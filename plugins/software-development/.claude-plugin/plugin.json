@@ -1,0 +1,7 @@
+{
+  "name": "software-development",
+  "description": "Software development workflow skills. Includes: analyze-logs, commit, create-branch, create-github-issue, fix-pr-checks, implement-feature, land-pr, pr, resolve-pr-comments, resolve-sonarqube-issues, review-code, review-readme, tidy-workspace, update-dependabot-bulk.",
+  "author": {
+    "name": "Dan Walker"
+  }
+}

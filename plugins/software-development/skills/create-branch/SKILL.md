@@ -1,0 +1,74 @@
+---
+name: create-branch
+description: Create a git branch named with the issue key and a short, slugified title or summary of the work. Use when the user wants to start work on an issue or create a branch for a Jira/GitHub work item.
+metadata:
+  category: software-development
+---
+
+# Create Branch
+
+Create a new git branch whose name starts with the issue key followed by a concise, slugified title or summary of the issue or work item. Keep the total branch name length within the usual PR title length (about 60–72 characters) so it can serve as the default PR title.
+
+## When to Use
+
+Use this skill when:
+
+- The user wants to create a branch for an issue or work item
+- The user asks to start work on a Jira ticket or GitHub issue and need a branch
+- You need to name a branch from an issue key and description
+
+## Instructions
+
+Please start by reviewing the AGENTS.md and CONTRIBUTING.md files in the project (if present). Note any branch naming conventions that should override the defaults below.
+
+1. **Get the issue key and title/summary**
+   - If the user provided an issue key (e.g. a Jira key like `PROJ-123`, or a GitHub issue number), use it.
+   - If there is a Jira or GitHub work item in context, use its key and summary or title.
+   - If the key or title is missing, ask the user or look up the work item (e.g. via acli, gh, or plan-from-work-item skill).
+
+2. **Build the branch name**
+   - Start with the issue key (e.g. `PROJ-123` for Jira or `123` for a GitHub issue). Use a consistent format (e.g. `gh-123` if the repo uses that pattern).
+   - Append a single hyphen, then a slugified version of the title or summary:
+     - Lowercase.
+     - Replace spaces and underscores with hyphens.
+     - Remove or replace characters that are invalid or awkward in branch names (e.g. strip most punctuation; keep hyphens and alphanumeric).
+     - Collapse multiple hyphens into one.
+     - Trim leading/trailing hyphens.
+
+3. **Shorten the title part to fit length**
+   - Keep the full branch name within about 60–72 characters so it fits typical PR title length.
+   - If the slugified title is too long, truncate the title portion (after the issue key and hyphen) to fit. Prefer keeping the most meaningful words (e.g. drop trailing words or abbreviate rather than cutting mid-word if possible).
+
+4. **Create the branch**
+   - Ensure you are on the correct base branch (e.g. `main` or `master`) and it is up to date if the user expects that.
+   - Run: `git checkout -b <branch-name>`.
+   - Confirm the branch was created and report the branch name to the user.
+
+5. **Publish the branch to origin**
+   - Check if an `origin` remote is configured: `git remote get-url origin`.
+   - If origin exists, verify connectivity by running: `git ls-remote --exit-code origin HEAD`.
+   - If both checks pass, push the branch: `git push -u origin <branch-name>`.
+   - Note the remote URL (e.g. `https://github.com/<owner>/<repo>`) for use in the comment below.
+   - If no origin or no connectivity, skip silently — do not treat this as an error.
+
+6. **Comment on the linked ticket/issue**
+   - Only do this step if the branch is associated with a Jira ticket or GitHub issue key.
+   - Construct the branch URL:
+     - **GitHub repo**: `https://github.com/<owner>/<repo>/tree/<branch-name>` (derive owner/repo from the origin remote URL).
+     - **Jira ticket with GitHub repo**: use the same GitHub branch URL.
+   - **Jira ticket** (e.g. `PROJ-123`): add a comment using `acli`:
+     ```
+     acli jira --action addComment --issue <ISSUE-KEY> --comment "Branch created: [<branch-name>|<branch-url>]"
+     ```
+   - **GitHub issue** (e.g. `#123`): add a comment using `gh`:
+     ```
+     gh issue comment <issue-number> --body "Branch created: [<branch-name>](<branch-url>)"
+     ```
+   - If commenting fails (e.g. no auth, wrong project), warn the user but do not abort.
+
+7. **Report**: After completing all steps, summarize:
+   - Branch name created
+   - Whether it was pushed to origin (and the remote URL if so)
+   - Whether a comment was posted on the linked ticket/issue (and any errors if not)
+
+If the user prefers a different naming pattern (e.g. issue key only, or a different max length), follow their preference.

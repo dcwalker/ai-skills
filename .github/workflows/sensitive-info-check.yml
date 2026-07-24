@@ -1,0 +1,41 @@
+name: Sensitive info check
+
+# Thin caller stub — all logic lives in TildeSlashDotAsterisk.
+# To change the scan behaviour, edit the central reusable workflow:
+#   dcwalker/TildeSlashDotAsterisk/.github/workflows/sensitive-info-check.yml
+#
+# SENSITIVE_DENYLIST repo secret: one POSIX ERE per line, case-insensitive.
+# See the reusable workflow for full denylist format documentation.
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, edited]
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1'  # Mondays 06:00 UTC
+  workflow_dispatch: {}
+
+jobs:
+  sensitive-info:
+    name: Sensitive info check
+    uses: dcwalker/TildeSlashDotAsterisk/.github/workflows/sensitive-info-check.yml@master
+    permissions:
+      contents: read
+      issues: write
+    with:
+      event_name: ${{ github.event_name }}
+      actor: ${{ github.actor }}
+      repository: ${{ github.repository }}
+      ref_name: ${{ github.ref_name }}
+      run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      pr_base_sha: ${{ github.event.pull_request.base.sha }}
+      pr_head_sha: ${{ github.event.pull_request.head.sha }}
+      pr_title: ${{ github.event.pull_request.title }}
+      pr_body: ${{ github.event.pull_request.body }}
+      before_sha: ${{ github.event.before }}
+      after_sha: ${{ github.event.after }}
+    secrets:
+      SENSITIVE_DENYLIST: ${{ secrets.SENSITIVE_DENYLIST }}
+      GH_TOKEN: ${{ github.token }}

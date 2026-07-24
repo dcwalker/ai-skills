@@ -1,0 +1,40 @@
+name: Claude PR Review
+
+# Always invokes the shared reusable workflow in dcwalker/TildeSlashDotAsterisk,
+# which decides internally whether to run the Claude review and always emits the
+# `review / gate` status that branch protection requires. The review rubric is the
+# review-code skill in THIS repo (single source of truth for it, since the
+# software-development plugin lives here); comments are posted by claude[bot].
+# Requires repo secrets CLAUDE_CODE_OAUTH_TOKEN and MARKETPLACE_READ_PAT.
+#
+# Review triggers (decided inside the reusable workflow): auto on
+# opened/ready_for_review/reopened for non-draft PRs; on demand by commenting
+# "/re-review" on the PR (owner/member/collaborator only). The "skip-code-review"
+# label and dependabot PRs are skipped. Pushes do NOT re-run the review; a prior
+# review keeps the gate green via the sticky "code-reviewed" label. A "/re-review"
+# blocks merging until it completes.
+
+on:
+  pull_request:
+    types: [opened, ready_for_review, reopened, synchronize, labeled, unlabeled]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  pull-requests: write
+  statuses: write   # lets a /re-review run post the `review / gate` commit status on the PR head
+  actions: read     # lets the github_ci MCP server read CI status
+  id-token: write   # caps the reusable workflow; the action needs it for the claude[bot] OIDC token exchange
+
+jobs:
+  review:
+    # Avoid invoking the reusable workflow for every PR comment; only do so for a
+    # /re-review request. The reusable workflow still fully validates the trigger.
+    if: >
+      github.event_name != 'issue_comment'
+      || contains(github.event.comment.body, '/re-review')
+    uses: dcwalker/TildeSlashDotAsterisk/.github/workflows/claude-review.yml@master
+    secrets:
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+      MARKETPLACE_READ_PAT: ${{ secrets.MARKETPLACE_READ_PAT }}

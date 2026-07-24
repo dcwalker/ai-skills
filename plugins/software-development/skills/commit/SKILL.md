@@ -1,0 +1,65 @@
+---
+name: commit
+description: Create a commit following project standards. Reviews changes, extracts issue ID from branch name, and creates properly formatted commit messages. Use when committing changes or when the user asks to commit.
+metadata:
+  category: software-development
+---
+
+# Commit
+
+Create a commit following project standards, ensuring all changes are intentional, complete, and properly documented.
+
+## When to Use
+
+Use this skill when:
+- The user asks to commit changes
+- You need to commit code changes following project conventions
+- You need to create a properly formatted commit message
+
+## Instructions
+
+Please start by reviewing the AGENTS.md then the "Commit Messages" section of the CONTRIBUTING.md document before proceeding.
+
+Before committing, follow this workflow:
+
+1. Run `git status` and `git diff` to review all uncommitted changes.
+
+2. Verify that the changes are intentional and complete. Confirm each of the following and report the result:
+   - **No debug code**: No temporary logging, hardcoded test values, or commented-out code included. [Yes / No — describe]
+   - **Documentation updated**: If the changes impact user-facing behavior, README or other docs have been updated. [Yes / N/A]
+   - **API spec updated**: If the changes impact API endpoints, openapi.yaml or openapi.json has been updated. [Yes / N/A]
+   - **Changes are related**: All changes belong in a single commit. [Yes / No — describe]
+   - If unrelated changes exist, ask whether to commit them separately or together.
+
+3. If you need more context about the work item to write a better commit message, fetch the details:
+   - For Jira projects: use the `acli` command line tool. Run `acli jira workitem --help` for usage information.
+   - For GitHub projects: use the `gh` command line tool (e.g., `gh issue view <number>`).
+
+4. **Check that the code builds and passes syntax checks**
+   - If the project has a build step, run it (e.g. `npm run build`, `make`, `go build ./...`).
+   - If there are linters or syntax checks configured (e.g. `npm run lint`, `eslint`, `ruff check`), run them.
+   - If the build or syntax checks **pass**: proceed normally.
+   - If they **fail**:
+     - Attempt to fix the errors.
+     - If the errors cannot be fixed quickly, ask the user whether to skip and commit anyway.
+     - If the user agrees to skip: prefix the commit message subject with `WIP: ` and add a short note in the commit body describing the build or syntax errors (e.g. "Build failing: …", "Lint errors in foo.ts: …"). Inform the user that the commit is marked WIP.
+     - If the user does not agree to skip, do not commit.
+   - If no build or lint commands are identifiable for the project, skip this step.
+
+5. Create the commit message following the format:
+   - Prefix: If an issue or ticket ID is derivable from the branch name (e.g., `PROJECT-123` from `PROJECT-123-feature-description`, or `#42` from `42-fix-login`), prefix the commit message with it (e.g., `[PROJECT-123] ...` or `#42 ...`). If it is not clear whether there is an associated ticket or work item, ask the user whether to include one and what format to use.
+   - Description: Clear, professional description of what changed and why.
+
+6. Commit the changes.
+
+7. If the commit fails (pre-commit hooks, validation errors, etc.):
+   - Review the error message.
+   - Fix any issues raised by hooks or validation.
+   - Retry the commit.
+
+8. **Report**: After a successful commit, report:
+   - The commit SHA
+   - The commit message used
+   - A brief summary of what was committed (files changed, nature of changes)
+
+If there are no uncommitted changes, report that to the user.

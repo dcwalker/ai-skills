@@ -1,0 +1,18 @@
+{
+  "name": "dcwalker-skills",
+  "owner": {
+    "name": "Dan Walker"
+  },
+  "plugins": [
+    {
+      "name": "life-skills",
+      "source": "./plugins/life-skills",
+      "description": "Personal life-organization skills. Includes: conduct-interview, organize-meeting-notes, triage."
+    },
+    {
+      "name": "software-development",
+      "source": "./plugins/software-development",
+      "description": "Software development workflow skills. Includes: analyze-logs, commit, create-branch, create-github-issue, fix-pr-checks, implement-feature, land-pr, pr, resolve-pr-comments, resolve-sonarqube-issues, review-code, review-readme, tidy-workspace, update-dependabot-bulk."
+    }
+  ]
+}
