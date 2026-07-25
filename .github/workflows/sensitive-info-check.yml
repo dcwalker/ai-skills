@@ -1,8 +1,8 @@
 name: Sensitive info check
 
-# Thin caller stub — all logic lives in TildeSlashDotAsterisk.
+# Thin caller stub — all logic lives in dcwalker/workflows.
 # To change the scan behaviour, edit the central reusable workflow:
-#   dcwalker/TildeSlashDotAsterisk/.github/workflows/sensitive-info-check.yml
+#   dcwalker/workflows/.github/workflows/sensitive-info-check.yml
 #
 # SENSITIVE_DENYLIST repo secret: one POSIX ERE per line, case-insensitive.
 # See the reusable workflow for full denylist format documentation.
@@ -20,7 +20,7 @@ on:
 jobs:
   sensitive-info:
     name: Sensitive info check
-    uses: dcwalker/TildeSlashDotAsterisk/.github/workflows/sensitive-info-check.yml@master
+    uses: dcwalker/workflows/.github/workflows/sensitive-info-check.yml@main
     permissions:
       contents: read
       issues: write

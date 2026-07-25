@@ -1,6 +1,6 @@
 name: Claude PR Review
 
-# Always invokes the shared reusable workflow in dcwalker/TildeSlashDotAsterisk,
+# Always invokes the shared reusable workflow in dcwalker/workflows,
 # which decides internally whether to run the Claude review and always emits the
 # `review / gate` status that branch protection requires. The review rubric is the
 # review-code skill in THIS repo (single source of truth for it, since the
@@ -34,7 +34,7 @@ jobs:
     if: >
       github.event_name != 'issue_comment'
       || contains(github.event.comment.body, '/re-review')
-    uses: dcwalker/TildeSlashDotAsterisk/.github/workflows/claude-review.yml@master
+    uses: dcwalker/workflows/.github/workflows/claude-review.yml@main
     secrets:
       CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
       MARKETPLACE_READ_PAT: ${{ secrets.MARKETPLACE_READ_PAT }}
