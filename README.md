@@ -23,12 +23,3 @@ Then install a plugin from it:
 ```
 
 Run `/plugin` to browse installed and available plugins, or to update/remove one later.
-
-## Code checks
-
-PRs to this repo run the same review and sensitive-info scans used across
-other repos in this account, via reusable workflows hosted in
-[TildeSlashDotAsterisk](https://github.com/dcwalker/TildeSlashDotAsterisk):
-
-- `.github/workflows/claude-review.yml` — automated Claude PR review, gated on the `review / gate` status check.
-- `.github/workflows/sensitive-info-check.yml` — scans PRs, pushes, and (weekly) full history for denylisted sensitive patterns.
