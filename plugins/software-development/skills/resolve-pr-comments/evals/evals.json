@@ -1,0 +1,140 @@
+{
+  "skill_name": "resolve-pr-comments",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Resolve the PR comments on this branch.",
+      "expected_output": "The skill finds one unresolved review comment on PR #42 pointing at a real off-by-one bug in src/discount.js (loop condition `i <= items.length` reads past the end of the array). It fixes the loop condition to `i < items.length`, commits the fix with a message referencing the PR comment, replies to the comment citing the commit SHA, and resolves the review thread.",
+      "expectations": [
+        "src/discount.js's loop condition was changed from `i <= items.length` to `i < items.length` (or an equivalent fix that stops iteration at the last valid index).",
+        "Exactly one new commit was created on top of the fixture's initial commit, and its message references PR comment #3001 or its URL.",
+        "A `gh api repos/acme/widgets/pulls/42/comments/3001/replies` call (or equivalent reply call for comment 3001) happened, with reply text containing the short SHA of the new commit.",
+        "A `resolveReviewThread` GraphQL mutation call happened for the thread containing comment 3001, and it happened only after the fix commit already exists (i.e. after the reply/commit, not before).",
+        "No other files were modified."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Resolve the PR comments on this branch.",
+      "expected_output": "The skill finds one unresolved review comment on PR #42 that is a genuine clarifying question about why a fixed 100ms retry delay was used instead of exponential backoff. It does not change any code. It replies with a brief explanation of the reasoning and resolves the thread.",
+      "expectations": [
+        "No files in the repository were modified and no new commit was created.",
+        "A reply call was made for comment #3002 whose text answers the 'why' question (addresses the design reasoning) rather than saying 'Addressed in <SHA>'.",
+        "A `resolveReviewThread` GraphQL mutation call happened for the thread containing comment 3002.",
+        "The reply was not a boilerplate 'Addressed in' message, since no fix was made."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Resolve the PR comments on this branch.",
+      "expected_output": "The skill finds one unresolved review comment on PR #42 about validateEmail accepting strings with no `@`. Git history on this branch already contains a later commit ('Require an @ symbol in validateEmail') that fixes exactly this. The skill recognizes the issue is already fixed, replies citing that existing commit's SHA, and resolves the thread without creating a new commit.",
+      "expectations": [
+        "No new commit was created; the git log after the run has exactly the same commits as before the run (the initial commit plus the pre-existing 'Require an @ symbol in validateEmail' commit).",
+        "src/validate.js was not modified during the run (it already contained the fix).",
+        "A reply call was made for comment #3003 whose text is 'Addressed in <SHA>' (or similar) citing the SHA of the pre-existing 'Require an @ symbol in validateEmail' commit, not a newly created SHA.",
+        "A `resolveReviewThread` GraphQL mutation call happened for the thread containing comment 3003."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Resolve the PR comments on this branch, but only address the bot's comments -- leave the human reviewer's comments alone for now.",
+      "expected_output": "The skill lists PR #42's comments filtered to bots only (comment #3004, from lint-bot[bot], a real bug about an unhandled JSON.parse exception in src/parse-config.js). It fixes that issue, commits, replies, and resolves the thread. It does not touch or reply to the human reviewer's comment (#3005), which is left unresolved.",
+      "expectations": [
+        "src/parse-config.js was changed to handle a JSON.parse failure (e.g. wrapped in try/catch or the parsed result validated) addressing comment #3004.",
+        "Exactly one new commit was created, referencing comment #3004 or the JSON.parse bug.",
+        "A reply and a `resolveReviewThread` mutation happened for the thread containing comment #3004.",
+        "No `gh` call (reply or resolve) referencing comment #3005 or its thread appears in the call log -- the human's comment was left untouched.",
+        "The `list-pr-comments.sh` invocation(s) used to gather comments included the `--bots` filter."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Resolve the PR comments on this branch, but only address the human reviewer's comments -- ignore anything from bots for now.",
+      "expected_output": "The skill lists PR #42's comments filtered to humans only (comment #3007, from dana-reviewer, asking for a named export instead of a default export in src/parse-config.js). It fixes that, commits, replies, and resolves the thread. It does not touch or reply to the bot's comment (#3006), which is left unresolved.",
+      "expectations": [
+        "src/parse-config.js's `module.exports = parseConfig;` was changed to a named export `module.exports = { parseConfig };` (or equivalent), addressing comment #3007.",
+        "Exactly one new commit was created, referencing comment #3007 or the export-shape change.",
+        "A reply and a `resolveReviewThread` mutation happened for the thread containing comment #3007.",
+        "No `gh` call (reply or resolve) referencing comment #3006 or its thread appears in the call log -- the bot's comment was left untouched.",
+        "The `list-pr-comments.sh` invocation(s) used to gather comments included the `--humans` filter."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Resolve the PR comments on this branch.",
+      "expected_output": "The skill finds two unresolved review comments on PR #42 in src/inventory.js: one valid (reserveStock mutates its input argument in place, comment #3008) and one invalid (a request to rename a function to snake_case in a JS codebase, comment #3009). It fixes and commits the valid one, replies declining the invalid one with a brief explanation, and resolves both threads independently.",
+      "expectations": [
+        "src/inventory.js's reserveStock function was changed to avoid mutating the `inventory` argument in place (e.g. clones/returns a new object) addressing comment #3008.",
+        "Exactly one new commit was created, and it references comment #3008 (the mutation bug), not comment #3009.",
+        "A reply was posted for comment #3008 citing the fix commit's SHA, and a separate reply was posted for comment #3009 explaining why the rename isn't appropriate (not a fix commit).",
+        "`resolveReviewThread` mutations happened for both thread 3008 and thread 3009.",
+        "The two comments were not lumped into a single reply or a single combined explanation -- each has its own distinct reply text."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Resolve the PR comments on this branch.",
+      "expected_output": "PR #42 has no unresolved review comments. The skill reports that there is nothing to address.",
+      "expectations": [
+        "No files in the repository were modified and no new commit was created.",
+        "No reply or `resolveReviewThread`/`minimizeComment` GraphQL call appears anywhere in the gh call log.",
+        "The final report clearly states there were no unresolved comments to process, rather than fabricating or inventing an action."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Resolve the PR comments on this branch.",
+      "expected_output": "The skill finds one unresolved review comment on PR #42 (comment #3010) asking to floor the final price to a whole dollar with Math.floor. CONTRIBUTING.md documents that pricing must use standard rounding (Math.round), never floor/ceil. The skill declines the suggestion with a polite explanation referencing that convention, and resolves the thread without changing the code.",
+      "expectations": [
+        "src/pricing.js was not modified; finalPrice still uses Math.round.",
+        "No new commit was created.",
+        "A reply was posted for comment #3010 explaining that the current Math.round behavior is intentional per project convention (not a boilerplate 'Addressed in' message).",
+        "A `resolveReviewThread` mutation happened for the thread containing comment #3010."
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Resolve the PR comments on this branch.",
+      "expected_output": "The skill finds one unresolved review comment on PR #42 (comment #3011) that legitimately requires changes across two files: src/order-total.js and src/format.js both hardcode a 7% tax rate instead of using the shared TAX_RATE constant in src/constants.js. The skill updates both files to use TAX_RATE, commits both changes together as one commit referencing the single comment, replies with the commit SHA, and resolves the thread.",
+      "expectations": [
+        "Both src/order-total.js and src/format.js were changed to reference the TAX_RATE constant from src/constants.js instead of a hardcoded 1.07/0.07 literal.",
+        "Exactly one new commit was created covering both files, and its message references comment #3011.",
+        "A reply was posted for comment #3011 citing that commit's SHA, and a `resolveReviewThread` mutation happened for its thread.",
+        "src/constants.js itself was not modified (TAX_RATE already existed there)."
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Resolve the PR comments on this branch.",
+      "expected_output": "The skill finds one unresolved review comment on PR #42 (comment #3012, from security-scan[bot]) flagging a hardcoded Slack webhook token in src/notify.js. This is a real, security-sensitive bug. The skill fixes it by loading the token via the existing config/secrets.js loader instead of hardcoding it, commits the fix, replies with the SHA, and resolves the thread.",
+      "expectations": [
+        "src/notify.js no longer contains the literal string 'xoxb-hardcoded-token-do-not-ship' or any other hardcoded credential.",
+        "src/notify.js was changed to obtain the Slack token via config/secrets.js's getSecret (or equivalent use of an environment-backed loader), not a hardcoded literal.",
+        "Exactly one new commit was created referencing comment #3012 or the credential leak.",
+        "A reply was posted for comment #3012 citing the fix commit's SHA, and a `resolveReviewThread` mutation happened for its thread."
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "Resolve the PR comments on this branch.",
+      "expected_output": "The skill finds two unresolved, unrelated review comments on PR #42: a loose-equality bug in src/cart.js (comment #3013) and a divide-by-zero bug in src/shipping.js (comment #3014). Both are valid. The skill fixes each and creates two separate commits (not one combined commit), replying to and resolving each thread independently.",
+      "expectations": [
+        "src/cart.js's removeItem was changed from `!=` to `!==` (or equivalent strict comparison) addressing comment #3013.",
+        "src/shipping.js's estimateShipping was changed to guard against an empty `items` array (e.g. avoid dividing by zero/using Math.max(items.length, 1)) addressing comment #3014.",
+        "Exactly two new commits were created: one touching only src/cart.js and referencing comment #3013, and one touching only src/shipping.js and referencing comment #3014 -- not a single commit touching both files.",
+        "Separate reply calls were made for comment #3013 and comment #3014, each citing its own commit's SHA.",
+        "`resolveReviewThread` mutations happened for both threads."
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Resolve the PR comments on this branch.",
+      "expected_output": "PR #42's only review thread (comment #3015, about a missing null check in src/checkout.js) is already resolved, and the branch already contains a commit ('Add null guard to checkout cart validation') that fixed it. Because the thread is already resolved, the default comment listing returns nothing unresolved. The skill reports there is nothing left to do.",
+      "expectations": [
+        "No files in the repository were modified and no new commit was created.",
+        "No reply or `resolveReviewThread`/`minimizeComment` GraphQL call appears anywhere in the gh call log.",
+        "The final report does not claim to have fixed or resolved comment #3015 during this run (it was already resolved beforehand), and does not fabricate a new action against it."
+      ]
+    }
+  ]
+}

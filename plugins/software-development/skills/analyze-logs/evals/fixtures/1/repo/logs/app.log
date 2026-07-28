@@ -1,0 +1,66 @@
+2026-07-26T08:01:03Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48201)
+2026-07-26T08:02:06Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48202)
+2026-07-26T08:03:09Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48203)
+2026-07-26T08:04:12Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48204)
+2026-07-26T08:05:11Z WARN [CacheService] Cache miss for key product:9182
+2026-07-26T08:05:15Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48205)
+2026-07-26T08:06:18Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48206)
+2026-07-26T08:07:21Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48207)
+2026-07-26T08:08:24Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48208)
+2026-07-26T08:09:27Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48209)
+2026-07-26T08:10:30Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48210)
+2026-07-26T08:11:33Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48211)
+2026-07-26T08:11:44Z WARN [AuthService] Password reset requested for unknown email
+2026-07-26T08:12:36Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48212)
+2026-07-26T08:13:39Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48213)
+2026-07-26T08:14:42Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48214)
+2026-07-26T08:15:45Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48215)
+2026-07-26T08:16:48Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48216)
+2026-07-26T08:17:51Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48217)
+2026-07-26T08:18:54Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48218)
+2026-07-26T08:19:57Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48219)
+2026-07-26T08:20:00Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48220)
+2026-07-26T08:21:03Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48221)
+2026-07-26T08:22:03Z WARN [InventoryService] Low stock warning for sku ABC-123
+2026-07-26T08:22:06Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48222)
+2026-07-26T08:23:09Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48223)
+2026-07-26T08:24:12Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48224)
+2026-07-26T08:25:15Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48225)
+2026-07-26T08:26:18Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48226)
+2026-07-26T08:27:21Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48227)
+2026-07-26T08:28:24Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48228)
+2026-07-26T08:29:27Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48229)
+2026-07-26T08:30:30Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48230)
+2026-07-26T08:31:33Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48231)
+2026-07-26T08:32:36Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48232)
+2026-07-26T08:33:39Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48233)
+2026-07-26T08:34:42Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48234)
+2026-07-26T08:35:45Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48235)
+2026-07-26T08:36:48Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48236)
+2026-07-26T08:37:51Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48237)
+2026-07-26T08:38:54Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48238)
+2026-07-26T08:39:57Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48239)
+2026-07-26T08:40:00Z ERROR [OrderService] Connection timeout calling payment-gateway (orderId=48240)
+2026-07-26T09:01:19Z WARN [CacheService] Cache miss for key product:2210
+2026-07-26T09:14:52Z WARN [ShippingService] Rate lookup slower than expected (820ms)
+2026-07-26T09:40:07Z WARN [InventoryService] Low stock warning for sku XZ-990
+2026-07-26T10:01:00Z INFO [OrderService] Order 70001 processed successfully
+2026-07-26T10:02:00Z INFO [OrderService] Order 70002 processed successfully
+2026-07-26T10:03:00Z INFO [OrderService] Order 70003 processed successfully
+2026-07-26T10:04:00Z INFO [OrderService] Order 70004 processed successfully
+2026-07-26T10:05:00Z INFO [OrderService] Order 70005 processed successfully
+2026-07-26T10:06:00Z INFO [OrderService] Order 70006 processed successfully
+2026-07-26T10:07:00Z INFO [OrderService] Order 70007 processed successfully
+2026-07-26T10:08:00Z INFO [OrderService] Order 70008 processed successfully
+2026-07-26T10:09:00Z INFO [OrderService] Order 70009 processed successfully
+2026-07-26T10:10:00Z INFO [OrderService] Order 70010 processed successfully
+2026-07-26T10:11:00Z INFO [OrderService] Order 70011 processed successfully
+2026-07-26T10:12:00Z INFO [OrderService] Order 70012 processed successfully
+2026-07-26T10:13:00Z INFO [OrderService] Order 70013 processed successfully
+2026-07-26T10:14:00Z INFO [OrderService] Order 70014 processed successfully
+2026-07-26T10:15:00Z INFO [OrderService] Order 70015 processed successfully
+2026-07-26T10:16:00Z INFO [OrderService] Order 70016 processed successfully
+2026-07-26T10:17:00Z INFO [OrderService] Order 70017 processed successfully
+2026-07-26T10:18:00Z INFO [OrderService] Order 70018 processed successfully
+2026-07-26T10:19:00Z INFO [OrderService] Order 70019 processed successfully
+2026-07-26T10:20:00Z INFO [OrderService] Order 70020 processed successfully

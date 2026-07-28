@@ -1,0 +1,123 @@
+2026-07-26T00:12:36Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T00:24:12Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T00:48:24Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T01:03:17Z INFO [ConnectionPool] Pool resized to 21 connections
+2026-07-26T01:05:09Z ERROR [ConnectionPool] Connection pool exhausted, request rejected
+2026-07-26T01:07:03Z WARN [ConnectionPool] Connection pool at 95% capacity
+2026-07-26T01:11:13Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T01:23:49Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T01:35:25Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T01:59:37Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T02:06:34Z INFO [ConnectionPool] Pool resized to 22 connections
+2026-07-26T02:10:18Z ERROR [ConnectionPool] Connection pool exhausted, request rejected
+2026-07-26T02:10:50Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T02:14:06Z WARN [ConnectionPool] Connection pool at 95% capacity
+2026-07-26T02:22:26Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T02:34:02Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T02:46:38Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T03:09:51Z INFO [ConnectionPool] Pool resized to 23 connections
+2026-07-26T03:15:27Z ERROR [ConnectionPool] Connection pool exhausted, request rejected
+2026-07-26T03:21:03Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T03:21:09Z WARN [ConnectionPool] Connection pool at 95% capacity
+2026-07-26T03:33:39Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T03:45:15Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T03:57:51Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T04:08:04Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T04:12:08Z INFO [ConnectionPool] Pool resized to 24 connections
+2026-07-26T04:20:36Z ERROR [ConnectionPool] Connection pool exhausted, request rejected
+2026-07-26T04:28:12Z WARN [ConnectionPool] Connection pool at 95% capacity
+2026-07-26T04:32:16Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T04:44:52Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T04:56:28Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T05:07:41Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T05:15:25Z INFO [ConnectionPool] Pool resized to 25 connections
+2026-07-26T05:19:17Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T05:25:45Z ERROR [ConnectionPool] Connection pool exhausted, request rejected
+2026-07-26T05:35:15Z WARN [ConnectionPool] Connection pool at 95% capacity
+2026-07-26T05:43:29Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T05:55:05Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T06:06:18Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T06:18:42Z INFO [ConnectionPool] Pool resized to 26 connections
+2026-07-26T06:18:54Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T06:30:30Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T06:30:54Z ERROR [ConnectionPool] Connection pool exhausted, request rejected
+2026-07-26T06:42:18Z WARN [ConnectionPool] Connection pool at 95% capacity
+2026-07-26T06:54:42Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T07:05:55Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T07:17:31Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T07:21:59Z INFO [ConnectionPool] Pool resized to 27 connections
+2026-07-26T07:29:07Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T07:35:03Z ERROR [ConnectionPool] Connection pool exhausted, request rejected
+2026-07-26T07:41:43Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T07:49:21Z WARN [ConnectionPool] Connection pool at 95% capacity
+2026-07-26T08:16:08Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T08:24:16Z INFO [ConnectionPool] Pool resized to 28 connections
+2026-07-26T08:28:44Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T08:40:12Z ERROR [ConnectionPool] Connection pool exhausted, request rejected
+2026-07-26T08:40:20Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T08:52:56Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T08:56:24Z WARN [ConnectionPool] Connection pool at 95% capacity
+2026-07-26T09:03:09Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T09:27:21Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T09:27:33Z INFO [ConnectionPool] Pool resized to 29 connections
+2026-07-26T09:39:57Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T09:45:21Z ERROR [ConnectionPool] Connection pool exhausted, request rejected
+2026-07-26T09:51:33Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T10:02:46Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T10:14:22Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T10:30:50Z INFO [ConnectionPool] Pool resized to 30 connections
+2026-07-26T10:38:34Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T10:50:10Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T10:50:30Z ERROR [ConnectionPool] Connection pool exhausted, request rejected
+2026-07-26T11:01:23Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T11:13:59Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T11:25:35Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T11:33:07Z INFO [ConnectionPool] Pool resized to 31 connections
+2026-07-26T11:49:47Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T12:00:00Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T12:12:36Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T12:24:12Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T12:36:24Z INFO [ConnectionPool] Pool resized to 32 connections
+2026-07-26T12:36:48Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T13:11:13Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T13:23:49Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T13:35:25Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T13:39:41Z INFO [ConnectionPool] Pool resized to 33 connections
+2026-07-26T13:47:01Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T14:22:26Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T14:34:02Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T14:42:58Z INFO [ConnectionPool] Pool resized to 34 connections
+2026-07-26T14:46:38Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T14:58:14Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T15:09:27Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T15:33:39Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T15:45:15Z INFO [ConnectionPool] Pool resized to 35 connections
+2026-07-26T15:45:15Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T15:57:51Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T16:08:04Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T16:20:40Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T16:44:52Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T16:56:28Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T17:07:41Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T17:19:17Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T17:31:53Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T17:55:05Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T18:06:18Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T18:18:54Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T18:30:30Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T18:42:06Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T19:17:31Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T19:29:07Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T19:53:19Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T20:04:32Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T20:28:44Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T20:40:20Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T21:15:45Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T21:39:57Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T21:51:33Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T22:02:46Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T22:26:58Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T22:50:10Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T23:01:23Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T23:13:59Z WARN [I18n] Using default locale en-US, no Accept-Language header present
+2026-07-26T23:37:11Z WARN [I18n] Using default locale en-US, no Accept-Language header present

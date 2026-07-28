@@ -1,0 +1,13 @@
+{
+  "calls": [
+    {
+      "match": ["auth", "status"],
+      "stdout": "github.com\n  ✓ Logged in to github.com account dcwalker (keyring)\n  ✓ Git operations for github.com configured to use https protocol.\n  ✓ Token: gho_****\n",
+      "exit_code": 0
+    }
+  ],
+  "default": {
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call -- the request was too vague to have reached discovery/creation yet"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "calls": [
+    {"match": ["auth", "status"], "exit_code": 0},
+    {"match": ["pr", "view"], "stdout_json": {"number": 7}},
+    {"match": ["pulls/7"], "stdout_json": {"number": 7, "head": {"sha": "def456", "ref": "fix/calc-bug"}}},
+    {"match": ["commits/def456/check-runs"], "times": 1, "stdout_json": {"check_runs": [
+      {"id": 601, "name": "lint", "status": "completed", "conclusion": "failure",
+       "output": {"summary": "check.py failed: AssertionError: difference(5,3) should be 2, got 8"},
+       "app": {"name": "GitHub Actions"}, "html_url": "https://github.com/acme/widgets/actions/runs/1",
+       "started_at": "2026-01-01T00:00:00Z", "completed_at": "2026-01-01T00:01:00Z"}
+    ]}},
+    {"match": ["commits/def456/check-runs"], "stdout_json": {"check_runs": [
+      {"id": 601, "name": "lint", "status": "completed", "conclusion": "success",
+       "output": {"summary": "All checks passed"},
+       "app": {"name": "GitHub Actions"}, "html_url": "https://github.com/acme/widgets/actions/runs/2",
+       "started_at": "2026-01-01T00:05:00Z", "completed_at": "2026-01-01T00:06:00Z"}
+    ]}},
+    {"match": ["commits/def456/status"], "stdout_json": {"state": "success", "statuses": []}},
+    {"match_regex": "^api repos/acme/widgets/commits/def456$", "stdout_json": {"commit": {"message": "Fix subtract bug"}}}
+  ],
+  "default": {"exit_code": 1, "stderr": "no fixture match"}
+}

@@ -1,0 +1,117 @@
+{
+  "calls": [
+    {
+      "match": [
+        "auth",
+        "status"
+      ],
+      "exit_code": 0
+    },
+    {
+      "match": [
+        "pr",
+        "view"
+      ],
+      "stdout_json": {
+        "number": 17
+      }
+    },
+    {
+      "match": [
+        "pulls/17"
+      ],
+      "stdout_json": {
+        "number": 17,
+        "head": {
+          "sha": "codeql01",
+          "ref": "add-query"
+        }
+      }
+    },
+    {
+      "match": [
+        "commits/codeql01/check-runs"
+      ],
+      "times": 1,
+      "stdout_json": {
+        "check_runs": [
+          {
+            "id": 1101,
+            "name": "CodeQL",
+            "status": "completed",
+            "conclusion": "failure",
+            "output": {
+              "summary": "1 alert found"
+            },
+            "app": {
+              "name": "CodeQL"
+            },
+            "html_url": "https://github.com/acme/widgets/security/code-scanning/1",
+            "started_at": "2026-01-01T00:00:00Z",
+            "completed_at": "2026-01-01T00:01:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "match": [
+        "commits/codeql01/check-runs"
+      ],
+      "stdout_json": {
+        "check_runs": [
+          {
+            "id": 1101,
+            "name": "CodeQL",
+            "status": "completed",
+            "conclusion": "success",
+            "output": {
+              "summary": "0 alerts found"
+            },
+            "app": {
+              "name": "CodeQL"
+            },
+            "html_url": "https://github.com/acme/widgets/security/code-scanning/1",
+            "started_at": "2026-01-01T00:05:00Z",
+            "completed_at": "2026-01-01T00:06:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "match": [
+        "commits/codeql01/status"
+      ],
+      "stdout_json": {
+        "state": "failure",
+        "statuses": []
+      }
+    },
+    {
+      "match": [
+        "check-runs/1101/annotations"
+      ],
+      "stdout_json": [
+        {
+          "path": "unsafe_query.py",
+          "start_line": 2,
+          "end_line": 2,
+          "annotation_level": "failure",
+          "title": "SQL query built from user-controlled sources",
+          "message": "This query string is built by concatenating the user_id parameter directly into SQL, which could allow an attacker to inject arbitrary SQL. Use a parameterized query instead."
+        }
+      ]
+    },
+    {
+      "match_regex": "^api repos/acme/widgets/commits/codeql01$",
+      "stdout_json": {
+        "commit": {
+          "message": "Add query builder"
+        }
+      }
+    }
+  ],
+  "default": {
+    "exit_code": 1,
+    "stderr": "no fixture match"
+  }
+}

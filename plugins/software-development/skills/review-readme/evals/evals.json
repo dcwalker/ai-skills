@@ -1,0 +1,133 @@
+{
+  "skill_name": "review-readme",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review and update the README for this project.",
+      "expected_output": "The README's Usage section tells the reader to run `npm run start`, but package.json only defines `dev`, `test`, and `build` scripts (no `start`). The rewritten README should replace `npm run start` with `npm run dev`, verifiable by diffing the fixture's package.json scripts against the final command text. A Phase 4 change report should note the command fix.",
+      "expectations": [
+        "The final README.md no longer contains the command `npm run start`",
+        "The final README.md's Usage section instructs the reader to run `npm run dev` instead",
+        "The Phase 4 change report lists a command/accuracy fix for the start/dev script discrepancy"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Review and update the README for this project.",
+      "expected_output": "The README has an 'Installation' section that appears twice with near-identical content. The rewritten README should contain only one Installation section, with the duplicate removed. The Phase 4 report should note a duplicate-removal change.",
+      "expectations": [
+        "The final README.md contains exactly one '## Installation' heading (not two)",
+        "The retained Installation section still contains the `npm install` instruction",
+        "The Phase 4 change report lists a duplicate-content removal"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Review and update the README for this project.",
+      "expected_output": "The README links to `./docs/ARCHITECTURE.md`, which does not exist anywhere in the fixture repo (no docs/ directory at all), while the CONTRIBUTING.md link is valid. The broken link should be fixed (e.g. removed, or pointed at real content) or, if it truly cannot be resolved from the codebase alone, explicitly flagged in the Phase 4 'Issues not fixed' section rather than silently left broken and unmentioned.",
+      "expectations": [
+        "The Phase 2 findings or Phase 4 report explicitly identifies the broken link to ./docs/ARCHITECTURE.md",
+        "Either the final README.md no longer contains a link to the nonexistent ./docs/ARCHITECTURE.md, or the Phase 4 report explicitly lists it under issues not fixed with a reason",
+        "The valid CONTRIBUTING.md link is left intact and is not incorrectly flagged as broken"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Review and update the README for this project.",
+      "expected_output": "The README is already accurate, well-structured, and matches the codebase (all commands match package.json scripts, no duplicates, no broken links, correct heading hierarchy, consistent formatting). This is the clean-fixture guard case: the skill should make minimal or no edits and its Phase 4 report should say so explicitly rather than inventing busywork changes.",
+      "expectations": [
+        "The Phase 4 report explicitly states that little or no changes were needed",
+        "The skill does not report fabricated duplicates, broken links, or inaccurate commands that do not exist in this fixture",
+        "Any edits actually made (if any) are genuinely trivial (e.g. whitespace) and not substantive rewrites of accurate content",
+        "Whether the skill makes zero edits or a small number of truly cosmetic ones is a reasonable judgment call either way"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Review and update the README for this project.",
+      "expected_output": "package.json defines a `lint` script (and a `format` script) that are not mentioned anywhere in the README. Per Phase 2 Step 9 (documentation gaps) and Phase 3 Step 8, the rewritten README should document the missing `npm run lint` script (and ideally `npm run format`), verifiable by checking the final README for these commands.",
+      "expectations": [
+        "The Phase 2 findings or Phase 4 report identifies the undocumented `lint` script as a documentation gap",
+        "The final README.md documents `npm run lint` somewhere (e.g. a Linting section)",
+        "Whether `npm run format` is also added is a reasonable judgment call and not strictly required"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Review and update the README for this project.",
+      "expected_output": "The README has a Table of Contents linking to `#setup`, a heading that does not exist (the actual heading is 'Configuration'), and the TOC is missing entries for the 'Configuration', 'Testing', and 'License' headings that do exist. The rewritten README's TOC should be corrected to link only to real headings and include all top-level headings.",
+      "expectations": [
+        "The Phase 2 findings or Phase 4 report identifies the broken #setup anchor and/or the missing TOC entries",
+        "The final README.md's Table of Contents no longer links to a nonexistent #setup anchor",
+        "The final README.md's Table of Contents includes an entry linking to the Configuration section (or the TOC is otherwise brought in sync with actual headings)"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Review and update the README for this project.",
+      "expected_output": "The README's heading hierarchy skips a level: the document jumps from an H1 ('# Heading App') directly to H3 ('### Installation', '### Usage') before returning to H2 for later sections. The rewritten README should fix the hierarchy so headings nest correctly (H1 -> H2, not H1 -> H3).",
+      "expectations": [
+        "The Phase 2 findings or Phase 4 report identifies the heading hierarchy violation (H1 to H3 skip)",
+        "The final README.md's Installation and Usage headings are H2 (`##`), not H3 (`###`), restoring a consistent H1 -> H2 hierarchy"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Review and update the README for this project.",
+      "expected_output": "CONTRIBUTING.md and CHANGELOG.md both exist in the project root as peers of the README but neither is linked from the README. The rewritten README should add links to both, verifiable by checking the final README for links to ./CONTRIBUTING.md and ./CHANGELOG.md.",
+      "expectations": [
+        "The Phase 2 findings or Phase 4 report identifies CONTRIBUTING.md and/or CHANGELOG.md as unlinked documentation",
+        "The final README.md contains a link to CONTRIBUTING.md",
+        "The final README.md contains a link to CHANGELOG.md"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Review and update the README for this project.",
+      "expected_output": "The README's Prerequisites section states 'Node.js 16 or higher', but package.json's engines field requires >=20. The rewritten README should update the stated Node version to match package.json (20 or higher), verifiable by diffing the fixture's package.json engines field against the final README text.",
+      "expectations": [
+        "The Phase 2 findings or Phase 4 report identifies the stale Node version requirement",
+        "The final README.md's Prerequisites section states a Node.js version of 20 or higher, not 16"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Review and update the README for this project.",
+      "expected_output": "Two of the README's fenced code blocks (under Installation and Testing) are bare triple-backtick fences with no language identifier, while others correctly specify `bash`. The rewritten README should add language identifiers to all fenced code blocks for consistency.",
+      "expectations": [
+        "The Phase 2 findings or Phase 4 report identifies the bare code fences as a formatting inconsistency",
+        "The final README.md contains no bare ``` fences that wrap shell commands -- all such fences specify a language (e.g. `bash`, `sh`)"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "Review and update the README for this project.",
+      "expected_output": "The README's Overview section is a single, extremely dense multi-hundred-word paragraph (7 long run-on sentences, no lists, no sub-headings) -- well past the ~6-sentence and wall-of-text thresholds. The rewritten README should break this up into shorter paragraphs, bullet points, or subsections while preserving the original meaning and tone.",
+      "expectations": [
+        "The Phase 2 findings or Phase 4 report identifies the Overview section as too long / a wall-of-text paragraph needing structural relief",
+        "The final README.md's Overview content is no longer a single unbroken paragraph of 7+ sentences -- it has been split into shorter paragraphs, a list, and/or subsections",
+        "The substantive information from the original Overview (what the app does, how it's built, how it's deployed, how it's tested) is still present after restructuring -- only the structure changed, not the facts, which is a matter of reasonable editorial judgment to verify"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Review and update the README for this project.",
+      "expected_output": "CONTRIBUTING.md's Documentation section states this project uses pnpm exclusively and that all documented commands must use `pnpm`, never `npm`. The README currently documents `npm install`, `npm run dev`, and `npm test`. Per Phase 1 (project guidelines override skill defaults), the rewritten README should use `pnpm` commands throughout, not just correct npm script names.",
+      "expectations": [
+        "The Phase 1 step summary or Phase 2 findings note that CONTRIBUTING.md requires pnpm, not npm, in documented commands",
+        "The final README.md's commands use `pnpm` (e.g. `pnpm install`, `pnpm dev` or `pnpm run dev`, `pnpm test`) rather than `npm`",
+        "The Phase 4 report attributes this change to the project's CONTRIBUTING.md guideline, not a generic default"
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "Review and update the README for this project.",
+      "expected_output": "The README's 'Project Structure' directory tree shows a `src/controllers/userController.js` and `src/utils/helpers.js` layout that does not match the actual repo, which has `src/routes/users.js` and `src/models/user.js` instead. The rewritten README's directory tree should be corrected to reflect the real structure.",
+      "expectations": [
+        "The Phase 2 findings (Step 4, visual content) or Phase 4 report identifies the directory tree as outdated/inaccurate",
+        "The final README.md's directory tree no longer shows the nonexistent controllers/userController.js or utils/helpers.js paths",
+        "The final README.md's directory tree reflects the actual src/routes and src/models layout, or the tree is removed/simplified rather than left inaccurate"
+      ]
+    }
+  ]
+}

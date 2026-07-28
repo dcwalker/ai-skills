@@ -1,0 +1,33 @@
+{
+  "calls": [
+    {
+      "match": ["pr", "view"],
+      "stderr": "no pull requests found for branch \"42-add-csv-export-button\"\n",
+      "exit_code": 1
+    },
+    {
+      "match": ["pr", "list"],
+      "stdout_json": [],
+      "exit_code": 0
+    },
+    {
+      "match": ["issue", "view", "42"],
+      "stdout_json": {
+        "number": 42,
+        "title": "Add CSV export to reports page",
+        "url": "https://github.com/example-org/demo-app/issues/42",
+        "state": "OPEN"
+      },
+      "exit_code": 0
+    },
+    {
+      "match": ["pr", "create"],
+      "stdout": "https://github.com/example-org/demo-app/pull/101\n",
+      "exit_code": 0
+    }
+  ],
+  "default": {
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call"
+  }
+}

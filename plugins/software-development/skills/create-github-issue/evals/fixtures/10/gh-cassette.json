@@ -1,0 +1,60 @@
+{
+  "calls": [
+    {
+      "match": ["auth", "status"],
+      "stdout": "github.com\n  ✓ Logged in to github.com account dcwalker (keyring)\n  ✓ Git operations for github.com configured to use https protocol.\n  ✓ Token: gho_****\n",
+      "exit_code": 0
+    },
+    {
+      "match": ["label", "list"],
+      "stdout_json": [
+        {"name": "bug"},
+        {"name": "enhancement"},
+        {"name": "documentation"},
+        {"name": "needs-repro"},
+        {"name": "good-first-issue"}
+      ],
+      "exit_code": 0
+    },
+    {
+      "match": ["milestone", "list"],
+      "stdout_json": [{"title": "v1.2 Release"}],
+      "exit_code": 0
+    },
+    {
+      "match": ["project", "list"],
+      "stdout_json": [],
+      "exit_code": 0
+    },
+    {
+      "match": ["issue", "list"],
+      "stdout_json": [
+        {
+          "title": "Session expires too early on mobile Safari",
+          "labels": [{"name": "bug"}],
+          "milestone": null,
+          "assignees": [],
+          "body": "Users on iOS Safari get logged out after roughly 2 minutes of inactivity, well below the 30 minute session timeout configured server-side."
+        },
+        {
+          "title": "Add dark mode toggle to settings",
+          "labels": [{"name": "enhancement"}],
+          "milestone": null,
+          "assignees": [],
+          "body": "Users have requested a dark mode option accessible from Settings > Appearance."
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "match": ["issue", "create"],
+      "stdout": "",
+      "stderr": "GraphQL: Resource not accessible by integration (createIssue)\nHTTP 403: Forbidden\n",
+      "exit_code": 1
+    }
+  ],
+  "default": {
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call"
+  }
+}

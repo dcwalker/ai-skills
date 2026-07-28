@@ -1,0 +1,20 @@
+{
+  "calls": [
+    {"match": ["auth", "status"], "exit_code": 0},
+    {"match": ["pr", "view", "--json", "number,url,state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,baseRefName,reviewDecision"], "stdout_json": {
+      "number": 503,
+      "url": "https://github.com/example/widget-service/pull/503",
+      "state": "OPEN",
+      "isDraft": false,
+      "mergeable": "MERGEABLE",
+      "mergeStateStatus": "BLOCKED",
+      "baseRefName": "main",
+      "reviewDecision": "REVIEW_REQUIRED",
+      "statusCheckRollup": [
+        {"name": "ci/build", "conclusion": "SUCCESS", "status": "COMPLETED"},
+        {"name": "ci/test", "conclusion": "SUCCESS", "status": "COMPLETED"}
+      ]
+    }}
+  ],
+  "default": {"exit_code": 0, "stdout": "[]"}
+}
