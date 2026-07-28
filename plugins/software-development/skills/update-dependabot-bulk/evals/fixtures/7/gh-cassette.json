@@ -1,0 +1,45 @@
+{
+  "calls": [
+    {
+      "match": [
+        "auth",
+        "status"
+      ],
+      "exit_code": 0
+    },
+    {
+      "match": [
+        "pulls?state=open"
+      ],
+      "stdout_json": [
+        {
+          "number": 701,
+          "title": "Bump minimist from 1.2.5 to 1.2.8",
+          "html_url": "https://github.com/acme/webapp/pull/701",
+          "created_at": "2026-07-15T09:00:00Z",
+          "updated_at": "2026-07-16T09:00:00Z",
+          "user": {
+            "login": "dependabot[bot]"
+          }
+        }
+      ]
+    },
+    {
+      "match": [
+        "pulls/701/files"
+      ],
+      "stdout_json": [
+        {
+          "filename": "yarn.lock",
+          "additions": 1,
+          "deletions": 1,
+          "patch": "@@ -80,7 +80,7 @@\n minimist@^1.2.0:\n-  version \"1.2.5\"\n+  version \"1.2.8\"\n"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call"
+  }
+}

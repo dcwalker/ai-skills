@@ -1,0 +1,97 @@
+{
+  "calls": [
+    {
+      "match": [
+        "auth",
+        "status"
+      ],
+      "exit_code": 0
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--json",
+        "number"
+      ],
+      "stdout": "42\n"
+    },
+    {
+      "match": [
+        "graphql",
+        "resolveReviewThread"
+      ],
+      "stdout_json": {
+        "data": {
+          "resolveReviewThread": {
+            "thread": {
+              "isResolved": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "match": [
+        "pulls/comments/"
+      ],
+      "stdout_json": {
+        "pull_request_url": "https://api.github.com/repos/acme/widgets/pulls/42"
+      }
+    },
+    {
+      "match": [
+        "replies",
+        "-X",
+        "POST"
+      ],
+      "stdout": ""
+    },
+    {
+      "match": [
+        "graphql"
+      ],
+      "stdout_json": {
+        "data": {
+          "repository": {
+            "pullRequest": {
+              "reviewThreads": {
+                "nodes": [
+                  {
+                    "id": "PRT_thread_3002",
+                    "isResolved": false,
+                    "comments": {
+                      "nodes": [
+                        {
+                          "id": "PRRC_3002",
+                          "databaseId": 3002,
+                          "bodyText": "Why did you choose a fixed 100ms sleep here instead of exponential backoff? Just curious about the reasoning, not blocking.",
+                          "path": "src/rate-limiter.js",
+                          "line": 9,
+                          "diffHunk": "@@ -6,6 +6,9 @@\n function throttle(fn) {\n+  // fixed delay between retries\n+  const DELAY_MS = 100;",
+                          "createdAt": "2026-07-20T10:00:00Z",
+                          "updatedAt": "2026-07-20T10:00:00Z",
+                          "author": {
+                            "login": "marcus-reviewer"
+                          },
+                          "url": "https://github.com/acme/widgets/pull/42#discussion_r3002"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "comments": {
+                "nodes": []
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "default": {
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call"
+  }
+}

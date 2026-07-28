@@ -1,0 +1,100 @@
+{
+  "api/authentication/validate": {
+    "valid": true
+  },
+  "api/components/show": {
+    "component": {
+      "key": "eval-webapp",
+      "name": "Eval Webapp"
+    }
+  },
+  "api/issues/search": {
+    "issues": [],
+    "paging": {
+      "total": 0
+    }
+  },
+  "api/hotspots/search": {
+    "hotspots": [
+      {
+        "key": "HOTSPOT-3001",
+        "ruleKey": "python:S4790",
+        "vulnerabilityProbability": "MEDIUM",
+        "status": "TO_REVIEW",
+        "component": "eval-webapp:app/cache.py",
+        "project": "eval-webapp",
+        "line": 11,
+        "message": "Make sure this weak hash algorithm is not used in a security context here.",
+        "author": "eval-fixture@localhost",
+        "creationDate": "2026-07-01T10:00:00+0000",
+        "updateDate": "2026-07-01T10:00:00+0000",
+        "textRange": {
+          "startLine": 11,
+          "startOffset": 0,
+          "endLine": 11,
+          "endOffset": 40
+        }
+      }
+    ],
+    "paging": {
+      "total": 1
+    },
+    "rules": [
+      {
+        "key": "python:S4790",
+        "riskDescription": "MD5 is a weak hash algorithm and should not be used in any security-sensitive context such as authentication, session tokens, or password storage.",
+        "fixRecommendations": "Verify this usage is not security-sensitive; if it is, replace with a strong algorithm such as SHA-256. If it is genuinely not security-sensitive, mark this hotspot as Safe."
+      }
+    ]
+  },
+  "api/issues/show": {
+    "issue": {}
+  },
+  "api/hotspots/show": {
+    "hotspot": {}
+  },
+  "api/rules/show": {
+    "errors": [
+      {
+        "msg": "Rule not found"
+      }
+    ]
+  },
+  "api/rules/search": {
+    "rules": []
+  },
+  "api/measures/component": {
+    "component": {
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "85.0"
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "40"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "6"
+        }
+      ]
+    }
+  },
+  "api/qualitygates/project_status": {
+    "projectStatus": {
+      "status": "OK",
+      "conditions": []
+    }
+  },
+  "api/measures/component_tree": {
+    "components": []
+  },
+  "api/duplications/show": {
+    "duplications": [],
+    "files": {}
+  },
+  "api/sources/lines": {
+    "sources": []
+  }
+}

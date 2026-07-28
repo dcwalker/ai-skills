@@ -97,8 +97,46 @@ class SonarQubeClient:
         self._auth_header = "Basic " + base64.b64encode(f"{token}:".encode()).decode()
         self._http_auth_error = False
 
+    def _fixture_response(self, fixture_file: str, path: str) -> Any:
+        """Serve a canned response for `path` from SONAR_FIXTURE_FILE instead of the network.
+
+        Eval-only mechanism, opt-in via the SONAR_FIXTURE_FILE env var. The fixture file is a
+        JSON object keyed by endpoint path (e.g. "api/issues/search"). A value can be a single
+        JSON response reused for every call, or a list of responses consumed in call order (the
+        last entry repeats once exhausted) -- this lets a fixture represent a scan loop where the
+        issue list shrinks across successive fetches as fixes land. Call counts are tracked in a
+        sibling `<fixture_file>.counts.json` file since each script invocation is a fresh process.
+        """
+        key = path.lstrip("/")
+        fixtures = json.loads(open(fixture_file).read())
+        if key not in fixtures:
+            raise RuntimeError(
+                f"SONAR_FIXTURE_FILE {fixture_file} has no entry for endpoint {key!r}. "
+                "Add one to the fixture's top-level object."
+            )
+        entry = fixtures[key]
+        if not isinstance(entry, list):
+            return entry
+
+        counts_path = fixture_file + ".counts.json"
+        counts = {}
+        if os.path.exists(counts_path):
+            try:
+                counts = json.loads(open(counts_path).read())
+            except (json.JSONDecodeError, OSError):
+                counts = {}
+        idx = counts.get(key, 0)
+        counts[key] = idx + 1
+        with open(counts_path, "w") as f:
+            json.dump(counts, f)
+        return entry[min(idx, len(entry) - 1)]
+
     def _request(self, path: str, params: Optional[dict] = None) -> Any:
         """Make authenticated GET request and return JSON."""
+        fixture_file = os.environ.get("SONAR_FIXTURE_FILE")
+        if fixture_file:
+            return self._fixture_response(fixture_file, path)
+
         url = self.base_url + path.lstrip("/")
         if params:
             url += "?" + urllib.parse.urlencode({k: v for k, v in params.items() if v is not None})

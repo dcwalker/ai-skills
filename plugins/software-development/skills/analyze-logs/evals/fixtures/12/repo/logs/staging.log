@@ -1,0 +1,23 @@
+2026-07-26T01:05:09Z INFO [QueueWorker] Job 5101 completed
+2026-07-26T01:07:03Z ERROR [QueueWorker] Job 5001 failed after 3 retries: connection refused (staging redis)
+2026-07-26T02:10:18Z INFO [QueueWorker] Job 5102 completed
+2026-07-26T02:14:06Z ERROR [QueueWorker] Job 5002 failed after 3 retries: connection refused (staging redis)
+2026-07-26T03:15:27Z INFO [QueueWorker] Job 5103 completed
+2026-07-26T03:21:09Z ERROR [QueueWorker] Job 5003 failed after 3 retries: connection refused (staging redis)
+2026-07-26T04:20:36Z INFO [QueueWorker] Job 5104 completed
+2026-07-26T04:28:12Z ERROR [QueueWorker] Job 5004 failed after 3 retries: connection refused (staging redis)
+2026-07-26T05:25:45Z INFO [QueueWorker] Job 5105 completed
+2026-07-26T05:35:15Z ERROR [QueueWorker] Job 5005 failed after 3 retries: connection refused (staging redis)
+2026-07-26T06:30:54Z INFO [QueueWorker] Job 5106 completed
+2026-07-26T06:42:18Z ERROR [QueueWorker] Job 5006 failed after 3 retries: connection refused (staging redis)
+2026-07-26T07:35:03Z INFO [QueueWorker] Job 5107 completed
+2026-07-26T07:49:21Z ERROR [QueueWorker] Job 5007 failed after 3 retries: connection refused (staging redis)
+2026-07-26T08:40:12Z INFO [QueueWorker] Job 5108 completed
+2026-07-26T08:56:24Z ERROR [QueueWorker] Job 5008 failed after 3 retries: connection refused (staging redis)
+2026-07-26T09:45:21Z INFO [QueueWorker] Job 5109 completed
+2026-07-26T10:50:30Z INFO [QueueWorker] Job 5110 completed
+2026-07-26T11:55:39Z INFO [QueueWorker] Job 5111 completed
+2026-07-26T12:00:48Z INFO [QueueWorker] Job 5112 completed
+2026-07-26T13:05:57Z INFO [QueueWorker] Job 5113 completed
+2026-07-26T14:10:06Z INFO [QueueWorker] Job 5114 completed
+2026-07-26T15:15:15Z INFO [QueueWorker] Job 5115 completed

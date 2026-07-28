@@ -1,0 +1,136 @@
+{
+  "skill_name": "create-branch",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Create a branch for PROJ-234: Add CSV export to reports page.",
+      "expected_output": "A new local branch named with the PROJ-234 key and a slug of the summary is created off main and pushed to origin.",
+      "expectations": [
+        "A new git branch exists whose name starts with PROJ-234-",
+        "The branch name is lowercase, hyphen-separated, and roughly 60-72 characters or fewer",
+        "The new branch's history is based on main (contains no unrelated release commits)",
+        "The branch was pushed to origin -- it exists as a remote-tracking ref (origin/PROJ-234-...)",
+        "The transcript does not show the assistant asking the user for the issue key or summary, since both were already given"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Start work on GitHub issue #88, \"Support keyboard navigation in the dropdown menu\". Create the branch for it.",
+      "expected_output": "A new branch keyed off issue 88 is created, pushed to origin, and a comment linking the branch is posted on issue #88 via gh.",
+      "expectations": [
+        "A new git branch exists whose name incorporates 88 (e.g. gh-88-... or 88-...) and a slug of the summary",
+        "The branch was pushed to origin",
+        "GH_STUB_LOG contains a `gh issue comment 88 ...` call",
+        "The transcript does not show the assistant asking for the issue number or summary, since both were already given"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Start a branch for the login timeout bug.",
+      "expected_output": "No issue key was given or derivable from context, so the skill asks the user for the issue key rather than inventing one.",
+      "expectations": [
+        "The transcript shows the assistant asking the user for a Jira key, GitHub issue number, or similar identifier",
+        "No new git branch is created before the assistant asks the question",
+        "If no branch was ultimately created in this trial, git branch shows only main"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Create a branch for PROJ-500.",
+      "expected_output": "An issue key was given but no title or summary, and none is available from context, so the skill asks the user for a short summary rather than fabricating one.",
+      "expectations": [
+        "The transcript shows the assistant asking for a short description or title for PROJ-500, or attempting a lookup that fails and then asking",
+        "If a branch was created in this trial, its name is not padded with an invented, unrelated summary the user never provided"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Create a branch for PROJ-610: Fix pagination off-by-one. Base it on release/2.4, not main.",
+      "expected_output": "The new branch is created from release/2.4 (not main), keeping release/2.4's extra commit in its history, and is pushed to origin.",
+      "expectations": [
+        "A new git branch exists whose name starts with PROJ-610-",
+        "The new branch's history includes the 'Cut release 2.4' commit (i.e. it descends from release/2.4, not from main directly)",
+        "The branch was pushed to origin"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Create a branch for PROJ-701: Improve error messages for failed uploads.",
+      "expected_output": "CONTRIBUTING.md specifies branches must be named feature/<issue-key>-<slug>; the skill follows that convention instead of its own default.",
+      "expectations": [
+        "A new git branch exists whose name starts with feature/PROJ-701-",
+        "No branch was created matching the bare default pattern PROJ-701-... without the feature/ prefix",
+        "The branch was pushed to origin"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Create a branch for PROJ-812: Investigate and fix the intermittent timeout errors happening on the checkout page during high-traffic flash sale events.",
+      "expected_output": "The slugified title is truncated to keep the overall branch name within the ~60-72 character PR-title-length guideline, while still starting with the issue key.",
+      "expectations": [
+        "A new git branch exists whose name starts with PROJ-812-",
+        "The full branch name is no longer than about 72 characters",
+        "The branch name is not cut off mid-word in a way that produces a nonsense trailing fragment (e.g. does not end in a single stray letter)"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Create a branch for PROJ-800: Add dark mode toggle.",
+      "expected_output": "No origin remote is configured; the skill creates the local branch and skips publishing silently, without reporting it as an error or failure.",
+      "expectations": [
+        "A new git branch exists whose name starts with PROJ-800-",
+        "The transcript does not report the missing push as an error or failure -- at most it neutrally notes the branch was not pushed",
+        "The transcript does not show the assistant asking the user to fix the missing remote"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Create a branch for PROJ-801: Add light mode toggle.",
+      "expected_output": "origin is configured but unreachable; the skill creates the local branch and skips publishing silently, without reporting it as a blocking error.",
+      "expectations": [
+        "A new git branch exists whose name starts with PROJ-801-",
+        "The transcript does not report the unreachable remote as a blocking error that stops the task",
+        "The branch is not pushed (no successful push occurred), and the assistant does not falsely claim it was pushed"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Create a branch for PROJ-802: Add system theme detection.",
+      "expected_output": "origin is reachable; the branch is created and successfully pushed, and the assistant reports the branch name and that it was pushed.",
+      "expectations": [
+        "A new git branch exists whose name starts with PROJ-802-",
+        "The branch was pushed to origin -- it exists as a remote-tracking ref",
+        "The transcript reports to the user that the branch was created and pushed"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "Create a branch for PROJ-555: Fix timeout bug.",
+      "expected_output": "A branch with the exact name the skill would derive already exists (from an unrelated earlier attempt); the skill notices the collision and asks how to proceed instead of silently overwriting or reusing it.",
+      "expectations": [
+        "The transcript shows the assistant noting that a branch named PROJ-555-fix-timeout-bug (or very similar) already exists",
+        "The assistant does not force-create or silently overwrite the existing PROJ-555-fix-timeout-bug branch's history",
+        "The transcript shows the assistant asking the user how to proceed (e.g. use the existing branch, pick a different name) rather than deciding unilaterally"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Create a branch for PROJ-777: Add retry indicator. Make sure it's based on the latest main -- a teammate merged something recently.",
+      "expected_output": "The skill fetches/pulls the latest main from origin before branching, so the new branch includes the teammate's newer commit.",
+      "expectations": [
+        "A new git branch exists whose name starts with PROJ-777-",
+        "The new branch's working tree/history includes LATEST_MARKER.txt, i.e. the commit that only existed on origin/main at the start",
+        "The branch was pushed to origin"
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "Create a branch for PROJ-820: Refactor session storage handling. Please just use the issue key for the branch name, no description needed.",
+      "expected_output": "Per the user's explicit preference, the branch name is just the issue key with no appended slug.",
+      "expectations": [
+        "A new git branch named exactly PROJ-820 exists (no additional slug appended)",
+        "The branch was pushed to origin"
+      ]
+    }
+  ]
+}

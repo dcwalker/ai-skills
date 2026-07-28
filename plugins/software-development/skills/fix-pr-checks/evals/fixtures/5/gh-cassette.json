@@ -1,0 +1,16 @@
+{
+  "calls": [
+    {"match": ["auth", "status"], "exit_code": 0},
+    {"match": ["pr", "view"], "stdout_json": {"number": 13}},
+    {"match": ["pulls/13"], "stdout_json": {"number": 13, "head": {"sha": "clean01", "ref": "all-good"}}},
+    {"match": ["commits/clean01/check-runs"], "stdout_json": {"check_runs": [
+      {"id": 901, "name": "lint", "status": "completed", "conclusion": "success",
+       "output": {"summary": "All checks passed"}, "app": {"name": "GitHub Actions"},
+       "html_url": "https://github.com/acme/widgets/actions/runs/1",
+       "started_at": "2026-01-01T00:00:00Z", "completed_at": "2026-01-01T00:01:00Z"}
+    ]}},
+    {"match": ["commits/clean01/status"], "stdout_json": {"state": "success", "statuses": []}},
+    {"match_regex": "^api repos/acme/widgets/commits/clean01$", "stdout_json": {"commit": {"message": "Add feature"}}}
+  ],
+  "default": {"exit_code": 1, "stderr": "no fixture match"}
+}

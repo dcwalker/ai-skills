@@ -1,0 +1,7 @@
+{
+  "calls": [
+    {"match": ["repo", "view"], "stdout_json": {"defaultBranchRef": {"name": "main"}}},
+    {"match": ["pr", "list", "--state", "merged"], "stdout_json": []}
+  ],
+  "default": {"exit_code": 0, "stdout": "[]"}
+}

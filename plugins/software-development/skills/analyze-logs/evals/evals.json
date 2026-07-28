@@ -1,0 +1,129 @@
+{
+  "skill_name": "analyze-logs",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Analyze the logs for this project and share what you find.",
+      "expected_output": "A 'Log Analysis Report' whose top-priority error group is the 40x 'Connection timeout calling payment-gateway' ERROR from OrderService -- the single dominant, high-volume, user-facing failure in the fixture. The six one-off WARN lines (cache miss, password reset, low stock) should appear as separate, lower-priority items or be omitted as not failure-relevant, never merged into or displacing the dominant group.",
+      "expectations": [
+        "The report is structured as a Log Analysis Report with an Executive Summary and Error Groups section",
+        "The highest-priority (Group 1) error group is the payment-gateway connection timeout, with a count at or near 40",
+        "The report cites OrderService / src/orders.js as the source of the timeout error",
+        "The dominant error group is not buried beneath or merged with the one-off WARN lines",
+        "Additional findings beyond the dominant group (e.g. how the one-off WARNs are handled) are a matter of reasonable judgment -- do not require an exact enumeration of every possible secondary note"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Analyze the logs for this project and share what you find.",
+      "expected_output": "A report that separates the three distinct, similarly-sized error types (DbPool exhaustion ~15x, EmailWorker send failures ~12x, PricingClient 503s ~14x) into three distinct error groups rather than lumping them into one bucket or arbitrarily picking only one to report.",
+      "expectations": [
+        "The report contains at least 3 distinct error groups",
+        "One group covers 'Database connection pool exhausted' (DbPool)",
+        "One group covers 'Failed to send email notification' (EmailWorker)",
+        "One group covers the third-party pricing API 503 (PricingClient)",
+        "No two of these distinct root causes are merged into a single group",
+        "The relative prioritization among these similarly-sized, similarly-impactful groups is a judgment call -- do not require one specific ordering"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Analyze the logs for this project and share what you find.",
+      "expected_output": "A report that clearly states no errors were found -- the log contains only INFO-level entries. This is the clean-fixture guard case: the skill must not invent or fabricate an error group to have something to report.",
+      "expectations": [
+        "The report explicitly states that no errors (or no ERROR/FATAL/failure-relevant entries) were found in the log",
+        "The report does not list any fabricated error group, issue, or recommendation framed as an existing problem",
+        "The report does not misclassify ordinary INFO lines as errors or failures"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Analyze the logs for this project and share what you find.",
+      "expected_output": "A report that still surfaces the single-occurrence 'Checksum mismatch ... possible data corruption' FATAL-severity error from LedgerService as a distinct, high-priority finding, even though it occurred only once amid ~275 benign INFO/WARN lines. Volume-only grouping would bury or drop this.",
+      "expectations": [
+        "The report includes a distinct error group for the ledger checksum mismatch / data corruption error",
+        "That group is presented with a count of 1 (or 'single occurrence') and is not dropped for having low volume",
+        "The group is prioritized at or near the top despite its low count, reflecting its severity/impact (data corruption) rather than being ranked below higher-volume noise",
+        "The report cites src/ledger.js (verifyChecksum) as the source"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Analyze the logs for this project and share what you find.",
+      "expected_output": "A report where the 2x FATAL 'System-wide outage: primary database cluster unreachable' error is ranked as the top-priority finding, ahead of the 200x lower-impact 'Failed to write metric to collector (non-critical...)' error, because impact tier outranks volume per the skill's prioritization rule.",
+      "expectations": [
+        "The report includes a distinct group for the FATAL database cluster outage",
+        "That group is ranked as the highest priority (Group 1), ahead of the 200x MetricsClient group",
+        "The MetricsClient group is still mentioned but explicitly noted as lower impact (e.g. non-critical / background) despite its much higher volume"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Analyze the logs for this project and share what you find.",
+      "expected_output": "The README has no Operations or Logs section. Per the skill's own Notes, the skill should ask the user where logs are located and how to access them, rather than guessing a path or fabricating a report.",
+      "expectations": [
+        "The skill does not fabricate a Log Analysis Report from an invented or guessed log location",
+        "The skill's response asks the user where logs are located and how to access them (or clearly states it cannot proceed without that information)"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Analyze the logs for this project and share what you find.",
+      "expected_output": "The README documents fetching logs via `scripts/fetch-logs.sh --since 24h`, but that script does not exist in the repo, so the fetch fails. Per the skill's Prerequisites step, the skill should report the fetch error and stop, not fabricate a report from nothing.",
+      "expectations": [
+        "The skill attempts to run the documented fetch command (or notes it looked for it) and encounters/reports that it failed or is missing",
+        "The skill does not produce a Log Analysis Report with fabricated error groups when the fetch failed",
+        "The response clearly communicates the fetch failure to the user as the stopping point"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Analyze the logs for this project and share what you find.",
+      "expected_output": "A report that normalizes the 25 'Failed to process payment for user <id> (txnId=<id>): gateway timeout' lines -- which differ only in user id and transaction id -- into a single error group with a count around 25, rather than treating each distinct id combination as its own group.",
+      "expectations": [
+        "The report contains one error group covering the payment processing gateway timeout, not many near-duplicate groups",
+        "That group's reported count is at or near 25",
+        "The report does not list 20+ separate near-identical groups differing only by user id or transaction id"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Analyze the logs for this project and share what you find.",
+      "expected_output": "A report that correctly locates the source of the 'card_declined' error in src/payment/charge.js (the chargeCard function), demonstrating the skill searched the codebase for the error message rather than only describing the log line.",
+      "expectations": [
+        "The report includes an error group for the card-decline / chargeCard failures",
+        "The group's Source/Context field references src/payment/charge.js and the chargeCard function specifically, not a generic or incorrect location"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Analyze the logs for this project and share what you find.",
+      "expected_output": "A report that includes the connection-pool exhaustion failure (and its directly related 'pool at 95% capacity' WARNs) as a real finding, but does not treat the unrelated, high-volume 'Using default locale en-US' WARN noise as a failure or error finding.",
+      "expectations": [
+        "The report includes a finding covering connection pool exhaustion (ConnectionPool ERROR), optionally noting the related capacity WARNs as context",
+        "The report does not list the 'default locale' / I18n WARN messages as an error or failure finding",
+        "Whether the capacity WARNs are folded into the same group as the ERROR or mentioned separately is a reasonable judgment call either way"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "Analyze the logs for this project and share what you find.",
+      "expected_output": "AGENTS.md states that payment-related errors must be treated as highest priority regardless of volume. The report should rank the 3x PaymentCapture failure above the 50x FeedCache failure, honoring that repo-specific guidance instead of defaulting to pure volume-based ranking.",
+      "expectations": [
+        "The report's top-priority (Group 1) finding is the PaymentCapture payment error, not the higher-volume FeedCache error",
+        "The report reflects or references the AGENTS.md guidance (e.g. notes payment errors are prioritized per project policy) rather than silently reordering with no explanation",
+        "The FeedCache error is still reported, just at lower priority than the payment error"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Analyze the production logs for this project and share what you find.",
+      "expected_output": "The Operations section documents separate staging and production log commands. Since the user explicitly asked for production, the report should be based on logs/production.log (the 'payload exceeds max size after schema migration' errors), not logs/staging.log (the 'connection refused' errors), demonstrating correct source selection under an explicit override.",
+      "expectations": [
+        "The report's Source field or narrative indicates production logs were used",
+        "The report's error group(s) reflect the production.log content -- 'payload exceeds max size' / schema migration -- not the staging-only 'connection refused (staging redis)' error",
+        "The staging-only error does not appear in the report as if it came from production"
+      ]
+    }
+  ]
+}

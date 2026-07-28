@@ -1,0 +1,119 @@
+{
+  "calls": [
+    {
+      "match": [
+        "auth",
+        "status"
+      ],
+      "exit_code": 0
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--json",
+        "number"
+      ],
+      "stdout": "42\n"
+    },
+    {
+      "match": [
+        "graphql",
+        "resolveReviewThread"
+      ],
+      "stdout_json": {
+        "data": {
+          "resolveReviewThread": {
+            "thread": {
+              "isResolved": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "match": [
+        "pulls/comments/"
+      ],
+      "stdout_json": {
+        "pull_request_url": "https://api.github.com/repos/acme/widgets/pulls/42"
+      }
+    },
+    {
+      "match": [
+        "replies",
+        "-X",
+        "POST"
+      ],
+      "stdout": ""
+    },
+    {
+      "match": [
+        "graphql"
+      ],
+      "stdout_json": {
+        "data": {
+          "repository": {
+            "pullRequest": {
+              "reviewThreads": {
+                "nodes": [
+                  {
+                    "id": "PRT_thread_3008",
+                    "isResolved": false,
+                    "comments": {
+                      "nodes": [
+                        {
+                          "id": "PRRC_3008",
+                          "databaseId": 3008,
+                          "bodyText": "`reserveStock` mutates the `inventory` object that was passed in, which surprises callers that expect a pure function. Please clone before mutating.",
+                          "path": "src/inventory.js",
+                          "line": 11,
+                          "diffHunk": "@@ -8,7 +8,7 @@\n function reserveStock(inventory, sku, qty) {\n-  inventory[sku] -= qty;\n+  inventory[sku] = inventory[sku] - qty;",
+                          "createdAt": "2026-07-20T10:00:00Z",
+                          "updatedAt": "2026-07-20T10:00:00Z",
+                          "author": {
+                            "login": "priya-reviewer"
+                          },
+                          "url": "https://github.com/acme/widgets/pull/42#discussion_r3008"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "PRT_thread_3009",
+                    "isResolved": false,
+                    "comments": {
+                      "nodes": [
+                        {
+                          "id": "PRRC_3009",
+                          "databaseId": 3009,
+                          "bodyText": "This function should be renamed to `reserve_stock` to match Python naming conventions.",
+                          "path": "src/inventory.js",
+                          "line": 20,
+                          "diffHunk": "",
+                          "createdAt": "2026-07-20T10:00:00Z",
+                          "updatedAt": "2026-07-20T10:00:00Z",
+                          "author": {
+                            "login": "marcus-reviewer"
+                          },
+                          "url": "https://github.com/acme/widgets/pull/42#discussion_r3009"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "comments": {
+                "nodes": []
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "default": {
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call"
+  }
+}

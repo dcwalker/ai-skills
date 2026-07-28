@@ -1,0 +1,74 @@
+{
+  "api/authentication/validate": {
+    "valid": false
+  },
+  "api/components/show": {
+    "component": {
+      "key": "eval-webapp",
+      "name": "Eval Webapp"
+    }
+  },
+  "api/issues/search": {
+    "issues": [],
+    "paging": {
+      "total": 0
+    }
+  },
+  "api/hotspots/search": {
+    "hotspots": [],
+    "paging": {
+      "total": 0
+    },
+    "rules": []
+  },
+  "api/issues/show": {
+    "issue": {}
+  },
+  "api/hotspots/show": {
+    "hotspot": {}
+  },
+  "api/rules/show": {
+    "errors": [
+      {
+        "msg": "Rule not found"
+      }
+    ]
+  },
+  "api/rules/search": {
+    "rules": []
+  },
+  "api/measures/component": {
+    "component": {
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "85.0"
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "40"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "6"
+        }
+      ]
+    }
+  },
+  "api/qualitygates/project_status": {
+    "projectStatus": {
+      "status": "OK",
+      "conditions": []
+    }
+  },
+  "api/measures/component_tree": {
+    "components": []
+  },
+  "api/duplications/show": {
+    "duplications": [],
+    "files": {}
+  },
+  "api/sources/lines": {
+    "sources": []
+  }
+}
