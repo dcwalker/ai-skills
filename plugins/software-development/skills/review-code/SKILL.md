@@ -166,6 +166,15 @@ Do not hard-code a specific posting command. The review is made up of:
   `REQUEST_CHANGES` when any finding is High or Critical (≥ 60, 🔴); `APPROVE`
   when there is nothing worth commenting on; `COMMENT` otherwise. If verdicts
   aren't available, convey the same outcome in the summary.
+- **A machine-readable risk marker**, appended as its own line at the very end
+  of the summary comment: `<!-- risk-level: <band> -->`, where `<band>` is the
+  lowercase risk band from the table above (`none`, `low`, `medium`, `high`, or
+  `critical`) matching the score you assigned. This is an HTML comment — GitHub
+  renders it as nothing, so it is invisible to anyone reading the PR — but some
+  CI environments running this skill parse it to apply a risk-level label to
+  the PR automatically. Always include it exactly once, even when the risk is
+  `none`. Do not add any other HTML comments to the summary; this marker must
+  be the only one, so a parser can find it unambiguously.
 
 After posting, output the review URL if one is available.
 
