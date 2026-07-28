@@ -17,7 +17,7 @@
 
 set -euo pipefail
 
-if [ -z "${EVAL_GH_SANDBOX_REPO:-}" ] || [ -z "${EVAL_GH_SANDBOX_TOKEN:-}" ]; then
+if [[ -z "${EVAL_GH_SANDBOX_REPO:-}" ]] || [[ -z "${EVAL_GH_SANDBOX_TOKEN:-}" ]]; then
   echo "sandbox eval skipped: EVAL_GH_SANDBOX_REPO and/or EVAL_GH_SANDBOX_TOKEN not set" >&2
   exit 77
 fi

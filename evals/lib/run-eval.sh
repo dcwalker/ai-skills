@@ -23,7 +23,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-if [ ! -d "$1" ]; then
+if [[ ! -d "$1" ]]; then
   echo "run-eval: no such skill evals dir: $1" >&2
   exit 1
 fi
@@ -35,7 +35,7 @@ EVAL_ID="$2"
 RUN_DIR="$3"
 
 FIXTURE_DIR="$SKILL_EVALS_DIR/fixtures/$EVAL_ID"
-if [ ! -d "$FIXTURE_DIR" ]; then
+if [[ ! -d "$FIXTURE_DIR" ]]; then
   echo "run-eval: no fixture directory at $FIXTURE_DIR" >&2
   exit 1
 fi
@@ -44,7 +44,7 @@ mkdir -p "$RUN_DIR"
 RUN_DIR="$(cd "$RUN_DIR" && pwd)"
 WORKSPACE_DIR="$RUN_DIR/workspace"
 
-if [ -d "$FIXTURE_DIR/repo" ] || [ -f "$FIXTURE_DIR/setup.sh" ] || [ -f "$FIXTURE_DIR/meta.json" ]; then
+if [[ -d "$FIXTURE_DIR/repo" ]] || [[ -f "$FIXTURE_DIR/setup.sh" ]] || [[ -f "$FIXTURE_DIR/meta.json" ]]; then
   "$SCRIPT_DIR/git-fixture.sh" "$FIXTURE_DIR" "$WORKSPACE_DIR" > /dev/null
 else
   mkdir -p "$WORKSPACE_DIR"
@@ -56,16 +56,16 @@ ENV_FILE="$RUN_DIR/env.sh"
   echo "export PATH=\"$SCRIPT_DIR/gh-stub:\$PATH\""
   echo "export GH_STUB_LOG=\"$RUN_DIR/gh-calls.log\""
 
-  if [ -f "$FIXTURE_DIR/gh-cassette.json" ]; then
+  if [[ -f "$FIXTURE_DIR/gh-cassette.json" ]]; then
     echo "export GH_STUB_CASSETTE=\"$FIXTURE_DIR/gh-cassette.json\""
   fi
 
-  if [ -f "$FIXTURE_DIR/sonar-fixture.json" ]; then
+  if [[ -f "$FIXTURE_DIR/sonar-fixture.json" ]]; then
     echo "export SONAR_FIXTURE_FILE=\"$FIXTURE_DIR/sonar-fixture.json\""
     echo "export SONAR_HOST_URL=\"https://sonar.invalid\""
     echo "export SONAR_TOKEN=\"eval-fixture-token\""
 
-    if [ -f "$FIXTURE_DIR/sonar-project-key" ]; then
+    if [[ -f "$FIXTURE_DIR/sonar-project-key" ]]; then
       PROJECT_KEY="$(cat "$FIXTURE_DIR/sonar-project-key")"
       echo "export SONAR_PROJECT_KEY=\"$PROJECT_KEY\""
     fi

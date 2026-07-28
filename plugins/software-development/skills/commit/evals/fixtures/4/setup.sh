@@ -28,3 +28,26 @@ cat > package.json <<'EOF'
   }
 }
 EOF
+
+cat > package-lock.json <<'EOF'
+{
+  "name": "demo-app",
+  "version": "1.0.0",
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {
+    "": {
+      "name": "demo-app",
+      "version": "1.0.0",
+      "dependencies": {
+        "left-pad": "1.3.0"
+      }
+    },
+    "node_modules/left-pad": {
+      "version": "1.3.0",
+      "resolved": "https://registry.npmjs.org/left-pad/-/left-pad-1.3.0.tgz",
+      "integrity": "sha512-000000000000000000000000000000000000000000000000000000000000000000000000000000000000A="
+    }
+  }
+}
+EOF
