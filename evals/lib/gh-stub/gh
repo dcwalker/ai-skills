@@ -1,0 +1,146 @@
+#!/usr/bin/env python3
+"""Fixture-driven fake `gh` for offline, deterministic skill evals.
+
+Reads a cassette JSON file (path from GH_STUB_CASSETTE) describing canned
+responses for `gh` invocations. Matches by pattern against the argv, not by
+strict call order, so a skill that reaches the same outcome through a
+different sequence of `gh` calls still passes -- eval graders should judge
+outcomes, not the exact path taken.
+
+Every invocation is appended to GH_STUB_LOG (if set) as one JSON object per
+line, so graders can assert on what was or wasn't called (e.g. "no `pr
+merge` call happened") without constraining call order.
+
+Cassette format:
+
+{
+  "calls": [
+    {
+      "match": ["pr", "view"],          // ALL substrings must appear in argv
+      "match_regex": null,               // OR a regex tested against argv joined by " "
+      "times": null,                     // optional cap on how many times this entry can match (default: unlimited)
+      "stdout": "...",                   // literal stdout
+      "stdout_json": {...},              // OR a JSON value to serialize as stdout
+      "stdout_file": "pr-view.json",     // OR a file path, relative to the cassette file's directory
+      "stderr": "",
+      "exit_code": 0
+    }
+  ],
+  "default": {                           // used when no entry matches
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call"
+  }
+}
+
+Entries are tried in file order; the first entry that matches AND still has
+remaining uses (per "times") wins. An unmatched call fails loudly (using
+"default", or a built-in error if "default" is absent) with the attempted
+argv on stderr, so gaps in fixture coverage are obvious immediately instead
+of silently returning empty data.
+"""
+
+import json
+import os
+import re
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+# Tracks how many times each cassette entry (by index) has matched, within
+# this single process invocation. Cross-invocation counting isn't needed
+# since each `gh` call is a fresh process; "times" caps are enforced by
+# writing a small counter file next to the cassette instead.
+def _counter_path(cassette_path: Path) -> Path:
+    return cassette_path.with_suffix(cassette_path.suffix + ".counts")
+
+
+def _load_counts(cassette_path: Path) -> dict:
+    counts_path = _counter_path(cassette_path)
+    if counts_path.exists():
+        try:
+            return json.loads(counts_path.read_text())
+        except (json.JSONDecodeError, OSError):
+            return {}
+    return {}
+
+
+def _save_counts(cassette_path: Path, counts: dict) -> None:
+    _counter_path(cassette_path).write_text(json.dumps(counts))
+
+
+def _matches(entry: dict, argv_str: str) -> bool:
+    substrings = entry.get("match")
+    if substrings is not None:
+        return all(s in argv_str for s in substrings)
+    pattern = entry.get("match_regex")
+    if pattern is not None:
+        return re.search(pattern, argv_str) is not None
+    return False
+
+
+def _resolve_stdout(entry: dict, cassette_dir: Path) -> str:
+    if "stdout_file" in entry:
+        return (cassette_dir / entry["stdout_file"]).read_text()
+    if "stdout_json" in entry:
+        return json.dumps(entry["stdout_json"])
+    return entry.get("stdout", "")
+
+
+def main() -> int:
+    argv = sys.argv[1:]
+    argv_str = " ".join(argv)
+
+    log_path = os.environ.get("GH_STUB_LOG")
+    if log_path:
+        with open(log_path, "a") as f:
+            f.write(json.dumps({
+                "ts": datetime.now(timezone.utc).isoformat(),
+                "argv": argv,
+            }) + "\n")
+
+    cassette_env = os.environ.get("GH_STUB_CASSETTE")
+    if not cassette_env:
+        sys.stderr.write(
+            "gh-stub: GH_STUB_CASSETTE is not set; refusing to guess a response "
+            f"for: gh {argv_str}\n"
+        )
+        return 1
+
+    cassette_path = Path(cassette_env)
+    cassette = json.loads(cassette_path.read_text())
+    cassette_dir = cassette_path.parent
+    counts = _load_counts(cassette_path)
+
+    for idx, entry in enumerate(cassette.get("calls", [])):
+        if not _matches(entry, argv_str):
+            continue
+        times = entry.get("times")
+        used = counts.get(str(idx), 0)
+        if times is not None and used >= times:
+            continue
+        counts[str(idx)] = used + 1
+        _save_counts(cassette_path, counts)
+        sys.stdout.write(_resolve_stdout(entry, cassette_dir))
+        stderr = entry.get("stderr", "")
+        if stderr:
+            sys.stderr.write(stderr)
+        return entry.get("exit_code", 0)
+
+    default = cassette.get("default")
+    if default is not None:
+        sys.stdout.write(_resolve_stdout(default, cassette_dir) if (
+            "stdout_file" in default or "stdout_json" in default or "stdout" in default
+        ) else "")
+        sys.stderr.write(default.get("stderr", ""))
+        return default.get("exit_code", 1)
+
+    sys.stderr.write(
+        f"gh-stub: no fixture entry matched: gh {argv_str}\n"
+        f"cassette: {cassette_path}\n"
+        "Add a `calls` entry (with \"match\" or \"match_regex\") to cover this invocation.\n"
+    )
+    return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
