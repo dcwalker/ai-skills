@@ -1,0 +1,30 @@
+{
+  "calls": [
+    {"match": ["auth", "status"], "exit_code": 0},
+    {"match": ["pr", "view"], "stdout_json": {"number": 11}},
+    {"match": ["pulls/11"], "stdout_json": {"number": 11, "head": {"sha": "multi01", "ref": "two-bugs"}}},
+    {"match": ["commits/multi01/check-runs"], "times": 1, "stdout_json": {"check_runs": [
+      {"id": 801, "name": "lint-add", "status": "completed", "conclusion": "failure",
+       "output": {"summary": "check.py failed: AssertionError: add(2,3) should be 5, got -1"},
+       "app": {"name": "GitHub Actions"}, "html_url": "https://github.com/acme/widgets/actions/runs/1",
+       "started_at": "2026-01-01T00:00:00Z", "completed_at": "2026-01-01T00:01:00Z"},
+      {"id": 802, "name": "lint-multiply", "status": "completed", "conclusion": "failure",
+       "output": {"summary": "check2.py failed: AssertionError: multiply(3,4) should be 12, got 7"},
+       "app": {"name": "GitHub Actions"}, "html_url": "https://github.com/acme/widgets/actions/runs/1",
+       "started_at": "2026-01-01T00:00:00Z", "completed_at": "2026-01-01T00:01:00Z"}
+    ]}},
+    {"match": ["commits/multi01/check-runs"], "stdout_json": {"check_runs": [
+      {"id": 801, "name": "lint-add", "status": "completed", "conclusion": "success",
+       "output": {"summary": "All checks passed"}, "app": {"name": "GitHub Actions"},
+       "html_url": "https://github.com/acme/widgets/actions/runs/2",
+       "started_at": "2026-01-01T00:05:00Z", "completed_at": "2026-01-01T00:06:00Z"},
+      {"id": 802, "name": "lint-multiply", "status": "completed", "conclusion": "success",
+       "output": {"summary": "All checks passed"}, "app": {"name": "GitHub Actions"},
+       "html_url": "https://github.com/acme/widgets/actions/runs/2",
+       "started_at": "2026-01-01T00:05:00Z", "completed_at": "2026-01-01T00:06:00Z"}
+    ]}},
+    {"match": ["commits/multi01/status"], "stdout_json": {"state": "success", "statuses": []}},
+    {"match_regex": "^api repos/acme/widgets/commits/multi01$", "stdout_json": {"commit": {"message": "Add two features"}}}
+  ],
+  "default": {"exit_code": 1, "stderr": "no fixture match"}
+}

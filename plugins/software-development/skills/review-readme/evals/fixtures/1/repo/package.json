@@ -1,0 +1,13 @@
+{
+  "name": "taskboard",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node server.js",
+    "test": "jest",
+    "build": "esbuild src/index.js --bundle --outfile=dist/bundle.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

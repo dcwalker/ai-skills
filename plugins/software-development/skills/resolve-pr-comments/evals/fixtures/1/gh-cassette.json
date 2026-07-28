@@ -1,0 +1,64 @@
+{
+  "calls": [
+    {
+      "match": ["auth", "status"],
+      "exit_code": 0
+    },
+    {
+      "match": ["pr", "view", "--json", "number"],
+      "stdout": "42\n"
+    },
+    {
+      "match": ["graphql", "resolveReviewThread"],
+      "stdout_json": {"data": {"resolveReviewThread": {"thread": {"isResolved": true}}}}
+    },
+    {
+      "match": ["pulls/comments/"],
+      "stdout_json": {"pull_request_url": "https://api.github.com/repos/acme/widgets/pulls/42"}
+    },
+    {
+      "match": ["replies", "-X", "POST"],
+      "stdout": ""
+    },
+    {
+      "match": ["graphql"],
+      "stdout_json": {
+        "data": {
+          "repository": {
+            "pullRequest": {
+              "reviewThreads": {
+                "nodes": [
+                  {
+                    "id": "PRT_thread_3001",
+                    "isResolved": false,
+                    "comments": {
+                      "nodes": [
+                        {
+                          "id": "PRRC_3001",
+                          "databaseId": 3001,
+                          "bodyText": "This loop runs one iteration past the end of `items` (`i <= items.length`), so `item` is `undefined` on the last pass and the discounted total is wrong. Should be `i < items.length`.",
+                          "path": "src/discount.js",
+                          "line": 4,
+                          "diffHunk": "@@ -1,5 +1,9 @@\n function applyDiscount(items, discountPerItem) {\n   const totals = [];\n-  for (let i = 0; i < items.length; i++) {\n+  for (let i = 0; i <= items.length; i++) {",
+                          "createdAt": "2026-07-20T10:00:00Z",
+                          "updatedAt": "2026-07-20T10:00:00Z",
+                          "author": {"login": "priya-reviewer"},
+                          "url": "https://github.com/acme/widgets/pull/42#discussion_r3001"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "comments": {"nodes": []}
+            }
+          }
+        }
+      }
+    }
+  ],
+  "default": {
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call"
+  }
+}

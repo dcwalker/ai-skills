@@ -1,0 +1,106 @@
+{
+  "api/authentication/validate": {
+    "valid": true
+  },
+  "api/components/show": {
+    "component": {
+      "key": "eval-webapp",
+      "name": "Eval Webapp"
+    }
+  },
+  "api/issues/search": [
+    {
+      "issues": [
+        {
+          "key": "ISSUE-1001",
+          "rule": "python:S1481",
+          "severity": "MINOR",
+          "type": "CODE_SMELL",
+          "status": "OPEN",
+          "component": "eval-webapp:pricing.py",
+          "project": "eval-webapp",
+          "line": 6,
+          "message": "Remove this unused local variable 'unused_count'.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 6,
+            "startOffset": 0,
+            "endLine": 6,
+            "endOffset": 40
+          }
+        }
+      ],
+      "paging": {
+        "total": 1
+      }
+    },
+    {
+      "issues": [],
+      "paging": {
+        "total": 0
+      }
+    }
+  ],
+  "api/hotspots/search": {
+    "hotspots": [],
+    "paging": {
+      "total": 0
+    },
+    "rules": []
+  },
+  "api/issues/show": {
+    "issue": {}
+  },
+  "api/hotspots/show": {
+    "hotspot": {}
+  },
+  "api/rules/show": {
+    "errors": [
+      {
+        "msg": "Rule not found"
+      }
+    ]
+  },
+  "api/rules/search": {
+    "rules": []
+  },
+  "api/measures/component": {
+    "component": {
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "85.0"
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "40"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "6"
+        }
+      ]
+    }
+  },
+  "api/qualitygates/project_status": {
+    "projectStatus": {
+      "status": "OK",
+      "conditions": []
+    }
+  },
+  "api/measures/component_tree": {
+    "components": []
+  },
+  "api/duplications/show": {
+    "duplications": [],
+    "files": {}
+  },
+  "api/sources/lines": {
+    "sources": []
+  }
+}

@@ -1,0 +1,37 @@
+2026-07-26T00:48:12Z ERROR [BillingService] Failed to process payment for user user_8024 (txnId=txn_01cd28): gateway timeout
+2026-07-26T01:05:09Z INFO [BillingService] Invoice 77001 generated
+2026-07-26T01:07:03Z ERROR [BillingService] Failed to process payment for user user_8001 (txnId=txn_001337): gateway timeout
+2026-07-26T01:55:15Z ERROR [BillingService] Failed to process payment for user user_8025 (txnId=txn_01e05f): gateway timeout
+2026-07-26T02:10:18Z INFO [BillingService] Invoice 77002 generated
+2026-07-26T02:14:06Z ERROR [BillingService] Failed to process payment for user user_8002 (txnId=txn_00266e): gateway timeout
+2026-07-26T03:15:27Z INFO [BillingService] Invoice 77003 generated
+2026-07-26T03:21:09Z ERROR [BillingService] Failed to process payment for user user_8003 (txnId=txn_0039a5): gateway timeout
+2026-07-26T04:20:36Z INFO [BillingService] Invoice 77004 generated
+2026-07-26T04:28:12Z ERROR [BillingService] Failed to process payment for user user_8004 (txnId=txn_004cdc): gateway timeout
+2026-07-26T05:25:45Z INFO [BillingService] Invoice 77005 generated
+2026-07-26T05:35:15Z ERROR [BillingService] Failed to process payment for user user_8005 (txnId=txn_006013): gateway timeout
+2026-07-26T06:30:54Z INFO [BillingService] Invoice 77006 generated
+2026-07-26T06:42:18Z ERROR [BillingService] Failed to process payment for user user_8006 (txnId=txn_00734a): gateway timeout
+2026-07-26T07:35:03Z INFO [BillingService] Invoice 77007 generated
+2026-07-26T07:49:21Z ERROR [BillingService] Failed to process payment for user user_8007 (txnId=txn_008681): gateway timeout
+2026-07-26T08:40:12Z INFO [BillingService] Invoice 77008 generated
+2026-07-26T08:56:24Z ERROR [BillingService] Failed to process payment for user user_8008 (txnId=txn_0099b8): gateway timeout
+2026-07-26T09:03:27Z ERROR [BillingService] Failed to process payment for user user_8009 (txnId=txn_00acef): gateway timeout
+2026-07-26T09:45:21Z INFO [BillingService] Invoice 77009 generated
+2026-07-26T10:10:30Z ERROR [BillingService] Failed to process payment for user user_8010 (txnId=txn_00c026): gateway timeout
+2026-07-26T10:50:30Z INFO [BillingService] Invoice 77010 generated
+2026-07-26T11:17:33Z ERROR [BillingService] Failed to process payment for user user_8011 (txnId=txn_00d35d): gateway timeout
+2026-07-26T11:55:39Z INFO [BillingService] Invoice 77011 generated
+2026-07-26T12:00:48Z INFO [BillingService] Invoice 77012 generated
+2026-07-26T12:24:36Z ERROR [BillingService] Failed to process payment for user user_8012 (txnId=txn_00e694): gateway timeout
+2026-07-26T13:31:39Z ERROR [BillingService] Failed to process payment for user user_8013 (txnId=txn_00f9cb): gateway timeout
+2026-07-26T14:38:42Z ERROR [BillingService] Failed to process payment for user user_8014 (txnId=txn_010d02): gateway timeout
+2026-07-26T15:45:45Z ERROR [BillingService] Failed to process payment for user user_8015 (txnId=txn_012039): gateway timeout
+2026-07-26T16:52:48Z ERROR [BillingService] Failed to process payment for user user_8016 (txnId=txn_013370): gateway timeout
+2026-07-26T17:59:51Z ERROR [BillingService] Failed to process payment for user user_8017 (txnId=txn_0146a7): gateway timeout
+2026-07-26T18:06:54Z ERROR [BillingService] Failed to process payment for user user_8018 (txnId=txn_0159de): gateway timeout
+2026-07-26T19:13:57Z ERROR [BillingService] Failed to process payment for user user_8019 (txnId=txn_016d15): gateway timeout
+2026-07-26T20:20:00Z ERROR [BillingService] Failed to process payment for user user_8020 (txnId=txn_01804c): gateway timeout
+2026-07-26T21:27:03Z ERROR [BillingService] Failed to process payment for user user_8021 (txnId=txn_019383): gateway timeout
+2026-07-26T22:34:06Z ERROR [BillingService] Failed to process payment for user user_8022 (txnId=txn_01a6ba): gateway timeout
+2026-07-26T23:41:09Z ERROR [BillingService] Failed to process payment for user user_8023 (txnId=txn_01b9f1): gateway timeout

@@ -1,0 +1,123 @@
+{
+  "api/authentication/validate": {
+    "valid": true
+  },
+  "api/components/show": {
+    "component": {
+      "key": "eval-webapp",
+      "name": "Eval Webapp"
+    }
+  },
+  "api/issues/search": {
+    "issues": [],
+    "paging": {
+      "total": 0
+    }
+  },
+  "api/hotspots/search": {
+    "hotspots": [],
+    "paging": {
+      "total": 0
+    },
+    "rules": []
+  },
+  "api/issues/show": {
+    "issue": {}
+  },
+  "api/hotspots/show": {
+    "hotspot": {}
+  },
+  "api/rules/show": {
+    "errors": [
+      {
+        "msg": "Rule not found"
+      }
+    ]
+  },
+  "api/rules/search": {
+    "rules": []
+  },
+  "api/measures/component": {
+    "component": {
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "85.0"
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "40"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "6"
+        }
+      ]
+    }
+  },
+  "api/qualitygates/project_status": {
+    "projectStatus": {
+      "status": "OK",
+      "conditions": []
+    }
+  },
+  "api/measures/component_tree": {
+    "components": [
+      {
+        "key": "eval-webapp:vendor/legacy_formatter.py",
+        "measures": [
+          {
+            "metric": "duplicated_lines",
+            "value": "2"
+          },
+          {
+            "metric": "lines",
+            "value": "7"
+          }
+        ]
+      },
+      {
+        "key": "eval-webapp:app/table.py",
+        "measures": [
+          {
+            "metric": "duplicated_lines",
+            "value": "2"
+          },
+          {
+            "metric": "lines",
+            "value": "7"
+          }
+        ]
+      }
+    ]
+  },
+  "api/duplications/show": {
+    "duplications": [
+      {
+        "blocks": [
+          {
+            "_ref": "1",
+            "from": 6,
+            "size": 2
+          },
+          {
+            "_ref": "2",
+            "from": 6,
+            "size": 2
+          }
+        ]
+      }
+    ],
+    "files": {
+      "1": {
+        "name": "vendor/legacy_formatter.py"
+      },
+      "2": {
+        "name": "app/table.py"
+      }
+    }
+  },
+  "api/sources/lines": {
+    "sources": []
+  }
+}

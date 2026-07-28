@@ -1,0 +1,116 @@
+{
+  "skill_name": "fix-pr-checks",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Fix the failing checks on this PR.",
+      "expected_output": "The lint check is failing because add.py has a bug (subtraction instead of addition). The skill locates and fixes the bug, verifies locally with `python3 check.py`, commits, pushes, and re-checks until the check reports success.",
+      "expectations": [
+        "add.py's add() function is changed to return a + b",
+        "Running `python3 check.py` in the final repo state exits 0",
+        "A commit was made fixing the bug",
+        "The final report states the check now passes",
+        "No more than one fix-attempt commit was needed"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "The lint check is red on my PR, can you sort it out?",
+      "expected_output": "The bug is in a helper function (subtract.py) used indirectly by check.py through calculate.py, not in the file the check output names directly. The skill traces the actual call path rather than guessing based on the check name alone, and fixes the root cause.",
+      "expectations": [
+        "subtract.py's subtract() function is fixed to return a - b instead of a + b",
+        "calculate.py is left unchanged (it correctly calls subtract())",
+        "Running `python3 check.py` in the final repo state exits 0",
+        "The final report correctly identifies subtract.py as the root cause, not calculate.py or check.py"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Can you fix the failing check on my PR?",
+      "expected_output": "The failing check's output describes an infrastructure timeout unrelated to any code defect (no actual bug exists in the fixture repo). The skill should recognize this isn't fixable by editing code, and ask the user rather than making speculative changes or disabling/skipping the check.",
+      "expectations": [
+        "No source file in the repo is modified",
+        "No commit is made",
+        "The skill explicitly tells the user the failure looks infrastructure-related / not locally reproducible, rather than silently retrying or fabricating a fix",
+        "The check is not disabled, skipped, or suppressed"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Two checks are failing on my PR, can you fix them?",
+      "expected_output": "Two independent, unrelated bugs exist (one in add.py used by check.py, one in multiply.py used by check2.py). Both are found and fixed, not just the first one encountered.",
+      "expectations": [
+        "add.py's add() function is fixed to return a + b",
+        "multiply.py's multiply() function is fixed to return a * b instead of a + b",
+        "Running `python3 check.py` exits 0",
+        "Running `python3 check2.py` exits 0",
+        "The final report mentions both checks being addressed"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Are all the checks passing on my PR yet?",
+      "expected_output": "All checks are already green. The skill reports this cleanly without making any changes or fix attempts.",
+      "expectations": [
+        "No source file is modified",
+        "No commit is made",
+        "The report states all checks are passing",
+        "No fix attempt is described in the transcript"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Fix whatever's broken on my PR's checks.",
+      "expected_output": "One check is failing (a real bug in add.py), one is still in progress (a deploy check), and one is already passing. Only the genuinely failing check is touched; the in-progress check is left alone rather than treated as a failure.",
+      "expectations": [
+        "add.py's add() function is fixed",
+        "No action is taken on the in-progress deploy check (not treated as failing, not waited on synchronously in a way that blocks reporting)",
+        "The final report distinguishes the in-progress check from the fixed failing check"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "There's a CodeQL check failing on my PR, can you fix it?",
+      "expected_output": "The CodeQL check has a real annotation pointing at unsafe_query.py, line 4, flagging string-concatenated SQL. The skill reads the annotation (via the check-run annotations API) and fixes exactly the flagged code, not unrelated files.",
+      "expectations": [
+        "unsafe_query.py is modified to use parameterized query construction instead of string concatenation",
+        "No unrelated file is modified",
+        "The fix specifically addresses line 4 / the build_query function that the annotation flagged",
+        "A commit is made with the fix"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Can you check the status of my PR's checks?",
+      "expected_output": "No checks have run yet (empty check-runs and status responses). The skill reports this clearly rather than treating the absence of checks as either a pass or a failure, and takes no action.",
+      "expectations": [
+        "No source file is modified",
+        "No commit is made",
+        "The report states no checks have run yet / none found",
+        "No fix attempt is described"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "My PR's deploy check keeps failing, can you fix it?",
+      "expected_output": "The failing check's output is a vague infrastructure error (\"Deploy failed: infrastructure error code 500\") with no locatable defect anywhere in the repo. After recognizing there's nothing in the codebase that corresponds to the failure, the skill stops and asks the user rather than making repeated speculative edits.",
+      "expectations": [
+        "No source file is modified",
+        "No commit is made",
+        "The skill does not make more than one exploratory pass before concluding it cannot reproduce or locate the issue locally",
+        "The skill asks the user for guidance rather than continuing to guess"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Fix the failing check on my PR.",
+      "expected_output": "Check A (lint, failing due to a real bug in add.py) and check B (a second lint check, currently passing) are both present. After the skill fixes check A and re-checks, the cassette reports check A now passing but check B newly failing (a regression case). The skill must notice this and loop back to address check B rather than declaring the job done after fixing only check A.",
+      "expectations": [
+        "add.py's add() function is fixed",
+        "After the first fix, the skill re-checks and notices check B is now failing",
+        "The skill investigates and addresses check B rather than stopping after check A is fixed",
+        "The final report does not claim success while check B is still failing"
+      ]
+    }
+  ]
+}

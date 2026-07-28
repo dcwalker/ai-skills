@@ -1,0 +1,136 @@
+{
+  "skill_name": "update-dependabot-bulk",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "There are a couple of open Dependabot PRs on this repo. Please batch them into a single update -- I approve applying the consolidated plan once you've put it together.",
+      "expected_output": "The skill finds two open Dependabot PRs (#101 bumping lodash 4.17.20->4.17.21, #102 bumping chalk 4.1.0->4.1.2), both direct dependencies with patch-level bumps and no breaking changes. It presents a short plan, then -- since approval was already given -- applies both bumps to package.json in a single commit that references both PR numbers.",
+      "expectations": [
+        "package.json's `lodash` entry was changed to 4.17.21 and `chalk` entry was changed to 4.1.2; no other dependency entries changed.",
+        "Exactly one new commit was created (not two), and its message references both PR #101 and PR #102.",
+        "No new top-level dependency, devDependency, or resolutions entry was added beyond lodash and chalk changing version.",
+        "The final report lists both PR #101 and #102 as superseded by the commit."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Batch up the open Dependabot PRs into one update. I approve applying the plan once it's ready.",
+      "expected_output": "The skill finds two open Dependabot PRs: #201 bumping eslint (a direct devDependency) from 9.24.0 to 10.0.3, and #202 bumping flatted from 3.3.3 to 3.4.2. flatted is not listed in any package.json; `yarn why flatted` shows it's pulled in via eslint -> file-entry-cache -> flat-cache. The newer eslint (10.0.3) pulls in a flat-cache version that depends on flatted@^3.4.0, which resolves the target. The skill bumps eslint's package.json entry to 10.0.3, does NOT add a `flatted` entry anywhere, runs `yarn install`, and confirms flatted@3.4.2 (or higher) in yarn.lock before committing.",
+      "expectations": [
+        "package.json's `eslint` devDependency entry was changed to 10.0.3 (or a version >= 10.0.3 that still resolves flatted to >= 3.4.0).",
+        "No `flatted` key was added anywhere in package.json's dependencies, devDependencies, or resolutions -- this is the skill's core constraint and must hold even though the Dependabot PR literally proposed bumping flatted.",
+        "yarn.lock's `flatted` entry resolves to 3.4.2 or higher after the update.",
+        "Exactly one new commit was created, and its message references both PR #201 and PR #202 (or explains that #202 is superseded via the eslint bump).",
+        "The final report explicitly describes the transitive resolution chain (flatted via eslint/file-entry-cache/flat-cache) rather than silently pinning flatted."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Consolidate the open Dependabot PRs. I approve applying whichever ones are safe to bulk-apply -- just make sure anything risky gets called out rather than silently included.",
+      "expected_output": "The skill finds two open Dependabot PRs: #301, a safe lodash patch bump (4.17.20->4.17.21), and #302, an axios major version bump (0.27.2->1.6.0, a 0.x->1.x jump that historically changes default export/error-handling behavior). It applies the safe lodash bump and explicitly flags the axios major bump as a breaking-change risk that needs separate review, rather than silently folding it into the same commit.",
+      "expectations": [
+        "package.json's `lodash` entry was changed to 4.17.21.",
+        "package.json's `axios` entry was NOT silently changed to 1.6.0 in the same automatic commit -- either it is left untouched pending explicit confirmation, or it is called out as a separate, clearly-flagged item requiring further approval before being applied.",
+        "The transcript or final report explicitly names axios's major version bump as a likely-breaking change distinct from the routine lodash bump.",
+        "If a commit was created, its message and/or the final report does not present the axios bump as already-applied without qualification."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Can you batch up our open Dependabot PRs into a single update?",
+      "expected_output": "There are no open Dependabot PRs on this repo (the only open PR, #55, is a human-authored feature PR, not Dependabot's). The skill reports that there is nothing to consolidate and does not touch any files.",
+      "expectations": [
+        "No files in the repository were modified and no new commit was created.",
+        "PR #55 was not referenced as a Dependabot PR, modified, or commented on in any way.",
+        "The final report clearly states there are no open Dependabot PRs, rather than fabricating an update."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Take a look at our open Dependabot PRs and see if we can batch them into one update.",
+      "expected_output": "The skill finds two open Dependabot PRs (#501 lodash patch bump, #502 chalk patch bump), both safe direct-dependency bumps. It classifies them, builds a plan listing the current and target versions for each, and presents that plan -- but since the prompt did not pre-approve applying it, the skill stops there and explicitly asks the user to confirm before making any changes.",
+      "expectations": [
+        "No changes were made to package.json, any lockfile, or any other file -- the working tree after the run is identical to the initial fixture state.",
+        "No new commit was created.",
+        "The transcript includes a plan naming both lodash (target 4.17.21) and chalk (target 4.1.2) with their current versions.",
+        "The transcript explicitly asks for the user's approval/confirmation before proceeding to apply the plan, rather than proceeding automatically or silently stopping without asking."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "There are several open Dependabot PRs. Please batch the safe ones into a single update -- I approve applying whatever you classify as safe once you've laid out the plan; just flag anything major-version or otherwise risky separately instead of rolling it in.",
+      "expected_output": "The skill finds five open Dependabot PRs: two safe direct bumps (#601 lodash, #602 chalk), a direct/transitive pair (#603 eslint direct bump, #604 flatted transitive bump resolved via the eslint update), and one major bump (#605 axios 0.27.2->1.6.0). It applies lodash, chalk, and the eslint bump (which also resolves flatted) in one commit, does not add a `flatted` entry to package.json, and explicitly flags the axios major bump as requiring separate confirmation rather than bulk-applying it.",
+      "expectations": [
+        "package.json's `lodash`, `chalk`, and `eslint` entries were updated to 4.17.21, 4.1.2, and 10.0.3 respectively (or equivalent versions satisfying the same constraints).",
+        "No `flatted` entry was added to package.json's dependencies/devDependencies/resolutions.",
+        "package.json's `axios` entry was not silently bumped to 1.6.0 as part of the same automatic commit; the major bump is explicitly called out as flagged/pending rather than applied without comment.",
+        "At most one commit was created covering the safe + transitive-resolved items (lodash, chalk, eslint), and its message does not claim to have applied the axios major bump.",
+        "The final report lists PR #601, #602, #603, and #604 as superseded, and separately flags PR #605 (axios) as not yet applied / needing review."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Batch up the open Dependabot PRs. Apply whatever you can safely resolve -- just flag anything you can't.",
+      "expected_output": "The skill finds one open Dependabot PR (#701) bumping `minimist` from 1.2.5 to 1.2.8. minimist is not in any package.json; `yarn why minimist` shows it's pulled in only by `old-build-tool`, an internal devDependency pinned at 2.0.0. No newer version of old-build-tool is available (it doesn't resolve on the npm registry / has no newer release) that would pull in a newer minimist. The skill does not add `minimist` directly to package.json, and instead reports this as an unresolved limitation in its final report.",
+      "expectations": [
+        "No `minimist` entry was added to package.json's dependencies, devDependencies, or resolutions -- the transitive-pinning constraint holds even when no clean resolution path exists.",
+        "package.json was not modified in a way that force-pins minimist as a workaround.",
+        "The final report explicitly lists PR #701 / the minimist bump as an unresolved limitation that could not be applied through a parent dependency update, rather than silently dropping it or silently pinning it.",
+        "No commit was created that claims to have resolved the minimist bump."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Batch up the open Dependabot PRs into a single update. I approve applying the plan once you've built it.",
+      "expected_output": "The skill finds two open Dependabot PRs: #801 proposes bumping lodash from 4.17.19 to 4.17.20, but package.json already has lodash at 4.17.20 -- the PR is stale/already satisfied and needs no change. #802 proposes bumping chalk from 4.1.0 to 4.1.2, which is a real pending change. The skill recognizes #801 needs no action, applies only the chalk bump, and reports both outcomes.",
+      "expectations": [
+        "package.json's `lodash` entry remains 4.17.20 (unchanged) after the run.",
+        "package.json's `chalk` entry was changed to 4.1.2.",
+        "Any commit created touches only the chalk version change, not a no-op lodash edit.",
+        "The final report distinguishes PR #801 (already satisfied / stale, safe to close without a code change) from PR #802 (applied), rather than treating them identically."
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "We've got one open Dependabot PR -- can you apply it? I approve going ahead once you've confirmed what it does.",
+      "expected_output": "The skill finds a single open Dependabot PR (#901) bumping chalk, a direct dependency, from 4.1.0 to 4.1.2 -- a straightforward patch bump. It applies the version change to package.json and commits, referencing PR #901.",
+      "expectations": [
+        "package.json's `chalk` entry was changed to 4.1.2; no other dependency entries changed.",
+        "Exactly one new commit was created, and its message references PR #901.",
+        "The final report lists PR #901 as superseded by the commit."
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Batch up the open Dependabot PRs into one update. I approve applying the plan once it's ready.",
+      "expected_output": "The skill finds two open Dependabot PRs both bumping `lodash`, a direct dependency, to different target versions: #1001 to 4.17.21, and #1002 to 4.17.23 (Dependabot reopened with a newer release after the first PR went stale). The skill consolidates these to a single final version -- the higher one, 4.17.23 -- rather than applying both or picking the lower, stale target.",
+      "expectations": [
+        "package.json's `lodash` entry was changed to 4.17.23 (the higher of the two proposed versions), not 4.17.21.",
+        "Exactly one new commit was created touching `lodash`, not two separate/conflicting edits.",
+        "The commit message or final report references both PR #1001 and #1002 as superseded by the single consolidated bump."
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "Batch up the open Dependabot PRs across the repo into a single update. I approve applying the plan once you've listed the files involved.",
+      "expected_output": "The skill finds two open Dependabot PRs touching two different package.json files: #1101 bumps chalk (a direct dependency) in the root package.json from 4.1.0 to 4.1.2, and #1102 bumps react in static/package.json from 18.2.0 to 18.2.9. Both are direct-dependency, non-breaking bumps in their respective files. The skill's plan explicitly lists both package.json files, and it updates both.",
+      "expectations": [
+        "The root package.json's `chalk` entry was changed to 4.1.2.",
+        "static/package.json's `react` entry was changed to 18.2.9.",
+        "The plan or final report explicitly names both package.json (root) and static/package.json as files that needed updates.",
+        "A commit (or commits) covering both files was created, referencing PR #1101 and #1102."
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Can you just show me what Dependabot PRs are currently open? No need to change anything yet, just want a status report.",
+      "expected_output": "The skill lists the two open Dependabot PRs (#1201 lodash, #1202 chalk) with their current/target versions, but -- because the user only asked for a status report, not for a bulk update -- it does not build an apply-plan, does not ask for approval to apply changes, and makes no code changes.",
+      "expectations": [
+        "No files in the repository were modified and no new commit was created.",
+        "The response lists PR #1201 and #1202 with their package/version details.",
+        "The response does not present or push a plan to apply the updates, and does not ask the user to approve a bulk update they didn't request.",
+        "No `gh` write operations (e.g. commenting on or closing a PR) occurred -- only read/list calls."
+      ]
+    }
+  ]
+}

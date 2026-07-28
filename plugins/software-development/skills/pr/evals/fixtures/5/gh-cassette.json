@@ -1,0 +1,33 @@
+{
+  "calls": [
+    {
+      "match": ["pr", "view"],
+      "stderr": "no pull requests found for branch \"110-add-bulk-delete\"\n",
+      "exit_code": 1
+    },
+    {
+      "match": ["pr", "list"],
+      "stdout_json": [],
+      "exit_code": 0
+    },
+    {
+      "match": ["issue", "view", "110"],
+      "stdout_json": {
+        "number": 110,
+        "title": "Add bulk delete for selected items",
+        "url": "https://github.com/example-org/demo-app/issues/110",
+        "state": "OPEN"
+      },
+      "exit_code": 0
+    },
+    {
+      "match": ["pr", "create"],
+      "stdout": "https://github.com/example-org/demo-app/pull/105\n",
+      "exit_code": 0
+    }
+  ],
+  "default": {
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "calls": [
+    {"match": ["repo", "view"], "stdout_json": {"defaultBranchRef": {"name": "main"}}},
+    {"match": ["pr", "list", "--state", "merged"], "stdout_json": [
+      {"headRefName": "PROJ-123-add-avatar-upload", "number": 88}
+    ]},
+    {"match": ["pr", "view", "88"], "stdout_json": {"number": 88, "state": "MERGED", "url": "https://github.com/example/demo/pull/88", "title": "PROJ-123: add avatar upload"}},
+    {"match": ["issue", "view", "123"], "stdout_json": {"number": 123, "state": "OPEN", "title": "Add avatar upload"}},
+    {"match": ["issue", "comment"], "stdout": "https://github.com/example/demo/issues/123#issuecomment-1\n"},
+    {"match": ["issue", "close"], "stdout": "Closed issue #123\n"}
+  ],
+  "default": {"exit_code": 0, "stdout": "[]"}
+}

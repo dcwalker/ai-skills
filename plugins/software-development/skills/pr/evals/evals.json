@@ -1,0 +1,145 @@
+{
+  "skill_name": "pr",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Open a PR for this branch.",
+      "expected_output": "gh pr create is called with --draft, a title describing the CSV export work, a non-empty description with a Value statement and Changes bullets, and issue #42 linked as a hyperlink.",
+      "expectations": [
+        "GH_STUB_LOG contains a `gh pr create` call",
+        "The `gh pr create` call includes the `--draft` flag",
+        "The `gh pr create` call's --title value is non-empty and mentions CSV export (not a generic placeholder)",
+        "The `gh pr create` call's --body value contains a '## Changes' section with at least one bullet",
+        "The --body value links issue #42 as a markdown hyperlink (e.g. [text](https://github.com/example-org/demo-app/issues/42)), not a bare '#42'",
+        "GH_STUB_LOG contains no `gh pr edit` call"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Update the PR for this branch with the nav highlight fix.",
+      "expected_output": "Since a PR already exists for this branch, the skill calls gh pr edit to update it rather than creating a duplicate PR.",
+      "expectations": [
+        "GH_STUB_LOG contains a `gh pr edit` call",
+        "GH_STUB_LOG contains no `gh pr create` call",
+        "The transcript does not claim to have created a brand-new PR"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Make a PR for this.",
+      "expected_output": "No title was given by the user, but the skill still produces a specific, outcome-based PR title reflecting the actual change (the error toast auto-dismiss timer), not a vague placeholder.",
+      "expectations": [
+        "GH_STUB_LOG contains a `gh pr create` call with --draft",
+        "The --title value is not a generic placeholder like 'Update', 'Changes', 'WIP', or 'Misc fixes'",
+        "The --title value reflects the actual change (relates to the error toast / auto-dismiss behavior)"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Open a PR for the search filter work. Yes, please use the repo's PR template as the base for the description.",
+      "expected_output": "The skill finds the short PR template, shows it to the user, and (per the user's go-ahead) uses its section structure (Summary / How to test / Checklist) as the basis for the PR body.",
+      "expectations": [
+        "The transcript shows the assistant surfacing the PR template found at .github/pull_request_template.md and asking whether to use it, before creating the PR",
+        "GH_STUB_LOG contains a `gh pr create` call with --draft",
+        "The --body value reflects the template's structure (e.g. contains a 'How to test' or 'Checklist' style section) rather than only the skill's default Value/Changes/Related template"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Open a PR for the bulk delete feature. Yes, use the template, a summary of it is fine.",
+      "expected_output": "The skill finds the long (30+ line) PR template and, because it is long, summarizes it briefly for the user rather than pasting it in full, then asks before using it as the description base.",
+      "expectations": [
+        "The transcript shows the assistant asking whether to use the PR template before creating the PR",
+        "The transcript's presentation of the template is a brief summary of its sections, not a verbatim reproduction of all 30+ lines",
+        "GH_STUB_LOG contains a `gh pr create` call with --draft"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Create a PR for the dark mode toggle. Yes, assign it to me.",
+      "expected_output": "The skill asks about assignment and, per the user's yes, creates the PR with itself assigned via --assignee @me.",
+      "expectations": [
+        "The transcript shows the assistant asking whether to assign the PR before creating it",
+        "GH_STUB_LOG contains a `gh pr create` call that includes `--assignee @me`"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Create a PR for the light mode toggle. Don't assign it to me, leave it unassigned.",
+      "expected_output": "The skill asks about assignment and, per the user's decline, creates the PR without any --assignee flag.",
+      "expectations": [
+        "GH_STUB_LOG contains a `gh pr create` call",
+        "The `gh pr create` call does NOT include `--assignee`"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "This PR is ready for review now, please mark it as such.",
+      "expected_output": "The skill confirms the current draft state with the user's intent and calls gh pr ready to convert the existing draft PR to ready-for-review.",
+      "expectations": [
+        "GH_STUB_LOG contains a `gh pr ready` call",
+        "GH_STUB_LOG contains no `gh pr create` call",
+        "GH_STUB_LOG contains no `gh pr convert-to-draft` call"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Update the PR description for the request logging middleware. Yes, go ahead and assign it to me too.",
+      "expected_output": "The existing PR has no assignees; the skill asks and, per the user's yes, adds the user as assignee via gh pr edit.",
+      "expectations": [
+        "GH_STUB_LOG contains a `gh pr edit` call",
+        "At least one `gh pr edit` (or equivalent) call in GH_STUB_LOG includes `--add-assignee @me` (or an assignee-adding equivalent)",
+        "GH_STUB_LOG contains no `gh pr create` call"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Refresh the PR description for this branch to reflect the multi-select work.",
+      "expected_output": "The existing PR's title (\"Fix typo in header\") is clearly stale given the real content (multi-select feature). The skill flags this and asks before changing the title rather than silently renaming it, since the user only asked to update the description.",
+      "expectations": [
+        "The transcript shows the assistant explicitly noting the current title looks inaccurate/stale relative to the actual change, and asking whether to update it",
+        "No `gh pr edit` call in GH_STUB_LOG silently changes --title to a new value without that question appearing first in the transcript",
+        "The PR body is still updated to describe the multi-select work (a `gh pr edit` call with an updated --body occurs)"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "Open a PR for the pagination and sorting fixes.",
+      "expected_output": "Both referenced issues (#10 and #20) are linked as hyperlinks in the Related section of the PR description.",
+      "expectations": [
+        "GH_STUB_LOG contains a `gh pr create` call with --draft",
+        "The --body value contains a hyperlink to https://github.com/example-org/demo-app/issues/10",
+        "The --body value contains a hyperlink to https://github.com/example-org/demo-app/issues/20"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Open a PR for the spinner animation tweak.",
+      "expected_output": "No related ticket exists anywhere in the branch name or commit messages, so the description omits the Related section entirely rather than inventing a link.",
+      "expectations": [
+        "GH_STUB_LOG contains a `gh pr create` call with --draft",
+        "The --body value does not contain a '## Related' section",
+        "The --body value does not contain a fabricated issue/PR link"
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "Open a PR for the button padding tweak.",
+      "expected_output": "The change is small enough that the description body has 3 or fewer bullet points, so the tl;dr line is omitted per the skill's own template rule.",
+      "expectations": [
+        "GH_STUB_LOG contains a `gh pr create` call with --draft",
+        "The --body value does not start with or contain a 'tl;dr' line",
+        "The --body value contains a '## Changes' section with 3 or fewer bullets"
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "Open a PR for my current branch.",
+      "expected_output": "The branch has zero commits ahead of origin/HEAD -- there is nothing to submit. The skill notices this and tells the user rather than creating an empty or placeholder PR.",
+      "expectations": [
+        "GH_STUB_LOG contains no `gh pr create` call",
+        "The transcript reports to the user that there are no commits/changes on this branch to open a PR for"
+      ]
+    }
+  ]
+}

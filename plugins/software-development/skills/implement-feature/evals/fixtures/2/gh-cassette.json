@@ -1,0 +1,9 @@
+{
+  "calls": [
+    {"match": ["auth", "status"], "exit_code": 0},
+    {"match": ["pr", "merge"], "exit_code": 1, "stderr": "gh-stub: pr merge should never be called by implement-feature\n"},
+    {"match": ["pr", "create"], "exit_code": 1, "stderr": "gh-stub: pr create should not be called before the ambiguous request is clarified\n"},
+    {"match": ["pr", "view", "--json", "assignees,isDraft"], "exit_code": 1, "stderr": "no pull requests found for branch\n"}
+  ],
+  "default": {"exit_code": 0, "stdout": "[]"}
+}

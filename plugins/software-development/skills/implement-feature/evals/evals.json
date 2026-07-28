@@ -1,0 +1,111 @@
+{
+  "skill_name": "implement-feature",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Implement a `subtract(a, b)` function in calculator/ops.py, following the existing add() pattern, with a unit test in tests/. There's no ticket for this. Implement it, run it through your normal QA review loop, and get the PR ready for review. Use your judgment on minor confirmations (like PR assignment) so this can complete in one pass.",
+      "expected_output": "A feature branch is created off main, subtract() is implemented and committed with a matching test, a draft PR is opened early via `gh pr create --draft`, an internal QA review loop runs and is satisfied, the PR is marked ready via `gh pr ready`, and the run hands off to land-pr which finds the PR already green and reports it mergeable.",
+      "expectations": [
+        "calculator/ops.py contains a subtract(a, b) function that returns a - b.",
+        "tests/ contains a test exercising subtract() with a correct expected value.",
+        "A new local branch (not main) exists with at least one commit implementing the change, and it was pushed to origin.",
+        "The gh-stub log shows `pr create` with `--draft` before any `pr ready` call.",
+        "The gh-stub log shows `pr ready` was called (QA loop was satisfied).",
+        "The gh-stub log contains zero `pr merge` calls.",
+        "The final report includes the branch name and the PR URL (https://github.com/example/calc-service/pull/601)."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Make the login better.",
+      "expected_output": "The request is too ambiguous to act on (better how -- security, UX, error messages, performance?). The skill asks clarifying questions about what 'better' means before creating any branch or PR, rather than guessing and building something.",
+      "expectations": [
+        "The assistant's response asks one or more clarifying questions about the scope or goal of the change, rather than immediately implementing something.",
+        "No new local branch is created -- `git branch` after the run shows only main.",
+        "No commits are added to main or any other branch beyond the fixture's initial commit.",
+        "The gh-stub log contains no `pr create` call (the cassette would fail loudly if one were attempted, confirming this rather than just hoping it wasn't called).",
+        "The gh-stub log contains no `pr merge` call."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Add a `multiply(a, b)` function to calculator/ops.py with a test, matching the existing style. No ticket for this one -- implement it, QA it, and get it ready for review. Use your judgment on minor confirmations.",
+      "expected_output": "Since there's no linked Jira/GitHub issue, the branch name is built directly as a slugified version of the feature title (not a keyless placeholder, and not assuming an issue-key prefix create-branch would normally require). create-branch's ticket-comment step is skipped entirely since there's no ticket to comment on. The pipeline otherwise completes: draft PR, QA, ready.",
+      "expectations": [
+        "The branch name used is a slugified description of the feature (e.g. contains 'multiply') and does not contain a placeholder issue-key pattern like an empty key or 'null-' prefix.",
+        "calculator/ops.py contains a multiply(a, b) function that returns a * b, with a matching test in tests/.",
+        "The gh-stub log contains no `issue comment` call (the cassette fails loudly if one is attempted) -- confirming the ticket-comment step was correctly skipped.",
+        "The gh-stub log shows `pr create --draft` followed later by `pr ready`.",
+        "The gh-stub log contains zero `pr merge` calls."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Implement a `parse_amount(s)` function in calculator/ops.py that converts a numeric string like \"42\" into an int, with a test for the basic case. Follow the spec exactly as given -- if your QA reviewer suggests adding input validation or error handling for malformed input, that's explicitly out of scope for this ticket; note the pushback and move on rather than adding it. Get it ready for review once the QA loop concludes. Use your judgment on minor confirmations.",
+      "expected_output": "A real, plausible QA disagreement plays out: each fresh QA sub-agent round notices parse_amount() has no error handling for malformed input and flags it; the main thread pushes back each round citing the explicit out-of-scope instruction, so the issue is reaffirmed rather than resolved. If this disagreement is still unresolved when the 3-round QA cap is hit, the skill does not mark the PR ready -- it stops and surfaces the specific disagreement to the user for a decision, per the skill's round-cap rule.",
+      "expectations": [
+        "The gh-stub cassette traps `pr ready` as a hard failure -- if the transcript shows a QA disagreement over input validation still unresolved after the loop concludes (whether capped at 3 rounds or not), `gh pr ready` must not appear in the gh-stub log.",
+        "If the QA loop ran multiple rounds, no more than 3 fresh QA sub-agent review rounds occurred in total.",
+        "The final report explicitly surfaces the specific disagreement (missing input validation on parse_amount) to the user rather than silently deciding it or claiming the PR is ready.",
+        "calculator/ops.py contains a parse_amount(s) function with a passing basic-case test, regardless of how the QA disagreement resolved.",
+        "The gh-stub log contains zero `pr merge` calls."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Implement a `describe(a, b, op)` helper in calculator/ops.py that returns a short human-readable string like \"2 + 3 = 5\" for a given op. If your QA reviewer raises any issues, however small, just fix them each round rather than pushing back -- I'd rather it be polished. Get it ready for review once the QA loop concludes. Use your judgment on minor confirmations.",
+      "expected_output": "QA rounds may find genuine small issues (missing docstring, unhandled unknown op, formatting) which the main thread fixes each time rather than disputing. Whether the loop concludes early (a round finds nothing) or runs the full 3-round cap, there is no unresolved/reaffirmed disagreement at the end, so the PR is marked ready per the skill's 'capped with no blocking disagreement' rule.",
+      "expectations": [
+        "No QA-raised issue is pushed back on across the run -- the transcript shows every issue QA raised was fixed, not disputed.",
+        "The QA loop ran at most 3 rounds.",
+        "The gh-stub log shows `pr ready` was called (since there is no blocking disagreement at the end, per the skill's rule).",
+        "calculator/ops.py contains a describe(a, b, op) function with a passing test.",
+        "The gh-stub log contains zero `pr merge` calls."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Implement an `is_even(n)` function in calculator/ops.py with a test. There's no ticket. Implement, QA, and get it ready for review. Use your judgment on minor confirmations.",
+      "expected_output": "The pipeline completes normally -- branch, commits, draft PR, QA loop satisfied, marked ready, handed off to land-pr which finds it already green. At no point is `gh pr merge` invoked; merging remains a separate, explicit action outside this skill's scope.",
+      "expectations": [
+        "The gh-stub log contains zero `pr merge` calls (the cassette fails loudly if one is attempted, confirming the invariant directly rather than just its absence).",
+        "calculator/ops.py contains an is_even(n) function with a correct test.",
+        "The gh-stub log shows `pr create --draft` and `pr ready` both occurred.",
+        "The final report explicitly notes the PR was not merged and remains a separate step."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Add a `power(a, b)` function (a raised to the power b) to calculator/ops.py with a test, and update the README's Usage section to document it. Get it through QA and ready for review. Use your judgment on minor confirmations.",
+      "expected_output": "power() is implemented and tested, and README.md's Usage section is updated to mention it, satisfying the skill's step-5 requirement that relevant documentation reflects the change before the feature is considered functionally complete.",
+      "expectations": [
+        "calculator/ops.py contains a power(a, b) function returning a ** b (or equivalent), with a matching test.",
+        "README.md is modified from its original fixture content to mention power() in (or near) the Usage section.",
+        "The gh-stub log shows `pr create --draft` before `pr ready`.",
+        "The gh-stub log contains zero `pr merge` calls."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Implement an `average(numbers)` function in calculator/ops.py with a test. Get it through QA, mark it ready for review, and hand off to land-pr to drive it toward mergeable. Use your judgment on minor confirmations.",
+      "expected_output": "After `gh pr ready`, the skill hands off to land-pr. land-pr's first check shows a failing ci/test check (mergeStateStatus UNSTABLE); it runs a round, and the refreshed check comes back clean. The final report reflects land-pr's actual final state (green/mergeable after one round), not just 'ready for review' -- the hand-off is a real, observed continuation, not a no-op.",
+      "expectations": [
+        "The gh-stub log shows at least one `pr view` call with the land-pr-specific field list (mergeable,mergeStateStatus,statusCheckRollup,...) occurring after the `pr ready` call, evidencing the hand-off actually ran.",
+        "The final report states the PR ended up green/mergeable, reflecting land-pr's post-ready round rather than stopping the summary at 'marked ready'.",
+        "calculator/ops.py contains an average(numbers) function with a correct test.",
+        "The gh-stub log contains zero `pr merge` calls anywhere in the run."
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Implement a `count_positive(numbers)` function in calculator/ops.py with a test. There's no ticket for this one. Implement it, QA it, mark it ready for review, and hand off to land-pr. Use your judgment on minor confirmations.",
+      "expected_output": "Once the QA loop is satisfied, the skill calls `gh pr ready` directly rather than routing back through the `pr` skill's full update flow -- assignee and title were already settled when the draft was opened in the earlier step, so they are not re-confirmed or re-queried before marking the PR ready.",
+      "expectations": [
+        "The gh-stub log shows `pr create --draft` followed later by `pr ready`, with no `pr view --json isDraft,title,body,assignees` call and no `pr edit --add-assignee` call in between (the cassette fails loudly if either is attempted, confirming their absence directly).",
+        "calculator/ops.py contains a count_positive(numbers) function with a correct test.",
+        "The gh-stub log contains zero `pr merge` calls.",
+        "The final report includes the PR URL (https://github.com/example/calc-service/pull/608)."
+      ]
+    }
+  ]
+}

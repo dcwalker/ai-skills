@@ -1,0 +1,10 @@
+{
+  "calls": [
+    {"match": ["auth", "status"], "exit_code": 0},
+    {"match": ["pr", "merge"], "exit_code": 1, "stderr": "gh-stub: pr merge should never be called by implement-feature\n"},
+    {"match": ["pr", "view", "--json", "assignees,isDraft"], "exit_code": 1, "stderr": "no pull requests found for branch\n"},
+    {"match": ["pr", "create", "--draft"], "stdout": "https://github.com/example/calc-service/pull/603\n"},
+    {"match": ["pr", "ready"], "exit_code": 1, "stderr": "gh-stub: pr ready should not be called while a blocking QA disagreement is unresolved\n"}
+  ],
+  "default": {"exit_code": 0, "stdout": "[]"}
+}

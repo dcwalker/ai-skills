@@ -1,0 +1,47 @@
+{
+  "calls": [
+    {
+      "match": ["pr", "view"],
+      "stdout_json": {
+        "number": 62,
+        "title": "Fix typo in header",
+        "isDraft": true,
+        "assignees": [{"login": "dan"}],
+        "body": "Fixes a small typo.",
+        "url": "https://github.com/example-org/demo-app/pull/62"
+      },
+      "exit_code": 0
+    },
+    {
+      "match": ["pr", "list"],
+      "stdout_json": [
+        {
+          "number": 62,
+          "title": "Fix typo in header",
+          "headRefName": "150-add-multi-select",
+          "isDraft": true
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "match": ["issue", "view", "150"],
+      "stdout_json": {
+        "number": 150,
+        "title": "Add multi-select support to the items list",
+        "url": "https://github.com/example-org/demo-app/issues/150",
+        "state": "OPEN"
+      },
+      "exit_code": 0
+    },
+    {
+      "match": ["pr", "edit"],
+      "stdout": "https://github.com/example-org/demo-app/pull/62\n",
+      "exit_code": 0
+    }
+  ],
+  "default": {
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call"
+  }
+}

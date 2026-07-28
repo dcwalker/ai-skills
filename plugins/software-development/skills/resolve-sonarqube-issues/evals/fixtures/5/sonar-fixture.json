@@ -1,0 +1,215 @@
+{
+  "api/authentication/validate": {
+    "valid": true
+  },
+  "api/components/show": {
+    "component": {
+      "key": "eval-webapp",
+      "name": "Eval Webapp"
+    }
+  },
+  "api/issues/search": [
+    {
+      "issues": [
+        {
+          "key": "ISSUE-5001",
+          "rule": "python:S1481",
+          "severity": "MINOR",
+          "type": "CODE_SMELL",
+          "status": "OPEN",
+          "component": "eval-webapp:app/reports.py",
+          "project": "eval-webapp",
+          "line": 6,
+          "message": "Remove this unused local variable 'row_count'.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 6,
+            "startOffset": 0,
+            "endLine": 6,
+            "endOffset": 40
+          }
+        }
+      ],
+      "paging": {
+        "total": 1
+      }
+    },
+    {
+      "issues": [],
+      "paging": {
+        "total": 0
+      }
+    }
+  ],
+  "api/hotspots/search": [
+    {
+      "hotspots": [
+        {
+          "key": "HOTSPOT-5001",
+          "ruleKey": "python:S4790",
+          "vulnerabilityProbability": "HIGH",
+          "status": "TO_REVIEW",
+          "component": "eval-webapp:app/cache.py",
+          "project": "eval-webapp",
+          "line": 8,
+          "message": "Make sure this weak hash algorithm is not used in a security context here.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "textRange": {
+            "startLine": 8,
+            "startOffset": 0,
+            "endLine": 8,
+            "endOffset": 40
+          }
+        }
+      ],
+      "paging": {
+        "total": 1
+      },
+      "rules": [
+        {
+          "key": "python:S4790",
+          "riskDescription": "MD5 is used here to build a password-reset token, which is a genuine security-sensitive context.",
+          "fixRecommendations": "Replace MD5 with a strong algorithm (e.g. SHA-256) or a cryptographically random token generator such as secrets.token_hex."
+        }
+      ]
+    },
+    {
+      "hotspots": [],
+      "paging": {
+        "total": 0
+      },
+      "rules": []
+    }
+  ],
+  "api/issues/show": {
+    "issue": {}
+  },
+  "api/hotspots/show": {
+    "hotspot": {}
+  },
+  "api/rules/show": {
+    "errors": [
+      {
+        "msg": "Rule not found"
+      }
+    ]
+  },
+  "api/rules/search": {
+    "rules": []
+  },
+  "api/measures/component": [
+    {
+      "component": {
+        "measures": [
+          {
+            "metric": "coverage",
+            "value": "45.0"
+          },
+          {
+            "metric": "lines_to_cover",
+            "value": "20"
+          },
+          {
+            "metric": "uncovered_lines",
+            "value": "11"
+          }
+        ]
+      }
+    },
+    {
+      "component": {
+        "measures": [
+          {
+            "metric": "coverage",
+            "value": "100.0"
+          },
+          {
+            "metric": "lines_to_cover",
+            "value": "20"
+          },
+          {
+            "metric": "uncovered_lines",
+            "value": "0"
+          }
+        ]
+      }
+    }
+  ],
+  "api/qualitygates/project_status": {
+    "projectStatus": {
+      "status": "OK",
+      "conditions": []
+    }
+  },
+  "api/measures/component_tree": [
+    {
+      "components": [
+        {
+          "key": "eval-webapp:app/format_a.py",
+          "measures": [
+            {
+              "metric": "duplicated_lines",
+              "value": "3"
+            },
+            {
+              "metric": "lines",
+              "value": "7"
+            }
+          ]
+        },
+        {
+          "key": "eval-webapp:app/format_b.py",
+          "measures": [
+            {
+              "metric": "duplicated_lines",
+              "value": "3"
+            },
+            {
+              "metric": "lines",
+              "value": "7"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "components": []
+    }
+  ],
+  "api/duplications/show": {
+    "duplications": [
+      {
+        "blocks": [
+          {
+            "_ref": "1",
+            "from": 5,
+            "size": 3
+          },
+          {
+            "_ref": "2",
+            "from": 5,
+            "size": 3
+          }
+        ]
+      }
+    ],
+    "files": {
+      "1": {
+        "name": "app/format_a.py"
+      },
+      "2": {
+        "name": "app/format_b.py"
+      }
+    }
+  },
+  "api/sources/lines": {
+    "sources": []
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "calls": [
+    {
+      "match": ["pr", "view"],
+      "stderr": "no pull requests found for branch \"101-add-search-filter\"\n",
+      "exit_code": 1
+    },
+    {
+      "match": ["pr", "list"],
+      "stdout_json": [],
+      "exit_code": 0
+    },
+    {
+      "match": ["issue", "view", "101"],
+      "stdout_json": {
+        "number": 101,
+        "title": "Add search filter to items list",
+        "url": "https://github.com/example-org/demo-app/issues/101",
+        "state": "OPEN"
+      },
+      "exit_code": 0
+    },
+    {
+      "match": ["pr", "create"],
+      "stdout": "https://github.com/example-org/demo-app/pull/104\n",
+      "exit_code": 0
+    }
+  ],
+  "default": {
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call"
+  }
+}

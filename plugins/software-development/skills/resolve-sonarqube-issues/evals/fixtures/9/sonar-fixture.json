@@ -1,0 +1,94 @@
+{
+  "api/authentication/validate": {
+    "valid": true
+  },
+  "api/components/show": {
+    "component": {
+      "key": "eval-webapp",
+      "name": "Eval Webapp"
+    }
+  },
+  "api/issues/search": {
+    "issues": [],
+    "paging": {
+      "total": 0
+    }
+  },
+  "api/hotspots/search": {
+    "hotspots": [],
+    "paging": {
+      "total": 0
+    },
+    "rules": []
+  },
+  "api/issues/show": {
+    "issue": {}
+  },
+  "api/hotspots/show": {
+    "hotspot": {}
+  },
+  "api/rules/show": {
+    "errors": [
+      {
+        "msg": "Rule not found"
+      }
+    ]
+  },
+  "api/rules/search": {
+    "rules": []
+  },
+  "api/measures/component": [
+    {
+      "component": {
+        "measures": [
+          {
+            "metric": "coverage",
+            "value": "30.0"
+          },
+          {
+            "metric": "lines_to_cover",
+            "value": "10"
+          },
+          {
+            "metric": "uncovered_lines",
+            "value": "7"
+          }
+        ]
+      }
+    },
+    {
+      "component": {
+        "measures": [
+          {
+            "metric": "coverage",
+            "value": "100.0"
+          },
+          {
+            "metric": "lines_to_cover",
+            "value": "10"
+          },
+          {
+            "metric": "uncovered_lines",
+            "value": "0"
+          }
+        ]
+      }
+    }
+  ],
+  "api/qualitygates/project_status": {
+    "projectStatus": {
+      "status": "OK",
+      "conditions": []
+    }
+  },
+  "api/measures/component_tree": {
+    "components": []
+  },
+  "api/duplications/show": {
+    "duplications": [],
+    "files": {}
+  },
+  "api/sources/lines": {
+    "sources": []
+  }
+}

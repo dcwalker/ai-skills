@@ -1,0 +1,17 @@
+{
+  "calls": [
+    {"match": ["auth", "status"], "exit_code": 0},
+    {"match": ["pr", "merge"], "exit_code": 1, "stderr": "gh-stub: pr merge should never be called by implement-feature\n"},
+    {"match": ["pr", "view", "--json", "assignees,isDraft"], "exit_code": 1, "stderr": "no pull requests found for branch\n"},
+    {"match": ["pr", "create", "--draft"], "stdout": "https://github.com/example/calc-service/pull/608\n"},
+    {"match": ["pr", "view", "--json", "isDraft,title,body,assignees"], "exit_code": 1, "stderr": "gh-stub: implement-feature should call  directly, not re-enter the pr skill's update flow\n"},
+    {"match": ["pr", "edit", "--add-assignee"], "exit_code": 1, "stderr": "gh-stub: assignment was already settled when the draft was opened -- should not be re-litigated before marking ready\n"},
+    {"match": ["pr", "ready"], "stdout": "Pull request #608 is marked as \"ready for review\"\n"},
+    {"match": ["pr", "view", "--json", "number,url,state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,baseRefName,reviewDecision"], "stdout_json": {
+      "number": 608, "url": "https://github.com/example/calc-service/pull/608", "state": "OPEN", "isDraft": false,
+      "mergeable": "MERGEABLE", "mergeStateStatus": "CLEAN", "baseRefName": "main", "reviewDecision": "APPROVED",
+      "statusCheckRollup": [{"name": "ci/test", "conclusion": "SUCCESS", "status": "COMPLETED"}]
+    }}
+  ],
+  "default": {"exit_code": 0, "stdout": "[]"}
+}
