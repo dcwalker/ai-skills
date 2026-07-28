@@ -23,6 +23,7 @@ on:
 permissions:
   contents: read
   pull-requests: write
+  issues: write     # lets the reusable workflow create/update the `code-reviewed` label
   statuses: write   # lets a /re-review run post the `review / gate` commit status on the PR head
   actions: read     # lets the github_ci MCP server read CI status
   id-token: write   # caps the reusable workflow; the action needs it for the claude[bot] OIDC token exchange
