@@ -1,0 +1,29 @@
+2026-07-26T01:05:09Z INFO [PaymentService] Charge succeeded for card token tok_4001
+2026-07-26T01:07:03Z ERROR [PaymentService] Failed to charge card: card_declined (operation=chargeCard reason=insufficient_funds)
+2026-07-26T02:10:18Z INFO [PaymentService] Charge succeeded for card token tok_4002
+2026-07-26T02:14:06Z ERROR [PaymentService] Failed to charge card: card_declined (operation=chargeCard reason=expired_card)
+2026-07-26T03:15:27Z INFO [PaymentService] Charge succeeded for card token tok_4003
+2026-07-26T03:21:09Z ERROR [PaymentService] Failed to charge card: card_declined (operation=chargeCard reason=insufficient_funds)
+2026-07-26T04:20:36Z INFO [PaymentService] Charge succeeded for card token tok_4004
+2026-07-26T04:28:12Z ERROR [PaymentService] Failed to charge card: card_declined (operation=chargeCard reason=issuer_declined)
+2026-07-26T05:25:45Z INFO [PaymentService] Charge succeeded for card token tok_4005
+2026-07-26T05:35:15Z ERROR [PaymentService] Failed to charge card: card_declined (operation=chargeCard reason=)
+2026-07-26T06:30:54Z INFO [PaymentService] Charge succeeded for card token tok_4006
+2026-07-26T06:42:18Z ERROR [PaymentService] Failed to charge card: card_declined (operation=chargeCard reason=insufficient_funds)
+2026-07-26T07:35:03Z INFO [PaymentService] Charge succeeded for card token tok_4007
+2026-07-26T07:49:21Z ERROR [PaymentService] Failed to charge card: card_declined (operation=chargeCard reason=expired_card)
+2026-07-26T08:40:12Z INFO [PaymentService] Charge succeeded for card token tok_4008
+2026-07-26T08:56:24Z ERROR [PaymentService] Failed to charge card: card_declined (operation=chargeCard reason=insufficient_funds)
+2026-07-26T09:03:27Z ERROR [PaymentService] Failed to charge card: card_declined (operation=chargeCard reason=issuer_declined)
+2026-07-26T09:45:21Z INFO [PaymentService] Charge succeeded for card token tok_4009
+2026-07-26T10:50:30Z INFO [PaymentService] Charge succeeded for card token tok_4010
+2026-07-26T11:55:39Z INFO [PaymentService] Charge succeeded for card token tok_4011
+2026-07-26T12:00:48Z INFO [PaymentService] Charge succeeded for card token tok_4012
+2026-07-26T13:05:57Z INFO [PaymentService] Charge succeeded for card token tok_4013
+2026-07-26T14:10:06Z INFO [PaymentService] Charge succeeded for card token tok_4014
+2026-07-26T15:15:15Z INFO [PaymentService] Charge succeeded for card token tok_4015
+2026-07-26T16:20:24Z INFO [PaymentService] Charge succeeded for card token tok_4016
+2026-07-26T17:25:33Z INFO [PaymentService] Charge succeeded for card token tok_4017
+2026-07-26T18:30:42Z INFO [PaymentService] Charge succeeded for card token tok_4018
+2026-07-26T19:35:51Z INFO [PaymentService] Charge succeeded for card token tok_4019
+2026-07-26T20:40:00Z INFO [PaymentService] Charge succeeded for card token tok_4020

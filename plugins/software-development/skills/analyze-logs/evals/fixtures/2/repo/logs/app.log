@@ -1,0 +1,56 @@
+2026-07-26T07:10:00Z INFO [Router] Request handled in 45ms
+2026-07-26T07:20:00Z INFO [Router] Request handled in 50ms
+2026-07-26T07:30:00Z INFO [Router] Request handled in 55ms
+2026-07-26T08:02:00Z INFO [Router] Request handled in 41ms
+2026-07-26T08:12:00Z INFO [Router] Request handled in 46ms
+2026-07-26T08:16:00Z ERROR [DbPool] Database connection pool exhausted, no connections available
+2026-07-26T08:22:00Z INFO [Router] Request handled in 51ms
+2026-07-26T08:32:00Z ERROR [DbPool] Database connection pool exhausted, no connections available
+2026-07-26T08:48:00Z ERROR [DbPool] Database connection pool exhausted, no connections available
+2026-07-26T09:04:00Z ERROR [DbPool] Database connection pool exhausted, no connections available
+2026-07-26T09:04:00Z INFO [Router] Request handled in 42ms
+2026-07-26T09:12:00Z ERROR [EmailWorker] Failed to send email notification (userId=3004)
+2026-07-26T09:14:00Z INFO [Router] Request handled in 47ms
+2026-07-26T09:20:00Z ERROR [DbPool] Database connection pool exhausted, no connections available
+2026-07-26T09:24:00Z ERROR [EmailWorker] Failed to send email notification (userId=3008)
+2026-07-26T09:24:00Z INFO [Router] Request handled in 52ms
+2026-07-26T09:36:00Z ERROR [DbPool] Database connection pool exhausted, no connections available
+2026-07-26T09:36:00Z ERROR [EmailWorker] Failed to send email notification (userId=3012)
+2026-07-26T09:52:00Z ERROR [DbPool] Database connection pool exhausted, no connections available
+2026-07-26T10:00:00Z ERROR [PricingClient] Third-party pricing API returned 503 Service Unavailable
+2026-07-26T10:03:00Z ERROR [EmailWorker] Failed to send email notification (userId=3001)
+2026-07-26T10:06:00Z INFO [Router] Request handled in 43ms
+2026-07-26T10:08:00Z ERROR [DbPool] Database connection pool exhausted, no connections available
+2026-07-26T10:15:00Z ERROR [EmailWorker] Failed to send email notification (userId=3005)
+2026-07-26T10:16:00Z INFO [Router] Request handled in 48ms
+2026-07-26T10:20:00Z ERROR [PricingClient] Third-party pricing API returned 503 Service Unavailable
+2026-07-26T10:24:00Z ERROR [DbPool] Database connection pool exhausted, no connections available
+2026-07-26T10:26:00Z INFO [Router] Request handled in 53ms
+2026-07-26T10:27:00Z ERROR [EmailWorker] Failed to send email notification (userId=3009)
+2026-07-26T10:40:00Z ERROR [DbPool] Database connection pool exhausted, no connections available
+2026-07-26T10:40:00Z ERROR [PricingClient] Third-party pricing API returned 503 Service Unavailable
+2026-07-26T10:56:00Z ERROR [DbPool] Database connection pool exhausted, no connections available
+2026-07-26T11:00:00Z ERROR [DbPool] Database connection pool exhausted, no connections available
+2026-07-26T11:05:00Z ERROR [PricingClient] Third-party pricing API returned 503 Service Unavailable
+2026-07-26T11:05:00Z ERROR [PricingClient] Third-party pricing API returned 503 Service Unavailable
+2026-07-26T11:06:00Z ERROR [EmailWorker] Failed to send email notification (userId=3002)
+2026-07-26T11:08:00Z INFO [Router] Request handled in 44ms
+2026-07-26T11:12:00Z ERROR [DbPool] Database connection pool exhausted, no connections available
+2026-07-26T11:18:00Z ERROR [EmailWorker] Failed to send email notification (userId=3006)
+2026-07-26T11:18:00Z INFO [Router] Request handled in 49ms
+2026-07-26T11:25:00Z ERROR [PricingClient] Third-party pricing API returned 503 Service Unavailable
+2026-07-26T11:28:00Z ERROR [DbPool] Database connection pool exhausted, no connections available
+2026-07-26T11:28:00Z INFO [Router] Request handled in 54ms
+2026-07-26T11:30:00Z ERROR [EmailWorker] Failed to send email notification (userId=3010)
+2026-07-26T11:44:00Z ERROR [DbPool] Database connection pool exhausted, no connections available
+2026-07-26T11:45:00Z ERROR [PricingClient] Third-party pricing API returned 503 Service Unavailable
+2026-07-26T12:09:00Z ERROR [EmailWorker] Failed to send email notification (userId=3003)
+2026-07-26T12:10:00Z ERROR [PricingClient] Third-party pricing API returned 503 Service Unavailable
+2026-07-26T12:10:00Z ERROR [PricingClient] Third-party pricing API returned 503 Service Unavailable
+2026-07-26T12:21:00Z ERROR [EmailWorker] Failed to send email notification (userId=3007)
+2026-07-26T12:30:00Z ERROR [PricingClient] Third-party pricing API returned 503 Service Unavailable
+2026-07-26T12:33:00Z ERROR [EmailWorker] Failed to send email notification (userId=3011)
+2026-07-26T12:50:00Z ERROR [PricingClient] Third-party pricing API returned 503 Service Unavailable
+2026-07-26T13:15:00Z ERROR [PricingClient] Third-party pricing API returned 503 Service Unavailable
+2026-07-26T13:35:00Z ERROR [PricingClient] Third-party pricing API returned 503 Service Unavailable
+2026-07-26T13:55:00Z ERROR [PricingClient] Third-party pricing API returned 503 Service Unavailable

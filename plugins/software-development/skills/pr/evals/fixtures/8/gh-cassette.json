@@ -1,0 +1,42 @@
+{
+  "calls": [
+    {
+      "match": ["pr", "view"],
+      "stdout_json": {
+        "number": 60,
+        "title": "Add basic rate limiting",
+        "isDraft": true,
+        "assignees": [{"login": "dan"}],
+        "body": "Adds a simple request-count rate limiter.",
+        "url": "https://github.com/example-org/demo-app/pull/60"
+      },
+      "exit_code": 0
+    },
+    {
+      "match": ["pr", "list"],
+      "stdout_json": [
+        {
+          "number": 60,
+          "title": "Add basic rate limiting",
+          "headRefName": "130-add-rate-limiting",
+          "isDraft": true
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "match": ["pr", "ready"],
+      "stdout": "✓ Pull request example-org/demo-app#60 is marked as \"ready for review\"\n",
+      "exit_code": 0
+    },
+    {
+      "match": ["pr", "edit"],
+      "stdout": "https://github.com/example-org/demo-app/pull/60\n",
+      "exit_code": 0
+    }
+  ],
+  "default": {
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call"
+  }
+}

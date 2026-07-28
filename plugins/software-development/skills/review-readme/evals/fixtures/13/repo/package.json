@@ -1,0 +1,9 @@
+{
+  "name": "treeview",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node server.js",
+    "test": "jest"
+  }
+}

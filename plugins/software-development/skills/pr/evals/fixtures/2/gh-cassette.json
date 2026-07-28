@@ -1,0 +1,47 @@
+{
+  "calls": [
+    {
+      "match": ["pr", "view"],
+      "stdout_json": {
+        "number": 55,
+        "title": "Fix nav highlight bug",
+        "isDraft": true,
+        "assignees": [{"login": "dan"}],
+        "body": "Old description that predates this update.",
+        "url": "https://github.com/example-org/demo-app/pull/55"
+      },
+      "exit_code": 0
+    },
+    {
+      "match": ["pr", "list"],
+      "stdout_json": [
+        {
+          "number": 55,
+          "title": "Fix nav highlight bug",
+          "headRefName": "77-fix-nav-highlight",
+          "isDraft": true
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "match": ["issue", "view", "77"],
+      "stdout_json": {
+        "number": 77,
+        "title": "Nav item doesn't highlight on nested routes",
+        "url": "https://github.com/example-org/demo-app/issues/77",
+        "state": "OPEN"
+      },
+      "exit_code": 0
+    },
+    {
+      "match": ["pr", "edit"],
+      "stdout": "https://github.com/example-org/demo-app/pull/55\n",
+      "exit_code": 0
+    }
+  ],
+  "default": {
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call"
+  }
+}

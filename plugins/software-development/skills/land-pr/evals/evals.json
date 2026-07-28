@@ -1,0 +1,110 @@
+{
+  "skill_name": "land-pr",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Land my PR on this branch -- get it fully mergeable.",
+      "expected_output": "`gh pr view` on the very first check already reports mergeable MERGEABLE, mergeStateStatus CLEAN, and every check passing. The skill does not enter the round loop at all -- it reports the PR is already green and ready, with zero fix rounds run.",
+      "expectations": [
+        "The report states the PR was already green/mergeable, with 0 rounds of fixing needed.",
+        "No sub-skill (resolve-pr-comments, resolve-sonarqube-issues, fix-pr-checks) is invoked, since there was nothing to fix.",
+        "No conflict-resolution commits or pushes appear in git history beyond what the fixture already had.",
+        "The gh-stub log contains no `pr merge` call.",
+        "The final report includes the PR URL (https://github.com/example/widget-service/pull/501)."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Land this PR -- drive it to mergeable.",
+      "expected_output": "Round 1's `gh pr view` reports `mergeable: CONFLICTING` against base `main`. The skill fetches origin/main, detects the real conflict in config.py (both the feature branch and main independently changed the VERSION line), merges main into the branch, resolves the conflict itself, commits, and pushes. A refreshed `gh pr view` then reports MERGEABLE/CLEAN, and the skill stops looping and reports success.",
+      "expectations": [
+        "config.py contains no leftover `<<<<<<<`, `=======`, or `>>>>>>>` conflict markers in the final state.",
+        "The branch's git history includes a merge commit (or rebase) that incorporates origin/main's commit ('Bump version to 1.1.0 on main') into feature/bump-version.",
+        "The resolved branch was pushed to origin (origin/feature/bump-version's tip matches the local branch tip).",
+        "The loop did not run a full 5 rounds -- it stopped as soon as the second `gh pr view` came back clean.",
+        "The gh-stub log contains no `pr merge` call.",
+        "Never force-pushed or bypassed hooks (no `--no-verify`, no `--force` on the push) without explicit user approval, per the skill's important notes."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Can you get this PR ready to merge?",
+      "expected_output": "All checks are passing and there are no conflicts, but `mergeStateStatus` is BLOCKED and `reviewDecision` is REVIEW_REQUIRED -- the PR is waiting purely on a human approval gate that no sub-skill can satisfy. After finding nothing to fix in round 1 (no conflicts, no comments, no SonarQube issues, no failing checks), the skill recognizes the REVIEW_REQUIRED case and stops immediately rather than burning the remaining 4 rounds.",
+      "expectations": [
+        "The skill runs at most 1 round before stopping -- it does not loop 5 times against an unchanging REVIEW_REQUIRED state.",
+        "The final report explicitly states the PR is blocked on human review approval, not on a technical/CI issue.",
+        "No conflict-resolution, comment-resolution, or check-fixing changes are made to the repo (working tree matches the fixture's committed state).",
+        "The gh-stub log contains no `pr merge` call.",
+        "The report includes the PR URL (https://github.com/example/widget-service/pull/503)."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Keep working this PR until it's mergeable.",
+      "expected_output": "Every round's `gh pr view` reports the same failing `ci/test` check (mergeStateStatus UNSTABLE) -- the cassette never resolves it, simulating an issue fix-pr-checks cannot actually fix. The skill runs the full 5 rounds, then stops and reports the round cap was hit with `ci/test` still outstanding, rather than looping forever or falsely claiming success.",
+      "expectations": [
+        "The transcript shows 5 distinct rounds of the loop (fetch/sync + fix attempts + re-check), not fewer and not an unbounded number.",
+        "The final report explicitly states the 5-round cap was reached and ci/test is still failing -- it does not claim the PR is green or mergeable.",
+        "The report asks the user how to proceed rather than silently giving up or continuing past round 5.",
+        "The gh-stub log contains no `pr merge` call.",
+        "No more than 5 matches are consumed against the `pr view` cassette entry (i.e. the skill doesn't re-check status far more than once per round)."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Land this PR for me.",
+      "expected_output": "`gh pr view` fails outright -- there is no open PR for this branch. The skill stops immediately and reports that a PR needs to be opened first (via the `pr` skill), rather than attempting to loop, fix checks, or guess at a PR number.",
+      "expectations": [
+        "The skill's final message tells the user no PR exists yet and to run the `pr` skill (or open one) first.",
+        "No fetch/merge/conflict-resolution activity happens -- git state is unchanged from the fixture.",
+        "No sub-skill (resolve-pr-comments, resolve-sonarqube-issues, fix-pr-checks) is invoked.",
+        "The gh-stub log contains no `pr merge`, `pr ready`, or `pr create` call."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Land this PR -- get it mergeable.",
+      "expected_output": "`gh pr view` reports `isDraft: true` with an unreliable-looking mergeable/mergeStateStatus (UNKNOWN/UNKNOWN). Since land-pr was invoked standalone here (not as a hand-off from implement-feature after marking it ready), the skill warns that GitHub's mergeability signals can be unreliable for draft PRs and asks whether to proceed anyway or mark it ready first, rather than looping on a signal it can't trust.",
+      "expectations": [
+        "The final message explicitly calls out that the PR is a draft and that mergeStateStatus can be unreliable for drafts.",
+        "The skill asks the user how to proceed (proceed anyway vs. mark ready first) rather than silently looping 5 rounds against UNKNOWN status.",
+        "No conflict-resolution or check-fixing changes are made to the repo.",
+        "The gh-stub log contains no `pr ready` or `pr merge` call -- marking ready is the user's call to make here, not the skill's to assume."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Please land this PR.",
+      "expected_output": "Round 1's `gh pr view` shows ci/test FAILURE (mergeStateStatus UNSTABLE). The skill invokes fix-pr-checks (or otherwise addresses it), then re-checks: the refreshed `gh pr view` now reports ci/test SUCCESS and mergeStateStatus CLEAN. The loop stops after round 2 and reports success.",
+      "expectations": [
+        "The loop runs exactly 2 rounds, not 5 -- it stops as soon as the second `gh pr view` comes back clean.",
+        "The per-round summary log (per the skill's 'log a one-line summary after each round' instruction) shows round 1 finding ci/test failing and round 2 finding it resolved.",
+        "The final report states the PR is now green/mergeable.",
+        "The gh-stub log contains no `pr merge` call."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Drive this PR to mergeable -- there's a bit going on with it.",
+      "expected_output": "Round 1 shows both a real merge conflict (mergeable CONFLICTING) against config.py's VERSION line and a failing ci/test check. The skill resolves the conflict for real (fetch/merge/resolve/commit/push) in round 1; round 2's refresh shows the conflict resolved but ci/test still failing; round 3's refresh shows everything clean. The skill correctly continues looping across multiple concurrent blocker types instead of stopping after fixing only the first one it noticed.",
+      "expectations": [
+        "config.py has no leftover conflict markers in the final state, and the branch history shows main's change ('Bump version to 1.2.0 on main') was merged in.",
+        "The loop runs 3 rounds (not fewer -- checks were still failing after the conflict fix in round 1; not 5 -- everything was clean by round 3).",
+        "The final report distinguishes what was fixed in which round (conflict in round 1, checks in round 2-3) rather than describing it as one flat step.",
+        "The gh-stub log contains no `pr merge` call.",
+        "No force-push or `--no-verify` appears in the transcript."
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "This PR should be good to go -- land it.",
+      "expected_output": "The PR is already green and mergeable (MERGEABLE/CLEAN/all checks passing). The skill reports it as ready and explicitly stops short of merging -- it never calls `gh pr merge`, even though the prompt's phrasing ('land it') could be misread as a request to merge.",
+      "expectations": [
+        "The gh-stub log contains zero `pr merge` calls (the cassette would return a hard failure if one were attempted, confirming the invariant rather than just hoping it wasn't called).",
+        "The final report explicitly states the PR is green/mergeable but stops short of merging, noting that merging is a separate, explicit action the user must take.",
+        "No destructive or state-changing git command beyond read-only fetch/status checks appears in the transcript, since nothing needed fixing.",
+        "The report includes the PR URL (https://github.com/example/widget-service/pull/509)."
+      ]
+    }
+  ]
+}

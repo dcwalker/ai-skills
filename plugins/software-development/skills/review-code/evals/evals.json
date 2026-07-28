@@ -1,0 +1,131 @@
+{
+  "skill_name": "review-code",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review the code in this repository (local working tree, no PR).",
+      "expected_output": "CONTRIBUTING.md states that all functions handling user input must validate it before use. src/profile.js's updateDisplayName destructures userId and displayName straight from req.body and passes them directly into a SQL UPDATE with no validation (no type check, no length check, no existence check). The review must cite this specific CONTRIBUTING.md rule and flag a File-level issue on src/profile.js at a Medium or High risk score (>= 40), not just a generic style nit.",
+      "expectations": [
+        "The output uses the local/text review format (=== Code Review === with a Risk Score and Issues section), since there is no PR",
+        "The output lists CONTRIBUTING.md as a loaded guideline source",
+        "An issue is flagged against src/profile.js / updateDisplayName for missing input validation on userId and/or displayName",
+        "The issue text references or paraphrases the CONTRIBUTING.md rule about validating user input before use",
+        "The issue (or overall risk score) is rated Medium or higher (>= 40), not Low/None"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Review the code in this repository (local working tree, no PR).",
+      "expected_output": "This repo has no CONTRIBUTING.md, AGENTS.md, or any tool-specific instruction file. Per the skill's own Step 2/'No repo-specific guidelines' behavior, the review must still proceed against general software-engineering and security best practices and explicitly state in its output that no repo-specific guideline files were found. The single function (applyDiscount) is simple, correct, and has no real issues, so the risk score should stay low.",
+      "expectations": [
+        "The output includes an explicit note that no repo-specific guideline files (CONTRIBUTING.md, AGENTS.md, etc.) were found and that the review used general best practices instead",
+        "The review is not skipped or refused for lack of guideline files",
+        "The overall risk score is in the None/Low band (0-39), since applyDiscount has no real defects"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Review the code in this repository (local working tree, no PR).",
+      "expected_output": "CONTRIBUTING.md explicitly requires parameterized queries and forbids building SQL by string concatenation. src/search.js's searchUsers builds a SQL query with raw string concatenation of req.query.name directly into a LIKE clause -- a textbook SQL injection vulnerability. This must be flagged at High or Critical risk (score >= 60), not missed or under-scored as a minor style issue.",
+      "expectations": [
+        "An issue is flagged against src/search.js / searchUsers for SQL injection via string concatenation of the `name` query parameter",
+        "That issue (or the overall risk score) is rated High or Critical (score >= 60)",
+        "The issue references or paraphrases the CONTRIBUTING.md rule requiring parameterized queries",
+        "The output uses the local/text review format since there is no PR"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Review the code in this repository (local working tree, no PR).",
+      "expected_output": "This is the clean-fixture guard case. CONTRIBUTING.md requires input validation, parameterized queries, test coverage for new endpoints, and explicit error handling -- and src/orders.js's createOrder satisfies all four: it validates sku and quantity, uses a parameterized query, has a matching test file in src/__tests__/, and catches/logs errors explicitly. The review should land in the None/Low risk band and must not invent nitpicks to justify a higher score.",
+      "expectations": [
+        "The overall risk score is in the None/Low band (0-39)",
+        "The output does not flag createOrder for missing input validation, missing parameterized queries, missing test coverage, or missing error handling -- all four are actually present in this fixture",
+        "Any issues listed, if present at all, are minor/stylistic and clearly not inflated to Medium or higher just to have something to report"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Review the code in this repository (local working tree, no PR).",
+      "expected_output": "This is the decoy case. CONTRIBUTING.md explicitly permits `any` for raw third-party SDK responses as long as the value is validated/narrowed before further use, and explicitly permits TODO comments that reference a tracked ticket for non-blocking follow-up work. src/webhooks.ts's rawBody/raw `any` types are narrowed via parseSdkEvent's validation before use, and the TODO references PROJ-482 and is explicitly non-blocking -- both match the fixture's own stated exceptions. Neither should be flagged as a real issue, since a generic pattern-matcher would flag `any` and TODO on sight but the repo's actual stated standard permits both here.",
+      "expectations": [
+        "The output does not flag the `any` typed parameters in src/webhooks.ts (parseSdkEvent's raw param or handleWebhook's rawBody param) as a violation, since CONTRIBUTING.md's own exception for narrowed third-party SDK responses applies here",
+        "The output does not flag the TODO(PROJ-482) comment as a problem, since CONTRIBUTING.md's own exception for ticket-referenced non-blocking TODOs applies here",
+        "The overall risk score reflects that no real issue was found (None/Low band, 0-39), rather than penalizing the code for surface-level patterns that the repo's own guidelines explicitly allow"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Review the code in this repository (local working tree, no PR).",
+      "expected_output": "CONTRIBUTING.md requires that all async functions calling external services catch and log errors. src/reports.js's generateNightlyReport calls fetchClient.get and fs.writeFile with no try/catch at all -- any failure (network, disk) propagates as an unhandled rejection with no log statement identifying what failed. This should be flagged citing that specific rule, at Medium risk given it is an operational/reliability gap rather than an immediate security hole.",
+      "expectations": [
+        "An issue is flagged against src/reports.js / generateNightlyReport for missing error handling around the fetchClient.get and/or fs.writeFile calls",
+        "The issue references or paraphrases the CONTRIBUTING.md rule requiring async functions calling external services to catch and log errors",
+        "The issue (or overall risk score) is rated at least Medium (score >= 40)"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Review the code in this repository (local working tree, no PR).",
+      "expected_output": "CONTRIBUTING.md warns about shared in-memory state across concurrent requests. src/rate-limiter.js's requestCounts object is shared process-wide and is never reset on any time window -- isRateLimited only ever increments, so once a given userId accumulates 10 total requests over the lifetime of the process, that user is permanently rate-limited forever, not just within a rolling window. This is a genuine correctness bug in the shared state's lifecycle (not a claim about JS threading), and should be flagged as a correctness concern at Medium-to-High risk.",
+      "expectations": [
+        "An issue is flagged against src/rate-limiter.js / isRateLimited or requestCounts for the lack of any time-window reset, meaning users become permanently rate-limited after 10 total requests rather than being limited per-window",
+        "The issue connects to the CONTRIBUTING.md guidance about shared in-memory state across concurrent requests",
+        "The issue (or overall risk score) is rated Medium or higher (score >= 40), reflecting a real correctness/reliability defect rather than a style nitpick"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Review the code in this repository (local working tree, no PR).",
+      "expected_output": "AGENTS.md explicitly forbids logging full credit card numbers, SSNs, or auth tokens, requiring all but the last 4 characters to be masked. src/payments.js's chargeCard logs the full, unmasked cardNumber via console.log. This is a sensitive-data-exposure issue that should be flagged at High risk (score >= 60), citing the AGENTS.md rule specifically (confirming AGENTS.md, not just CONTRIBUTING.md, is loaded and applied).",
+      "expectations": [
+        "The output lists AGENTS.md as a loaded guideline source",
+        "An issue is flagged against src/payments.js / chargeCard for logging the full, unmasked card number",
+        "The issue references or paraphrases the AGENTS.md rule about masking all but the last 4 characters of sensitive values",
+        "The issue (or overall risk score) is rated High or higher (score >= 60), reflecting sensitive data exposure"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Review the code in this repository (local working tree, no PR).",
+      "expected_output": "CLAUDE.md (a tool-specific instruction file) requires all HTTP handlers to set an explicit request timeout when calling downstream services. src/proxy.js's proxyToRecommendations calls fetch() against an internal service with no timeout or AbortController, so a slow/hung dependency would hang the request indefinitely. This should be flagged citing the CLAUDE.md rule, confirming the skill loads tool-specific instruction files (not just CONTRIBUTING.md/AGENTS.md).",
+      "expectations": [
+        "The output lists CLAUDE.md as a loaded guideline source",
+        "An issue is flagged against src/proxy.js / proxyToRecommendations for missing a request timeout on the fetch() call to the downstream recommendations service",
+        "The issue references or paraphrases the CLAUDE.md rule requiring explicit timeouts on downstream calls",
+        "The issue (or overall risk score) is rated at least Medium (score >= 40)"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Review the code in this repository (local working tree, no PR).",
+      "expected_output": "CONTRIBUTING.md requires defensive handling of missing/optional data. src/session.js's getCurrentUserDisplayName calls sessions.get(sessionId), which session-store.js's own comment documents as returning undefined for an expired or nonexistent session, then immediately dereferences session.user.displayName with no null/undefined check -- a TypeError waiting to happen at a very ordinary boundary condition (expired session). This must be flagged as a real correctness issue.",
+      "expectations": [
+        "An issue is flagged against src/session.js / getCurrentUserDisplayName for dereferencing session.user.displayName without checking whether session (or session.user) is null/undefined",
+        "The issue notes this will throw/crash when the session has expired or never existed, per session-store.js's own documented behavior",
+        "The issue (or overall risk score) is rated at least Medium (score >= 40), reflecting a real correctness defect rather than a style nitpick"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "Review the code in this repository (local working tree, no PR).",
+      "expected_output": "CONTRIBUTING.md requires input validation and parameterized queries. src/comments.js's addComment fully complies (validates postId and text, uses a parameterized query) while src/reactions.js's addReaction violates both (no validation of postId/emoji, and builds SQL via string concatenation -- a SQL injection vector). The review must discriminate correctly: flag reactions.js at High risk and NOT flag comments.js as having a real issue, since it's a decoy showing the skill checks each file against the actual standard rather than pattern-matching similar-looking code across files.",
+      "expectations": [
+        "An issue is flagged against src/reactions.js / addReaction for missing input validation and/or SQL injection via string concatenation",
+        "That issue (or the overall risk score) is rated High or Critical (score >= 60)",
+        "src/comments.js / addComment is not flagged as having a validation or SQL-injection issue -- it already follows the CONTRIBUTING.md pattern correctly"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Review the code in this repository (local working tree, no PR).",
+      "expected_output": "CONTRIBUTING.md requires every new API endpoint to have a matching automated test in src/__tests__/. src/health.js's healthCheck (existing endpoint) already has a matching test in src/__tests__/health.test.js and should not be flagged. src/exports.js's exportOrdersCsv is a new endpoint (per its own comment) with no corresponding test file anywhere in src/__tests__/ -- this specific gap should be flagged, citing the CONTRIBUTING.md testing rule, at Medium risk.",
+      "expectations": [
+        "An issue is flagged against src/exports.js / exportOrdersCsv for lacking an automated test in src/__tests__/",
+        "The issue references or paraphrases the CONTRIBUTING.md rule requiring a test for every new endpoint",
+        "src/health.js / healthCheck is not flagged for missing test coverage, since it already has a matching test file",
+        "The exports.js issue (or overall risk score) is rated at least Medium (score >= 40)"
+      ]
+    }
+  ]
+}

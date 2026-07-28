@@ -1,0 +1,12 @@
+{
+  "name": "streamline",
+  "version": "3.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node server.js",
+    "test": "jest"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

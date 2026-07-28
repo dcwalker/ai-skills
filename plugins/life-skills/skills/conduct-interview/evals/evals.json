@@ -1,0 +1,86 @@
+{
+  "skill_name": "conduct-interview",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need help writing an email to my manager. I have to tell her I'm turning down the promotion she offered me last week -- I want to stay in my current role for personal reasons, but I don't want to sound ungrateful or like I'm not committed to the team.",
+      "expected_output": "The skill establishes the deliverable (email, audience = manager, purpose, tone/length) in Step 1, then interviews the user one question at a time -- never combining two questions into a single turn -- providing a running summary of the interview so far after each answer, before eventually drafting the email in Step 4.",
+      "expectations": [
+        "Every assistant turn during the interview phase contains at most one question -- no turn bundles two or more distinct questions together.",
+        "A running summary of the answers gathered so far appears after each of the user's answers, not only at the end of the interview.",
+        "The Step 3 completeness check (a full Q&A summary plus an explicit readiness question) appears in the transcript before any drafted email text is shown.",
+        "The email draft contains only reasons and details the user actually provided, not invented justifications for declining the promotion."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Help me write a debrief of the meeting I just had with the client. Actually let me just tell you everything up front: the meeting was with Acme Corp about their Q3 renewal, it ran 45 minutes, my manager Sarah and their VP Tom were there, we agreed to a 10% discount if they sign a 2-year term, and the follow-up is I need to send the revised contract by Friday. Go from there.",
+      "expected_output": "The skill's questions after this info-dense opening do not re-ask facts already given (who attended, topic, duration, outcome, follow-up deadline) verbatim; instead it acknowledges what's already known and asks about genuinely unaddressed points (e.g. unresolved concerns, the client's reaction, next steps beyond the contract).",
+      "expectations": [
+        "No subsequent question re-asks something the user already stated in the opening message (e.g. it does not ask again who attended or what was discussed).",
+        "The running summary shown after the opening message reflects the facts already provided (Acme Corp, Q3 renewal, Sarah and Tom, 10% discount, 2-year term, Friday deadline).",
+        "Follow-up questions target information genuinely missing from the opening message rather than repeating a fixed generic script."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Help me write a short planning doc for reorganizing our team's on-call rotation. Audience is my own team, it should be about half a page, and the purpose is to propose a new rotation schedule before our next sprint planning. The current rotation is weekly, causes burnout because the same three people cover most weekends, and I want to propose splitting it into a rotating group of six with primary/secondary on-call roles.",
+      "expected_output": "After Step 1 details are confirmed and Step 2 gathers enough detail, the skill explicitly performs Step 3 -- presenting the full Q&A summary and asking whether anything is missing, incorrect, or worth adding, and confirming readiness to draft -- strictly before any drafted planning-doc text appears anywhere in the transcript.",
+      "expectations": [
+        "A full summary of all questions and answers, plus an explicit readiness question (e.g. 'Is there anything missing, incorrect, or that you want to add?' and confirmation of readiness to draft), appears in the transcript.",
+        "No drafted planning-doc content (the actual deliverable text) appears anywhere before that Step 3 completeness checkpoint.",
+        "The completeness check happens only after the interview has gathered the substantive details already given in the prompt (current weekly rotation, burnout on three people, proposed six-person rotation with primary/secondary roles), not prematurely before those are discussed."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Help me write a journal entry about finishing my first half marathon this weekend. I trained for 4 months, finished in 2 hours 18 minutes, my goal was under 2:30, and I ran it with my sister. After you show me a draft, I'm going to ask you to cut the second paragraph down to one sentence and add a line about how my knee held up better than expected. Please make that revision when I ask, and don't just show me the same draft again or consider the interview finished until I approve.",
+      "expected_output": "The skill drafts the journal entry in Step 4, and when the scripted revision request comes in, produces an actually revised version (shortened second paragraph, added line about the knee) per Step 5, rather than repeating the original draft unchanged or treating the interview as complete before the revision.",
+      "expectations": [
+        "A distinct, revised draft is shown after the revision request, differing from the first draft in the requested ways (second paragraph shortened, a line about the knee added).",
+        "The skill does not present an unchanged copy of the first draft as if it were the revision.",
+        "The skill does not conclude or hand off the interview as finished before the user's revision has actually been made."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Help me write a quick status update email to my team. Keep asking me questions but I'm going to give short answers: 'shipped the API.' 'yes.' 'none.' 'Monday.' Don't add detail I didn't give you.",
+      "expected_output": "The skill asks its questions one at a time as usual, accepts the terse answers at face value, and produces a status-update draft built only from what was actually said (shipped the API; a yes/no confirmation; no blockers; a Monday-related date), without inventing elaboration, specifics, or context the user never supplied.",
+      "expectations": [
+        "The draft email does not contain invented specifics (e.g. a made-up API name, feature list, or reason) beyond what the terse answers actually conveyed.",
+        "Where information is genuinely thin (e.g. what the 'yes' confirmed, what happens Monday), the draft either uses the user's own words or flags it with a follow-up marker rather than fabricating a plausible-sounding detail.",
+        "The interview still proceeds one question at a time despite the short answers, and a running summary still appears after each answer."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "I want to write a journal entry about a difficult conversation I had with my dad yesterday about his health. We talked for about an hour at his kitchen table. He finally admitted his doctor is worried about his heart. I don't know yet what I think about it all -- I might need help figuring that out too.",
+      "expected_output": "The skill treats this as a journal entry (self-audience, reflective purpose) and, per the question-technique guidance, opens with broad or contextual questions (what happened, what was said) before moving to reflective questions ('what did you take away from this,' 'how are you feeling about it') later in the interview, rather than opening with a reflective question.",
+      "expectations": [
+        "The first one or two questions asked are broad or factual/contextual (e.g. about what happened or what was discussed), not a reflective 'how do you feel' or 'what did you take away' question.",
+        "A reflective question about feelings, takeaways, or conclusions appears only after some factual context has already been gathered, not as the opening question.",
+        "The eventual journal entry draft uses the user's own words about the conversation and does not assert a specific emotional conclusion the user never stated, given the user said they don't yet know what they think."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Help me write a debrief of today's vendor call. We talked with DataFlow Inc about migrating our pipeline to their platform. I was on the call with two of their engineers. We covered pricing and a rough timeline, but honestly I don't remember the exact quoted price -- I'd have to check the follow-up email they said they'd send. The timeline they mentioned was 'a few months' but no exact date.",
+      "expected_output": "Because the exact price and exact timeline are things the user does not know, the skill adds them to a follow-up list (using a marker like '[confirm with vendor email]' or '[date TBD]') rather than skipping them or inventing a number/date, and surfaces that follow-up list to the user at least once before or during the Step 3 completeness check.",
+      "expectations": [
+        "The unresolved price and timeline are tracked as explicit follow-up items with a marker (e.g. '[confirm with ...]', '[TBD]'), not silently dropped or given a fabricated specific number or date.",
+        "The follow-up list is shown to the user at least once, either during the interview or as part of the Step 3 completeness summary.",
+        "The final debrief draft contains the same follow-up markers for the unresolved price and timeline rather than inventing values for them."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Help me put together a planning doc.",
+      "expected_output": "Before asking any content questions, the skill first establishes the Step 1 basics for a planning doc -- audience, expected length/format, and purpose, since the document type is already given -- confirming or asking about whichever aren't yet clear, before moving into Step 2 content questions.",
+      "expectations": [
+        "The skill's early turns focus on establishing audience, length/format, and purpose for the planning doc rather than immediately asking about the doc's substantive content.",
+        "Each of those Step 1 clarifying turns asks about one thing at a time rather than diving straight into open-ended content questions.",
+        "No drafted planning-doc content appears until well after the Step 1 basics (audience, purpose, format) have been established in the transcript."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,251 @@
+{
+  "api/authentication/validate": {
+    "valid": true
+  },
+  "api/components/show": {
+    "component": {
+      "key": "eval-webapp",
+      "name": "Eval Webapp"
+    }
+  },
+  "api/issues/search": [
+    {
+      "issues": [
+        {
+          "key": "ISSUE-7100",
+          "rule": "python:S1481",
+          "severity": "MINOR",
+          "type": "CODE_SMELL",
+          "status": "OPEN",
+          "component": "eval-webapp:batch1.py",
+          "project": "eval-webapp",
+          "line": 5,
+          "message": "Remove this unused local variable 'helper_a'.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 5,
+            "startOffset": 0,
+            "endLine": 5,
+            "endOffset": 40
+          }
+        },
+        {
+          "key": "ISSUE-7101",
+          "rule": "python:S1481",
+          "severity": "MINOR",
+          "type": "CODE_SMELL",
+          "status": "OPEN",
+          "component": "eval-webapp:batch1.py",
+          "project": "eval-webapp",
+          "line": 10,
+          "message": "Remove this unused local variable 'helper_b'.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 10,
+            "startOffset": 0,
+            "endLine": 10,
+            "endOffset": 40
+          }
+        },
+        {
+          "key": "ISSUE-7102",
+          "rule": "python:S1481",
+          "severity": "MINOR",
+          "type": "CODE_SMELL",
+          "status": "OPEN",
+          "component": "eval-webapp:batch1.py",
+          "project": "eval-webapp",
+          "line": 15,
+          "message": "Remove this unused local variable 'helper_c'.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 15,
+            "startOffset": 0,
+            "endLine": 15,
+            "endOffset": 40
+          }
+        },
+        {
+          "key": "ISSUE-7103",
+          "rule": "python:S1481",
+          "severity": "MINOR",
+          "type": "CODE_SMELL",
+          "status": "OPEN",
+          "component": "eval-webapp:batch1.py",
+          "project": "eval-webapp",
+          "line": 20,
+          "message": "Remove this unused local variable 'helper_d'.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 20,
+            "startOffset": 0,
+            "endLine": 20,
+            "endOffset": 40
+          }
+        },
+        {
+          "key": "ISSUE-7104",
+          "rule": "python:S1481",
+          "severity": "MINOR",
+          "type": "CODE_SMELL",
+          "status": "OPEN",
+          "component": "eval-webapp:batch1.py",
+          "project": "eval-webapp",
+          "line": 25,
+          "message": "Remove this unused local variable 'helper_e'.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 25,
+            "startOffset": 0,
+            "endLine": 25,
+            "endOffset": 40
+          }
+        }
+      ],
+      "paging": {
+        "total": 5
+      }
+    },
+    {
+      "issues": [
+        {
+          "key": "ISSUE-7200",
+          "rule": "python:S1481",
+          "severity": "MINOR",
+          "type": "CODE_SMELL",
+          "status": "OPEN",
+          "component": "eval-webapp:batch2.py",
+          "project": "eval-webapp",
+          "line": 5,
+          "message": "Remove this unused local variable 'helper_f'.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 5,
+            "startOffset": 0,
+            "endLine": 5,
+            "endOffset": 40
+          }
+        },
+        {
+          "key": "ISSUE-7201",
+          "rule": "python:S1481",
+          "severity": "MINOR",
+          "type": "CODE_SMELL",
+          "status": "OPEN",
+          "component": "eval-webapp:batch2.py",
+          "project": "eval-webapp",
+          "line": 10,
+          "message": "Remove this unused local variable 'helper_g'.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 10,
+            "startOffset": 0,
+            "endLine": 10,
+            "endOffset": 40
+          }
+        }
+      ],
+      "paging": {
+        "total": 2
+      }
+    },
+    {
+      "issues": [],
+      "paging": {
+        "total": 0
+      }
+    }
+  ],
+  "api/hotspots/search": {
+    "hotspots": [],
+    "paging": {
+      "total": 0
+    },
+    "rules": []
+  },
+  "api/issues/show": {
+    "issue": {}
+  },
+  "api/hotspots/show": {
+    "hotspot": {}
+  },
+  "api/rules/show": {
+    "errors": [
+      {
+        "msg": "Rule not found"
+      }
+    ]
+  },
+  "api/rules/search": {
+    "rules": []
+  },
+  "api/measures/component": {
+    "component": {
+      "measures": [
+        {
+          "metric": "coverage",
+          "value": "85.0"
+        },
+        {
+          "metric": "lines_to_cover",
+          "value": "40"
+        },
+        {
+          "metric": "uncovered_lines",
+          "value": "6"
+        }
+      ]
+    }
+  },
+  "api/qualitygates/project_status": {
+    "projectStatus": {
+      "status": "OK",
+      "conditions": []
+    }
+  },
+  "api/measures/component_tree": {
+    "components": []
+  },
+  "api/duplications/show": {
+    "duplications": [],
+    "files": {}
+  },
+  "api/sources/lines": {
+    "sources": []
+  }
+}

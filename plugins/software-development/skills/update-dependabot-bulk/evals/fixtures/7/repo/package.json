@@ -1,0 +1,13 @@
+{
+  "name": "webapp",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "lodash": "4.17.20",
+    "chalk": "4.1.0"
+  },
+  "devDependencies": {
+    "old-build-tool": "2.0.0",
+    "jest": "29.5.0"
+  }
+}

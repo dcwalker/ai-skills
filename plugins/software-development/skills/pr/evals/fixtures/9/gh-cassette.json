@@ -1,0 +1,37 @@
+{
+  "calls": [
+    {
+      "match": ["pr", "view"],
+      "stdout_json": {
+        "number": 61,
+        "title": "Add request logging middleware",
+        "isDraft": true,
+        "assignees": [],
+        "body": "Logs incoming requests for debugging.",
+        "url": "https://github.com/example-org/demo-app/pull/61"
+      },
+      "exit_code": 0
+    },
+    {
+      "match": ["pr", "list"],
+      "stdout_json": [
+        {
+          "number": 61,
+          "title": "Add request logging middleware",
+          "headRefName": "140-add-request-logging",
+          "isDraft": true
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "match": ["pr", "edit"],
+      "stdout": "https://github.com/example-org/demo-app/pull/61\n",
+      "exit_code": 0
+    }
+  ],
+  "default": {
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call"
+  }
+}

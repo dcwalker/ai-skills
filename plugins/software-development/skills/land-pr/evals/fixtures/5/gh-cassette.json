@@ -1,0 +1,7 @@
+{
+  "calls": [
+    {"match": ["auth", "status"], "exit_code": 0},
+    {"match": ["pr", "view"], "exit_code": 1, "stderr": "no pull requests found for branch \"feature/no-pr-yet\"\n"}
+  ],
+  "default": {"exit_code": 0, "stdout": "[]"}
+}

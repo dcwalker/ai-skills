@@ -1,0 +1,120 @@
+{
+  "calls": [
+    {
+      "match": [
+        "auth",
+        "status"
+      ],
+      "exit_code": 0
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--json",
+        "number"
+      ],
+      "stdout": "42\n"
+    },
+    {
+      "match": [
+        "graphql",
+        "resolveReviewThread"
+      ],
+      "stdout_json": {
+        "data": {
+          "resolveReviewThread": {
+            "thread": {
+              "isResolved": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "match": [
+        "pulls/comments/"
+      ],
+      "stdout_json": {
+        "pull_request_url": "https://api.github.com/repos/acme/widgets/pulls/42"
+      }
+    },
+    {
+      "match": [
+        "replies",
+        "-X",
+        "POST"
+      ],
+      "stdout": ""
+    },
+    {
+      "match": [
+        "graphql"
+      ],
+      "stdout_json": {
+        "data": {
+          "repository": {
+            "pullRequest": {
+              "reviewThreads": {
+                "nodes": [
+                  {
+                    "id": "PRT_thread_3006",
+                    "isResolved": false,
+                    "comments": {
+                      "nodes": [
+                        {
+                          "id": "PRRC_3006",
+                          "databaseId": 3006,
+                          "bodyText": "This `JSON.parse(input)` call has no try/catch, so a malformed config file will crash the process instead of surfacing a clear error.",
+                          "path": "src/parse-config.js",
+                          "line": 7,
+                          "diffHunk": "@@ -3,6 +3,7 @@\n function parseConfig(input) {\n-  return JSON.parse(input);\n+  const parsed = JSON.parse(input);\n+  return parsed;",
+                          "createdAt": "2026-07-20T10:00:00Z",
+                          "updatedAt": "2026-07-20T10:00:00Z",
+                          "author": {
+                            "login": "lint-bot[bot]",
+                            "id": "BOT_kwDOBot3006"
+                          },
+                          "url": "https://github.com/acme/widgets/pull/42#discussion_r3006"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "PRT_thread_3007",
+                    "isResolved": false,
+                    "comments": {
+                      "nodes": [
+                        {
+                          "id": "PRRC_3007",
+                          "databaseId": 3007,
+                          "bodyText": "The default export here should be a named export `parseConfig` to match the rest of the module's conventions -- right now consumers have to guess the import shape.",
+                          "path": "src/parse-config.js",
+                          "line": 2,
+                          "diffHunk": "@@ -1,3 +1,3 @@\n-module.exports = parseConfig;\n+module.exports = { parseConfig };",
+                          "createdAt": "2026-07-20T10:00:00Z",
+                          "updatedAt": "2026-07-20T10:00:00Z",
+                          "author": {
+                            "login": "dana-reviewer"
+                          },
+                          "url": "https://github.com/acme/widgets/pull/42#discussion_r3007"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "comments": {
+                "nodes": []
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "default": {
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call"
+  }
+}

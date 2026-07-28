@@ -1,0 +1,16 @@
+{
+  "calls": [
+    {"match": ["auth", "status"], "exit_code": 0},
+    {"match": ["pr", "view"], "stdout_json": {"number": 9}},
+    {"match": ["pulls/9"], "stdout_json": {"number": 9, "head": {"sha": "flaky01", "ref": "some-branch"}}},
+    {"match": ["commits/flaky01/check-runs"], "stdout_json": {"check_runs": [
+      {"id": 701, "name": "integration-tests", "status": "completed", "conclusion": "failure",
+       "output": {"summary": "Error: connection timed out while reaching test-db.internal after 30000ms"},
+       "app": {"name": "GitHub Actions"}, "html_url": "https://github.com/acme/widgets/actions/runs/1",
+       "started_at": "2026-01-01T00:00:00Z", "completed_at": "2026-01-01T00:01:00Z"}
+    ]}},
+    {"match": ["commits/flaky01/status"], "stdout_json": {"state": "failure", "statuses": []}},
+    {"match_regex": "^api repos/acme/widgets/commits/flaky01$", "stdout_json": {"commit": {"message": "Add feature"}}}
+  ],
+  "default": {"exit_code": 1, "stderr": "no fixture match"}
+}

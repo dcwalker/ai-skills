@@ -1,0 +1,74 @@
+{
+  "calls": [
+    {
+      "match": [
+        "auth",
+        "status"
+      ],
+      "exit_code": 0
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--json",
+        "number"
+      ],
+      "stdout": "42\n"
+    },
+    {
+      "match": [
+        "graphql",
+        "resolveReviewThread"
+      ],
+      "stdout_json": {
+        "data": {
+          "resolveReviewThread": {
+            "thread": {
+              "isResolved": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "match": [
+        "pulls/comments/"
+      ],
+      "stdout_json": {
+        "pull_request_url": "https://api.github.com/repos/acme/widgets/pulls/42"
+      }
+    },
+    {
+      "match": [
+        "replies",
+        "-X",
+        "POST"
+      ],
+      "stdout": ""
+    },
+    {
+      "match": [
+        "graphql"
+      ],
+      "stdout_json": {
+        "data": {
+          "repository": {
+            "pullRequest": {
+              "reviewThreads": {
+                "nodes": []
+              },
+              "comments": {
+                "nodes": []
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "default": {
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call"
+  }
+}
