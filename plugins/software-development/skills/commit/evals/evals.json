@@ -1,0 +1,141 @@
+{
+  "skill_name": "commit",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Commit the changes on this branch.",
+      "expected_output": "A single commit is created containing the timeout fix in src/auth.ts, with the message prefixed [PROJ-123], and no clarifying questions are asked.",
+      "expectations": [
+        "Exactly one new commit is created on top of the initial fixture commit",
+        "The commit includes the change to src/auth.ts and no other files",
+        "The commit message subject is prefixed with [PROJ-123]",
+        "The commit message is not prefixed with WIP:",
+        "The transcript does not show the assistant asking the user any clarifying questions before committing"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Please commit my changes.",
+      "expected_output": "A single commit is created containing the redirect fix in src/routes.ts, with the message prefixed using the GitHub issue number #42, and no clarifying questions are asked.",
+      "expectations": [
+        "Exactly one new commit is created on top of the initial fixture commit",
+        "The commit includes the change to src/routes.ts and no other files",
+        "The commit message subject is prefixed with #42",
+        "The transcript does not show the assistant asking the user any clarifying questions before committing"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Commit the retry logic changes.",
+      "expected_output": "The skill notices the console.log(\"HERE\") debug artifact left in src/network.ts and flags it to the user instead of silently committing it as-is.",
+      "expectations": [
+        "The transcript explicitly calls out the console.log(\"HERE\") line in src/network.ts as debug code before committing",
+        "If a commit is created, it does not include the literal string console.log(\"HERE\") -- the debug line was removed or the user was asked first",
+        "The assistant does not commit the unmodified debug artifact without comment"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Commit what I've got on this branch.",
+      "expected_output": "The skill notices the diff spans two unrelated concerns -- an auth bugfix and a left-pad dependency bump -- and asks whether to split them into separate commits rather than committing both together silently.",
+      "expectations": [
+        "The transcript shows the assistant identifying that src/auth.ts and package.json represent unrelated changes",
+        "The transcript shows the assistant asking whether to commit the changes separately or together",
+        "The assistant does not create a single commit bundling both changes without first raising the question"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Commit this.",
+      "expected_output": "Because the branch name quick-fix has no derivable issue key, the skill asks the user whether to include a ticket prefix and what format to use, rather than inventing one.",
+      "expectations": [
+        "The transcript shows the assistant asking about a ticket/issue prefix rather than fabricating one",
+        "If a commit is created, its message is not prefixed with an invented issue ID such as [QUICK-FIX] or similar",
+        "The assistant does not silently proceed with a fabricated ticket reference"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Commit the validation changes on this branch. Heads up that the lint script is known to be broken right now unrelated to my change -- if it fails, go ahead and skip it, just mark the commit WIP and note the failure.",
+      "expected_output": "The skill runs lint, finds it fails, and -- per the user's pre-authorized instruction to skip -- creates a commit whose subject is prefixed WIP: with a note about the lint failure in the body.",
+      "expectations": [
+        "Exactly one new commit is created",
+        "The commit message subject starts with WIP:",
+        "The commit message body mentions the lint failure",
+        "The commit includes the change to src/validate.ts"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Commit the copy update.",
+      "expected_output": "Lint passes cleanly, so the skill commits normally with no WIP prefix and no mention of lint failure.",
+      "expectations": [
+        "Exactly one new commit is created",
+        "The commit message subject is prefixed with [PROJ-401]",
+        "The commit message subject is NOT prefixed with WIP:",
+        "The commit includes the change to src/copy.ts"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Commit my changes.",
+      "expected_output": "The working tree is completely clean, so the skill reports there is nothing to commit and does not create an empty commit.",
+      "expectations": [
+        "No new commit is created -- git log on the branch still shows only the initial fixture commit",
+        "The transcript reports to the user that there are no uncommitted changes"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Commit the formatter fix.",
+      "expected_output": "The first commit attempt is rejected by the repo's pre-commit hook because of trailing whitespace; the skill fixes the whitespace and successfully retries, ending with one clean commit.",
+      "expectations": [
+        "Exactly one new commit exists on the branch after the run",
+        "The committed version of src/formatter.ts contains no trailing-whitespace lines (git diff --cached --check style)",
+        "The commit message subject is prefixed with [PROJ-403]",
+        "The transcript shows the assistant encountering the pre-commit hook failure and fixing it rather than giving up"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Commit the new export-csv flag.",
+      "expected_output": "The skill notices this is a user-facing CLI change and that README.md (which documents the CLI flags) was not updated, and flags or asks about it rather than committing silently.",
+      "expectations": [
+        "The transcript shows the assistant explicitly noting that README.md documentation was not updated for this user-facing change",
+        "The assistant either asks whether to update the docs first or clearly flags the gap before/while committing",
+        "The assistant does not report 'Documentation updated: Yes' when README.md was left unchanged"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "Commit the new export endpoint.",
+      "expected_output": "The skill notices this change adds a new API endpoint but openapi.yaml was not updated, and flags or asks about it rather than committing silently.",
+      "expectations": [
+        "The transcript shows the assistant explicitly noting that openapi.yaml was not updated for this new endpoint",
+        "The assistant either asks whether to update the API spec first or clearly flags the gap before/while committing",
+        "The assistant does not report 'API spec updated: Yes' or equivalent when openapi.yaml was left unchanged"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Commit the parser simplification.",
+      "expected_output": "The skill notices the large block of commented-out old code left in src/parser.ts and flags it as debug/dead code rather than committing it unremarked.",
+      "expectations": [
+        "The transcript explicitly calls out the commented-out code block in src/parser.ts before committing",
+        "If a commit is created, the committed src/parser.ts does not still contain the commented-out parseCsvLineOld block -- it was removed or the user was asked first",
+        "The assistant does not commit the unmodified commented-out block without comment"
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "Commit the user model rename.",
+      "expected_output": "Although the change touches three files, it is a single coherent rename applied consistently, so the skill commits it as one commit without asking to split.",
+      "expectations": [
+        "Exactly one new commit is created",
+        "The commit includes all three files: src/models/user.ts, src/services/userService.ts, and src/controllers/userController.ts",
+        "The commit message subject is prefixed with [PROJ-407]",
+        "The transcript does not show the assistant asking whether to split the change into multiple commits"
+      ]
+    }
+  ]
+}
