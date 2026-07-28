@@ -51,6 +51,9 @@ from pathlib import Path
 # since each `gh` call is a fresh process; "times" caps are enforced by
 # writing a small counter file next to the cassette instead.
 def _counter_path(cassette_path: Path) -> Path:
+    counts_dir = os.environ.get("GH_STUB_COUNTS_DIR")
+    if counts_dir:
+        return Path(counts_dir) / (cassette_path.name + ".counts")
     return cassette_path.with_suffix(cassette_path.suffix + ".counts")
 
 

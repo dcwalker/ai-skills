@@ -55,6 +55,7 @@ ENV_FILE="$RUN_DIR/env.sh"
   echo "export WORKSPACE_DIR=\"$WORKSPACE_DIR\""
   echo "export PATH=\"$SCRIPT_DIR/gh-stub:\$PATH\""
   echo "export GH_STUB_LOG=\"$RUN_DIR/gh-calls.log\""
+  echo "export GH_STUB_COUNTS_DIR=\"$RUN_DIR\""
 
   if [[ -f "$FIXTURE_DIR/gh-cassette.json" ]]; then
     echo "export GH_STUB_CASSETTE=\"$FIXTURE_DIR/gh-cassette.json\""
