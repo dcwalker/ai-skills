@@ -1,0 +1,476 @@
+{
+  "metadata": {
+    "skill_name": "analyze-logs",
+    "skill_path": "plugins/software-development/skills/analyze-logs",
+    "executor_model": "claude-sonnet-5",
+    "analyzer_model": "claude-sonnet-5",
+    "timestamp": "2026-07-29T14:04:33Z",
+    "evals_run": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 168.37,
+        "tokens": 104793,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report is structured as a Log Analysis Report with an Executive Summary and Error Groups section",
+          "passed": true,
+          "evidence": "Transcript report contains '# Log Analysis Report' heading, an '## Executive Summary' section, and an '## Error Groups (by priority)' section (also includes 'Recommendations')."
+        },
+        {
+          "text": "The highest-priority (Group 1) error group is the payment-gateway connection timeout, with a count at or near 40",
+          "passed": true,
+          "evidence": "Group 1 is titled 'Payment gateway connection timeout on order submission' with 'Count: 40'. Verified against fixture: `grep -c \"Connection timeout calling payment-gateway\" logs/app.log` returns exactly 40, matching order IDs 48201-48240."
+        },
+        {
+          "text": "The report cites OrderService / src/orders.js as the source of the timeout error",
+          "passed": true,
+          "evidence": "Group 1 'Source' field states `src/orders.js`, `submitOrder()` (lines 3-10), catch block lines 6-9. Verified against fixture: src/orders.js line 7 contains `console.error(\\`ERROR [OrderService] Connection timeout calling payment-gateway (orderId=${orderId})\\`)`, an exact match to the log message format."
+        },
+        {
+          "text": "The dominant error group is not buried beneath or merged with the one-off WARN lines",
+          "passed": true,
+          "evidence": "The Error Groups section contains only Group 1 (the timeout); all six WARN lines (cache miss x2, password reset, low stock x2, shipping rate lookup) are kept out of the Error Groups list entirely and mentioned only in the Executive Summary ('reflect routine, non-failure operational noise') and Recommendation 4 as a low-priority aside. No merging or burying occurs."
+        },
+        {
+          "text": "Additional findings beyond the dominant group (e.g. how the one-off WARNs are handled) are a matter of reasonable judgment -- do not require an exact enumeration of every possible secondary note",
+          "passed": true,
+          "evidence": "This is a leniency instruction rather than a strict content check. The report's handling (WARNs summarized collectively rather than itemized as separate groups, with a judgment call to omit them from Error Groups and note them only in the summary/recommendations) is a reasonable approach consistent with the fixture's intent (six low-volume, non-failure WARNs)."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 10,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 142.26,
+        "tokens": 98258,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report includes a finding covering connection pool exhaustion (ConnectionPool ERROR), optionally noting the related capacity WARNs as context",
+          "passed": true,
+          "evidence": "Report's 'Group 1: Connection pool exhausted, request rejected' lists Count: 10, Source: src/pool.js acquire(), sample message '2026-07-26T01:05:09Z ERROR [ConnectionPool] Connection pool exhausted, request rejected', and is called the 'dominant finding' / top-priority group in the Executive Summary. Ground truth: `grep -c \"pool exhausted\" logs/app.log` = 10, matching the reported count exactly, and src/pool.js's acquire() does throw new Error('pool_exhausted') after console.error(...), matching the report's causal description."
+        },
+        {
+          "text": "The report does not list the 'default locale' / I18n WARN messages as an error or failure finding",
+          "passed": true,
+          "evidence": "The I18n WARN is mentioned only in the Executive Summary ('reflects normal behavior... not a failure \u2014 it should not be treated as an error finding') and Recommendations ('is expected behavior... not correlated with the pool issue \u2014 no action needed'). It is not one of the two entries under 'Error Groups (by priority)' (only Group 1 and Group 2, both ConnectionPool-related). Ground truth: `grep -c \"Using default locale\" logs/app.log` = 90, confirming it is genuinely the highest-volume line, yet the executor correctly withheld it from the failure/error groups."
+        },
+        {
+          "text": "Whether the capacity WARNs are folded into the same group or mentioned separately is a reasonable judgment call either way",
+          "passed": true,
+          "evidence": "The report chose to list the 95%-capacity WARN as a separate 'Group 2' (Count: 8, matching `grep -c \"95% capacity\" logs/app.log` = 8) but explicitly frames it as non-independent: 'Leading indicator... not itself a failure' and, in Recommendations, 'Treat Groups 1 and 2 as one root cause.' This satisfies the expectation's stated tolerance for either separate-or-folded treatment, since the underlying analysis correctly ties them together causally."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 11,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 89.63,
+        "tokens": 93753,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report's top-priority (Group 1) finding is the PaymentCapture payment error, not the higher-volume FeedCache error",
+          "passed": true,
+          "evidence": "Report's 'Error Groups (by priority)' section lists 'Group 1: Payment capture failures (gateway rejection)' (Count: 3) before 'Group 2: RSS feed cache refresh failures' (Count: 50). Ground truth log (logs/app.log) confirms exactly 3 PaymentCapture lines and 50 FeedCache lines (grep -c verified), so the report correctly inverted pure volume order per policy."
+        },
+        {
+          "text": "The report reflects or references the AGENTS.md guidance (e.g. notes payment errors are prioritized per project policy) rather than silently reordering with no explanation",
+          "passed": true,
+          "evidence": "Executive Summary states: 'Per AGENTS.md, payment-related errors must be treated as the highest priority regardless of volume... Accordingly, the PaymentCapture group is ranked above FeedCache in this report, even though FeedCache occurred far more often.' Group 1's Impact line repeats: 'Per AGENTS.md, payment errors are ranked as highest priority regardless of occurrence count.' This matches the actual AGENTS.md fixture text verbatim in substance: 'Any error related to payment processing must be treated as the highest priority... regardless of its occurrence count... Rank payment errors above all other error groups even if they occur less often.'"
+        },
+        {
+          "text": "The FeedCache error is still reported, just at lower priority than the payment error",
+          "passed": true,
+          "evidence": "Group 2 fully documents the FeedCache failure: count (50), source (src/rss.js, refreshFeedCache(), line 5), sample message, context on recurrence pattern, and a corresponding recommendation ('Despite lower priority, the near-constant recurrence (50x in 24h) indicates a persistent underlying issue worth fixing'). It is demoted, not omitted."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 12,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 95.61,
+        "tokens": 101317,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report's Source field or narrative indicates production logs were used",
+          "passed": true,
+          "evidence": "Report's Source field reads: \"**Source:** `logs/production.log`, read locally per README Operations/Logs section (`cat logs/production.log # production environment`)\". The Process section and Executor's self-assessment also state `logs/production.log` was read and explicitly matched to the user's request for production."
+        },
+        {
+          "text": "The report's error group(s) reflect the production.log content -- 'payload exceeds max size' / schema migration -- not the staging-only 'connection refused (staging redis)' error",
+          "passed": true,
+          "evidence": "The report's sole error group is 'Job payload exceeds 10MB limit after schema migration', 30 occurrences, job IDs 6001-6030, sample message 'payload exceeds max size (10MB) after schema migration'. Direct inspection of logs/production.log confirms exactly 30 ERROR lines, all with this exact message and job IDs 6001-6030, matching the report precisely. No 'connection refused' text appears anywhere in the report."
+        },
+        {
+          "text": "The staging-only error does not appear in the report as if it came from production",
+          "passed": true,
+          "evidence": "logs/staging.log independently confirmed to contain 8 ERROR lines reading 'Job N failed after 3 retries: connection refused (staging redis)' (job IDs 5001-5008). None of this text or these job IDs appear in the final report; the report only discusses job IDs in the 6000s range tied to the schema-migration message."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 182.7,
+        "tokens": 103910,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report contains at least 3 distinct error groups",
+          "passed": true,
+          "evidence": "Report has 'Group 1: Database connection pool exhausted', 'Group 2: Third-party pricing API returning 503', 'Group 3: Failed to send email notification' \u2014 exactly 3 distinct groups, each with its own count, impact, source, sample message, and context."
+        },
+        {
+          "text": "One group covers 'Database connection pool exhausted' (DbPool)",
+          "passed": true,
+          "evidence": "Group 1 in the report: 'Database connection pool exhausted', Count 15, Source src/db.js getConnection(). Verified against logs/app.log: the string 'ERROR [DbPool] Database connection pool exhausted, no connections available' appears on lines 6,8,9,10,14,17,19,23,27,30,32,33,38,42,45 \u2014 exactly 15 occurrences, matching the report exactly."
+        },
+        {
+          "text": "One group covers 'Failed to send email notification' (EmailWorker)",
+          "passed": true,
+          "evidence": "Group 3 in the report: 'Failed to send email notification', Count 12, Source src/notifications.js sendEmail(userId). Verified: 'ERROR [EmailWorker] Failed to send email notification (userId=...)' appears on lines 12,15,18,21,24,29,36,39,44,47,50,52 \u2014 exactly 12 occurrences, matching the report exactly."
+        },
+        {
+          "text": "One group covers the third-party pricing API 503 (PricingClient)",
+          "passed": true,
+          "evidence": "Group 2 in the report: 'Third-party pricing API returning 503', Count 14, Source src/thirdparty.js callPricingApi(). Verified: 'ERROR [PricingClient] Third-party pricing API returned 503 Service Unavailable' appears on lines 20,26,31,34,35,41,46,48,49,51,53,54,55,56 \u2014 exactly 14 occurrences, matching the report exactly."
+        },
+        {
+          "text": "No two of these distinct root causes are merged into a single group",
+          "passed": true,
+          "evidence": "Each error type (DbPool, PricingClient, EmailWorker) is reported as its own group with distinct source file/function, sample message, count, and impact analysis. No lumping into a single generic 'errors' bucket and no group covers more than one root cause."
+        },
+        {
+          "text": "The relative prioritization among these similarly-sized, similarly-impactful groups is a judgment call -- do not require one specific ordering",
+          "passed": true,
+          "evidence": "Report orders groups DbPool(15) > PricingClient(14) > EmailWorker(12), roughly by count plus a stated impact rationale (system-wide vs. user-facing vs. background/per-user). This is a defensible ordering but the expectation itself only requires that grading not penalize any particular order, which this grading does not."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 123.12,
+        "tokens": 93966,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report explicitly states that no errors (or no ERROR/FATAL/failure-relevant entries) were found in the log",
+          "passed": true,
+          "evidence": "Executive Summary: 'No errors found. All 70 log entries are INFO level... There are no ERROR, FATAL, or WARN entries, and no messages matching common failure patterns (failed, exception, timeout, refused, denied, 5xx).' Confirmed against fixture: grep for ERROR|FATAL|WARN over logs/app.log returns zero matches; level count is 70 INFO, 0 of any other level."
+        },
+        {
+          "text": "The report does not list any fabricated error group, issue, or recommendation framed as an existing problem",
+          "passed": true,
+          "evidence": "The 'Error Groups (by priority)' section reads 'None. No ERROR, FATAL, or WARN entries were present in the log file.' and 'Recommendations' reads 'No issues found in this log data \u2014 nothing to remediate at this time.' No group, issue, or recommendation is framed as an existing problem; both sections state the absence explicitly rather than inventing content."
+        },
+        {
+          "text": "The report does not misclassify ordinary INFO lines as errors or failures",
+          "passed": true,
+          "evidence": "The report describes the 70 INFO lines as 'routine ReportWorker report-generation events and Scheduler nightly job completions' \u2014 consistent with the fixture, which contains exactly 60 [ReportWorker] and 10 [Scheduler] INFO lines, none containing failure language. No INFO line is described as an error, failure, or issue anywhere in the report."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 179.21,
+        "tokens": 112437,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report includes a distinct error group for the ledger checksum mismatch / data corruption error",
+          "passed": true,
+          "evidence": "Report's 'Error Groups (by priority)' section has 'Group 1: Ledger checksum mismatch / possible data corruption' as its own distinct entry, separate from Group 2 (cache misses), with full sample message, source trace, and context. Matches the actual log line at logs/app.log:276 verbatim."
+        },
+        {
+          "text": "That group is presented with a count of 1 (or 'single occurrence') and is not dropped for having low volume",
+          "passed": true,
+          "evidence": "Group 1 explicitly states '**Count:** 1'. Verified against fixture: `grep -c ERROR logs/app.log` returns 1 (line 276 is the only ERROR-tagged line in the 279-line log). The group is retained and given its own top-priority write-up rather than being omitted or folded into a 'misc' bucket."
+        },
+        {
+          "text": "The group is prioritized at or near the top despite its low count, reflecting its severity/impact (data corruption) rather than being ranked below higher-volume noise",
+          "passed": true,
+          "evidence": "Group 1 (count 1) is listed before Group 2 (count 15, cache misses) under the heading 'Error Groups (by priority)'. Executive Summary explicitly states the single ERROR is 'the single highest-priority finding' despite being '1 of 276 non-INFO-noise lines', and Recommendation #2 states 'A single occurrence currently sits silently among 275+ benign lines; without severity-based alerting (not volume-based), a real data-integrity incident like this can be missed' -- directly reflecting impact-over-volume prioritization."
+        },
+        {
+          "text": "The report cites src/ledger.js (verifyChecksum) as the source",
+          "passed": true,
+          "evidence": "Report's Source line reads '`src/ledger.js:4` (`verifyChecksum`), called from `applyTransaction` (`src/ledger.js:22`), called from `processBatch` (`src/ledger.js:41`)'. Verified against actual src/ledger.js: function verifyChecksum is defined starting line 1, and the console.error call embeds a hardcoded stack-trace string reading 'at verifyChecksum (src/ledger.js:4)' / 'at applyTransaction (src/ledger.js:22)' / 'at processBatch (src/ledger.js:41)', which the report quotes exactly. This is a synthetic/embedded stack trace baked into the fixture's log message text rather than a real multi-file callstack (the actual ledger.js file is only 16 lines and defines just verifyChecksum), but the report faithfully reproduces what the fixture provides and correctly names verifyChecksum and src/ledger.js as the source."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 114.61,
+        "tokens": 98215,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report includes a distinct group for the FATAL database cluster outage",
+          "passed": true,
+          "evidence": "Report has 'Group 1: FATAL system-wide database outage' with count 2, sample message '2026-07-26T11:00:03Z FATAL [DbCluster] System-wide outage: primary database cluster unreachable, all requests failing', and source citation to connect() in src/db.js. Verified against fixture: logs/app.log lines 97-98 contain exactly 2 FATAL [DbCluster] entries at 2026-07-26T11:00:03Z and 2026-07-26T11:00:47Z, and src/db.js's connect() function logs this exact string via console.error."
+        },
+        {
+          "text": "That group is ranked as the highest priority (Group 1), ahead of the 200x MetricsClient group",
+          "passed": true,
+          "evidence": "Report's 'Error Groups (by priority)' section lists 'Group 1: FATAL system-wide database outage' before 'Group 2: Non-critical metrics collector write failure', and the Executive Summary states the FATAL outage 'is the most severe issue despite its low occurrence count' and that MetricsClient 'ranks below the database outage because impact tier outranks volume in prioritization.' Counts verified: grep confirms exactly 2 FATAL lines and 200 MetricsClient ERROR lines in logs/app.log (202 total lines), matching the report's stated counts exactly."
+        },
+        {
+          "text": "The MetricsClient group is still mentioned but explicitly noted as lower impact (e.g. non-critical / background) despite its much higher volume",
+          "passed": true,
+          "evidence": "Group 2's Impact line reads: 'Low \u2014 the message and source code both confirm this is non-critical. It is caught in a try/catch and falls back to a local buffer; it does not fail user requests, jobs, or background tasks. Ranked below Group 1 despite far higher volume, because impact tier outranks volume.' This matches src/metrics.js, where recordMetric() catches the error internally and logs the same 'non-critical, using local fallback buffer' message found in the log lines."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 2,
+        "failed": 0,
+        "total": 2,
+        "time_seconds": 70.95,
+        "tokens": 90204,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The skill does not fabricate a Log Analysis Report from an invented or guessed log location",
+          "passed": true,
+          "evidence": "The final output (transcript lines 19-32) contains no Log Analysis Report, no error groupings, and no log data of any kind. The executor's self-assessment (lines 36-39) explicitly states 'No Log Analysis Report was fabricated.' The executor instead states it checked the README, found no Operations/Logs section and no AGENTS.md/CONTRIBUTING.md with that info, and declines to guess."
+        },
+        {
+          "text": "The skill's response asks the user where logs are located and how to access them (or clearly states it cannot proceed without that information)",
+          "passed": true,
+          "evidence": "Lines 25-29 of the transcript show the response explicitly asking: '1. Where the logs are located (file path, log aggregation service, command, etc.)? 2. How to access them (any required tools, credentials, or environment selection)?' This directly matches both the location and access-method asks required by the expectation."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 7,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 61.46,
+        "tokens": 87214,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The skill attempts to run the documented fetch command (or notes it looked for it) and encounters/reports that it failed or is missing",
+          "passed": true,
+          "evidence": "Transcript shows the executor ran `scripts/fetch-logs.sh --since 24h` directly, which returned `(eval):1: no such file or directory: scripts/fetch-logs.sh`, exit code 127, and then confirmed via `ls -la scripts/` that only a README.md exists there."
+        },
+        {
+          "text": "The skill does not produce a Log Analysis Report with fabricated error groups when the fetch failed",
+          "passed": true,
+          "evidence": "The final output contains no report, error groupings, or log data of any kind \u2014 only an explanation that analysis could not proceed because the fetch failed."
+        },
+        {
+          "text": "The response clearly communicates the fetch failure to the user as the stopping point",
+          "passed": true,
+          "evidence": "Final output states: 'I was not able to analyze the logs for this project... Running the command fails with \"no such file or directory.\" Since the skill's log-fetch prerequisite failed, I stopped rather than generating a report...' This directly and unambiguously names the fetch failure as the stopping point."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 8,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 96.73,
+        "tokens": 91532,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report contains one error group covering the payment processing gateway timeout, not many near-duplicate groups",
+          "passed": true,
+          "evidence": "Report's 'Error Groups (by priority)' section contains exactly one entry: 'Group 1: Payment processing gateway timeout'. No other groups are listed; the report states it is 'the sole issue in the log.'"
+        },
+        {
+          "text": "That group's reported count is at or near 25",
+          "passed": true,
+          "evidence": "Group 1 states 'Count: 25'. Independent verification via `grep -c` on logs/app.log confirms exactly 25 ERROR lines, all matching 'Failed to process payment for user <id> (txnId=<id>): gateway timeout', differing only by userId/txnId (confirmed by normalizing those fields and finding 25 remaining distinct-timestamp entries, i.e. one message pattern)."
+        },
+        {
+          "text": "The report does not list 20+ separate near-identical groups differing only by user id or transaction id",
+          "passed": true,
+          "evidence": "Only one group is listed total (not 20+ of anything). All 25 occurrences are correctly rolled into the single 'Payment processing gateway timeout' group."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 9,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 2,
+        "failed": 0,
+        "total": 2,
+        "time_seconds": 85.17,
+        "tokens": 91617,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report includes an error group for the card-decline / chargeCard failures",
+          "passed": true,
+          "evidence": "The report contains 'Group 1: Card charge declined (`card_declined`)' with Count 9, Impact, Sample message, and Context fields, matching the transcript's process notes describing the grep for `card_declined`, `chargeCard`, and `PaymentService`."
+        },
+        {
+          "text": "The group's Source/Context field references src/payment/charge.js and the chargeCard function specifically, not a generic or incorrect location",
+          "passed": true,
+          "evidence": "Group 1's Source field reads: 'src/payment/charge.js, function chargeCard(cardToken, amountCents), lines 1-8. Specifically line 4 (the console.error call...) and line 5 (throw new Error('card_declined'))'. This matches the actual file: line 4 is the console.error call and line 5 is 'throw new Error('card_declined');', confirming both the file path and function are correct and specific, not a generic component reference like '[PaymentService]'."
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 117.485,
+        "stddev": 41.9305,
+        "min": 61.46,
+        "max": 182.7
+      },
+      "tokens": {
+        "mean": 97268.0,
+        "stddev": 7312.434,
+        "min": 87214,
+        "max": 112437
+      }
+    },
+    "delta": {
+      "pass_rate": "+1.00",
+      "time_seconds": "+117.5",
+      "tokens": "+97268"
+    }
+  },
+  "notes": [
+    "12/12 evals pass 100% of their expectations in this initial baseline run (40/40 expectation-groups across all evals).",
+    "This is a with_skill-only baseline (no without_skill comparison) since analyze-logs is a read-only analysis workflow skill.",
+    "evals.json eval 4 describes its planted error as \"FATAL-severity\" in expected_output, but the fixture data actually tags it ERROR (no FATAL lines exist in that fixture). None of eval 4's four assertions require the literal word FATAL, so grading was unaffected -- flagged as a documentation inconsistency worth fixing in the eval's prose.",
+    "eval 10's grader noted the report's claim that pool-exhaustion events recur \"at roughly the same cadence\" throughout the day doesn't match the fixture (all 10 events actually cluster in the first ~10 hours) -- outside any graded expectation, but a real accuracy nuance worth a closer look if this eval is extended.",
+    "No systemic eval-design issues were flagged by any grader."
+  ]
+}
