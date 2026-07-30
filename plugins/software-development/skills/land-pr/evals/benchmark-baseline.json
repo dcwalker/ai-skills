@@ -30,8 +30,8 @@
         "total": 5,
         "time_seconds": null,
         "tokens": null,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -73,8 +73,8 @@
         "total": 6,
         "time_seconds": null,
         "tokens": null,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -121,8 +121,8 @@
         "total": 5,
         "time_seconds": null,
         "tokens": null,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -164,8 +164,8 @@
         "total": 5,
         "time_seconds": null,
         "tokens": null,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -209,8 +209,8 @@
         "total": 4,
         "time_seconds": 38.566,
         "tokens": 45088,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -247,8 +247,8 @@
         "total": 4,
         "time_seconds": 42.903,
         "tokens": 45237,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -285,8 +285,8 @@
         "total": 4,
         "time_seconds": null,
         "tokens": null,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -323,8 +323,8 @@
         "total": 5,
         "time_seconds": null,
         "tokens": null,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -366,8 +366,8 @@
         "total": 4,
         "time_seconds": 189.421,
         "tokens": 63500,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -416,11 +416,6 @@
         "min": 45088,
         "max": 63500
       }
-    },
-    "delta": {
-      "pass_rate": "+1.00",
-      "time_seconds": "+90.3",
-      "tokens": "+51275"
     }
   },
   "notes": [
@@ -428,6 +423,8 @@
     "This is a with_skill-only baseline (no without_skill comparison) since land-pr is an orchestration/workflow skill, not a content generator.",
     "This batch exercised real git conflict resolution (evals 2 and 8 -- genuine merge conflicts in config.py's VERSION line, resolved for real via fetch/merge/resolve/commit/push, not simulated) and real CI-failure remediation (evals 4, 7, and 8 -- actual bugs/missing files in the fixture repos, fixed and verified locally before push), exercising the skill's core orchestration logic (round looping, sub-skill invocation, round-cap handling) against realistic scenarios rather than trivial always-green fixtures.",
     "Time/token usage figures are only available for evals 5, 6, and 9 (45088/45237/63500 tokens; 38.6/42.9/189.4 seconds respectively). Figures for evals 1, 2, 3, 4, 7, and 8 were not captured because task usage metadata was not retrievable via a blocking TaskOutput poll for those trials (only background task-notification completions surfaced a usage tag in this session). The aggregate time/token stats are computed only over the 3 evals with real data and should not be read as representative of the other 6 -- a known tooling gap, consistent with the same gap noted in the implement-feature baseline.",
-    "Eval 9 independently confirmed the gh-stub word-boundary matching bug fixed in PR #11 (not yet merged to main at the time of this run) is real and still live on `main`: its trial hit the exact false-positive (`[\"pr\",\"merge\"]` guard matching inside \"mergeable\"/\"mergeStateStatus\") and the executor correctly diagnosed and worked around it without modifying the shared repo. Subsequent trials in this batch were run from the branch containing the fix to avoid repeating this."
+    "Eval 9 independently confirmed the gh-stub word-boundary matching bug fixed in PR #11 (not yet merged to main at the time of this run) is real and still live on `main`: its trial hit the exact false-positive (`[\"pr\",\"merge\"]` guard matching inside \"mergeable\"/\"mergeStateStatus\") and the executor correctly diagnosed and worked around it without modifying the shared repo. Subsequent trials in this batch were run from the branch containing the fix to avoid repeating this.",
+    "The `tool_calls` and `errors` fields on every run were hardcoded to 0, not measured -- they aren't wired up in the executor/grader pipeline yet. Set to null here (matching how the timing/token gap above is already disclosed) rather than left as a silent 0 that could be mistaken for \"measured, zero tool calls,\" since several evals (e.g. eval 9's script-patch-and-log-read sequence) clearly involved many tool calls despite the old value reading 0.",
+    "run_summary.delta is omitted: this is a with_skill-only baseline (no without_skill comparison was run), so a computed \"+X\" delta against an implicit zero baseline would be misleading -- consistent with the Markdown summary, which never had a delta row to begin with."
   ]
 }
