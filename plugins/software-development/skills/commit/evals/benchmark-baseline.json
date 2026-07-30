@@ -1,0 +1,520 @@
+{
+  "metadata": {
+    "skill_name": "commit",
+    "skill_path": "plugins/software-development/skills/commit",
+    "executor_model": "claude-sonnet-5",
+    "analyzer_model": "claude-sonnet-5",
+    "timestamp": "2026-07-29T05:22:51Z",
+    "evals_run": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 101.23,
+        "tokens": 91081,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Exactly one new commit is created on top of the initial fixture commit",
+          "passed": true,
+          "evidence": "git log --oneline shows exactly two commits: 566c320 [PROJ-123] Increase session timeout from 1s to 30s on top of 554764a Initial fixture state. No other commits present."
+        },
+        {
+          "text": "The commit includes the change to src/auth.ts and no other files",
+          "passed": true,
+          "evidence": "git show --stat HEAD reports '1 file changed, 1 insertion(+), 1 deletion(-)' for src/auth.ts only, and git status --short is empty (clean working tree, nothing left uncommitted)."
+        },
+        {
+          "text": "The commit message subject is prefixed with [PROJ-123]",
+          "passed": true,
+          "evidence": "git show HEAD subject line is '[PROJ-123] Increase session timeout from 1s to 30s'."
+        },
+        {
+          "text": "The commit message is not prefixed with WIP:",
+          "passed": true,
+          "evidence": "Subject line is '[PROJ-123] Increase session timeout from 1s to 30s' \u2014 no 'WIP:' prefix present anywhere in the commit message."
+        },
+        {
+          "text": "The transcript does not show the assistant asking the user any clarifying questions before committing",
+          "passed": true,
+          "evidence": "Transcript section 5 states no gh/acli lookup was needed since the branch name unambiguously derived the ticket prefix, and section 7 states 'No clarifying questions were needed... all clearly satisfiable from inspection.' No question is posed to the user anywhere in the transcript; the commit is executed directly in section 7."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 10,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 33.172,
+        "tokens": 45361,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The transcript shows the assistant explicitly noting that README.md documentation was not updated for this user-facing change",
+          "passed": true,
+          "evidence": "Transcript lines 21 and 28: 'README.md \u2014 documents usage and states \"Supported flags: --help, --version.\" Does not mention --export-csv.' and 'Documentation updated: No \u2014 this changes user-facing CLI behavior (a new --export-csv flag), but README.md's \"Supported flags\" line still lists only --help and --version.' Verified against actual workspace: README.md at /tmp/baseline/run-10/workspace/README.md still reads 'Supported flags: `--help`, `--version`.' with no mention of --export-csv, confirming the assistant's observation was accurate."
+        },
+        {
+          "text": "The assistant either asks whether to update the docs first or clearly flags the gap before/while committing",
+          "passed": true,
+          "evidence": "The assistant did not stop to ask before committing, but clearly flagged the gap both in its internal reasoning (line 28: 'I'm surfacing this gap rather than silently fixing or silently ignoring it') and in the final user-facing message (line 96): 'Documentation updated: No ... Flagging it here so a decision can be made about whether the README should be updated (either in this commit or a follow-up).' This satisfies the 'clearly flags the gap' branch of the expectation."
+        },
+        {
+          "text": "The assistant does not report 'Documentation updated: Yes' when README.md was left unchanged",
+          "passed": true,
+          "evidence": "Final message checklist (line 95-96) explicitly reports 'Documentation updated: **No**', not Yes. Verified README.md was in fact left unchanged: git show --stat HEAD confirms only src/cli.ts was modified (1 file changed, 1 insertion, 1 deletion), and git status --short shows a clean working tree with no pending README changes."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 11,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 25.823,
+        "tokens": 44887,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The transcript shows the assistant explicitly noting that openapi.yaml was not updated for this new endpoint",
+          "passed": true,
+          "evidence": "Transcript line 61-65 under 'Decisions': \"**API spec updated**: **No.** The change adds a new API endpoint (`POST /users/:id/export` \u2192 `exportUser`) to `src/routes.ts`, but `openapi.yaml` was not touched and still only documents `GET /users` and `GET /users/{id}`.\" Verified against ground truth: openapi.yaml on disk only contains the two GET paths, and git status shows only src/routes.ts modified."
+        },
+        {
+          "text": "The assistant either asks whether to update the API spec first or clearly flags the gap before/while committing",
+          "passed": true,
+          "evidence": "Transcript lines 91-96 and 112-115 explicitly pose the question to the user: \"Do you want me to (a) hold off on committing until the API spec is updated, (b) commit just the route change now and track the spec update separately, or (c) commit as-is because the spec update isn't needed here?\" This was asked before any commit, and no commit was created (git log shows only the original 'Initial fixture state' commit, git status shows src/routes.ts still modified and unstaged)."
+        },
+        {
+          "text": "The assistant does not report 'API spec updated: Yes' or equivalent when openapi.yaml was left unchanged",
+          "passed": true,
+          "evidence": "The transcript explicitly reports 'API spec updated: No' (line 61), not Yes, and this is corroborated by the actual file contents (openapi.yaml unchanged, still only the two GET routes) and git status (openapi.yaml not in the modified/staged list)."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 12,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 39.606,
+        "tokens": 45257,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The transcript explicitly calls out the commented-out code block in src/parser.ts before committing",
+          "passed": true,
+          "evidence": "Step 4 ('Intentional-and-complete check'): 'No debug code: No. The diff leaves in a large commented-out block reproducing the old implementation as parseCsvLineOld (7 lines of dead code). This looks like leftover scratch/debug content, not something meant to ship.' Step 7 reiterates this as the explicit reason for stopping before any commit."
+        },
+        {
+          "text": "If a commit is created, the committed src/parser.ts does not still contain the commented-out parseCsvLineOld block -- it was removed or the user was asked first",
+          "passed": true,
+          "evidence": "Conditional expectation, trivially satisfied: no commit was created. `git -C /tmp/baseline/run-12/workspace log --oneline` shows only the single pre-existing '9810d3e Initial fixture state' commit -- no new commit was added by the run."
+        },
+        {
+          "text": "The assistant does not commit the unmodified commented-out block without comment",
+          "passed": true,
+          "evidence": "`git status --short` shows ' M src/parser.ts' (unstaged, uncommitted) and `git show --stat HEAD` confirms HEAD is still the initial fixture commit. The assistant halted at step 7 and drafted a clarifying question for the user instead of staging/committing anything."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 13,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 114.18,
+        "tokens": 98566,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Exactly one new commit is created",
+          "passed": true,
+          "evidence": "git log --oneline shows exactly two commits total: '0dcd7c7 [PROJ-407] Rename User.fullName to displayName' and '5fac52e Initial fixture state'. Only one commit was added on top of the pre-existing initial fixture commit."
+        },
+        {
+          "text": "The commit includes all three files: src/models/user.ts, src/services/userService.ts, and src/controllers/userController.ts",
+          "passed": true,
+          "evidence": "git show --stat HEAD lists all three files: 'src/controllers/userController.ts | 2 +-', 'src/models/user.ts | 2 +-', 'src/services/userService.ts | 2 +-' (3 files changed, 3 insertions(+), 3 deletions(-)). git show HEAD confirms each file's diff genuinely changes fullName to displayName."
+        },
+        {
+          "text": "The commit message subject is prefixed with [PROJ-407]",
+          "passed": true,
+          "evidence": "git show HEAD subject line reads '[PROJ-407] Rename User.fullName to displayName', matching the ticket ID derived from branch name PROJ-407-rename-user-model (confirmed via git branch --show-current)."
+        },
+        {
+          "text": "The transcript does not show the assistant asking whether to split the change into multiple commits",
+          "passed": true,
+          "evidence": "Transcript section 7 states 'No decision to split the commit was made or surfaced to the user' and the final message (section 8) explicitly notes 'No clarifying question was asked about whether to split the change into multiple commits.' No question to that effect appears anywhere in the transcript."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 35.07,
+        "tokens": 46039,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Exactly one new commit is created on top of the initial fixture commit",
+          "passed": true,
+          "evidence": "git log --oneline shows exactly two commits: fb45a23 (\"#42 Support legacy login path in redirect resolution\") on top of fc2c045 (\"Initial fixture state\"). Working tree is clean, no other new commits exist."
+        },
+        {
+          "text": "The commit includes the change to src/routes.ts and no other files",
+          "passed": true,
+          "evidence": "git show --stat HEAD reports 'src/routes.ts | 2 +-, 1 file changed, 1 insertion(+), 1 deletion(-)'. git show HEAD confirms the only diff hunk is the added `|| path === \"/login-legacy\"` condition in src/routes.ts."
+        },
+        {
+          "text": "The commit message subject is prefixed with #42",
+          "passed": true,
+          "evidence": "git show HEAD subject line is '#42 Support legacy login path in redirect resolution', confirmed directly from the actual commit object (not just the transcript's claim)."
+        },
+        {
+          "text": "The transcript does not show the assistant asking the user any clarifying questions before committing",
+          "passed": true,
+          "evidence": "Transcript proceeds through steps 1-8 (skill read, status/diff review, verification checklist, ticket lookup attempt via gh, build/lint check, hook check, commit) without any question posed to the user; the final message only reports the completed commit and explains why no question was needed (issue ID unambiguously derivable from branch name 42-fix-login-redirect)."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 148.6,
+        "tokens": 93155,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The transcript explicitly calls out the console.log(\"HERE\") line in src/network.ts as debug code before committing",
+          "passed": true,
+          "evidence": "Transcript section 2 states: 'the diff also contains console.log(\"HERE\"); inside the loop \u2014 a stray debug statement unrelated to the retry functionality. This fails the skill's \"No debug code\" check.' This is stated before any commit action is taken, and the actual git log confirms no commit followed (`git -C /tmp/baseline/run-3/workspace log --oneline` shows only the pre-existing 'Initial fixture state' commit 21fe01a)."
+        },
+        {
+          "text": "If a commit is created, it does not include the literal string console.log(\"HERE\") -- the debug line was removed or the user was asked first",
+          "passed": true,
+          "evidence": "Conditional expectation trivially satisfied: no commit was created at all. `git log --oneline` on the workspace shows only the single pre-existing commit 21fe01a 'Initial fixture state'; there is no new commit containing the retry logic or the debug line."
+        },
+        {
+          "text": "The assistant does not commit the unmodified debug artifact without comment",
+          "passed": true,
+          "evidence": "Verified against ground truth: `git status --short` shows ' M src/network.ts' (still just a working-tree modification, not committed), and `git diff` shows the console.log(\"HERE\") line present only in the unstaged diff. The assistant instead posed an explicit question to the user (quoted in transcript section 3) asking whether to commit as-is or remove the debug line first."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 30.27,
+        "tokens": 45650,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The transcript shows the assistant identifying that src/auth.ts and package.json represent unrelated changes",
+          "passed": true,
+          "evidence": "Transcript lines 113-118 (\"Changes are related: No. The working tree contains two distinct, unrelated changes: 1. src/auth.ts ... a genuine auth bug fix ... 2. package.json / package-lock.json \u2014 bumps the left-pad dependency ... unrelated to the auth fix\"). Confirmed against real git diff: git -C /tmp/baseline/run-4/workspace diff HEAD shows exactly these two unrelated changes (auth.ts trims username; package.json/package-lock.json bump left-pad 1.0.0 -> 1.3.0)."
+        },
+        {
+          "text": "The transcript shows the assistant asking whether to commit the changes separately or together",
+          "passed": true,
+          "evidence": "Transcript lines 132-138, 'What I would have asked the user' section, explicitly poses: 'Would you like these committed together in one commit, or split into two separate commits (e.g., [PROJ-301] Trim username before checking credentials and a separate dependency-bump commit)?'"
+        },
+        {
+          "text": "The assistant does not create a single commit bundling both changes without first raising the question",
+          "passed": true,
+          "evidence": "git -C /tmp/baseline/run-4/workspace log --oneline shows only one commit, '6c7cca2 Initial fixture state', which is the pre-existing fixture commit (per its own commit message and matches the transcript's stated starting point). git status --short shows package-lock.json, package.json, and src/auth.ts all still modified/unstaged with no new commit created, confirming the assistant stopped before committing, exactly as it claims in lines 129-130 ('I did not commit anything... all three files remain modified/unstaged')."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 39.098,
+        "tokens": 44609,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The transcript shows the assistant asking about a ticket/issue prefix rather than fabricating one",
+          "passed": true,
+          "evidence": "Step 5 of the transcript quotes SKILL.md's instruction to ask when it's unclear whether a ticket is associated, notes branch name `quick-fix` has no derivable `PROJECT-123` or `#42` pattern, and produces an explicit question for the user: \"The branch `quick-fix` doesn't contain a recognizable issue/ticket ID ... Should I commit without a ticket prefix, or is there a ticket ID you'd like me to include, and in what format...?\" This is a genuine clarifying question, not a fabricated prefix."
+        },
+        {
+          "text": "If a commit is created, its message is not prefixed with an invented issue ID such as [QUICK-FIX] or similar",
+          "passed": true,
+          "evidence": "Ground truth `git -C /tmp/baseline/run-5/workspace log --oneline -20` shows only `37f21ae Initial fixture state` \u2014 no new commit exists at all, so trivially no fabricated prefix like [QUICK-FIX] appears in any commit message."
+        },
+        {
+          "text": "The assistant does not silently proceed with a fabricated ticket reference",
+          "passed": true,
+          "evidence": "`git status --short` shows `M src/utils.ts` still unstaged and `git diff` shows the working tree change untouched/uncommitted. The assistant explicitly stopped before staging or committing ('I did not invent a ticket ID or guess a format. I stopped before drafting/creating the commit.'), and the repo state confirms nothing was committed silently."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 38.976,
+        "tokens": 46332,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Exactly one new commit is created",
+          "passed": true,
+          "evidence": "git log --oneline shows exactly two commits total: b299874 (Initial fixture state, pre-existing) and 6ee31c0 (new). git reflog confirms a single 'commit:' event (HEAD@{0}) after the branch checkout, and working tree is clean with nothing left to commit."
+        },
+        {
+          "text": "The commit message subject starts with WIP:",
+          "passed": true,
+          "evidence": "git show --stat HEAD subject line reads 'WIP: [PROJ-400] Strengthen email validation regex'."
+        },
+        {
+          "text": "The commit message body mentions the lint failure",
+          "passed": true,
+          "evidence": "Commit body (git show HEAD) includes: 'Lint failing: `npm run lint` exits 1 (script is just `exit 1`), a known pre-existing failure unrelated to this change. Skipped per user's explicit request; commit marked WIP as a result.'"
+        },
+        {
+          "text": "The commit includes the change to src/validate.ts",
+          "passed": true,
+          "evidence": "git show HEAD diff shows src/validate.ts changed (1 insertion, 1 deletion), converting isValidEmail from email.includes(\"@\") to a regex test. git show --stat HEAD confirms 'src/validate.ts | 2 +-, 1 file changed, 1 insertion(+), 1 deletion(-)'."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 7,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 38.156,
+        "tokens": 45713,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Exactly one new commit is created",
+          "passed": true,
+          "evidence": "git log --oneline shows exactly two commits total: 71d1d12 'Initial fixture state' (pre-existing baseline) and efe7273 '[PROJ-401] Update welcome message copy' (the new commit created by this run). Only one commit was added."
+        },
+        {
+          "text": "The commit message subject is prefixed with [PROJ-401]",
+          "passed": true,
+          "evidence": "git show HEAD subject line is exactly '[PROJ-401] Update welcome message copy'."
+        },
+        {
+          "text": "The commit message subject is NOT prefixed with WIP:",
+          "passed": true,
+          "evidence": "Subject line '[PROJ-401] Update welcome message copy' contains no 'WIP:' prefix or mention anywhere in the commit message body."
+        },
+        {
+          "text": "The commit includes the change to src/copy.ts",
+          "passed": true,
+          "evidence": "git show --stat HEAD shows 'src/copy.ts | 2 +-, 1 file changed, 1 insertion(+), 1 deletion(-)'; git show HEAD diff confirms WELCOME_MESSAGE changed from \"Welcome!\" to \"Welcome back!\"."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 8,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 2,
+        "failed": 0,
+        "total": 2,
+        "time_seconds": 24.91,
+        "tokens": 43108,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "No new commit is created -- git log on the branch still shows only the initial fixture commit",
+          "passed": true,
+          "evidence": "git -C /tmp/baseline/run-8/workspace log --oneline --all shows a single commit: 'aebd42f Initial fixture state'. HEAD is aebd42ffc7180a0c5e84299c240359967196f502 on branch PROJ-402-noop, matching the transcript's cited SHA. No new commit exists."
+        },
+        {
+          "text": "The transcript reports to the user that there are no uncommitted changes",
+          "passed": true,
+          "evidence": "Transcript's 'Final message to user' section (lines 57-59) states: 'No uncommitted changes exist in /tmp/baseline/run-8/workspace. The working tree is clean on branch PROJ-402-noop (HEAD at aebd42f, \"Initial fixture state\"). Nothing was committed.'"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 9,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 78.88,
+        "tokens": 49147,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Exactly one new commit exists on the branch after the run",
+          "passed": true,
+          "evidence": "git log --oneline shows exactly two commits total: 11041a8 'Initial fixture state' (pre-existing baseline) and 9e95b38 '[PROJ-403] Format negative currency amounts with a leading minus sign' (the new one). git reflog confirms only a single 'commit:' event (9e95b38) occurred after the branch checkout, with no other commit-creation events \u2014 consistent with the first attempt being rejected by the hook before any commit object was made."
+        },
+        {
+          "text": "The committed version of src/formatter.ts contains no trailing-whitespace lines (git diff --cached --check style)",
+          "passed": true,
+          "evidence": "`git diff --check 11041a8 9e95b38` (equivalent check applied to the actual committed diff) returned exit code 0 with no output, meaning git's own whitespace checker finds no trailing-whitespace lines in the change that was committed. `git show HEAD` diff shows '+  if (amount < 0) {' with no trailing spaces, versus the transcript's pre-fix version which had trailing spaces after the brace."
+        },
+        {
+          "text": "The commit message subject is prefixed with [PROJ-403]",
+          "passed": true,
+          "evidence": "`git show --stat HEAD` subject line: '[PROJ-403] Format negative currency amounts with a leading minus sign'."
+        },
+        {
+          "text": "The transcript shows the assistant encountering the pre-commit hook failure and fixing it rather than giving up",
+          "passed": true,
+          "evidence": "Transcript section 8 ('First commit attempt \u2014 rejected by pre-commit hook') shows `git commit` output 'Trailing whitespace detected in staged changes. Commit rejected.', followed by diagnosis via `git diff --cached --check` identifying the exact offending line, then section 9 ('Fix and retry') shows the whitespace removed, re-staged, verified clean, and the commit successfully retried with the same message (SHA 9e95b38). Transcript explicitly states 'No --no-verify or other bypass was used.'"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 57.5362,
+        "stddev": 39.9576,
+        "min": 24.91,
+        "max": 148.6
+      },
+      "tokens": {
+        "mean": 56838.8462,
+        "stddev": 21437.0109,
+        "min": 43108,
+        "max": 98566
+      }
+    },
+    "delta": {
+      "pass_rate": "+1.00",
+      "time_seconds": "+57.5",
+      "tokens": "+56839"
+    }
+  },
+  "notes": [
+    "All 13 evals pass 100% (13/13 expectations-groups, no failures) in this initial baseline run.",
+    "Executor wall-clock/token timing was only captured for evals 1, 3, and 13 (run within the same session as grading); for evals 2, 4-12, executor timing was lost to context compaction between the executor run and the grading pass, so time_seconds/tokens for those runs reflect grader-only cost, not full executor+grader cost. Treat time_seconds and tokens as a lower bound for those runs, not an apples-to-apples comparison against evals 1/3/13.",
+    "This is a with_skill-only baseline (no without_skill comparison) since commit is a workflow skill, not a content-generation skill where a without-skill run would be meaningful.",
+    "No eval-design issues were flagged by any grader across the 13 evals.",
+    "The `tool_calls` field on every run is a stub default (always 0), not a measured value -- it isn't wired up in the executor/grader pipeline yet. Do not read it as \"zero tool calls occurred\"; several evals (e.g. eval 9's pre-commit-hook failure/diagnose/retry sequence) clearly involved multiple tool invocations despite the field reading 0. Treat it as not-yet-tracked, the same way the timing/token gap above is called out rather than left to look like real signal."
+  ]
+}
