@@ -96,6 +96,7 @@ class SonarQubeClient:
         self.args = args
         self._auth_header = "Basic " + base64.b64encode(f"{token}:".encode()).decode()
         self._http_auth_error = False
+        self._partial_fetch_error = False
 
     def _fixture_response(self, fixture_file: str, path: str) -> Any:
         """Serve a canned response for `path` from SONAR_FIXTURE_FILE instead of the network.
@@ -131,7 +132,7 @@ class SonarQubeClient:
             json.dump(counts, f)
         return entry[min(idx, len(entry) - 1)]
 
-    def _paginated_request(self, path: str, params: dict, list_key: str) -> list:
+    def _paginated_request(self, path: str, params: dict, list_key: str) -> dict:
         """Fetch every page of a SonarQube search endpoint and return the
         concatenated list under `list_key` (e.g. "issues", "hotspots").
 
@@ -172,11 +173,23 @@ class SonarQubeClient:
         while True:
             params["p"] = page
             data = self._request(path, params)
-            if not data:
+            if not data or data.get("errors"):
+                # A failure on page 1 is a total failure -- the existing
+                # `errors` handling in get_issues/get_hotspots already
+                # covers that (warn + report 0). A failure on page 2+
+                # means earlier pages already succeeded and `items` holds
+                # real, partial data: silently discarding it (by letting
+                # the caller's `errors` check take over) OR silently
+                # returning it as if it were the complete list are both
+                # wrong -- flag it so main() can fail loudly regardless of
+                # --json/--summary, rather than ever reporting a possibly-
+                # incomplete count as a clean result.
+                if page > 1:
+                    self._partial_fetch_error = True
+                if data:
+                    last_data = data
                 break
             last_data = data
-            if data.get("errors"):
-                break
             page_items = data.get(list_key, [])
             items.extend(page_items)
             components.extend(data.get("components", []))
@@ -1014,6 +1027,22 @@ def _exit_if_sonar_auth_rejected(client: SonarQubeClient) -> None:
     sys.exit(1)
 
 
+def _exit_if_partial_fetch(client: SonarQubeClient) -> None:
+    """Stop with a clear message if pagination succeeded on some pages then
+    failed on a later one. Checked unconditionally (even under --json/
+    --summary) so a partial, incomplete fetch is never reported as if it
+    were a complete, trustworthy issue/hotspot count."""
+    if not client._partial_fetch_error:
+        return
+    print(
+        "Error: SonarQube returned an error partway through paginating results "
+        "(e.g. a transient failure or a very large result set). The issue/hotspot "
+        "counts above may be incomplete -- re-run to confirm before trusting them.",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
+
 def run(
     client: SonarQubeClient,
     formatter: OutputFormatter,
@@ -1034,6 +1063,7 @@ def run(
 
     issues_data = client.get_issues() if fetch_issues else {"total": 0, "issues": []}
     hotspots_data = client.get_hotspots() if fetch_hotspots else {"total": 0, "hotspots": []}
+    _exit_if_partial_fetch(client)
 
     # Add isHotspot to each hotspot for compatibility
     for h in hotspots_data.get("hotspots", []):
