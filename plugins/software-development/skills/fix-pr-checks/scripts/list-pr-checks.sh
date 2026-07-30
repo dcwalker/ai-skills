@@ -231,7 +231,7 @@ circleci_api_request() {
   response=$(curl -s -H "Circle-Token: ${CIRCLE_TOKEN}" "$url")
   local exit_code=$?
 
-  if [ $exit_code -ne 0 ]; then
+  if [[ $exit_code -ne 0 ]]; then
     echo "Error: Failed to make API request to $url" >&2
     return 1
   fi
@@ -261,7 +261,7 @@ get_pipelines_for_pr() {
   local branch_formats=()
 
   # Add actual branch name if we got it
-  if [ -n "$actual_branch" ] && [ "$actual_branch" != "null" ]; then
+  if [[ -n "$actual_branch" ]] && [[ "$actual_branch" != "null" ]]; then
     branch_formats+=("$actual_branch")
   fi
 
@@ -275,7 +275,7 @@ get_pipelines_for_pr() {
 
     while true; do
       local request_url="$url"
-      if [ -n "$page_token" ]; then
+      if [[ -n "$page_token" ]]; then
         # Check if URL already has query params
         if echo "$request_url" | grep -q "?"; then
           request_url="${request_url}&page-token=${page_token}"
@@ -286,7 +286,7 @@ get_pipelines_for_pr() {
 
       local response
       response=$(circleci_api_request "$request_url" 2>/dev/null)
-      if [ $? -ne 0 ]; then
+      if [[ $? -ne 0 ]]; then
         break
       fi
 
@@ -297,7 +297,7 @@ get_pipelines_for_pr() {
 
       local pipelines
       pipelines=$(echo "$response" | jq -r '.items // []' 2>/dev/null)
-      if [ -z "$pipelines" ] || [ "$pipelines" = "null" ] || [ "$pipelines" = "[]" ]; then
+      if [[ -z "$pipelines" ]] || [[ "$pipelines" = "null" ]] || [[ "$pipelines" = "[]" ]]; then
         break
       fi
 
@@ -306,7 +306,7 @@ get_pipelines_for_pr() {
 
       # Check for next page token
       page_token=$(echo "$response" | jq -r '.next_page_token // empty' 2>/dev/null)
-      if [ -z "$page_token" ] || [ "$page_token" = "null" ]; then
+      if [[ -z "$page_token" ]] || [[ "$page_token" = "null" ]]; then
         break
       fi
     done
@@ -314,12 +314,13 @@ get_pipelines_for_pr() {
     # If we found pipelines, we can stop trying other formats
     local found_count
     found_count=$(echo "$all_pipelines" | jq 'length' 2>/dev/null || echo "0")
-    if [ "$found_count" -gt 0 ]; then
+    if [[ "$found_count" -gt 0 ]]; then
       break
     fi
   done
 
   echo "$all_pipelines"
+  return 0
 }
 
 # Function to get workflows for a pipeline
@@ -331,19 +332,19 @@ get_workflows_for_pipeline() {
 
   while true; do
     local request_url="$url"
-    if [ -n "$page_token" ]; then
+    if [[ -n "$page_token" ]]; then
       request_url="${url}?page-token=${page_token}"
     fi
 
     local response
     response=$(circleci_api_request "$request_url")
-    if [ $? -ne 0 ]; then
+    if [[ $? -ne 0 ]]; then
       break
     fi
 
     local workflows
     workflows=$(echo "$response" | jq -r '.items // []' 2>/dev/null)
-    if [ -z "$workflows" ] || [ "$workflows" = "null" ] || [ "$workflows" = "[]" ]; then
+    if [[ -z "$workflows" ]] || [[ "$workflows" = "null" ]] || [[ "$workflows" = "[]" ]]; then
       break
     fi
 
@@ -352,12 +353,13 @@ get_workflows_for_pipeline() {
 
     # Check for next page token
     page_token=$(echo "$response" | jq -r '.next_page_token // empty' 2>/dev/null)
-    if [ -z "$page_token" ] || [ "$page_token" = "null" ]; then
+    if [[ -z "$page_token" ]] || [[ "$page_token" = "null" ]]; then
       break
     fi
   done
 
   echo "$all_workflows"
+  return 0
 }
 
 # Function to get jobs for a workflow
@@ -369,19 +371,19 @@ get_jobs_for_workflow() {
 
   while true; do
     local request_url="$url"
-    if [ -n "$page_token" ]; then
+    if [[ -n "$page_token" ]]; then
       request_url="${url}?page-token=${page_token}"
     fi
 
     local response
     response=$(circleci_api_request "$request_url")
-    if [ $? -ne 0 ]; then
+    if [[ $? -ne 0 ]]; then
       break
     fi
 
     local jobs
     jobs=$(echo "$response" | jq -r '.items // []' 2>/dev/null)
-    if [ -z "$jobs" ] || [ "$jobs" = "null" ] || [ "$jobs" = "[]" ]; then
+    if [[ -z "$jobs" ]] || [[ "$jobs" = "null" ]] || [[ "$jobs" = "[]" ]]; then
       break
     fi
 
@@ -390,12 +392,13 @@ get_jobs_for_workflow() {
 
     # Check for next page token
     page_token=$(echo "$response" | jq -r '.next_page_token // empty' 2>/dev/null)
-    if [ -z "$page_token" ] || [ "$page_token" = "null" ]; then
+    if [[ -z "$page_token" ]] || [[ "$page_token" = "null" ]]; then
       break
     fi
   done
 
   echo "$all_jobs"
+  return 0
 }
 
 # Function to get job details (v2 API)
@@ -403,6 +406,7 @@ get_job_details() {
   local job_number="$1"
   local url="${CIRCLE_API_BASE}/project/${PROJECT_SLUG}/job/${job_number}"
   circleci_api_request "$url"
+  return $?
 }
 
 # Function to get test metadata for a job (v2 API)
@@ -410,6 +414,7 @@ get_job_tests() {
   local job_number="$1"
   local url="${CIRCLE_API_BASE}/project/${PROJECT_SLUG}/${job_number}/tests"
   circleci_api_request "$url"
+  return $?
 }
 
 # Function to get job details with steps/actions from v1.1 API
@@ -436,7 +441,7 @@ get_job_with_steps_v1() {
   response=$(echo "$response" | sed '/HTTP_CODE:/d')
 
   # Check if request failed or returned error status
-  if [ -z "$http_code" ] || [ "$http_code" != "200" ]; then
+  if [[ -z "$http_code" ]] || [[ "$http_code" != "200" ]]; then
     return 1
   fi
 
@@ -451,7 +456,7 @@ get_job_with_steps_v1() {
 # Function to download and extract log content from S3 URL
 download_log_from_url() {
   local output_url="$1"
-  if [ -z "$output_url" ] || [ "$output_url" = "null" ] || [ "$output_url" = "" ]; then
+  if [[ -z "$output_url" ]] || [[ "$output_url" = "null" ]] || [[ "$output_url" = "" ]]; then
     return 1
   fi
 
@@ -463,7 +468,7 @@ download_log_from_url() {
 # The log content is a JSON array with objects containing "message", "time", "type", "truncated"
 format_log_output() {
   local log_content="$1"
-  if [ -z "$log_content" ]; then
+  if [[ -z "$log_content" ]]; then
     return 1
   fi
 
@@ -478,7 +483,7 @@ format_log_output() {
   # jq -r will decode Unicode escape sequences (ANSI codes, carriage returns, etc.) and output raw text
   # Then strip ANSI escape codes and control characters for cleaner output
   echo "$log_content" | jq -r '.[]? | select(.message != null and .message != "") | .message' 2>/dev/null | \
-    while IFS= read -r line || [ -n "$line" ]; do
+    while IFS= read -r line || [[ -n "$line" ]]; do
       # Remove carriage returns
       line=$(echo "$line" | tr -d '\r')
       # Remove ANSI escape codes (color codes, cursor movement, etc.)
@@ -487,7 +492,7 @@ format_log_output() {
       # Remove other common ANSI codes
       line=$(echo "$line" | sed 's/\x1b\[K//g' | sed 's/\x1b\[2K//g' | sed 's/\x1b\[1G//g' | sed 's/\x1b\[0K//g')
       # Only print non-empty lines
-      if [ -n "$line" ]; then
+      if [[ -n "$line" ]]; then
         echo "$line"
       fi
     done
@@ -507,11 +512,11 @@ enrich_checks_with_circleci() {
     return 0
   fi
 
-  if [ -z "$PROJECT_SLUG" ]; then
+  if [[ -z "$PROJECT_SLUG" ]]; then
     PROJECT_SLUG="gh/${OWNER}/${REPO_NAME}"
   fi
 
-  if [ -z "$CIRCLE_TOKEN" ]; then
+  if [[ -z "$CIRCLE_TOKEN" ]]; then
     echo "Error: CIRCLE_TOKEN environment variable is not set (required for CircleCI check details)" >&2
     echo "Documentation: https://circleci.com/docs/managing-api-tokens/" >&2
     echo "$github_checks"
@@ -526,14 +531,14 @@ enrich_checks_with_circleci() {
   local pipeline_count
   pipeline_count=$(echo "$pipelines" | jq 'length' 2>/dev/null || echo "0")
 
-  if [ "$pipeline_count" -gt 0 ]; then
+  if [[ "$pipeline_count" -gt 0 ]]; then
     # Filter to latest pipeline
     pipelines=$(echo "$pipelines" | jq 'sort_by(.created_at // "") | reverse | .[0:1]' 2>/dev/null || echo "$pipelines")
     local pipeline_ids
     pipeline_ids=$(echo "$pipelines" | jq -r '.[].id' 2>/dev/null)
 
     for pipeline_id in $pipeline_ids; do
-      if [ -z "$pipeline_id" ] || [ "$pipeline_id" = "null" ]; then
+      if [[ -z "$pipeline_id" ]] || [[ "$pipeline_id" = "null" ]]; then
         continue
       fi
 
@@ -547,10 +552,8 @@ enrich_checks_with_circleci() {
       # Extract pipeline errors if any
       local pipeline_errors
       pipeline_errors=$(echo "$pipelines" | jq -r --arg id "$pipeline_id" '.[] | select(.id == $id) | .errors // []' 2>/dev/null)
-      if [ -n "$pipeline_errors" ] && [ "$pipeline_errors" != "null" ] && [ "$pipeline_errors" != "[]" ]; then
-        if [ "$pipeline_number" != "N/A" ] && [ "$pipeline_number" != "null" ]; then
-          pipeline_errors_map=$(echo "$pipeline_errors_map" | jq --arg pipeline_number "$pipeline_number" --argjson errors "$pipeline_errors" '.[$pipeline_number] = $errors' 2>/dev/null || echo "$pipeline_errors_map")
-        fi
+      if [[ -n "$pipeline_errors" ]] && [[ "$pipeline_errors" != "null" ]] && [[ "$pipeline_errors" != "[]" ]] && [[ "$pipeline_number" != "N/A" ]] && [[ "$pipeline_number" != "null" ]]; then
+        pipeline_errors_map=$(echo "$pipeline_errors_map" | jq --arg pipeline_number "$pipeline_number" --argjson errors "$pipeline_errors" '.[$pipeline_number] = $errors' 2>/dev/null || echo "$pipeline_errors_map")
       fi
 
       local workflows
@@ -559,7 +562,7 @@ enrich_checks_with_circleci() {
       workflow_ids=$(echo "$workflows" | jq -r '.[].id' 2>/dev/null)
 
       for workflow_id in $workflow_ids; do
-        if [ -z "$workflow_id" ] || [ "$workflow_id" = "null" ]; then
+        if [[ -z "$workflow_id" ]] || [[ "$workflow_id" = "null" ]]; then
           continue
         fi
 
@@ -615,7 +618,7 @@ enrich_checks_with_circleci() {
   ' 2>/dev/null || echo "$github_checks")
 
   # Find expected CircleCI jobs (jobs in workflow but no check run yet)
-  if [ -n "$circle_jobs_map" ] && [ "$circle_jobs_map" != "{}" ] && [ "$circle_jobs_map" != "null" ]; then
+  if [[ -n "$circle_jobs_map" ]] && [[ "$circle_jobs_map" != "{}" ]] && [[ "$circle_jobs_map" != "null" ]]; then
     local workflow_job_names
     workflow_job_names=$(echo "$circle_jobs_map" | jq -r 'keys[]' 2>/dev/null)
 
@@ -623,7 +626,7 @@ enrich_checks_with_circleci() {
     existing_check_names=$(echo "$all_checks" | jq -r '.[] | select(.is_circleci == true) | (.context | split(": ") | if length > 1 then .[1] else .context end)' 2>/dev/null)
 
     for job_name in $workflow_job_names; do
-      if [ -z "$job_name" ] || [ "$job_name" = "null" ]; then
+      if [[ -z "$job_name" ]] || [[ "$job_name" = "null" ]]; then
         continue
       fi
 
@@ -656,7 +659,7 @@ enrich_checks_with_circleci() {
             pipeline_branch: (if $branch != "" then $branch else null end)
           }' 2>/dev/null)
 
-        if [ -n "$expected_check" ]; then
+        if [[ -n "$expected_check" ]]; then
           all_checks=$(echo "$all_checks" | jq --argjson expected "$expected_check" '. + [$expected]' 2>/dev/null || echo "$all_checks")
         fi
       fi
@@ -846,7 +849,7 @@ fetch_and_display_summary() {
   fi
 
   # Apply workflow filter (only applies to CircleCI checks; non-CircleCI checks are unaffected)
-  if [ -n "$WORKFLOW_FILTER" ]; then
+  if [[ -n "$WORKFLOW_FILTER" ]]; then
     filtered_checks=$(echo "$filtered_checks" | jq --arg filter "$WORKFLOW_FILTER" '[.[] | select(.is_circleci != true or .workflow_name == $filter)]' 2>/dev/null || echo "$filtered_checks")
   fi
 
@@ -1156,7 +1159,7 @@ if [ -n "$JOB_FILTER" ]; then
 fi
 
 # Apply workflow filter (only applies to CircleCI checks; non-CircleCI checks are unaffected)
-if [ -n "$WORKFLOW_FILTER" ]; then
+if [[ -n "$WORKFLOW_FILTER" ]]; then
   FILTERED_CHECKS=$(echo "$FILTERED_CHECKS" | jq --arg filter "$WORKFLOW_FILTER" '[.[] | select(.is_circleci != true or .workflow_name == $filter)]' 2>/dev/null || echo "$FILTERED_CHECKS")
 fi
 
@@ -1187,7 +1190,7 @@ if [ -n "$SHOW_FAILING" ] || [ -n "$SHOW_PASSING" ] || [ -n "$SHOW_IN_PROGRESS" 
 fi
 
 # Enrich checks with details if requested (CircleCI checks only)
-if [ -n "$DETAILS" ]; then
+if [[ -n "$DETAILS" ]]; then
   ENRICHED_CHECKS="[]"
   DETAILS_CHECK_COUNT=$(echo "$FILTERED_CHECKS" | jq 'length' 2>/dev/null || echo "0")
 
@@ -1196,18 +1199,18 @@ if [ -n "$DETAILS" ]; then
     CHECK_IS_CIRCLECI=$(echo "$CHECK" | jq -r '.is_circleci // false' 2>/dev/null)
     CHECK_JOB_NUMBER=$(echo "$CHECK" | jq -r '.job_number // empty' 2>/dev/null)
 
-    if [ "$CHECK_IS_CIRCLECI" = "true" ] && [ -n "$CHECK_JOB_NUMBER" ] && [ "$CHECK_JOB_NUMBER" != "null" ]; then
+    if [[ "$CHECK_IS_CIRCLECI" = "true" ]] && [[ -n "$CHECK_JOB_NUMBER" ]] && [[ "$CHECK_JOB_NUMBER" != "null" ]]; then
       JOB_DETAILS=$(get_job_details "$CHECK_JOB_NUMBER")
-      if [ $? -eq 0 ] && [ -n "$JOB_DETAILS" ]; then
+      if [[ $? -eq 0 ]] && [[ -n "$JOB_DETAILS" ]]; then
         CHECK=$(echo "$CHECK" | jq --argjson details "$JOB_DETAILS" '. + $details' 2>/dev/null || echo "$CHECK")
       fi
 
       CHECK_STATUS_LOWER=$(echo "$CHECK" | jq -r '.status // "unknown"' 2>/dev/null | tr '[:upper:]' '[:lower:]')
-      if [ "$CHECK_STATUS_LOWER" = "failed" ] || [ "$CHECK_STATUS_LOWER" = "error" ] || [ "$CHECK_STATUS_LOWER" = "failure" ]; then
+      if [[ "$CHECK_STATUS_LOWER" = "failed" ]] || [[ "$CHECK_STATUS_LOWER" = "error" ]] || [[ "$CHECK_STATUS_LOWER" = "failure" ]]; then
         TEST_DATA=$(get_job_tests "$CHECK_JOB_NUMBER" 2>/dev/null)
-        if [ $? -eq 0 ] && [ -n "$TEST_DATA" ] && echo "$TEST_DATA" | jq empty 2>/dev/null; then
+        if [[ $? -eq 0 ]] && [[ -n "$TEST_DATA" ]] && echo "$TEST_DATA" | jq empty 2>/dev/null; then
           FAILED_TESTS=$(echo "$TEST_DATA" | jq '[.items[]? | select(.result == "failure" or .result == "error")]' 2>/dev/null)
-          if [ -n "$FAILED_TESTS" ] && [ "$FAILED_TESTS" != "null" ] && [ "$FAILED_TESTS" != "[]" ]; then
+          if [[ -n "$FAILED_TESTS" ]] && [[ "$FAILED_TESTS" != "null" ]] && [[ "$FAILED_TESTS" != "[]" ]]; then
             CHECK=$(echo "$CHECK" | jq --argjson tests "$FAILED_TESTS" '. + {failed_tests: $tests}' 2>/dev/null || echo "$CHECK")
           fi
         fi
@@ -1339,27 +1342,27 @@ else
       fi
 
       # Show CircleCI-specific info if applicable
-      if [ "$IS_CIRCLECI" = "true" ]; then
-        if [ "$WORKFLOW_NAME" != "N/A" ] && [ "$WORKFLOW_NAME" != "null" ]; then
+      if [[ "$IS_CIRCLECI" = "true" ]]; then
+        if [[ "$WORKFLOW_NAME" != "N/A" ]] && [[ "$WORKFLOW_NAME" != "null" ]]; then
           echo "Workflow:         $WORKFLOW_NAME"
         fi
-        if [ "$PIPELINE_BRANCH" != "N/A" ] && [ "$PIPELINE_BRANCH" != "null" ] && [ "$PIPELINE_NUMBER" != "N/A" ]; then
+        if [[ "$PIPELINE_BRANCH" != "N/A" ]] && [[ "$PIPELINE_BRANCH" != "null" ]] && [[ "$PIPELINE_NUMBER" != "N/A" ]]; then
           echo "Pipeline:         #${PIPELINE_NUMBER} (${PIPELINE_BRANCH})"
-        elif [ "$PIPELINE_NUMBER" != "N/A" ]; then
+        elif [[ "$PIPELINE_NUMBER" != "N/A" ]]; then
           echo "Pipeline:         #${PIPELINE_NUMBER}"
         fi
-        if [ "$PIPELINE_CREATED" != "N/A" ] && [ "$PIPELINE_CREATED" != "null" ]; then
+        if [[ "$PIPELINE_CREATED" != "N/A" ]] && [[ "$PIPELINE_CREATED" != "null" ]]; then
           echo "Pipeline Created: $PIPELINE_CREATED"
         fi
-        if [ "$PIPELINE_ERRORS" != "null" ] && [ "$PIPELINE_ERRORS" != "" ] && [ -n "$PIPELINE_ERRORS" ]; then
+        if [[ "$PIPELINE_ERRORS" != "null" ]] && [[ "$PIPELINE_ERRORS" != "" ]] && [[ -n "$PIPELINE_ERRORS" ]]; then
           PIPELINE_ERROR_COUNT=$(echo "$PIPELINE_ERRORS" | jq 'length' 2>/dev/null || echo "0")
-          if [ "$PIPELINE_ERROR_COUNT" -gt 0 ] 2>/dev/null; then
+          if [[ "$PIPELINE_ERROR_COUNT" -gt 0 ]] 2>/dev/null; then
             echo ""
             echo "Pipeline Errors:"
             echo "$PIPELINE_ERRORS" | jq -r '.[] | "  - \(.type // "error"): \(.message // "Unknown error")"' 2>/dev/null
           fi
         fi
-        if [ "$JOB_NUMBER" != "N/A" ] && [ "$JOB_NUMBER" != "null" ]; then
+        if [[ "$JOB_NUMBER" != "N/A" ]] && [[ "$JOB_NUMBER" != "null" ]]; then
           echo "Job Number:       $JOB_NUMBER"
         fi
       fi
@@ -1426,9 +1429,9 @@ else
       fi
 
       # Show failed tests if available (CircleCI only, requires --details)
-      if [ "$IS_CIRCLECI" = "true" ]; then
+      if [[ "$IS_CIRCLECI" = "true" ]]; then
         FAILED_TESTS=$(echo "$CHECK" | jq '.failed_tests // empty' 2>/dev/null)
-        if [ -n "$FAILED_TESTS" ] && [ "$FAILED_TESTS" != "null" ] && [ "$FAILED_TESTS" != "[]" ]; then
+        if [[ -n "$FAILED_TESTS" ]] && [[ "$FAILED_TESTS" != "null" ]] && [[ "$FAILED_TESTS" != "[]" ]]; then
           FAILED_TEST_COUNT=$(echo "$FAILED_TESTS" | jq 'length' 2>/dev/null || echo "0")
           echo ""
           echo "Failed Tests:     $FAILED_TEST_COUNT"
@@ -1437,9 +1440,9 @@ else
 
         # Show job output/logs for failed jobs (unless --hide-job-output is set)
         # Uses the v1.1 API to get job steps/actions with output_url (v2 doesn't provide this)
-        if [ -z "$HIDE_JOB_OUTPUT" ] && [ "$CHECK_STATUS" != "success" ] && [ "$CHECK_STATUS" != "successful" ] && [ "$CHECK_STATUS" != "N/A" ] && [ "$JOB_NUMBER" != "N/A" ] && [ "$JOB_NUMBER" != "null" ]; then
+        if [[ -z "$HIDE_JOB_OUTPUT" ]] && [[ "$CHECK_STATUS" != "success" ]] && [[ "$CHECK_STATUS" != "successful" ]] && [[ "$CHECK_STATUS" != "N/A" ]] && [[ "$JOB_NUMBER" != "N/A" ]] && [[ "$JOB_NUMBER" != "null" ]]; then
           JOB_V1=$(get_job_with_steps_v1 "$JOB_NUMBER" 2>/dev/null)
-          if [ $? -eq 0 ] && [ -n "$JOB_V1" ] && echo "$JOB_V1" | jq empty 2>/dev/null; then
+          if [[ $? -eq 0 ]] && [[ -n "$JOB_V1" ]] && echo "$JOB_V1" | jq empty 2>/dev/null; then
             ALL_STEPS=$(echo "$JOB_V1" | jq '[.steps[]? | {
               name: .name,
               is_failed: (if any(.actions[]?; .failed == true or .status == "failed" or (.exit_code != null and .exit_code != 0)) then true else false end),
@@ -1452,9 +1455,9 @@ else
               }]
             }]' 2>/dev/null)
 
-            if [ -n "$ALL_STEPS" ] && [ "$ALL_STEPS" != "null" ] && [ "$ALL_STEPS" != "[]" ]; then
+            if [[ -n "$ALL_STEPS" ]] && [[ "$ALL_STEPS" != "null" ]] && [[ "$ALL_STEPS" != "[]" ]]; then
               STEP_COUNT=$(echo "$ALL_STEPS" | jq 'length' 2>/dev/null || echo "0")
-              if [ "$STEP_COUNT" -gt 0 ]; then
+              if [[ "$STEP_COUNT" -gt 0 ]]; then
                 echo ""
                 echo "Job Steps:"
 
@@ -1462,16 +1465,16 @@ else
                   step_name=$(echo "$step_json" | jq -r '.name // "Unknown step"' 2>/dev/null)
                   is_failed=$(echo "$step_json" | jq -r '.is_failed // false' 2>/dev/null)
 
-                  if [ "$is_failed" = "true" ]; then
+                  if [[ "$is_failed" = "true" ]]; then
                     echo "  🔴 $step_name (Failed)"
                   else
                     echo "  🟢 $step_name (Success)"
                   fi
 
-                  if [ "$is_failed" = "true" ]; then
+                  if [[ "$is_failed" = "true" ]]; then
                     failed_actions=$(echo "$step_json" | jq '[.actions[]? | select(.failed == true or .status == "failed" or (.exit_code != null and .exit_code != 0))]' 2>/dev/null)
 
-                    if [ -n "$failed_actions" ] && [ "$failed_actions" != "null" ] && [ "$failed_actions" != "[]" ]; then
+                    if [[ -n "$failed_actions" ]] && [[ "$failed_actions" != "null" ]] && [[ "$failed_actions" != "[]" ]]; then
                       echo "$failed_actions" | jq -c '.[]' 2>/dev/null | while IFS= read -r action_json; do
                         action_name=$(echo "$action_json" | jq -r '.name // "Unknown action"' 2>/dev/null)
                         exit_code=$(echo "$action_json" | jq -r '.exit_code // "unknown"' 2>/dev/null)
@@ -1480,13 +1483,13 @@ else
                         echo "    Action: $action_name"
                         echo "    Exit Code: $exit_code"
 
-                        if [ -n "$output_url" ] && [ "$output_url" != "" ] && [ "$output_url" != "null" ]; then
+                        if [[ -n "$output_url" ]] && [[ "$output_url" != "" ]] && [[ "$output_url" != "null" ]]; then
                           echo ""
                           echo "      Log Output:"
                           log_content=$(download_log_from_url "$output_url" 2>/dev/null)
-                          if [ -n "$log_content" ]; then
+                          if [[ -n "$log_content" ]]; then
                             formatted_log=$(format_log_output "$log_content")
-                            if [ -n "$formatted_log" ]; then
+                            if [[ -n "$formatted_log" ]]; then
                               echo "$formatted_log" | sed 's/^/        /'
                             else
                               echo "        (Log content is empty)"
