@@ -1,6 +1,6 @@
 # Contributing Guidelines
 
-This document outlines our coding standards, documentation practices, and testing expectations to help maintain consistency and quality across the codebase.
+This document outlines our coding standards, documentation practices, and testing expectations for this repo's Claude Code skills and plugins, and for the supporting scripts (e.g. `evals/lib/`) that back them.
 
 ## Planning
 
@@ -18,32 +18,22 @@ This helps ensure we're all moving in the same direction and prevents duplicate 
 
 - Clarity over cleverness: write code that's easy to understand and maintain. Code should be clear and intentional. Variables, function names, and types should have meaningful names that describe their purpose.
 - Brevity over verbosity: be concise, but not at the expense of clarity
-- Follow DRY principles: centralize shared logic and prefer reusable CSS classes over inline styles
+- Follow DRY principles: centralize shared logic and avoid duplicating it across skills or scripts
 - Security: use environment variables or secure vaults for secrets, API keys, and credentials
 - Ecosystem best practices: adhere to community and industry best practices; use the existing patterns and frameworks established in the project.
 - Performance and scalability: code should be resource efficient and capable of running at large scale.
 
 ### Configuration and Environment
 
-- Avoid hard-coding URLs or other environment-specific attributes
+- Avoid hard-coding URLs or other environment-specific attributes in scripts
 - Keep configuration values and constants centralized (e.g., in `config/` directories or `env.sample`)
-- Document all environment variables in a table within the README
+- Document environment variables used by scripts where they're consumed (e.g. the eval harness's env vars are documented in [evals/README.md](evals/README.md))
 - Bypassing pre-commit hooks is strongly discouraged, they exist as a safety net
-
-### API Integration
-
-When working with external APIs:
-
-- Consult official API documentation before writing or modifying integration code
-- If you can't find documentation, please ask for the specification or reference material
-- Avoid relying on trial-and-error approaches
 
 ### Code Maintenance
 
 - Remove dead code rather than commenting it out; version control preserves history
 - Assume backward compatibility is not required unless explicitly stated
-- Design with a mobile-first approach and architect APIs before UIs when possible
-- Favor lightweight user interfaces with centralized business logic
 
 ### Code Quality
 
@@ -52,14 +42,6 @@ When working with external APIs:
 - Never include personally identifiable information (PII) or sensitive data in the project
 - Use git tools like `diff` and `reset` when reverting changes
 
-### Accessibility
-
-- Use semantic HTML elements (`<button>`, `<nav>`, `<main>`, etc.) rather than generic `<div>` or `<span>` with click handlers
-- Ensure sufficient color contrast (WCAG AA minimum is 4.5:1 for body text, and 3:1 for large text)
-- Never rely on color alone to convey meaning; pair it with text, icons, or patterns
-- All interactive elements must be keyboard-navigable and have visible focus states
-- Use ARIA labels and roles only when semantic HTML is insufficient; do not layer ARIA on top of already-semantic elements
-
 ### Dependencies
 
 - Bundle dependencies locally; avoid loading them dynamically from CDNs or services like unpkg.com
@@ -67,35 +49,6 @@ When working with external APIs:
 - For security or other updates to transitive (indirect) dependencies, update the direct dependency in package.json that brings in that transitive dependency to a version that depends on the fixed transitive version. Do not add the transitive package as a direct dependency just to pin its version.
   - Example: if a Dependabot PR updates `@types/node` (a dependency of `typescript`), update `typescript` in package.json to a version that requires the newer `@types/node`, rather than adding `@types/node` to package.json.
   - Example: if a PR updates a direct dependency (e.g. `lodash`), update that package's version in package.json as usual.
-
-### Logging
-
-When adding logging to the application, always include useful messages with context that will enable future troubleshooting. Log outcomes and results, not plans or progress. Use these standard levels:
-
-TRACE
-Ultra-detailed diagnostic information including fine-grained internal state, step-by-step operations, and verbose algorithm flow. Typically only enabled during deep debugging.
-
-DEBUG
-Developer-oriented diagnostics with useful checkpoints, variable values, decisions, and execution flow that aid debugging but aren't needed during normal operation.
-
-INFO
-High-level operational events describing normal behavior, such as starting or completing a task, handling a request, or performing a scheduled operation.
-
-WARN
-Unusual or unexpected behavior that didn't stop execution. Something may require attention, but the system continued running successfully.
-
-ERROR
-A failure that prevented a task or invocation from completing normally. This includes exceptions, failed API calls, or unrecoverable conditions.
-
-FATAL
-A severe failure that stops execution and requires immediate attention.
-
-### Error Handling
-
-- Handle errors gracefully; avoid letting unhandled exceptions crash the application or silently swallow failures
-- Classify errors as transient (rate limits, timeouts, and 5xx responses) or non-transient (auth failures, configuration errors, and not found)
-- Transient errors should be logged and retried with an appropriate backoff strategy. If retries are exhausted, escalate by logging at ERROR level and surfacing the failure
-- Non-transient errors should be logged and raised immediately; retrying these is unlikely to help
 
 ## Testing
 
@@ -106,6 +59,16 @@ We take testing seriously to maintain code quality:
 - Respect test coverage thresholds if defined; lowering thresholds should not be used as a workaround
 - Avoid disabling or skipping linting rules or tests just to make code pass
 - Ensure both tests and documentation accurately reflect the implementation before committing
+
+### Evals
+
+Skills are tested with evals, not unit tests. See [evals/README.md](evals/README.md) for the harness and schema.
+
+- Every skill must ship with an eval suite at `evals/evals.json` (plus `evals/fixtures/`), following the skill-creator schema (`id`, `prompt`, `expected_output`, `expectations`)
+- Cover both positive cases (clean scenario, skill should act) and negative cases (ambiguous or invalid scenario, skill should ask or decline); a one-sided eval set trains one-sided behavior
+- Run the eval suite for any skill you add or modify, and read the transcripts rather than trusting the grader's verdict blindly
+- A new skill needs a `benchmark-baseline.json` established before merge; an existing skill's changes are benchmarked against its current `benchmark-baseline.json`
+- If a change to an existing skill lowers its benchmark pass rate, or otherwise regresses behavior relative to `benchmark-baseline.json`, justify the regression in the PR description (what tradeoff was made and why it's acceptable) before it can be accepted. Update `benchmark-baseline.json` only after that regression (or an improvement) has been reviewed and accepted
 
 ## Commit Messages
 
@@ -138,7 +101,6 @@ Good documentation makes the project accessible to everyone.
   - Table of Contents: a navigation aid and an overview of all the content
   - Usage: provide concise instructions and examples for common use cases
   - Installation and Configuration: list required and optional steps with their purpose and examples
-  - Operations: cover common failure modes and how to resolve them. If the project produces logs, document where they are written, any tools required to read them, the structure of log messages (and file layout if logs are written to disk), and examples of filtering for common scenarios. If the platform does not enforce a log format, define one in the project so log output is consistent and parseable. Document any automated alerting (what triggers an alert, who is notified, and how) and how to monitor the health of the system (health check endpoints, dashboards, status commands, or other observability tools)
   - Technical Details: include architecture diagrams, process flows, and sequence diagrams using Mermaid when helpful
 
 ### Accessibility
@@ -161,13 +123,9 @@ GitHub's [About READMEs](https://docs.github.com/en/repositories/managing-your-r
 ### Additional Documentation
 
 - Avoid new ad-hoc ALL_CAPS doc files. Convention files (README, CONTRIBUTING, AGENTS, SKILL.md) are fine; prefer docs/ or code comments for new documentation.
-- If the project requires permissions, maintain a Permissions section in the README describing each one, what access it grants, which features depend on it, and link to official documentation
-- Consider maintaining a Glossary of Terms in the README for consistent language across code and UI
+- Consider maintaining a Glossary of Terms in the README for consistent language across skills and docs
 - Update documentation and diagrams whenever the implementation changes; they should always describe the current state
-- If the project has API endpoints available, then maintain a detailed `openapi.yaml` or `openapi.json` doc in the project
-- Include a Design Guidelines section in the README describing color, style, and interaction patterns to keep the UI consistent
-- Present user interactions and notifications clearly, accessibly, and with a friendly tone
-- Adopt local UI cues and behaviors so the app blends seamlessly into its environment
+- Present skill output and messages to the user clearly, accessibly, and with a friendly tone
 
 ---
 
