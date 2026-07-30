@@ -1,0 +1,481 @@
+{
+  "metadata": {
+    "skill_name": "review-readme",
+    "skill_path": "plugins/software-development/skills/review-readme",
+    "executor_model": "claude-sonnet-5",
+    "analyzer_model": "claude-sonnet-5",
+    "timestamp": "2026-07-30T22:45:00Z",
+    "evals_run": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The final README.md no longer contains the command `npm run start`",
+          "passed": true,
+          "evidence": "Final README no longer contains `npm run start` -- independently verified via grep (0 matches)."
+        },
+        {
+          "text": "The final README.md's Usage section instructs the reader to run `npm run dev` instead",
+          "passed": true,
+          "evidence": "Final README's Usage section instructs `npm run dev` instead -- independently verified via grep (1 match), consistent with package.json's actual scripts (dev/test/build, no start)."
+        },
+        {
+          "text": "The Phase 4 change report lists a command/accuracy fix for the start/dev script discrepancy",
+          "passed": true,
+          "evidence": "Phase 4 change report lists a command/accuracy fix for the start/dev discrepancy as the first item under 'Changes made'."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 93.355,
+        "tokens": 53378,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The final README.md contains exactly one '## Installation' heading (not two)",
+          "passed": true,
+          "evidence": "Final README contains exactly one '## Installation' heading -- independently verified via grep -c (1)."
+        },
+        {
+          "text": "The retained Installation section still contains the `npm install` instruction",
+          "passed": true,
+          "evidence": "The retained Installation section still contains the `npm install` instruction -- independently verified via grep (1 match)."
+        },
+        {
+          "text": "The Phase 4 change report lists a duplicate-content removal",
+          "passed": true,
+          "evidence": "Phase 4 change report lists a duplicate-content removal as one of the three changes made."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 63.114,
+        "tokens": 49232,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The Phase 2 findings or Phase 4 report explicitly identifies the broken link to ./docs/ARCHITECTURE.md",
+          "passed": true,
+          "evidence": "Phase 2 findings (Step 7) explicitly identify the broken ./docs/ARCHITECTURE.md link, confirmed via `find` showing no docs/ directory exists anywhere in the repo."
+        },
+        {
+          "text": "Either the final README.md no longer contains a link to the nonexistent ./docs/ARCHITECTURE.md, or the Phase 4 report explicitly lists it under issues not fixed with a reason",
+          "passed": true,
+          "evidence": "Final README no longer contains a link to ./docs/ARCHITECTURE.md -- independently verified via grep (0 matches); the link was removed since no real content could be pointed to without fabrication."
+        },
+        {
+          "text": "The valid CONTRIBUTING.md link is left intact and is not incorrectly flagged as broken",
+          "passed": true,
+          "evidence": "The valid CONTRIBUTING.md link is left intact and not flagged as broken -- independently verified via grep (1 match remains in the final README)."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The Phase 4 report explicitly states that little or no changes were needed",
+          "passed": true,
+          "evidence": "Phase 4 report explicitly states 'No changes were needed -- the README was already accurate, well-structured, and fully in sync with the codebase,' with statistics showing 0 across every change category."
+        },
+        {
+          "text": "The skill does not report fabricated duplicates, broken links, or inaccurate commands that do not exist in this fixture",
+          "passed": true,
+          "evidence": "No fabricated duplicates, broken links, or inaccurate commands were reported -- all four commands (npm install/dev/test/lint) were independently verified against package.json's actual scripts and server.js's actual port (4000), all correct."
+        },
+        {
+          "text": "Any edits actually made (if any) are genuinely trivial (e.g. whitespace) and not substantive rewrites of accurate content",
+          "passed": true,
+          "evidence": "Zero edits were made -- independently verified: the final README.md is byte-for-byte identical to the fixture's original committed content (diffed via `git show HEAD:README.md`)."
+        },
+        {
+          "text": "Whether the skill makes zero edits or a small number of truly cosmetic ones is a reasonable judgment call either way",
+          "passed": true,
+          "evidence": "This clean-fixture guard case is a judgment call satisfied here by making genuinely zero edits, which is one of the two explicitly acceptable outcomes."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The Phase 2 findings or Phase 4 report identifies the undocumented `lint` script as a documentation gap",
+          "passed": true,
+          "evidence": "Phase 2 Step 9 findings identify the undocumented `npm run lint` script as a documentation gap, explicitly quoted in the executor's report and carried into Phase 4."
+        },
+        {
+          "text": "The final README.md documents `npm run lint` somewhere (e.g. a Linting section)",
+          "passed": true,
+          "evidence": "Final README documents `npm run lint` in a new Linting section -- independently verified via grep (1 match)."
+        },
+        {
+          "text": "Whether `npm run format` is also added is a reasonable judgment call and not strictly required",
+          "passed": true,
+          "evidence": "`npm run format` was also documented (a reasonable judgment call, not strictly required) -- present as an optional formatting step in the same section."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The Phase 2 findings or Phase 4 report identifies the broken #setup anchor and/or the missing TOC entries",
+          "passed": true,
+          "evidence": "Phase 2 findings (Steps 6-7) explicitly identify both the broken #setup anchor and the three missing TOC entries (Configuration, Testing, License)."
+        },
+        {
+          "text": "The final README.md's Table of Contents no longer links to a nonexistent #setup anchor",
+          "passed": true,
+          "evidence": "Final README's TOC no longer links to #setup -- independently verified via grep (0 matches)."
+        },
+        {
+          "text": "The final README.md's Table of Contents includes an entry linking to the Configuration section (or the TOC is otherwise brought in sync with actual headings)",
+          "passed": true,
+          "evidence": "Final README's TOC includes an entry linking to the Configuration section (#configuration) -- independently verified via grep (1 match, plus confirmed the actual '## Configuration' heading exists at line 25)."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 7,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 2,
+        "failed": 0,
+        "total": 2,
+        "time_seconds": 75.652,
+        "tokens": 52047,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The Phase 2 findings or Phase 4 report identifies the heading hierarchy violation (H1 to H3 skip)",
+          "passed": true,
+          "evidence": "Phase 2 findings (Step 5) explicitly identify the heading hierarchy violation: 'the document jumps from H1 directly to H3 for Installation and Usage, skipping H2.'"
+        },
+        {
+          "text": "The final README.md's Installation and Usage headings are H2 (`##`), not H3 (`###`), restoring a consistent H1 -> H2 hierarchy",
+          "passed": true,
+          "evidence": "Final README's Installation and Usage headings are H2 (`##`), not H3 -- independently verified via grep (both now read '## Installation' and '## Usage')."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 8,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 54.798,
+        "tokens": 48806,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The Phase 2 findings or Phase 4 report identifies CONTRIBUTING.md and/or CHANGELOG.md as unlinked documentation",
+          "passed": true,
+          "evidence": "Phase 2 Step 10 findings explicitly identify CONTRIBUTING.md and CHANGELOG.md as existing in the project root but unlinked from the README."
+        },
+        {
+          "text": "The final README.md contains a link to CONTRIBUTING.md",
+          "passed": true,
+          "evidence": "Final README contains a link to CONTRIBUTING.md -- independently verified via grep (1 match)."
+        },
+        {
+          "text": "The final README.md contains a link to CHANGELOG.md",
+          "passed": true,
+          "evidence": "Final README contains a link to CHANGELOG.md -- independently verified via grep (1 match); both files independently confirmed to exist in the workspace root."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 9,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 2,
+        "failed": 0,
+        "total": 2,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The Phase 2 findings or Phase 4 report identifies the stale Node version requirement",
+          "passed": true,
+          "evidence": "Phase 2 Step 3 findings explicitly identify the stale Node version requirement: 'README Prerequisites states Node.js 16 or higher, but package.json engines.node requires >=20.'"
+        },
+        {
+          "text": "The final README.md's Prerequisites section states a Node.js version of 20 or higher, not 16",
+          "passed": true,
+          "evidence": "Final README's Prerequisites section states 'Node.js 20 or higher' -- independently verified by reading the file directly, matching package.json's actual engines field (>=20)."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 10,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 2,
+        "failed": 0,
+        "total": 2,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The Phase 2 findings or Phase 4 report identifies the bare code fences as a formatting inconsistency",
+          "passed": true,
+          "evidence": "Phase 2 Step 8 findings explicitly identify the bare code fences on Installation and Testing as a formatting inconsistency versus the correctly-tagged Usage fence."
+        },
+        {
+          "text": "The final README.md contains no bare ``` fences that wrap shell commands -- all such fences specify a language (e.g. `bash`, `sh`)",
+          "passed": true,
+          "evidence": "Final README contains no bare ``` opening fences wrapping shell commands -- independently verified: all three opening fences (lines 7, 13, 19) specify `bash`; closing fences are plain ``` as correct Markdown syntax."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 11,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The Phase 2 findings or Phase 4 report identifies the Overview section as too long / a wall-of-text paragraph needing structural relief",
+          "passed": true,
+          "evidence": "Phase 2 Step 6 findings explicitly identify the Overview as a single 411-word, 7-sentence paragraph exceeding the readability threshold with no structural relief."
+        },
+        {
+          "text": "The final README.md's Overview content is no longer a single unbroken paragraph of 7+ sentences -- it has been split into shorter paragraphs, a list, and/or subsections",
+          "passed": true,
+          "evidence": "Final Overview is no longer a single unbroken paragraph -- independently verified: 6 H3 subsections (Features, Architecture, Configuration, Deployment, Testing, Getting oriented) with 5 bullet points, not one dense block."
+        },
+        {
+          "text": "The substantive information from the original Overview (what the app does, how it's built, how it's deployed, how it's tested) is still present after restructuring -- only the structure changed, not the facts, which is a matter of reasonable editorial judgment to verify",
+          "passed": true,
+          "evidence": "All substantive information from the original (what it does, how it's built, deployed, tested) is present after restructuring -- independently spot-checked against the original text quoted in the executor's report: every fact (SQLite storage, Slack webhook, VM deployment, test coverage gap, etc.) appears in the corresponding new subsection."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 12,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 77.556,
+        "tokens": 51657,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The Phase 1 step summary or Phase 2 findings note that CONTRIBUTING.md requires pnpm, not npm, in documented commands",
+          "passed": true,
+          "evidence": "Phase 1 step summary explicitly quotes CONTRIBUTING.md's Documentation section verbatim: 'This project uses pnpm exclusively... never npm or yarn,' and Phase 2 cites this rule as the basis for the command fixes."
+        },
+        {
+          "text": "The final README.md's commands use `pnpm` (e.g. `pnpm install`, `pnpm dev` or `pnpm run dev`, `pnpm test`) rather than `npm`",
+          "passed": true,
+          "evidence": "Final README's commands use pnpm throughout (pnpm install, pnpm dev, pnpm test) -- independently verified by reading the file directly; no bare npm command remains (a naive grep for 'npm ' only matches the substring inside 'pnpm', not a real npm invocation)."
+        },
+        {
+          "text": "The Phase 4 report attributes this change to the project's CONTRIBUTING.md guideline, not a generic default",
+          "passed": true,
+          "evidence": "Phase 4 report attributes each of the three command changes specifically to 'CONTRIBUTING.md requires pnpm exclusively, never npm,' not a generic skill default."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 13,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 105.336,
+        "tokens": 53940,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The Phase 2 findings (Step 4, visual content) or Phase 4 report identifies the directory tree as outdated/inaccurate",
+          "passed": true,
+          "evidence": "Phase 2 Step 4 findings explicitly identify the directory tree as outdated/inaccurate, verified by the executor via `find` against the real repo layout before editing."
+        },
+        {
+          "text": "The final README.md's directory tree no longer shows the nonexistent controllers/userController.js or utils/helpers.js paths",
+          "passed": true,
+          "evidence": "Final README's directory tree no longer shows controllers/userController.js or utils/helpers.js -- independently verified via grep (0 matches)."
+        },
+        {
+          "text": "The final README.md's directory tree reflects the actual src/routes and src/models layout, or the tree is removed/simplified rather than left inaccurate",
+          "passed": true,
+          "evidence": "Final directory tree reflects the actual src/routes and src/models layout -- independently verified: the workspace's real files are src/models/user.js and src/routes/users.js, both of which now appear in the README's tree, confirmed via `find` on the actual filesystem."
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 78.3018,
+        "stddev": 18.6982,
+        "min": 54.798,
+        "max": 105.336
+      },
+      "tokens": {
+        "mean": 51510.0,
+        "stddev": 2107.3776,
+        "min": 48806,
+        "max": 53940
+      }
+    },
+    "delta": {
+      "pass_rate": "+1.00",
+      "time_seconds": "+78.3",
+      "tokens": "+51510"
+    }
+  },
+  "notes": [
+    "13/13 evals pass 100% of their expectations in this initial baseline run. All results were independently verified against ground truth (direct file reads, grep against the final README, and cross-checks against package.json/CONTRIBUTING.md/the actual repo file layout) rather than accepted from executor self-report alone.",
+    "This is a with_skill-only baseline (no without_skill comparison) since review-readme is a workflow skill, not a content generator.",
+    "This skill has no gh/GitHub interaction at all -- fixtures are plain local file trees with no gh-stub cassette involved, so this batch was unaffected by the gh-stub bugs found and fixed while baselining other skills this session.",
+    "Time/token usage figures are only available for evals 2, 3, 4, 7, 8, 12, and 13. Figures for evals 1, 5, 6, 9, 10, and 11 were not captured because task usage metadata was not retrievable via a blocking TaskOutput poll for those trials -- the same known tooling gap noted in prior baselines this session. The aggregate time/token stats are computed only over the 7 evals with real data.",
+    "Eval 4 (the clean-fixture guard case) is a strong positive result: the executor independently re-verified every command, port number, and Node version against the actual codebase before concluding no changes were needed, rather than assuming the prompt's framing. It made zero edits, and the final README is byte-for-byte identical to the fixture's original -- avoiding the 'invents busywork to seem useful' failure mode this eval specifically guards against.",
+    "This batch covered a strong mix of real documentation defects: stale commands (1, 9, 12), duplicate content (2), a genuinely unresolvable broken link handled by removal rather than fabrication (3), a clean-fixture guard (4), documentation gaps (5, 8), a broken/incomplete table of contents (6), a heading hierarchy violation (7), inconsistent code-fence formatting (10), a wall-of-text paragraph needing restructuring without information loss (11), a CONTRIBUTING.md guideline overriding the skill's npm default (12), and an outdated directory tree (13)."
+  ]
+}
