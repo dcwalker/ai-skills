@@ -44,6 +44,8 @@ The script auto-detects the current branch's PR and prints each check with its s
 
 If the PR does not exist yet or no checks have run, the script will say so. In that case, push the branch first and wait for checks to start before re-running.
 
+**External CI tools:** checks reported through GitHub's legacy Status API rather than its native Checks API usually mean an external CI tool posted them — for example CircleCI, Jenkins, Travis CI, Buildkite, or TeamCity. Today the script only pulls richer failure detail (job logs, workflow/pipeline info) for CircleCI; a failing check from any of the others still shows up with its name and status, just without that extra detail. For CircleCI, the script tries to identify the project and pull that detail directly from its API, assuming the project's identifier matches the repo's GitHub remote. If that assumption is wrong (the CircleCI API calls come back empty or errored for a project you can otherwise see is failing), search the repo yourself — e.g. CI config files, README badges — for the real project identifier, or ask the user, rather than assuming the script will find it for you. If the tool needs an API token (e.g. `CIRCLE_TOKEN` for CircleCI) and it isn't set, the script says so; ask the user for it rather than guessing or skipping the check.
+
 ### Phase 2: Fix each failure
 
 Work through the failing checks one at a time. For each failure:
