@@ -116,10 +116,37 @@ def _matches(entry: dict, argv: list, argv_str: str) -> bool:
         # `gh pr view --json ...,mergeable,mergeStateStatus,...` call, which
         # previously false-triggered a `["pr", "merge"]` guard entry meant to
         # catch actual `gh pr merge` invocations).
+        #
+        # Multi-element entries made up ENTIRELY of bare subcommand words
+        # (e.g. ["pr", "list"], ["label", "list"], no substring starting
+        # with "-") represent a subcommand path, which always appears as a
+        # prefix of argv before any flag. Restricting their search to that
+        # prefix stops a generic entry like ["pr", "list"] from matching a
+        # completely different call (e.g. `pr edit --body "...the items
+        # list..."`) just because a later flag's free-text VALUE happens to
+        # contain the word "list" as a bounded token. Entries that
+        # themselves include a flag-like substring (e.g. ["pr", "view",
+        # "--json", "assignees,isDraft"], which intentionally matches a
+        # flag and its value) are exempt from this restriction -- the
+        # entry author is deliberately reaching past the subcommand prefix,
+        # so the full argv remains searchable. Single-element entries (e.g.
+        # a `gh api <path>` fragment) are likewise exempt, since they
+        # intentionally match one specific positional token.
+        bare_subcommand_entry = len(substrings) > 1 and not any(
+            s.startswith("-") for s in substrings
+        )
+        if bare_subcommand_entry:
+            search_limit = len(argv)
+            for i, tok in enumerate(argv):
+                if tok.startswith("-"):
+                    search_limit = i
+                    break
+        else:
+            search_limit = len(argv)
         pos = 0
         for s in substrings:
             found_at = None
-            for i in range(pos, len(argv)):
+            for i in range(pos, search_limit):
                 if _bounded_contains(s, argv[i]):
                     found_at = i
                     break
