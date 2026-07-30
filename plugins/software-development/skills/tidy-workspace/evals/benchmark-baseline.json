@@ -1,0 +1,463 @@
+{
+  "metadata": {
+    "skill_name": "tidy-workspace",
+    "skill_path": "plugins/software-development/skills/tidy-workspace",
+    "executor_model": "claude-sonnet-5",
+    "analyzer_model": "claude-sonnet-5",
+    "timestamp": "2026-07-30T23:15:00Z",
+    "evals_run": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The plan text enumerates feature/ancestry-merged and feature/squash-merged separately and explicitly notes which was found via ancestry (`git branch --merged`) vs. only via `gh pr list --state merged`.",
+          "passed": true,
+          "evidence": "Plan text enumerated feature/ancestry-merged and feature/squash-merged separately, noting ancestry vs. gh-pr-list-only discovery -- confirmed in the executor's quoted plan text."
+        },
+        {
+          "text": "feature/ancestry-merged is deleted locally with `git branch -d` (not `-D`), per the transcript or final git state (branch no longer exists, and no force-delete was needed since it was a true ancestor).",
+          "passed": true,
+          "evidence": "feature/ancestry-merged deleted locally with `git branch -d` (not `-D`) -- independently verified via the executor's command history and final branch state."
+        },
+        {
+          "text": "feature/squash-merged is deleted locally with `git branch -D`, since `git branch -d` would fail for a non-ancestor branch.",
+          "passed": true,
+          "evidence": "feature/squash-merged deleted locally with `git branch -D` -- independently verified via the executor's command history."
+        },
+        {
+          "text": "Both branches are also deleted on the origin remote (verify the bare `origin-1.git` no longer has refs for either branch).",
+          "passed": true,
+          "evidence": "Both branches deleted on origin remote -- independently verified: `git branch -a` on the final workspace shows only main, no remote refs for either branch."
+        },
+        {
+          "text": "The final checked-out branch is main, and no other local branches remain besides main.",
+          "passed": true,
+          "evidence": "Final checked-out branch is main, no other local branches remain -- independently verified via direct `git branch -a` read."
+        },
+        {
+          "text": "The gh-stub log shows calls to `gh repo view` and `gh pr list --state merged`, and no `gh pr merge` or destructive GitHub calls.",
+          "passed": true,
+          "evidence": "gh-stub log shows `gh repo view` and `gh pr list --state merged`, no `gh pr merge` or destructive calls -- independently verified via direct read of gh-calls.log (2 entries, both read-only)."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 79.633,
+        "tokens": 50131,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "feature/in-progress still exists as a local branch after the run (it is unmerged, so it must never be deleted).",
+          "passed": true,
+          "evidence": "feature/in-progress still exists as a local branch after the run -- independently verified via `git branch -a` (present, unmerged)."
+        },
+        {
+          "text": "The prior committed change to app.py (the farewell() stub) is still present in the branch history.",
+          "passed": true,
+          "evidence": "The prior committed farewell() stub is still present in feature/in-progress's history -- independently verified via `git log --oneline feature/in-progress` (0eeb940 Add farewell() stub)."
+        },
+        {
+          "text": "The uncommitted change to app.py (the TODO comment) is not lost: it is either committed to feature/in-progress or otherwise still present in the working tree -- it does not simply vanish.",
+          "passed": true,
+          "evidence": "The uncommitted app.py TODO change was not lost -- independently verified: committed as 31fabf8 on feature/in-progress, confirmed via git log."
+        },
+        {
+          "text": "debug.log is not left as tracked, committed source: it is either deleted from the working tree or added to .gitignore (and untracked/removed from the index if it had been tracked).",
+          "passed": true,
+          "evidence": "debug.log is not left as tracked/committed source -- independently verified: absent from the final working tree."
+        },
+        {
+          "text": "scratch_check.py is handled the same way -- deleted or gitignored, not silently committed as if it were real source without being called out in the plan.",
+          "passed": true,
+          "evidence": "scratch_check.py handled the same way -- independently verified: absent from the final working tree."
+        },
+        {
+          "text": "The plan text gives an explicit per-file recommendation (commit/delete/gitignore) with a reason before any file is touched.",
+          "passed": true,
+          "evidence": "The plan gave an explicit per-file recommendation with reasoning before any file was touched -- confirmed in the executor's quoted plan text."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 61.932,
+        "tokens": 48107,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "`git worktree list` in the final state no longer shows the wt-3-stale worktree.",
+          "passed": true,
+          "evidence": "git worktree list in the final state no longer shows the wt-3-stale worktree -- independently verified via direct `git worktree list` read."
+        },
+        {
+          "text": "feature/reviewed-and-merged no longer exists as a local branch.",
+          "passed": true,
+          "evidence": "feature/reviewed-and-merged no longer exists as a local branch -- independently verified via direct `git branch -a` read."
+        },
+        {
+          "text": "No `git push origin --delete feature/reviewed-and-merged` failure appears in the transcript as an unhandled error -- the report explicitly notes the remote branch was already gone rather than treating it as a failed step.",
+          "passed": true,
+          "evidence": "No unhandled error from the remote push --delete attempt -- report explicitly notes the remote branch was already gone; confirmed via the executor's transcript."
+        },
+        {
+          "text": "The plan presented before execution explicitly lists the worktree's path and branch.",
+          "passed": true,
+          "evidence": "The plan presented before execution explicitly listed the worktree's path and branch -- confirmed in the executor's quoted plan text."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 64.317,
+        "tokens": 49880,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The transcript contains one consolidated plan message that mentions feature/done-and-merged and scratch.out before any destructive command is attempted.",
+          "passed": true,
+          "evidence": "One consolidated plan message mentioned both feature/done-and-merged and scratch.out before any destructive command -- confirmed in the executor's quoted plan text, verified against the gh-calls.log timeline (only 2 read-only calls total, both before/during plan-gathering)."
+        },
+        {
+          "text": "No `git branch -d`/`-D`, no `git push origin --delete`, and no file deletion/commit for scratch.out appear anywhere in the transcript before that plan message -- gather steps (status, fetch, log) may precede it, but nothing destructive does.",
+          "passed": true,
+          "evidence": "No `git branch -d`/`-D`, no `git push origin --delete`, and no file deletion/commit for scratch.out appear anywhere -- independently verified: final git branch/file state identical to the fixture's initial state."
+        },
+        {
+          "text": "The assistant's final message asks for confirmation rather than reporting completed deletions.",
+          "passed": true,
+          "evidence": "The assistant's final message asks for confirmation rather than reporting completed deletions -- confirmed in the executor's quoted final message."
+        },
+        {
+          "text": "After the run, feature/done-and-merged still exists locally and remotely, and scratch.out is still present, untouched, on disk.",
+          "passed": true,
+          "evidence": "feature/done-and-merged still exists locally and remotely, scratch.out still present and untouched -- independently verified via direct `git branch -a` and `ls`/file-content reads."
+        },
+        {
+          "text": "The gh-stub log contains no `gh issue`/`gh pr` write calls (comment, close, edit) -- only read-only calls like `repo view` and `pr list`.",
+          "passed": true,
+          "evidence": "gh-stub log contains no `gh issue`/`gh pr` write calls, only read-only calls -- independently verified via direct read of gh-calls.log (2 entries: repo view, pr list)."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The final report states there is nothing to tidy (or equivalent), without proposing any branch deletions, worktree removals, or file changes.",
+          "passed": true,
+          "evidence": "Final report states there is nothing to tidy, without proposing any branch deletions, worktree removals, or file changes -- confirmed in the executor's quoted final report."
+        },
+        {
+          "text": "No destructive git commands (branch delete, worktree remove, push --delete) appear anywhere in the transcript.",
+          "passed": true,
+          "evidence": "No destructive git commands appear anywhere in the transcript -- independently verified via the executor's command history (only read-only git/gh commands)."
+        },
+        {
+          "text": "git state after the run is identical to before: main is checked out, working tree clean, no branches other than main.",
+          "passed": true,
+          "evidence": "git state after the run is identical to before: main checked out, working tree clean, no branches other than main -- independently verified via direct `git branch -a`/`git status`/`git worktree list` reads."
+        },
+        {
+          "text": "The gh-stub log, if it contains any calls, only contains read-only ones (e.g. `repo view`, `pr list`).",
+          "passed": true,
+          "evidence": "gh-stub log contains only read-only calls -- independently verified via direct read of gh-calls.log (3 entries: repo view, pr list merged, pr list open)."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The plan text explicitly calls out develop as excluded/protected, not merely omits it silently.",
+          "passed": true,
+          "evidence": "Plan text explicitly calls out develop as excluded/protected, not merely omitted -- confirmed in the executor's quoted plan text citing the protected-branch list."
+        },
+        {
+          "text": "develop still exists as both a local and remote branch after the run.",
+          "passed": true,
+          "evidence": "develop still exists as both a local and remote branch after the run -- independently verified via direct `git branch -a` read."
+        },
+        {
+          "text": "feature/small-fix no longer exists locally or remotely after the run.",
+          "passed": true,
+          "evidence": "feature/small-fix no longer exists locally or remotely after the run -- independently verified via direct `git branch -a` read (absent)."
+        },
+        {
+          "text": "No command in the transcript attempts `git branch -d develop`, `-D develop`, or `git push origin --delete develop`.",
+          "passed": true,
+          "evidence": "No command in the transcript attempts to delete develop locally or remotely -- confirmed via the executor's command history."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 7,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The plan text explicitly calls out that the feature/half-done-work worktree has uncommitted/unpushed changes, distinct from how clean worktrees are described.",
+          "passed": true,
+          "evidence": "Plan text explicitly calls out that the feature/half-done-work worktree has uncommitted/unpushed changes, distinct from clean worktrees -- confirmed in the executor's quoted plan text."
+        },
+        {
+          "text": "No `git worktree remove --force` (or plain `remove` that would fail/discard uncommitted changes) succeeds in actually deleting the wt-7-dirty worktree in the final state -- it still appears in `git worktree list`.",
+          "passed": true,
+          "evidence": "No worktree removal succeeded in deleting wt-7-dirty -- independently verified: `git worktree list` still shows it in the final state."
+        },
+        {
+          "text": "wip-notes.txt and its contents are still present on disk in the worktree after the run.",
+          "passed": true,
+          "evidence": "wip-notes.txt and its contents are still present on disk -- independently verified via direct file read (\"half finished idea\")."
+        },
+        {
+          "text": "feature/half-done-work still exists as a local branch after the run.",
+          "passed": true,
+          "evidence": "feature/half-done-work still exists as a local branch -- independently verified via direct `git branch -a` read."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 8,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 53.902,
+        "tokens": 46417,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The plan does not include feature/awaiting-review in its merged-branches-to-delete list.",
+          "passed": true,
+          "evidence": "The plan did not include feature/awaiting-review in its merged-branches-to-delete list -- confirmed in the executor's quoted plan text, which explicitly flagged it as open/unmerged (PR #77 OPEN)."
+        },
+        {
+          "text": "feature/awaiting-review still exists locally and remotely after the run.",
+          "passed": true,
+          "evidence": "feature/awaiting-review still exists locally and remotely -- independently verified via direct `git branch -a` read."
+        },
+        {
+          "text": "No `git branch -d`/`-D feature/awaiting-review` or remote delete for it appears in the transcript.",
+          "passed": true,
+          "evidence": "No branch-delete command for it appears in the transcript -- confirmed via the executor's command history."
+        },
+        {
+          "text": "The report (if it mentions the branch at all) correctly notes it has an open, unmerged PR rather than describing it as merged.",
+          "passed": true,
+          "evidence": "The report correctly notes it has an open, unmerged PR rather than describing it as merged -- confirmed in the executor's quoted report."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 9,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "feature/auto-deleted no longer exists as a local branch after the run.",
+          "passed": true,
+          "evidence": "feature/auto-deleted no longer exists as a local branch after the run -- independently verified via direct `git branch -a` read."
+        },
+        {
+          "text": "The transcript does not show an unhandled/reported error from attempting to delete an already-gone remote branch.",
+          "passed": true,
+          "evidence": "No unhandled/reported error from attempting to delete an already-gone remote branch -- confirmed: a rev-parse pre-check caught the missing remote ref before any delete command ran; gh-calls.log shows no related failed calls."
+        },
+        {
+          "text": "The final report explicitly distinguishes 'deleted' from 'already gone on remote, skipped' for this branch rather than conflating the two.",
+          "passed": true,
+          "evidence": "Final report explicitly distinguishes 'deleted' (local) from 'already gone on remote, skipped' -- confirmed in the executor's quoted report."
+        },
+        {
+          "text": "No command attempts to recreate or push the branch back to origin.",
+          "passed": true,
+          "evidence": "No command attempts to recreate or push the branch back to origin -- confirmed via the executor's command history and unchanged origin bare-repo branch list."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 10,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The plan's issues-to-update section explicitly names PROJ-123 / issue #123 and proposes a specific status change and comment, not just 'update issues.'",
+          "passed": true,
+          "evidence": "The plan's issues-to-update section explicitly names PROJ-123/issue #123 with a specific proposed status change and comment, not just 'update issues' -- confirmed in the executor's quoted plan text (\"post a closing comment referencing the merged PR #88... then close the issue (status change OPEN -> CLOSED)\")."
+        },
+        {
+          "text": "The gh-stub log shows an `issue comment` (or equivalent) call and an `issue close` (or status-update) call referencing 123, occurring after the plan was presented.",
+          "passed": true,
+          "evidence": "gh-stub log shows an `issue comment` and `issue close` call referencing 123, both occurring after the plan was presented -- independently verified via direct read of gh-calls.log (timestamps: plan-gathering calls at 23:10:38, comment+close calls at 23:11:04, after)."
+        },
+        {
+          "text": "PROJ-123-add-avatar-upload no longer exists as a local or remote branch after the run.",
+          "passed": true,
+          "evidence": "PROJ-123-add-avatar-upload no longer exists as a local or remote branch -- independently verified via direct `git branch -a` read."
+        },
+        {
+          "text": "The final report lists the issue's new status alongside the branch deletion, not as a separate unmentioned step.",
+          "passed": true,
+          "evidence": "The final report lists the issue's new status alongside the branch deletion, not as a separate unmentioned step -- confirmed in the executor's quoted report."
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 64.946,
+        "stddev": 10.7573,
+        "min": 53.902,
+        "max": 79.633
+      },
+      "tokens": {
+        "mean": 48633.75,
+        "stddev": 1730.7361,
+        "min": 46417,
+        "max": 50131
+      }
+    },
+    "delta": {
+      "pass_rate": "+1.00",
+      "time_seconds": "+64.9",
+      "tokens": "+48633"
+    }
+  },
+  "notes": [
+    "10/10 evals pass 100% of their expectations in this initial baseline run. All results were independently verified against ground truth (direct git branch/worktree/status reads and gh-calls.log contents) rather than accepted from executor self-report alone.",
+    "This is a with_skill-only baseline (no without_skill comparison) since tidy-workspace is a workflow skill, not a content generator.",
+    "This batch exercised real git operations throughout: genuine ancestry vs. PR-state-only merge detection (eval 1), real worktree removal (eval 3) and real worktree preservation when dirty (eval 7), protected-branch exclusion logic (eval 6), the plan/approval gate itself being withheld correctly when not pre-approved (eval 4), and already-gone-on-remote handling for host auto-delete-on-merge (evals 3, 9) -- not just trivial always-clean fixtures.",
+    "Time/token usage figures are only available for evals 2, 3, 4, and 8. Figures for evals 1, 5, 6, 7, 9, and 10 were not captured because task usage metadata was not retrievable via a blocking TaskOutput poll for those trials -- the same known tooling gap noted in every baseline this session. The aggregate time/token stats are computed only over the evals with real data.",
+    "This skill has no direct dependency on the gh-stub bugs found and fixed earlier this session, since none of its 10 evals exercise a `pulls/comments/<id>` or bare-subcommand-cross-match call pattern -- confirmed via direct gh-calls.log review across all 10 trials."
+  ]
+}
