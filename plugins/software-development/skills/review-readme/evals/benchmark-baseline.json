@@ -34,8 +34,8 @@
         "total": 3,
         "time_seconds": null,
         "tokens": null,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -67,8 +67,8 @@
         "total": 3,
         "time_seconds": 93.355,
         "tokens": 53378,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -100,8 +100,8 @@
         "total": 3,
         "time_seconds": 63.114,
         "tokens": 49232,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -133,8 +133,8 @@
         "total": 4,
         "time_seconds": null,
         "tokens": null,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -171,8 +171,8 @@
         "total": 3,
         "time_seconds": null,
         "tokens": null,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -204,8 +204,8 @@
         "total": 3,
         "time_seconds": null,
         "tokens": null,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -237,8 +237,8 @@
         "total": 2,
         "time_seconds": 75.652,
         "tokens": 52047,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -265,8 +265,8 @@
         "total": 3,
         "time_seconds": 54.798,
         "tokens": 48806,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -298,8 +298,8 @@
         "total": 2,
         "time_seconds": null,
         "tokens": null,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -326,8 +326,8 @@
         "total": 2,
         "time_seconds": null,
         "tokens": null,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -354,8 +354,8 @@
         "total": 3,
         "time_seconds": null,
         "tokens": null,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -387,8 +387,8 @@
         "total": 3,
         "time_seconds": 77.556,
         "tokens": 51657,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -420,8 +420,8 @@
         "total": 3,
         "time_seconds": 105.336,
         "tokens": 53940,
-        "tool_calls": 0,
-        "errors": 0
+        "tool_calls": null,
+        "errors": null
       },
       "expectations": [
         {
@@ -463,19 +463,16 @@
         "min": 48806,
         "max": 53940
       }
-    },
-    "delta": {
-      "pass_rate": "+1.00",
-      "time_seconds": "+78.3",
-      "tokens": "+51510"
     }
   },
   "notes": [
     "13/13 evals pass 100% of their expectations in this initial baseline run. All results were independently verified against ground truth (direct file reads, grep against the final README, and cross-checks against package.json/CONTRIBUTING.md/the actual repo file layout) rather than accepted from executor self-report alone.",
     "This is a with_skill-only baseline (no without_skill comparison) since review-readme is a workflow skill, not a content generator.",
     "This skill has no gh/GitHub interaction at all -- fixtures are plain local file trees with no gh-stub cassette involved, so this batch was unaffected by the gh-stub bugs found and fixed while baselining other skills this session.",
-    "Time/token usage figures are only available for evals 2, 3, 4, 7, 8, 12, and 13. Figures for evals 1, 5, 6, 9, 10, and 11 were not captured because task usage metadata was not retrievable via a blocking TaskOutput poll for those trials -- the same known tooling gap noted in prior baselines this session. The aggregate time/token stats are computed only over the 7 evals with real data.",
+    "Time/token usage figures are only available for evals 2, 3, 7, 8, 12, and 13. Figures for evals 1, 4, 5, 6, 9, 10, and 11 were not captured because task usage metadata was not retrievable via a blocking TaskOutput poll for those trials -- the same known tooling gap noted in prior baselines this session. The aggregate time/token stats are computed only over the 6 evals with real data.",
     "Eval 4 (the clean-fixture guard case) is a strong positive result: the executor independently re-verified every command, port number, and Node version against the actual codebase before concluding no changes were needed, rather than assuming the prompt's framing. It made zero edits, and the final README is byte-for-byte identical to the fixture's original -- avoiding the 'invents busywork to seem useful' failure mode this eval specifically guards against.",
-    "This batch covered a strong mix of real documentation defects: stale commands (1, 9, 12), duplicate content (2), a genuinely unresolvable broken link handled by removal rather than fabrication (3), a clean-fixture guard (4), documentation gaps (5, 8), a broken/incomplete table of contents (6), a heading hierarchy violation (7), inconsistent code-fence formatting (10), a wall-of-text paragraph needing restructuring without information loss (11), a CONTRIBUTING.md guideline overriding the skill's npm default (12), and an outdated directory tree (13)."
+    "This batch covered a strong mix of real documentation defects: stale commands (1, 9, 12), duplicate content (2), a genuinely unresolvable broken link handled by removal rather than fabrication (3), a clean-fixture guard (4), documentation gaps (5, 8), a broken/incomplete table of contents (6), a heading hierarchy violation (7), inconsistent code-fence formatting (10), a wall-of-text paragraph needing restructuring without information loss (11), a CONTRIBUTING.md guideline overriding the skill's npm default (12), and an outdated directory tree (13).",
+    "The `tool_calls` and `errors` fields on every run were hardcoded to 0, not measured -- they aren't wired up in the executor/grader pipeline yet. Set to null here (matching how the timing/token gap above is already disclosed) rather than left as a silent 0 that could be mistaken for \"measured, zero tool calls,\" including on the 6 runs that do have real timing/token data.",
+    "run_summary.delta is omitted: this is a with_skill-only baseline (no without_skill comparison was run), so a computed \"+X\" delta against an implicit zero baseline would be misleading -- consistent with the Markdown summary, which never had a delta row to begin with."
   ]
 }
