@@ -460,8 +460,15 @@ download_log_from_url() {
     return 1
   fi
 
-  # Download the log file from S3 (requires Circle-Token for authentication)
-  curl -s -H "Circle-Token: ${CIRCLE_TOKEN}" "$output_url" 2>/dev/null
+  # Download the log file. output_url is CircleCI's log storage (S3), not
+  # circleci.com -- these URLs are typically pre-signed, so only attach the
+  # Circle-Token header when the target is actually circleci.com, to avoid
+  # needlessly sending the token to a third-party host.
+  if [[ "$output_url" == *"circleci.com"* ]]; then
+    curl -s -H "Circle-Token: ${CIRCLE_TOKEN}" "$output_url" 2>/dev/null
+  else
+    curl -s "$output_url" 2>/dev/null
+  fi
 }
 
 # Function to format log content from JSON array format
@@ -481,21 +488,16 @@ format_log_output() {
 
   # Extract messages from JSON array, preserving order
   # jq -r will decode Unicode escape sequences (ANSI codes, carriage returns, etc.) and output raw text
-  # Then strip ANSI escape codes and control characters for cleaner output
+  # Then strip ANSI escape codes and control characters for cleaner output.
+  # A single sed pass over the whole stream (rather than forking multiple
+  # subshells per line) avoids a meaningful latency cost on multi-thousand-
+  # line CircleCI job logs. The general \x1b\[[0-9;]*[a-zA-Z] pattern already
+  # covers the K/2K/1G/0K cases the old per-line version handled separately
+  # (each is just ESC[ + digits + one letter), and /^$/d drops any line that
+  # becomes empty once its escape codes/carriage returns are stripped --
+  # matching the old "only print non-empty lines" behavior.
   echo "$log_content" | jq -r '.[]? | select(.message != null and .message != "") | .message' 2>/dev/null | \
-    while IFS= read -r line || [[ -n "$line" ]]; do
-      # Remove carriage returns
-      line=$(echo "$line" | tr -d '\r')
-      # Remove ANSI escape codes (color codes, cursor movement, etc.)
-      # This regex handles: \x1b[ followed by numbers/semicolons and ending with a letter
-      line=$(echo "$line" | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g')
-      # Remove other common ANSI codes
-      line=$(echo "$line" | sed 's/\x1b\[K//g' | sed 's/\x1b\[2K//g' | sed 's/\x1b\[1G//g' | sed 's/\x1b\[0K//g')
-      # Only print non-empty lines
-      if [[ -n "$line" ]]; then
-        echo "$line"
-      fi
-    done
+    sed -E 's/\r//g; s/\x1b\[[0-9;]*[a-zA-Z]//g; /^$/d'
 }
 
 # Enrich a GitHub checks array with CircleCI data where applicable. No-op
@@ -1202,7 +1204,13 @@ if [[ -n "$DETAILS" ]]; then
     if [[ "$CHECK_IS_CIRCLECI" = "true" ]] && [[ -n "$CHECK_JOB_NUMBER" ]] && [[ "$CHECK_JOB_NUMBER" != "null" ]]; then
       JOB_DETAILS=$(get_job_details "$CHECK_JOB_NUMBER")
       if [[ $? -eq 0 ]] && [[ -n "$JOB_DETAILS" ]]; then
-        CHECK=$(echo "$CHECK" | jq --argjson details "$JOB_DETAILS" '. + $details' 2>/dev/null || echo "$CHECK")
+        # $details goes first so CHECK's already-normalized GitHub-derived
+        # fields (e.g. .name/.status) win on conflict -- JOB_DETAILS carries
+        # CircleCI's raw job vocabulary (blocked, infrastructure_fail, etc.)
+        # under those same keys, which doesn't match the failure|failed|error
+        # / success|successful checks used later and would misclassify the
+        # check (e.g. as "Unknown") if it were allowed to overwrite them.
+        CHECK=$(echo "$CHECK" | jq --argjson details "$JOB_DETAILS" '$details + .' 2>/dev/null || echo "$CHECK")
       fi
 
       CHECK_STATUS_LOWER=$(echo "$CHECK" | jq -r '.status // "unknown"' 2>/dev/null | tr '[:upper:]' '[:lower:]')
