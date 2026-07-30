@@ -73,32 +73,59 @@ def _save_counts(cassette_path: Path, counts: dict) -> None:
     _counter_path(cassette_path).write_text(json.dumps(counts))
 
 
+def _bounded_contains(s: str, token: str) -> bool:
+    """True if `s` appears in `token` as a whole word, not embedded in a
+    longer word. Prevents a substring like "merge" (intended to match the
+    literal `merge` subcommand token) from also matching inside an unrelated
+    word like "mergeable" or "mergeStateStatus" in a --json field-list
+    value. A match counts as bounded when the character immediately before
+    and after it (if any) is not alphanumeric -- so comma/slash/space/flag
+    delimited occurrences (e.g. "milestone" inside
+    "title,labels,milestone,assignees,body") still count, but a same-word
+    prefix collision like "merge" inside "mergeable" does not.
+    """
+    start = 0
+    while True:
+        idx = token.find(s, start)
+        if idx == -1:
+            return False
+        before = token[idx - 1] if idx > 0 else ""
+        after = token[idx + len(s)] if idx + len(s) < len(token) else ""
+        if not before.isalnum() and not after.isalnum():
+            return True
+        start = idx + 1
+
+
 def _matches(entry: dict, argv: list, argv_str: str) -> bool:
     substrings = entry.get("match")
     if substrings is not None:
-        # Each substring must be found as a substring of some argv token, and
-        # tokens must be consumed in order (each substring's token index must
-        # be >= the previous substring's token index). This is deliberately
-        # NOT "all substrings appear anywhere in the space-joined argv" --
-        # that allowed a substring like "label" (intended to match the
-        # `label` subcommand token) to also match inside an unrelated later
-        # token such as a `--json title,labels,milestone,...` field list,
-        # since "labels" contains "label". Requiring in-order, per-token
+        # Each substring must be found as a bounded (whole-word) substring of
+        # some argv token, and tokens must be consumed in order (each
+        # substring's token index must be strictly greater than the previous
+        # substring's). This is deliberately NOT "all substrings appear
+        # anywhere in the space-joined argv" -- that allowed a substring like
+        # "label" (intended to match the `label` subcommand token) to also
+        # match inside an unrelated later token such as a
+        # `--json title,labels,milestone,...` field list, since "labels"
+        # contains "label". Requiring in-order, per-token, bounded
         # containment keeps single-element path-fragment matches (e.g.
         # ["commits/abc123/check-runs"] against one `gh api <path>` token)
-        # working exactly as before, while eliminating cross-argument false
-        # positives for the common multi-element subcommand-shaped patterns
-        # (e.g. ["label", "list"], ["milestone", "list"]).
+        # working exactly as before, while eliminating both cross-argument
+        # false positives (e.g. ["label", "list"] vs. a --json field list)
+        # and same-word prefix collisions (e.g. "merge" vs. "mergeable" in a
+        # `gh pr view --json ...,mergeable,mergeStateStatus,...` call, which
+        # previously false-triggered a `["pr", "merge"]` guard entry meant to
+        # catch actual `gh pr merge` invocations).
         pos = 0
         for s in substrings:
             found_at = None
             for i in range(pos, len(argv)):
-                if s in argv[i]:
+                if _bounded_contains(s, argv[i]):
                     found_at = i
                     break
             if found_at is None:
                 return False
-            pos = found_at
+            pos = found_at + 1
         return True
     pattern = entry.get("match_regex")
     if pattern is not None:
