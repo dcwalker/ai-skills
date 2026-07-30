@@ -131,6 +131,69 @@ class SonarQubeClient:
             json.dump(counts, f)
         return entry[min(idx, len(entry) - 1)]
 
+    def _paginated_request(self, path: str, params: dict, list_key: str) -> list:
+        """Fetch every page of a SonarQube search endpoint and return the
+        concatenated list under `list_key` (e.g. "issues", "hotspots").
+
+        SonarQube's search endpoints cap each response to `ps` items
+        (default varies by endpoint, well under real project sizes) and
+        report the true count in `paging.total`. A single unpaginated call
+        silently truncates to the first page, which under-reports issues
+        on any project/PR with more findings than fit on one page --
+        exactly the "never report a clean bill of health from a partial
+        result" failure this skill is supposed to guard against, just one
+        level up (a partial fetch instead of a stale scan).
+
+        Returns a dict shaped like a single search response (so existing
+        callers' error/metadata handling is unchanged), but with `list_key`
+        holding every item across all pages instead of just the first.
+
+        Under SONAR_FIXTURE_FILE (see _fixture_response), a fixture entry
+        is keyed by path only and ignores query params, so every page
+        request would return the exact same canned response -- looping
+        would either hang (if the fixture's own paging.total exceeds one
+        page) or, for a list-valued fixture entry, incorrectly consume
+        multiple call-count-driven entries (meant to represent successive
+        scans, not pages of one scan) for a single fetch. So pagination is
+        real-API-only; fixture mode keeps making exactly one call per
+        fetch, matching the eval fixtures' existing call-count semantics.
+        """
+        if os.environ.get("SONAR_FIXTURE_FILE"):
+            return self._request(path, params) or {}
+
+        params = dict(params)
+        params.setdefault("ps", 500)
+        page = 1
+        items: list = []
+        components: list = []
+        rules: list = []
+        users: list = []
+        last_data: dict = {}
+        while True:
+            params["p"] = page
+            data = self._request(path, params)
+            if not data:
+                break
+            last_data = data
+            if data.get("errors"):
+                break
+            page_items = data.get(list_key, [])
+            items.extend(page_items)
+            components.extend(data.get("components", []))
+            rules.extend(data.get("rules", []))
+            users.extend(data.get("users", []))
+            total = data.get("paging", {}).get("total", len(items))
+            if len(items) >= total or not page_items:
+                break
+            page += 1
+
+        result = dict(last_data)
+        result[list_key] = items
+        result["components"] = components
+        result["rules"] = rules
+        result["users"] = users
+        return result
+
     def _request(self, path: str, params: Optional[dict] = None) -> Any:
         """Make authenticated GET request and return JSON."""
         fixture_file = os.environ.get("SONAR_FIXTURE_FILE")
@@ -218,9 +281,9 @@ class SonarQubeClient:
         ]
 
     def get_issues(self) -> dict:
-        """Fetch issues from api/issues/search."""
+        """Fetch issues from api/issues/search, across all pages."""
         params = self._build_issue_search_params()
-        data = self._request("api/issues/search", params)
+        data = self._paginated_request("api/issues/search", params, "issues")
         if not data:
             return {"total": 0, "issues": []}
         errs = data.get("errors", [])
@@ -251,7 +314,7 @@ class SonarQubeClient:
         return hotspots
 
     def get_hotspots(self) -> dict:
-        """Fetch security hotspots from api/hotspots/search."""
+        """Fetch security hotspots from api/hotspots/search, across all pages."""
         params = {"projectKey": self.project_key}
         if self.args.issue_key:
             params["ps"] = 500
@@ -264,7 +327,7 @@ class SonarQubeClient:
         if self.args.rule:
             params["ruleKey"] = self.args.rule
 
-        data = self._request("api/hotspots/search", params)
+        data = self._paginated_request("api/hotspots/search", params, "hotspots")
         if not data:
             return {"total": 0, "hotspots": [], "rules": []}
         errs = data.get("errors", [])
