@@ -17,8 +17,8 @@ Cassette format:
   "calls": [
     {
       "match": ["pr", "view"],          // ALL substrings must be found as substrings
-                                         // of argv tokens, in order (each one at the
-                                         // same token or a later token than the last)
+                                         // of argv tokens, in order (each subsequent
+                                         // substring must land in a strictly later token)
       "match_regex": null,               // OR a regex tested against argv joined by " "
       "times": null,                     // optional cap on how many times this entry can match (default: unlimited)
       "stdout": "...",                   // literal stdout
