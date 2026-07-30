@@ -83,7 +83,18 @@ def _bounded_contains(s: str, token: str) -> bool:
     delimited occurrences (e.g. "milestone" inside
     "title,labels,milestone,assignees,body") still count, but a same-word
     prefix collision like "merge" inside "mergeable" does not.
+
+    The boundary check on each side is only enforced when `s` itself ends
+    (or begins) with an alphanumeric character. If `s` already ends with a
+    delimiter -- e.g. a path-fragment match like "pulls/comments/" -- then
+    whatever follows in the token (even a digit, like the numeric ID in
+    ".../pulls/comments/3001") can never "extend" `s` into a different word,
+    so no boundary check is needed on that side. Without this, a match
+    substring deliberately ending in "/" would wrongly fail to match any
+    token where it's immediately followed by more path segments or digits.
     """
+    check_before = s[0].isalnum() if s else False
+    check_after = s[-1].isalnum() if s else False
     start = 0
     while True:
         idx = token.find(s, start)
@@ -91,7 +102,9 @@ def _bounded_contains(s: str, token: str) -> bool:
             return False
         before = token[idx - 1] if idx > 0 else ""
         after = token[idx + len(s)] if idx + len(s) < len(token) else ""
-        if not before.isalnum() and not after.isalnum():
+        before_ok = not (check_before and before.isalnum())
+        after_ok = not (check_after and after.isalnum())
+        if before_ok and after_ok:
             return True
         start = idx + 1
 
