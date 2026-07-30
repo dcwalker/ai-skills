@@ -1,6 +1,6 @@
 # Contributing Guidelines
 
-This document outlines our coding standards, documentation practices, and testing expectations for this repo's Claude Code skills and plugins, and for the supporting scripts (e.g. `evals/lib/`) that back them.
+This document outlines our coding standards, documentation practices, and testing expectations for the skills and plugins in this repo, and for the supporting scripts (e.g. `evals/lib/`) that back them. Skills are written to be usable by any capable agent, not just Claude Code; this repo's plugin packaging (`.claude-plugin/`, the marketplace) is a Claude Code-specific distribution mechanism, but the skill instructions themselves should not assume a specific agent's tool names or behavior.
 
 ## Planning
 
@@ -22,6 +22,7 @@ This helps ensure we're all moving in the same direction and prevents duplicate 
 - Security: use environment variables or secure vaults for secrets, API keys, and credentials
 - Ecosystem best practices: adhere to community and industry best practices; use the existing patterns and frameworks established in the project.
 - Performance and scalability: code should be resource efficient and capable of running at large scale.
+- Agent portability: write skill instructions around generic tools and outcomes (e.g. `git`, `gh`) rather than a specific agent's tool-calling interface, so skills remain usable by any capable agent
 
 ### Configuration and Environment
 
