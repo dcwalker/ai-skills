@@ -58,7 +58,7 @@
         {
           "text": "The skill reports the created issue back to the user as a link referencing the issue number/URL returned by the stub",
           "passed": true,
-          "evidence": "Transcript line 63: 'Result reported to user: https://github.com/dcwalker/widget-app/issues/101 \u2014 Issue #101.' Cross-checked against the fixture cassette (/Users/danwalker/code/ai-skills/plugins/software-development/skills/create-github-issue/evals/fixtures/1/gh-cassette.json), whose 'issue','create' match entry returns stdout 'https://github.com/dcwalker/widget-app/issues/101\\n' \u2014 the reported link matches the stub's actual canned output exactly."
+          "evidence": "Transcript line 63: 'Result reported to user: https://github.com/dcwalker/widget-app/issues/101 \u2014 Issue #101.' Cross-checked against the fixture cassette (plugins/software-development/skills/create-github-issue/evals/fixtures/1/gh-cassette.json), whose 'issue','create' match entry returns stdout 'https://github.com/dcwalker/widget-app/issues/101\\n' \u2014 the reported link matches the stub's actual canned output exactly."
         }
       ],
       "notes": []
