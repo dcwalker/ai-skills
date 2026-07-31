@@ -6,7 +6,7 @@
       "prompt": "I need help writing an email to my manager. I have to tell her I'm turning down the promotion she offered me last week -- I want to stay in my current role for personal reasons, but I don't want to sound ungrateful or like I'm not committed to the team.",
       "expected_output": "The skill establishes the deliverable (email, audience = manager, purpose, tone/length) in Step 1, then interviews the user one question at a time -- never combining two questions into a single turn -- providing a running summary of the interview so far after each answer, before eventually drafting the email in Step 4.",
       "expectations": [
-        "Every assistant turn during the interview phase contains at most one question -- no turn bundles two or more distinct questions together.",
+        "Every assistant turn during the interview phase pursues at most one line of inquiry. A second question in the same turn is acceptable only when it clarifies or narrows the first (guiding how to answer the same inquiry); a turn that bundles asks about different subjects, whether as separate question sentences or joined into one sentence with 'and', fails this.",
         "A running summary of the answers gathered so far appears after each of the user's answers, not only at the end of the interview.",
         "The Step 3 completeness check (a full Q&A summary plus an explicit readiness question) appears in the transcript before any drafted email text is shown.",
         "The email draft contains only reasons and details the user actually provided, not invented justifications for declining the promotion."
