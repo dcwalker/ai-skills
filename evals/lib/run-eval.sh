@@ -85,6 +85,12 @@ ENV_FILE="$RUN_DIR/env.sh"
       echo "export SONAR_PROJECT_KEY=\"$PROJECT_KEY\""
     fi
   fi
+
+  if [[ -f "$FIXTURE_DIR/trello-fixture.json" ]]; then
+    echo "export TRELLO_FIXTURE_FILE=\"$FIXTURE_DIR/trello-fixture.json\""
+    echo "export TRELLO_FIXTURE_COUNTS_DIR=\"$RUN_DIR\""
+    echo "export TRELLO_FIXTURE_LOG=\"$RUN_DIR/trello-calls.log\""
+  fi
 } > "$ENV_FILE"
 
 echo "$ENV_FILE"
