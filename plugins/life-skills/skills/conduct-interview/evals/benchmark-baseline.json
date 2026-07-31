@@ -316,7 +316,7 @@
     }
   },
   "notes": [
-    "12 of 13 expectation-groups pass across 8 evals (eval 1 has 1 genuine failure: two Step 2 interview turns bundled multiple distinct questions into one turn, violating the skill's one-question-at-a-time rule -- confirmed directly against the transcript, not just the self-report).",
+    "In the ORIGINAL 2026-07-29 baseline run, 12 of 13 expectation-groups passed across 8 evals; eval 1's one genuine failure (two Step 2 interview turns bundling multiple distinct questions into one turn) was later fixed and re-run at 4/4 (see the final note), which is what the runs data in this file reflects.",
     "This is a with_skill-only baseline (no without_skill comparison) since conduct-interview is a workflow skill, not a content-generation skill.",
     "All evals are pure conversational simulations (no git fixtures or gh-stub) -- the executor plays both the skill and the simulated user in a single agent turn, then a separate grader agent independently re-reads the resulting transcript.",
     "No systemic eval-design issues were flagged by any grader.",

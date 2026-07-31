@@ -58,8 +58,9 @@ Use a one-question-at-a-time format:
 - When the user uses jargon or shorthand, ask them to explain it if it needs to be clear in the deliverable.
 - If a topic is sensitive or complex, approach it from multiple angles.
 - Save reflective questions ("What did you take away from this?" or "What would you do differently?") for later in the interview when context is established.
-- Do not batch multiple questions into a single message. One question, one
-  response. The unit is the line of inquiry, not the question mark: a turn
+- Do not batch multiple questions into a single message. One line of
+  inquiry, one response. The unit is the line of inquiry, not the question
+  mark: a turn
   may contain a second question only when it clarifies or narrows the first,
   guiding how to answer the same inquiry ("What is the weather like? Has it
   been warmer than usual?"). A turn must never bundle asks about different
