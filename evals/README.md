@@ -104,6 +104,51 @@ exists) and `TRELLO_FIXTURE_LOG` (one JSON line per call -- `{"text", "desc",
 "url"}` or `{"text", "desc", "error"}` -- for graders, mirroring `GH_STUB_LOG`).
 See the script's own header comment for the exact fixture JSON format.
 
+## MCP stub servers (Trello)
+
+`triage` depends on real MCP tools (Trello today; Jira/Gmail may follow the
+same pattern later) rather than a CLI on `PATH`, so it needs a different
+mocking seam than `gh`/Sonar. `evals/lib/mcp-stub/` holds real,
+protocol-compliant MCP stdio servers (built on the official `mcp` Python SDK,
+not a hand-rolled JSON-RPC shim) that stand in for the real third-party
+server -- `trello_stub.py` implements the subset of Trello tools `triage`
+actually calls, backed by an in-memory fake "database" seeded from a fixture
+file. Tool names and parameter schemas were confirmed against a live
+connected Trello MCP server, not guessed from prose, so a skill's real tool
+calls (including name-based list/board resolution and `update_card`'s batch
+form) match the stub instead of silently no-oping.
+
+Requires a one-time local dependency install (isolated venv, not system
+Python -- see `evals/lib/mcp-stub/requirements.txt`):
+
+```bash
+uv venv --python 3.11 evals/lib/mcp-stub/.venv
+uv pip install --python evals/lib/mcp-stub/.venv/bin/python3 -r evals/lib/mcp-stub/requirements.txt
+```
+
+**Mechanical difference from every other skill's evals:** MCP server
+resolution happens once when a `claude` process starts -- unlike `PATH`,
+which a subagent's Bash calls can pick up per-command via a sourced
+`env.sh`. So a `triage` eval's executor must be a real, separate `claude`
+CLI subprocess (launched via `claude -p --strict-mcp-config --mcp-config
+...`), not an `Agent`-tool subagent like the other 15 skills use.
+
+```bash
+source "$(evals/lib/run-mcp-eval.sh plugins/life-skills/skills/triage/evals 1 /tmp/eval-run)"
+cd "$WORKSPACE_DIR"
+claude -p --dangerously-skip-permissions \
+  --strict-mcp-config --mcp-config "$MCP_CONFIG_PATH" \
+  -- "<the eval's prompt from evals.json>"
+```
+
+`run-mcp-eval.sh` wires a fixture's `trello-mcp-state.json` (the stub's seed
+state) into a scratch `mcp-config.json` naming the stub as the *only* MCP
+server, so the real Trello MCP server is never reachable during a trial.
+After the trial, grade by diffing `$MCP_STUB_STATE_OUT` (final state) against
+an expected snapshot, and/or reading `$MCP_STUB_LOG` (one JSON line per tool
+call) -- the same "grade final state, not exact steps" philosophy as every
+other eval in this repo, not by trusting the subprocess's stdout self-report.
+
 ## Live sandbox cases
 
 A handful of "golden path" evals per GitHub-touching skill are marked
@@ -121,8 +166,9 @@ runs fine without it.
 1. Add an entry to the skill's `evals.json` (id, prompt, expected_output,
    expectations).
 2. Create `fixtures/<eval-id>/` with whatever the scenario needs: a `repo/`
-   tree, a `gh-cassette.json`, a `sonar-fixture.json`, a `trello-fixture.json`.
-   Not every eval needs every fixture type.
+   tree, a `gh-cassette.json`, a `sonar-fixture.json`, a `trello-fixture.json`,
+   or (for `triage`) a `trello-mcp-state.json`. Not every eval needs every
+   fixture type.
 3. Include both positive cases (clean scenario, skill should act) and
    negative cases (ambiguous or invalid scenario, skill should ask or
    decline) -- a one-sided eval set trains one-sided behavior.

@@ -1,0 +1,159 @@
+{
+  "metadata": {
+    "skill_name": "triage",
+    "skill_path": "plugins/life-skills/skills/triage",
+    "executor_model": "claude-sonnet-5",
+    "analyzer_model": "claude-sonnet-5",
+    "timestamp": "2026-07-31T04:27:00Z",
+    "evals_run": [1, 2, 3],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 2,
+        "failed": 2,
+        "total": 4,
+        "time_seconds": 46,
+        "tokens": null,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "The response asks the user to clarify scope (e.g. which board, card URL, or platform to process) rather than proceeding against an assumed target.",
+          "passed": false,
+          "evidence": "The transcript opens with 'Assuming that's what you meant, here's the review' and proceeds directly into a full per-item audit. It asks field-level questions (due date, description content, labels) at the end, not a scope-confirmation question up front. It never asked the Step 0 scope question before touching card data."
+        },
+        {
+          "text": "No Trello write tool is called (no update_card, create_label, move_card, or similar mutating call appears in the call log).",
+          "passed": true,
+          "evidence": "trello-calls.log contains only get_boards, view_board, view_list, view_card, and get_board_labels -- no mutating call."
+        },
+        {
+          "text": "No individual card is fetched or read via view_card, view_list, or search_trello -- the skill stops at the scope question before touching card-level data. (A get_boards call to survey what exists, if any, is acceptable.)",
+          "passed": false,
+          "evidence": "trello-calls.log shows view_board, view_list, and view_card were all called, fetching full card-level detail (including the empty description) before any scope confirmation from the user."
+        },
+        {
+          "text": "The final Trello state is unchanged from the seed state -- no boards, lists, cards, or labels were added, removed, or modified.",
+          "passed": true,
+          "evidence": "trello-state-out.json is semantically identical to fixtures/1/trello-mcp-state.json (verified via direct JSON comparison, not just visual diff -- the raw text differs only in whitespace formatting from the stub's indent=2 flush)."
+        }
+      ]
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 33,
+        "tokens": null,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "card-1's title is changed from the vague 'flight' to something specific and action-oriented that references booking flights and/or the Austin trip.",
+          "passed": true,
+          "evidence": "trello-state-out.json shows card-1's name is 'Book round-trip flights to Austin for June conference'."
+        },
+        {
+          "text": "card-1 has the existing label-1 ('travel') applied to it.",
+          "passed": true,
+          "evidence": "trello-state-out.json shows card-1's labels: ['label-1']."
+        },
+        {
+          "text": "No new label is created for card-1 -- the existing 'travel' label (label-1) is reused rather than a duplicate 'travel' label being created via create_label.",
+          "passed": true,
+          "evidence": "trello-calls.log contains no create_label call; get_board_labels was called first and label-1 was reused via update_card's add_labels."
+        },
+        {
+          "text": "card-2 ('Call dentist to reschedule appointment') is not modified.",
+          "passed": true,
+          "evidence": "trello-calls.log's only update_card call targets card-1; trello-state-out.json's card-2 is identical to the seed."
+        },
+        {
+          "text": "The response tells the user what was changed on card-1, and separately notes that card-2 needed no changes rather than omitting it from the summary entirely.",
+          "passed": true,
+          "evidence": "Transcript has a clear 'Applied' section for card-1 and a separate 'No changes' section for card-2."
+        }
+      ]
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 34,
+        "tokens": null,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "No update_card call is made against card-1.",
+          "passed": true,
+          "evidence": "trello-calls.log contains no update_card call."
+        },
+        {
+          "text": "No create_label call is made.",
+          "passed": true,
+          "evidence": "trello-calls.log contains no create_label call."
+        },
+        {
+          "text": "The final Trello state is byte-identical to the seed state.",
+          "passed": true,
+          "evidence": "trello-state-out.json is semantically identical to fixtures/3/trello-mcp-state.json (verified via direct JSON comparison; raw text differs only in whitespace from the stub's indent=2 flush)."
+        },
+        {
+          "text": "The response explicitly states the card looks complete / needs no changes, rather than silently omitting it from the summary or fabricating a change.",
+          "passed": true,
+          "evidence": "Transcript states 'I applied no changes because it's already well-formed' and asks whether to mark it reviewed."
+        }
+      ]
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 0.8333,
+        "stddev": 0.2357,
+        "min": 0.5,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 37.6667,
+        "stddev": 5.9067,
+        "min": 33,
+        "max": 46
+      },
+      "tokens": {
+        "mean": null,
+        "stddev": null,
+        "min": null,
+        "max": null
+      }
+    }
+  },
+  "notes": [
+    "2/3 evals pass all expectations; eval 1 fails 2 of its 4 expectations. All results were independently verified against ground truth (trello-calls.log call sequence and direct JSON comparison of trello-state-out.json against the seed fixture), not accepted from the transcript's self-report alone.",
+    "Executor mechanism differs from every other skill's baseline in this repo: each trial is a real, separate `claude -p --dangerously-skip-permissions --strict-mcp-config` subprocess (via evals/lib/mcp-stub/trello_stub.py and evals/lib/run-mcp-eval.sh), not an in-process Agent-tool subagent, because MCP server resolution happens once at process launch and can't be swapped per-command via PATH the way the gh-stub is. See evals/README.md's 'MCP stub servers' section.",
+    "Eval 1's failure is a genuine, repeatable finding, not a fixture artifact: given a vague scope request ('help me triage my backlog') against a Trello workspace containing exactly one board/list/card, the executor used Step 0's own 'capability discovery' step to survey what exists, found only one candidate, and proceeded directly into a full per-item fetch and audit (view_board, view_list, view_card, get_board_labels) rather than stopping to ask the user to confirm scope first, as SKILL.md's Step 0 explicitly requires ('Do not proceed until scope is clear'). It did not mutate anything and did ask real clarifying questions, but only after already fetching full card detail -- the ask came at the field level (due date, labels), not as the required scope-confirmation gate before touching card data. Worth a second opinion on whether Step 0 should be read as 'ask only when genuinely ambiguous' rather than 'always ask when the user didn't specify a target', since the current wording produced this divergence.",
+    "Eval 2 surfaced a good example of correct judgment beyond what the eval anticipated: the fixture's card description says 'the June conference' with no year, and the executor noticed this creates a real ambiguity against the session's current date (2026-07-30, so an unqualified 'June conference' could mean a past or future date) and asked rather than inventing a due date -- consistent with the skill's 'never invent facts or dates' rule. This was graded as intended (correct) behavior, not a shortfall.",
+    "Time figures are approximate, derived from file mtimes (mcp-config.json creation to transcript.txt completion) rather than the subprocess's own reported wall-clock time, since run-trials.sh invoked `claude -p` in plain-text output mode. Token figures are unavailable for the same reason (plain-text mode doesn't report usage) -- a future run using `--output-format json` would capture both more precisely; not done here to avoid a second live round-trip for a 3-eval pilot batch.",
+    "Scoped to triage's primary Trello-processing path (Steps 0-4, 8) with a single-board, Trello-only pilot fixture set. Step 4c's capture-into-Trello-from-another-platform flow, staleness handling (Step 7, which needs a last-activity timestamp the stub does not currently model), and Jira/Gmail scope are all deferred to a follow-up batch, not covered here."
+  ]
+}

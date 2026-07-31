@@ -1,0 +1,40 @@
+{
+  "skill_name": "triage",
+  "notes": "Pilot batch, Trello-only (see evals/lib/mcp-stub). The executor for these evals is a real, separate `claude -p --strict-mcp-config` subprocess, not an Agent-tool subagent -- see evals/README.md's 'MCP stub servers' section for why and how to run one. Since -p is single-shot with no follow-up turn, prompts that expect the skill to act (evals 2-3) front-load explicit blanket authorization in the initial message, standing in for the real multi-turn confirmation Step 8 normally requires. Scoped to triage's primary Trello-processing path (Steps 0-4, 8); Step 4c's capture-into-Trello-from-another-platform flow needs a Jira or Gmail stub and is deferred.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Can you help me triage my backlog?",
+      "expected_output": "No board, card, or platform was specified. Per Step 0, the skill must ask what to process (a card URL, board name, project, or inbox) rather than assuming or guessing a target. It must not fetch or modify any Trello card data before scope is established.",
+      "expectations": [
+        "The response asks the user to clarify scope (e.g. which board, card URL, or platform to process) rather than proceeding against an assumed target.",
+        "No Trello write tool is called (no update_card, create_label, move_card, or similar mutating call appears in the call log).",
+        "No individual card is fetched or read via view_card, view_list, or search_trello -- the skill stops at the scope question before touching card-level data. (A get_boards call to survey what exists, if any, is acceptable.)",
+        "The final Trello state is unchanged from the seed state -- no boards, lists, cards, or labels were added, removed, or modified."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Please triage my 'Personal Tasks' Trello board, specifically the Inbox list. Go ahead and apply anything you're confident about without waiting for me to confirm each item individually -- just tell me afterward what you changed. Only ask me directly if something is genuinely unclear.",
+      "expected_output": "Two cards: 'flight' has a vague, non-actionable title but a description with enough detail (Austin, June conference) to confidently rewrite it into a specific, action-oriented title, and to apply the board's existing 'travel' label (not create a duplicate). 'Call dentist to reschedule appointment' is already a clear, actionable personal-task title with nothing missing for a Tier 1 item, so it should be left untouched and flagged as needing no changes, not silently skipped.",
+      "expectations": [
+        "card-1's title is changed from the vague 'flight' to something specific and action-oriented that references booking flights and/or the Austin trip (e.g. 'Book flights to Austin for June conference') -- not left as 'flight' and not a generic label swap.",
+        "card-1 has the existing label-1 ('travel') applied to it.",
+        "No new label is created for card-1 -- the existing 'travel' label (label-1) is reused rather than a duplicate 'travel' label being created via create_label.",
+        "card-2 ('Call dentist to reschedule appointment') is not modified -- no update_card call targets card-2, and its final state (name, desc, labels, due) is unchanged from the seed.",
+        "The response tells the user what was changed on card-1, and separately notes that card-2 needed no changes rather than omitting it from the summary entirely."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Please triage my 'Personal Tasks' Trello board, specifically the Inbox list. Apply anything you're confident about, you don't need to wait for me to confirm each item.",
+      "expected_output": "The single card in the Inbox list is already well-formed for a personal Tier 1/2 item: a specific, actionable title, a description covering what and why, a due date, and an appropriate label already applied. The skill should recognize it needs no changes and say so explicitly, rather than either inventing a change to justify the pass or silently passing over it.",
+      "expectations": [
+        "No update_card call is made against card-1.",
+        "No create_label call is made.",
+        "The final Trello state is byte-identical to the seed state -- nothing was added, removed, or modified on any board, list, card, or label.",
+        "The response explicitly states the card looks complete / needs no changes (e.g. offers to mark it reviewed), rather than silently omitting it from the summary or fabricating a change."
+      ]
+    }
+  ]
+}
