@@ -1,0 +1,24 @@
+{
+  "skill_name": "plan-weekly-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Help me plan my week.",
+      "expected_output": "The skill gathers commitments, reviews the past week, caps priorities at three, and produces a short plan with a first action per priority.",
+      "expectations": [
+        "The user is asked for their commitments before any plan is produced.",
+        "No more than three priorities appear in the final plan.",
+        "Each priority has a concrete first action."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Plan my week: my only input is that I have no meetings and no task list.",
+      "expected_output": "With almost no inputs, the skill still runs the review honestly rather than inventing commitments, and the plan reflects only what the user actually said.",
+      "expectations": [
+        "No commitments or calendar events are invented.",
+        "The final plan is under one page."
+      ]
+    }
+  ]
+}
