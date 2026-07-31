@@ -59,7 +59,7 @@ while [[ $# -gt 0 ]]; do
       exit 0
       ;;
     *)
-      if [ -n "$TEXT" ]; then
+      if [[ -n "$TEXT" ]]; then
         echo "Error: unexpected extra argument: $1" >&2
         exit 1
       fi
@@ -69,12 +69,12 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [ -z "$TEXT" ]; then
+if [[ -z "$TEXT" ]]; then
   echo "Error: action item text is required. Use -h or --help for usage." >&2
   exit 1
 fi
 
-if [ -n "${TRELLO_FIXTURE_FILE:-}" ]; then
+if [[ -n "${TRELLO_FIXTURE_FILE:-}" ]]; then
   RESULT=$(python3 - "$TRELLO_FIXTURE_FILE" "${TRELLO_FIXTURE_COUNTS_DIR:-}" <<'PYEOF'
 import json
 import os
@@ -118,9 +118,9 @@ else:
 PYEOF
 )
   STATUS=$(echo "$RESULT" | sed -n '1p')
-  if [ "$STATUS" = "OK" ]; then
+  if [[ "$STATUS" = "OK" ]]; then
     URL=$(echo "$RESULT" | sed -n '2p')
-    if [ -n "${TRELLO_FIXTURE_LOG:-}" ]; then
+    if [[ -n "${TRELLO_FIXTURE_LOG:-}" ]]; then
       python3 - "$TRELLO_FIXTURE_LOG" "$TEXT" "$DESC" "$URL" <<'PYEOF'
 import json
 import sys
@@ -135,7 +135,7 @@ PYEOF
   else
     ERROR_MSG=$(echo "$RESULT" | sed -n '2p')
     EXIT_CODE=$(echo "$RESULT" | sed -n '3p')
-    if [ -n "${TRELLO_FIXTURE_LOG:-}" ]; then
+    if [[ -n "${TRELLO_FIXTURE_LOG:-}" ]]; then
       python3 - "$TRELLO_FIXTURE_LOG" "$TEXT" "$DESC" "$ERROR_MSG" <<'PYEOF'
 import json
 import sys
@@ -151,7 +151,7 @@ PYEOF
 fi
 
 # Real mode
-if [ -z "${TRELLO_API_KEY:-}" ] || [ -z "${TRELLO_TOKEN:-}" ] || [ -z "${TRELLO_LIST_ID:-}" ]; then
+if [[ -z "${TRELLO_API_KEY:-}" ]] || [[ -z "${TRELLO_TOKEN:-}" ]] || [[ -z "${TRELLO_LIST_ID:-}" ]]; then
   echo "Error: TRELLO_API_KEY, TRELLO_TOKEN, and TRELLO_LIST_ID must all be set." >&2
   exit 1
 fi
@@ -166,7 +166,7 @@ RESPONSE=$(curl -sS -w "\n%{http_code}" -X POST "https://api.trello.com/1/cards"
 HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
 BODY=$(echo "$RESPONSE" | sed '$d')
 
-if [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
+if [[ "$HTTP_CODE" -lt 200 ]] || [[ "$HTTP_CODE" -ge 300 ]]; then
   echo "Error: Trello API request failed (HTTP $HTTP_CODE): $BODY" >&2
   exit 1
 fi
