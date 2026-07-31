@@ -126,6 +126,29 @@
         "src/health.js / healthCheck is not flagged for missing test coverage, since it already has a matching test file",
         "The exports.js issue (or overall risk score) is rated at least Medium (score >= 40)"
       ]
+    },
+    {
+      "id": 13,
+      "prompt": "Review my local changes.",
+      "expected_output": "The uncommitted diff touches plugins/life-skills/skills/plan-weekly-review/SKILL.md (a new Step 5 section), so skill-quality mode fires additively: the review output contains a Skill Quality section for plan-weekly-review with the static checks reported, and -- because nothing in the request asked for evals to be run -- states that evals were not run (on-request only) with the checked-in benchmark-baseline as the result of record. The general code review still runs and uses the local/text format since no PR exists.",
+      "expectations": [
+        "The output uses the local/text review format (=== Code Review === with a Risk Score), since there is no PR.",
+        "A Skill Quality section is present and names the plan-weekly-review skill (or its path).",
+        "The Skill Quality section reports static checks (description quality, line budget, naming, bundled resources, and/or eval hygiene -- at least some of these named).",
+        "The output explicitly states evals were NOT run for this review (on-request only) and references the checked-in benchmark-baseline as the last verified result; no eval-results table or fresh pass-rate numbers are fabricated.",
+        "The transcript shows no executor/grader subagents were spawned to run the fixture skill's evals."
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "Review my local changes.",
+      "expected_output": "The uncommitted diff touches only src/report.js -- the repo contains a skill directory, but no skill file is in the diff, so skill-quality mode must NOT fire: no Skill Quality section appears. The general review flags the new searchSummaries function, which concatenates the user-supplied term straight into a SQL LIKE clause with no validation, violating CONTRIBUTING.md's user-input rule (and a SQL injection risk), at High or Critical severity.",
+      "expectations": [
+        "No Skill Quality section appears anywhere in the output, and no skill static checks or eval/baseline references are reported.",
+        "An issue is flagged against src/report.js's searchSummaries for the unvalidated, string-concatenated SQL (injection risk), rated High or Critical (>= 60).",
+        "The pre-existing getWeeklySummary function (parameterized query) is not flagged as a SQL injection issue.",
+        "The output uses the local/text review format and lists CONTRIBUTING.md as a loaded guideline source."
+      ]
     }
   ]
 }
