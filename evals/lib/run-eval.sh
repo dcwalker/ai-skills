@@ -21,7 +21,11 @@
 
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Some shells print the resolved directory as a side effect of `cd` itself
+# (e.g. when CDPATH is set) -- redirect cd's own stdout everywhere below so
+# only the explicit `pwd` is captured, not a doubled/newline-joined value.
+unset CDPATH
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null && pwd)"
 
 if [[ ! -d "$1" ]]; then
   echo "run-eval: no such skill evals dir: $1" >&2
@@ -30,7 +34,7 @@ fi
 # Resolve to absolute paths up front -- git-fixture.sh cd's into the
 # workspace, and a relative path passed through would otherwise be silently
 # re-interpreted against the new cwd instead of the caller's.
-SKILL_EVALS_DIR="$(cd "$1" && pwd)"
+SKILL_EVALS_DIR="$(cd "$1" > /dev/null && pwd)"
 EVAL_ID="$2"
 RUN_DIR="$3"
 
@@ -41,7 +45,7 @@ if [[ ! -d "$FIXTURE_DIR" ]]; then
 fi
 
 mkdir -p "$RUN_DIR"
-RUN_DIR="$(cd "$RUN_DIR" && pwd)"
+RUN_DIR="$(cd "$RUN_DIR" > /dev/null && pwd)"
 WORKSPACE_DIR="$RUN_DIR/workspace"
 
 if [[ -d "$FIXTURE_DIR/repo" ]] || [[ -f "$FIXTURE_DIR/setup.sh" ]] || [[ -f "$FIXTURE_DIR/meta.json" ]]; then

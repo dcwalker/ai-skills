@@ -17,11 +17,16 @@
 
 set -euo pipefail
 
+# Some shells print the resolved directory as a side effect of `cd` itself
+# (e.g. when CDPATH is set) -- redirect cd's own stdout everywhere below so
+# only the explicit `pwd` is captured, not a doubled/newline-joined value.
+unset CDPATH
+
 if [[ ! -d "$1" ]]; then
   echo "git-fixture: fixture dir does not exist: $1" >&2
   exit 1
 fi
-FIXTURE_DIR="$(cd "$1" && pwd)"
+FIXTURE_DIR="$(cd "$1" > /dev/null && pwd)"
 WORKSPACE_DIR_ARG="$2"
 
 if [[ -e "$WORKSPACE_DIR_ARG" ]] && [[ -n "$(ls -A "$WORKSPACE_DIR_ARG" 2>/dev/null)" ]]; then
@@ -33,7 +38,7 @@ fi
 # would otherwise be silently re-interpreted against the new cwd once we cd
 # into it, causing $FIXTURE_DIR/repo etc. to resolve to the wrong place.
 mkdir -p "$WORKSPACE_DIR_ARG"
-WORKSPACE_DIR="$(cd "$WORKSPACE_DIR_ARG" && pwd)"
+WORKSPACE_DIR="$(cd "$WORKSPACE_DIR_ARG" > /dev/null && pwd)"
 cd "$WORKSPACE_DIR"
 
 git init --initial-branch=main --quiet
