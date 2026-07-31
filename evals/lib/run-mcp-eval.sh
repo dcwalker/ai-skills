@@ -33,8 +33,10 @@
 # (one JSON line per tool call) -- not by trusting the subprocess's stdout
 # self-report.
 #
-# Only wires a Trello stub today (Phase 6b's pilot scope). A future Jira or
-# Gmail stub would follow the same pattern: add its own fixture file check
+# Wires whichever stubs the fixture provides state for -- a fixture with
+# both trello-mcp-state.json and gmail-mcp-state.json gets both servers in
+# one trial (e.g. triage's Step 4c capture-from-email-to-Trello flow). A
+# future Jira stub follows the same pattern: its own fixture file check
 # below and another entry in the generated mcpServers object.
 
 set -euo pipefail
@@ -78,25 +80,32 @@ fi
 
 MCP_SERVERS_JSON="{}"
 
-if [[ -f "$FIXTURE_DIR/trello-mcp-state.json" ]]; then
-  TRELLO_STATE_OUT="$RUN_DIR/trello-state-out.json"
-  TRELLO_LOG="$RUN_DIR/trello-calls.log"
+# add_stub_server <service> <stub script>: if the fixture has
+# <service>-mcp-state.json, add that stub to the generated config with
+# per-service state-out/log paths in $RUN_DIR.
+add_stub_server() {
+  local SERVICE="$1" STUB_SCRIPT="$2"
+  local STATE_FILE="$FIXTURE_DIR/$SERVICE-mcp-state.json"
+  [[ -f "$STATE_FILE" ]] || return 0
   MCP_SERVERS_JSON=$(python3 -c "
 import json, sys
 servers = json.loads(sys.argv[1])
-servers['trello'] = {
-    'command': sys.argv[2],
-    'args': [sys.argv[3]],
+servers[sys.argv[2]] = {
+    'command': sys.argv[3],
+    'args': [sys.argv[4]],
     'env': {
-        'MCP_STUB_STATE_FILE': sys.argv[4],
-        'MCP_STUB_STATE_OUT': sys.argv[5],
-        'MCP_STUB_LOG': sys.argv[6],
+        'MCP_STUB_STATE_FILE': sys.argv[5],
+        'MCP_STUB_STATE_OUT': sys.argv[6],
+        'MCP_STUB_LOG': sys.argv[7],
     },
 }
 print(json.dumps(servers))
-" "$MCP_SERVERS_JSON" "$MCP_STUB_PYTHON" "$MCP_STUB_DIR/trello_stub.py" \
-    "$FIXTURE_DIR/trello-mcp-state.json" "$TRELLO_STATE_OUT" "$TRELLO_LOG")
-fi
+" "$MCP_SERVERS_JSON" "$SERVICE" "$MCP_STUB_PYTHON" "$MCP_STUB_DIR/$STUB_SCRIPT" \
+    "$STATE_FILE" "$RUN_DIR/$SERVICE-state-out.json" "$RUN_DIR/$SERVICE-calls.log")
+}
+
+add_stub_server trello trello_stub.py
+add_stub_server gmail gmail_stub.py
 
 if [[ "$MCP_SERVERS_JSON" == "{}" ]]; then
   echo "run-mcp-eval: fixture $FIXTURE_DIR provides no recognized *-mcp-state.json file" >&2
@@ -113,10 +122,14 @@ ENV_FILE="$RUN_DIR/env.sh"
 {
   echo "export WORKSPACE_DIR=\"$WORKSPACE_DIR\""
   echo "export MCP_CONFIG_PATH=\"$MCP_CONFIG_PATH\""
-  if [[ -n "${TRELLO_STATE_OUT:-}" ]]; then
-    echo "export MCP_STUB_STATE_OUT=\"$TRELLO_STATE_OUT\""
-    echo "export MCP_STUB_LOG=\"$TRELLO_LOG\""
-  fi
+  # Per-service grading artifacts (only for services this fixture wired up):
+  for SERVICE in trello gmail; do
+    if [[ -f "$FIXTURE_DIR/$SERVICE-mcp-state.json" ]]; then
+      VAR="$(echo "$SERVICE" | tr '[:lower:]' '[:upper:]')"
+      echo "export ${VAR}_STATE_OUT=\"$RUN_DIR/$SERVICE-state-out.json\""
+      echo "export ${VAR}_CALLS_LOG=\"$RUN_DIR/$SERVICE-calls.log\""
+    fi
+  done
 } > "$ENV_FILE"
 
 echo "$ENV_FILE"

@@ -1,0 +1,25 @@
+{
+  "boards": {
+    "board-1": {"id": "board-1", "name": "Personal Tasks"}
+  },
+  "lists": {
+    "list-1": {"id": "list-1", "name": "Inbox", "board_id": "board-1"},
+    "list-2": {"id": "list-2", "name": "Doing", "board_id": "board-1"}
+  },
+  "cards": {
+    "card-1": {
+      "id": "card-1",
+      "name": "Service the lawnmower",
+      "desc": "Blade needs sharpening before autumn.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [],
+      "due": null,
+      "due_complete": false,
+      "url": "https://trello.com/c/card-1/service-the-lawnmower"
+    }
+  },
+  "labels": {
+    "label-1": {"id": "label-1", "name": "family", "color": "purple", "board_id": "board-1"}
+  }
+}
