@@ -61,6 +61,11 @@ and which CLI tools respond to `command -v <tool>`. Use the best available
 option for the platform implied by the scope. If the platform is ambiguous,
 ask.
 
+Capability discovery informs *how* to fetch, never *what* the scope is. Even
+if discovery finds only one possible target (a single board, project, or
+inbox), confirm it with the user before fetching any card-level or
+thread-level detail; a sole candidate is not the same as confirmed scope.
+
 ---
 
 ## Step 0.5: Assess Scale and Agree on Pace
