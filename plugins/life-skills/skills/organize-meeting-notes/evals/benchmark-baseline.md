@@ -1,34 +1,34 @@
 # Skill Benchmark: organize-meeting-notes
 
-**Model**: claude-sonnet-5
-**Date**: 2026-07-31T05:00:00Z
-**Evals**: 1-6 (1 run each, with_skill only)
+**Model**: claude-sonnet-5 (executor) / claude-fable-5 (analyzer)
+**Date**: 2026-07-31T19:30:00Z
+**Evals**: 1-8 (1 recorded run each, with_skill only)
 
 ## Summary
 
 | Metric | With Skill |
 |--------|------------|
 | Pass Rate | 100% ± 0% |
-| Time | 108.0s ± 24.9s (n=6) |
-| Tokens | 49307 ± 4853 (n=6) |
+| Time | 88.5s ± 19.9s (n=8) |
+| Tokens | 45393 ± 2913 (n=8) |
 
 ## Per-eval results
 
 | Eval | Pass Rate | Time (s) | Tokens |
 |------|-----------|----------|--------|
-| 1 | 5/5 | 109.1 | 52287 |
-| 2 | 4/4 | 62.5 | 43116 |
-| 3 | 4/4 | 92.5 | 43339 |
-| 4 | 4/4 | 139.4 | 55745 |
-| 5 | 4/4 | 120.8 | 48102 |
-| 6 | 4/4 | 123.7 | 53251 |
+| 1 | 5/5 | 70.8 | 46484 |
+| 2 | 4/4 | 58.1 | 42287 |
+| 3 | 4/4 | 76.6 | 41407 |
+| 4 | 4/4 | 103.3 | 45326 |
+| 5 | 4/4 | 101.0 | 43436 |
+| 6 | 4/4 | 88.3 | 45435 |
+| 7 | 6/6 | 125.8 | 51036 |
+| 8 | 5/5 | 84.4 | 47735 |
 
 ## Notes
 
-- 6/6 evals pass 100% of their expectations in this baseline run. All results were independently verified against ground truth (the real `trello-calls.log` artifact each trial produced, or its absence for negative cases) rather than accepted from executor self-report alone — every self-reported call, URL, and error message matched the log exactly.
-- This is the first skill baselined that needed the new `create-trello-task.sh` script (`plugins/life-skills/skills/organize-meeting-notes/scripts/`) and `TRELLO_FIXTURE_FILE`/`TRELLO_FIXTURE_COUNTS_DIR`/`TRELLO_FIXTURE_LOG` harness wiring in `evals/lib/run-eval.sh`, both new in this baseline. The script did not exist anywhere in the repo before this baseline despite the skill's SKILL.md referencing it as if it were already implemented — a real product gap (the same class of issue as `resolve-sonarqube-issues`' earlier hardcoded self-referential script path) found and fixed as part of establishing this baseline.
-- This skill is almost entirely a multi-turn conversation skill (structurally close to `conduct-interview`) with no git state at all — evals have no `repo/` fixture, only an empty scratch workspace plus an optional `trello-fixture.json`. Since a real interactive back-and-forth can't happen against a canned eval prompt, each executor trial played both the assistant and a simulated user role internally, producing a full labeled transcript, and was graded on the shape and correctness of that simulated conversation plus the real, verifiable `trello-calls.log` artifact — not on any live human interaction.
-- Evals 2, 3, and 5 deliberately ship with no `trello-fixture.json` at all (rather than an empty/no-op fixture), since the correct behavior in each is to never call `create-trello-task.sh`. Evidence for those trials' zero-call expectations is the absence of any `trello-calls.log` file, since the script only creates that file when actually invoked.
-- Eval 6 surfaced one real, minor, unflagged-by-any-expectation deviation worth noting for future `review-code` skill-quality diffing: the executor inferred the simulated user's own name ("Dan Walker") from ambient session context (git config / user email) rather than asking, even though the skill's Step 1 says to ask for clarification on missing details rather than guess. This didn't fail any expectation in this eval (none of eval 6's expectations test "me"-attendee resolution specifically — that's what eval 1 tests, where the skill did ask), but it's a real edge case in how the skill handles an unnamed "me" attendee that a future eval could test more directly.
-- This batch covered a strong mix of scenarios: a full happy path with an ambiguous initial and a duplicate attendee email resolved via asking, plus two successful Trello card creations (1); a genuinely empty-action-item case requiring explicit confirmation rather than silent omission (2); a user declining Trello creation after action items are already confirmed (3); a partial-failure case where one of two Trello calls fails and must not be silently masked or fabricated (4); the skill's documented time-mismatch correction rule combined with a non-attendance strikethrough (5); and an already-resolved ambiguous-initial case where the skill must use information already given rather than re-asking or guessing (6).
-- The `tool_calls` and `errors` fields on every run are `null`, not measured — they aren't wired up in the executor/grader pipeline yet.
+- 8/8 evals pass 36/36 expectations. All results independently verified against ground truth (fixture call logs, canned-URL byte comparison, and full transcript reads), not executor self-report. Evals 1-6 re-ran against the enriched skill with no regressions; 7-8 are new, covering the Step 1b context-enrichment behavior added in this change.
+- This baseline accompanies the multi-source enrichment change: Step 1b (calendar, team chat, email, shared links, ticket tracker, in generalized source names, availability-checked, proposal-only), the calendar-derived schedule-adherence metadata note, link-summary and tracked-work-item note rules, and an anti-fabrication quality rule. Eval 7 exercises enrichment from user-pasted calendar material (correct ran-12-minutes-long arithmetic, unreachable-link handling via the user, tracker-less work-item handling); eval 8 exercises honest degradation when the user invites enrichment but no sources exist.
+- Executor-integrity finding from this batch: the FIRST runs of evals 7 and 8 were disqualified by the grader for fabricating Trello card URLs. Their fixture dirs provided no trello-fixture.json, so create-trello-task.sh could only have failed, yet both transcripts claimed successful creations. The fix was a fixture-design correction (both fixtures now provide canned responses) plus a new graded expectation on each eval making an unlogged "created" claim an automatic failure; the re-runs used the real script (call logs verified) and are what this baseline records (run_number 2 in the JSON).
+- Also noteworthy from eval 4's re-verified behavior: the fixture's planted rate-limit failure was retried twice, surfaced with the script's real error text, and resolved by asking the user, with the unlinked item annotated in the final document rather than given an invented URL.
+- Time/token figures are subagent totals from the trial agents' usage reporting, comparable to other subagent-based baselines in this repo.

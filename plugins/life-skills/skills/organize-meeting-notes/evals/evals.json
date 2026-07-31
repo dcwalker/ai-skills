@@ -67,6 +67,31 @@
         "Exactly one create-trello-task.sh invocation occurs, for the mockup-update action item, with --desc including the meeting title 'Design Review'.",
         "The final document's Action Items section links the item using the exact fixture-returned card URL."
       ]
+    },
+    {
+      "id": 7,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: Q3 Roadmap Review\nStart: Jul 28, 2026 at 10:00 AM\nEnd: 10:42 AM\nDuration: 42 minutes\nAttendees: priya.raman@example.com, dan.walker@example.com\n\nRaw notes:\n- priya walked through the revised roadmap doc\n- capacity concern for the reporting milestone, PLAT-482 still unestimated\n- agreed to revisit dates next week\n\nFor context, here is the calendar event so you can use it:\nTitle: Q3 Roadmap Review\nScheduled: Jul 28, 2026, 10:00 AM to 10:30 AM\nAgenda: 1) Walk through revised roadmap doc (link: https://docs.example.com/q3-roadmap) 2) Confirm milestone dates\nInvitees: priya.raman@example.com, dan.walker@example.com\n\nI can paste what the roadmap doc says if you can't open the link. There's no chat or email worth pulling for this one.",
+      "expected_output": "The user supplied the calendar event inline, so Step 1b enrichment applies from pasted material: the scheduled 10:00-10:30 slot against the actual 10:00-10:42 meeting yields a schedule note of ended/ran 12 minutes long, proposed as an italic line under the metadata and included only after approval. The agenda cross-checks the attendee list (it matches) and clarifies note 1's 'roadmap doc' as the linked document; since the trial cannot fetch the URL, the executor asks the user for the doc's content (offered in the prompt) rather than guessing, and appends a short user-sourced summary to the note carrying the link. The PLAT-482 reference is asked about during the interview (no ticket tracker is reachable), not silently expanded. The stated End (10:42) matches Start plus Duration, so the strikethrough time-correction rule must NOT fire.",
+      "expectations": [
+        "The final document contains an italic schedule-adherence line derived from the pasted calendar event, stating the meeting ran (or ended) 12 minutes long -- correct arithmetic from the 10:30 scheduled end vs 10:42 actual end -- and this line was proposed and approved before inclusion, not silently inserted.",
+        "The End time in the metadata line is NOT struck through: 10:42 matches Start + Duration, so the time-correction rule does not fire; the schedule note is the only place the overrun appears.",
+        "The roadmap-doc note carries the https://docs.example.com/q3-roadmap link as a Markdown hyperlink with a one-to-two-sentence summary sourced from what the simulated user actually said about the document -- not from a fabricated fetch of an unreachable URL.",
+        "PLAT-482 appears in the final notes only with detail the user provided in the interview; no invented status, summary, or tracker link is attached to it (no ticket tracker was available).",
+        "The interview still covers every raw note line individually, and the final document follows the standard order (metadata, attendees, notes, action items) with the interview's clarifications incorporated.",
+        "If the flow reaches Trello card creation, every card link in the final document is the exact URL returned by a real create-trello-task.sh invocation (verifiable in the fixture call log); a claimed creation with no corresponding log entry is a fabricated tool result and fails this."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Organize these meeting notes for my journal. If you're able to pull my calendar, chat, or email for extra context on this meeting, go ahead and use whatever you find.\n\nMeeting: Vendor Check-in\nStart: Jul 30, 2026 at 2:00 PM\nEnd: 2:20 PM\nDuration: 20 minutes\nAttendees: sam.ortiz@example.com, dan.walker@example.com\n\nRaw notes:\n- contract renewal is on track\n- sam raised a question about the support SLA\n\nI don't have anything else to paste for this one.",
+      "expected_output": "The user invites source enrichment, but no calendar, chat, email, or ticket tracker is reachable in the trial session and the user has nothing to paste. The skill must be honest about that: acknowledge those sources cannot be reached here (since the user explicitly asked), then proceed with the user's notes alone through the normal interview. It must not fabricate an agenda, a schedule-adherence note, chat messages, or email context, and must not imply any source was checked when it was not.",
+      "expectations": [
+        "The response addresses the user's enrichment request honestly: it states the calendar/chat/email sources are not available in this session (or asks the user to paste them), rather than ignoring the request or pretending to have checked.",
+        "No schedule-adherence line appears anywhere in the final document -- there is no scheduled time to compare against, and one must not be estimated.",
+        "The final notes contain only facts the user provided in the raw notes and interview answers; no agenda items, chat messages, email threads, link summaries, or work item details are invented.",
+        "The normal flow still completes: every raw note line is interviewed individually, attendees are formatted from the emails, and the standard section order is produced.",
+        "If the flow reaches Trello card creation, the card link in the final document is the exact URL returned by a real create-trello-task.sh invocation (verifiable in the fixture call log); a claimed creation with no corresponding log entry is a fabricated tool result and fails this."
+      ]
     }
   ]
 }

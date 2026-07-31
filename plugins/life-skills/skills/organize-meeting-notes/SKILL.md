@@ -36,6 +36,46 @@ Collect:
 
 If required information is missing, ask for clarification. Do not guess.
 
+### Step 1b: Enrich from Available Sources
+
+Before the interview, check which context sources the current session can
+actually reach (a calendar, email, team chat, a ticket tracker, web
+fetching). Use only what is genuinely available: skip anything that is not
+connected without comment, and never present content as coming from a source
+that was not actually consulted. The user may also paste source material
+(a calendar event, chat excerpts, an email) directly; treat that the same
+way as fetched content.
+
+For each available source:
+
+- **Calendar**: find the event matching the meeting title and time. Pull the
+  agenda or event description and the invitee list (cross-check it against
+  the attendees from Step 1). Compare the scheduled start/end against the
+  actual times: note whether the meeting started and ended on time, ended
+  early, or ran long, and by how much (see Step 2 for where this lands).
+- **Team chat**: look for messages sent by attendees during the meeting's
+  start-to-end window. Judge relevance before proposing anything: a message
+  matters only if it bears on the meeting topic (a shared link, a decision
+  echoed in a channel, a side answer to a question raised in the room).
+  Ignore unrelated chatter.
+- **Email**: look for threads involving the attendees or matching the
+  meeting topic close to the meeting date (an agenda sent beforehand, a
+  document circulated for the meeting, a follow-up thread).
+- **Shared links**: collect URLs from the raw notes and from any relevant
+  chat or email found above. Follow each link, and summarize in one or two
+  sentences what it contains and why it mattered to this meeting. If a link
+  cannot be fetched, say so rather than guessing at its content.
+- **Ticket tracker**: if the notes or discussion reference tracked work
+  items (an item key, or a topic recognizable as a tracked item), look them
+  up and capture the item's current summary and status so the note can name
+  what was actually discussed.
+
+Present what was found as proposals, source by source, before or during the
+Step 4 interview; the user decides what gets in. Enrichment supplements the
+user's notes; it never overrides what the user said, and a conflict between
+a source and the user's notes is a question to ask, not a correction to
+apply silently.
+
 ### Step 2: Format Meeting Metadata
 
 Format metadata exactly as:
@@ -52,6 +92,16 @@ Time correction rule:
   `Start: **Feb 27, 2025 at 11:00 AM** • End: ~~11:30 AM~~ **11:07 AM** • Duration: **7 minutes** • Location: **Home**`
 - Example match pattern:
   `Start: **Feb 27, 2025 at 11:00 AM** • End: **11:30 AM** • Duration: **30 minutes**`
+
+Schedule note (only when calendar data is available from Step 1b):
+- Compare the actual start/end against the calendar event's scheduled times
+  and propose one italic line directly under the metadata line stating how
+  the meeting tracked its schedule, with the difference in minutes.
+- Example: `*Scheduled for 30 minutes; ran 12 minutes long.*`
+- Example: `*Started 5 minutes late; ended on time.*`
+- Include it only with the user's approval, and omit it entirely when no
+  calendar data exists; never estimate schedule adherence without the
+  scheduled times.
 
 ### Step 3: Format Attendees
 
@@ -99,6 +149,15 @@ Acronym rule:
 
 URL rule:
 - If URLs are listed at the end of notes, move them into relevant note locations as Markdown hyperlinks.
+- For each link summarized in Step 1b, append its one-to-two-sentence
+  summary (what it contains and why it mattered to the meeting) to the note
+  that carries the link, subject to the user's approval.
+
+Tracked work item rule:
+- Where Step 1b resolved a referenced work item, name it in the relevant
+  note with its item key and current summary/status as a Markdown link when
+  a URL is known (e.g. `[KEY-123](...): <summary> (<status>)`), so the note
+  stands on its own without the tracker open.
 
 Image rule:
 - For each screenshot/photo, ask the user for a caption describing its significance.
@@ -156,3 +215,7 @@ At the very end, append:
 - Preserve factual accuracy; do not invent details.
 - Ask clarifying questions when uncertain.
 - Follow requested section order and formatting exactly.
+- Enrichment content must trace to a real source that was actually
+  consulted (or material the user pasted). When no context sources are
+  available, proceed with the user's notes alone; never simulate a source
+  check or fabricate agenda, chat, email, link, or work item detail.
