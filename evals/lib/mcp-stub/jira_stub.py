@@ -143,15 +143,18 @@ def _jql_matches(issue: dict, jql: str) -> bool:
     lower = query.lower()
     if " order by " in lower:
         query = query[: lower.index(" order by ")]
-    # JQL's AND keyword is case-insensitive, so split accordingly. A quoted
-    # value containing the word "and" would be split too, but that then hits
-    # the unsupported-clause error loudly rather than silently mismatching.
-    clauses = re.split(r"\s+and\s+", query, flags=re.IGNORECASE)
+    # JQL's AND keyword is case-insensitive, so split accordingly. The
+    # whitespace is normalized first so the split can use a literal
+    # single-space pattern (no quantifiers, no backtracking). A quoted value
+    # containing the word "and" would be split too, but that then hits the
+    # unsupported-clause error loudly rather than silently mismatching.
+    query = " ".join(query.split())
+    clauses = re.split(r" and ", query, flags=re.IGNORECASE)
     return all(_clause_matches(issue, part) for part in clauses if part.strip())
 
 
 @server.tool()
-def getAccessibleAtlassianResources() -> list[dict]:  # NOSONAR: camelCase is the real MCP tool name (schema fidelity)
+def getAccessibleAtlassianResources() -> list[dict]:  # NOSONAR(S1542) camelCase = real MCP tool name
     """Get the Atlassian sites (cloud resources) this account can access,
     including each site's cloudId. Call this first: every Jira tool below
     requires the cloudId."""
@@ -162,7 +165,7 @@ def getAccessibleAtlassianResources() -> list[dict]:  # NOSONAR: camelCase is th
 
 
 @server.tool()
-def getVisibleJiraProjects(  # NOSONAR: camelCase is the real MCP tool name (schema fidelity)
+def getVisibleJiraProjects(  # NOSONAR(S1542) camelCase = real MCP tool name
     cloudId: str,
     action: str = "create",
     expandIssueTypes: bool = True,
@@ -188,7 +191,7 @@ def getVisibleJiraProjects(  # NOSONAR: camelCase is the real MCP tool name (sch
 
 
 @server.tool()
-def searchJiraIssuesUsingJql(  # NOSONAR: camelCase is the real MCP tool name (schema fidelity)
+def searchJiraIssuesUsingJql(  # NOSONAR(S1542) camelCase = real MCP tool name
     cloudId: str,
     jql: str,
     fields: list[str] | None = None,
@@ -220,7 +223,7 @@ def searchJiraIssuesUsingJql(  # NOSONAR: camelCase is the real MCP tool name (s
 
 
 @server.tool()
-def getJiraIssue(  # NOSONAR: camelCase is the real MCP tool name (schema fidelity)
+def getJiraIssue(  # NOSONAR(S1542) camelCase = real MCP tool name
     cloudId: str,
     issueIdOrKey: str,
     fields: list[str] | None = None,
@@ -237,7 +240,7 @@ def getJiraIssue(  # NOSONAR: camelCase is the real MCP tool name (schema fideli
 
 
 @server.tool()
-def editJiraIssue(  # NOSONAR: camelCase is the real MCP tool name (schema fidelity)
+def editJiraIssue(  # NOSONAR(S1542) camelCase = real MCP tool name
     cloudId: str,
     issueIdOrKey: str,
     fields: dict,
@@ -262,7 +265,7 @@ def editJiraIssue(  # NOSONAR: camelCase is the real MCP tool name (schema fidel
 
 
 @server.tool()
-def addCommentToJiraIssue(  # NOSONAR: camelCase is the real MCP tool name (schema fidelity)
+def addCommentToJiraIssue(  # NOSONAR(S1542) camelCase = real MCP tool name
     cloudId: str,
     issueIdOrKey: str,
     commentBody: str,
@@ -296,7 +299,7 @@ def addCommentToJiraIssue(  # NOSONAR: camelCase is the real MCP tool name (sche
 
 
 @server.tool()
-def getTransitionsForJiraIssue(cloudId: str, issueIdOrKey: str) -> dict:  # NOSONAR: camelCase is the real MCP tool name (schema fidelity)
+def getTransitionsForJiraIssue(cloudId: str, issueIdOrKey: str) -> dict:  # NOSONAR(S1542) camelCase = real MCP tool name
     """Get the status transitions currently available for an issue."""
     _check_cloud(cloudId)
     _get_issue(issueIdOrKey)
@@ -306,7 +309,7 @@ def getTransitionsForJiraIssue(cloudId: str, issueIdOrKey: str) -> dict:  # NOSO
 
 
 @server.tool()
-def transitionJiraIssue(cloudId: str, issueIdOrKey: str, transition: dict) -> dict:  # NOSONAR: camelCase is the real MCP tool name (schema fidelity)
+def transitionJiraIssue(cloudId: str, issueIdOrKey: str, transition: dict) -> dict:  # NOSONAR(S1542) camelCase = real MCP tool name
     """Transition an issue's status. transition is {"id": "<transition id>"}
     from getTransitionsForJiraIssue."""
     _check_cloud(cloudId)
@@ -325,7 +328,7 @@ def transitionJiraIssue(cloudId: str, issueIdOrKey: str, transition: dict) -> di
 
 
 @server.tool()
-def lookupJiraAccountId(cloudId: str, searchString: str) -> list[dict]:  # NOSONAR: camelCase is the real MCP tool name (schema fidelity)
+def lookupJiraAccountId(cloudId: str, searchString: str) -> list[dict]:  # NOSONAR(S1542) camelCase = real MCP tool name
     """Look up user account IDs by display name or email substring."""
     _check_cloud(cloudId)
     needle = searchString.lower()
