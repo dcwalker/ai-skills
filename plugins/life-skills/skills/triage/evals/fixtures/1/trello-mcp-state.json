@@ -1,0 +1,22 @@
+{
+  "boards": {
+    "board-1": {"id": "board-1", "name": "Personal Tasks"}
+  },
+  "lists": {
+    "list-1": {"id": "list-1", "name": "Inbox", "board_id": "board-1"}
+  },
+  "cards": {
+    "card-1": {
+      "id": "card-1",
+      "name": "Buy groceries",
+      "desc": "",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [],
+      "due": null,
+      "due_complete": false,
+      "url": "https://trello.com/c/card-1/buy-groceries"
+    }
+  },
+  "labels": {}
+}
