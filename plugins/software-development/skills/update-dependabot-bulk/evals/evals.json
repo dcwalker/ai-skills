@@ -15,13 +15,12 @@
     {
       "id": 2,
       "prompt": "Batch up the open Dependabot PRs into one update. I approve applying the plan once it's ready.",
-      "expected_output": "The skill finds two open Dependabot PRs: #201 bumping eslint (a direct devDependency) from 9.24.0 to 10.0.3, and #202 bumping flatted from 3.3.3 to 3.4.2. flatted is not listed in any package.json; `yarn why flatted` shows it's pulled in via eslint -> file-entry-cache -> flat-cache. The newer eslint (10.0.3) pulls in a flat-cache version that depends on flatted@^3.4.0, which resolves the target. The skill bumps eslint's package.json entry to 10.0.3, does NOT add a `flatted` entry anywhere, runs `yarn install`, and confirms flatted@3.4.2 (or higher) in yarn.lock before committing.",
+      "expected_output": "The skill finds two open Dependabot PRs: #201 bumping eslint (a direct devDependency) from 9.24.0 to 10.0.3 -- a major version bump -- and #202 bumping flatted from 3.3.3 to 3.4.2. flatted is not listed in any package.json; `yarn why flatted` shows it's pulled in via eslint -> file-entry-cache -> flat-cache. Real dependency resolution shows every current eslint release (9.x through 10.x) still depends on file-entry-cache@^8.0.0, whose only release depends on flat-cache@^4.0.0, which only ever requires flatted@^3.2.9 -- so no eslint version change actually moves flatted forward. flatted's existing locked range already permits 3.4.2, so it resolves via a plain `yarn install` lockfile refresh, independent of the eslint decision. The skill does NOT add a `flatted` entry anywhere, and -- per this repo's CONTRIBUTING.md policy to flag major-version bumps for review rather than applying them silently -- does not fold the eslint major bump into the same automatic step; it's flagged for separate confirmation.",
       "expectations": [
-        "package.json's `eslint` devDependency entry was changed to 10.0.3 (or a version >= 10.0.3 that still resolves flatted to >= 3.4.0).",
-        "No `flatted` key was added anywhere in package.json's dependencies, devDependencies, or resolutions -- this is the skill's core constraint and must hold even though the Dependabot PR literally proposed bumping flatted.",
-        "yarn.lock's `flatted` entry resolves to 3.4.2 or higher after the update.",
-        "Exactly one new commit was created, and its message references both PR #201 and PR #202 (or explains that #202 is superseded via the eslint bump).",
-        "The final report explicitly describes the transitive resolution chain (flatted via eslint/file-entry-cache/flat-cache) rather than silently pinning flatted."
+        "Either (a) yarn.lock's `flatted` entry resolves to 3.4.2 or higher, achieved without adding a `flatted` key anywhere in package.json's dependencies/devDependencies/resolutions, or (b) no changes were applied yet and the skill instead paused to ask whether to proceed, having correctly determined that flatted is independently resolvable via a lockfile refresh. Silently doing nothing without asking, or fabricating an applied fix that wasn't actually verified, both fail this.",
+        "package.json's `eslint` devDependency entry was NOT changed to 10.0.3 as part of the same automatic step -- it's a major version bump that CONTRIBUTING.md says must be flagged for review, not silently applied alongside (or ahead of) the routine flatted fix.",
+        "The transcript or final report explicitly names the eslint bump (PR #201) as a major version change requiring separate review, distinct from the flatted resolution.",
+        "If a commit was created, its message does not claim to have applied the eslint major bump as part of the same change."
       ]
     },
     {
@@ -59,13 +58,13 @@
     {
       "id": 6,
       "prompt": "There are several open Dependabot PRs. Please batch the safe ones into a single update -- I approve applying whatever you classify as safe once you've laid out the plan; just flag anything major-version or otherwise risky separately instead of rolling it in.",
-      "expected_output": "The skill finds five open Dependabot PRs: two safe direct bumps (#601 lodash, #602 chalk), a direct/transitive pair (#603 eslint direct bump, #604 flatted transitive bump resolved via the eslint update), and one major bump (#605 axios 0.27.2->1.6.0). It applies lodash, chalk, and the eslint bump (which also resolves flatted) in one commit, does not add a `flatted` entry to package.json, and explicitly flags the axios major bump as requiring separate confirmation rather than bulk-applying it.",
+      "expected_output": "The skill finds five open Dependabot PRs: two safe, patch-level direct bumps (#601 lodash, #602 chalk); one major-version direct bump (#603 eslint 9.24.0->10.0.3); one transitive bump (#604 flatted, pulled in via eslint -> file-entry-cache -> flat-cache); and one major bump (#605 axios 0.27.2->1.6.0). Real dependency resolution shows flatted's existing locked range already permits the target 3.4.2 -- it resolves via a plain lockfile refresh, independent of whether eslint is bumped, so it doesn't wait on the eslint decision. The skill applies the two safe patch bumps (lodash, chalk) and the flatted lockfile refresh in one commit, does not add a `flatted` entry to package.json, and -- per this repo's CONTRIBUTING.md policy plus the prompt's own instruction to flag major-version items separately -- excludes BOTH major-version bumps (eslint #603 and axios #605) from the auto-applied batch, flagging each for separate confirmation instead of silently rolling either in.",
       "expectations": [
-        "package.json's `lodash`, `chalk`, and `eslint` entries were updated to 4.17.21, 4.1.2, and 10.0.3 respectively (or equivalent versions satisfying the same constraints).",
-        "No `flatted` entry was added to package.json's dependencies/devDependencies/resolutions.",
+        "package.json's `lodash` and `chalk` entries were updated to 4.17.21 and 4.1.2 respectively; package.json's `eslint` entry was NOT changed to 10.0.3 as part of the same automatic commit -- it's a major version bump that must be flagged separately per CONTRIBUTING.md and the prompt's own instruction, not silently rolled in.",
+        "yarn.lock's `flatted` entry resolves to 3.4.2 or higher, achieved without adding a `flatted` entry to package.json's dependencies/devDependencies/resolutions -- and without requiring the eslint bump to be applied first.",
         "package.json's `axios` entry was not silently bumped to 1.6.0 as part of the same automatic commit; the major bump is explicitly called out as flagged/pending rather than applied without comment.",
-        "At most one commit was created covering the safe + transitive-resolved items (lodash, chalk, eslint), and its message does not claim to have applied the axios major bump.",
-        "The final report lists PR #601, #602, #603, and #604 as superseded, and separately flags PR #605 (axios) as not yet applied / needing review."
+        "Any commit created covers only the safe + transitive-resolved items (lodash, chalk, flatted lockfile refresh); its message does not claim to have applied either the eslint or axios major bumps.",
+        "The final report lists PR #601, #602, and #604 as superseded/applied, and separately flags BOTH PR #603 (eslint) and PR #605 (axios) as major-version bumps not yet applied / needing individual review."
       ]
     },
     {
@@ -113,10 +112,10 @@
     {
       "id": 11,
       "prompt": "Batch up the open Dependabot PRs across the repo into a single update. I approve applying the plan once you've listed the files involved.",
-      "expected_output": "The skill finds two open Dependabot PRs touching two different package.json files: #1101 bumps chalk (a direct dependency) in the root package.json from 4.1.0 to 4.1.2, and #1102 bumps react in static/package.json from 18.2.0 to 18.2.9. Both are direct-dependency, non-breaking bumps in their respective files. The skill's plan explicitly lists both package.json files, and it updates both.",
+      "expected_output": "The skill finds two open Dependabot PRs touching two different package.json files: #1101 bumps chalk (a direct dependency) in the root package.json from 4.1.0 to 4.1.2, and #1102 bumps react in static/package.json from 18.2.0 to 18.3.1. Both are direct-dependency, non-breaking bumps in their respective files. The skill's plan explicitly lists both package.json files, and it updates both.",
       "expectations": [
         "The root package.json's `chalk` entry was changed to 4.1.2.",
-        "static/package.json's `react` entry was changed to 18.2.9.",
+        "static/package.json's `react` entry was changed to 18.3.1.",
         "The plan or final report explicitly names both package.json (root) and static/package.json as files that needed updates.",
         "A commit (or commits) covering both files was created, referencing PR #1101 and #1102."
       ]

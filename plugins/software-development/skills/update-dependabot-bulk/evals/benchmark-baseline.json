@@ -1,0 +1,479 @@
+{
+  "metadata": {
+    "skill_name": "update-dependabot-bulk",
+    "skill_path": "plugins/software-development/skills/update-dependabot-bulk",
+    "executor_model": "claude-sonnet-5",
+    "analyzer_model": "claude-sonnet-5",
+    "timestamp": "2026-07-31T00:10:00Z",
+    "evals_run": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 158.342,
+        "tokens": 59442,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "package.json's `lodash` entry was changed to 4.17.21 and `chalk` entry was changed to 4.1.2; no other dependency entries changed.",
+          "passed": true,
+          "evidence": "Independently verified by reading package.json directly: lodash 4.17.21, chalk 4.1.2, axios and left-pad unchanged."
+        },
+        {
+          "text": "Exactly one new commit was created (not two), and its message references both PR #101 and PR #102.",
+          "passed": true,
+          "evidence": "git log shows exactly one commit beyond the fixture's initial commit (c41ece3), message references both #101 and #102."
+        },
+        {
+          "text": "No new top-level dependency, devDependency, or resolutions entry was added beyond lodash and chalk changing version.",
+          "passed": true,
+          "evidence": "package.json's dependency/devDependency key sets are unchanged; only the two version strings differ."
+        },
+        {
+          "text": "The final report lists both PR #101 and #102 as superseded by the commit.",
+          "passed": true,
+          "evidence": "Executor's final report explicitly lists both PRs as superseded."
+        }
+      ]
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 522.142,
+        "tokens": 93232,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "Either (a) yarn.lock's `flatted` entry resolves to 3.4.2 or higher, achieved without adding a `flatted` key anywhere in package.json's dependencies/devDependencies/resolutions, or (b) no changes were applied yet and the skill instead paused to ask whether to proceed, having correctly determined that flatted is independently resolvable via a lockfile refresh. Silently doing nothing without asking, or fabricating an applied fix that wasn't actually verified, both fail this.",
+          "passed": true,
+          "evidence": "No commit made and yarn.lock/package.json unchanged (verified directly), but the executor did the real research (yarn why, npm info against the live registry, a scratch-copy yarn upgrade test) and correctly determined flatted resolves via a plain lockfile refresh within the already-permitted range, then paused to ask about the eslint decision before touching the real workspace -- option (b). Two independent trials of this eval (a prior contaminated run and this one) produced the same real-registry finding and the same cautious pause, corroborating it's a genuine, repeatable outcome rather than a fluke."
+        },
+        {
+          "text": "package.json's `eslint` devDependency entry was NOT changed to 10.0.3 as part of the same automatic step -- it's a major version bump that CONTRIBUTING.md says must be flagged for review, not silently applied alongside (or ahead of) the routine flatted fix.",
+          "passed": true,
+          "evidence": "package.json verified unchanged (still eslint 9.24.0)."
+        },
+        {
+          "text": "The transcript or final report explicitly names the eslint bump (PR #201) as a major version change requiring separate review, distinct from the flatted resolution.",
+          "passed": true,
+          "evidence": "Executor's report explicitly calls out the eslint 9->10 bump as major and asks for separate confirmation, distinct from its flatted findings."
+        },
+        {
+          "text": "If a commit was created, its message does not claim to have applied the eslint major bump as part of the same change.",
+          "passed": true,
+          "evidence": "Vacuously true -- no commit was created (git log shows only the fixture's initial commit)."
+        }
+      ]
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 144.869,
+        "tokens": 54596,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "package.json's `lodash` entry was changed to 4.17.21.",
+          "passed": true,
+          "evidence": "Independently verified: package.json's lodash entry is 4.17.21."
+        },
+        {
+          "text": "package.json's `axios` entry was NOT silently changed to 1.6.0 in the same automatic commit -- either it is left untouched pending explicit confirmation, or it is called out as a separate, clearly-flagged item requiring further approval before being applied.",
+          "passed": true,
+          "evidence": "Independently verified: axios remains 0.27.2 in package.json, untouched."
+        },
+        {
+          "text": "The transcript or final report explicitly names axios's major version bump as a likely-breaking change distinct from the routine lodash bump.",
+          "passed": true,
+          "evidence": "Commit message and final report both explicitly call out axios 0.27.2->1.6.0 as a major bump flagged for individual review."
+        },
+        {
+          "text": "If a commit was created, its message and/or the final report does not present the axios bump as already-applied without qualification.",
+          "passed": true,
+          "evidence": "Commit 54c87d6's message explicitly states axios is excluded and flagged, not applied."
+        }
+      ]
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 65.368,
+        "tokens": 46834,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "No files in the repository were modified and no new commit was created.",
+          "passed": true,
+          "evidence": "git status clean, git log shows only the fixture's initial commit."
+        },
+        {
+          "text": "PR #55 was not referenced as a Dependabot PR, modified, or commented on in any way.",
+          "passed": true,
+          "evidence": "Executor's gh call log shows only the list-dependabot-prs.sh calls (which returned zero results); no call referencing PR #55."
+        },
+        {
+          "text": "The final report clearly states there are no open Dependabot PRs, rather than fabricating an update.",
+          "passed": true,
+          "evidence": "Executor's final report states plainly there are no open Dependabot PRs."
+        }
+      ]
+    },
+    {
+      "eval_id": 5,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 60.139,
+        "tokens": 47534,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "No changes were made to package.json, any lockfile, or any other file -- the working tree after the run is identical to the initial fixture state.",
+          "passed": true,
+          "evidence": "git diff against the initial commit is empty (verified directly)."
+        },
+        {
+          "text": "No new commit was created.",
+          "passed": true,
+          "evidence": "git log shows only the fixture's initial commit."
+        },
+        {
+          "text": "The transcript includes a plan naming both lodash (target 4.17.21) and chalk (target 4.1.2) with their current versions.",
+          "passed": true,
+          "evidence": "Executor's report includes a plan table naming lodash 4.17.20->4.17.21 and chalk 4.1.0->4.1.2."
+        },
+        {
+          "text": "The transcript explicitly asks for the user's approval/confirmation before proceeding to apply the plan, rather than proceeding automatically or silently stopping without asking.",
+          "passed": true,
+          "evidence": "Executor's report ends with an explicit question asking whether to proceed and which package manager to use."
+        }
+      ]
+    },
+    {
+      "eval_id": 6,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 507.139,
+        "tokens": 88481,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "package.json's `lodash` and `chalk` entries were updated to 4.17.21 and 4.1.2 respectively; package.json's `eslint` entry was NOT changed to 10.0.3 as part of the same automatic commit -- it's a major version bump that must be flagged separately per CONTRIBUTING.md and the prompt's own instruction, not silently rolled in.",
+          "passed": true,
+          "evidence": "Independently verified: package.json shows lodash 4.17.21, chalk 4.1.2, eslint unchanged at 9.24.0."
+        },
+        {
+          "text": "yarn.lock's `flatted` entry resolves to 3.4.2 or higher, achieved without adding a `flatted` entry to package.json's dependencies/devDependencies/resolutions -- and without requiring the eslint bump to be applied first.",
+          "passed": true,
+          "evidence": "Independently verified: yarn.lock shows flatted resolved to 3.4.4 (>= 3.4.2), eslint entry in the same lockfile still at 9.24.0, no flatted key in package.json."
+        },
+        {
+          "text": "package.json's `axios` entry was not silently bumped to 1.6.0 as part of the same automatic commit; the major bump is explicitly called out as flagged/pending rather than applied without comment.",
+          "passed": true,
+          "evidence": "Independently verified: axios unchanged at 0.27.2; commit message explicitly excludes and flags it."
+        },
+        {
+          "text": "Any commit created covers only the safe + transitive-resolved items (lodash, chalk, flatted lockfile refresh); its message does not claim to have applied either the eslint or axios major bumps.",
+          "passed": true,
+          "evidence": "Commit dcd7334's message explicitly lists what was applied (lodash, chalk, flatted) and explicitly states eslint and axios are excluded/flagged."
+        },
+        {
+          "text": "The final report lists PR #601, #602, and #604 as superseded/applied, and separately flags BOTH PR #603 (eslint) and PR #605 (axios) as major-version bumps not yet applied / needing individual review.",
+          "passed": true,
+          "evidence": "Executor's final report lists #601/#602/#604 as superseded and #603/#605 as flagged, matching commit message."
+        }
+      ]
+    },
+    {
+      "eval_id": 7,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 108.236,
+        "tokens": 51403,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "No `minimist` entry was added to package.json's dependencies, devDependencies, or resolutions -- the transitive-pinning constraint holds even when no clean resolution path exists.",
+          "passed": true,
+          "evidence": "Independently verified: zero occurrences of \"minimist\" in package.json."
+        },
+        {
+          "text": "package.json was not modified in a way that force-pins minimist as a workaround.",
+          "passed": true,
+          "evidence": "git diff against the initial commit is empty."
+        },
+        {
+          "text": "The final report explicitly lists PR #701 / the minimist bump as an unresolved limitation that could not be applied through a parent dependency update, rather than silently dropping it or silently pinning it.",
+          "passed": true,
+          "evidence": "Executor's report explains old-build-tool 404s against both npm and yarn registries, so no parent bump path exists, and flags PR #701 for manual handling."
+        },
+        {
+          "text": "No commit was created that claims to have resolved the minimist bump.",
+          "passed": true,
+          "evidence": "git log shows only the fixture's initial commit -- no commit was created at all."
+        }
+      ]
+    },
+    {
+      "eval_id": 8,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 159.472,
+        "tokens": 55619,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "package.json's `lodash` entry remains 4.17.20 (unchanged) after the run.",
+          "passed": true,
+          "evidence": "Independently verified: package.json's lodash entry is still 4.17.20."
+        },
+        {
+          "text": "package.json's `chalk` entry was changed to 4.1.2.",
+          "passed": true,
+          "evidence": "Independently verified: package.json's chalk entry is 4.1.2."
+        },
+        {
+          "text": "Any commit created touches only the chalk version change, not a no-op lodash edit.",
+          "passed": true,
+          "evidence": "Commit 3d004e6's diff (per package.json content) touches only chalk; lodash line is byte-identical to the fixture."
+        },
+        {
+          "text": "The final report distinguishes PR #801 (already satisfied / stale, safe to close without a code change) from PR #802 (applied), rather than treating them identically.",
+          "passed": true,
+          "evidence": "Commit message and final report both explicitly separate #801 (already satisfied, no change) from #802 (applied)."
+        }
+      ]
+    },
+    {
+      "eval_id": 9,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 207.962,
+        "tokens": 57539,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "package.json's `chalk` entry was changed to 4.1.2; no other dependency entries changed.",
+          "passed": true,
+          "evidence": "Independently verified: package.json shows chalk 4.1.2, lodash/axios/left-pad unchanged."
+        },
+        {
+          "text": "Exactly one new commit was created, and its message references PR #901.",
+          "passed": true,
+          "evidence": "git log shows exactly one commit beyond the fixture's initial commit (a8af82d), message references PR #901."
+        },
+        {
+          "text": "The final report lists PR #901 as superseded by the commit.",
+          "passed": true,
+          "evidence": "Executor's final report lists PR #901 as superseded."
+        }
+      ]
+    },
+    {
+      "eval_id": 10,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 208.991,
+        "tokens": 58939,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "package.json's `lodash` entry was changed to 4.17.23 (the higher of the two proposed versions), not 4.17.21.",
+          "passed": true,
+          "evidence": "Independently verified: package.json's lodash entry is 4.17.23."
+        },
+        {
+          "text": "Exactly one new commit was created touching `lodash`, not two separate/conflicting edits.",
+          "passed": true,
+          "evidence": "git log shows exactly one commit beyond the fixture's initial commit (380dd8c)."
+        },
+        {
+          "text": "The commit message or final report references both PR #1001 and #1002 as superseded by the single consolidated bump.",
+          "passed": true,
+          "evidence": "Commit message explicitly lists both #1001 and #1002 as superseded, with reasoning for taking the higher version."
+        }
+      ]
+    },
+    {
+      "eval_id": 11,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 135.762,
+        "tokens": 55212,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "The root package.json's `chalk` entry was changed to 4.1.2.",
+          "passed": true,
+          "evidence": "Independently verified: root package.json's chalk entry is 4.1.2."
+        },
+        {
+          "text": "static/package.json's `react` entry was changed to 18.3.1.",
+          "passed": true,
+          "evidence": "Independently verified: static/package.json's react entry is 18.3.1, react-dom left untouched at 18.2.0."
+        },
+        {
+          "text": "The plan or final report explicitly names both package.json (root) and static/package.json as files that needed updates.",
+          "passed": true,
+          "evidence": "Executor's report table and commit message both explicitly name both files."
+        },
+        {
+          "text": "A commit (or commits) covering both files was created, referencing PR #1101 and #1102.",
+          "passed": true,
+          "evidence": "git log shows exactly one commit (a0a83eb) whose message references both #1101 and #1102; both package.json files' diffs are contained in it."
+        }
+      ]
+    },
+    {
+      "eval_id": 12,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 24.431,
+        "tokens": 41001,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "No files in the repository were modified and no new commit was created.",
+          "passed": true,
+          "evidence": "git diff against the initial commit is empty, git log shows only the fixture's initial commit."
+        },
+        {
+          "text": "The response lists PR #1201 and #1202 with their package/version details.",
+          "passed": true,
+          "evidence": "Executor's final report table lists both PRs with package and version details."
+        },
+        {
+          "text": "The response does not present or push a plan to apply the updates, and does not ask the user to approve a bulk update they didn't request.",
+          "passed": true,
+          "evidence": "Executor's report is a status listing only, ending with an offer (not a push) to build a plan if wanted."
+        },
+        {
+          "text": "No `gh` write operations (e.g. commenting on or closing a PR) occurred -- only read/list calls.",
+          "passed": true,
+          "evidence": "gh-calls.log contains exactly 4 entries, all reads: auth status, pulls list, and two pulls/*/files calls."
+        }
+      ]
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 191.9044,
+        "stddev": 154.0951,
+        "min": 24.431,
+        "max": 522.142
+      },
+      "tokens": {
+        "mean": 59152.6667,
+        "stddev": 15136.4559,
+        "min": 41001,
+        "max": 93232
+      }
+    }
+  },
+  "notes": [
+    "12/12 evals pass 100% of their expectations in this baseline run. All results were independently verified against ground truth (direct file reads, git log/show, and gh-calls.log contents) rather than accepted from executor self-report alone.",
+    "This is a with_skill-only baseline (no without_skill comparison) since update-dependabot-bulk is a workflow skill, not a content generator.",
+    "This baseline required three rounds of trials because it surfaced three genuine, distinct infrastructure/fixture bugs (not skill bugs), all fixed before the results reported here were produced: (1) the shared eval harness (evals/lib/run-eval.sh) never put a skill's own bundled scripts/ directory on PATH for subagent executor trials -- only the gh-stub was added -- so list-dependabot-prs.sh could not be found; fixed by having run-eval.sh always prepend the skill's scripts/ dir alongside the gh-stub, mirroring how a real Claude Code session exposes an active skill's bundled scripts. (2) Several package-lock.json fixtures (evals 1, 3, 4, 5, 8, 9, 10, 11, 12) shipped with fabricated all-zero placeholder integrity hashes, which made a real `npm install` fail with EINTEGRITY on every package in the file, not just the ones being bumped -- forcing every npm-based trial through an unplanned lockfile-repair side-quest whose outcome varied by which workaround each executor happened to choose, rather than testing the skill's actual intended behavior. Fixed by regenerating all affected package-lock.json fixtures from the real npm registry. (3) Eval 11's fixture proposed bumping react to a fabricated version (18.2.9) that does not exist on the real npm registry (confirmed via `npm info react@18.2.9` -> 404); fixed by retargeting the fixture and evals.json to a real published version (18.3.1).",
+    "A fourth issue was fixture-narrative rather than infrastructure: evals 2 and 6 originally assumed that bumping eslint from 9.24.0 to 10.0.3 would pull `flatted` forward to >=3.4.0 via file-entry-cache/flat-cache. Verified directly against the live npm registry that this is false -- every current eslint release (9.x through the actual latest, 10.8.0) still depends on file-entry-cache@^8.0.0, whose only release depends on flat-cache@^4.0.0, which only ever requires flatted@^3.2.9. flatted's existing locked range already permits the target version, so it resolves via a plain lockfile refresh, independent of the eslint decision. Two independent executor trials of eval 2 discovered this same fact through real research and correctly declined to fabricate the assumed link. evals.json was corrected to grade the real, verified resolution path instead of the originally-imagined one. Eval 6's `expected_output` also had an internal inconsistency fixed at the same time: the prompt itself says to flag major-version items separately, but the original expectations bundled the eslint major bump into the auto-applied \"safe\" batch alongside patch-level lodash/chalk -- corrected so both major bumps (eslint and axios) are expected to be flagged, not just axios.",
+    "Eval 2's grading was written to accept two valid outcomes given its more ambiguous prompt wording (unlike evals 3 and 6, it doesn't explicitly say 'flag risky items separately'): either applying the safe, independently-resolvable flatted fix while flagging eslint, or pausing to ask before touching anything once a major-version item was discovered mid-plan. Two independent trials both chose the latter, cautious path after doing the real verification work -- treated here as a legitimate outcome, not a shortfall, consistent with the guide's principle of not rejecting valid alternative approaches.",
+    "This batch covered a strong mix of scenarios: a clean two-PR direct-dependency batch (1), a transitive dependency requiring real npm/yarn research where the assumed resolution path turned out not to exist (2), a safe-plus-major mix (3), zero open PRs (4), a plan-only request with no pre-approval (5), a five-PR mix of safe/transitive/two-major items (6), an unresolvable transitive dependency via a fictitious parent package (7), a stale/already-satisfied PR alongside a real one (8), a single-PR bulk update (9), two PRs targeting the same package at conflicting versions (10), a monorepo with two package.json files (11), and a status-only request that must not build or push a plan (12).",
+    "The `tool_calls` and `errors` fields on every run are `null`, not measured -- they aren't wired up in the executor/grader pipeline yet.",
+    "Unlike several earlier baselines this session, real time/token usage data was available for all 12 runs (via the background Agent tool's usage reporting), so no runs are missing from the aggregate time/token statistics."
+  ]
+}
