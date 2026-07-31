@@ -16,11 +16,11 @@
     {
       "id": 2,
       "prompt": "Review the code in this repository (local working tree, no PR).",
-      "expected_output": "This repo has no CONTRIBUTING.md, AGENTS.md, or any tool-specific instruction file. Per the skill's own Step 2/'No repo-specific guidelines' behavior, the review must still proceed against general software-engineering and security best practices and explicitly state in its output that no repo-specific guideline files were found. The single function (applyDiscount) is simple, correct, and has no real issues, so the risk score should stay low.",
+      "expected_output": "This repo has no CONTRIBUTING.md, AGENTS.md, or any tool-specific instruction file. Per the skill's own Step 2/'No repo-specific guidelines' behavior, the review must still proceed against general software-engineering and security best practices and explicitly state in its output that no repo-specific guideline files were found. The single function (applyDiscount) has no security-sensitive issues and no crash-level bugs, but it does genuinely lack bounds/NaN validation on percentOff -- a real, minor-to-moderate defensive-coding gap a careful reviewer should catch, not a fabricated finding. The risk score should reflect that real gap without being inflated into a security or correctness emergency.",
       "expectations": [
         "The output includes an explicit note that no repo-specific guideline files (CONTRIBUTING.md, AGENTS.md, etc.) were found and that the review used general best practices instead",
         "The review is not skipped or refused for lack of guideline files",
-        "The overall risk score is in the None/Low band (0-39), since applyDiscount has no real defects"
+        "The overall risk score reflects the code's real, minor state -- None/Low/Medium (0-59), not High/Critical -- and any issues raised are genuine defensive-coding gaps actually present in this 4-line function (e.g. missing bounds/NaN validation), not fabricated, security-framed, or wildly inflated beyond what the code actually contains"
       ]
     },
     {
