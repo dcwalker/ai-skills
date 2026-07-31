@@ -26,6 +26,8 @@ set -euo pipefail
 # only the explicit `pwd` is captured, not a doubled/newline-joined value.
 unset CDPATH
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null && pwd)"
+# shellcheck source=isolation-env.sh
+source "$SCRIPT_DIR/isolation-env.sh"
 
 if [[ ! -d "$1" ]]; then
   echo "run-eval: no such skill evals dir: $1" >&2
@@ -63,36 +65,21 @@ ENV_FILE="$RUN_DIR/env.sh"
     # Real Claude Code sessions put an active skill's bundled scripts/ dir on
     # PATH automatically; a subagent executor trial doesn't inherit that, so
     # reproduce it here rather than relying on the executor to guess a path.
-    echo "export PATH=\"$SCRIPT_DIR/gh-stub:$SKILL_SCRIPTS_DIR:\$PATH\""
-  else
-    echo "export PATH=\"$SCRIPT_DIR/gh-stub:\$PATH\""
+    # emit_isolation_env below prepends the gh stub, so it still wins over any
+    # real gh regardless of what this adds.
+    echo "export PATH=\"$SKILL_SCRIPTS_DIR:\$PATH\""
   fi
   echo "export GH_STUB_LOG=\"$RUN_DIR/gh-calls.log\""
   echo "export GH_STUB_COUNTS_DIR=\"$RUN_DIR\""
 
-  # Marks the environment as a trial. Bundled scripts that can reach a real
-  # service check this and refuse rather than falling back to real mode, so a
-  # missing fixture file fails loudly instead of hitting a live account.
-  echo "export AI_SKILLS_EVAL=1"
-
-  # Scrub every real service credential inherited from the caller's shell.
-  # Trials run in the developer's own environment, where these are usually
-  # exported by a profile. Without this, a fixture file that was simply never
-  # authored leaves a bundled script holding live credentials -- which is how
-  # three real Trello cards were created on a personal board during an
-  # organize-meeting-notes run.
-  for cred in TRELLO_API_KEY TRELLO_TOKEN TRELLO_LIST_ID \
-              TRELLO_BOARD_ID TRELLO_WORKSPACE_ID \
-              SONAR_TOKEN SONAR_HOST_URL SONAR_PROJECT_KEY \
-              GH_TOKEN GITHUB_TOKEN; do
-    echo "unset $cred"
-  done
-
-  # Point anything that reads a host at an unroutable name, so a script that
-  # ignores both the marker and the missing credentials still cannot reach a
-  # real service.
-  echo "export SONAR_HOST_URL=\"https://sonar.invalid\""
-  echo "export SONAR_TOKEN=\"eval-fixture-token\""
+  # Scrub every real service credential inherited from the caller's shell, and
+  # shadow gh. Trials run in the developer's own environment, where these are
+  # usually exported by a profile. Without this, a fixture file that was simply
+  # never authored leaves a bundled script holding live credentials -- which is
+  # how three real Trello cards were created on a personal board during an
+  # organize-meeting-notes run. The list lives in isolation-env.sh so this
+  # harness and run-mcp-eval.sh cannot drift apart.
+  emit_isolation_env "$SCRIPT_DIR"
 
   if [[ -f "$FIXTURE_DIR/gh-cassette.json" ]]; then
     echo "export GH_STUB_CASSETTE=\"$FIXTURE_DIR/gh-cassette.json\""
