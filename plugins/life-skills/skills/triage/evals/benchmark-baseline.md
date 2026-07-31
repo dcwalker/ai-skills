@@ -9,8 +9,8 @@
 | Metric | With Skill |
 |--------|------------|
 | Pass Rate | 100% ± 0% |
-| Time | 44.5s ± 15.6s (n=9) |
-| Tokens | 326124 ± 116543 (n=9; total processed, see notes) |
+| Time | 44.5s ± 16.2s (n=9) |
+| Tokens | 326124 ± 120259 (n=9; total processed, see notes) |
 
 ## Per-eval results
 
