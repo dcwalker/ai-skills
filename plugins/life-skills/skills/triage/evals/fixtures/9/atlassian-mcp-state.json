@@ -1,0 +1,25 @@
+{
+  "cloud": {"id": "b7c9e1a2-0000-4000-8000-example00001", "url": "https://danwalker.atlassian.net", "name": "danwalker"},
+  "projects": {
+    "HOME": {"key": "HOME", "id": "10001", "name": "Home Projects", "issueTypes": ["Task"]}
+  },
+  "issues": {
+    "HOME-7": {
+      "key": "HOME-7", "id": "20007", "project": "HOME",
+      "summary": "Convert the garage into a home office",
+      "description": "Multi-week project, drawings are done. Builder starts the first week of September. IMPORTANT: before anything can start, someone needs to book a waste skip for the first week of works, arrange it with the neighbours (shared driveway access), and confirm the electrician's second-fix date. None of that is tracked anywhere yet.",
+      "status": {"name": "In Progress", "statusCategory": "In Progress"},
+      "issuetype": "Task", "priority": "High", "labels": ["home", "renovation"],
+      "assignee": {"accountId": "user-1", "displayName": "Dan Walker"},
+      "reporter": {"accountId": "user-1", "displayName": "Dan Walker"},
+      "created": "2026-07-01T09:00:00Z", "updated": "2026-07-29T09:00:00Z",
+      "resolution": null, "duedate": "2026-09-30", "comments": []
+    }
+  },
+  "users": [{"accountId": "user-1", "displayName": "Dan Walker", "emailAddress": "eval-user@example.com"}],
+  "transitions": [
+    {"id": "11", "name": "To Do", "to": {"name": "To Do", "statusCategory": "To Do"}},
+    {"id": "21", "name": "In Progress", "to": {"name": "In Progress", "statusCategory": "In Progress"}},
+    {"id": "31", "name": "Done", "to": {"name": "Done", "statusCategory": "Done"}}
+  ]
+}

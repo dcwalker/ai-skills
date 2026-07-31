@@ -1,0 +1,36 @@
+{
+  "cloud": {"id": "b7c9e1a2-0000-4000-8000-example00001", "url": "https://danwalker.atlassian.net", "name": "danwalker"},
+  "projects": {
+    "HOME": {"key": "HOME", "id": "10001", "name": "Home Projects", "issueTypes": ["Task"]}
+  },
+  "issues": {
+    "HOME-1": {
+      "key": "HOME-1", "id": "20001", "project": "HOME",
+      "summary": "Renew home insurance before the 15 September deadline",
+      "description": "Current policy expires 15 September. Compare at least two quotes against the renewal offer; last year's premium was $1,240. Documents are in the shared drive under Insurance/2026.",
+      "status": {"name": "To Do", "statusCategory": "To Do"},
+      "issuetype": "Task", "priority": "High", "labels": ["home", "finance"],
+      "assignee": {"accountId": "user-1", "displayName": "Dan Walker"},
+      "reporter": {"accountId": "user-1", "displayName": "Dan Walker"},
+      "created": "2026-07-22T09:00:00Z", "updated": "2026-07-30T09:00:00Z",
+      "resolution": null, "duedate": "2026-09-10", "comments": []
+    },
+    "HOME-2": {
+      "key": "HOME-2", "id": "20002", "project": "HOME",
+      "summary": "Fix the leaking outdoor tap",
+      "description": "Replaced the washer and the tap body. No further action.",
+      "status": {"name": "Done", "statusCategory": "Done"},
+      "issuetype": "Task", "priority": "Low", "labels": ["home"],
+      "assignee": {"accountId": "user-1", "displayName": "Dan Walker"},
+      "reporter": {"accountId": "user-1", "displayName": "Dan Walker"},
+      "created": "2026-06-10T09:00:00Z", "updated": "2026-06-20T09:00:00Z",
+      "resolution": "Done", "duedate": null, "comments": []
+    }
+  },
+  "users": [{"accountId": "user-1", "displayName": "Dan Walker", "emailAddress": "eval-user@example.com"}],
+  "transitions": [
+    {"id": "11", "name": "To Do", "to": {"name": "To Do", "statusCategory": "To Do"}},
+    {"id": "21", "name": "In Progress", "to": {"name": "In Progress", "statusCategory": "In Progress"}},
+    {"id": "31", "name": "Done", "to": {"name": "Done", "statusCategory": "Done"}}
+  ]
+}
