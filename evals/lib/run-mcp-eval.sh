@@ -46,6 +46,8 @@ set -euo pipefail
 # only the explicit `pwd` is captured, not a doubled/newline-joined value.
 unset CDPATH
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null && pwd)"
+# shellcheck source=isolation-env.sh
+source "$SCRIPT_DIR/isolation-env.sh"
 
 if [[ ! -d "$1" ]]; then
   echo "run-mcp-eval: no such skill evals dir: $1" >&2
@@ -124,17 +126,16 @@ ENV_FILE="$RUN_DIR/env.sh"
   echo "export WORKSPACE_DIR=\"$WORKSPACE_DIR\""
   echo "export MCP_CONFIG_PATH=\"$MCP_CONFIG_PATH\""
 
-  # --strict-mcp-config already keeps the trial off the real MCP servers, but
-  # the `claude` subprocess still inherits the caller's shell. Scrub the same
-  # credentials run-eval.sh does, so a trial that shells out to a bundled
-  # script or curl cannot reach a live account either.
-  echo "export AI_SKILLS_EVAL=1"
-  for cred in TRELLO_API_KEY TRELLO_TOKEN TRELLO_LIST_ID \
-              TRELLO_BOARD_ID TRELLO_WORKSPACE_ID \
-              SONAR_TOKEN SONAR_HOST_URL SONAR_PROJECT_KEY \
-              GH_TOKEN GITHUB_TOKEN; do
-    echo "unset $cred"
-  done
+  # --strict-mcp-config keeps the trial off the real MCP servers, but it only
+  # governs MCP. The `claude` subprocess still inherits the caller's shell and
+  # can shell out, and triage/SKILL.md documents two such paths: a curl -X POST
+  # to Jira's REST API using ATLASSIAN_USER_* credentials, and gh pr view /
+  # gh search prs. Neither goes through MCP. The same isolation preamble
+  # run-eval.sh uses covers both -- scrubbing the credentials, and shadowing gh,
+  # which authenticates from its own keyring and so ignores GH_TOKEN entirely.
+  emit_isolation_env "$SCRIPT_DIR"
+  echo "export GH_STUB_LOG=\"$RUN_DIR/gh-calls.log\""
+  echo "export GH_STUB_COUNTS_DIR=\"$RUN_DIR\""
   # Per-service grading artifacts (only for services this fixture wired up):
   for SERVICE in trello gmail atlassian; do
     if [[ -f "$FIXTURE_DIR/$SERVICE-mcp-state.json" ]]; then

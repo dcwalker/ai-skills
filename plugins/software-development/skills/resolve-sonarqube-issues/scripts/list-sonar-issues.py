@@ -221,6 +221,21 @@ class SonarQubeClient:
         if fixture_file:
             return self._fixture_response(fixture_file, path)
 
+        # Fail closed inside an eval, mirroring create-trello-task.sh. Choosing
+        # real mode by the mere absence of a fixture var is what let an eval
+        # trial write to a real Trello board; the harness now also pins
+        # SONAR_HOST_URL to an unroutable name, but that is a second line of
+        # defence and this script should not depend on it. An eval reaching
+        # here without a fixture is a harness bug, never a request to call the
+        # real API.
+        if os.environ.get("AI_SKILLS_EVAL"):
+            raise RuntimeError(
+                "running under AI_SKILLS_EVAL with no SONAR_FIXTURE_FILE set. "
+                "Refusing to call the real SonarQube API. Add a "
+                "sonar-fixture.json to this eval's fixture directory; "
+                "run-eval.sh wires it automatically."
+            )
+
         url = self.base_url + path.lstrip("/")
         if params:
             url += "?" + urllib.parse.urlencode({k: v for k, v in params.items() if v is not None})
