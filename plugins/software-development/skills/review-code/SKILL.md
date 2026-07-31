@@ -34,6 +34,12 @@ gh pr view --json number,title,url,headRefName 2>/dev/null
 - When a PR exists, fall back to text only if the request explicitly opted out of
   posting (e.g. "just show me the text," "don't post to the PR").
 
+**Skill-quality mode (additive, do not ask):** if the diff touches any
+`SKILL.md`, `evals/evals.json`, `evals/benchmark-baseline.*`, or other file
+under a `plugins/*/skills/<skill>/` path, ALSO run Step 4b (Skill Quality
+Review) for each affected skill. General code review still applies to every
+file in the diff, including the skill files themselves.
+
 ## Step 2: Load guidelines
 
 **Primary** — read the first one found:
@@ -85,7 +91,14 @@ Question every implementation decision with a tester's mindset:
 
 Use `Grep` to understand how changed code is used elsewhere before deciding whether to flag something.
 
-Assign a risk score 0–100 based on the most serious issue found:
+**Mixed diffs (code + skills):** a diff that touches both ordinary code and
+skill files gets both treatments — every file goes through this step's normal
+review, and each affected skill additionally goes through Step 4b. Neither
+substitutes for the other: a bug in a skill's bundled script is a Step 4 code
+finding AND may also be a Step 4b resource-organization finding.
+
+Assign a risk score 0–100 based on the most serious issue found — across
+Step 4 and Step 4b findings alike; a single scale covers both:
 
 | Score | Risk | Meaning |
 |-------|------|---------|
@@ -95,7 +108,66 @@ Assign a risk score 0–100 based on the most serious issue found:
 | 60–79 | 🔴 High | Correctness concerns, unsafe patterns |
 | 80–100 | 🔴 Critical | Will break in production, security vulnerabilities |
 
-## Step 5: Output
+## Step 4b: Skill Quality Review
+
+Runs in addition to Step 4, only for skills the diff touches (see Step 1).
+It has a cheap static part that always runs, and an expensive dynamic part
+that runs **only on explicit request**.
+
+### Static checks (always)
+
+For each affected skill, check and report:
+
+- **Description quality**: the frontmatter `description` states what the skill
+  does AND when to use it, with concrete triggering phrases — the description
+  is the only thing the model sees when deciding whether to load the skill.
+- **Line budget / progressive disclosure**: SKILL.md under ~500 lines; large
+  reference material split into `references/` files rather than inlined.
+- **Naming convention**: lowercase-hyphen name; action skills follow
+  `{intent}-{subject}[-{qualifier}]`, integrations `{tool}[-{scope}]`. Reuse
+  the intent words already established by sibling skills (no synonym drift,
+  e.g. mixing `fix`/`resolve` for the same intent). If
+  `~/rules/skill-naming-conventions.md` exists in this environment, apply it
+  as the authority; otherwise apply the pattern above as observed from the
+  existing skill set.
+- **Bundled-resource organization**: `scripts/`, `references/`, and `evals/`
+  subdirectories follow this repo's existing layout; any script SKILL.md
+  references actually exists in the repo (a referenced-but-missing bundled
+  script is a High finding — it has happened here before).
+- **Eval hygiene**: if the skill has `evals/evals.json`, the eval set includes
+  both positive and negative cases, and fixture directories referenced by the
+  evals exist. If the diff changes `evals.json` or fixtures without updating
+  `benchmark-baseline.*`, flag that the baseline may be stale.
+
+### Dynamic check (only on explicit request)
+
+Running a skill's evals spawns executor and grader subagents per eval — slow
+and costly. **Do not run evals by default, and never in an unattended/CI run
+unless the invoking request explicitly asks** (e.g. "run the evals", "check
+the benchmark" in the request or a `/re-review` comment body). When not
+requested, add one line to the Skill Quality section: evals not run; the
+checked-in `benchmark-baseline.*` is the last verified result.
+
+When explicitly requested:
+
+1. Run the changed skill's evals via the executor/grader flow this repo's
+   baselines were built with (see `evals/README.md`; use `evals/lib/run-eval.sh`
+   per trial, or `evals/lib/run-mcp-eval.sh` for MCP-backed skills — noting the
+   latter requires a real `claude -p` subprocess, which not every environment
+   can authenticate).
+2. Aggregate results and diff against the skill's checked-in
+   `evals/benchmark-baseline.json`: flag pass-rate drops and newly-failing
+   expectations (each at minimum a Medium finding; treat a drop on a
+   previously-100% eval as High), and note material time/token regressions
+   and improvements.
+3. Verify results against ground truth (fixture logs, final state), not
+   executor self-report — the same rule the baselines follow.
+
+For the dynamic check only, the `Agent` tool and unrestricted `Bash` are
+permitted, as exceptions to the Rules below. The static checks stay within
+the standard allowed tools.
+
+
 
 ### Text output
 
@@ -136,6 +208,25 @@ Risk:          🟢 Low (0)
 Note:
 | Guidelines loaded: CONTRIBUTING.md, AGENTS.md
 
+=== Skill Quality ===              (only when the diff touches skill files)
+
+Skill: triage (plugins/life-skills/skills/triage)
+---
+Static checks:  description ✓ · line budget ✓ (699 — over ~500, flag) ·
+                naming ✓ · resources ✓ · eval hygiene ✓
+Evals:          not run (on-request only); baseline of record:
+                evals/benchmark-baseline.json (83.3% pass, 2026-07-31)
+
+Skill: commit (plugins/software-development/skills/commit)
+---
+Static checks:  all ✓
+Evals:          run on request — see table below
+
+| Eval | Baseline | This run | Δ |
+|------|----------|----------|---|
+| 1    | 4/4      | 4/4      | = |
+| 2    | 4/4      | 3/4      | ▼ newly failing: "commit message references the issue" |
+
 === Summary ===
 
 Risk Score:    35/100
@@ -144,6 +235,11 @@ Issues:        3
   🟡 Medium:   1
   🟢 Low:      1
 ```
+
+In a mixed diff, the Issues section covers all files (code and skill files
+alike) and the Skill Quality section appears additionally, once per affected
+skill. Skill-quality findings count toward the issue totals and the risk
+score like any other finding.
 
 Wrap issue text at ~80 characters and prefix each line with `| ` (matching the sonar script style). Risk emoji: 🔴 for score ≥ 60, 🟡 for 40–59, 🟢 for < 40.
 
@@ -161,7 +257,10 @@ Do not hard-code a specific posting command. The review is made up of:
   with a suggested fix where possible. Only comment on lines present in the PR
   diff; PR-level observations belong in the summary.
 - **A summary** stating the overall risk (none / low / medium / high / critical)
-  and the standards you reviewed against.
+  and the standards you reviewed against. When the diff touches skill files,
+  include the Skill Quality section (static-check results per affected skill,
+  and the eval-vs-baseline table when evals were explicitly requested) in this
+  summary comment, above the risk marker.
 - **A verdict, only if your environment supports submitting one:**
   `REQUEST_CHANGES` when any finding is High or Critical (≥ 60, 🔴); `APPROVE`
   when there is nothing worth commenting on; `COMMENT` otherwise. If verdicts
@@ -200,3 +299,8 @@ output / PR summary so the reader knows the basis:
 - Posting requires the runtime to have pull-request write permission (via a native PR-commenting tool or `gh`); this is a workflow/credential concern, not something to prompt about
 - Do not use the `Write` tool
 - Allowed tools: `Read`, `Glob`, `Grep`, `Bash` (for `gh` commands only)
+- Exception, scoped to Step 4b's dynamic check only (and only when evals were
+  explicitly requested): the `Agent` tool (executor/grader subagents) and
+  `Bash` beyond `gh` (eval harness scripts). Everything else in the review,
+  including all static skill-quality checks, stays within the standard
+  allowed tools above
