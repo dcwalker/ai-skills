@@ -159,6 +159,13 @@ Tracked work item rule:
   a URL is known (e.g. `[KEY-123](...): <summary> (<status>)`), so the note
   stands on its own without the tracker open.
 
+Unanchored enrichment rule:
+- A link or work item surfaced by Step 1b may have no matching note to
+  attach to (it came from chat, email, or discussion the raw notes never
+  mentioned). Propose a new note bullet for it, placed where it fits the
+  flow of the meeting, subject to the user's approval; if the user declines,
+  drop it rather than forcing it into an unrelated note.
+
 Image rule:
 - For each screenshot/photo, ask the user for a caption describing its significance.
 - Add the caption under each image using italic text (e.g., `*Caption describing the image*`).
