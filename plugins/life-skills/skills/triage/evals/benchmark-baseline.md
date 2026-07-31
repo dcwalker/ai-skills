@@ -1,30 +1,33 @@
 # Skill Benchmark: triage
 
-**Model**: claude-sonnet-5
-**Date**: 2026-07-31T04:27:00Z
-**Evals**: 1-3 (1 run each, with_skill only, Trello-only pilot batch)
+**Model**: claude-sonnet-5 (executor) / claude-fable-5 (analyzer)
+**Date**: 2026-07-31T15:20:00Z
+**Evals**: 1-6 (1 run each, with_skill only)
 
 ## Summary
 
 | Metric | With Skill |
 |--------|------------|
-| Pass Rate | 83.3% ± 23.6% |
-| Time | 37.7s ± 5.9s (n=3) |
-| Tokens | unavailable (see notes) |
+| Pass Rate | 100% ± 0% |
+| Time | 40.5s ± 9.2s (n=6) |
+| Tokens | 288202 ± 102970 (n=6; total processed, see notes) |
 
 ## Per-eval results
 
 | Eval | Pass Rate | Time (s) | Tokens |
 |------|-----------|----------|--------|
-| 1 | 2/4 | 46 | n/a |
-| 2 | 5/5 | 33 | n/a |
-| 3 | 4/4 | 34 | n/a |
+| 1 | 4/4 | 27.4 | 182772 |
+| 2 | 5/5 | 42.9 | 259838 |
+| 3 | 4/4 | 36.4 | 447464 |
+| 4 | 5/5 | 52.2 | 267428 |
+| 5 | 4/4 | 32.8 | 172079 |
+| 6 | 6/6 | 51.5 | 399630 |
 
 ## Notes
 
-- 2/3 evals pass all expectations; eval 1 fails 2 of its 4 expectations. All results were independently verified against ground truth (`trello-calls.log` call sequence and direct JSON comparison of `trello-state-out.json` against the seed fixture), not accepted from the transcript's self-report alone.
-- Executor mechanism differs from every other skill's baseline in this repo: each trial is a real, separate `claude -p --dangerously-skip-permissions --strict-mcp-config` subprocess (via `evals/lib/mcp-stub/trello_stub.py` and `evals/lib/run-mcp-eval.sh`), not an in-process Agent-tool subagent, because MCP server resolution happens once at process launch and can't be swapped per-command via `PATH` the way the gh-stub is. See `evals/README.md`'s "MCP stub servers" section.
-- Eval 1's failure is a genuine, repeatable finding, not a fixture artifact: given a vague scope request ("help me triage my backlog") against a Trello workspace containing exactly one board/list/card, the executor used Step 0's own "capability discovery" step to survey what exists, found only one candidate, and proceeded directly into a full per-item fetch and audit (`view_board`, `view_list`, `view_card`, `get_board_labels`) rather than stopping to ask the user to confirm scope first, as SKILL.md's Step 0 explicitly requires ("Do not proceed until scope is clear"). It did not mutate anything and did ask real clarifying questions, but only after already fetching full card detail — the ask came at the field level (due date, labels), not as the required scope-confirmation gate before touching card data. Worth a second opinion on whether Step 0 should be read as "ask only when genuinely ambiguous" rather than "always ask when the user didn't specify a target," since the current wording produced this divergence.
-- Eval 2 surfaced a good example of correct judgment beyond what the eval anticipated: the fixture's card description says "the June conference" with no year, and the executor noticed this creates a real ambiguity against the session's current date (2026-07-30, so an unqualified "June conference" could mean a past or future date) and asked rather than inventing a due date — consistent with the skill's "never invent facts or dates" rule. This was graded as intended (correct) behavior, not a shortfall.
-- Time figures are approximate, derived from file mtimes (`mcp-config.json` creation to `transcript.txt` completion) rather than the subprocess's own reported wall-clock time, since `run-trials.sh` invoked `claude -p` in plain-text output mode. Token figures are unavailable for the same reason (plain-text mode doesn't report usage) — a future run using `--output-format json` would capture both more precisely; not done here to avoid a second live round-trip for a 3-eval pilot batch.
-- Scoped to triage's primary Trello-processing path (Steps 0-4, 8) with a single-board, Trello-only pilot fixture set. Step 4c's capture-into-Trello-from-another-platform flow, staleness handling (Step 7, which needs a last-activity timestamp the stub does not currently model), and Jira/Gmail scope are all deferred to a follow-up batch, not covered here.
+- 6/6 evals pass 28/28 expectations. All results independently verified against ground truth (per-service call logs and direct JSON comparison of final stub state against seed fixtures), not executor self-report.
+- This run replaces the 2026-07-31T04:27Z 3-eval Trello-only pilot baseline (83.3% pass). Two things changed since: (1) SKILL.md's Step 0 gained the sole-candidate scope-confirmation rule after the pilot's eval 1 failure — eval 1 now passes, with the executor surveying at board level only and explicitly asking before fetching card detail; (2) evals 4-6 were added covering the email workflow (Step 4b) and the capture-from-email-to-Trello flow (Step 4c), the latter running the Trello and Gmail stubs together in one trial.
+- Executor mechanism (unchanged from the pilot): each trial is a real `claude -p --dangerously-skip-permissions --strict-mcp-config` subprocess against the mcp-stub servers, run from the user's authenticated terminal via `run-trials.sh`; see `evals/README.md`'s "MCP stub servers" section.
+- Time and token figures are the subprocess's own reported values (`--output-format json`), not file-mtime approximations as in the pilot. The tokens figure is total tokens processed per trial (input + output + cache creation + cache read); cache reads dominate it, so it is NOT comparable to the subagent-token figures in other skills' baselines. Per-trial breakdowns live in the run's `metrics.json` artifacts (not committed).
+- Continued good judgment observed beyond graded expectations: eval 2 re-flagged the fixture's "June conference" date ambiguity and asked rather than inventing a due date; eval 5 verified its empty-inbox result with one read-only `in:anywhere` query while explicitly declining to expand scope; eval 6 surfaced its due-date choice (fair date vs the PTA's "early September" request) as a question instead of silently deciding.
+- Still deferred: Jira scope (needs a schema-verified Atlassian stub), staleness handling (Step 7 needs last-activity timestamps modeled in the stubs), and large-set batch pacing (Step 0.5).
