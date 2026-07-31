@@ -72,6 +72,7 @@ ENV_FILE="$RUN_DIR/env.sh"
 
   if [[ -f "$FIXTURE_DIR/sonar-fixture.json" ]]; then
     echo "export SONAR_FIXTURE_FILE=\"$FIXTURE_DIR/sonar-fixture.json\""
+    echo "export SONAR_FIXTURE_COUNTS_DIR=\"$RUN_DIR\""
     echo "export SONAR_HOST_URL=\"https://sonar.invalid\""
     echo "export SONAR_TOKEN=\"eval-fixture-token\""
 

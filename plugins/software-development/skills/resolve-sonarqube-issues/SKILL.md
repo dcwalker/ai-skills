@@ -15,6 +15,8 @@ Review and systematically resolve SonarQube findings (Issues, Security Hotspots,
 - User intent: fix valid findings, document false positives, or suppress (suppression only with explicit user approval)
 - Environment variables: `SONAR_TOKEN` (required); `SONAR_HOST_URL` (defaults to `https://sonarcloud.io` for cloud projects)
 
+This skill uses `list-sonar-issues.py`. It is available in your PATH as `list-sonar-issues.py` — use the PATH form for all commands below. If it is not on your PATH, look for it in the repository (e.g. under `scripts/`) before falling back to a fixed path; do not assume the target project is a checkout of the `ai-skills` repo itself.
+
 ## Required output structure
 
 1. **Initial server check**: report current issue counts from the server before any scan
@@ -31,11 +33,11 @@ Review and systematically resolve SonarQube findings (Issues, Security Hotspots,
 ### Phase 0: Setup
 
 - Read `AGENTS.md` and `CONTRIBUTING.md` if present.
-- Run `python3 plugins/software-development/skills/resolve-sonarqube-issues/scripts/list-sonar-issues.py --help` from the repo root to confirm the script is available.
+- Run `list-sonar-issues.py --help` to confirm the script is available.
 
 ### Phase 1: Check server for existing issues
 
-- Run `python3 plugins/software-development/skills/resolve-sonarqube-issues/scripts/list-sonar-issues.py --summary` and **cache** the output.
+- Run `list-sonar-issues.py --summary` and **cache** the output.
 - If the script errors, stop and report; do not proceed on assumed-empty results.
 - Report the current issue and hotspot counts to the user.
 - If issues already exist on the server, skip to **Phase 3: Fix** — do not run a redundant scan first.
@@ -104,7 +106,7 @@ Review and systematically resolve SonarQube findings (Issues, Security Hotspots,
 - Once the new analysis is confirmed published, run the full issue fetch and **cache** the output:
 
   ```bash
-  python3 plugins/software-development/skills/resolve-sonarqube-issues/scripts/list-sonar-issues.py
+  list-sonar-issues.py
   ```
 
 - If the script errors after the scan, stop and report.

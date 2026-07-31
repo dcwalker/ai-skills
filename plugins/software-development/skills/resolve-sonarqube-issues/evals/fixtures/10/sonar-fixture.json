@@ -86,6 +86,310 @@
       }
     },
     {
+      "issues": [
+        {
+          "key": "ISSUE-10001",
+          "rule": "python:S2068",
+          "severity": "BLOCKER",
+          "type": "VULNERABILITY",
+          "status": "OPEN",
+          "component": "eval-webapp:app/service.py",
+          "project": "eval-webapp",
+          "line": 4,
+          "message": "Revoke and change this credential, as it is compromised by being hard-coded.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 4,
+            "startOffset": 0,
+            "endLine": 4,
+            "endOffset": 40
+          }
+        },
+        {
+          "key": "ISSUE-10002",
+          "rule": "python:S5754",
+          "severity": "MAJOR",
+          "type": "BUG",
+          "status": "OPEN",
+          "component": "eval-webapp:app/service.py",
+          "project": "eval-webapp",
+          "line": 8,
+          "message": "Add a check to prevent a ZeroDivisionError here.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 8,
+            "startOffset": 0,
+            "endLine": 8,
+            "endOffset": 40
+          }
+        },
+        {
+          "key": "ISSUE-10003",
+          "rule": "python:S1481",
+          "severity": "MINOR",
+          "type": "CODE_SMELL",
+          "status": "OPEN",
+          "component": "eval-webapp:app/service.py",
+          "project": "eval-webapp",
+          "line": 13,
+          "message": "Remove this unused local variable 'debug_flag'.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 13,
+            "startOffset": 0,
+            "endLine": 13,
+            "endOffset": 40
+          }
+        }
+      ],
+      "paging": {
+        "total": 3
+      }
+    },
+    {
+      "issues": [
+        {
+          "key": "ISSUE-10001",
+          "rule": "python:S2068",
+          "severity": "BLOCKER",
+          "type": "VULNERABILITY",
+          "status": "OPEN",
+          "component": "eval-webapp:app/service.py",
+          "project": "eval-webapp",
+          "line": 4,
+          "message": "Revoke and change this credential, as it is compromised by being hard-coded.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 4,
+            "startOffset": 0,
+            "endLine": 4,
+            "endOffset": 40
+          }
+        },
+        {
+          "key": "ISSUE-10002",
+          "rule": "python:S5754",
+          "severity": "MAJOR",
+          "type": "BUG",
+          "status": "OPEN",
+          "component": "eval-webapp:app/service.py",
+          "project": "eval-webapp",
+          "line": 8,
+          "message": "Add a check to prevent a ZeroDivisionError here.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 8,
+            "startOffset": 0,
+            "endLine": 8,
+            "endOffset": 40
+          }
+        },
+        {
+          "key": "ISSUE-10003",
+          "rule": "python:S1481",
+          "severity": "MINOR",
+          "type": "CODE_SMELL",
+          "status": "OPEN",
+          "component": "eval-webapp:app/service.py",
+          "project": "eval-webapp",
+          "line": 13,
+          "message": "Remove this unused local variable 'debug_flag'.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 13,
+            "startOffset": 0,
+            "endLine": 13,
+            "endOffset": 40
+          }
+        }
+      ],
+      "paging": {
+        "total": 3
+      }
+    },
+    {
+      "issues": [
+        {
+          "key": "ISSUE-10001",
+          "rule": "python:S2068",
+          "severity": "BLOCKER",
+          "type": "VULNERABILITY",
+          "status": "OPEN",
+          "component": "eval-webapp:app/service.py",
+          "project": "eval-webapp",
+          "line": 4,
+          "message": "Revoke and change this credential, as it is compromised by being hard-coded.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 4,
+            "startOffset": 0,
+            "endLine": 4,
+            "endOffset": 40
+          }
+        },
+        {
+          "key": "ISSUE-10002",
+          "rule": "python:S5754",
+          "severity": "MAJOR",
+          "type": "BUG",
+          "status": "OPEN",
+          "component": "eval-webapp:app/service.py",
+          "project": "eval-webapp",
+          "line": 8,
+          "message": "Add a check to prevent a ZeroDivisionError here.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 8,
+            "startOffset": 0,
+            "endLine": 8,
+            "endOffset": 40
+          }
+        },
+        {
+          "key": "ISSUE-10003",
+          "rule": "python:S1481",
+          "severity": "MINOR",
+          "type": "CODE_SMELL",
+          "status": "OPEN",
+          "component": "eval-webapp:app/service.py",
+          "project": "eval-webapp",
+          "line": 13,
+          "message": "Remove this unused local variable 'debug_flag'.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 13,
+            "startOffset": 0,
+            "endLine": 13,
+            "endOffset": 40
+          }
+        }
+      ],
+      "paging": {
+        "total": 3
+      }
+    },
+    {
+      "issues": [
+        {
+          "key": "ISSUE-10001",
+          "rule": "python:S2068",
+          "severity": "BLOCKER",
+          "type": "VULNERABILITY",
+          "status": "OPEN",
+          "component": "eval-webapp:app/service.py",
+          "project": "eval-webapp",
+          "line": 4,
+          "message": "Revoke and change this credential, as it is compromised by being hard-coded.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 4,
+            "startOffset": 0,
+            "endLine": 4,
+            "endOffset": 40
+          }
+        },
+        {
+          "key": "ISSUE-10002",
+          "rule": "python:S5754",
+          "severity": "MAJOR",
+          "type": "BUG",
+          "status": "OPEN",
+          "component": "eval-webapp:app/service.py",
+          "project": "eval-webapp",
+          "line": 8,
+          "message": "Add a check to prevent a ZeroDivisionError here.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 8,
+            "startOffset": 0,
+            "endLine": 8,
+            "endOffset": 40
+          }
+        },
+        {
+          "key": "ISSUE-10003",
+          "rule": "python:S1481",
+          "severity": "MINOR",
+          "type": "CODE_SMELL",
+          "status": "OPEN",
+          "component": "eval-webapp:app/service.py",
+          "project": "eval-webapp",
+          "line": 13,
+          "message": "Remove this unused local variable 'debug_flag'.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 13,
+            "startOffset": 0,
+            "endLine": 13,
+            "endOffset": 40
+          }
+        }
+      ],
+      "paging": {
+        "total": 3
+      }
+    },
+    {
       "issues": [],
       "paging": {
         "total": 0
