@@ -167,7 +167,7 @@ For the dynamic check only, the `Agent` tool and unrestricted `Bash` are
 permitted, as exceptions to the Rules below. The static checks stay within
 the standard allowed tools.
 
-
+## Step 5: Output
 
 ### Text output
 
@@ -212,7 +212,7 @@ Note:
 
 Skill: triage (plugins/life-skills/skills/triage)
 ---
-Static checks:  description ✓ · line budget ✓ (699 — over ~500, flag) ·
+Static checks:  description ✓ · line budget ⚠ (699 — over ~500, flag) ·
                 naming ✓ · resources ✓ · eval hygiene ✓
 Evals:          not run (on-request only); baseline of record:
                 evals/benchmark-baseline.json (83.3% pass, 2026-07-31)
