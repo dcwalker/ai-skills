@@ -48,6 +48,8 @@ matching nothing or everything -- the same fail-loud property as the other
 stubs.
 """
 
+import re
+
 from common import StubState
 
 state = StubState(default={"cloud": {"id": "cloud-1", "url": "https://example.atlassian.net", "name": "example"},
@@ -56,6 +58,9 @@ state = StubState(default={"cloud": {"id": "cloud-1", "url": "https://example.at
 from mcp.server.mcpserver import MCPServer  # noqa: E402
 
 server = MCPServer("atlassian-stub")
+
+# Fixed "now" for deterministic updated/created stamps in trial state.
+_STUB_NOW = "2026-07-31T16:00:00Z"
 
 
 def _check_cloud(cloud_id: str) -> None:
@@ -67,6 +72,12 @@ def _check_cloud(cloud_id: str) -> None:
         )
 
 
+def _get_issue(issue_id_or_key: str) -> dict:
+    if issue_id_or_key not in state.data["issues"]:
+        raise ValueError(f"jira-stub: no issue with key {issue_id_or_key!r}")
+    return state.data["issues"][issue_id_or_key]
+
+
 def _issue_view(issue: dict, include_comments: bool = False) -> dict:
     view = {k: v for k, v in issue.items() if k != "comments"}
     if include_comments:
@@ -74,35 +85,53 @@ def _issue_view(issue: dict, include_comments: bool = False) -> dict:
     return view
 
 
+def _clause_value(clause: str, field: str, operator: str) -> str | None:
+    """The clause's comparison value when it uses `operator`, else None."""
+    rest = clause[len(field):].strip()
+    if rest.startswith(operator):
+        return rest[len(operator):].strip().strip('"\'')
+    return None
+
+
+def _match_project(issue: dict, clause: str) -> bool:
+    value = _clause_value(clause, "project", "=")
+    if value is None:
+        raise ValueError(f"jira-stub: unsupported JQL clause {clause!r} (project supports '=' only)")
+    return issue["project"].lower() == value.lower()
+
+
+def _match_status_field(issue: dict, clause: str, field: str) -> bool:
+    actual = issue["status"]["statusCategory"] if field == "statuscategory" else issue["status"]["name"]
+    value = _clause_value(clause, field, "!=")
+    if value is not None:
+        return actual.lower() != value.lower()
+    value = _clause_value(clause, field, "=")
+    if value is not None:
+        return actual.lower() == value.lower()
+    raise ValueError(f"jira-stub: unsupported JQL clause {clause!r} ({field} supports '=' and '!=')")
+
+
+def _match_text_field(issue: dict, clause: str, field: str) -> bool:
+    value = _clause_value(clause, field, "~")
+    if value is None:
+        raise ValueError(f"jira-stub: unsupported JQL clause {clause!r} ({field} supports '~' only)")
+    haystack = issue["summary"].lower()
+    if field == "text":
+        haystack += " " + (issue.get("description") or "").lower()
+    return value.lower() in haystack
+
+
 def _clause_matches(issue: dict, clause: str) -> bool:
     c = clause.strip()
     lower = c.lower()
     if lower.startswith("project"):
-        rest = c[len("project"):].strip()
-        if rest.startswith("="):
-            return issue["project"].lower() == rest[1:].strip().strip('"\'').lower()
-        raise ValueError(f"jira-stub: unsupported JQL clause {clause!r} (project supports '=' only)")
-    for field, getter in (
-        ("statuscategory", lambda i: i["status"]["statusCategory"]),
-        ("status", lambda i: i["status"]["name"]),
-    ):
+        return _match_project(issue, c)
+    for field in ("statuscategory", "status"):
         if lower.startswith(field):
-            rest = c[len(field):].strip()
-            if rest.startswith("!="):
-                return getter(issue).lower() != rest[2:].strip().strip('"\'').lower()
-            if rest.startswith("="):
-                return getter(issue).lower() == rest[1:].strip().strip('"\'').lower()
-            raise ValueError(f"jira-stub: unsupported JQL clause {clause!r} ({field} supports '=' and '!=')")
+            return _match_status_field(issue, c, field)
     for field in ("text", "summary"):
         if lower.startswith(field):
-            rest = c[len(field):].strip()
-            if rest.startswith("~"):
-                needle = rest[1:].strip().strip('"\'').lower()
-                haystack = issue["summary"].lower()
-                if field == "text":
-                    haystack += " " + (issue.get("description") or "").lower()
-                return needle in haystack
-            raise ValueError(f"jira-stub: unsupported JQL clause {clause!r} ({field} supports '~' only)")
+            return _match_text_field(issue, c, field)
     raise ValueError(
         f"jira-stub: unsupported JQL clause {clause!r} -- supported: project =, status =/!=, "
         "statusCategory =/!=, text ~, summary ~, joined by AND, optional trailing ORDER BY"
@@ -114,11 +143,15 @@ def _jql_matches(issue: dict, jql: str) -> bool:
     lower = query.lower()
     if " order by " in lower:
         query = query[: lower.index(" order by ")]
-    return all(_clause_matches(issue, part) for part in query.split(" AND ") if part.strip())
+    # JQL's AND keyword is case-insensitive, so split accordingly. A quoted
+    # value containing the word "and" would be split too, but that then hits
+    # the unsupported-clause error loudly rather than silently mismatching.
+    clauses = re.split(r"\s+and\s+", query, flags=re.IGNORECASE)
+    return all(_clause_matches(issue, part) for part in clauses if part.strip())
 
 
 @server.tool()
-def getAccessibleAtlassianResources() -> list[dict]:
+def getAccessibleAtlassianResources() -> list[dict]:  # NOSONAR: camelCase is the real MCP tool name (schema fidelity)
     """Get the Atlassian sites (cloud resources) this account can access,
     including each site's cloudId. Call this first: every Jira tool below
     requires the cloudId."""
@@ -129,7 +162,7 @@ def getAccessibleAtlassianResources() -> list[dict]:
 
 
 @server.tool()
-def getVisibleJiraProjects(
+def getVisibleJiraProjects(  # NOSONAR: camelCase is the real MCP tool name (schema fidelity)
     cloudId: str,
     action: str = "create",
     expandIssueTypes: bool = True,
@@ -155,7 +188,7 @@ def getVisibleJiraProjects(
 
 
 @server.tool()
-def searchJiraIssuesUsingJql(
+def searchJiraIssuesUsingJql(  # NOSONAR: camelCase is the real MCP tool name (schema fidelity)
     cloudId: str,
     jql: str,
     fields: list[str] | None = None,
@@ -187,7 +220,7 @@ def searchJiraIssuesUsingJql(
 
 
 @server.tool()
-def getJiraIssue(
+def getJiraIssue(  # NOSONAR: camelCase is the real MCP tool name (schema fidelity)
     cloudId: str,
     issueIdOrKey: str,
     fields: list[str] | None = None,
@@ -197,16 +230,14 @@ def getJiraIssue(
     """Get issue details. Include "comment" (or "*all") in fields to get
     the issue's comments in comment.comments."""
     _check_cloud(cloudId)
-    if issueIdOrKey not in state.data["issues"]:
-        raise ValueError(f"jira-stub: no issue with key {issueIdOrKey!r}")
     include_comments = bool(fields) and ("comment" in fields or "*all" in fields)
-    result = _issue_view(state.data["issues"][issueIdOrKey], include_comments)
+    result = _issue_view(_get_issue(issueIdOrKey), include_comments)
     state.log_call("getJiraIssue", {"cloudId": cloudId, "issueIdOrKey": issueIdOrKey, "fields": fields}, result)
     return result
 
 
 @server.tool()
-def editJiraIssue(
+def editJiraIssue(  # NOSONAR: camelCase is the real MCP tool name (schema fidelity)
     cloudId: str,
     issueIdOrKey: str,
     fields: dict,
@@ -217,15 +248,13 @@ def editJiraIssue(
     assignee, duedate), keyed by field name. Pass an explicit null to
     clear a field. Returns the updated issue."""
     _check_cloud(cloudId)
-    if issueIdOrKey not in state.data["issues"]:
-        raise ValueError(f"jira-stub: no issue with key {issueIdOrKey!r}")
-    issue = state.data["issues"][issueIdOrKey]
+    issue = _get_issue(issueIdOrKey)
     editable = {"summary", "description", "labels", "priority", "assignee", "duedate", "resolution"}
     for name, value in fields.items():
         if name not in editable:
             raise ValueError(f"jira-stub: field {name!r} is not editable here -- editable: {sorted(editable)}")
         issue[name] = value
-    issue["updated"] = "2026-07-31T16:00:00Z"
+    issue["updated"] = _STUB_NOW
     state.flush()
     result = _issue_view(issue)
     state.log_call("editJiraIssue", {"cloudId": cloudId, "issueIdOrKey": issueIdOrKey, "fields": fields}, result)
@@ -233,7 +262,7 @@ def editJiraIssue(
 
 
 @server.tool()
-def addCommentToJiraIssue(
+def addCommentToJiraIssue(  # NOSONAR: camelCase is the real MCP tool name (schema fidelity)
     cloudId: str,
     issueIdOrKey: str,
     commentBody: str,
@@ -244,9 +273,7 @@ def addCommentToJiraIssue(
     """Add a comment to an issue, or update an existing one when commentId
     is given."""
     _check_cloud(cloudId)
-    if issueIdOrKey not in state.data["issues"]:
-        raise ValueError(f"jira-stub: no issue with key {issueIdOrKey!r}")
-    issue = state.data["issues"][issueIdOrKey]
+    issue = _get_issue(issueIdOrKey)
     comments = issue.setdefault("comments", [])
     if commentId:
         for c in comments:
@@ -258,9 +285,9 @@ def addCommentToJiraIssue(
             raise ValueError(f"jira-stub: no comment with id {commentId!r} on {issueIdOrKey}")
     else:
         result = {"id": f"comment-{len(comments) + 1}", "body": commentBody,
-                  "created": "2026-07-31T16:00:00Z"}
+                  "created": _STUB_NOW}
         comments.append(dict(result))
-    issue["updated"] = "2026-07-31T16:00:00Z"
+    issue["updated"] = _STUB_NOW
     state.flush()
     state.log_call("addCommentToJiraIssue",
                    {"cloudId": cloudId, "issueIdOrKey": issueIdOrKey,
@@ -269,29 +296,26 @@ def addCommentToJiraIssue(
 
 
 @server.tool()
-def getTransitionsForJiraIssue(cloudId: str, issueIdOrKey: str) -> dict:
+def getTransitionsForJiraIssue(cloudId: str, issueIdOrKey: str) -> dict:  # NOSONAR: camelCase is the real MCP tool name (schema fidelity)
     """Get the status transitions currently available for an issue."""
     _check_cloud(cloudId)
-    if issueIdOrKey not in state.data["issues"]:
-        raise ValueError(f"jira-stub: no issue with key {issueIdOrKey!r}")
+    _get_issue(issueIdOrKey)
     result = {"transitions": state.data["transitions"]}
     state.log_call("getTransitionsForJiraIssue", {"cloudId": cloudId, "issueIdOrKey": issueIdOrKey}, result)
     return result
 
 
 @server.tool()
-def transitionJiraIssue(cloudId: str, issueIdOrKey: str, transition: dict) -> dict:
+def transitionJiraIssue(cloudId: str, issueIdOrKey: str, transition: dict) -> dict:  # NOSONAR: camelCase is the real MCP tool name (schema fidelity)
     """Transition an issue's status. transition is {"id": "<transition id>"}
     from getTransitionsForJiraIssue."""
     _check_cloud(cloudId)
-    if issueIdOrKey not in state.data["issues"]:
-        raise ValueError(f"jira-stub: no issue with key {issueIdOrKey!r}")
+    issue = _get_issue(issueIdOrKey)
     tid = transition.get("id")
     for t in state.data["transitions"]:
         if t["id"] == tid:
-            issue = state.data["issues"][issueIdOrKey]
             issue["status"] = dict(t["to"])
-            issue["updated"] = "2026-07-31T16:00:00Z"
+            issue["updated"] = _STUB_NOW
             state.flush()
             result = _issue_view(issue)
             state.log_call("transitionJiraIssue",
@@ -301,7 +325,7 @@ def transitionJiraIssue(cloudId: str, issueIdOrKey: str, transition: dict) -> di
 
 
 @server.tool()
-def lookupJiraAccountId(cloudId: str, searchString: str) -> list[dict]:
+def lookupJiraAccountId(cloudId: str, searchString: str) -> list[dict]:  # NOSONAR: camelCase is the real MCP tool name (schema fidelity)
     """Look up user account IDs by display name or email substring."""
     _check_cloud(cloudId)
     needle = searchString.lower()
