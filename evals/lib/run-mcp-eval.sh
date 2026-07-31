@@ -84,9 +84,9 @@ MCP_SERVERS_JSON="{}"
 # <service>-mcp-state.json, add that stub to the generated config with
 # per-service state-out/log paths in $RUN_DIR.
 add_stub_server() {
-  local SERVICE="$1" STUB_SCRIPT="$2"
-  local STATE_FILE="$FIXTURE_DIR/$SERVICE-mcp-state.json"
-  [[ -f "$STATE_FILE" ]] || return 0
+  local service="$1" stub_script="$2"
+  local state_file="$FIXTURE_DIR/$service-mcp-state.json"
+  [[ -f "$state_file" ]] || return 0
   MCP_SERVERS_JSON=$(python3 -c "
 import json, sys
 servers = json.loads(sys.argv[1])
@@ -100,8 +100,8 @@ servers[sys.argv[2]] = {
     },
 }
 print(json.dumps(servers))
-" "$MCP_SERVERS_JSON" "$SERVICE" "$MCP_STUB_PYTHON" "$MCP_STUB_DIR/$STUB_SCRIPT" \
-    "$STATE_FILE" "$RUN_DIR/$SERVICE-state-out.json" "$RUN_DIR/$SERVICE-calls.log")
+" "$MCP_SERVERS_JSON" "$service" "$MCP_STUB_PYTHON" "$MCP_STUB_DIR/$stub_script" \
+    "$state_file" "$RUN_DIR/$service-state-out.json" "$RUN_DIR/$service-calls.log")
 }
 
 add_stub_server trello trello_stub.py
