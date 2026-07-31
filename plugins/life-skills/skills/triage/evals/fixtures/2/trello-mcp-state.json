@@ -1,0 +1,35 @@
+{
+  "boards": {
+    "board-1": {"id": "board-1", "name": "Personal Tasks"}
+  },
+  "lists": {
+    "list-1": {"id": "list-1", "name": "Inbox", "board_id": "board-1"}
+  },
+  "cards": {
+    "card-1": {
+      "id": "card-1",
+      "name": "flight",
+      "desc": "Need to book round-trip flights to Austin for the June conference, budget under $600.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [],
+      "due": null,
+      "due_complete": false,
+      "url": "https://trello.com/c/card-1/flight"
+    },
+    "card-2": {
+      "id": "card-2",
+      "name": "Call dentist to reschedule appointment",
+      "desc": "",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [],
+      "due": null,
+      "due_complete": false,
+      "url": "https://trello.com/c/card-2/call-dentist"
+    }
+  },
+  "labels": {
+    "label-1": {"id": "label-1", "name": "travel", "color": "blue", "board_id": "board-1"}
+  }
+}

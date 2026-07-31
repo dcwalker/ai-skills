@@ -1,0 +1,24 @@
+{
+  "boards": {
+    "board-1": {"id": "board-1", "name": "Personal Tasks"}
+  },
+  "lists": {
+    "list-1": {"id": "list-1", "name": "Inbox", "board_id": "board-1"}
+  },
+  "cards": {
+    "card-1": {
+      "id": "card-1",
+      "name": "Renew passport before December Japan trip",
+      "desc": "Passport expires in March; need to renew before booking flights for the December Japan trip.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": ["label-1"],
+      "due": "2026-10-15",
+      "due_complete": false,
+      "url": "https://trello.com/c/card-1/renew-passport"
+    }
+  },
+  "labels": {
+    "label-1": {"id": "label-1", "name": "travel", "color": "blue", "board_id": "board-1"}
+  }
+}
