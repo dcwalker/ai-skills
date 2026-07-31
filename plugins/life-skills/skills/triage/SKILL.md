@@ -690,6 +690,12 @@ reference material.
 - One question at a time during the stall interview.
 - Propose each change once, in the final Step 8 summary, not earlier.
 - If scope is ambiguous, stop and ask before proceeding.
+- When the user did not specify what to process, the first reply IS the
+  Step 0 scope question and nothing more. A capability survey to learn
+  which platforms exist may precede it, but no item-level fetching or
+  auditing happens before the user confirms scope, and "there was only one
+  candidate" never substitutes for that confirmation. "Scope resolved" is
+  something only the user can say.
 - For email, never read full bodies of the entire corpus up front. Honor the
   bounded-read rule in Step 0.
 
