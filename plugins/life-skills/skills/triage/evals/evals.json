@@ -1,6 +1,6 @@
 {
   "skill_name": "triage",
-  "notes": "Pilot batch, Trello-only (see evals/lib/mcp-stub). The executor for these evals is a real, separate `claude -p --strict-mcp-config` subprocess, not an Agent-tool subagent -- see evals/README.md's 'MCP stub servers' section for why and how to run one. Since -p is single-shot with no follow-up turn, prompts that expect the skill to act (evals 2-3) front-load explicit blanket authorization in the initial message, standing in for the real multi-turn confirmation Step 8 normally requires. Scoped to triage's primary Trello-processing path (Steps 0-4, 8); Step 4c's capture-into-Trello-from-another-platform flow needs a Jira or Gmail stub and is deferred.",
+  "notes": "MCP-stub-backed batch (see evals/lib/mcp-stub). The executor for these evals is a real, separate `claude -p --strict-mcp-config` subprocess, not an Agent-tool subagent -- see evals/README.md's 'MCP stub servers' section for why and how to run one. Since -p is single-shot with no follow-up turn, prompts that expect the skill to act front-load explicit blanket authorization in the initial message, standing in for the real multi-turn confirmation Step 8 normally requires. Evals 1-3 cover the Trello-scoped path (Steps 0-4, 8); evals 4-6 cover the email workflow (Step 4b) and the capture-to-Trello flow (Step 4c, a cross-service trial wiring both stubs into one mcp-config). Jira scope still needs an Atlassian stub and is deferred.",
   "evals": [
     {
       "id": 1,
@@ -34,6 +34,42 @@
         "No create_label call is made.",
         "The final Trello state is byte-identical to the seed state -- nothing was added, removed, or modified on any board, list, card, or label.",
         "The response explicitly states the card looks complete / needs no changes (e.g. offers to mark it reviewed), rather than silently omitting it from the summary or fabricating a change."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Please triage my email inbox. Go ahead and apply anything you're confident about (labels, archiving, saving reply drafts) without waiting for me to confirm each thread -- just summarize what you did afterward. For context: I still owe Sue that Q3 forecast and can knock out a quick reply now; the fence quote is something I'm waiting on the vendor for.",
+      "expected_output": "Three inbox threads, one per Step 4b decision branch. Sue's Q3 forecast request is a under-two-minute reply the user has pre-authorized: a reply draft gets saved via create_draft (never sent -- the stub, like the real Gmail MCP, cannot send). The fence-quote thread is waiting on someone else: 'Waiting For' label applied and archived out of the inbox. The newsletter long-read is worth reading but not actionable: 'Read-Review' label applied and archived. All three labels already exist, so no label creation is needed, and the response ends with a processed-count summary.",
+      "expectations": [
+        "Exactly one draft exists in the final Gmail state, addressed to sue@example.com (and/or created with replyToMessageId msg-1), with reply content consistent with sending the Q3 forecast -- and no draft is fabricated for any other thread.",
+        "thread-2 (fence quote) has the 'Waiting For' label (Label_2) in its final labelIds and no longer has INBOX.",
+        "thread-3 (long-read newsletter) has the 'Read-Review' label (Label_3) in its final labelIds and no longer has INBOX.",
+        "No create-label operation occurs and no thread is trashed/deleted -- the call log contains only reads plus create_draft, modify_thread_labels, and archive_thread calls.",
+        "The response includes a processed-count summary of what happened to the three threads (drafted, waiting-for, read-review), consistent with the actual final state."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Please triage my email inbox. You don't need to check with me before applying anything obvious.",
+      "expected_output": "The inbox is empty -- the account's only thread is an already-archived receipt carrying a topical reference label, which does not match the in:inbox scope. The skill should report the inbox is already empty (zero threads to process) and make no writes. It must not widen the scope to all mail uninvited, and must not invent work on the archived receipt.",
+      "expectations": [
+        "A search scoped to the inbox (in:inbox) appears in the call log.",
+        "No write call appears in the call log -- no create_draft, modify_thread_labels, or archive_thread.",
+        "The final Gmail state is semantically identical to the seed state.",
+        "The response states the inbox is empty / there is nothing to process, and does not claim any thread was processed or expand into archived mail without being asked."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Please triage my email inbox. Anything that's a real multi-step task should be captured onto my 'Personal Tasks' Trello board's 'Inbox' list rather than left sitting in email -- go ahead and apply what you're confident about without confirming each step, and summarize afterward.",
+      "expected_output": "One inbox thread: a school-fair volunteering commitment that is clearly a multi-step, for-later task (recruit helpers, arrange bakers, sort a float, collect a table), not a quick reply. Per Step 4c the skill searches Trello for an existing card first (none of the seeded cards match), then creates one card on Personal Tasks / Inbox with an action-oriented title and a description linking back to the source email, then archives the thread out of the inbox. The unrelated seeded lawnmower card is untouched.",
+      "expectations": [
+        "A search_trello call appears in the Trello call log before the create_card call -- the skill checked for an existing card rather than blindly creating one.",
+        "Exactly one new Trello card exists in the final Trello state, on list-1 (Inbox) of board-1 (Personal Tasks), with an action-oriented title about organizing the bake sale stall / school fair (not the raw email subject 'School fair volunteering rota' verbatim as a noun phrase, and not a generic title).",
+        "The new card's description references the source email (the Gmail thread id, message id, sender, or subject), so the card links back to where the commitment came from.",
+        "The seeded card-1 ('Service the lawnmower') is unmodified in the final Trello state, and no second new card is created.",
+        "thread-1 no longer has INBOX in its final Gmail labelIds (archived after capture), and no reply draft was created for it.",
+        "The response summarizes the capture (card created, thread archived) consistently with the actual final state of both services."
       ]
     }
   ]

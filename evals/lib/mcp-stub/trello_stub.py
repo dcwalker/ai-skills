@@ -34,15 +34,14 @@ State model (the fake Trello "database"):
                                "board_id": "..."}}
   }
 
-Tool surface is intentionally a subset scoped to what `triage`'s
-Trello-scoped flow actually needs (Steps 0-4, 8): resolve boards/lists,
-fetch cards (list-level and single-card detail), search for duplicates,
-audit and apply metadata changes, and manage labels. It does not cover
-card creation/move-to-archive/checklists/comments (not exercised by the
-initial eval batch, and view_card's checklists/comments are always
-returned empty here) or Step 4c's capture-to-Trello flow (that's a
-secondary path used when the *primary* scope is Jira/email, not Trello,
-and is out of scope for this pilot -- see the plan for sequencing).
+Tool surface is intentionally a subset scoped to what `triage` actually
+needs: resolve boards/lists, fetch cards (list-level and single-card
+detail), search for duplicates, audit and apply metadata changes, manage
+labels, and create cards (Step 4c's capture-to-Trello flow, used when
+triaging another platform surfaces an action worth recording as a card).
+It does not cover move-to-archive/checklists/comments -- not exercised by
+the eval batches, and view_card's checklists/comments are always returned
+empty here.
 """
 
 import copy
@@ -286,6 +285,68 @@ def create_label(
     result = {"id": new_id, "name": name, "color": color}
     state.log_call(
         "create_label", {"board_id": board_id, "board_name": board_name, "name": name, "color": color}, result
+    )
+    return result
+
+
+def _create_one_card(title: str, desc, due, list_ref: str, label_ids: list[str]) -> dict:
+    new_id = f"card-{len(state.data['cards']) + 1}"
+    slug = "-".join(title.lower().split())[:40] or "card"
+    card = {
+        "id": new_id,
+        "name": title,
+        "desc": desc or "",
+        "list_id": list_ref,
+        "board_id": state.data["lists"][list_ref]["board_id"],
+        "labels": list(label_ids),
+        "due": due,
+        "due_complete": False,
+        "url": f"https://trello.com/c/{new_id}/{slug}",
+    }
+    state.data["cards"][new_id] = card
+    return dict(card)
+
+
+@server.tool()
+def create_card(
+    name: str | list[str],
+    desc: str | None = None,
+    due: str | None = None,
+    pos: str = "bottom",
+    labels: str | list[str] | None = None,
+    list_id: str | None = None,
+    list_name: str | None = None,
+    board_id: str | None = None,
+    board_name: str | None = None,
+    timezone: str | None = None,
+) -> dict:
+    """Create one or more Trello cards in a list. Target the list by list_id
+    (preferred) or list_name plus board_name/board_id. Pass a list of names
+    to create several cards in one call; desc/due/labels apply to every
+    card. timezone is accepted for schema parity but ignored -- the stub
+    stores due dates as given."""
+    list_ref = _resolve_list(list_id, list_name, board_id, board_name)
+    board_ref = state.data["lists"][list_ref]["board_id"]
+    label_ids = [_resolve_label(lbl, board_ref) for lbl in _as_list(labels)]
+    titles = name if isinstance(name, list) else [name]
+    created = [_create_one_card(t, desc, due, list_ref, label_ids) for t in titles]
+    state.flush()
+    result = {"cards": created, "succeeded": len(created), "failed": 0}
+    state.log_call(
+        "create_card",
+        {
+            "name": name,
+            "desc": desc,
+            "due": due,
+            "pos": pos,
+            "labels": labels,
+            "list_id": list_id,
+            "list_name": list_name,
+            "board_id": board_id,
+            "board_name": board_name,
+            "timezone": timezone,
+        },
+        result,
     )
     return result
 
