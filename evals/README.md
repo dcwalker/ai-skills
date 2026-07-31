@@ -36,10 +36,12 @@ plugins/<plugin>/skills/<skill>/evals/
         ├── meta.json          Optional: {"checkout": "<branch>"}.
         ├── gh-cassette.json   Optional: canned `gh` responses for this eval.
         ├── sonar-fixture.json Optional: canned Sonar API responses.
-        └── sonar-project-key Optional: plain-text project key, exported as
-                               SONAR_PROJECT_KEY when sonar-fixture.json is
-                               present -- lets a fixture skip shipping a
-                               sonar-project.properties file in repo/.
+        ├── sonar-project-key Optional: plain-text project key, exported as
+        │                      SONAR_PROJECT_KEY when sonar-fixture.json is
+        │                      present -- lets a fixture skip shipping a
+        │                      sonar-project.properties file in repo/.
+        └── trello-fixture.json Optional: canned create-trello-task.sh
+                               responses (organize-meeting-notes).
 ```
 
 ## Running one eval trial
@@ -89,6 +91,19 @@ also exists, its contents are exported as `SONAR_PROJECT_KEY`, so the fixture
 repo doesn't need a `sonar-project.properties` file just to satisfy the
 script's project-key lookup.
 
+## The Trello fixture hook
+
+`organize-meeting-notes`'s bundled `create-trello-task.sh` reads
+`TRELLO_FIXTURE_FILE` (an opt-in env var; unset in normal use) and serves a
+canned response instead of calling the real Trello API. `run-eval.sh` sets it
+automatically when `fixtures/<eval-id>/trello-fixture.json` exists, along
+with `TRELLO_FIXTURE_COUNTS_DIR` (each script call is a fresh process, so a
+list-valued fixture entry's call-order index has to persist across
+invocations via a counts file, the same reason `SONAR_FIXTURE_COUNTS_DIR`
+exists) and `TRELLO_FIXTURE_LOG` (one JSON line per call -- `{"text", "desc",
+"url"}` or `{"text", "desc", "error"}` -- for graders, mirroring `GH_STUB_LOG`).
+See the script's own header comment for the exact fixture JSON format.
+
 ## Live sandbox cases
 
 A handful of "golden path" evals per GitHub-touching skill are marked
@@ -106,8 +121,8 @@ runs fine without it.
 1. Add an entry to the skill's `evals.json` (id, prompt, expected_output,
    expectations).
 2. Create `fixtures/<eval-id>/` with whatever the scenario needs: a `repo/`
-   tree, a `gh-cassette.json`, a `sonar-fixture.json`. Not every eval needs
-   every fixture type.
+   tree, a `gh-cassette.json`, a `sonar-fixture.json`, a `trello-fixture.json`.
+   Not every eval needs every fixture type.
 3. Include both positive cases (clean scenario, skill should act) and
    negative cases (ambiguous or invalid scenario, skill should ask or
    decline) -- a one-sided eval set trains one-sided behavior.
