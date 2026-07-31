@@ -3,9 +3,16 @@
     "skill_name": "triage",
     "skill_path": "plugins/life-skills/skills/triage",
     "executor_model": "claude-sonnet-5",
-    "analyzer_model": "claude-sonnet-5",
-    "timestamp": "2026-07-31T04:27:00Z",
-    "evals_run": [1, 2, 3],
+    "analyzer_model": "claude-fable-5",
+    "timestamp": "2026-07-31T15:20:00Z",
+    "evals_run": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
     "runs_per_configuration": 1
   },
   "runs": [
@@ -14,35 +21,35 @@
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.5,
-        "passed": 2,
-        "failed": 2,
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
         "total": 4,
-        "time_seconds": 46,
-        "tokens": null,
+        "time_seconds": 27.433,
+        "tokens": 182772,
         "tool_calls": null,
         "errors": null
       },
       "expectations": [
         {
           "text": "The response asks the user to clarify scope (e.g. which board, card URL, or platform to process) rather than proceeding against an assumed target.",
-          "passed": false,
-          "evidence": "The transcript opens with 'Assuming that's what you meant, here's the review' and proceeds directly into a full per-item audit. It asks field-level questions (due date, description content, labels) at the end, not a scope-confirmation question up front. It never asked the Step 0 scope question before touching card data."
+          "passed": true,
+          "evidence": "Transcript surveys availability, presents the sole board found, and explicitly asks 'Is the Inbox list on Personal Tasks the backlog you meant?' before doing anything else -- the Step 0 fix's intended behavior, reversing the original run's 'assuming that's what you meant' failure."
         },
         {
           "text": "No Trello write tool is called (no update_card, create_label, move_card, or similar mutating call appears in the call log).",
           "passed": true,
-          "evidence": "trello-calls.log contains only get_boards, view_board, view_list, view_card, and get_board_labels -- no mutating call."
+          "evidence": "trello-calls.log contains only get_boards and view_board."
         },
         {
           "text": "No individual card is fetched or read via view_card, view_list, or search_trello -- the skill stops at the scope question before touching card-level data. (A get_boards call to survey what exists, if any, is acceptable.)",
-          "passed": false,
-          "evidence": "trello-calls.log shows view_board, view_list, and view_card were all called, fetching full card-level detail (including the empty description) before any scope confirmation from the user."
+          "passed": true,
+          "evidence": "Only get_boards and view_board (board/list-level counts, no card content) were called; no view_list, view_card, or search_trello."
         },
         {
           "text": "The final Trello state is unchanged from the seed state -- no boards, lists, cards, or labels were added, removed, or modified.",
           "passed": true,
-          "evidence": "trello-state-out.json is semantically identical to fixtures/1/trello-mcp-state.json (verified via direct JSON comparison, not just visual diff -- the raw text differs only in whitespace formatting from the stub's indent=2 flush)."
+          "evidence": "trello-state-out.json is semantically identical to the seed fixture (direct JSON comparison)."
         }
       ]
     },
@@ -55,36 +62,36 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 33,
-        "tokens": null,
+        "time_seconds": 42.887,
+        "tokens": 259838,
         "tool_calls": null,
         "errors": null
       },
       "expectations": [
         {
-          "text": "card-1's title is changed from the vague 'flight' to something specific and action-oriented that references booking flights and/or the Austin trip.",
+          "text": "card-1's title is changed from the vague 'flight' to something specific and action-oriented that references booking flights and/or the Austin trip (e.g. 'Book flights to Austin for June conference') -- not left as 'flight' and not a generic label swap.",
           "passed": true,
-          "evidence": "trello-state-out.json shows card-1's name is 'Book round-trip flights to Austin for June conference'."
+          "evidence": "Final state: 'Book round-trip flights to Austin for June conference'."
         },
         {
           "text": "card-1 has the existing label-1 ('travel') applied to it.",
           "passed": true,
-          "evidence": "trello-state-out.json shows card-1's labels: ['label-1']."
+          "evidence": "Final state: card-1 labels ['label-1']."
         },
         {
           "text": "No new label is created for card-1 -- the existing 'travel' label (label-1) is reused rather than a duplicate 'travel' label being created via create_label.",
           "passed": true,
-          "evidence": "trello-calls.log contains no create_label call; get_board_labels was called first and label-1 was reused via update_card's add_labels."
+          "evidence": "No create_label call in the log; get_board_labels was called first and label-1 reused."
         },
         {
-          "text": "card-2 ('Call dentist to reschedule appointment') is not modified.",
+          "text": "card-2 ('Call dentist to reschedule appointment') is not modified -- no update_card call targets card-2, and its final state (name, desc, labels, due) is unchanged from the seed.",
           "passed": true,
-          "evidence": "trello-calls.log's only update_card call targets card-1; trello-state-out.json's card-2 is identical to the seed."
+          "evidence": "The only update_card call targets card-1; card-2's final state matches the seed."
         },
         {
           "text": "The response tells the user what was changed on card-1, and separately notes that card-2 needed no changes rather than omitting it from the summary entirely.",
           "passed": true,
-          "evidence": "Transcript has a clear 'Applied' section for card-1 and a separate 'No changes' section for card-2."
+          "evidence": "Transcript has an 'Applied' section for card-1 and a 'No changes' section for card-2 with reasoning; it also again flagged the June-date ambiguity and asked rather than inventing a due date."
         }
       ]
     },
@@ -97,8 +104,8 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 34,
-        "tokens": null,
+        "time_seconds": 36.404,
+        "tokens": 447464,
         "tool_calls": null,
         "errors": null
       },
@@ -106,22 +113,148 @@
         {
           "text": "No update_card call is made against card-1.",
           "passed": true,
-          "evidence": "trello-calls.log contains no update_card call."
+          "evidence": "No update_card in the call log."
         },
         {
           "text": "No create_label call is made.",
           "passed": true,
-          "evidence": "trello-calls.log contains no create_label call."
+          "evidence": "No create_label in the call log."
         },
         {
           "text": "The final Trello state is byte-identical to the seed state.",
           "passed": true,
-          "evidence": "trello-state-out.json is semantically identical to fixtures/3/trello-mcp-state.json (verified via direct JSON comparison; raw text differs only in whitespace from the stub's indent=2 flush)."
+          "evidence": "trello-state-out.json semantically identical to the seed fixture (direct JSON comparison)."
         },
         {
-          "text": "The response explicitly states the card looks complete / needs no changes, rather than silently omitting it from the summary or fabricating a change.",
+          "text": "The response explicitly states the card looks complete / needs no changes (e.g. offers to mark it reviewed), rather than silently omitting it from the summary or fabricating a change.",
           "passed": true,
-          "evidence": "Transcript states 'I applied no changes because it's already well-formed' and asks whether to mark it reviewed."
+          "evidence": "Transcript: 'it's already well-formed. I applied nothing' with a per-field assessment table, plus two flagged-but-not-acted-on observations (missing year on the expiry, uncaptured trip) surfaced as questions."
+        }
+      ]
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 52.18,
+        "tokens": 267428,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "Exactly one draft exists in the final Gmail state, addressed to sue@example.com (and/or created with replyToMessageId msg-1), with reply content consistent with sending the Q3 forecast -- and no draft is fabricated for any other thread.",
+          "passed": true,
+          "evidence": "Final state: exactly draft-1, to sue@example.com, replyToMessageId msg-1, subject 'Re: Q3 forecast numbers'."
+        },
+        {
+          "text": "thread-2 (fence quote) has the 'Waiting For' label (Label_2) in its final labelIds and no longer has INBOX.",
+          "passed": true,
+          "evidence": "Final labelIds for thread-2: ['Label_2']."
+        },
+        {
+          "text": "thread-3 (long-read newsletter) has the 'Read-Review' label (Label_3) in its final labelIds and no longer has INBOX.",
+          "passed": true,
+          "evidence": "Final labelIds for thread-3: ['Label_3']."
+        },
+        {
+          "text": "No create-label operation occurs and no thread is trashed/deleted -- the call log contains only reads plus create_draft, modify_thread_labels, and archive_thread calls.",
+          "passed": true,
+          "evidence": "Call log: search_threads/list_labels/get_thread reads plus one create_draft, three modify_thread_labels, two archive_thread. Nothing else."
+        },
+        {
+          "text": "The response includes a processed-count summary of what happened to the three threads (drafted, waiting-for, read-review), consistent with the actual final state.",
+          "passed": true,
+          "evidence": "Counts block matches the verified final state, including the deliberate choice to leave Sue's thread in the inbox (labeled Action) until the unsent draft goes out -- explained rather than hidden."
+        }
+      ]
+    },
+    {
+      "eval_id": 5,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 32.829,
+        "tokens": 172079,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "A search scoped to the inbox (in:inbox) appears in the call log.",
+          "passed": true,
+          "evidence": "First call is search_threads with query in:inbox."
+        },
+        {
+          "text": "No write call appears in the call log -- no create_draft, modify_thread_labels, or archive_thread.",
+          "passed": true,
+          "evidence": "Call log contains only search_threads (x3) and list_labels."
+        },
+        {
+          "text": "The final Gmail state is semantically identical to the seed state.",
+          "passed": true,
+          "evidence": "Direct JSON comparison: identical."
+        },
+        {
+          "text": "The response states the inbox is empty / there is nothing to process, and does not claim any thread was processed or expand into archived mail without being asked.",
+          "passed": true,
+          "evidence": "States 'Your inbox is empty. Nothing to triage.' with a 0-thread count. It ran one read-only in:anywhere metadata query purely to verify the empty result was real, explicitly declared the lone archived receipt out of scope, and touched nothing -- verification, not scope expansion."
+        }
+      ]
+    },
+    {
+      "eval_id": 6,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 51.48,
+        "tokens": 399630,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "A search_trello call appears in the Trello call log before the create_card call -- the skill checked for an existing card rather than blindly creating one.",
+          "passed": true,
+          "evidence": "Call order: search_trello ('bake sale fair', board-scoped) precedes create_card."
+        },
+        {
+          "text": "Exactly one new Trello card exists in the final Trello state, on list-1 (Inbox) of board-1 (Personal Tasks), with an action-oriented title about organizing the bake sale stall / school fair (not the raw email subject 'School fair volunteering rota' verbatim as a noun phrase, and not a generic title).",
+          "passed": true,
+          "evidence": "One new card (card-2) on list-1: 'Organize the bake sale stall for the school fair on 19 September', with the family label and due 2026-09-19."
+        },
+        {
+          "text": "The new card's description references the source email (the Gmail thread id, message id, sender, or subject), so the card links back to where the commitment came from.",
+          "passed": true,
+          "evidence": "Description opens 'Volunteered via Lakeside PTA' (the sender) and enumerates the email's four steps."
+        },
+        {
+          "text": "The seeded card-1 ('Service the lawnmower') is unmodified in the final Trello state, and no second new card is created.",
+          "passed": true,
+          "evidence": "card-1 byte-identical to the seed; exactly one new card exists."
+        },
+        {
+          "text": "thread-1 no longer has INBOX in its final Gmail labelIds (archived after capture), and no reply draft was created for it.",
+          "passed": true,
+          "evidence": "Final labelIds: ['UNREAD'] (INBOX removed); drafts empty."
+        },
+        {
+          "text": "The response summarizes the capture (card created, thread archived) consistently with the actual final state of both services.",
+          "passed": true,
+          "evidence": "Counts block and card link match the verified final state of both stubs; the due-date choice is surfaced as an explicit follow-up question."
         }
       ]
     }
@@ -129,31 +262,31 @@
   "run_summary": {
     "with_skill": {
       "pass_rate": {
-        "mean": 0.8333,
-        "stddev": 0.2357,
-        "min": 0.5,
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
         "max": 1.0
       },
       "time_seconds": {
-        "mean": 37.6667,
-        "stddev": 5.9067,
-        "min": 33,
-        "max": 46
+        "mean": 40.5355,
+        "stddev": 9.2109,
+        "min": 27.433,
+        "max": 52.18
       },
       "tokens": {
-        "mean": null,
-        "stddev": null,
-        "min": null,
-        "max": null
+        "mean": 288201.8333,
+        "stddev": 102969.8139,
+        "min": 172079,
+        "max": 447464
       }
     }
   },
   "notes": [
-    "2/3 evals pass all expectations; eval 1 fails 2 of its 4 expectations. All results were independently verified against ground truth (trello-calls.log call sequence and direct JSON comparison of trello-state-out.json against the seed fixture), not accepted from the transcript's self-report alone.",
-    "Executor mechanism differs from every other skill's baseline in this repo: each trial is a real, separate `claude -p --dangerously-skip-permissions --strict-mcp-config` subprocess (via evals/lib/mcp-stub/trello_stub.py and evals/lib/run-mcp-eval.sh), not an in-process Agent-tool subagent, because MCP server resolution happens once at process launch and can't be swapped per-command via PATH the way the gh-stub is. See evals/README.md's 'MCP stub servers' section.",
-    "Eval 1's failure is a genuine, repeatable finding, not a fixture artifact: given a vague scope request ('help me triage my backlog') against a Trello workspace containing exactly one board/list/card, the executor used Step 0's own 'capability discovery' step to survey what exists, found only one candidate, and proceeded directly into a full per-item fetch and audit (view_board, view_list, view_card, get_board_labels) rather than stopping to ask the user to confirm scope first, as SKILL.md's Step 0 explicitly requires ('Do not proceed until scope is clear'). It did not mutate anything and did ask real clarifying questions, but only after already fetching full card detail -- the ask came at the field level (due date, labels), not as the required scope-confirmation gate before touching card data. Worth a second opinion on whether Step 0 should be read as 'ask only when genuinely ambiguous' rather than 'always ask when the user didn't specify a target', since the current wording produced this divergence.",
-    "Eval 2 surfaced a good example of correct judgment beyond what the eval anticipated: the fixture's card description says 'the June conference' with no year, and the executor noticed this creates a real ambiguity against the session's current date (2026-07-30, so an unqualified 'June conference' could mean a past or future date) and asked rather than inventing a due date -- consistent with the skill's 'never invent facts or dates' rule. This was graded as intended (correct) behavior, not a shortfall.",
-    "Time figures are approximate, derived from file mtimes (mcp-config.json creation to transcript.txt completion) rather than the subprocess's own reported wall-clock time, since run-trials.sh invoked `claude -p` in plain-text output mode. Token figures are unavailable for the same reason (plain-text mode doesn't report usage) -- a future run using `--output-format json` would capture both more precisely; not done here to avoid a second live round-trip for a 3-eval pilot batch.",
-    "Scoped to triage's primary Trello-processing path (Steps 0-4, 8) with a single-board, Trello-only pilot fixture set. Step 4c's capture-into-Trello-from-another-platform flow, staleness handling (Step 7, which needs a last-activity timestamp the stub does not currently model), and Jira/Gmail scope are all deferred to a follow-up batch, not covered here."
+    "6/6 evals pass 28/28 expectations. All results independently verified against ground truth (per-service call logs and direct JSON comparison of final stub state against seed fixtures), not executor self-report.",
+    "This run replaces the 2026-07-31T04:27Z 3-eval Trello-only pilot baseline (83.3% pass). Two things changed since: (1) SKILL.md's Step 0 gained the sole-candidate scope-confirmation rule after the pilot's eval 1 failure -- eval 1 now passes, with the executor surveying at board level only and explicitly asking before fetching card detail; (2) evals 4-6 were added covering the email workflow (Step 4b) and the capture-from-email-to-Trello flow (Step 4c), the latter running the Trello and Gmail stubs together in one trial.",
+    "Executor mechanism (unchanged from the pilot): each trial is a real `claude -p --dangerously-skip-permissions --strict-mcp-config` subprocess against the mcp-stub servers, run from the user's authenticated terminal via run-trials.sh; see evals/README.md's 'MCP stub servers' section.",
+    "Time and token figures are the subprocess's own reported values (--output-format json), not file-mtime approximations as in the pilot. The tokens figure is total tokens processed per trial (input + output + cache creation + cache read); cache reads dominate it, so it is NOT comparable to the subagent-token figures in other skills' baselines. Per-trial breakdowns are in metrics.json artifacts of the run (not committed).",
+    "Continued good judgment observed beyond graded expectations: eval 2 re-flagged the fixture's 'June conference' date ambiguity and asked rather than inventing a due date; eval 5 verified its empty-inbox result with one read-only in:anywhere query while explicitly declining to expand scope; eval 6 surfaced its due-date choice (fair date vs the PTA's 'early September' request) as a question instead of silently deciding.",
+    "Still deferred: Jira scope (needs a schema-verified Atlassian stub), staleness handling (Step 7 needs last-activity timestamps modeled in the stubs), and large-set batch pacing (Step 0.5)."
   ]
 }
