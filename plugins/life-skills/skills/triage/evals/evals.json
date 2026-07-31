@@ -1,6 +1,6 @@
 {
   "skill_name": "triage",
-  "notes": "MCP-stub-backed batch (see evals/lib/mcp-stub). The executor for these evals is a real, separate `claude -p --strict-mcp-config` subprocess, not an Agent-tool subagent -- see evals/README.md's 'MCP stub servers' section for why and how to run one. Since -p is single-shot with no follow-up turn, prompts that expect the skill to act front-load explicit blanket authorization in the initial message, standing in for the real multi-turn confirmation Step 8 normally requires. Evals 1-3 cover the Trello-scoped path (Steps 0-4, 8); evals 4-6 cover the email workflow (Step 4b) and the capture-to-Trello flow (Step 4c, a cross-service trial wiring both stubs into one mcp-config). Jira scope still needs an Atlassian stub and is deferred.",
+  "notes": "MCP-stub-backed batch (see evals/lib/mcp-stub). The executor for these evals is a real, separate `claude -p --strict-mcp-config` subprocess, not an Agent-tool subagent -- see evals/README.md's 'MCP stub servers' section for why and how to run one. Since -p is single-shot with no follow-up turn, prompts that expect the skill to act front-load explicit blanket authorization in the initial message, standing in for the real multi-turn confirmation Step 8 normally requires. Evals 1-3 cover the Trello-scoped path (Steps 0-4, 8); evals 4-6 cover the email workflow (Step 4b) and the capture-to-Trello flow (Step 4c, a cross-service trial wiring both stubs into one mcp-config); evals 7-9 cover the Jira-scoped path via the Atlassian stub (schema-verified against the live connector, including the cloudId-discovery flow), with eval 9 a second cross-service Step 4c trial capturing from Jira into Trello.",
   "evals": [
     {
       "id": 1,
@@ -70,6 +70,42 @@
         "The seeded card-1 ('Service the lawnmower') is unmodified in the final Trello state, and no second new card is created.",
         "thread-1 no longer has INBOX in its final Gmail labelIds (archived after capture), and no reply draft was created for it.",
         "The response summarizes the capture (card created, thread archived) consistently with the actual final state of both services."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Please triage the HOME project on my Jira. Go ahead and apply anything you're confident about without waiting for me to confirm each item individually -- just tell me afterward what you changed. Only ask me directly if something is genuinely unclear.",
+      "expected_output": "Two open issues. HOME-1 has a vague one-word summary ('deck') but a description with enough detail (rotting boards, before-autumn deadline, quote valid until end of August) to confidently rewrite the summary into an action-oriented one and add sensible labels; the quote deadline also supports a due date, though setting one is not required. HOME-2 is already well-formed (clear summary, description, priority, labels, assignee, due date) and must be left untouched and reported as needing no changes. The executor discovers the cloudId via getAccessibleAtlassianResources before calling any Jira tool.",
+      "expectations": [
+        "HOME-1's summary is changed from 'deck' to something specific and action-oriented about replacing the deck boards -- not left as 'deck'.",
+        "HOME-1 gains at least one sensible label (e.g. home and/or a domain tag) via editJiraIssue; no fabricated fields appear (no invented assignee, and no due date unless it is derived from the description's stated end-of-August quote deadline).",
+        "HOME-2 is not modified: no editJiraIssue, addCommentToJiraIssue, or transitionJiraIssue call targets HOME-2, and its final state is unchanged from the seed.",
+        "No issue is transitioned to a different status, and no comment is posted to either issue (the request was metadata triage, not status reporting).",
+        "The response tells the user what changed on HOME-1 and separately notes HOME-2 needed no changes rather than omitting it."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Please triage the HOME project on my Jira. Apply anything you're confident about, you don't need to wait for me to confirm each item.",
+      "expected_output": "The project's only open issue (HOME-1, insurance renewal) is already fully formed: action-oriented summary, complete description, priority, labels, assignee, and due date. HOME-2 is Done and therefore outside the processing scope (closed items are exempt). The skill should make no writes at all, explicitly report that HOME-1 looks complete, and not drag the Done issue into the audit or propose changes to it.",
+      "expectations": [
+        "No write call appears in the Atlassian call log: no editJiraIssue, no addCommentToJiraIssue, no transitionJiraIssue.",
+        "The final Jira state is semantically identical to the seed state.",
+        "The response explicitly states HOME-1 looks complete / needs no changes, rather than silently omitting it or fabricating an improvement.",
+        "HOME-2 (Done) is not audited as an open item and no changes are proposed for it; at most it is mentioned as closed/out of scope."
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Please triage the HOME project on my Jira. Any untracked personal to-dos you find along the way should be captured onto my 'Personal Tasks' Trello board's 'Inbox' list rather than left buried -- go ahead and apply what you're confident about without confirming each step, and summarize afterward.",
+      "expected_output": "One in-progress issue (HOME-7, garage conversion) whose description explicitly flags three untracked prerequisite to-dos (book a waste skip, arrange driveway access with the neighbours, confirm the electrician's second-fix date). Per Step 4c the skill searches Trello for existing cards first, then captures the untracked work to Personal Tasks / Inbox with action-oriented titles and descriptions linking back to HOME-7, leaving the seeded passport card untouched. The Jira issue itself is already well-formed, so no Jira field edits are needed (a comment noting the capture is acceptable but not required).",
+      "expectations": [
+        "At least one search_trello call appears in the Trello call log before the first create_card call -- existing cards are checked before creating new ones.",
+        "One to three new Trello cards exist in the final Trello state, all on list-1 (Inbox) of board-1, with action-oriented titles covering the description's untracked to-dos (skip booking, neighbour access, and/or electrician date) -- not the raw issue summary and not duplicates of each other.",
+        "Each new card's description references the source Jira issue (the HOME-7 key or its summary), so the cards link back to where the to-dos came from.",
+        "The seeded card-1 ('Renew passport before December Japan trip') is unmodified in the final Trello state.",
+        "HOME-7's summary, status, labels, priority, assignee, and due date are unchanged in the final Jira state (a new comment on HOME-7 is permitted; field edits and transitions are not).",
+        "The response summarizes what was captured consistently with the actual final state of both services."
       ]
     }
   ]

@@ -106,6 +106,7 @@ print(json.dumps(servers))
 
 add_stub_server trello trello_stub.py
 add_stub_server gmail gmail_stub.py
+add_stub_server atlassian jira_stub.py
 
 if [[ "$MCP_SERVERS_JSON" == "{}" ]]; then
   echo "run-mcp-eval: fixture $FIXTURE_DIR provides no recognized *-mcp-state.json file" >&2
@@ -123,7 +124,7 @@ ENV_FILE="$RUN_DIR/env.sh"
   echo "export WORKSPACE_DIR=\"$WORKSPACE_DIR\""
   echo "export MCP_CONFIG_PATH=\"$MCP_CONFIG_PATH\""
   # Per-service grading artifacts (only for services this fixture wired up):
-  for SERVICE in trello gmail; do
+  for SERVICE in trello gmail atlassian; do
     if [[ -f "$FIXTURE_DIR/$SERVICE-mcp-state.json" ]]; then
       VAR="$(echo "$SERVICE" | tr '[:lower:]' '[:upper:]')"
       echo "export ${VAR}_STATE_OUT=\"$RUN_DIR/$SERVICE-state-out.json\""
