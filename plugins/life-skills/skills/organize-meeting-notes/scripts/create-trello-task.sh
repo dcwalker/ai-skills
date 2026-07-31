@@ -78,6 +78,19 @@ if [[ -z "$TEXT" ]]; then
   exit 1
 fi
 
+# Fail closed inside an eval. Mode used to be chosen by the mere absence of
+# TRELLO_FIXTURE_FILE, so a fixture file that was never authored silently
+# selected real mode -- and with the developer's own credentials in the
+# environment, that created real cards on a real board. An eval trial that
+# reaches this point without a fixture is a harness bug, never a request to
+# call the live API.
+if [[ -n "${AI_SKILLS_EVAL:-}" && -z "${TRELLO_FIXTURE_FILE:-}" ]]; then
+  echo "Error: running under AI_SKILLS_EVAL with no TRELLO_FIXTURE_FILE set." >&2
+  echo "Refusing to call the real Trello API. Add a trello-fixture.json to this" >&2
+  echo "eval's fixture directory; run-eval.sh wires it automatically." >&2
+  exit 1
+fi
+
 if [[ -n "${TRELLO_FIXTURE_FILE:-}" ]]; then
   RESULT=$(python3 - "$TRELLO_FIXTURE_FILE" "${TRELLO_FIXTURE_COUNTS_DIR:-}" <<'PYEOF'
 import json

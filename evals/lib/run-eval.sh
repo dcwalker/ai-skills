@@ -70,6 +70,30 @@ ENV_FILE="$RUN_DIR/env.sh"
   echo "export GH_STUB_LOG=\"$RUN_DIR/gh-calls.log\""
   echo "export GH_STUB_COUNTS_DIR=\"$RUN_DIR\""
 
+  # Marks the environment as a trial. Bundled scripts that can reach a real
+  # service check this and refuse rather than falling back to real mode, so a
+  # missing fixture file fails loudly instead of hitting a live account.
+  echo "export AI_SKILLS_EVAL=1"
+
+  # Scrub every real service credential inherited from the caller's shell.
+  # Trials run in the developer's own environment, where these are usually
+  # exported by a profile. Without this, a fixture file that was simply never
+  # authored leaves a bundled script holding live credentials -- which is how
+  # three real Trello cards were created on a personal board during an
+  # organize-meeting-notes run.
+  for cred in TRELLO_API_KEY TRELLO_TOKEN TRELLO_LIST_ID \
+              TRELLO_BOARD_ID TRELLO_WORKSPACE_ID \
+              SONAR_TOKEN SONAR_HOST_URL SONAR_PROJECT_KEY \
+              GH_TOKEN GITHUB_TOKEN; do
+    echo "unset $cred"
+  done
+
+  # Point anything that reads a host at an unroutable name, so a script that
+  # ignores both the marker and the missing credentials still cannot reach a
+  # real service.
+  echo "export SONAR_HOST_URL=\"https://sonar.invalid\""
+  echo "export SONAR_TOKEN=\"eval-fixture-token\""
+
   if [[ -f "$FIXTURE_DIR/gh-cassette.json" ]]; then
     echo "export GH_STUB_CASSETTE=\"$FIXTURE_DIR/gh-cassette.json\""
   fi
@@ -77,8 +101,6 @@ ENV_FILE="$RUN_DIR/env.sh"
   if [[ -f "$FIXTURE_DIR/sonar-fixture.json" ]]; then
     echo "export SONAR_FIXTURE_FILE=\"$FIXTURE_DIR/sonar-fixture.json\""
     echo "export SONAR_FIXTURE_COUNTS_DIR=\"$RUN_DIR\""
-    echo "export SONAR_HOST_URL=\"https://sonar.invalid\""
-    echo "export SONAR_TOKEN=\"eval-fixture-token\""
 
     if [[ -f "$FIXTURE_DIR/sonar-project-key" ]]; then
       PROJECT_KEY="$(cat "$FIXTURE_DIR/sonar-project-key")"

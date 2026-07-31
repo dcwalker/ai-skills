@@ -123,6 +123,18 @@ ENV_FILE="$RUN_DIR/env.sh"
 {
   echo "export WORKSPACE_DIR=\"$WORKSPACE_DIR\""
   echo "export MCP_CONFIG_PATH=\"$MCP_CONFIG_PATH\""
+
+  # --strict-mcp-config already keeps the trial off the real MCP servers, but
+  # the `claude` subprocess still inherits the caller's shell. Scrub the same
+  # credentials run-eval.sh does, so a trial that shells out to a bundled
+  # script or curl cannot reach a live account either.
+  echo "export AI_SKILLS_EVAL=1"
+  for cred in TRELLO_API_KEY TRELLO_TOKEN TRELLO_LIST_ID \
+              TRELLO_BOARD_ID TRELLO_WORKSPACE_ID \
+              SONAR_TOKEN SONAR_HOST_URL SONAR_PROJECT_KEY \
+              GH_TOKEN GITHUB_TOKEN; do
+    echo "unset $cred"
+  done
   # Per-service grading artifacts (only for services this fixture wired up):
   for SERVICE in trello gmail atlassian; do
     if [[ -f "$FIXTURE_DIR/$SERVICE-mcp-state.json" ]]; then
