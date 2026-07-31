@@ -2,22 +2,46 @@
 
 Personal Claude Code plugins and skills, distributed as a plugin marketplace.
 
+## Table of Contents
+
+- [Plugins](#plugins)
+- [Usage](#usage)
+- [Installation](#installation)
+- [Evals](#evals)
+- [Contributing](#contributing)
+
 ## Plugins
 
 - **life-skills** — Personal life-organization skills: `conduct-interview`, `organize-meeting-notes`, `triage`.
 - **software-development** — Software development workflow skills: `analyze-logs`, `commit`, `create-branch`, `create-github-issue`, `fix-pr-checks`, `implement-feature`, `land-pr`, `pr`, `resolve-pr-comments`, `resolve-sonarqube-issues`, `review-code`, `review-readme`, `tidy-workspace`, `update-dependabot-bulk`.
 
+## Usage
+
+Once a plugin is installed, its skills activate in two ways:
+
+- **Automatically**: describe what you want in conversation, and a skill whose
+  description matches the request loads on its own (e.g. "commit these
+  changes" triggers `commit`; "triage my inbox" triggers `triage`).
+- **Explicitly**: invoke a skill by name as a slash command in the form
+  `/<plugin>:<skill>`, optionally with arguments:
+
+```text
+/software-development:commit
+/software-development:land-pr https://github.com/owner/repo/pull/42
+/life-skills:triage
+```
+
 ## Installation
 
 Add this repo as a plugin marketplace in Claude Code:
 
-```
+```text
 /plugin marketplace add dcwalker/ai-skills
 ```
 
 Then install a plugin from it:
 
-```
+```text
 /plugin install life-skills@dcwalker-skills
 /plugin install software-development@dcwalker-skills
 ```
@@ -91,7 +115,7 @@ dates, and totals.
 - Most skills: `evals/lib/run-eval.sh <skill-evals-dir> <eval-id> <run-dir>`
   prepares an isolated trial (scratch repo, stubs on `PATH`, fixture env
   vars); the executor is then a Claude subagent pointed at the prepared
-  workspace. See `evals/README.md` for the full workflow.
+  workspace.
 - MCP-backed skills (`triage`): trials must be real `claude -p` subprocesses,
   so run `bash plugins/life-skills/skills/triage/evals/run-trials.sh` from a
   logged-in terminal; it wires the MCP stubs via `evals/lib/run-mcp-eval.sh`
@@ -99,10 +123,17 @@ dates, and totals.
   grading.
 - One-time setup for the MCP stubs (isolated venv):
 
-  ```
+  ```bash
   uv venv --python 3.11 evals/lib/mcp-stub/.venv
   uv pip install --python evals/lib/mcp-stub/.venv/bin/python3 -r evals/lib/mcp-stub/requirements.txt
   ```
 
-Full details, including the fixture and cassette formats and how to add a new
-eval, are in [evals/README.md](evals/README.md).
+Full details on the eval workflow, including the fixture and cassette formats
+and how to add a new eval, are in [evals/README.md](evals/README.md).
+
+## Contributing
+
+Coding standards, testing expectations (including the eval requirements for
+new and modified skills), and documentation guidelines are in
+[CONTRIBUTING.md](CONTRIBUTING.md). Directives specific to AI coding agents
+working in this repo are in [AGENTS.md](AGENTS.md).
