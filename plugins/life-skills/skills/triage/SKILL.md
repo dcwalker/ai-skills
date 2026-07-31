@@ -55,16 +55,37 @@ scoped set up front. Fetch only metadata (subject, from, date, snippet, labels)
 for the corpus. Read full bodies one thread at a time, only on items the user
 agrees to act on or that require a body read to classify.
 
-**Capability discovery:** Before fetching, survey what is available in the
-current session. Check which MCP tools are loaded, which skills are available,
-and which CLI tools respond to `command -v <tool>`. Use the best available
-option for the platform implied by the scope. If the platform is ambiguous,
-ask.
+**Scope Confirmation block:** every run records its scope in this block and
+shows it to the user before any item-level detail is fetched:
 
-Capability discovery informs *how* to fetch, never *what* the scope is. Even
-if discovery finds only one possible target (a single board, project, or
-inbox), confirm it with the user before fetching any card-level or
-thread-level detail; a sole candidate is not the same as confirmed scope.
+```
+Scope:     <board / project / inbox / specific item>
+Source:    user request | user reply | sole candidate from discovery
+Confirmed: yes | pending
+```
+
+- When the user named the target (in the original request or in a reply to
+  the scope question), Source is that message and Confirmed is `yes`.
+- When the user did not specify what to process, the first reply is the
+  scope question above and nothing else. Capability discovery waits until
+  the user answers; do not survey targets first and infer from what exists.
+- If the user's answer still leaves the target open ("whatever I have",
+  "you pick"), run capability discovery then. If exactly one candidate
+  exists, proceed with the block showing `Source: sole candidate from
+  discovery` and `Confirmed: pending`: reading and auditing are allowed,
+  but the Step 8 proposal must lead with this block and ask the user to
+  confirm the scope, and nothing is applied while it is pending. If more
+  than one candidate exists, list them and ask; audit none of them.
+- Only a user message flips Confirmed to `yes`. The assistant never sets it
+  on its own authority, and "there was only one candidate" is a Source, not
+  a confirmation.
+
+**Capability discovery:** once scope is named (or on the open-answer path
+above), survey what is available in the current session. Check which MCP
+tools are loaded, which skills are available, and which CLI tools respond to
+`command -v <tool>`. Use the best available option for the platform implied
+by the scope. If the platform is ambiguous, ask. Discovery informs *how* to
+fetch, never *what* the scope is.
 
 ---
 
@@ -690,12 +711,11 @@ reference material.
 - One question at a time during the stall interview.
 - Propose each change once, in the final Step 8 summary, not earlier.
 - If scope is ambiguous, stop and ask before proceeding.
-- When the user did not specify what to process, the first reply IS the
-  Step 0 scope question and nothing more. A capability survey to learn
-  which platforms exist may precede it, but no item-level fetching or
-  auditing happens before the user confirms scope, and "there was only one
-  candidate" never substitutes for that confirmation. "Scope resolved" is
-  something only the user can say.
+- When the user did not specify what to process, the first reply is the
+  Step 0 scope question alone, before any discovery. Any later
+  sole-candidate proceed happens read-only under a Scope Confirmation block
+  marked pending: nothing is written while it is pending, and only a user
+  message can set Confirmed to yes.
 - For email, never read full bodies of the entire corpus up front. Honor the
   bounded-read rule in Step 0.
 
