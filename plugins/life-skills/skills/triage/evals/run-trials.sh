@@ -57,11 +57,25 @@ for e in data['evals']:
       --mcp-config "$MCP_CONFIG_PATH" --output-format json -- "$PROMPT"
   ) > "$RUN_DIR/result.json" 2> "$RUN_DIR/stderr.txt"
 
+  # A parse failure must stay isolated to this one trial: under set -e an
+  # uncaught exception here would abort the whole batch, losing every eval
+  # ID not yet run. Each trial's artifacts live in their own $RUN_DIR, so a
+  # bad result.json just gets a placeholder metrics.json and the loop moves
+  # on; the raw result.json is kept for manual inspection.
   python3 - "$RUN_DIR" <<'PYEOF'
 import json, sys
 run_dir = sys.argv[1]
-with open(f"{run_dir}/result.json") as f:
-    data = json.load(f)
+try:
+    with open(f"{run_dir}/result.json") as f:
+        data = json.load(f)
+except (json.JSONDecodeError, OSError) as e:
+    with open(f"{run_dir}/metrics.json", "w") as f:
+        json.dump({"parse_error": str(e),
+                   "note": "result.json was missing or not valid JSON; "
+                           "inspect it manually alongside stderr.txt"}, f, indent=2)
+    print(f"  WARNING: could not parse result.json ({e}); wrote placeholder "
+          "metrics.json and continuing with the next eval")
+    sys.exit(0)
 with open(f"{run_dir}/transcript.txt", "w") as f:
     f.write(data.get("result", ""))
 usage = data.get("usage", {})
