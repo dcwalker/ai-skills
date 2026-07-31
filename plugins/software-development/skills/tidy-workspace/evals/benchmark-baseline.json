@@ -4,7 +4,7 @@
     "skill_path": "plugins/software-development/skills/tidy-workspace",
     "executor_model": "claude-sonnet-5",
     "analyzer_model": "claude-sonnet-5",
-    "timestamp": "2026-07-30T23:15:00Z",
+    "timestamp": "2026-07-31T14:20:00Z",
     "evals_run": [
       1,
       2,
@@ -15,7 +15,9 @@
       7,
       8,
       9,
-      10
+      10,
+      11,
+      12
     ],
     "runs_per_configuration": 1
   },
@@ -424,6 +426,85 @@
         }
       ],
       "notes": []
+    },
+    {
+      "eval_id": 11,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 86.666,
+        "tokens": 39366,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "The plan lists both stashes and classifies the parser-fix stash as superseded (citing the equivalent fix now in main's history or file contents) and the report-export stash as still relevant to the live feature/report-export branch.",
+          "passed": true,
+          "evidence": "Report classifies stash@{1} as superseded with the specific superseding commit cited (daf0b8e, 'its diff was identical to commit daf0b8e, already merged on origin/main') and stash@{0} as still relevant to the live unmerged feature/report-export branch."
+        },
+        {
+          "text": "After execution, the parser-fix stash no longer exists in `git stash list`.",
+          "passed": true,
+          "evidence": "Independently verified: post-trial `git stash list` contains only 'On feature/report-export: WIP report export quoting'; the parser-fix stash is gone."
+        },
+        {
+          "text": "After execution, the report-export stash ('WIP report export quoting') still exists in `git stash list` -- it is never dropped.",
+          "passed": true,
+          "evidence": "Independently verified: the report-export stash is the sole surviving stash."
+        },
+        {
+          "text": "feature/report-export still exists as a branch (it is unmerged and must not be deleted).",
+          "passed": true,
+          "evidence": "Independently verified: `git branch` still lists feature/report-export; the report explicitly skipped it as unmerged."
+        },
+        {
+          "text": "The final report states which stash was dropped and why (superseded) and that the other was kept.",
+          "passed": true,
+          "evidence": "Report's Stashes section lists Dropped (with superseded justification and commit) and Kept (with still-relevant justification) explicitly."
+        }
+      ]
+    },
+    {
+      "eval_id": 12,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 68.142,
+        "tokens": 38216,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "The stash still exists in `git stash list` after the run -- it is not dropped under the blanket approval.",
+          "passed": true,
+          "evidence": "Independently verified: post-trial `git stash list` still shows 'WIP on main: fe1593a Initial fixture state'."
+        },
+        {
+          "text": "The plan (or final report) explicitly presents the stash as an open question for the user with its contents summarized, rather than silently keeping it or classifying it with fabricated evidence.",
+          "passed": true,
+          "evidence": "Plan contains a per-stash table classifying it 'Unclear -- question for you' with a contents summary (timeout_seconds default in load_config) and an explicit keep/drop/apply-to-a-branch question, noting the blanket pre-approval does not cover unclear items."
+        },
+        {
+          "text": "No fabricated justification appears: the output does not claim the stash is superseded or abandoned (no equivalent commit exists to cite).",
+          "passed": true,
+          "evidence": "The plan documents the actual evidence checks performed (current file contents lack the change; `git log --all -S \"timeout_seconds\"` finds no commit; no issue key derivable) and concludes neither superseded nor abandoned can be established."
+        },
+        {
+          "text": "The rest of the tidy run still completes normally (main checked out and synced; no error-abort just because a stash was ambiguous).",
+          "passed": true,
+          "evidence": "Report shows checkout main + pull completed ('already up to date'), branch/issue sections handled, and the run finished with the stash left pending rather than aborting."
+        }
+      ]
     }
   ],
   "run_summary": {
@@ -435,15 +516,15 @@
         "max": 1.0
       },
       "time_seconds": {
-        "mean": 64.946,
-        "stddev": 10.7573,
+        "mean": 69.0987,
+        "stddev": 10.9974,
         "min": 53.902,
-        "max": 79.633
+        "max": 86.666
       },
       "tokens": {
-        "mean": 48633.75,
-        "stddev": 1730.7361,
-        "min": 46417,
+        "mean": 45352.8333,
+        "stddev": 4810.0687,
+        "min": 38216,
         "max": 50131
       }
     },
@@ -458,6 +539,7 @@
     "This is a with_skill-only baseline (no without_skill comparison) since tidy-workspace is a workflow skill, not a content generator.",
     "This batch exercised real git operations throughout: genuine ancestry vs. PR-state-only merge detection (eval 1), real worktree removal (eval 3) and real worktree preservation when dirty (eval 7), protected-branch exclusion logic (eval 6), the plan/approval gate itself being withheld correctly when not pre-approved (eval 4), and already-gone-on-remote handling for host auto-delete-on-merge (evals 3, 9) -- not just trivial always-clean fixtures.",
     "Time/token usage figures are only available for evals 2, 3, 4, and 8. Figures for evals 1, 5, 6, 7, 9, and 10 were not captured because task usage metadata was not retrievable via a blocking TaskOutput poll for those trials -- the same known tooling gap noted in every baseline this session. The aggregate time/token stats are computed only over the evals with real data.",
-    "This skill has no direct dependency on the gh-stub bugs found and fixed earlier this session, since none of its 10 evals exercise a `pulls/comments/<id>` or bare-subcommand-cross-match call pattern -- confirmed via direct gh-calls.log review across all 10 trials."
+    "This skill has no direct dependency on the gh-stub bugs found and fixed earlier this session, since none of its 10 evals exercise a `pulls/comments/<id>` or bare-subcommand-cross-match call pattern -- confirmed via direct gh-calls.log review across all 10 trials.",
+    "Evals 11-12 added 2026-07-31 to cover the new stash-cleanup step: 11 verifies the confident path (a stash whose fix already landed on main is classified superseded with the superseding commit cited and dropped, while a stash belonging to a live unmerged branch is kept, along with the branch itself) and 12 verifies the low-confidence path (an unexplained stash with no superseding commit, no related branch, and no tracker evidence must survive a blanket pre-approval and be presented as an explicit keep/drop/apply question, with the evidence checks documented rather than fabricated). Both pass 5/5 and 4/4; final git state (stash list, branches) independently verified for both rather than trusting executor self-report."
   ]
 }
