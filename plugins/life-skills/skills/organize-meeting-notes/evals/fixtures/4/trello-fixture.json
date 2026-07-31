@@ -1,0 +1,6 @@
+{
+  "create_card": [
+    {"url": "https://trello.com/c/omn7e8f9/update-internal-pricing-sheet"},
+    {"exit_code": 1, "error": "Trello API error: rate limit exceeded, try again later"}
+  ]
+}
