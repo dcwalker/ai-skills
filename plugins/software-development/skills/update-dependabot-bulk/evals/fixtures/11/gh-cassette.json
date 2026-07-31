@@ -24,7 +24,7 @@
         },
         {
           "number": 1102,
-          "title": "Bump react from 18.2.0 to 18.2.9 in /static",
+          "title": "Bump react from 18.2.0 to 18.3.1 in /static",
           "html_url": "https://github.com/acme/webapp/pull/1102",
           "created_at": "2026-07-15T09:00:00Z",
           "updated_at": "2026-07-16T09:00:00Z",
@@ -56,7 +56,7 @@
           "filename": "static/package.json",
           "additions": 1,
           "deletions": 1,
-          "patch": "@@ -2,7 +2,7 @@\n   \"dependencies\": {\n-    \"react\": \"18.2.0\",\n+    \"react\": \"18.2.9\",\n     \"react-dom\": \"18.2.0\""
+          "patch": "@@ -2,7 +2,7 @@\n   \"dependencies\": {\n-    \"react\": \"18.2.0\",\n+    \"react\": \"18.3.1\",\n     \"react-dom\": \"18.2.0\""
         }
       ]
     }
