@@ -56,13 +56,35 @@ against ground truth instead of trusting the executor's self-report.
 
 ### Where the results are
 
-- Per skill: `plugins/<plugin>/skills/<skill>/evals/benchmark-baseline.md` is
-  the human-readable report (summary stats, per-eval pass rates, and notes on
-  every finding), with `benchmark-baseline.json` holding the underlying data.
-  These committed baselines are the results of record.
-- Repo-wide: `python3 evals/lib/report.py` prints one table across every
-  committed baseline: per-skill eval counts, expectation pass rates, baseline
-  dates, and totals.
+Each skill's committed baseline is the result of record: a human-readable
+`benchmark-baseline.md` report (summary stats, per-eval pass rates, and notes
+on every finding), with `benchmark-baseline.json` alongside it holding the
+underlying data.
+
+**life-skills:**
+[conduct-interview](plugins/life-skills/skills/conduct-interview/evals/benchmark-baseline.md) ·
+[organize-meeting-notes](plugins/life-skills/skills/organize-meeting-notes/evals/benchmark-baseline.md) ·
+[triage](plugins/life-skills/skills/triage/evals/benchmark-baseline.md)
+
+**software-development:**
+[analyze-logs](plugins/software-development/skills/analyze-logs/evals/benchmark-baseline.md) ·
+[commit](plugins/software-development/skills/commit/evals/benchmark-baseline.md) ·
+[create-branch](plugins/software-development/skills/create-branch/evals/benchmark-baseline.md) ·
+[create-github-issue](plugins/software-development/skills/create-github-issue/evals/benchmark-baseline.md) ·
+[fix-pr-checks](plugins/software-development/skills/fix-pr-checks/evals/benchmark-baseline.md) ·
+[implement-feature](plugins/software-development/skills/implement-feature/evals/benchmark-baseline.md) ·
+[land-pr](plugins/software-development/skills/land-pr/evals/benchmark-baseline.md) ·
+[pr](plugins/software-development/skills/pr/evals/benchmark-baseline.md) ·
+[resolve-pr-comments](plugins/software-development/skills/resolve-pr-comments/evals/benchmark-baseline.md) ·
+[resolve-sonarqube-issues](plugins/software-development/skills/resolve-sonarqube-issues/evals/benchmark-baseline.md) ·
+[review-code](plugins/software-development/skills/review-code/evals/benchmark-baseline.md) ·
+[review-readme](plugins/software-development/skills/review-readme/evals/benchmark-baseline.md) ·
+[tidy-workspace](plugins/software-development/skills/tidy-workspace/evals/benchmark-baseline.md) ·
+[update-dependabot-bulk](plugins/software-development/skills/update-dependabot-bulk/evals/benchmark-baseline.md)
+
+Repo-wide: `python3 evals/lib/report.py` prints one table across every
+committed baseline: per-skill eval counts, expectation pass rates, baseline
+dates, and totals.
 
 ### How to run
 
