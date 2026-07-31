@@ -609,6 +609,11 @@ Confirm all changes before applying.
 
 ## Step 8: Present Proposed Changes and Apply
 
+**Scope check first:** if Step 0's Scope Confirmation block is still
+`Confirmed: pending`, open this summary with that block and ask the user to
+confirm the scope before anything else in it. Nothing is applied while the
+block reads pending, no matter how routine the proposals look.
+
 Collect proposals into a summary and ask for confirmation before applying
 anything. For sets processed in batches (Step 0.5), present and confirm this
 summary once per batch of ~10 items; otherwise present it once for the whole
@@ -714,8 +719,9 @@ reference material.
 - When the user did not specify what to process, the first reply is the
   Step 0 scope question alone, before any discovery. Any later
   sole-candidate proceed happens read-only under a Scope Confirmation block
-  marked pending: nothing is written while it is pending, and only a user
-  message can set Confirmed to yes.
+  marked pending: nothing is written while it is pending, only a user
+  message can set Confirmed to yes, and the Step 8 summary opens with that
+  block asking for confirmation whenever it is still pending.
 - For email, never read full bodies of the entire corpus up front. Honor the
   bounded-read rule in Step 0.
 
