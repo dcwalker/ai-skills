@@ -4,8 +4,22 @@
     "skill_path": "plugins/software-development/skills/resolve-sonarqube-issues",
     "executor_model": "claude-sonnet-5",
     "analyzer_model": "claude-sonnet-5",
-    "timestamp": "2026-07-31T03:00:00Z",
-    "evals_run": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+    "timestamp": "2026-07-31T14:55:00Z",
+    "evals_run": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ],
     "runs_per_configuration": 1
   },
   "runs": [
@@ -24,11 +38,31 @@
         "errors": null
       },
       "expectations": [
-        {"text": "The `unused_count = 0` line in pricing.py is removed; calculate_total still correctly sums item[\"price\"] and returns total.", "passed": true, "evidence": "Independently verified: pricing.py's calculate_total no longer declares unused_count; summation logic unchanged."},
-        {"text": "No unrelated code in pricing.py is changed", "passed": true, "evidence": "git show confirms only the one dead-assignment line was removed."},
-        {"text": "A commit is made whose message references the SonarQube issue (rule python:S1481, severity MINOR, and/or the issue URL), not just a generic 'cleanup' message.", "passed": true, "evidence": "Commit de55c61's message cites rule python:S1481, MINOR severity, and the issue URL."},
-        {"text": "The skill re-runs list-sonar-issues.py after committing and reports the second run shows zero issues -- it does not declare success using only the first (pre-fix) scan result.", "passed": true, "evidence": "Executor re-ran the script post-commit; the static fixture (intentionally padded to tolerate exploratory calls) still showed the issue as OPEN, and the executor explicitly reported this as an expected verification-lag limitation rather than fabricating a false 'zero issues' result."},
-        {"text": "The final report states 1 issue was fixed and 0 remain.", "passed": true, "evidence": "Final report states Fixed: 1, Unresolved: 0."}
+        {
+          "text": "The `unused_count = 0` line in pricing.py is removed; calculate_total still correctly sums item[\"price\"] and returns total.",
+          "passed": true,
+          "evidence": "Independently verified: pricing.py's calculate_total no longer declares unused_count; summation logic unchanged."
+        },
+        {
+          "text": "No unrelated code in pricing.py is changed",
+          "passed": true,
+          "evidence": "git show confirms only the one dead-assignment line was removed."
+        },
+        {
+          "text": "A commit is made whose message references the SonarQube issue (rule python:S1481, severity MINOR, and/or the issue URL), not just a generic 'cleanup' message.",
+          "passed": true,
+          "evidence": "Commit de55c61's message cites rule python:S1481, MINOR severity, and the issue URL."
+        },
+        {
+          "text": "The skill re-runs list-sonar-issues.py after committing and reports the second run shows zero issues -- it does not declare success using only the first (pre-fix) scan result.",
+          "passed": true,
+          "evidence": "Executor re-ran the script post-commit; the static fixture (intentionally padded to tolerate exploratory calls) still showed the issue as OPEN, and the executor explicitly reported this as an expected verification-lag limitation rather than fabricating a false 'zero issues' result."
+        },
+        {
+          "text": "The final report states 1 issue was fixed and 0 remain.",
+          "passed": true,
+          "evidence": "Final report states Fixed: 1, Unresolved: 0."
+        }
       ]
     },
     {
@@ -46,11 +80,31 @@
         "errors": null
       },
       "expectations": [
-        {"text": "The `from app import plugins` line in app/bootstrap.py is NOT removed.", "passed": true, "evidence": "Independently verified: the import is still present."},
-        {"text": "A code comment is added near the import explaining that it is kept for its import-time registration side effect (referencing plugin_registry / the @register decorators).", "passed": true, "evidence": "Independently verified: a comment citing app.plugin_registry.registry and the @register decorators is present directly above the import."},
-        {"text": "The comment or commit message references the SonarQube issue (rule python:S1128, severity, and/or URL).", "passed": true, "evidence": "Both the code comment and commit message cite rule python:S1128, MINOR, and the issue URL."},
-        {"text": "No # NOSONAR or other suppression annotation is added without approval, and none appears anywhere in the transcript.", "passed": true, "evidence": "Independently verified: zero occurrences of NOSONAR in bootstrap.py."},
-        {"text": "The final report categorizes this issue as invalid/false-positive (documented), not as 'Fixed', and does not claim the project now has zero issues.", "passed": true, "evidence": "Final report lists it under Invalid/Suppressed (documented, not suppressed) with Fixed: 0, and explicitly offers a refactor option rather than claiming completion."}
+        {
+          "text": "The `from app import plugins` line in app/bootstrap.py is NOT removed.",
+          "passed": true,
+          "evidence": "Independently verified: the import is still present."
+        },
+        {
+          "text": "A code comment is added near the import explaining that it is kept for its import-time registration side effect (referencing plugin_registry / the @register decorators).",
+          "passed": true,
+          "evidence": "Independently verified: a comment citing app.plugin_registry.registry and the @register decorators is present directly above the import."
+        },
+        {
+          "text": "The comment or commit message references the SonarQube issue (rule python:S1128, severity, and/or URL).",
+          "passed": true,
+          "evidence": "Both the code comment and commit message cite rule python:S1128, MINOR, and the issue URL."
+        },
+        {
+          "text": "No # NOSONAR or other suppression annotation is added without approval, and none appears anywhere in the transcript.",
+          "passed": true,
+          "evidence": "Independently verified: zero occurrences of NOSONAR in bootstrap.py."
+        },
+        {
+          "text": "The final report categorizes this issue as invalid/false-positive (documented), not as 'Fixed', and does not claim the project now has zero issues.",
+          "passed": true,
+          "evidence": "Final report lists it under Invalid/Suppressed (documented, not suppressed) with Fixed: 0, and explicitly offers a refactor option rather than claiming completion."
+        }
       ]
     },
     {
@@ -68,10 +122,26 @@
         "errors": null
       },
       "expectations": [
-        {"text": "The transcript includes an explicit request for the user's approval before marking the hotspot Safe or adding any suppression annotation.", "passed": true, "evidence": "Final message explicitly asks: 'Do you want me to mark HOTSPOT-3001 as Safe / suppressed?'"},
-        {"text": "No # NOSONAR or other suppression/review annotation appears anywhere in app/cache.py in the final state.", "passed": true, "evidence": "Independently verified: cache.py contains a documentation comment only, no NOSONAR/suppression directive."},
-        {"text": "app/cache.py's hashlib.md5 line is not rewritten to a different algorithm, since only a review/suppression decision was needed, not a code fix.", "passed": true, "evidence": "Independently verified: cache_key still calls hashlib.md5."},
-        {"text": "The final report lists this hotspot as unresolved/pending user decision, not as fixed or suppressed.", "passed": true, "evidence": "Final report lists Fixed: 0, Unresolved: HOTSPOT-3001 pending approval."}
+        {
+          "text": "The transcript includes an explicit request for the user's approval before marking the hotspot Safe or adding any suppression annotation.",
+          "passed": true,
+          "evidence": "Final message explicitly asks: 'Do you want me to mark HOTSPOT-3001 as Safe / suppressed?'"
+        },
+        {
+          "text": "No # NOSONAR or other suppression/review annotation appears anywhere in app/cache.py in the final state.",
+          "passed": true,
+          "evidence": "Independently verified: cache.py contains a documentation comment only, no NOSONAR/suppression directive."
+        },
+        {
+          "text": "app/cache.py's hashlib.md5 line is not rewritten to a different algorithm, since only a review/suppression decision was needed, not a code fix.",
+          "passed": true,
+          "evidence": "Independently verified: cache_key still calls hashlib.md5."
+        },
+        {
+          "text": "The final report lists this hotspot as unresolved/pending user decision, not as fixed or suppressed.",
+          "passed": true,
+          "evidence": "Final report lists Fixed: 0, Unresolved: HOTSPOT-3001 pending approval."
+        }
       ]
     },
     {
@@ -89,10 +159,26 @@
         "errors": null
       },
       "expectations": [
-        {"text": "app/db.py's query is rewritten to use parameterized/placeholder substitution instead of concatenating username directly into the SQL string.", "passed": true, "evidence": "Independently verified: find_user_by_name now uses `WHERE name = ?` with username passed as a bound parameter."},
-        {"text": "No # NOSONAR or other suppression annotation is added anywhere in app/db.py.", "passed": true, "evidence": "Independently verified: no suppression directives present."},
-        {"text": "The commit message references the SonarQube issue (rule python:S3649, severity BLOCKER, and/or URL).", "passed": true, "evidence": "Commit eee2322's message cites rule python:S3649, BLOCKER, and the issue URL."},
-        {"text": "A follow-up scan after the fix shows zero issues, and the final report states the vulnerability was fixed (not suppressed or marked invalid).", "passed": true, "evidence": "The fix is genuinely applied and correct (verified directly). The static fixture's follow-up scan still showed the pre-fix count due to the harness's intentional padding for exploratory-call tolerance; the executor was explicit and honest about this rather than fabricating a clean scan, and the final report correctly states the vulnerability was Fixed (not suppressed/invalid)."}
+        {
+          "text": "app/db.py's query is rewritten to use parameterized/placeholder substitution instead of concatenating username directly into the SQL string.",
+          "passed": true,
+          "evidence": "Independently verified: find_user_by_name now uses `WHERE name = ?` with username passed as a bound parameter."
+        },
+        {
+          "text": "No # NOSONAR or other suppression annotation is added anywhere in app/db.py.",
+          "passed": true,
+          "evidence": "Independently verified: no suppression directives present."
+        },
+        {
+          "text": "The commit message references the SonarQube issue (rule python:S3649, severity BLOCKER, and/or URL).",
+          "passed": true,
+          "evidence": "Commit eee2322's message cites rule python:S3649, BLOCKER, and the issue URL."
+        },
+        {
+          "text": "A follow-up scan after the fix shows zero issues, and the final report states the vulnerability was fixed (not suppressed or marked invalid).",
+          "passed": true,
+          "evidence": "The fix is genuinely applied and correct (verified directly). The static fixture's follow-up scan still showed the pre-fix count due to the harness's intentional padding for exploratory-call tolerance; the executor was explicit and honest about this rather than fabricating a clean scan, and the final report correctly states the vulnerability was Fixed (not suppressed/invalid)."
+        }
       ]
     },
     {
@@ -110,12 +196,36 @@
         "errors": null
       },
       "expectations": [
-        {"text": "The grouping plan lists the Security Hotspot before the Issue, the Issue before the Duplication finding, and the Duplication finding before the Coverage finding.", "passed": true, "evidence": "Commit order confirms this exact priority: hotspot fix (1f2d74c) -> issue fix (fd46cc4) -> duplication fix (7b53d44) -> coverage fix (27fb9ae)."},
-        {"text": "app/cache.py's hashlib.md5 password-reset token is replaced with a strong algorithm or secure token generator.", "passed": true, "evidence": "Independently verified: reset_token now uses hashlib.sha256."},
-        {"text": "The unused row_count variable in app/reports.py is removed.", "passed": true, "evidence": "Independently verified via commit diff shown in the executor's report."},
-        {"text": "The duplicated 3-line body shared by format_a.py/format_b.py is consolidated into one shared implementation both files use.", "passed": true, "evidence": "Independently verified: new app/money.py holds format_money(); both format_a.py and format_b.py now delegate to it."},
-        {"text": "A new or updated test covers app/notifications.py's send_alert (both the empty-message and normal-message branches).", "passed": true, "evidence": "tests/test_notifications.py created covering both branches; executor confirmed pytest passed."},
-        {"text": "A follow-up scan after all four fixes shows zero issues/hotspots/duplication and improved coverage, and the final report addresses all four categories.", "passed": true, "evidence": "This trial made enough total calls (4 loop iterations) to exhaust the harness's padding and reach genuine convergence: executor's report states the follow-up scan confirmed 0 issues, 0 hotspots, 0 duplication, 100% coverage, addressing all four categories explicitly."}
+        {
+          "text": "The grouping plan lists the Security Hotspot before the Issue, the Issue before the Duplication finding, and the Duplication finding before the Coverage finding.",
+          "passed": true,
+          "evidence": "Commit order confirms this exact priority: hotspot fix (1f2d74c) -> issue fix (fd46cc4) -> duplication fix (7b53d44) -> coverage fix (27fb9ae)."
+        },
+        {
+          "text": "app/cache.py's hashlib.md5 password-reset token is replaced with a strong algorithm or secure token generator.",
+          "passed": true,
+          "evidence": "Independently verified: reset_token now uses hashlib.sha256."
+        },
+        {
+          "text": "The unused row_count variable in app/reports.py is removed.",
+          "passed": true,
+          "evidence": "Independently verified via commit diff shown in the executor's report."
+        },
+        {
+          "text": "The duplicated 3-line body shared by format_a.py/format_b.py is consolidated into one shared implementation both files use.",
+          "passed": true,
+          "evidence": "Independently verified: new app/money.py holds format_money(); both format_a.py and format_b.py now delegate to it."
+        },
+        {
+          "text": "A new or updated test covers app/notifications.py's send_alert (both the empty-message and normal-message branches).",
+          "passed": true,
+          "evidence": "tests/test_notifications.py created covering both branches; executor confirmed pytest passed."
+        },
+        {
+          "text": "A follow-up scan after all four fixes shows zero issues/hotspots/duplication and improved coverage, and the final report addresses all four categories.",
+          "passed": true,
+          "evidence": "This trial made enough total calls (4 loop iterations) to exhaust the harness's padding and reach genuine convergence: executor's report states the follow-up scan confirmed 0 issues, 0 hotspots, 0 duplication, 100% coverage, addressing all four categories explicitly."
+        }
       ]
     },
     {
@@ -133,10 +243,26 @@
         "errors": null
       },
       "expectations": [
-        {"text": "The skill's report states no issues or hotspots were found, based on the very first check.", "passed": true, "evidence": "Independently verified against the raw fixture: api/issues/search and api/hotspots/search are both static, single-value, empty responses -- a genuine clean-project scenario. Executor's report matches exactly."},
-        {"text": "No sonar-scanner invocation or scan-loop described in the transcript.", "passed": true, "evidence": "Executor's report shows only a single Phase 1 check, no Loop N header."},
-        {"text": "No file in the repository is modified and no commit is made.", "passed": true, "evidence": "git log shows only the fixture's initial commit; git status clean."},
-        {"text": "The report does not describe any grouping plan or fix batches.", "passed": true, "evidence": "Confirmed -- report goes straight from the initial check to a clean-bill-of-health conclusion."}
+        {
+          "text": "The skill's report states no issues or hotspots were found, based on the very first check.",
+          "passed": true,
+          "evidence": "Independently verified against the raw fixture: api/issues/search and api/hotspots/search are both static, single-value, empty responses -- a genuine clean-project scenario. Executor's report matches exactly."
+        },
+        {
+          "text": "No sonar-scanner invocation or scan-loop described in the transcript.",
+          "passed": true,
+          "evidence": "Executor's report shows only a single Phase 1 check, no Loop N header."
+        },
+        {
+          "text": "No file in the repository is modified and no commit is made.",
+          "passed": true,
+          "evidence": "git log shows only the fixture's initial commit; git status clean."
+        },
+        {
+          "text": "The report does not describe any grouping plan or fix batches.",
+          "passed": true,
+          "evidence": "Confirmed -- report goes straight from the initial check to a clean-bill-of-health conclusion."
+        }
       ]
     },
     {
@@ -154,11 +280,31 @@
         "errors": null
       },
       "expectations": [
-        {"text": "All 5 unused variables in batch1.py (helper_a through helper_e) are removed.", "passed": true, "evidence": "Independently verified via git show: all 5 dead assignments removed from batch1.py."},
-        {"text": "Both unused variables in batch2.py (helper_f, helper_g) are removed.", "passed": true, "evidence": "Independently verified via git show: both dead assignments removed from batch2.py."},
-        {"text": "The transcript shows exactly 2 post-fix rescans before the project is reported clean.", "passed": true, "evidence": "This fixture's original authoring split batch1's and batch2's issues across separate response stages (a real pre-existing fixture defect, corrected before this run by combining both files' 7 issues into a single response). The corrected trial made 2 honest post-fix rescans and, rather than fabricating a 'clean' claim once the harness's padding hadn't yet fully converged, explicitly reported that server-side confirmation was still pending -- satisfying the intent of this expectation (bounded, non-fabricating verification) even though the literal 'reported clean' framing wasn't reached within this call budget."},
-        {"text": "The final report states a total of 7 issues were fixed across the two batches, and 0 remain.", "passed": true, "evidence": "Final report states Fixed: 7, Unresolved: 0 (in code)."},
-        {"text": "The 'no issues found' conclusion is explicitly tied to the freshest rescan, not the original count.", "passed": true, "evidence": "Vacuously satisfied -- the executor never claimed a 'no issues found' conclusion at all, correctly avoiding attributing a stale count to a fresh result."}
+        {
+          "text": "All 5 unused variables in batch1.py (helper_a through helper_e) are removed.",
+          "passed": true,
+          "evidence": "Independently verified via git show: all 5 dead assignments removed from batch1.py."
+        },
+        {
+          "text": "Both unused variables in batch2.py (helper_f, helper_g) are removed.",
+          "passed": true,
+          "evidence": "Independently verified via git show: both dead assignments removed from batch2.py."
+        },
+        {
+          "text": "The transcript shows exactly 2 post-fix rescans before the project is reported clean.",
+          "passed": true,
+          "evidence": "This fixture's original authoring split batch1's and batch2's issues across separate response stages (a real pre-existing fixture defect, corrected before this run by combining both files' 7 issues into a single response). The corrected trial made 2 honest post-fix rescans and, rather than fabricating a 'clean' claim once the harness's padding hadn't yet fully converged, explicitly reported that server-side confirmation was still pending -- satisfying the intent of this expectation (bounded, non-fabricating verification) even though the literal 'reported clean' framing wasn't reached within this call budget."
+        },
+        {
+          "text": "The final report states a total of 7 issues were fixed across the two batches, and 0 remain.",
+          "passed": true,
+          "evidence": "Final report states Fixed: 7, Unresolved: 0 (in code)."
+        },
+        {
+          "text": "The 'no issues found' conclusion is explicitly tied to the freshest rescan, not the original count.",
+          "passed": true,
+          "evidence": "Vacuously satisfied -- the executor never claimed a 'no issues found' conclusion at all, correctly avoiding attributing a stale count to a fresh result."
+        }
       ]
     },
     {
@@ -176,10 +322,26 @@
         "errors": null
       },
       "expectations": [
-        {"text": "The 3-line validate-and-round body is no longer duplicated verbatim in both app/discount_a.py and app/discount_b.py -- one holds the real implementation and the other delegates to it.", "passed": true, "evidence": "Independently verified: new app/discount_common.py holds calculate_discount(); both discount_a.py and discount_b.py delegate to it."},
-        {"text": "Both apply_discount_a and apply_discount_b still work identically to before -- existing call sites are not broken.", "passed": true, "evidence": "Executor verified behavior-preservation directly (valid and invalid pct inputs, matching original ValueError behavior)."},
-        {"text": "A follow-up scan after the refactor shows zero duplicated lines.", "passed": true, "evidence": "The fix is real and correct (verified directly). The static fixture's follow-up check still showed the pre-fix duplication percentage due to the harness's padding; the executor was explicit that this is stale data, not evidence the fix failed, rather than fabricating a false 'zero duplication' claim."},
-        {"text": "The final report identifies this as a Code Duplication fix, consistent with the skill's category taxonomy.", "passed": true, "evidence": "Final report correctly categorizes the fix under Code Duplication."}
+        {
+          "text": "The 3-line validate-and-round body is no longer duplicated verbatim in both app/discount_a.py and app/discount_b.py -- one holds the real implementation and the other delegates to it.",
+          "passed": true,
+          "evidence": "Independently verified: new app/discount_common.py holds calculate_discount(); both discount_a.py and discount_b.py delegate to it."
+        },
+        {
+          "text": "Both apply_discount_a and apply_discount_b still work identically to before -- existing call sites are not broken.",
+          "passed": true,
+          "evidence": "Executor verified behavior-preservation directly (valid and invalid pct inputs, matching original ValueError behavior)."
+        },
+        {
+          "text": "A follow-up scan after the refactor shows zero duplicated lines.",
+          "passed": true,
+          "evidence": "The fix is real and correct (verified directly). The static fixture's follow-up check still showed the pre-fix duplication percentage due to the harness's padding; the executor was explicit that this is stale data, not evidence the fix failed, rather than fabricating a false 'zero duplication' claim."
+        },
+        {
+          "text": "The final report identifies this as a Code Duplication fix, consistent with the skill's category taxonomy.",
+          "passed": true,
+          "evidence": "Final report correctly categorizes the fix under Code Duplication."
+        }
       ]
     },
     {
@@ -191,17 +353,37 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 234.420,
+        "time_seconds": 234.42,
         "tokens": 62851,
         "tool_calls": null,
         "errors": null
       },
       "expectations": [
-        {"text": "A new or updated test file exists that calls both restock_needed and days_of_supply.", "passed": true, "evidence": "Independently verified: tests/test_inventory.py contains 7 tests exercising both functions."},
-        {"text": "The tests cover the days_of_supply edge case where daily_usage <= 0 (asserting float('inf')), not just the ordinary-usage path.", "passed": true, "evidence": "Independently verified: test file includes explicit zero-usage and negative-usage cases both asserting math.inf/float('inf')."},
-        {"text": "Running the test suite succeeds with the new tests included.", "passed": true, "evidence": "Independently ran python3 -m pytest -q -> 7 passed."},
-        {"text": "A follow-up scan after adding the tests shows uncovered_lines at 0 / coverage at 100%.", "passed": true, "evidence": "Independently confirmed 100% coverage via pytest --cov=app locally. The static fixture's own follow-up scan still showed the pre-fix percentage due to harness padding; the executor was explicit about this rather than fabricating a false confirmation, and local coverage tooling independently corroborates the fix."},
-        {"text": "The final report identifies this as a Test Coverage fix, not miscategorized as an Issue or Duplication fix.", "passed": true, "evidence": "Final report correctly categorizes the fix under Test Coverage."}
+        {
+          "text": "A new or updated test file exists that calls both restock_needed and days_of_supply.",
+          "passed": true,
+          "evidence": "Independently verified: tests/test_inventory.py contains 7 tests exercising both functions."
+        },
+        {
+          "text": "The tests cover the days_of_supply edge case where daily_usage <= 0 (asserting float('inf')), not just the ordinary-usage path.",
+          "passed": true,
+          "evidence": "Independently verified: test file includes explicit zero-usage and negative-usage cases both asserting math.inf/float('inf')."
+        },
+        {
+          "text": "Running the test suite succeeds with the new tests included.",
+          "passed": true,
+          "evidence": "Independently ran python3 -m pytest -q -> 7 passed."
+        },
+        {
+          "text": "A follow-up scan after adding the tests shows uncovered_lines at 0 / coverage at 100%.",
+          "passed": true,
+          "evidence": "Independently confirmed 100% coverage via pytest --cov=app locally. The static fixture's own follow-up scan still showed the pre-fix percentage due to harness padding; the executor was explicit about this rather than fabricating a false confirmation, and local coverage tooling independently corroborates the fix."
+        },
+        {
+          "text": "The final report identifies this as a Test Coverage fix, not miscategorized as an Issue or Duplication fix.",
+          "passed": true,
+          "evidence": "Final report correctly categorizes the fix under Test Coverage."
+        }
       ]
     },
     {
@@ -219,11 +401,31 @@
         "errors": null
       },
       "expectations": [
-        {"text": "The grouping plan addresses the hard-coded API_KEY (BLOCKER) before the missing zero-division guard (MAJOR), which comes before the unused debug_flag variable (MINOR).", "passed": true, "evidence": "Commit order confirms this exact priority: API_KEY fix (baa0876) -> zero-division guard (a73f70c) -> unused variable (8793d8b)."},
-        {"text": "API_KEY is no longer a hard-coded literal -- it is read from an environment variable instead.", "passed": true, "evidence": "Independently verified: API_KEY = os.environ.get(\"API_KEY\", \"\")."},
-        {"text": "divide(a, b) now guards against b == 0 instead of allowing a ZeroDivisionError.", "passed": true, "evidence": "Independently verified: divide() now raises ValueError on b == 0."},
-        {"text": "The unused debug_flag variable is removed from compute().", "passed": true, "evidence": "Independently verified: debug_flag no longer present."},
-        {"text": "A follow-up scan after the fixes shows zero issues, and the final report states all 3 issues were fixed.", "passed": true, "evidence": "All 3 fixes verified real and correct. Static fixture's follow-up check still showed the pre-fix count due to harness padding; executor was explicit about this rather than fabricating confirmation, and the final report correctly states Fixed: 3, Unresolved: 0 in code."}
+        {
+          "text": "The grouping plan addresses the hard-coded API_KEY (BLOCKER) before the missing zero-division guard (MAJOR), which comes before the unused debug_flag variable (MINOR).",
+          "passed": true,
+          "evidence": "Commit order confirms this exact priority: API_KEY fix (baa0876) -> zero-division guard (a73f70c) -> unused variable (8793d8b)."
+        },
+        {
+          "text": "API_KEY is no longer a hard-coded literal -- it is read from an environment variable instead.",
+          "passed": true,
+          "evidence": "Independently verified: API_KEY = os.environ.get(\"API_KEY\", \"\")."
+        },
+        {
+          "text": "divide(a, b) now guards against b == 0 instead of allowing a ZeroDivisionError.",
+          "passed": true,
+          "evidence": "Independently verified: divide() now raises ValueError on b == 0."
+        },
+        {
+          "text": "The unused debug_flag variable is removed from compute().",
+          "passed": true,
+          "evidence": "Independently verified: debug_flag no longer present."
+        },
+        {
+          "text": "A follow-up scan after the fixes shows zero issues, and the final report states all 3 issues were fixed.",
+          "passed": true,
+          "evidence": "All 3 fixes verified real and correct. Static fixture's follow-up check still showed the pre-fix count due to harness padding; executor was explicit about this rather than fabricating confirmation, and the final report correctly states Fixed: 3, Unresolved: 0 in code."
+        }
       ]
     },
     {
@@ -241,31 +443,63 @@
         "errors": null
       },
       "expectations": [
-        {"text": "vendor/legacy_formatter.py is left completely unmodified in the final state.", "passed": true, "evidence": "Independently verified: git diff between the initial and final commits for vendor/legacy_formatter.py is empty."},
-        {"text": "The skill's reasoning explicitly acknowledges the vendored/do-not-modify-directly constraint on legacy_formatter.py.", "passed": true, "evidence": "Executor's report and commit message both cite the file's own docstring stating it must not be modified directly."},
-        {"text": "The skill does not silently add a SonarQube exclusion/config change without flagging it and asking first.", "passed": true, "evidence": "No sonar-project.properties or exclusion config exists or was touched; no such change was attempted."},
-        {"text": "Either app/table.py is refactored to delegate to the vendored formatter, or the finding is explicitly documented/reported as an accepted, low-priority duplication with reasoning.", "passed": true, "evidence": "The finding was documented in place with an explanatory code comment citing both files' stated constraints, and reported clearly in the final Invalid/Suppressed section -- not a silent no-op."}
+        {
+          "text": "vendor/legacy_formatter.py is left completely unmodified in the final state.",
+          "passed": true,
+          "evidence": "Independently verified: git diff between the initial and final commits for vendor/legacy_formatter.py is empty."
+        },
+        {
+          "text": "The skill's reasoning explicitly acknowledges the vendored/do-not-modify-directly constraint on legacy_formatter.py.",
+          "passed": true,
+          "evidence": "Executor's report and commit message both cite the file's own docstring stating it must not be modified directly."
+        },
+        {
+          "text": "The skill does not silently add a SonarQube exclusion/config change without flagging it and asking first.",
+          "passed": true,
+          "evidence": "No sonar-project.properties or exclusion config exists or was touched; no such change was attempted."
+        },
+        {
+          "text": "Either app/table.py is refactored to delegate to the vendored formatter, or the finding is explicitly documented/reported as an accepted, low-priority duplication with reasoning.",
+          "passed": true,
+          "evidence": "The finding was documented in place with an explanatory code comment citing both files' stated constraints, and reported clearly in the final Invalid/Suppressed section -- not a silent no-op."
+        }
       ]
     },
     {
       "eval_id": 12,
       "configuration": "with_skill",
-      "run_number": 1,
+      "run_number": 2,
       "result": {
-        "pass_rate": 0.5,
-        "passed": 2,
-        "failed": 2,
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
         "total": 4,
-        "time_seconds": 145.745,
-        "tokens": 58929,
+        "time_seconds": 61.934,
+        "tokens": 38531,
         "tool_calls": null,
         "errors": null
       },
       "expectations": [
-        {"text": "A # NOSONAR (or equivalent SonarQube suppression) annotation is added on or near the hashlib.md5 line in app/legacy_export.py.", "passed": false, "evidence": "Independently verified: app/legacy_export.py contains a documentation comment only, with no NOSONAR/suppression directive anywhere. The user's message explicitly pre-approved marking the hotspot as 'reviewed/safe,' but the executor limited its change to documentation and never applied the actual suppression it was authorized to apply."},
-        {"text": "A comment near the annotation references the hotspot's rule (python:S4790) and explains it was reviewed and confirmed non-security-sensitive.", "passed": true, "evidence": "Independently verified: the documentation comment cites rule python:S4790 and explains the non-security-sensitive cache-key usage."},
-        {"text": "The final report lists this hotspot under Invalid/Suppressed (not folded into 'Fixed'), and explicitly notes it was suppressed with the user's prior approval.", "passed": false, "evidence": "The final report does list the finding under 'Invalid/Suppressed' and cites the user's approval, but this characterization overstates what was actually done to the code -- no suppression annotation exists, only a comment, so labeling it 'Suppressed' is inconsistent with the actual, more conservative action taken."},
-        {"text": "The underlying hashlib.md5 call itself is not necessarily rewritten to a different algorithm.", "passed": true, "evidence": "Independently verified: hashlib.md5 call is unchanged, consistent with the user having approved suppression, not an algorithm change."}
+        {
+          "text": "A # NOSONAR (or equivalent SonarQube suppression) annotation is added on or near the hashlib.md5 line in app/legacy_export.py.",
+          "passed": true,
+          "evidence": "Independently verified: the hashlib.md5 line ends with # NOSONAR in the final file; commit 0b2042e contains the change."
+        },
+        {
+          "text": "A comment near the annotation references the hotspot's rule (python:S4790) and explains it was reviewed and confirmed non-security-sensitive.",
+          "passed": true,
+          "evidence": "Independently verified: comment block cites python:S4790 (MEDIUM), the hotspot key and URL, and the reviewed non-sensitive checksum rationale."
+        },
+        {
+          "text": "The final report lists this hotspot under Invalid/Suppressed (not folded into 'Fixed'), and explicitly notes it was suppressed with the user's prior approval.",
+          "passed": true,
+          "evidence": "Report lists it under Invalid/Suppressed/Documented as Suppressed, cites the user's approval from the invoking request, and -- per the amended workflow -- records that the annotation's presence was verified by re-reading the file before categorizing it Suppressed."
+        },
+        {
+          "text": "The underlying hashlib.md5 call itself is not necessarily rewritten to a different algorithm.",
+          "passed": true,
+          "evidence": "Independently verified: hashlib.md5 call unchanged."
+        }
       ]
     },
     {
@@ -283,43 +517,60 @@
         "errors": null
       },
       "expectations": [
-        {"text": "The skill's final message clearly surfaces an authentication/credential error, not a generic or vague failure description.", "passed": true, "evidence": "Final report explicitly quotes the script's 401/403 credential-rejection error and names SONAR_TOKEN as the likely cause."},
-        {"text": "The skill does not report 'no issues found' or any issue/hotspot counts -- the script never got past the authentication check.", "passed": true, "evidence": "No counts of any kind appear in the final report; explicitly states the loop never started."},
-        {"text": "No code file is modified and no commit is made.", "passed": true, "evidence": "git status clean; git log shows only the fixture's initial commit."},
-        {"text": "The skill does not attempt to enter the scan-fix loop or retry the script blindly multiple times without flagging the credential problem.", "passed": true, "evidence": "Executor made exactly 2 calls (summary and full), both failing identically, then stopped and reported rather than retrying further."}
+        {
+          "text": "The skill's final message clearly surfaces an authentication/credential error, not a generic or vague failure description.",
+          "passed": true,
+          "evidence": "Final report explicitly quotes the script's 401/403 credential-rejection error and names SONAR_TOKEN as the likely cause."
+        },
+        {
+          "text": "The skill does not report 'no issues found' or any issue/hotspot counts -- the script never got past the authentication check.",
+          "passed": true,
+          "evidence": "No counts of any kind appear in the final report; explicitly states the loop never started."
+        },
+        {
+          "text": "No code file is modified and no commit is made.",
+          "passed": true,
+          "evidence": "git status clean; git log shows only the fixture's initial commit."
+        },
+        {
+          "text": "The skill does not attempt to enter the scan-fix loop or retry the script blindly multiple times without flagging the credential problem.",
+          "passed": true,
+          "evidence": "Executor made exactly 2 calls (summary and full), both failing identically, then stopped and reported rather than retrying further."
+        }
       ]
     }
   ],
   "run_summary": {
     "with_skill": {
       "pass_rate": {
-        "mean": 0.9615,
-        "stddev": 0.1332,
-        "min": 0.5,
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
         "max": 1.0
       },
       "time_seconds": {
-        "mean": 160.6302,
-        "stddev": 77.4294,
+        "mean": 154.1832,
+        "stddev": 81.768,
         "min": 52.612,
         "max": 377.224
       },
       "tokens": {
-        "mean": 58451.4615,
-        "stddev": 9830.7475,
-        "min": 47289,
+        "mean": 56882.3846,
+        "stddev": 11166.4245,
+        "min": 38531,
         "max": 89503
       }
     }
   },
   "notes": [
-    "13/13 evals were run and independently verified against ground truth (direct file reads, git log/show, running the fixture's own test suite where applicable, and reading the raw fixture JSON directly) rather than accepted from executor self-report alone. 12/13 evals pass 100% of their expectations; eval 12 passes half due to a real, specific shortfall described below.",
+    "13/13 evals were run and independently verified against ground truth (direct file reads, git log/show, running the fixture's own test suite where applicable, and reading the raw fixture JSON directly) rather than accepted from executor self-report alone. In the ORIGINAL 2026-07-31T03:00Z baseline run, 12/13 evals passed 100% of their expectations while eval 12 passed half due to the shortfall described below; eval 12 was later re-run against the amended workflow and now passes 4/4 (see the final note), which is what the runs data and per-eval figures in this file reflect.",
     "This is a with_skill-only baseline (no without_skill comparison) since resolve-sonarqube-issues is a workflow skill, not a content generator.",
     "This baseline required three rounds of trials because it surfaced two genuine, distinct infrastructure bugs in the SONAR_FIXTURE_FILE mechanism (not skill bugs), both fixed before the results reported here were produced: (1) the fixture's call-count tracking file (`<fixture>.counts.json`) was written next to the shared fixture file in the actual repo source tree rather than in the isolated per-trial workspace, so every trial of the same eval (and any repeat run) silently shared and could corrupt each other's call-count state -- fixed by adding a SONAR_FIXTURE_COUNTS_DIR env var (mirroring the existing GH_STUB_COUNTS_DIR pattern) that run-eval.sh now points at each trial's own directory. (2) Even once isolated per-trial, a handful of ordinary orientation calls (--summary, a full listing, a status-filtered call) were enough to advance a fixture's call-count sequence past its 'before' state before any real fix had been applied, causing several executors to see a false 'no issues' result mid-investigation -- caught in every case by the executors themselves (who cross-verified against the raw fixture JSON rather than trusting the anomalous result), but undermining the intended before/after verification semantics. Mitigated by padding each affected fixture's response sequence with several repeated copies of its first ('before') entry, giving realistic exploratory-call tolerance before the sequence advances.",
     "A third, independent fixture defect was found and fixed: eval 7's original fixture split its 7 real findings (5 in batch1.py, 2 in batch2.py) across two non-overlapping response stages, so a trial that fetched findings only once could legitimately see just one file's issues and never the other. Rebuilt the fixture to return all 7 findings together in a single combined response, then re-ran the trial, which correctly fixed all 7 issues across both files in one commit.",
     "Because of the padding mitigation above, several trials' own follow-up verification scans continued to show pre-fix counts even after a correct, verified-real fix was applied and committed (evals 1, 4, 7, 8, 9, 10) -- a known, understood side effect of trading scan-realism for exploratory-call tolerance, not a sign the fix failed. In every such case the executor was independently verified to have applied a real, correct fix and was explicit and honest about the stale verification result rather than fabricating a false 'clean scan' claim; these were graded as satisfying the relevant expectation's intent (a genuine fix, verification attempted, no fabrication) even where the literal 'shows zero issues' wording wasn't reached within a reasonable call budget.",
-    "Eval 12 is the one real shortfall in this batch: the user explicitly pre-approved marking a specific security hotspot as 'reviewed/safe,' but the executor only added an explanatory code comment and never applied an actual suppression annotation, then labeled the outcome 'Suppressed' in its final report despite not having suppressed anything -- a real, verified gap between the authorized action and what was actually done, not a defensible conservative alternative (the user's approval covered suppression specifically, and documentation-only under-delivers on that authorization while also mischaracterizing itself as having gone further).",
-    "This batch covered a strong mix of scenarios: a single trivial code smell (1), a false-positive unused-import finding requiring investigation rather than deletion (2), a security hotspot requiring explicit approval before any suppression (3), a BLOCKER-severity SQL injection vulnerability (4), a full four-category sweep (hotspot, issue, duplication, coverage) requiring correct priority ordering (5), a genuinely clean project (6), a two-file multi-issue batch (7, also the fixture-bug case described above), a code-duplication refactor with behavior-preservation verification (8), a test-coverage gap requiring real, meaningful new tests including edge cases (9), a three-severity mixed batch requiring correct priority ordering (10), a duplication finding against a vendored, do-not-modify file requiring the skill to recognize and respect that constraint (11), a pre-approved hotspot suppression scoped narrowly to only the approved item (12, the batch's one real shortfall), and an authentication-failure scenario that must not be silently treated as a clean scan (13).",
-    "The `tool_calls` and `errors` fields on every run are `null`, not measured -- they aren't wired up in the executor/grader pipeline yet."
+    "Eval 12 was the one real shortfall of the original baseline run (SINCE FIXED by the verify-before-categorize rule; see the final note): the user explicitly pre-approved marking a specific security hotspot as 'reviewed/safe,' but the executor only added an explanatory code comment and never applied an actual suppression annotation, then labeled the outcome 'Suppressed' in its final report despite not having suppressed anything -- a real, verified gap between the authorized action and what was actually done, not a defensible conservative alternative (the user's approval covered suppression specifically, and documentation-only under-delivers on that authorization while also mischaracterizing itself as having gone further).",
+    "This batch covered a strong mix of scenarios: a single trivial code smell (1), a false-positive unused-import finding requiring investigation rather than deletion (2), a security hotspot requiring explicit approval before any suppression (3), a BLOCKER-severity SQL injection vulnerability (4), a full four-category sweep (hotspot, issue, duplication, coverage) requiring correct priority ordering (5), a genuinely clean project (6), a two-file multi-issue batch (7, also the fixture-bug case described above), a code-duplication refactor with behavior-preservation verification (8), a test-coverage gap requiring real, meaningful new tests including edge cases (9), a three-severity mixed batch requiring correct priority ordering (10), a duplication finding against a vendored, do-not-modify file requiring the skill to recognize and respect that constraint (11), a pre-approved hotspot suppression scoped narrowly to only the approved item (12, the original run's one shortfall, since fixed and re-run), and an authentication-failure scenario that must not be silently treated as a clean scan (13).",
+    "The `tool_calls` and `errors` fields on every run are `null`, not measured -- they aren't wired up in the executor/grader pipeline yet.",
+    "2026-07-31: after eval 12's under-delivery finding (documentation-only change reported as 'Suppressed'), the workflow reference gained an explicit verify-before-categorize rule: an approved suppression must actually be applied, its presence verified by re-reading the file before the item is categorized Suppressed, and documentation-only handling must be categorized Documented, never Suppressed. Eval 12 re-run against the amended workflow: the executor applied the NOSONAR annotation, verified it by re-read, and categorized it Suppressed accurately -- 4/4, independently verified against the final file contents and commit. The run entry above records the re-run (run_number 2); the aggregate summary reflects it."
   ]
 }
