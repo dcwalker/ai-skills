@@ -1,0 +1,72 @@
+{
+  "skill_name": "organize-meeting-notes",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Help me organize my meeting notes into my journal.\n\nMeeting: Weekly Sync\nStart: Feb 27, 2026 at 11:00 AM\nEnd: 11:30 AM\nDuration: 30 minutes\nLocation: Zoom\nAttendees: sarah.chen@acme.com, j.rivera-contractor@acme.com, sarah.chen@acme.com\n\nRaw notes:\n- discussed Q3 budget overrun\n- need to email finance about the discrepancy\n- also should schedule a follow-up with the vendor about pricing\n\nPlease interview me about each line, then propose creating Trello tasks for the two action items when you're done. I'll answer your questions as we go and confirm everything before you create any cards.",
+      "expected_output": "The skill establishes metadata (Step 2, no time-mismatch correction needed since 11:00-11:30 already equals the stated 30-minute duration), formats attendees (Step 3: 'Sarah Chen' and 'J. Rivera', title-cased, '-contractor' stripped, deduplicated, alphabetically sorted -- there are only two distinct attendees since sarah.chen@acme.com appears twice), then interviews the user line-by-line (Step 4, one question per line, not batched) before normalizing and bulleting the notes. After staged approval of metadata/attendees/notes, it identifies two action items (email finance about the budget discrepancy; schedule a vendor follow-up about pricing), presents them for confirmation, then asks whether to create Trello tasks. Since the user confirms yes, it calls create-trello-task.sh once per action item with the actual action-item text and a --desc including the meeting title and date, and replaces each checklist item's text with a Markdown link to the returned card URL in the final document.",
+      "expectations": [
+        "Attendees are formatted as 'Sarah Chen' and 'J. Rivera' (title case, -contractor stripped), deduplicated to two people despite the duplicate email, sorted alphabetically by first name.",
+        "The transcript shows a genuine per-line interview (at least one clarifying question per raw note line) before the notes are finalized as complete sentences -- the skill does not fabricate finished notes without first asking about each line.",
+        "Exactly two create-trello-task.sh invocations occur (one per confirmed action item), each with --desc including the meeting title 'Weekly Sync' and a February 2026 date.",
+        "The final Markdown document's Action Items section links each item as `- [ ] [<text>](<trello card url>)` using the exact URLs the fixture returned, not fabricated URLs.",
+        "The final document's section order is exactly: metadata block, ###### Attendees, ###### Notes, ###### Action Items, matching Step 8."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: Solo Planning Block\nStart: Mar 3, 2026 at 9:00 AM\nEnd: 9:15 AM\nDuration: 15 minutes\nAttendees: me\n\nRaw notes:\n- reviewed my calendar for next week, nothing to flag\n\nThere's nothing actionable here, just a quick log. Interview me about the note if you need to, but I don't expect any action items to come out of this.",
+      "expected_output": "The skill interviews the user about the single note line, confirms the notes, and at the action-item identification step correctly finds zero action items in this content. Per Step 7.5 ('It is valid for a meeting to have no action items'), it explicitly confirms this with the user rather than fabricating one to have something to show, and per Step 7.8 skips Trello creation entirely since there are no confirmed action items -- it must not call create-trello-task.sh even speculatively.",
+      "expectations": [
+        "Zero create-trello-task.sh invocations occur.",
+        "The transcript explicitly confirms with the user that there are no action items, rather than silently omitting the section or inventing one.",
+        "The final document's Action Items section reflects that none exist (e.g. states none, or is empty/omitted per the skill's own formatting for this case) rather than containing a fabricated item.",
+        "The skill never asks 'create Trello tasks?' at all, since Step 7.8 only reaches that question when action items were confirmed."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Help me clean up these meeting notes.\n\nMeeting: 1:1 with Manager\nStart: Mar 5, 2026 at 2:00 PM\nEnd: 2:30 PM\nDuration: 30 minutes\nAttendees: me, manager@acme.com\n\nRaw notes:\n- discussed my Q2 goals\n- agreed I'll draft a proposal for the new tooling budget\n\nInterview me about the notes, and when you get to the Trello question, I'll tell you not to bother creating cards this time -- I'm tracking this one myself.",
+      "expected_output": "The skill interviews the user, identifies one action item (draft a tooling budget proposal), confirms it, then asks whether to create a Trello task. Per the user's stated intent, when asked, the user declines -- per Step 7.8 the skill must skip Trello creation and proceed straight to producing the final document with the action item as a plain, unlinked checklist item, not silently create a card anyway.",
+      "expectations": [
+        "The skill explicitly asks whether to create a Trello task for the confirmed action item before proceeding.",
+        "Zero create-trello-task.sh invocations occur, since the user declines.",
+        "The final document's Action Items section contains the item as a plain `- [ ] <text>` line with no Trello link, since no card was created.",
+        "The final document is still produced (declining Trello creation does not abort the whole task, per Step 7.8's 'skip Trello creation' framing, not 'stop entirely')."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Organize my notes from today's vendor call.\n\nMeeting: Vendor Call - Acme Supplies\nStart: Mar 10, 2026 at 1:00 PM\nEnd: 1:20 PM\nDuration: 20 minutes\nAttendees: me, rep@acmesupplies.com\n\nRaw notes:\n- vendor confirmed new pricing takes effect next quarter\n- I need to update our internal pricing sheet before then\n- also need to loop in procurement about the change\n\nInterview me about each line, then go ahead and create Trello cards for both action items once we've confirmed them -- I approve that upfront.",
+      "expected_output": "The skill interviews the user, confirms two action items (update the internal pricing sheet; loop in procurement), and per the user's upfront approval proceeds to create Trello tasks for both. In this scenario, the fixture is set up so the first create-trello-task.sh call succeeds but the second fails (simulating a real API error). The skill must not fabricate a card URL for the failed item, must not silently drop it from the final document, and must clearly surface the failure to the user rather than presenting a broken or misleading final document.",
+      "expectations": [
+        "Exactly two create-trello-task.sh invocations are attempted, one per confirmed action item.",
+        "The action item whose call succeeded is linked in the final document using the exact fixture-returned URL.",
+        "The action item whose call failed is NOT given a fabricated or guessed URL -- it either remains a plain unlinked checklist item with the failure surfaced to the user, or the skill pauses and asks how to proceed before finalizing that item.",
+        "The transcript explicitly reports the create-trello-task.sh failure (e.g. its error message) rather than silently treating it as a success or omitting it from the report."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Organize these notes for my journal. No action items expected, just testing the formatting.\n\nMeeting: Retro\nStart: Mar 12, 2026 at 3:00 PM\nEnd: 3:30 PM\nDuration: 45 minutes\nAttendees: me, kim.park@acme.com, r.singh-contractor@acme.com, t.nguyen@acme.com\n\nRaw notes:\n- team felt the last sprint's scope was too large\n- retro action: nothing formal, just a discussion\n\nKim didn't actually make it to this one, she had a conflict. Interview me about the note, then finalize -- no Trello needed since there's nothing actionable.",
+      "expected_output": "This tests Step 2's time-correction rule and Step 3's attendee formatting/non-attendance rule together. Start (3:00 PM) + Duration (45 min) = 3:45 PM, which does NOT match the stated End (3:30 PM) -- a clean mismatch per the skill's own documented example pattern. Per Step 2, the skill must strikethrough only the original end time value (3:30 PM) and append the corrected end time (3:45 PM), both within the End field, not silently pick one value or leave the mismatch unresolved. Attendees format to 'Kim Park', 'R. Singh', 'T. Nguyen' (title case, -contractor stripped, alphabetical), with Kim Park struck through since she did not attend (the user states this explicitly, distinct from the invited-attendees list). No action items are identified in this content, so Trello is skipped entirely, matching eval 2's negative case but combined with the formatting checks here.",
+      "expectations": [
+        "The final metadata line's End field shows the original 3:30 PM struck through with the corrected 3:45 PM appended, matching the skill's documented mismatch-correction pattern -- not silently left as just 3:30 PM and not silently corrected without showing the original.",
+        "Kim Park's name appears with strikethrough formatting in the final Attendees section, since the user stated she did not attend despite being invited.",
+        "The other two attendees ('R. Singh', 'T. Nguyen') are correctly title-cased with '-contractor' stripped from R. Singh.",
+        "Zero create-trello-task.sh invocations occur, since no action items exist in this content."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Help me journal this meeting.\n\nMeeting: Design Review\nStart: Mar 15, 2026 at 10:00 AM\nEnd: 10:45 AM\nDuration: 45 minutes\nAttendees: me, a.lee@acme.com, a.wong@acme.com\n\nRaw notes:\n- reviewed the new checkout flow mockups\n- agreed to simplify the payment step\n- I'll update the mockups and share by Friday\n\nBoth Alex Lee and Amy Wong attended -- just initials in the emails since our email format is inconsistent for these two. Interview me about the notes, and go ahead and create the Trello card for the one action item, I approve that.",
+      "expected_output": "This tests Step 3's ambiguous-initial handling: two attendees share the same initial-based email pattern (a.lee@, a.wong@) where the initial alone doesn't disambiguate a full first name without the user's help, which the skill must ask about rather than guess (Step 3: 'If only an initial is available and the full first name is unknown, ask the user before finalizing'). The user's follow-up message already supplies both full first names ('Alex Lee and Amy Wong'), so the skill should use those once given rather than continuing to ask after the ambiguity is resolved. One action item exists (update mockups and share by Friday), gets confirmed, and per the user's upfront approval a single Trello card is created for it.",
+      "expectations": [
+        "The transcript shows the skill either asking about the ambiguous initials before finalizing names, or correctly using the full names already supplied in the prompt ('Alex Lee', 'Amy Wong') without guessing a different expansion of the 'a.' initial for either person.",
+        "The final Attendees section lists 'Alex Lee' and 'Amy Wong' (title case, alphabetically sorted by first name), not 'A. Lee'/'A. Wong' or an incorrect guessed name.",
+        "Exactly one create-trello-task.sh invocation occurs, for the mockup-update action item, with --desc including the meeting title 'Design Review'.",
+        "The final document's Action Items section links the item using the exact fixture-returned card URL."
+      ]
+    }
+  ]
+}
