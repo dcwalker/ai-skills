@@ -11,8 +11,12 @@
 # terminal, not delegated to an in-session Bash tool call. See
 # evals/README.md's "MCP stub servers" section for the underlying mechanism.
 #
-# Usage: bash plugins/life-skills/skills/triage/evals/run-trials.sh
-# Run from the repo root.
+# Usage: bash plugins/life-skills/skills/triage/evals/run-trials.sh [id ...]
+# Run from the repo root. With no arguments, wipes .trial-runs/ and runs
+# every eval in evals.json. With explicit ids (e.g. `run-trials.sh 6 7 8 9`
+# after a partial run died on a session limit), re-runs only those,
+# replacing just their own .trial-runs/<id>/ dirs and leaving completed
+# trials in place.
 
 set -euo pipefail
 
@@ -20,13 +24,19 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../../../../.." > /dev/null && pwd)"
 TRIALS_DIR="$SCRIPT_DIR/.trial-runs"
 
-IDS=$(python3 -c "
+if [[ $# -gt 0 ]]; then
+  IDS="$*"
+  for ID in $IDS; do
+    rm -rf "$TRIALS_DIR/$ID"
+  done
+else
+  IDS=$(python3 -c "
 import json
 data = json.load(open('$SCRIPT_DIR/evals.json'))
 print(' '.join(str(e['id']) for e in data['evals']))
 ")
-
-rm -rf "$TRIALS_DIR"
+  rm -rf "$TRIALS_DIR"
+fi
 mkdir -p "$TRIALS_DIR"
 
 for ID in $IDS; do
@@ -51,11 +61,16 @@ for e in data['evals']:
   # which left earlier baselines approximating time from file mtimes with no
   # token figures at all. result.json keeps the full envelope; transcript.txt
   # stays the human-readable reply for graders.
+  # `|| true`: a failing trial (session limit hit, transient API error, a
+  # result that reports is_error) must not abort the batch under set -e --
+  # its result.json still lands in its own $RUN_DIR and the failure shows
+  # up in metrics.json's is_error/parse_error fields for the grader.
   (
     cd "$WORKSPACE_DIR"
     claude -p --dangerously-skip-permissions --strict-mcp-config \
       --mcp-config "$MCP_CONFIG_PATH" --output-format json -- "$PROMPT"
-  ) > "$RUN_DIR/result.json" 2> "$RUN_DIR/stderr.txt"
+  ) > "$RUN_DIR/result.json" 2> "$RUN_DIR/stderr.txt" || \
+    echo "  WARNING: claude exited non-zero for eval $ID; continuing with the next eval"
 
   # A parse failure must stay isolated to this one trial: under set -e an
   # uncaught exception here would abort the whole batch, losing every eval
