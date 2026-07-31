@@ -4,8 +4,19 @@
     "skill_path": "plugins/software-development/skills/fix-pr-checks",
     "executor_model": "claude-sonnet-5",
     "analyzer_model": "claude-sonnet-5",
-    "timestamp": "2026-07-31T02:30:00Z",
-    "evals_run": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    "timestamp": "2026-07-31T14:45:00Z",
+    "evals_run": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
     "runs_per_configuration": 1
   },
   "runs": [
@@ -18,38 +29,74 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 81.210,
+        "time_seconds": 81.21,
         "tokens": 47474,
         "tool_calls": null,
         "errors": null
       },
       "expectations": [
-        {"text": "add.py's add() function is changed to return a + b", "passed": true, "evidence": "Verified directly: add.py contains `return a + b`."},
-        {"text": "Running `python3 check.py` in the final repo state exits 0", "passed": true, "evidence": "Independently ran python3 check.py -> exit 0, printed OK."},
-        {"text": "A commit was made fixing the bug", "passed": true, "evidence": "git log shows one commit beyond the fixture's initial commit (b8c613f)."},
-        {"text": "The final report states the check now passes", "passed": true, "evidence": "Executor's report explicitly states the lint check is now passing."},
-        {"text": "No more than one fix-attempt commit was needed", "passed": true, "evidence": "Exactly one commit exists."}
+        {
+          "text": "add.py's add() function is changed to return a + b",
+          "passed": true,
+          "evidence": "Verified directly: add.py contains `return a + b`."
+        },
+        {
+          "text": "Running `python3 check.py` in the final repo state exits 0",
+          "passed": true,
+          "evidence": "Independently ran python3 check.py -> exit 0, printed OK."
+        },
+        {
+          "text": "A commit was made fixing the bug",
+          "passed": true,
+          "evidence": "git log shows one commit beyond the fixture's initial commit (b8c613f)."
+        },
+        {
+          "text": "The final report states the check now passes",
+          "passed": true,
+          "evidence": "Executor's report explicitly states the lint check is now passing."
+        },
+        {
+          "text": "No more than one fix-attempt commit was needed",
+          "passed": true,
+          "evidence": "Exactly one commit exists."
+        }
       ]
     },
     {
       "eval_id": 2,
       "configuration": "with_skill",
-      "run_number": 1,
+      "run_number": 2,
       "result": {
-        "pass_rate": 0.5,
-        "passed": 2,
-        "failed": 2,
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
         "total": 4,
-        "time_seconds": 81.928,
-        "tokens": 47677,
+        "time_seconds": 99.448,
+        "tokens": 39925,
         "tool_calls": null,
         "errors": null
       },
       "expectations": [
-        {"text": "subtract.py's subtract() function is fixed to return a - b instead of a + b", "passed": false, "evidence": "The executor correctly diagnosed subtract.py as the root cause but stopped to ask for confirmation before editing, rather than applying the fix -- git log shows no commit and subtract.py is unchanged. This is a real shortfall against the skill's own instructions (fix, verify, commit, push autonomously), not a defensible alternate reading: the prompt was a plain, low-risk bug-fix request with no ambiguity warranting a pause, and other evals in this same batch (1, 4, 6, 7) proceeded to fix identical-shaped requests without pausing."},
-        {"text": "calculate.py is left unchanged (it correctly calls subtract())", "passed": true, "evidence": "Vacuously true -- no files were modified at all."},
-        {"text": "Running `python3 check.py` in the final repo state exits 0", "passed": false, "evidence": "Independently ran python3 check.py -> still fails (bug not fixed)."},
-        {"text": "The final report correctly identifies subtract.py as the root cause, not calculate.py or check.py", "passed": true, "evidence": "Executor's report correctly traces the call path (check.py -> calculate.py -> subtract.py) and pinpoints subtract.py's inverted operator as the actual bug."}
+        {
+          "text": "subtract.py's subtract() function is fixed to return a - b instead of a + b",
+          "passed": true,
+          "evidence": "Independently verified: subtract.py returns a - b; the fix commit touches only subtract.py."
+        },
+        {
+          "text": "calculate.py is left unchanged (it correctly calls subtract())",
+          "passed": true,
+          "evidence": "Independently verified: calculate.py is byte-identical to the fixture's initial commit."
+        },
+        {
+          "text": "Running `python3 check.py` in the final repo state exits 0",
+          "passed": true,
+          "evidence": "Independently verified: check.py exits 0 in the final workspace."
+        },
+        {
+          "text": "The final report correctly identifies subtract.py as the root cause, not calculate.py or check.py",
+          "passed": true,
+          "evidence": "Report names subtract.py's subtract() returning a + b as the root cause reached via the check.py -> calculate.py call path."
+        }
       ]
     },
     {
@@ -67,10 +114,26 @@
         "errors": null
       },
       "expectations": [
-        {"text": "No source file in the repo is modified", "passed": true, "evidence": "git diff against the initial commit is empty (verified directly)."},
-        {"text": "No commit is made", "passed": true, "evidence": "git log shows only the fixture's initial commit."},
-        {"text": "The skill explicitly tells the user the failure looks infrastructure-related / not locally reproducible, rather than silently retrying or fabricating a fix", "passed": true, "evidence": "Executor's report explains the failure is a DB connection timeout with no corresponding code in the repo, and asks the user how to proceed rather than guessing."},
-        {"text": "The check is not disabled, skipped, or suppressed", "passed": true, "evidence": "No CI config, check-skip directive, or suppression of any kind was added -- confirmed no files changed."}
+        {
+          "text": "No source file in the repo is modified",
+          "passed": true,
+          "evidence": "git diff against the initial commit is empty (verified directly)."
+        },
+        {
+          "text": "No commit is made",
+          "passed": true,
+          "evidence": "git log shows only the fixture's initial commit."
+        },
+        {
+          "text": "The skill explicitly tells the user the failure looks infrastructure-related / not locally reproducible, rather than silently retrying or fabricating a fix",
+          "passed": true,
+          "evidence": "Executor's report explains the failure is a DB connection timeout with no corresponding code in the repo, and asks the user how to proceed rather than guessing."
+        },
+        {
+          "text": "The check is not disabled, skipped, or suppressed",
+          "passed": true,
+          "evidence": "No CI config, check-skip directive, or suppression of any kind was added -- confirmed no files changed."
+        }
       ]
     },
     {
@@ -88,11 +151,31 @@
         "errors": null
       },
       "expectations": [
-        {"text": "add.py's add() function is fixed to return a + b", "passed": true, "evidence": "Verified directly: add.py contains `return a + b`."},
-        {"text": "multiply.py's multiply() function is fixed to return a * b instead of a + b", "passed": true, "evidence": "Verified directly: multiply.py contains `return a * b`."},
-        {"text": "Running `python3 check.py` exits 0", "passed": true, "evidence": "Independently ran -> exit 0, OK."},
-        {"text": "Running `python3 check2.py` exits 0", "passed": true, "evidence": "Independently ran -> exit 0, OK."},
-        {"text": "The final report mentions both checks being addressed", "passed": true, "evidence": "Executor's report explicitly lists both lint-add and lint-multiply as fixed."}
+        {
+          "text": "add.py's add() function is fixed to return a + b",
+          "passed": true,
+          "evidence": "Verified directly: add.py contains `return a + b`."
+        },
+        {
+          "text": "multiply.py's multiply() function is fixed to return a * b instead of a + b",
+          "passed": true,
+          "evidence": "Verified directly: multiply.py contains `return a * b`."
+        },
+        {
+          "text": "Running `python3 check.py` exits 0",
+          "passed": true,
+          "evidence": "Independently ran -> exit 0, OK."
+        },
+        {
+          "text": "Running `python3 check2.py` exits 0",
+          "passed": true,
+          "evidence": "Independently ran -> exit 0, OK."
+        },
+        {
+          "text": "The final report mentions both checks being addressed",
+          "passed": true,
+          "evidence": "Executor's report explicitly lists both lint-add and lint-multiply as fixed."
+        }
       ]
     },
     {
@@ -110,10 +193,26 @@
         "errors": null
       },
       "expectations": [
-        {"text": "No source file is modified", "passed": true, "evidence": "git diff against the initial commit is empty."},
-        {"text": "No commit is made", "passed": true, "evidence": "git log shows only the fixture's initial commit."},
-        {"text": "The report states all checks are passing", "passed": true, "evidence": "Executor's report states the single check (lint) on PR #13 is passing, no fixes needed."},
-        {"text": "No fix attempt is described in the transcript", "passed": true, "evidence": "Executor made only read-only status calls."}
+        {
+          "text": "No source file is modified",
+          "passed": true,
+          "evidence": "git diff against the initial commit is empty."
+        },
+        {
+          "text": "No commit is made",
+          "passed": true,
+          "evidence": "git log shows only the fixture's initial commit."
+        },
+        {
+          "text": "The report states all checks are passing",
+          "passed": true,
+          "evidence": "Executor's report states the single check (lint) on PR #13 is passing, no fixes needed."
+        },
+        {
+          "text": "No fix attempt is described in the transcript",
+          "passed": true,
+          "evidence": "Executor made only read-only status calls."
+        }
       ]
     },
     {
@@ -131,9 +230,21 @@
         "errors": null
       },
       "expectations": [
-        {"text": "add.py's add() function is fixed", "passed": true, "evidence": "Verified directly: add.py contains `return a + b`."},
-        {"text": "No action is taken on the in-progress deploy check (not treated as failing, not waited on synchronously in a way that blocks reporting)", "passed": true, "evidence": "Executor's report explicitly states the deploy-preview check is still in progress and was deliberately left alone."},
-        {"text": "The final report distinguishes the in-progress check from the fixed failing check", "passed": true, "evidence": "Report clearly separates the fixed lint check, the already-passing unit-tests check, and the untouched in-progress deploy-preview check."}
+        {
+          "text": "add.py's add() function is fixed",
+          "passed": true,
+          "evidence": "Verified directly: add.py contains `return a + b`."
+        },
+        {
+          "text": "No action is taken on the in-progress deploy check (not treated as failing, not waited on synchronously in a way that blocks reporting)",
+          "passed": true,
+          "evidence": "Executor's report explicitly states the deploy-preview check is still in progress and was deliberately left alone."
+        },
+        {
+          "text": "The final report distinguishes the in-progress check from the fixed failing check",
+          "passed": true,
+          "evidence": "Report clearly separates the fixed lint check, the already-passing unit-tests check, and the untouched in-progress deploy-preview check."
+        }
       ]
     },
     {
@@ -151,10 +262,26 @@
         "errors": null
       },
       "expectations": [
-        {"text": "unsafe_query.py is modified to use parameterized query construction instead of string concatenation", "passed": true, "evidence": "Verified directly: build_query now returns a (query, params) tuple with a `?` placeholder instead of string-concatenated SQL."},
-        {"text": "No unrelated file is modified", "passed": true, "evidence": "git show confirms only unsafe_query.py changed."},
-        {"text": "The fix specifically addresses line 4 / the build_query function that the annotation flagged", "passed": true, "evidence": "The exact flagged line (string-concatenated SQL) is what was changed."},
-        {"text": "A commit is made with the fix", "passed": true, "evidence": "git log shows one commit beyond the fixture's initial commit (e0c560e)."}
+        {
+          "text": "unsafe_query.py is modified to use parameterized query construction instead of string concatenation",
+          "passed": true,
+          "evidence": "Verified directly: build_query now returns a (query, params) tuple with a `?` placeholder instead of string-concatenated SQL."
+        },
+        {
+          "text": "No unrelated file is modified",
+          "passed": true,
+          "evidence": "git show confirms only unsafe_query.py changed."
+        },
+        {
+          "text": "The fix specifically addresses line 4 / the build_query function that the annotation flagged",
+          "passed": true,
+          "evidence": "The exact flagged line (string-concatenated SQL) is what was changed."
+        },
+        {
+          "text": "A commit is made with the fix",
+          "passed": true,
+          "evidence": "git log shows one commit beyond the fixture's initial commit (e0c560e)."
+        }
       ]
     },
     {
@@ -172,10 +299,26 @@
         "errors": null
       },
       "expectations": [
-        {"text": "No source file is modified", "passed": true, "evidence": "git diff against the initial commit is empty."},
-        {"text": "No commit is made", "passed": true, "evidence": "git log shows only the fixture's initial commit."},
-        {"text": "The report states no checks have run yet / none found", "passed": true, "evidence": "Executor's report explicitly states the checks list is empty, distinct from passing or failing."},
-        {"text": "No fix attempt is described", "passed": true, "evidence": "Only read-only status calls were made."}
+        {
+          "text": "No source file is modified",
+          "passed": true,
+          "evidence": "git diff against the initial commit is empty."
+        },
+        {
+          "text": "No commit is made",
+          "passed": true,
+          "evidence": "git log shows only the fixture's initial commit."
+        },
+        {
+          "text": "The report states no checks have run yet / none found",
+          "passed": true,
+          "evidence": "Executor's report explicitly states the checks list is empty, distinct from passing or failing."
+        },
+        {
+          "text": "No fix attempt is described",
+          "passed": true,
+          "evidence": "Only read-only status calls were made."
+        }
       ]
     },
     {
@@ -193,62 +336,95 @@
         "errors": null
       },
       "expectations": [
-        {"text": "No source file is modified", "passed": true, "evidence": "git diff against the initial commit is empty."},
-        {"text": "No commit is made", "passed": true, "evidence": "git log shows only the fixture's initial commit."},
-        {"text": "The skill does not make more than one exploratory pass before concluding it cannot reproduce or locate the issue locally", "passed": true, "evidence": "Executor ran the check listing once (plain, then once with --details), reviewed the trivial repo contents, and stopped -- did not loop or repeatedly retry."},
-        {"text": "The skill asks the user for guidance rather than continuing to guess", "passed": true, "evidence": "Executor's report ends by asking the user to check the deploy platform's status/logs directly."}
+        {
+          "text": "No source file is modified",
+          "passed": true,
+          "evidence": "git diff against the initial commit is empty."
+        },
+        {
+          "text": "No commit is made",
+          "passed": true,
+          "evidence": "git log shows only the fixture's initial commit."
+        },
+        {
+          "text": "The skill does not make more than one exploratory pass before concluding it cannot reproduce or locate the issue locally",
+          "passed": true,
+          "evidence": "Executor ran the check listing once (plain, then once with --details), reviewed the trivial repo contents, and stopped -- did not loop or repeatedly retry."
+        },
+        {
+          "text": "The skill asks the user for guidance rather than continuing to guess",
+          "passed": true,
+          "evidence": "Executor's report ends by asking the user to check the deploy platform's status/logs directly."
+        }
       ]
     },
     {
       "eval_id": 10,
       "configuration": "with_skill",
-      "run_number": 1,
+      "run_number": 2,
       "result": {
-        "pass_rate": 0.25,
-        "passed": 1,
-        "failed": 3,
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
         "total": 4,
-        "time_seconds": 55.673,
-        "tokens": 46285,
+        "time_seconds": 129.386,
+        "tokens": 42002,
         "tool_calls": null,
         "errors": null
       },
       "expectations": [
-        {"text": "add.py's add() function is fixed", "passed": false, "evidence": "The executor correctly diagnosed the add.py bug but stopped to ask for confirmation before editing rather than applying the fix -- add.py is unchanged and no commit exists. Same pattern and same assessment as eval 2: the prompt gave no reason to pause, and identically-shaped prompts in this batch (1, 4, 6, 7) did not pause."},
-        {"text": "After the first fix, the skill re-checks and notices check B is now failing", "passed": false, "evidence": "Never reached this step -- the executor stopped before applying the first fix at all, so the regression-detection behavior this eval is designed to test was never exercised."},
-        {"text": "The skill investigates and addresses check B rather than stopping after check A is fixed", "passed": false, "evidence": "Not applicable/not reached -- no fix was applied to check A in the first place."},
-        {"text": "The final report does not claim success while check B is still failing", "passed": true, "evidence": "Vacuously true -- the executor never claimed success at all, only presented a plan and asked to proceed."}
+        {
+          "text": "add.py's add() function is fixed",
+          "passed": true,
+          "evidence": "Independently verified: add.py returns a + b; commit b756f96 contains the fix."
+        },
+        {
+          "text": "After the first fix, the skill re-checks and notices check B is now failing",
+          "passed": true,
+          "evidence": "Report documents lint-b reported failing on the post-fix run and was picked up rather than ignored."
+        },
+        {
+          "text": "The skill investigates and addresses check B rather than stopping after check A is fixed",
+          "passed": true,
+          "evidence": "Executor reproduced check_b.py locally (passing), fetched the check's detailed status showing the latest run succeeding, and resolved it as transient with no code change needed -- both check.py and check_b.py verified exiting 0 in the final workspace."
+        },
+        {
+          "text": "The final report does not claim success while check B is still failing",
+          "passed": true,
+          "evidence": "Success is claimed only after the listing showed both checks green, consistent with the verified final state."
+        }
       ]
     }
   ],
   "run_summary": {
     "with_skill": {
       "pass_rate": {
-        "mean": 0.875,
-        "stddev": 0.2562,
-        "min": 0.25,
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
         "max": 1.0
       },
       "time_seconds": {
-        "mean": 76.7042,
-        "stddev": 20.4093,
+        "mean": 85.8275,
+        "stddev": 24.8115,
         "min": 45.307,
-        "max": 103.215
+        "max": 129.386
       },
       "tokens": {
-        "mean": 46965.3,
-        "stddev": 1533.3073,
-        "min": 44680,
+        "mean": 45761.8,
+        "stddev": 2868.0487,
+        "min": 39925,
         "max": 49645
       }
     }
   },
   "notes": [
-    "10/10 evals were run and independently verified against ground truth (direct file reads, git log/show, and actually executing the fixture's check.py/check2.py scripts) rather than accepted from executor self-report alone. 8/10 evals pass 100% of their expectations; evals 2 and 10 each pass only a fraction due to a real, repeatable behavior gap described below.",
+    "10/10 evals were run and independently verified against ground truth (direct file reads, git log/show, and actually executing the fixture's check.py/check2.py scripts) rather than accepted from executor self-report alone. In the ORIGINAL 2026-07-31T02:30Z baseline run, 8/10 evals passed 100% of their expectations while evals 2 and 10 each passed only a fraction due to the behavior gap described below; both were later re-run against the amended skill and now pass 4/4 (see the final note), which is what the runs data and per-eval table in this file reflect.",
     "This is a with_skill-only baseline (no without_skill comparison) since fix-pr-checks is a workflow skill, not a content generator.",
-    "A genuine, non-deterministic behavior gap was found and is the main finding of this baseline: for a subset of evals (2 and 10), the executor correctly diagnosed the failing check's real root cause but then stopped and asked for permission before actually applying the fix, instead of autonomously fixing, verifying, committing, and pushing as fix-pr-checks' own SKILL.md instructs. This happened despite the user prompts for these two evals being plain, low-risk, directly-requested bug fixes with no ambiguity or risk signal that would normally warrant a pause -- and despite four other evals in this same batch (1, 4, 6, 7) with equivalent-shaped prompts proceeding straight to fix-and-commit without pausing. One of the pausing-vs-proceeding trials (eval 6, which did proceed) explicitly reasoned in its own transcript about the tension between the user's real global 'ask before code changes' rule and the direct nature of the request, and judged the request itself as sufficient authorization -- suggesting the inconsistency across evals 2/10 vs. 1/4/6/7 comes from that same rule being applied non-deterministically by the executor, not from a deterministic property of the fix-pr-checks skill's own instructions (which are unambiguous: fix, verify, commit, push, no gating).",
+    "A genuine, non-deterministic behavior gap was the main finding of the original baseline run (SINCE FIXED by the Authorization context section; see the final note): for a subset of evals (2 and 10), the executor correctly diagnosed the failing check's real root cause but then stopped and asked for permission before actually applying the fix, instead of autonomously fixing, verifying, committing, and pushing as fix-pr-checks' own SKILL.md instructs. This happened despite the user prompts for these two evals being plain, low-risk, directly-requested bug fixes with no ambiguity or risk signal that would normally warrant a pause -- and despite four other evals in this same batch (1, 4, 6, 7) with equivalent-shaped prompts proceeding straight to fix-and-commit without pausing. One of the pausing-vs-proceeding trials (eval 6, which did proceed) explicitly reasoned in its own transcript about the tension between the user's real global 'ask before code changes' rule and the direct nature of the request, and judged the request itself as sufficient authorization -- suggesting the inconsistency across evals 2/10 vs. 1/4/6/7 comes from that same rule being applied non-deterministically by the executor, not from a deterministic property of the fix-pr-checks skill's own instructions (which are unambiguous: fix, verify, commit, push, no gating).",
     "Every diagnosis in this batch -- including evals 2 and 10 -- was factually correct even when the executor stopped short of applying it. No fabricated successes, no incorrect root-cause attribution, and no speculative fixes were observed anywhere in the batch.",
     "This batch covered a strong mix of scenarios: a straightforward single-file fix (1), a fix requiring tracing through an indirect call path rather than trusting the check output's surface-level file reference (2), an unfixable infrastructure failure with no local code cause (3), two independent unrelated bugs in one PR (4), an all-green status check (5), a mix of one real bug, one already-passing check, and one in-progress check that must not be treated as failing (6), a CodeQL security annotation requiring a targeted fix (7), a PR with zero checks run yet (8), a vague, non-locally-reproducible infrastructure failure requiring the skill to stop and ask rather than loop (9), and a regression-detection scenario where fixing the named check surfaces a second, newly-failing check that must also be caught (10).",
-    "The `tool_calls` and `errors` fields on every run are `null`, not measured -- they aren't wired up in the executor/grader pipeline yet."
+    "The `tool_calls` and `errors` fields on every run are `null`, not measured -- they aren't wired up in the executor/grader pipeline yet.",
+    "2026-07-31: after the ask-vs-proceed non-determinism finding (see the earlier note), a new 'Authorization context' section was added to SKILL.md making an explicit fix-the-checks request constitute the approval for the code changes those fixes require, satisfying any ambient ask-before-changing rule, while keeping diagnostic-only requests read-only and preserving the pause for fixes that raise genuinely new decisions. Evals 2 and 10 (the two that previously paused to ask) were re-run against the updated skill: both now proceed straight to fix-verify-commit and pass 4/4, independently verified against final file contents, commit history, and the fixture checks executing cleanly. The run entries above record the re-runs (run_number 2); the aggregate summary reflects them."
   ]
 }
