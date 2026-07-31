@@ -189,6 +189,29 @@ def view_card(card_id: str) -> dict:
     return result
 
 
+def _card_matches_search(c: dict, q: str, board_id: str | None, exclude_completed: bool) -> bool:
+    if board_id and c["board_id"] != board_id:
+        return False
+    if exclude_completed and c.get("due_complete"):
+        return False
+    return q in c["name"].lower() or q in c["desc"].lower()
+
+
+def _search_cards(q: str, board_id: str | None, exclude_completed: bool, limit: int) -> list[dict]:
+    matches = [
+        {
+            "id": c["id"],
+            "name": c["name"],
+            "url": c["url"],
+            "list_id": c["list_id"],
+            "board_id": c["board_id"],
+        }
+        for c in state.data["cards"].values()
+        if _card_matches_search(c, q, board_id, exclude_completed)
+    ]
+    return matches[:limit]
+
+
 @server.tool()
 def search_trello(
     query: str,
@@ -207,23 +230,7 @@ def search_trello(
     result: dict[str, list[dict]] = {}
 
     if "cards" in types:
-        matches = []
-        for c in state.data["cards"].values():
-            if board_id and c["board_id"] != board_id:
-                continue
-            if exclude_completed and c.get("due_complete"):
-                continue
-            if q in c["name"].lower() or q in c["desc"].lower():
-                matches.append(
-                    {
-                        "id": c["id"],
-                        "name": c["name"],
-                        "url": c["url"],
-                        "list_id": c["list_id"],
-                        "board_id": c["board_id"],
-                    }
-                )
-        result["cards"] = matches[:limit]
+        result["cards"] = _search_cards(q, board_id, exclude_completed, limit)
 
     if "boards" in types:
         result["boards"] = [
@@ -283,6 +290,37 @@ def create_label(
     return result
 
 
+def _apply_simple_field_updates(card: dict, name, desc, due, due_complete, pos) -> None:
+    if name is not None:
+        card["name"] = name
+    if desc is not None:
+        card["desc"] = desc
+    if due is not None:
+        card["due"] = due if due != "" else None
+    if due_complete is not None:
+        card["due_complete"] = due_complete
+    if pos is not None:
+        card["pos"] = pos
+
+
+def _apply_list_move(card: dict, list_id, list_name, board_id, board_name) -> None:
+    if list_id is None and list_name is None:
+        return
+    card["list_id"] = _resolve_list(list_id, list_name, board_id, board_name)
+    card["board_id"] = state.data["lists"][card["list_id"]]["board_id"]
+
+
+def _apply_label_changes(card: dict, add_labels, remove_labels) -> None:
+    for lbl in _as_list(add_labels):
+        resolved_lbl = _resolve_label(lbl, card["board_id"])
+        if resolved_lbl not in card["labels"]:
+            card["labels"].append(resolved_lbl)
+    for lbl in _as_list(remove_labels):
+        resolved_lbl = _resolve_label(lbl, card["board_id"])
+        if resolved_lbl in card["labels"]:
+            card["labels"].remove(resolved_lbl)
+
+
 def _update_one_card(
     card_id: str,
     name,
@@ -300,27 +338,9 @@ def _update_one_card(
     if card_id not in state.data["cards"]:
         raise ValueError(f"trello-stub: no card with id {card_id!r}")
     card = state.data["cards"][card_id]
-    if name is not None:
-        card["name"] = name
-    if desc is not None:
-        card["desc"] = desc
-    if due is not None:
-        card["due"] = due if due != "" else None
-    if due_complete is not None:
-        card["due_complete"] = due_complete
-    if pos is not None:
-        card["pos"] = pos
-    if list_id is not None or list_name is not None:
-        card["list_id"] = _resolve_list(list_id, list_name, board_id, board_name)
-        card["board_id"] = state.data["lists"][card["list_id"]]["board_id"]
-    for lbl in _as_list(add_labels):
-        resolved_lbl = _resolve_label(lbl, card["board_id"])
-        if resolved_lbl not in card["labels"]:
-            card["labels"].append(resolved_lbl)
-    for lbl in _as_list(remove_labels):
-        resolved_lbl = _resolve_label(lbl, card["board_id"])
-        if resolved_lbl in card["labels"]:
-            card["labels"].remove(resolved_lbl)
+    _apply_simple_field_updates(card, name, desc, due, due_complete, pos)
+    _apply_list_move(card, list_id, list_name, board_id, board_name)
+    _apply_label_changes(card, add_labels, remove_labels)
     return dict(card)
 
 
