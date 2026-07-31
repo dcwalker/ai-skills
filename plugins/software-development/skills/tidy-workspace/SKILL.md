@@ -89,9 +89,13 @@ Do not proceed past the plan without explicit confirmation. If the user asks for
 5. **Drop approved stashes**: `git stash drop stash@{N}` for each stash
    approved for dropping, processing from the highest index to the lowest so
    earlier drops do not renumber the remaining ones. Never drop a stash the
-   plan classified as unclear unless the user explicitly resolved it; if the
-   user chose *apply to a branch now* for a stash, apply it there first and
-   only drop once the apply succeeds cleanly.
+   plan classified as unclear unless the user explicitly resolved it. If the
+   user chose *apply to a branch now* for a stash: check out the target
+   branch, apply the stash there, and only drop it once the apply succeeds
+   cleanly (an apply that conflicts leaves the stash intact and gets
+   reported as pending instead); then check out the main branch again, so
+   the run still ends on a clean, synced main regardless of which branch
+   the stash was applied to.
 6. **Update issues**: for each approved issue, post the status update/comment via `gh issue`/`gh pr` or `acli jira workitem` as appropriate.
 
 ### 5. Report
@@ -99,7 +103,8 @@ Do not proceed past the plan without explicit confirmation. If the user asks for
 Summarize what was done:
 - Worktrees removed (and any skipped/flagged).
 - Files committed, deleted, or gitignored.
-- Stashes dropped (with the classification that justified each), kept, or
+- Stashes dropped (with the classification that justified each), kept,
+  applied to a branch then dropped (user-resolved, naming the branch), or
   left pending a user decision.
 - Branch checked out and pull result.
 - Branches deleted locally and remotely, any skipped because they weren't actually merged, and any remote branches skipped because they were already deleted (e.g. by the host's auto-delete-on-merge).
