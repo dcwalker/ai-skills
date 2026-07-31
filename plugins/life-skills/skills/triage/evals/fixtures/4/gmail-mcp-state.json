@@ -1,0 +1,67 @@
+{
+  "threads": {
+    "thread-1": {
+      "id": "thread-1",
+      "subject": "Q3 forecast numbers",
+      "from": "sue@example.com",
+      "to": ["dan.walker@gmail.com"],
+      "date": "2026-07-29T10:12:00Z",
+      "snippet": "Could you send me the final Q3 forecast by Friday? Just the summary tab is fine.",
+      "labelIds": ["INBOX", "UNREAD"],
+      "messages": [
+        {
+          "id": "msg-1",
+          "from": "sue@example.com",
+          "to": ["dan.walker@gmail.com"],
+          "date": "2026-07-29T10:12:00Z",
+          "snippet": "Could you send me the final Q3 forecast by Friday? Just the summary tab is fine.",
+          "body": "Hi Dan,\n\nCould you send me the final Q3 forecast by Friday? Just the summary tab is fine, no need for the full workbook.\n\nThanks,\nSue"
+        }
+      ]
+    },
+    "thread-2": {
+      "id": "thread-2",
+      "subject": "Fence repair quote",
+      "from": "dan.walker@gmail.com",
+      "to": ["quotes@northfence.example"],
+      "date": "2026-07-27T16:40:00Z",
+      "snippet": "Following up on my request for a quote to replace the back fence panels.",
+      "labelIds": ["INBOX"],
+      "messages": [
+        {
+          "id": "msg-2",
+          "from": "dan.walker@gmail.com",
+          "to": ["quotes@northfence.example"],
+          "date": "2026-07-27T16:40:00Z",
+          "snippet": "Following up on my request for a quote to replace the back fence panels.",
+          "body": "Hello,\n\nFollowing up on my request from last week for a quote to replace the back fence panels (about 12 metres). Could you let me know when someone can come out to measure?\n\nDan"
+        }
+      ]
+    },
+    "thread-3": {
+      "id": "thread-3",
+      "subject": "Deep dive: how we cut our build times by 80%",
+      "from": "digest@engblogweekly.example",
+      "to": ["dan.walker@gmail.com"],
+      "date": "2026-07-30T07:05:00Z",
+      "snippet": "A 25-minute read on incremental build caching strategies at scale.",
+      "labelIds": ["INBOX"],
+      "messages": [
+        {
+          "id": "msg-3",
+          "from": "digest@engblogweekly.example",
+          "to": ["dan.walker@gmail.com"],
+          "date": "2026-07-30T07:05:00Z",
+          "snippet": "A 25-minute read on incremental build caching strategies at scale.",
+          "body": "This week's long read: how one team cut CI build times by 80% with incremental caching. Approximately 25 minutes."
+        }
+      ]
+    }
+  },
+  "labels": {
+    "Label_1": {"id": "Label_1", "name": "Action", "type": "user"},
+    "Label_2": {"id": "Label_2", "name": "Waiting For", "type": "user"},
+    "Label_3": {"id": "Label_3", "name": "Read-Review", "type": "user"}
+  },
+  "drafts": {}
+}

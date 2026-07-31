@@ -1,0 +1,29 @@
+{
+  "threads": {
+    "thread-1": {
+      "id": "thread-1",
+      "subject": "Receipt: annual domain renewal",
+      "from": "billing@registrar.example",
+      "to": ["dan.walker@gmail.com"],
+      "date": "2026-07-20T09:00:00Z",
+      "snippet": "Your domain renewal payment was processed successfully.",
+      "labelIds": ["Label_9"],
+      "messages": [
+        {
+          "id": "msg-1",
+          "from": "billing@registrar.example",
+          "to": ["dan.walker@gmail.com"],
+          "date": "2026-07-20T09:00:00Z",
+          "snippet": "Your domain renewal payment was processed successfully.",
+          "body": "Your domain renewal payment of $14.99 was processed successfully. No action is required."
+        }
+      ]
+    }
+  },
+  "labels": {
+    "Label_1": {"id": "Label_1", "name": "Action", "type": "user"},
+    "Label_2": {"id": "Label_2", "name": "Waiting For", "type": "user"},
+    "Label_9": {"id": "Label_9", "name": "Receipts", "type": "user"}
+  },
+  "drafts": {}
+}
