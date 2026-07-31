@@ -45,7 +45,7 @@ secondary path used when the *primary* scope is Jira/email, not Trello,
 and is out of scope for this pilot -- see the plan for sequencing).
 """
 
-import sys
+import copy
 
 from common import StubState
 
@@ -337,10 +337,16 @@ def _update_one_card(
 ) -> dict:
     if card_id not in state.data["cards"]:
         raise ValueError(f"trello-stub: no card with id {card_id!r}")
-    card = state.data["cards"][card_id]
+    # Stage all changes on a deep copy and write back only after every
+    # sub-update succeeds -- otherwise a failing list move or label resolve
+    # would leave the live state holding a half-applied update while the
+    # caller reports the card as failed, giving graders an inconsistent
+    # state snapshot.
+    card = copy.deepcopy(state.data["cards"][card_id])
     _apply_simple_field_updates(card, name, desc, due, due_complete, pos)
     _apply_list_move(card, list_id, list_name, board_id, board_name)
     _apply_label_changes(card, add_labels, remove_labels)
+    state.data["cards"][card_id] = card
     return dict(card)
 
 
@@ -401,5 +407,4 @@ def update_card(
 
 
 if __name__ == "__main__":
-    sys.path.insert(0, __file__.rsplit("/", 1)[0])
     server.run(transport="stdio")
