@@ -1,0 +1,171 @@
+{
+  "metadata": {
+    "skill_name": "organize-meeting-notes",
+    "skill_path": "plugins/life-skills/skills/organize-meeting-notes",
+    "executor_model": "claude-sonnet-5",
+    "analyzer_model": "claude-sonnet-5",
+    "timestamp": "2026-07-31T05:00:00Z",
+    "evals_run": [1, 2, 3, 4, 5, 6],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 109.138,
+        "tokens": 52287,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {"text": "Attendees are formatted as 'Sarah Chen' and 'J. Rivera' (title case, -contractor stripped), deduplicated to two people despite the duplicate email, sorted alphabetically by first name.", "passed": true, "evidence": "Final document shows 'Jorge Rivera' and 'Sarah Chen' (the transcript resolved the ambiguous initial by asking, getting 'Jorge'), deduplicated from the repeated sarah.chen@acme.com entry, sorted alphabetically by first name (Jorge before Sarah)."},
+        {"text": "The transcript shows a genuine per-line interview before the notes are finalized.", "passed": true, "evidence": "Transcript shows one clarifying question per each of the 3 raw note lines, with confirmation before moving to the next."},
+        {"text": "Exactly two create-trello-task.sh invocations occur, each with --desc including the meeting title and a February 2026 date.", "passed": true, "evidence": "Independently verified via trello-calls.log: exactly 2 entries, both --desc values reference 'Weekly Sync meeting on Feb 27, 2026'."},
+        {"text": "The final Markdown document's Action Items section links each item using the fixture's exact URLs.", "passed": true, "evidence": "trello-calls.log confirms both URLs (omn1a2b3.../omn4c5d6...) exactly match the fixture entries in order; the reported final document uses these same URLs verbatim."},
+        {"text": "The final document's section order is exactly: metadata block, Attendees, Notes, Action Items.", "passed": true, "evidence": "Reported final document follows this exact order with the correct trailing #### timestamp line."}
+      ]
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 62.534,
+        "tokens": 43116,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {"text": "Zero create-trello-task.sh invocations occur.", "passed": true, "evidence": "Independently verified: no trello-calls.log file was created for this trial (the script only writes to it when actually invoked)."},
+        {"text": "The transcript explicitly confirms with the user that there are no action items.", "passed": true, "evidence": "Transcript shows an explicit 'Confirming: no action items for this meeting?' / 'Correct, no action items.' exchange."},
+        {"text": "The final document's Action Items section reflects that none exist rather than a fabricated item.", "passed": true, "evidence": "Final document shows 'Action Items: None.' -- no invented item."},
+        {"text": "The skill never asks 'create Trello tasks?' at all.", "passed": true, "evidence": "Transcript confirms the Trello question was never asked, consistent with zero confirmed action items."}
+      ]
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 92.504,
+        "tokens": 43339,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {"text": "The skill explicitly asks whether to create a Trello task before proceeding.", "passed": true, "evidence": "Transcript shows an explicit 'Want me to create a Trello card for this action item?' question."},
+        {"text": "Zero create-trello-task.sh invocations occur, since the user declines.", "passed": true, "evidence": "Independently verified: no trello-calls.log file was created for this trial."},
+        {"text": "The final document's Action Items section contains the item as a plain, unlinked line.", "passed": true, "evidence": "Final document shows '- [ ] Draft a proposal for the new tooling budget' with no link."},
+        {"text": "The final document is still produced despite declining Trello creation.", "passed": true, "evidence": "A complete, well-formed final document was produced."}
+      ]
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 139.421,
+        "tokens": 55745,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {"text": "Exactly two create-trello-task.sh invocations are attempted, one per confirmed action item.", "passed": true, "evidence": "Independently verified via trello-calls.log: exactly 2 entries."},
+        {"text": "The action item whose call succeeded is linked using the exact fixture-returned URL.", "passed": true, "evidence": "trello-calls.log shows the first call succeeded with url 'https://trello.com/c/omn7e8f9/update-internal-pricing-sheet', matching the fixture and the reported final document exactly."},
+        {"text": "The action item whose call failed is NOT given a fabricated URL.", "passed": true, "evidence": "trello-calls.log's second entry shows an 'error' field (no url), matching the fixture's simulated rate-limit failure; the reported final document leaves that item unlinked with an explicit warning rather than inventing a URL."},
+        {"text": "The transcript explicitly reports the failure rather than silently treating it as success.", "passed": true, "evidence": "Transcript quotes the exact error ('rate limit exceeded, try again later') to the user and offers a retry, rather than omitting or masking it."}
+      ]
+    },
+    {
+      "eval_id": 5,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 120.759,
+        "tokens": 48102,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {"text": "The final End field shows the original struck through with the corrected time appended.", "passed": true, "evidence": "Final document shows 'End: ~~3:30 PM~~ **3:45 PM**' -- exact match to the skill's documented mismatch-correction pattern (Start 3:00 PM + Duration 45 min = 3:45 PM, correctly computed and applied)."},
+        {"text": "Kim Park's name appears with strikethrough formatting.", "passed": true, "evidence": "Final document shows '~~Kim Park~~' in the Attendees section."},
+        {"text": "The other attendees are correctly title-cased with '-contractor' stripped from R. Singh.", "passed": true, "evidence": "Final document shows 'Raj Singh' (contractor suffix correctly dropped) and 'Tam Nguyen', both title-cased and alphabetically ordered alongside Dan Walker and the struck-through Kim Park."},
+        {"text": "Zero create-trello-task.sh invocations occur.", "passed": true, "evidence": "Independently verified: no trello-calls.log file was created for this trial."}
+      ]
+    },
+    {
+      "eval_id": 6,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 123.745,
+        "tokens": 53251,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {"text": "The transcript shows correctly using the full names already supplied rather than guessing.", "passed": true, "evidence": "Transcript explicitly states it will use the user-supplied 'Alex Lee'/'Amy Wong' without re-asking or guessing a different expansion of the 'a.' initial."},
+        {"text": "The final Attendees section lists 'Alex Lee' and 'Amy Wong', not the raw initials.", "passed": true, "evidence": "Final document shows 'Alex Lee', 'Amy Wong', 'Dan Walker' -- correctly resolved, alphabetically sorted."},
+        {"text": "Exactly one create-trello-task.sh invocation occurs, with --desc including the meeting title.", "passed": true, "evidence": "Independently verified via trello-calls.log: exactly 1 entry, --desc references 'Design Review meeting on Mar 15, 2026'."},
+        {"text": "The final document's Action Items section links the item using the fixture-returned URL.", "passed": true, "evidence": "trello-calls.log confirms url 'https://trello.com/c/omn9g0h1/update-checkout-mockups' matches the fixture and the reported final document exactly."}
+      ]
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 108.0168,
+        "stddev": 24.8548,
+        "min": 62.534,
+        "max": 139.421
+      },
+      "tokens": {
+        "mean": 49306.6667,
+        "stddev": 4852.5064,
+        "min": 43116,
+        "max": 55745
+      }
+    }
+  },
+  "notes": [
+    "6/6 evals pass 100% of their expectations in this baseline run. All results were independently verified against ground truth (the real trello-calls.log artifact each trial produced, or its absence for negative cases) rather than accepted from executor self-report alone -- every self-reported call, URL, and error message matched the log exactly.",
+    "This is the first skill baselined that needed the new create-trello-task.sh script (plugins/life-skills/skills/organize-meeting-notes/scripts/) and TRELLO_FIXTURE_FILE/TRELLO_FIXTURE_COUNTS_DIR/TRELLO_FIXTURE_LOG harness wiring in evals/lib/run-eval.sh, both new in this baseline. The script did not exist anywhere in the repo before this baseline despite the skill's SKILL.md referencing it as if it were already implemented -- a real product gap (the same class of issue as resolve-sonarqube-issues' earlier hardcoded self-referential script path) found and fixed as part of establishing this baseline.",
+    "This skill is almost entirely a multi-turn conversation skill (structurally close to conduct-interview) with no git state at all -- evals have no repo/ fixture, only an empty scratch workspace plus an optional trello-fixture.json. Since a real interactive back-and-forth can't happen against a canned eval prompt, each executor trial played both the assistant and a simulated user role internally, producing a full labeled transcript, and was graded on the shape and correctness of that simulated conversation plus the real, verifiable trello-calls.log artifact -- not on any live human interaction.",
+    "Evals 2, 3, and 5 deliberately ship with no trello-fixture.json at all (rather than an empty/no-op fixture), since the correct behavior in each is to never call create-trello-task.sh. Evidence for those trials' zero-call expectations is the absence of any trello-calls.log file, since the script only creates that file when actually invoked.",
+    "Eval 6 surfaced one real, minor, unflagged-by-any-expectation deviation worth noting for future review-code skill-quality diffing: the executor inferred the simulated user's own name ('Dan Walker') from ambient session context (git config / user email) rather than asking, even though the skill's Step 1 says to ask for clarification on missing details rather than guess. This didn't fail any expectation in this eval (none of eval 6's expectations test 'me'-attendee resolution specifically -- that's what eval 1 tests, where the skill did ask), but it's a real edge case in how the skill handles an unnamed 'me' attendee that a future eval could test more directly.",
+    "This batch covered a strong mix of scenarios: a full happy path with an ambiguous initial and a duplicate attendee email resolved via asking, plus two successful Trello card creations (1); a genuinely empty-action-item case requiring explicit confirmation rather than silent omission (2); a user declining Trello creation after action items are already confirmed (3); a partial-failure case where one of two Trello calls fails and must not be silently masked or fabricated (4); the skill's documented time-mismatch correction rule combined with a non-attendance strikethrough (5); and an already-resolved ambiguous-initial case where the skill must use information already given rather than re-asking or guessing (6).",
+    "The `tool_calls` and `errors` fields on every run are `null`, not measured -- they aren't wired up in the executor/grader pipeline yet."
+  ]
+}
