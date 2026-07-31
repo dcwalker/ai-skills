@@ -15,6 +15,26 @@ Use `list-pr-checks.sh` to identify which PR checks are failing and why, then fi
 - Use when you've made code changes and need to ensure they pass CI
 - Use when preparing code for commit or pull request
 
+## Authorization context
+
+This skill can run under many surrounding environments: an interactive
+session, CI, another skill's hand-off, or a user profile carrying its own
+global rules (for example, a standing "ask before changing code" rule). The
+skill cannot know which of these apply, so resolve the tension locally:
+
+- An explicit request to fix failing checks (invoking this skill by name, or
+  wording like "fix the failing checks", "get CI green", "make the checks
+  pass") *is* the approval to make the code changes those fixes require.
+  Treat it as satisfying any ambient ask-before-changing rule; do not pause
+  to re-request permission the user has already given by asking.
+- A request that is only diagnostic ("why is CI failing?", "what's wrong
+  with the checks?") authorizes no code changes: report findings and
+  proposed fixes, and stop.
+- Pausing to ask remains right when the *fix itself* raises a new decision
+  the request did not cover: a fix that changes user-facing behavior,
+  requires an out-of-scope refactor, or conflicts with a project convention.
+  Ask about the specific decision, not for blanket permission to proceed.
+
 ## Instructions
 
 ### Phase 0: Read project conventions
