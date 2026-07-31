@@ -51,6 +51,15 @@ Work through each group following this workflow:
    - Include the SonarQube issue type, severity, and URL in the comment.
    - Do not suppress the issue without approval.
    - Suppressing SonarQube items requires user approval. Propose why suppression is appropriate and wait for confirmation before proceeding.
+   - When suppression IS approved (in the invoking request or a later
+     confirmation), apply the actual suppression mechanism (`# NOSONAR`, a
+     suppression annotation, or marking the hotspot reviewed/safe via the
+     API), not just an explanatory comment. Before categorizing the item as
+     Suppressed in the final report, verify the suppression exists: re-read
+     the file and confirm the annotation is present (or confirm the API
+     status change). If you deliberately chose documentation-only instead,
+     categorize the item as Documented, never Suppressed. The report must
+     describe what was actually done, not what was authorized.
 
 After processing each group, output a brief summary of what was done (issues fixed, issues marked invalid, commit SHA if applicable) before moving to the next group.
 
@@ -59,7 +68,7 @@ After processing each group, output a brief summary of what was done (issues fix
 After fixing all valid issues, provide a structured summary:
 
 1. **Fixed**: Count and list of issues fixed, with commit SHAs
-2. **Invalid/Suppressed**: Count and list of issues marked invalid, with reasons
+2. **Invalid/Suppressed/Documented**: Count and list of issues marked invalid, with reasons. Use *Suppressed* only for items where a suppression annotation or API status change was applied and verified present; use *Documented* for items handled with an explanatory comment only.
 3. **Unresolved**: Any issues that could not be addressed, with the reason
 4. **Statistics**: Total findings, total fixed, total invalid, total unresolved
 

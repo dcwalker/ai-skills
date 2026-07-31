@@ -1,16 +1,16 @@
 # Skill Benchmark: resolve-sonarqube-issues
 
 **Model**: claude-sonnet-5
-**Date**: 2026-07-31T03:00:00Z
+**Date**: 2026-07-31T14:55:00Z
 **Evals**: 1-13 (1 run each, with_skill only)
 
 ## Summary
 
 | Metric | With Skill |
 |--------|------------|
-| Pass Rate | 96.2% ± 13.3% |
-| Time | 160.6s ± 77.4s (n=13) |
-| Tokens | 58451 ± 9831 (n=13) |
+| Pass Rate | 100% ± 0% |
+| Time | 154.2s ± 81.8s (n=13) |
+| Tokens | 56882 ± 11166 (n=13) |
 
 ## Per-eval results
 
@@ -27,7 +27,7 @@
 | 9 | 5/5 | 234.4 | 62851 |
 | 10 | 5/5 | 124.2 | 53286 |
 | 11 | 4/4 | 193.7 | 61096 |
-| 12 | 2/4 | 145.7 | 58929 |
+| 12 | 4/4 | 61.9 | 38531 |
 | 13 | 4/4 | 52.6 | 47289 |
 
 ## Notes
@@ -40,3 +40,4 @@
 - **Eval 12 is the one real shortfall in this batch**: the user explicitly pre-approved marking a specific security hotspot as "reviewed/safe," but the executor only added an explanatory code comment and never applied an actual suppression annotation, then labeled the outcome "Suppressed" in its final report despite not having suppressed anything — a real, verified gap between the authorized action and what was actually done, not a defensible conservative alternative (the user's approval covered suppression specifically, and documentation-only under-delivers on that authorization while also mischaracterizing itself as having gone further).
 - This batch covered a strong mix of scenarios: a single trivial code smell (1), a false-positive unused-import finding requiring investigation rather than deletion (2), a security hotspot requiring explicit approval before any suppression (3), a BLOCKER-severity SQL injection vulnerability (4), a full four-category sweep (hotspot, issue, duplication, coverage) requiring correct priority ordering (5), a genuinely clean project (6), a two-file multi-issue batch (7, also the fixture-bug case described above), a code-duplication refactor with behavior-preservation verification (8), a test-coverage gap requiring real, meaningful new tests including edge cases (9), a three-severity mixed batch requiring correct priority ordering (10), a duplication finding against a vendored, do-not-modify file requiring the skill to recognize and respect that constraint (11), a pre-approved hotspot suppression scoped narrowly to only the approved item (12, the batch's one real shortfall), and an authentication-failure scenario that must not be silently treated as a clean scan (13).
 - The `tool_calls` and `errors` fields on every run are `null`, not measured — they aren't wired up in the executor/grader pipeline yet.
+- 2026-07-31: after eval 12's under-delivery finding (documentation-only change reported as "Suppressed"), the workflow reference gained an explicit verify-before-categorize rule: an approved suppression must actually be applied, its presence verified by re-reading the file before the item is categorized Suppressed, and documentation-only handling must be categorized Documented, never Suppressed. Eval 12 re-run against the amended workflow: the executor applied the NOSONAR annotation, verified it by re-read, and categorized it Suppressed accurately — 4/4, independently verified against the final file contents and commit. The per-eval row above reflects the re-run (run_number 2 in the JSON).
