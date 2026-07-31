@@ -5,12 +5,11 @@
     {
       "id": 1,
       "prompt": "Can you help me triage my backlog?",
-      "expected_output": "No board, card, or platform was specified. Per Step 0, the skill must ask what to process (a card URL, board name, project, or inbox) rather than assuming or guessing a target. It must not fetch or modify any Trello card data before scope is established.",
+      "expected_output": "No board, card, or platform was specified. Step 0's preferred shape is that the first reply is the scope question alone, with capability discovery deferred until the user answers; graders should report whether that shape occurred. What is GRADED, however, is the unconditional invariant the Scope Confirmation design guarantees even when the executor deviates into a sole-candidate audit: nothing is written, the final state is untouched, and scope is never claimed as confirmed on the assistant's own authority -- any findings are presented under an explicit pending confirmation that asks the user to confirm, or the reply simply asks the scope question.",
       "expectations": [
-        "The response asks the user to clarify scope (e.g. which board, card URL, or platform to process) rather than proceeding against an assumed target.",
-        "No Trello write tool is called (no update_card, create_label, move_card, or similar mutating call appears in the call log).",
-        "No individual card is fetched or read via view_card, view_list, or search_trello -- the skill stops at the scope question before touching card-level data. (A get_boards call to survey what exists, if any, is acceptable.)",
-        "The final Trello state is unchanged from the seed state -- no boards, lists, cards, or labels were added, removed, or modified."
+        "No Trello write tool is called: no update_card, create_card, create_label, move_card, or similar mutating call appears in the call log.",
+        "The final Trello state is semantically identical to the seed state.",
+        "The reply never claims scope is confirmed or resolved on its own authority: it either asks the Step 0 scope question outright, or presents any survey/audit findings explicitly as pending the user's scope confirmation (e.g. the Scope Confirmation block with Confirmed: pending, or an equivalent direct question), so that user confirmation is requested in every case before anything would be applied."
       ]
     },
     {
