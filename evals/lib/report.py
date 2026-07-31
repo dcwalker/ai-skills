@@ -13,7 +13,6 @@ Usage, from the repo root:
 
 import glob
 import json
-import os
 import sys
 
 
@@ -31,10 +30,22 @@ def main() -> int:
         plugin = path.split("plugins/")[1].split("/")[0]
         date = (d.get("metadata", {}).get("timestamp") or "?")[:10]
         runs = d.get("runs", [])
-        n_evals = len({r["eval_id"] for r in runs})
-        passed = sum(r["result"].get("passed", 0) for r in runs)
-        total = sum(r["result"].get("total", 0) for r in runs)
-        fully_passing = sum(1 for r in runs if r["result"].get("pass_rate") == 1.0)
+        # Aggregate per eval_id, not per run: a baseline may hold multiple
+        # runs of the same eval (run_number / runs_per_configuration), and an
+        # eval only counts as fully passing when every one of its runs passed
+        # every expectation. Integer passed/total comparison also avoids
+        # float equality on pass_rate.
+        evals = {}
+        for r in runs:
+            res = r["result"]
+            agg = evals.setdefault(r["eval_id"], {"passed": 0, "total": 0})
+            agg["passed"] += res.get("passed", 0)
+            agg["total"] += res.get("total", 0)
+        n_evals = len(evals)
+        passed = sum(a["passed"] for a in evals.values())
+        total = sum(a["total"] for a in evals.values())
+        fully_passing = sum(1 for a in evals.values()
+                            if a["total"] > 0 and a["passed"] == a["total"])
         rate = (passed / total * 100) if total else 0.0
         rows.append((skill, plugin, n_evals, fully_passing, passed, total, rate, date))
 
