@@ -40,6 +40,126 @@
       }
     },
     {
+      "issues": [
+        {
+          "key": "ISSUE-1001",
+          "rule": "python:S1481",
+          "severity": "MINOR",
+          "type": "CODE_SMELL",
+          "status": "OPEN",
+          "component": "eval-webapp:pricing.py",
+          "project": "eval-webapp",
+          "line": 6,
+          "message": "Remove this unused local variable 'unused_count'.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 6,
+            "startOffset": 0,
+            "endLine": 6,
+            "endOffset": 40
+          }
+        }
+      ],
+      "paging": {
+        "total": 1
+      }
+    },
+    {
+      "issues": [
+        {
+          "key": "ISSUE-1001",
+          "rule": "python:S1481",
+          "severity": "MINOR",
+          "type": "CODE_SMELL",
+          "status": "OPEN",
+          "component": "eval-webapp:pricing.py",
+          "project": "eval-webapp",
+          "line": 6,
+          "message": "Remove this unused local variable 'unused_count'.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 6,
+            "startOffset": 0,
+            "endLine": 6,
+            "endOffset": 40
+          }
+        }
+      ],
+      "paging": {
+        "total": 1
+      }
+    },
+    {
+      "issues": [
+        {
+          "key": "ISSUE-1001",
+          "rule": "python:S1481",
+          "severity": "MINOR",
+          "type": "CODE_SMELL",
+          "status": "OPEN",
+          "component": "eval-webapp:pricing.py",
+          "project": "eval-webapp",
+          "line": 6,
+          "message": "Remove this unused local variable 'unused_count'.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 6,
+            "startOffset": 0,
+            "endLine": 6,
+            "endOffset": 40
+          }
+        }
+      ],
+      "paging": {
+        "total": 1
+      }
+    },
+    {
+      "issues": [
+        {
+          "key": "ISSUE-1001",
+          "rule": "python:S1481",
+          "severity": "MINOR",
+          "type": "CODE_SMELL",
+          "status": "OPEN",
+          "component": "eval-webapp:pricing.py",
+          "project": "eval-webapp",
+          "line": 6,
+          "message": "Remove this unused local variable 'unused_count'.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 6,
+            "startOffset": 0,
+            "endLine": 6,
+            "endOffset": 40
+          }
+        }
+      ],
+      "paging": {
+        "total": 1
+      }
+    },
+    {
       "issues": [],
       "paging": {
         "total": 0

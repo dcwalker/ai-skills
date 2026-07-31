@@ -106,7 +106,11 @@ class SonarQubeClient:
         JSON response reused for every call, or a list of responses consumed in call order (the
         last entry repeats once exhausted) -- this lets a fixture represent a scan loop where the
         issue list shrinks across successive fetches as fixes land. Call counts are tracked in a
-        sibling `<fixture_file>.counts.json` file since each script invocation is a fresh process.
+        `<fixture_file>.counts.json` file since each script invocation is a fresh process. That
+        file is written under SONAR_FIXTURE_COUNTS_DIR when set (mirroring the gh-stub's
+        GH_STUB_COUNTS_DIR) so each eval trial gets its own isolated counter instead of sharing
+        one next to the fixture file in the repo -- multiple trials of the same eval (or repeat
+        runs) would otherwise silently corrupt each other's call-count state.
         """
         key = path.lstrip("/")
         fixtures = json.loads(open(fixture_file).read())
@@ -119,7 +123,11 @@ class SonarQubeClient:
         if not isinstance(entry, list):
             return entry
 
-        counts_path = fixture_file + ".counts.json"
+        counts_dir = os.environ.get("SONAR_FIXTURE_COUNTS_DIR")
+        if counts_dir:
+            counts_path = os.path.join(counts_dir, os.path.basename(fixture_file) + ".counts.json")
+        else:
+            counts_path = fixture_file + ".counts.json"
         counts = {}
         if os.path.exists(counts_path):
             try:

@@ -61,6 +61,78 @@
         "measures": [
           {
             "metric": "coverage",
+            "value": "30.0"
+          },
+          {
+            "metric": "lines_to_cover",
+            "value": "10"
+          },
+          {
+            "metric": "uncovered_lines",
+            "value": "7"
+          }
+        ]
+      }
+    },
+    {
+      "component": {
+        "measures": [
+          {
+            "metric": "coverage",
+            "value": "30.0"
+          },
+          {
+            "metric": "lines_to_cover",
+            "value": "10"
+          },
+          {
+            "metric": "uncovered_lines",
+            "value": "7"
+          }
+        ]
+      }
+    },
+    {
+      "component": {
+        "measures": [
+          {
+            "metric": "coverage",
+            "value": "30.0"
+          },
+          {
+            "metric": "lines_to_cover",
+            "value": "10"
+          },
+          {
+            "metric": "uncovered_lines",
+            "value": "7"
+          }
+        ]
+      }
+    },
+    {
+      "component": {
+        "measures": [
+          {
+            "metric": "coverage",
+            "value": "30.0"
+          },
+          {
+            "metric": "lines_to_cover",
+            "value": "10"
+          },
+          {
+            "metric": "uncovered_lines",
+            "value": "7"
+          }
+        ]
+      }
+    },
+    {
+      "component": {
+        "measures": [
+          {
+            "metric": "coverage",
             "value": "100.0"
           },
           {
