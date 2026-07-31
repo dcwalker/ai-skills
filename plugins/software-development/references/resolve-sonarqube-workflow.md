@@ -68,7 +68,7 @@ After processing each group, output a brief summary of what was done (issues fix
 After fixing all valid issues, provide a structured summary:
 
 1. **Fixed**: Count and list of issues fixed, with commit SHAs
-2. **Invalid/Suppressed/Documented**: Count and list of issues marked invalid, with reasons. Use *Suppressed* only for items where a suppression annotation or API status change was applied and verified present; use *Documented* for items handled with an explanatory comment only.
+2. **Invalid/Suppressed/Documented**: Count and list, with reasons, using these categories precisely. *Invalid* means the finding is a false positive: the rule does not actually apply here, and the code comment explains why the finding is wrong. *Suppressed* means a suppression annotation or API status change was applied and verified present. *Documented* means the finding is valid but was deliberately handled with an explanatory comment only, with the comment explaining why no fix or suppression was applied.
 3. **Unresolved**: Any issues that could not be addressed, with the reason
 4. **Statistics**: Total findings, total fixed, total invalid, total unresolved
 
