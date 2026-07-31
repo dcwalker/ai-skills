@@ -24,7 +24,7 @@ Before writing the description:
 - If it is short (under ~30 lines), show the full template to the user.
 - If it is long (30+ lines), summarize its sections briefly.
 - Ask: "A PR template was found. Do you want to use it as the base for the description?"
-  - If yes: use the template structure, filling in the relevant sections. Keep the final result scannable in under one minute.
+  - If yes: use the template structure, filling in the relevant sections. Keep the final result readable in under one minute.
   - If no: proceed with the standard description template below.
 
 ### 2. Confirm assignment
