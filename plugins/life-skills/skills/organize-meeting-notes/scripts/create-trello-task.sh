@@ -51,7 +51,11 @@ show_help() {
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --desc)
-      DESC="${2:-}"
+      if [[ $# -lt 2 ]]; then
+        echo "Error: --desc requires a value." >&2
+        exit 1
+      fi
+      DESC="$2"
       shift 2
       ;;
     -h|--help)
