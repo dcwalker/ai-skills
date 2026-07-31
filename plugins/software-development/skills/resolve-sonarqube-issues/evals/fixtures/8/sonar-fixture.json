@@ -93,6 +93,126 @@
       ]
     },
     {
+      "components": [
+        {
+          "key": "eval-webapp:app/discount_a.py",
+          "measures": [
+            {
+              "metric": "duplicated_lines",
+              "value": "3"
+            },
+            {
+              "metric": "lines",
+              "value": "7"
+            }
+          ]
+        },
+        {
+          "key": "eval-webapp:app/discount_b.py",
+          "measures": [
+            {
+              "metric": "duplicated_lines",
+              "value": "3"
+            },
+            {
+              "metric": "lines",
+              "value": "7"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "components": [
+        {
+          "key": "eval-webapp:app/discount_a.py",
+          "measures": [
+            {
+              "metric": "duplicated_lines",
+              "value": "3"
+            },
+            {
+              "metric": "lines",
+              "value": "7"
+            }
+          ]
+        },
+        {
+          "key": "eval-webapp:app/discount_b.py",
+          "measures": [
+            {
+              "metric": "duplicated_lines",
+              "value": "3"
+            },
+            {
+              "metric": "lines",
+              "value": "7"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "components": [
+        {
+          "key": "eval-webapp:app/discount_a.py",
+          "measures": [
+            {
+              "metric": "duplicated_lines",
+              "value": "3"
+            },
+            {
+              "metric": "lines",
+              "value": "7"
+            }
+          ]
+        },
+        {
+          "key": "eval-webapp:app/discount_b.py",
+          "measures": [
+            {
+              "metric": "duplicated_lines",
+              "value": "3"
+            },
+            {
+              "metric": "lines",
+              "value": "7"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "components": [
+        {
+          "key": "eval-webapp:app/discount_a.py",
+          "measures": [
+            {
+              "metric": "duplicated_lines",
+              "value": "3"
+            },
+            {
+              "metric": "lines",
+              "value": "7"
+            }
+          ]
+        },
+        {
+          "key": "eval-webapp:app/discount_b.py",
+          "measures": [
+            {
+              "metric": "duplicated_lines",
+              "value": "3"
+            },
+            {
+              "metric": "lines",
+              "value": "7"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "components": []
     }
   ],

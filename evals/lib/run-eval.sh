@@ -50,10 +50,19 @@ else
   mkdir -p "$WORKSPACE_DIR"
 fi
 
+SKILL_SCRIPTS_DIR="$(dirname "$SKILL_EVALS_DIR")/scripts"
+
 ENV_FILE="$RUN_DIR/env.sh"
 {
   echo "export WORKSPACE_DIR=\"$WORKSPACE_DIR\""
-  echo "export PATH=\"$SCRIPT_DIR/gh-stub:\$PATH\""
+  if [[ -d "$SKILL_SCRIPTS_DIR" ]]; then
+    # Real Claude Code sessions put an active skill's bundled scripts/ dir on
+    # PATH automatically; a subagent executor trial doesn't inherit that, so
+    # reproduce it here rather than relying on the executor to guess a path.
+    echo "export PATH=\"$SCRIPT_DIR/gh-stub:$SKILL_SCRIPTS_DIR:\$PATH\""
+  else
+    echo "export PATH=\"$SCRIPT_DIR/gh-stub:\$PATH\""
+  fi
   echo "export GH_STUB_LOG=\"$RUN_DIR/gh-calls.log\""
   echo "export GH_STUB_COUNTS_DIR=\"$RUN_DIR\""
 
@@ -63,6 +72,7 @@ ENV_FILE="$RUN_DIR/env.sh"
 
   if [[ -f "$FIXTURE_DIR/sonar-fixture.json" ]]; then
     echo "export SONAR_FIXTURE_FILE=\"$FIXTURE_DIR/sonar-fixture.json\""
+    echo "export SONAR_FIXTURE_COUNTS_DIR=\"$RUN_DIR\""
     echo "export SONAR_HOST_URL=\"https://sonar.invalid\""
     echo "export SONAR_TOKEN=\"eval-fixture-token\""
 
