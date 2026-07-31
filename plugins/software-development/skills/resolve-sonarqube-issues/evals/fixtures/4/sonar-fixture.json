@@ -40,6 +40,126 @@
       }
     },
     {
+      "issues": [
+        {
+          "key": "ISSUE-4001",
+          "rule": "python:S3649",
+          "severity": "BLOCKER",
+          "type": "VULNERABILITY",
+          "status": "OPEN",
+          "component": "eval-webapp:app/db.py",
+          "project": "eval-webapp",
+          "line": 5,
+          "message": "Change this code to not construct SQL queries directly from user-controlled data.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 5,
+            "startOffset": 0,
+            "endLine": 5,
+            "endOffset": 40
+          }
+        }
+      ],
+      "paging": {
+        "total": 1
+      }
+    },
+    {
+      "issues": [
+        {
+          "key": "ISSUE-4001",
+          "rule": "python:S3649",
+          "severity": "BLOCKER",
+          "type": "VULNERABILITY",
+          "status": "OPEN",
+          "component": "eval-webapp:app/db.py",
+          "project": "eval-webapp",
+          "line": 5,
+          "message": "Change this code to not construct SQL queries directly from user-controlled data.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 5,
+            "startOffset": 0,
+            "endLine": 5,
+            "endOffset": 40
+          }
+        }
+      ],
+      "paging": {
+        "total": 1
+      }
+    },
+    {
+      "issues": [
+        {
+          "key": "ISSUE-4001",
+          "rule": "python:S3649",
+          "severity": "BLOCKER",
+          "type": "VULNERABILITY",
+          "status": "OPEN",
+          "component": "eval-webapp:app/db.py",
+          "project": "eval-webapp",
+          "line": 5,
+          "message": "Change this code to not construct SQL queries directly from user-controlled data.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 5,
+            "startOffset": 0,
+            "endLine": 5,
+            "endOffset": 40
+          }
+        }
+      ],
+      "paging": {
+        "total": 1
+      }
+    },
+    {
+      "issues": [
+        {
+          "key": "ISSUE-4001",
+          "rule": "python:S3649",
+          "severity": "BLOCKER",
+          "type": "VULNERABILITY",
+          "status": "OPEN",
+          "component": "eval-webapp:app/db.py",
+          "project": "eval-webapp",
+          "line": 5,
+          "message": "Change this code to not construct SQL queries directly from user-controlled data.",
+          "author": "eval-fixture@localhost",
+          "creationDate": "2026-07-01T10:00:00+0000",
+          "updateDate": "2026-07-01T10:00:00+0000",
+          "resolution": "",
+          "effort": "5min",
+          "debt": "5min",
+          "textRange": {
+            "startLine": 5,
+            "startOffset": 0,
+            "endLine": 5,
+            "endOffset": 40
+          }
+        }
+      ],
+      "paging": {
+        "total": 1
+      }
+    },
+    {
       "issues": [],
       "paging": {
         "total": 0
