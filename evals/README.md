@@ -104,6 +104,27 @@ exists) and `TRELLO_FIXTURE_LOG` (one JSON line per call -- `{"text", "desc",
 "url"}` or `{"text", "desc", "error"}` -- for graders, mirroring `GH_STUB_LOG`).
 See the script's own header comment for the exact fixture JSON format.
 
+## Trials must not be able to reach a real service
+
+Every trial environment is a fail-closed one. This is the invariant to
+preserve when adding a stub, a fixture hook, or a bundled script:
+
+- `run-eval.sh` and `run-mcp-eval.sh` export `AI_SKILLS_EVAL=1` and `unset`
+  every real service credential inherited from the developer's shell
+  (`TRELLO_*`, `SONAR_*`, `GH_TOKEN`, `GITHUB_TOKEN`) before a trial starts.
+- A bundled script that can reach a real service checks `AI_SKILLS_EVAL` and
+  **refuses** when its fixture is absent. It must never treat a missing
+  fixture as "use the real API."
+- `gh-stub` is the reference: it refuses when `GH_STUB_CASSETTE` is unset and
+  never execs the real `gh`.
+
+A missing fixture file is an authoring oversight, and an oversight must fail
+loudly rather than quietly reach a live account. Before this was enforced,
+`create-trello-task.sh` selected its mode by the mere absence of
+`TRELLO_FIXTURE_FILE`; three evals had no `trello-fixture.json`, the
+developer's real Trello credentials were exported by their shell profile, and
+a trial created three real cards on a real personal board.
+
 ## MCP stub servers (Trello, Gmail, Jira)
 
 `triage` depends on real MCP tools (Trello, Gmail, and Jira) rather than a
