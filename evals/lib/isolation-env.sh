@@ -67,4 +67,8 @@ emit_isolation_env() {
   # does not need GH_TOKEN, so unsetting tokens does not stop it. Shadowing the
   # binary does: the stub refuses without a cassette and never execs real gh.
   echo "export PATH=\"$lib_dir/gh-stub:\$PATH\""
+
+  # Explicit: a caller under `set -e` must not inherit the exit status of
+  # whatever the last echo happened to be.
+  return 0
 }
