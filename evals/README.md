@@ -104,6 +104,39 @@ exists) and `TRELLO_FIXTURE_LOG` (one JSON line per call -- `{"text", "desc",
 "url"}` or `{"text", "desc", "error"}` -- for graders, mirroring `GH_STUB_LOG`).
 See the script's own header comment for the exact fixture JSON format.
 
+## Trials must not be able to reach a real service
+
+Every trial environment is a fail-closed one. This is the invariant to
+preserve when adding a stub, a fixture hook, or a bundled script:
+
+- Both harnesses emit the same preamble via `emit_isolation_env` in
+  [`isolation-env.sh`](lib/isolation-env.sh), which is the one place the
+  credential list lives. Add a service there, not in a harness.
+- That preamble exports `AI_SKILLS_EVAL=1`, `unset`s every real service
+  credential inherited from the developer's shell (`TRELLO_*`, `SONAR_*`,
+  `GH_TOKEN`/`GITHUB_TOKEN`, `ATLASSIAN_*`/`JIRA_*`), and prepends `gh-stub`
+  to `PATH`.
+- A bundled script that can reach a real service checks `AI_SKILLS_EVAL` and
+  **refuses** when its fixture is absent. It must never treat a missing
+  fixture as "use the real API." Both `create-trello-task.sh` and
+  `list-sonar-issues.py` do this.
+- `gh-stub` is the reference: it refuses when `GH_STUB_CASSETTE` is unset and
+  never execs the real `gh`.
+
+**Scrubbing credentials is necessary but not sufficient.** A CLI with its own
+stored auth ignores the environment entirely — `gh` authenticates from its
+keyring after `gh auth login` and does not need `GH_TOKEN` — so the stub has
+to shadow the binary on `PATH`. And `--strict-mcp-config` only governs MCP: a
+skill that documents a `curl` to a REST API (as `triage` does for Jira)
+bypasses it completely. Assume every trial can shell out.
+
+A missing fixture file is an authoring oversight, and an oversight must fail
+loudly rather than quietly reach a live account. Before this was enforced,
+`create-trello-task.sh` selected its mode by the mere absence of
+`TRELLO_FIXTURE_FILE`; three evals had no `trello-fixture.json`, the
+developer's real Trello credentials were exported by their shell profile, and
+a trial created three real cards on a real personal board.
+
 ## MCP stub servers (Trello, Gmail, Jira)
 
 `triage` depends on real MCP tools (Trello, Gmail, and Jira) rather than a
