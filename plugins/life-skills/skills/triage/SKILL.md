@@ -621,6 +621,16 @@ run. Do not present the same change in multiple places. Items with no
 proposed changes still appear in the summary, flagged as "No changes — looks
 complete. Mark reviewed?" rather than being dropped.
 
+Every item named in the summary is a hyperlink to itself: use the item's own
+web URL as returned by the platform (a Trello card's `url`/`shortUrl`, a Jira
+issue's browse URL, a Gmail thread's URL), so the heading reads
+`Proposed changes for [Book flights to Austin](https://trello.com/c/abc123):`
+rather than a bare title or a bare `PROJ-123`. The same applies to any card,
+issue, or thread mentioned elsewhere in the summary, including newly created
+Trello cards (Step 4c) and linked items. Only ever use a URL the platform
+actually returned — if an item's URL is unavailable, say so and name the item
+in plain text rather than constructing one.
+
 ```
 Proposed changes for [ITEM TITLE] ([KEY or URL]):
 
@@ -710,6 +720,8 @@ reference material.
   over. The user decides whether an item needs a change, not you by omission.
 - Never apply a change without explicit user confirmation.
 - Never invent facts, dates, names, or descriptions. Ask if unknown.
+- Refer to every card, issue, or thread by a hyperlink to the item itself,
+  never a bare title or key, and never a URL the platform did not return.
 - Always show the full draft of any comment, email, or new Trello card before
   writing it.
 - Preserve the user's voice in any drafted text.

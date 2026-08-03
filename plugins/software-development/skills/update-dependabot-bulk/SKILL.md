@@ -110,8 +110,10 @@ After committing, provide a structured summary:
 - Updated: each dependency updated with old version, new version, and which Dependabot PR(s) it supersedes
 - Transitive resolutions: each transitive package, which parent was updated, and the resolved version confirmed in yarn.lock
 - Test and lint results: whether all checks passed, and any failures encountered
-- Superseded PRs: full list of Dependabot PR numbers that can now be closed
+- Superseded PRs: full list of Dependabot PRs that can now be closed, each as a clickable link (`[#101](https://github.com/<owner>/<repo>/pull/101)`) using the `html_url` the GitHub API returned for that PR, not a bare `#101`
 - Issues: any problems encountered or dependencies that could not be updated
+
+Reference each Dependabot PR as a link wherever it appears in the report, including in the plan from Step 3. Use only the URLs the API returned; if a PR came back without one, cite its number in plain text rather than constructing a URL.
 
 ## Example Scenario
 

@@ -130,6 +130,17 @@
         "The response does not present or push a plan to apply the updates, and does not ask the user to approve a bulk update they didn't request.",
         "No `gh` write operations (e.g. commenting on or closing a PR) occurred -- only read/list calls."
       ]
+    },
+    {
+      "id": 13,
+      "prompt": "Batch the open Dependabot PRs into a single update -- I approve applying the consolidated plan once you've put it together. When you're done, give me the list of PRs I can close.",
+      "expected_output": "Two open Dependabot PRs (#301 bumping axios 0.27.2->0.27.3, #302 bumping left-pad 1.3.0->1.3.1) are both direct dependencies with patch-level bumps. The skill applies both in one commit, and the Step 8 report lists each superseded PR as a clickable link built from the html_url the API returned, not as a bare '#301'/'#302'.",
+      "expectations": [
+        "package.json's `axios` entry was changed to 0.27.3 and `left-pad` to 1.3.1; no other dependency entries changed and no new entries were added.",
+        "Exactly one new commit was created, and its message references both PR #301 and PR #302.",
+        "The final report's superseded-PR list presents each PR as a clickable link -- #301 to https://github.com/acme/webapp/pull/301 and #302 to https://github.com/acme/webapp/pull/302 -- rather than as bare numbers with no URL.",
+        "Each PR is linked to its own html_url as returned by the API; neither link points at a URL the API did not return."
+      ]
     }
   ]
 }

@@ -76,7 +76,7 @@ Invoke the `land-pr` skill to drive the PR to a green, mergeable state — it ha
 
 Summarize:
 
-- Branch name and PR URL.
+- Branch name, and the PR as a clickable link (`[#601](https://github.com/<owner>/<repo>/pull/601)`) using the URL `gh pr create`/`gh pr view` returned — not a bare `#601`. Link any ticket the work implements the same way.
 - Whether sub-agents were used for implementation, and for what.
 - QA rounds run, what was fixed, and what was pushed back on (with reasoning).
 - Final state handed back from `land-pr` (green/mergeable, or still blocked on specific items).
