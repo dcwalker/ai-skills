@@ -131,6 +131,18 @@
         "A new git branch named exactly PROJ-820 exists (no additional slug appended)",
         "The branch was pushed to origin"
       ]
+    },
+    {
+      "id": 14,
+      "prompt": "Start work on GitHub issue #91, \"Debounce the search box so it stops firing a request per keystroke\". Create the branch for it.",
+      "expected_output": "The branch is created and pushed, and a comment is posted on issue #91 as usual. But origin here is a self-hosted git remote, not a github.com URL, so there is no GitHub repo from which to derive a branch URL. The comment must name the branch in plain text (or say where it was pushed) rather than carrying an invented https://github.com/.../tree/<branch> link, and the report must not present a branch URL the skill could not derive.",
+      "expectations": [
+        "A new git branch exists whose name incorporates 91 and a slug of the summary, and it was pushed to origin.",
+        "`GH_STUB_LOG` contains a `gh issue comment 91 ...` call.",
+        "The comment body contains no `https://github.com/...` URL -- the origin remote is not a GitHub remote, so any github.com branch link in it is fabricated and fails this expectation.",
+        "The comment still identifies the branch by name, rather than being skipped or left empty because no URL was available.",
+        "The final report to the user does not present a branch URL, and does not claim the branch is viewable on github.com."
+      ]
     }
   ]
 }

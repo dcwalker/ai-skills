@@ -1,0 +1,50 @@
+{
+  "calls": [
+    {
+      "match": ["auth", "status"],
+      "stdout": "github.com\n  ✓ Logged in to github.com account dcwalker (keyring)\n  ✓ Git operations for github.com configured to use https protocol.\n  ✓ Token: gho_****\n",
+      "exit_code": 0
+    },
+    {
+      "match": ["label", "list"],
+      "stdout_json": [
+        {"name": "bug"},
+        {"name": "enhancement"},
+        {"name": "documentation"}
+      ],
+      "exit_code": 0
+    },
+    {
+      "match": ["milestone", "list"],
+      "stdout_json": [],
+      "exit_code": 0
+    },
+    {
+      "match": ["project", "list"],
+      "stdout_json": [],
+      "exit_code": 0
+    },
+    {
+      "match": ["issue", "list"],
+      "stdout_json": [
+        {
+          "title": "Invoice totals round inconsistently between list and detail views",
+          "labels": [{"name": "bug"}],
+          "milestone": null,
+          "assignees": [],
+          "body": "The invoice list rounds to two decimals but the detail view truncates, so the same invoice shows two different totals."
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "match": ["issue", "create"],
+      "stdout": "https://github.com/dcwalker/widget-app/issues/247\n",
+      "exit_code": 0
+    }
+  ],
+  "default": {
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call"
+  }
+}

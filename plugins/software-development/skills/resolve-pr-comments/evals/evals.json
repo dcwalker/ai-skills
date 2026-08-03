@@ -135,6 +135,18 @@
         "No reply or `resolveReviewThread`/`minimizeComment` GraphQL call appears anywhere in the gh call log.",
         "The final report does not claim to have fixed or resolved comment #3015 during this run (it was already resolved beforehand), and does not fabricate a new action against it."
       ]
+    },
+    {
+      "id": 13,
+      "prompt": "Resolve the PR comments on this branch.",
+      "expected_output": "Two comments on PR #64 are addressed: the off-by-one loop bound (`i <= items.length`) and the `Math.floor` call that CONTRIBUTING.md forbids for discount math. Each per-comment summary and the Final Report cite the comment as a link to its own URL (#discussion_r6401 and #discussion_r6402) rather than as a bare id, and the PR itself is cited as a link.",
+      "expectations": [
+        "src/discount.js's loop bound is changed to `i < items.length` and the `Math.floor` call is replaced with `Math.round`.",
+        "The final report references comment 6401 as a link to https://github.com/acme/widgets/pull/64#discussion_r6401 and comment 6402 as a link to https://github.com/acme/widgets/pull/64#discussion_r6402 -- bare ids with no URL fail this expectation.",
+        "Each comment is linked to its own URL; the two comments are not both pointed at the same link.",
+        "The report references PR #64 as a clickable link to https://github.com/acme/widgets/pull/64, not as a bare '#64'.",
+        "No comment URL appears that the tooling did not return for that comment."
+      ]
     }
   ]
 }

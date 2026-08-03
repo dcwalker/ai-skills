@@ -106,6 +106,18 @@
         "HOME-7's summary, status, labels, priority, assignee, and due date are unchanged in the final Jira state (a new comment on HOME-7 is permitted; field edits and transitions are not).",
         "The response summarizes what was captured consistently with the actual final state of both services."
       ]
+    },
+    {
+      "id": 10,
+      "prompt": "Please triage my 'Personal Tasks' Trello board, specifically the Inbox list. Go ahead and apply anything you're confident about without waiting for me to confirm each item individually -- just tell me afterward what you changed.",
+      "expected_output": "Two cards: 'taxes' has a vague title but a description with enough detail (2025 receipts, accountant, April filing deadline) to confidently rewrite it into a specific, action-oriented title and apply the board's existing 'finance' label. 'Renew passport before the September trip' is already clear and needs no changes. Whatever the skill proposes, every card it names in the summary is a hyperlink to that card's own Trello URL as returned by the MCP server, not a bare card title or card id.",
+      "expectations": [
+        "card-1's title is rewritten from the vague 'taxes' into something specific and action-oriented referencing the receipts/accountant/filing deadline.",
+        "The summary refers to card-1 as a hyperlink whose target is exactly https://trello.com/c/card-1/taxes -- the `url` the Trello MCP returned for that card. Naming it only as 'taxes', only by its new title, or only as 'card-1' with no URL fails this expectation.",
+        "The summary refers to card-2 as a hyperlink whose target is exactly https://trello.com/c/card-2/renew-passport, including in the 'no changes needed' note -- cards that needed no change are linked too, not demoted to plain text.",
+        "Every Trello URL in the response is one the MCP server actually returned; no card link is constructed from a guessed id or slug.",
+        "card-2 is not modified -- no update_card call targets card-2, and its final state (name, desc, labels, due) is unchanged from the seed."
+      ]
     }
   ]
 }
