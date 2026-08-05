@@ -105,6 +105,18 @@
         "No destructive or state-changing git command beyond read-only fetch/status checks appears in the transcript, since nothing needed fixing.",
         "The report includes the PR URL (https://github.com/example/widget-service/pull/509)."
       ]
+    },
+    {
+      "id": 10,
+      "prompt": "Land this PR -- drive it to mergeable.",
+      "expected_output": "Round 1 shows ci/test failing with its own check-run URL; after the fix the refreshed `gh pr view` reports CLEAN with everything passing. The step 4 report presents PR #510 as a clickable link built from the `url` field `gh pr view` returned, and names the ci/test check with its `detailsUrl` rather than as a bare check name.",
+      "expectations": [
+        "The report references the PR as a clickable link to https://github.com/example/widget-service/pull/510 -- the `url` field `gh pr view` returned -- not a bare '#510'.",
+        "The report names the ci/test check that was failing and links it to https://github.com/example/widget-service/actions/runs/51001, the detailsUrl it carried when it was red.",
+        "The report states the PR ended green and mergeable after one round of fixing.",
+        "`GH_STUB_LOG` contains no `gh pr merge` call.",
+        "No PR or check URL appears in the report that `gh pr view` did not return."
+      ]
     }
   ]
 }

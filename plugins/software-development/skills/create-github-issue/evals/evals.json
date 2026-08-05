@@ -109,6 +109,17 @@
         "The skill does not present a fabricated issue number or link as if creation succeeded.",
         "The skill offers a corrective next step (retry, check auth/permissions) consistent with the SKILL.md Error Handling section."
       ]
+    },
+    {
+      "id": 11,
+      "prompt": "File a bug in dcwalker/widget-app: the 'Export to PDF' button on the invoice detail page produces a PDF where every currency amount reads 'NaN'. It happens every time on invoices that contain a discount line, and never on invoices without one. Title: 'Invoice PDF export renders currency amounts as NaN when a discount line is present'. Label it 'bug'. This is a scripted, single-session interaction: after you show me the draft and ask for approval, my reply will be 'Yes, please create it.' Complete the flow through creation, then tell me where the issue ended up.",
+      "expected_output": "After the scripted approval the skill calls `gh issue create` and the stub prints https://github.com/dcwalker/widget-app/issues/247. Step 8 requires the result be shared as a clickable link, so the skill's closing message presents the issue as a hyperlink pointing at exactly that URL -- not a bare '#247', not an unlinked 'the issue was created', and not a URL it constructed instead of reading from the command's output.",
+      "expectations": [
+        "`GH_STUB_LOG` contains exactly one `gh issue create` call, and it appears after the draft and the scripted approval in the transcript.",
+        "The skill's closing message presents the created issue as a clickable link -- a Markdown hyperlink such as `[#247](https://github.com/dcwalker/widget-app/issues/247)`, or the bare URL itself. A response that names the issue only as `#247`, only by title, or only as 'created successfully' with no URL anywhere fails this expectation.",
+        "The link target is character-for-character the URL the stub returned (`https://github.com/dcwalker/widget-app/issues/247`). Any other issue number or URL is a fabricated result and fails.",
+        "No second, differently-numbered issue link appears anywhere in the response."
+      ]
     }
   ]
 }

@@ -121,6 +121,14 @@ After processing all comments, provide a structured summary:
 3. **Commits created**: List each commit SHA with a brief description
 4. **Unresolved**: Any comments that could not be addressed, with the reason
 
+Link every comment you name — in the per-comment summaries and in the final
+report — to its own URL (the `html_url`/`url` each comment carries in
+`list-pr-comments.sh` output, e.g.
+`https://github.com/<owner>/<repo>/pull/42#discussion_r3001`), so
+`[3001](https://.../pull/42#discussion_r3001)` rather than a bare `3001`. Do the
+same for the PR itself. Use only URLs the tooling returned; if a comment came
+back without one, say so rather than constructing a URL that may not resolve.
+
 ## Important Notes
 
 - Always review the script help content first to understand current options and usage.

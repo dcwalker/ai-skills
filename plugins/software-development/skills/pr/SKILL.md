@@ -68,6 +68,10 @@ gh pr create \
 
 Always use `--draft`. Never create a PR in ready-for-review state.
 
+### 5. Report back
+
+Report the PR as a clickable link — `[#101](https://github.com/<owner>/<repo>/pull/101)` — using the URL `gh pr create` printed, not a bare `#101`. Name any linked ticket as a hyperlink too. Never construct a PR URL that `gh` did not return.
+
 ---
 
 ## Updating a PR
@@ -120,6 +124,7 @@ Before finishing, confirm:
 - [ ] Title was reviewed and confirmed accurate against the description
 - [ ] Assignee was set or user explicitly declined
 - [ ] All related tickets are linked as hyperlinks in the description
+- [ ] The PR itself was reported back to the user as a hyperlink, not a bare number
 - [ ] Description has a value statement
 - [ ] Description reads in under one minute
 - [ ] tl;dr is present if the description is more than 3 bullet points

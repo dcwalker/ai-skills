@@ -1,0 +1,13 @@
+{
+  "calls": [
+    {
+      "match": ["issue", "comment", "91"],
+      "stdout": "https://github.com/example-org/demo-app/issues/91#issuecomment-1000000091\n",
+      "exit_code": 0
+    }
+  ],
+  "default": {
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call"
+  }
+}

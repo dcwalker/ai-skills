@@ -1,0 +1,35 @@
+{
+  "boards": {
+    "board-1": {"id": "board-1", "name": "Personal Tasks"}
+  },
+  "lists": {
+    "list-1": {"id": "list-1", "name": "Inbox", "board_id": "board-1"}
+  },
+  "cards": {
+    "card-1": {
+      "id": "card-1",
+      "name": "taxes",
+      "desc": "Gather the 2025 receipts and hand them to the accountant before the April filing deadline.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [],
+      "due": null,
+      "due_complete": false,
+      "url": "https://trello.com/c/card-1/taxes"
+    },
+    "card-2": {
+      "id": "card-2",
+      "name": "Renew passport before the September trip",
+      "desc": "Current passport expires in October.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [],
+      "due": null,
+      "due_complete": false,
+      "url": "https://trello.com/c/card-2/renew-passport"
+    }
+  },
+  "labels": {
+    "label-1": {"id": "label-1", "name": "finance", "color": "green", "board_id": "board-1"}
+  }
+}
