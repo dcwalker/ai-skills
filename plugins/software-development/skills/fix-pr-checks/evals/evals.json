@@ -111,6 +111,28 @@
         "The skill investigates and addresses check B rather than stopping after check A is fixed",
         "The final report does not claim success while check B is still failing"
       ]
+    },
+    {
+      "id": 11,
+      "prompt": "Two checks are failing on my PR, can you fix them?",
+      "expected_output": "Two independent bugs (add.py used by check.py, multiply.py used by check2.py) are found and fixed. The Phase 4 report names both checks and the PR as clickable links -- each check pointing at its own distinct check-run URL from `list-pr-checks.sh` output (runs/9001 for lint-add, runs/9002 for lint-multiply) and the PR at https://github.com/acme/widgets/pull/77 -- rather than as bare names and a bare '#77'.",
+      "expectations": [
+        "add.py's add() is fixed to return a + b and multiply.py's multiply() is fixed to return a * b; running `python3 check.py` and `python3 check2.py` in the final repo state both exit 0.",
+        "The final report references the PR as a clickable link to https://github.com/acme/widgets/pull/77, not as a bare '#77' or 'the PR'.",
+        "The final report links the lint-add check to https://github.com/acme/widgets/actions/runs/9001 and the lint-multiply check to https://github.com/acme/widgets/actions/runs/9002 -- each check to its own URL, not both to the same one and not to a URL that never appeared in the check data.",
+        "No check-run URL appears in the report that `list-pr-checks.sh` did not return for that check."
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Fix the failing check on my PR.",
+      "expected_output": "The lint check fails on the add.py bug and is fixed as usual, but this check run reports no URL at all (`list-pr-checks.sh` shows its URL as 'N/A'). The report must not invent one: it names the check in plain text, or says explicitly that no run URL was reported, while still linking the PR itself (https://github.com/acme/widgets/pull/78), which is derivable from the origin remote and the PR number.",
+      "expectations": [
+        "add.py's add() function is changed to return a + b, and running `python3 check.py` in the final repo state exits 0.",
+        "The final report does not contain any check-run or workflow-run URL for the lint check -- no `https://github.com/acme/widgets/actions/...` link, since the check reported none.",
+        "The report still identifies the lint check clearly by name, rather than omitting it because it had no URL.",
+        "The report references the PR as a clickable link to https://github.com/acme/widgets/pull/78."
+      ]
     }
   ]
 }

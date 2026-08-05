@@ -140,6 +140,18 @@
         "GH_STUB_LOG contains no `gh pr create` call",
         "The transcript reports to the user that there are no commits/changes on this branch to open a PR for"
       ]
+    },
+    {
+      "id": 15,
+      "prompt": "Open a PR for this branch.",
+      "expected_output": "The skill creates the draft PR with issue #77 linked as a hyperlink in the Related section, then reports back to the user with the created PR as a clickable link built from the URL `gh pr create` printed (https://github.com/example-org/demo-app/pull/205) -- not a bare '#205' and not a URL it invented.",
+      "expectations": [
+        "`GH_STUB_LOG` contains a `gh pr create` call with the `--draft` flag.",
+        "The `--body` value links issue #77 as a Markdown hyperlink to https://github.com/example-org/demo-app/issues/77, not a bare '#77'.",
+        "The skill's closing message to the user presents the created PR as a clickable link (Markdown hyperlink or bare URL) rather than only a number, a title, or 'PR created'.",
+        "The PR link target is exactly https://github.com/example-org/demo-app/pull/205 -- the URL `gh pr create` printed -- with no invented or altered PR number.",
+        "The closing message also refers to issue #77 as a hyperlink, not a bare '#77'."
+      ]
     }
   ]
 }

@@ -75,7 +75,7 @@ Summarize:
 
 - Rounds run and what each resolved (comments, SonarQube issues, checks, conflicts).
 - Final PR state: green and mergeable, or still blocked with specific remaining items.
-- The PR URL.
+- The PR as a clickable link — `[#501](https://github.com/<owner>/<repo>/pull/501)`, using the `url` field `gh pr view` returned, not a bare `#501`. Link every remaining blocked item the same way (a failing check to its check-run URL, an unresolved comment to its comment URL) so the user can go straight to it. Only use URLs `gh` actually returned; if an item came back without one, name it in plain text rather than constructing a URL.
 
 ## Important Notes
 

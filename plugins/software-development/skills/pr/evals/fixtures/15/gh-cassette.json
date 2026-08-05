@@ -1,0 +1,33 @@
+{
+  "calls": [
+    {
+      "match": ["pr", "view"],
+      "stderr": "no pull requests found for branch \"77-fix-invoice-rounding\"\n",
+      "exit_code": 1
+    },
+    {
+      "match": ["pr", "list"],
+      "stdout_json": [],
+      "exit_code": 0
+    },
+    {
+      "match": ["issue", "view", "77"],
+      "stdout_json": {
+        "number": 77,
+        "title": "Invoice totals round inconsistently between list and detail views",
+        "url": "https://github.com/example-org/demo-app/issues/77",
+        "state": "OPEN"
+      },
+      "exit_code": 0
+    },
+    {
+      "match": ["pr", "create"],
+      "stdout": "https://github.com/example-org/demo-app/pull/205\n",
+      "exit_code": 0
+    }
+  ],
+  "default": {
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call"
+  }
+}

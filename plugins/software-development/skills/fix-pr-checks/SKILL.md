@@ -93,6 +93,7 @@ After fixing all locally-reproducible failures:
 - List which checks were fixed and how.
 - Note any checks that were skipped and why (e.g. requires cloud secrets, infrastructure-only).
 - If a failure cannot be fixed after three attempts, stop and ask the user for guidance.
+- Reference the PR and every check run as a clickable link, not a bare number or name. The PR link can be built from the origin remote's owner/repo plus the PR number — `[#42](https://github.com/<owner>/<repo>/pull/42)`. A check-run link cannot: use the URL `list-pr-checks.sh` reported for that specific check, link each check to its own URL rather than reusing one across checks, and if a check reported no URL (shown as `N/A`), name the check in plain text and say its run URL wasn't reported instead of inventing one.
 
 ## Important Notes
 
