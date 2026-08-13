@@ -1,0 +1,14 @@
+{
+  "enabledPlugins": {
+    "life-skills@dcwalker-skills": true,
+    "software-development@dcwalker-skills": true
+  },
+  "extraKnownMarketplaces": {
+    "dcwalker-skills": {
+      "source": {
+        "source": "github",
+        "repo": "dcwalker/ai-skills"
+      }
+    }
+  }
+}

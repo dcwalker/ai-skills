@@ -1,0 +1,6 @@
+# Personal, machine-specific Claude Code overrides. `.claude/settings.json` is
+# shared and committed; `settings.local.json` is where a local override lives --
+# for example pointing the dcwalker-skills marketplace at a `directory` source
+# so a session loads the working tree instead of what is on GitHub. That source
+# records an absolute path, so it must never be committed.
+.claude/settings.local.json
