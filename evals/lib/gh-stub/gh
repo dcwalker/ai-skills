@@ -277,6 +277,42 @@ def _apply_jq(stdout: str, expression: str) -> str:
     return result.stdout
 
 
+_UNMATCHED = "gh-stub: no fixture entry matched: gh "
+
+
+def _respond_unmatched(cassette: dict, cassette_dir: Path, cassette_path: Path,
+                       argv_str: str, jq_expr: str) -> int:
+    """Handle a call no cassette entry matched, via `default` or a hard error."""
+    default = cassette.get("default")
+    if default is None:
+        sys.stderr.write(
+            _UNMATCHED + argv_str + "\n"
+            f"cassette: {cassette_path}\n"
+            "Add a `calls` entry (with \"match\" or \"match_regex\") to cover this invocation.\n"
+        )
+        return 1
+
+    has_stdout = any(k in default for k in ("stdout_file", "stdout_json", "stdout"))
+    sys.stdout.write(
+        _apply_jq(_resolve_stdout(default, cassette_dir), jq_expr) if has_stdout else ""
+    )
+    # Always announce the fallback, on top of whatever "stderr" the default
+    # carries. A default that exits non-zero is self-evident, but a permissive
+    # one (exit 0 with an empty list, say) is not: it hands back a plausible
+    # "nothing here" answer that reads exactly like real data. A skill can then
+    # skip a step it should have taken and still look correct, and a grader has
+    # no way to tell coverage from absence. Say which call went uncovered so
+    # the gap is visible in the trial itself.
+    sys.stderr.write(
+        _UNMATCHED + argv_str + "\n"
+        "gh-stub: responding from the cassette's `default`, which is a "
+        "coverage gap and not an answer about the world. If this call "
+        "belongs in the flow, add a `calls` entry for it.\n"
+    )
+    sys.stderr.write(default.get("stderr", ""))
+    return default.get("exit_code", 1)
+
+
 def main() -> int:
     argv = sys.argv[1:]
     argv_str = " ".join(argv)
@@ -337,33 +373,7 @@ def main() -> int:
             sys.stderr.write(stderr)
         return exit_code
 
-    default = cassette.get("default")
-    if default is not None:
-        sys.stdout.write(_apply_jq(_resolve_stdout(default, cassette_dir), jq_expr) if (
-            "stdout_file" in default or "stdout_json" in default or "stdout" in default
-        ) else "")
-        # Always announce the fallback, on top of whatever "stderr" the default
-        # carries. A default that exits non-zero is self-evident, but a
-        # permissive one (exit 0 with an empty list, say) is not: it hands back
-        # a plausible "nothing here" answer that reads exactly like real data.
-        # A skill can then skip a step it should have taken and still look
-        # correct, and a grader has no way to tell coverage from absence. Say
-        # which call went uncovered so the gap is visible in the trial itself.
-        sys.stderr.write(
-            f"gh-stub: no fixture entry matched: gh {argv_str}\n"
-            f"gh-stub: responding from the cassette's `default`, which is a "
-            f"coverage gap and not an answer about the world. If this call "
-            f"belongs in the flow, add a `calls` entry for it.\n"
-        )
-        sys.stderr.write(default.get("stderr", ""))
-        return default.get("exit_code", 1)
-
-    sys.stderr.write(
-        f"gh-stub: no fixture entry matched: gh {argv_str}\n"
-        f"cassette: {cassette_path}\n"
-        "Add a `calls` entry (with \"match\" or \"match_regex\") to cover this invocation.\n"
-    )
-    return 1
+    return _respond_unmatched(cassette, cassette_dir, cassette_path, argv_str, jq_expr)
 
 
 if __name__ == "__main__":
