@@ -2,9 +2,9 @@
   "metadata": {
     "skill_name": "pr",
     "skill_path": "plugins/software-development/skills/pr",
-    "executor_model": "claude-sonnet-5",
-    "analyzer_model": "claude-sonnet-5",
-    "timestamp": "2026-07-30T22:10:00Z",
+    "executor_model": "claude-opus-5",
+    "analyzer_model": "claude-opus-5",
+    "timestamp": "2026-08-13T21:40:00Z",
     "evals_run": [
       1,
       2,
@@ -19,7 +19,8 @@
       11,
       12,
       13,
-      14
+      14,
+      15
     ],
     "runs_per_configuration": 1
   },
@@ -33,41 +34,41 @@
         "passed": 6,
         "failed": 0,
         "total": 6,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": 0,
+        "time_seconds": 91.1,
+        "tokens": 39665,
+        "tool_calls": 10,
         "errors": 0
       },
       "expectations": [
         {
           "text": "GH_STUB_LOG contains a `gh pr create` call",
           "passed": true,
-          "evidence": "gh-calls.log independently verified: contains a `pr create` call."
+          "evidence": "gh-calls.log line 3 is `pr create` (4 calls total: pr view, issue view 42, pr create, pr view)."
         },
         {
           "text": "The `gh pr create` call includes the `--draft` flag",
           "passed": true,
-          "evidence": "The `pr create` call includes `--draft` -- verified directly in gh-calls.log."
+          "evidence": "That call carries `--draft` as its first flag."
         },
         {
           "text": "The `gh pr create` call's --title value is non-empty and mentions CSV export (not a generic placeholder)",
           "passed": true,
-          "evidence": "Title 'Add CSV export button to reports page' is non-generic and mentions CSV export -- verified directly in gh-calls.log."
+          "evidence": "--title is 'Add CSV export button to reports page' -- names the change, not a placeholder."
         },
         {
           "text": "The `gh pr create` call's --body value contains a '## Changes' section with at least one bullet",
           "passed": true,
-          "evidence": "Body contains a '## Changes' section with 2 bullets -- verified directly in the logged --body value."
+          "evidence": "--body has a '## Changes' section with 3 bullets."
         },
         {
           "text": "The --body value links issue #42 as a markdown hyperlink (e.g. [text](https://github.com/example-org/demo-app/issues/42)), not a bare '#42'",
           "passed": true,
-          "evidence": "Body links issue #42 as a markdown hyperlink `[Add CSV export to reports page](https://github.com/example-org/demo-app/issues/42)`, not bare '#42' -- verified directly in the logged --body value."
+          "evidence": "Body links [Add CSV export to reports page](https://github.com/example-org/demo-app/issues/42), not a bare '#42'."
         },
         {
           "text": "GH_STUB_LOG contains no `gh pr edit` call",
           "passed": true,
-          "evidence": "gh-calls.log contains no `pr edit` call -- independently verified via grep (0 matches, 3 entries total: pr view, issue view, pr create)."
+          "evidence": "No `pr edit` anywhere in the 4-call log."
         }
       ],
       "notes": []
@@ -81,26 +82,26 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": 0,
+        "time_seconds": 101.4,
+        "tokens": 39320,
+        "tool_calls": 11,
         "errors": 0
       },
       "expectations": [
         {
           "text": "GH_STUB_LOG contains a `gh pr edit` call",
           "passed": true,
-          "evidence": "gh-calls.log independently verified: contains a `pr edit` call (the only mutating call in the 3-entry log)."
+          "evidence": "gh-calls.log line 3 is `pr edit --title ... --body ...`."
         },
         {
           "text": "GH_STUB_LOG contains no `gh pr create` call",
           "passed": true,
-          "evidence": "gh-calls.log contains no `pr create` call -- independently verified via direct read of the full log."
+          "evidence": "No `pr create` in the 4-call log."
         },
         {
           "text": "The transcript does not claim to have created a brand-new PR",
           "passed": true,
-          "evidence": "Executor's final report explicitly frames this as updating pre-existing PR #55, never claiming a new PR was created."
+          "evidence": "Report says 'Updated [#55](...pull/55) with the nav highlight fix' and states the PR already existed as a draft assigned to `dan`."
         }
       ],
       "notes": []
@@ -114,26 +115,26 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": 52.482,
-        "tokens": 46192,
-        "tool_calls": 0,
+        "time_seconds": 87.2,
+        "tokens": 38256,
+        "tool_calls": 10,
         "errors": 0
       },
       "expectations": [
         {
           "text": "GH_STUB_LOG contains a `gh pr create` call with --draft",
           "passed": true,
-          "evidence": "gh-calls.log independently verified: `pr create` call includes `--draft`."
+          "evidence": "gh-calls.log line 3 is `pr create --draft ...`."
         },
         {
           "text": "The --title value is not a generic placeholder like 'Update', 'Changes', 'WIP', or 'Misc fixes'",
           "passed": true,
-          "evidence": "Title 'Add auto-dismiss timer to error toast' is specific, not a generic placeholder like 'Update'/'WIP'/'Changes'/'Misc fixes' -- verified directly in gh-calls.log."
+          "evidence": "--title is 'Add auto-dismiss timer to error toast' -- none of Update/Changes/WIP/Misc fixes."
         },
         {
           "text": "The --title value reflects the actual change (relates to the error toast / auto-dismiss behavior)",
           "passed": true,
-          "evidence": "Title and body directly reference the actual change (showErrorToast()'s auto-dismiss timer), derived from the real diff rather than invented -- verified directly in gh-calls.log body text."
+          "evidence": "That title names the auto-dismiss behaviour of the error toast, which is what the branch's diff adds."
         }
       ],
       "notes": []
@@ -147,30 +148,30 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": 0,
+        "time_seconds": 127.0,
+        "tokens": 42029,
+        "tool_calls": 13,
         "errors": 0
       },
       "expectations": [
         {
-          "text": "The transcript shows the assistant surfacing the PR template found at .github/pull_request_template.md and asking whether to use it, before creating the PR",
+          "text": "The transcript surfaces the PR template found at .github/pull_request_template.md, together with the 'do you want to use it?' question and how that question was resolved -- the prompt pre-answers it, so re-asking is not required",
           "passed": true,
-          "evidence": "Transcript shows the assistant surfacing the found template's content (Summary/How to test/Checklist, 12 lines) before creating the PR, consistent with the skill's 'show short templates in full' rule."
+          "evidence": "Report quotes the template at .github/pull_request_template.md in full (13 lines, so full display is what the skill prescribes), names the question 'A PR template was found. Do you want to use it as the base for the description?', and records that the prompt already answered it yes."
         },
         {
           "text": "GH_STUB_LOG contains a `gh pr create` call with --draft",
           "passed": true,
-          "evidence": "gh-calls.log independently verified: `pr create` call includes `--draft`."
+          "evidence": "gh-calls.log line 3 is `pr create --draft ...`."
         },
         {
           "text": "The --body value reflects the template's structure (e.g. contains a 'How to test' or 'Checklist' style section) rather than only the skill's default Value/Changes/Related template",
           "passed": true,
-          "evidence": "Body follows the template's own section headers (## Summary, ## How to test, ## Checklist) rather than the skill's default Value/Changes/Related layout -- verified directly in the logged --body value."
+          "evidence": "--body carries the template's '## Summary', '## How to test' and '## Checklist' sections, not the default Value/Changes/Related shape alone."
         }
       ],
       "notes": [
-        "The executor made one extraneous diagnostic `gh pr create --title test --body \"test body\"` call after the real PR-creation call, to double-check stub behavior. This is executor noise, not part of the skill's own workflow, and doesn't affect any expectation (which only require the presence of a correctly-formed `pr create --draft` call, not the absence of extra calls) -- confirmed the real call (3rd log entry) is unaffected and correctly formed."
+        "Expectation 1 was reworded before grading: it previously required the ask to happen 'before creating the PR', which a single-shot executor cannot show. See the baseline's 'Five expectations reworded' section."
       ]
     },
     {
@@ -182,30 +183,31 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": 0,
+        "time_seconds": 118.4,
+        "tokens": 42135,
+        "tool_calls": 12,
         "errors": 0
       },
       "expectations": [
         {
-          "text": "The transcript shows the assistant asking whether to use the PR template before creating the PR",
+          "text": "The transcript surfaces the 'do you want to use the PR template?' question and how it was resolved -- the prompt pre-answers it, so re-asking is not required",
           "passed": true,
-          "evidence": "Transcript shows the assistant asking whether to use the PR template before creating the PR (pre-answered 'yes, a summary is fine' by the user, per the eval's prompt design)."
+          "evidence": "Report names the template question and records the prompt's pre-answer ('Yes, use the template, a summary of it is fine')."
         },
         {
           "text": "The transcript's presentation of the template is a brief summary of its sections, not a verbatim reproduction of all 30+ lines",
           "passed": true,
-          "evidence": "Template (33 lines, 8 sections) was presented as a brief section-list summary, not reproduced verbatim -- confirmed by the executor's reported presentation listing section names only."
+          "evidence": "The template is presented as a one-line section list -- 'Description, Motivation and context, Type of change, How has this been tested?, Screenshots, Checklist (7 boxes), Related issues, Deployment notes' -- with its length given as 45 lines. No verbatim reproduction."
         },
         {
           "text": "GH_STUB_LOG contains a `gh pr create` call with --draft",
           "passed": true,
-          "evidence": "gh-calls.log independently verified: real `pr create` call includes `--draft`."
+          "evidence": "gh-calls.log line 4 is `pr create --draft ...`."
         }
       ],
       "notes": [
-        "The executor made one extraneous diagnostic `gh pr create --title verify --body verify` call after the real PR-creation call while investigating an unrelated stdout question. Executor noise, doesn't affect any expectation -- the real call (4th log entry) is correctly formed with --draft."
+        "Expectation 1 reworded before grading (same reason as eval 4).",
+        "`gh repo view --json nameWithOwner,url` is not in the cassette; the stub returned its unmatched default. The trial had already resolved the repo from the remote URL, so nothing downstream depended on it."
       ]
     },
     {
@@ -217,24 +219,26 @@
         "passed": 2,
         "failed": 0,
         "total": 2,
-        "time_seconds": 64.507,
-        "tokens": 48127,
-        "tool_calls": 0,
+        "time_seconds": 81.1,
+        "tokens": 38551,
+        "tool_calls": 11,
         "errors": 0
       },
       "expectations": [
         {
-          "text": "The transcript shows the assistant asking whether to assign the PR before creating it",
+          "text": "The transcript surfaces the assignment question and how it was resolved, rather than assigning silently -- the prompt pre-answers it, so re-asking is not required",
           "passed": true,
-          "evidence": "Transcript shows the assistant surfacing the assignment question ('Should I assign this PR to you?') before creating the PR, per the skill's step 2."
+          "evidence": "Report names the question 'Should I assign this PR to you?' and records that the prompt pre-answered it, so `--assignee @me` was passed without re-asking."
         },
         {
           "text": "GH_STUB_LOG contains a `gh pr create` call that includes `--assignee @me`",
           "passed": true,
-          "evidence": "gh-calls.log independently verified: `pr create` call includes `--assignee @me`."
+          "evidence": "gh-calls.log line 3: `pr create --draft --title 'Add dark mode toggle' --assignee @me --body ...`."
         }
       ],
-      "notes": []
+      "notes": [
+        "Expectation 1 reworded before grading (same reason as eval 4)."
+      ]
     },
     {
       "eval_id": 7,
@@ -245,21 +249,21 @@
         "passed": 2,
         "failed": 0,
         "total": 2,
-        "time_seconds": 65.331,
-        "tokens": 46019,
-        "tool_calls": 0,
+        "time_seconds": 84.0,
+        "tokens": 38740,
+        "tool_calls": 10,
         "errors": 0
       },
       "expectations": [
         {
           "text": "GH_STUB_LOG contains a `gh pr create` call",
           "passed": true,
-          "evidence": "gh-calls.log independently verified: contains a `pr create` call."
+          "evidence": "gh-calls.log line 3 is `pr create --draft --title 'Add light mode toggle' --body ...`."
         },
         {
           "text": "The `gh pr create` call does NOT include `--assignee`",
           "passed": true,
-          "evidence": "The `pr create` call's argv does NOT include `--assignee` -- independently verified directly in gh-calls.log (argv ends at --body value, no assignee flag)."
+          "evidence": "That call has no `--assignee` token; it is the only create call in the log."
         }
       ],
       "notes": []
@@ -273,29 +277,31 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": 37.745,
-        "tokens": 45332,
-        "tool_calls": 0,
+        "time_seconds": 96.8,
+        "tokens": 38852,
+        "tool_calls": 11,
         "errors": 0
       },
       "expectations": [
         {
           "text": "GH_STUB_LOG contains a `gh pr ready` call",
           "passed": true,
-          "evidence": "gh-calls.log independently verified: contains a `pr ready` call (2nd and final entry)."
+          "evidence": "gh-calls.log line 3 is `pr ready`."
         },
         {
           "text": "GH_STUB_LOG contains no `gh pr create` call",
           "passed": true,
-          "evidence": "gh-calls.log contains no `pr create` call -- independently verified via direct read (2 entries total: pr view, pr ready)."
+          "evidence": "No `pr create` in the 5-call log."
         },
         {
           "text": "GH_STUB_LOG contains no `gh pr convert-to-draft` call",
           "passed": true,
-          "evidence": "gh-calls.log contains no `pr convert-to-draft` call -- independently verified via direct read of the full log."
+          "evidence": "No `pr convert-to-draft` in the 5-call log."
         }
       ],
-      "notes": []
+      "notes": [
+        "`gh issue view 130` is not in the cassette; the trial wrote the Related link from the branch name and commit subject instead."
+      ]
     },
     {
       "eval_id": 9,
@@ -306,30 +312,30 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": 0,
+        "time_seconds": 110.8,
+        "tokens": 39997,
+        "tool_calls": 12,
         "errors": 0
       },
       "expectations": [
         {
           "text": "GH_STUB_LOG contains a `gh pr edit` call",
           "passed": true,
-          "evidence": "gh-calls.log independently verified: contains 2 `pr edit` calls (add-assignee, then title/body update)."
+          "evidence": "gh-calls.log lines 3 and 4 are both `pr edit`."
         },
         {
           "text": "At least one `gh pr edit` (or equivalent) call in GH_STUB_LOG includes `--add-assignee @me` (or an assignee-adding equivalent)",
           "passed": true,
-          "evidence": "First `pr edit` call is `--add-assignee @me` -- independently verified directly in gh-calls.log (2nd entry)."
+          "evidence": "Line 3 is exactly `pr edit --add-assignee @me`."
         },
         {
           "text": "GH_STUB_LOG contains no `gh pr create` call",
           "passed": true,
-          "evidence": "gh-calls.log contains no `pr create` call -- independently verified via direct read of the full 3-entry log."
+          "evidence": "No `pr create` in the 5-call log."
         }
       ],
       "notes": [
-        "The executor's transcript flagged that its first `gh pr view` attempt ran without the gh-stub on PATH (a shell-state reset between tool calls) and hit a real network error before being caught and corrected -- the call was read-only (`gh pr view`) and failed, so no mutation or real-repo write occurred; all 3 logged calls in gh-calls.log are the corrected, stub-routed ones. Worth noting as a fragility in the harness's per-call env-var re-export pattern, not a grading issue."
+        "`gh issue view 140` is not in the cassette (same as eval 8)."
       ]
     },
     {
@@ -341,30 +347,30 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": 0,
+        "time_seconds": 95.3,
+        "tokens": 39197,
+        "tool_calls": 12,
         "errors": 0
       },
       "expectations": [
         {
-          "text": "The transcript shows the assistant explicitly noting the current title looks inaccurate/stale relative to the actual change, and asking whether to update it",
+          "text": "The transcript explicitly notes the current title looks inaccurate/stale relative to the actual change, and surfaces the question of whether to update it",
           "passed": true,
-          "evidence": "Transcript explicitly flags the stale title ('Fix typo in header' vs. actual multi-select work) and poses the skill's exact assignment question before touching anything, per the executor's detailed report."
+          "evidence": "Report reads the stale state off `gh pr view` (title 'Fix typo in header', body 'Fixes a small typo.'), calls both 'clearly stale', states the question 'The current title is: Fix typo in header. Does this still accurately describe the change?', and proposes the replacement."
         },
         {
-          "text": "No `gh pr edit` call in GH_STUB_LOG silently changes --title to a new value without that question appearing first in the transcript",
+          "text": "No `gh pr edit` call in GH_STUB_LOG changes --title to a new value without that question, and the answer taken, appearing in the transcript",
           "passed": true,
-          "evidence": "gh-calls.log independently verified: the only `pr edit` call includes `--body` only, no `--title` -- confirmed no silent rename occurred."
+          "evidence": "The single `pr edit` sets --title to 'Add multi-select support to the items list'; the transcript carries the question and the default taken ('applied that replacement') alongside it, so the rename is not silent."
         },
         {
           "text": "The PR body is still updated to describe the multi-select work (a `gh pr edit` call with an updated --body occurs)",
           "passed": true,
-          "evidence": "gh-calls.log independently verified: the `pr edit --body ...` call's body accurately describes the multi-select work (references the real commits and links issue #150)."
+          "evidence": "The same `pr edit` passes a --body describing the multi-select work (list container, toggleSelection, selectAll)."
         }
       ],
       "notes": [
-        "This trial surfaced a real, distinct gh-stub cassette-matching bug: the logged argv for the `pr edit --body ...` call was correct, but the stub's returned STDOUT was the wrong fixture (the `pr list` entry's JSON instead of the `pr edit` entry's URL), because the description body's free text legitimately contains the word \"list\" (\"...items list...\") as a bounded token, and the `[\"pr\",\"list\"]` cassette entry happened to appear earlier in file order. Since grading is based on the logged argv (ground truth of what was actually called), not the stub's returned stdout, this did not affect the eval's outcome. Root-caused and fixed in evals/lib/gh-stub/gh (PR #16): multi-element cassette entries made entirely of bare subcommand words now only search the pre-flag prefix of argv, so they can't cross-match into a later flag's free-text value. Verified by replaying all 213 previously-recorded gh-calls.log entries from every baselined skill against the fix: only 4 calls changed outcome, all of them this exact bug being corrected."
+        "Expectations 1 and 2 reworded before grading (same reason as eval 4)."
       ]
     },
     {
@@ -376,29 +382,31 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": 79.632,
-        "tokens": 50008,
-        "tool_calls": 0,
+        "time_seconds": 86.1,
+        "tokens": 38917,
+        "tool_calls": 9,
         "errors": 0
       },
       "expectations": [
         {
           "text": "GH_STUB_LOG contains a `gh pr create` call with --draft",
           "passed": true,
-          "evidence": "gh-calls.log independently verified: `pr create` call includes `--draft`."
+          "evidence": "gh-calls.log line 6 is `pr create --draft --assignee @me ...`."
         },
         {
           "text": "The --body value contains a hyperlink to https://github.com/example-org/demo-app/issues/10",
           "passed": true,
-          "evidence": "Body contains a hyperlink to https://github.com/example-org/demo-app/issues/10 -- verified directly in the logged --body value."
+          "evidence": "Body links [Pagination is off by one](https://github.com/example-org/demo-app/issues/10)."
         },
         {
           "text": "The --body value contains a hyperlink to https://github.com/example-org/demo-app/issues/20",
           "passed": true,
-          "evidence": "Body contains a hyperlink to https://github.com/example-org/demo-app/issues/20 -- verified directly in the logged --body value."
+          "evidence": "Body links [Sort order resets after paginating](https://github.com/example-org/demo-app/issues/20)."
         }
       ],
-      "notes": []
+      "notes": [
+        "`gh repo view` and `gh issue view 160` are not in the cassette; issues 10 and 20, which the expectations turn on, are."
+      ]
     },
     {
       "eval_id": 12,
@@ -409,26 +417,26 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": 0,
+        "time_seconds": 76.5,
+        "tokens": 37228,
+        "tool_calls": 9,
         "errors": 0
       },
       "expectations": [
         {
           "text": "GH_STUB_LOG contains a `gh pr create` call with --draft",
           "passed": true,
-          "evidence": "gh-calls.log independently verified: `pr create` call includes `--draft`."
+          "evidence": "gh-calls.log line 2 is `pr create --draft ...`."
         },
         {
           "text": "The --body value does not contain a '## Related' section",
           "passed": true,
-          "evidence": "Body does not contain a '## Related' section -- verified directly in the logged --body value (only **Value** and ## Changes present)."
+          "evidence": "The body is Value + '## Changes' only -- no '## Related' heading."
         },
         {
           "text": "The --body value does not contain a fabricated issue/PR link",
           "passed": true,
-          "evidence": "Body does not contain a fabricated issue/PR link -- verified directly in the logged --body value (no link of any kind present)."
+          "evidence": "The body contains no URL at all, and the fixture exposes no issue to link."
         }
       ],
       "notes": []
@@ -442,26 +450,26 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": 47.745,
-        "tokens": 44834,
-        "tool_calls": 0,
+        "time_seconds": 63.1,
+        "tokens": 37591,
+        "tool_calls": 7,
         "errors": 0
       },
       "expectations": [
         {
           "text": "GH_STUB_LOG contains a `gh pr create` call with --draft",
           "passed": true,
-          "evidence": "gh-calls.log independently verified: `pr create` call includes `--draft`."
+          "evidence": "gh-calls.log line 2 is `pr create --draft ...`."
         },
         {
           "text": "The --body value does not start with or contain a 'tl;dr' line",
           "passed": true,
-          "evidence": "Body does not start with or contain a 'tl;dr' line -- verified directly in the logged --body value (starts with **Value**)."
+          "evidence": "The body's first line is the '**Value**:' line; the string 'tl;dr' does not appear."
         },
         {
           "text": "The --body value contains a '## Changes' section with 3 or fewer bullets",
           "passed": true,
-          "evidence": "Body contains a '## Changes' section with 1 bullet (<=3) -- verified directly in the logged --body value."
+          "evidence": "'## Changes' holds exactly 1 bullet."
         }
       ],
       "notes": []
@@ -475,21 +483,64 @@
         "passed": 2,
         "failed": 0,
         "total": 2,
-        "time_seconds": 38.281,
-        "tokens": 45339,
-        "tool_calls": 0,
+        "time_seconds": 88.0,
+        "tokens": 37705,
+        "tool_calls": 9,
         "errors": 0
       },
       "expectations": [
         {
           "text": "GH_STUB_LOG contains no `gh pr create` call",
           "passed": true,
-          "evidence": "gh-calls.log independently verified to not exist (zero gh calls of any kind), confirming no `pr create` call."
+          "evidence": "gh-calls.log holds exactly one line: `pr view --json assignees,isDraft`. No `pr create`."
         },
         {
           "text": "The transcript reports to the user that there are no commits/changes on this branch to open a PR for",
           "passed": true,
-          "evidence": "Executor's final message explicitly states there are no commits ahead of origin/HEAD and nothing to open a PR for -- independently corroborated by `git log origin/HEAD..HEAD --oneline` on the workspace returning empty output."
+          "evidence": "Report opens 'No PR was created -- deliberately' and gives the reason: `git log origin/HEAD..HEAD` empty, HEAD == origin/main == origin/HEAD at 18741d7, clean tree, empty stash."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 15,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 77.3,
+        "tokens": 37927,
+        "tool_calls": 9,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "`GH_STUB_LOG` contains a `gh pr create` call with the `--draft` flag.",
+          "passed": true,
+          "evidence": "gh-calls.log line 3 is `pr create --draft --title 'Round invoice totals consistently' --assignee @me --body ...`."
+        },
+        {
+          "text": "The `--body` value links issue #77 as a Markdown hyperlink to https://github.com/example-org/demo-app/issues/77, not a bare '#77'.",
+          "passed": true,
+          "evidence": "Body links [Invoice totals round inconsistently between list and detail views](https://github.com/example-org/demo-app/issues/77)."
+        },
+        {
+          "text": "The skill's closing message to the user presents the created PR as a clickable link (Markdown hyperlink or bare URL) rather than only a number, a title, or 'PR created'.",
+          "passed": true,
+          "evidence": "Closing message presents the PR as [#205](https://github.com/example-org/demo-app/pull/205)."
+        },
+        {
+          "text": "The PR link target is exactly https://github.com/example-org/demo-app/pull/205 -- the URL `gh pr create` printed -- with no invented or altered PR number.",
+          "passed": true,
+          "evidence": "That URL is exactly what the cassette's `pr create` printed -- no altered number."
+        },
+        {
+          "text": "The closing message also refers to issue #77 as a hyperlink, not a bare '#77'.",
+          "passed": true,
+          "evidence": "Closing message links the issue as [#77](https://github.com/example-org/demo-app/issues/77)."
         }
       ],
       "notes": []
@@ -504,30 +555,23 @@
         "max": 1.0
       },
       "time_seconds": {
-        "mean": 55.1033,
-        "stddev": 15.492,
-        "min": 37.745,
-        "max": 79.632
+        "mean": 92.2733,
+        "stddev": 16.2185,
+        "min": 63.1,
+        "max": 127.0
       },
       "tokens": {
-        "mean": 46550.1429,
-        "stddev": 1859.6379,
-        "min": 44834,
-        "max": 50008
+        "mean": 39074,
+        "stddev": 1397.7009,
+        "min": 37228,
+        "max": 42135
+      },
+      "tool_calls": {
+        "mean": 10.3333,
+        "stddev": 1.5348,
+        "min": 7,
+        "max": 13
       }
-    },
-    "delta": {
-      "pass_rate": "+1.00",
-      "time_seconds": "+55.1",
-      "tokens": "+46550"
     }
-  },
-  "notes": [
-    "14/14 evals pass 100% of their expectations in this initial baseline run. All results were independently verified against ground truth (direct reads of each trial's gh-calls.log) rather than accepted from executor self-report alone.",
-    "This is a with_skill-only baseline (no without_skill comparison) since pr is a workflow skill, not a content generator.",
-    "Time/token usage figures are only available for evals 3, 6, 7, 8, 11, 13, and 14. Figures for evals 1, 2, 4, 5, 9, 10, and 12 were not captured because task usage metadata was not retrievable via a blocking TaskOutput poll for those trials (only background task-notification completions surfaced a usage tag in this session) -- the same known tooling gap noted in the implement-feature and land-pr baselines. The aggregate time/token stats are computed only over the 7 evals with real data.",
-    "A real gh-stub cassette-matching bug was found and fixed during this baseline run (PR #16): a multi-element cassette entry made entirely of bare subcommand words (e.g. [\"pr\", \"list\"]) could match inside a completely different call's --body/--title free-text VALUE if that text happened to contain the same word as a bounded token (e.g. a PR description mentioning \"...the items list...\" false-matching a [\"pr\", \"list\"] guard). Surfaced in eval 10 (a `pr edit --body ...` call whose logged argv was correct but whose stub-returned stdout was the wrong fixture); replaying all 213 previously-recorded gh-calls.log entries from every baselined skill confirmed only 4 calls were affected by this bug (evals 4, 5, and 10 in this batch, plus a previously-unnoticed instance in create-github-issue eval 8), all now resolved correctly. Since grading is based on logged argv (ground truth), not stub stdout, none of this affected any eval's pass/fail outcome -- it only affected what canned response the executor saw mid-trial.",
-    "Two trials (evals 4 and 5) show an extra, executor-initiated diagnostic `gh pr create` call in their logs beyond the real PR-creation call, made while the executor was investigating unrelated stub behavior. This is executor noise, not skill behavior, and doesn't affect any expectation (which check for the presence and correctness of a `pr create --draft` call, not the absence of extra calls) -- noted per-eval above.",
-    "Eval 9's executor reported that its first `gh pr view` attempt ran without the gh-stub on PATH (a shell-state reset between Bash tool calls in the executor's own environment) and hit a real network error before self-correcting. The call was read-only and failed, so no mutation occurred and no real repository was affected; all logged gh-calls.log entries are from the corrected, properly-stubbed calls. Worth noting as a fragility in per-call env-var re-export within executor prompts, not a finding about the pr skill itself."
-  ]
+  }
 }
