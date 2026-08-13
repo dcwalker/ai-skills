@@ -1,9 +1,10 @@
 # Cache files
 
-Reference for the `writing` skill, Step 2. These are the two files in the
-style cache that a person writes and reads by hand, rather than ones the
-skill generates per request. Style cards and `index.md` are generated, and
-their formats stay in SKILL.md.
+Reference for the `writing` skill, Step 2: the format of every file in the
+style cache. `identity.md` and `general.md` are written and edited by hand;
+style cards and `index.md` are generated per request. The rules for deciding
+when to reuse a cached card and when to research again live in SKILL.md,
+because they are read on every run.
 
 ## identity.md
 
@@ -97,3 +98,37 @@ Rules for it:
   qualify, because those are exactly what audience changes.
 - **It is rung 5 evidence, cached.** Label it that way when it is used: it
   says how the user writes in general, never how they write to this person.
+
+## Style cards
+
+A stored card is the Step 6 block verbatim, including its `Built:` line. That
+line is the only record of how old a reading is, so a card written without it
+cannot be aged, refreshed, or honestly reused:
+
+```
+Built:       <date written> | newest sample <date> | rebuilt | reused from cache
+```
+
+Age is measured from the newest sample rather than the build date. A card
+rebuilt yesterday out of samples that all predate last spring is stale in the
+way that matters, because it describes how the user wrote a year ago. The
+build date is for telling the user how old the reading is when it gets reused.
+
+## index.md
+
+The searches ledger, one row per card, so a later session can tell what was
+already looked for without opening every card:
+
+```markdown
+| medium | audience | samples | rung | confidence | newest sample | built |
+|---|---|---|---|---|---|---|
+| email | peer (jordan@example.com) | 6 | 1 | high | 2026-07-30 | 2026-08-02 |
+
+Searches run: `in:sent to:jordan@example.com` (6 results, 2026-08-02)
+
+No samples found for: text message, any personal audience.
+```
+
+The "no samples found for" line matters as much as the rows. A search that
+came back empty is a result worth keeping, so the next session does not spend
+the same calls rediscovering that the corpus is not there.

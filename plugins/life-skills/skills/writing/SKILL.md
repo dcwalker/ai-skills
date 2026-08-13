@@ -123,44 +123,20 @@ index.md                          Searches already run and what they returned
 card-<medium>-<audience-slug>.md  One style card per (medium, audience) pair
 ```
 
-`identity.md` and `general.md` are the two a person writes and edits by
-hand, and they are the reason the cache is worth having. Their formats and
-rules are in [references/cache-files.md](references/cache-files.md): read it
-before writing either file, and before relying on what one of them says.
-In short, `identity.md` records the account identifiers that decide which
-samples are the user's, plus their org, team, and known relationships;
-`general.md` records only the traits that survive every audience, which is
-what a request with no card of its own falls back to.
+All four formats are in
+[references/cache-files.md](references/cache-files.md). Read it before writing
+any of these files, and before relying on what one of them says. In short:
+`identity.md` records the account identifiers that decide which samples are
+the user's, plus their org, team, and known relationships; `general.md`
+records only the traits that survive every audience, which is what a request
+with no card of its own falls back to; `index.md` is the ledger of searches
+already run, including the ones that came back empty.
 
-**A stored card is the Step 6 block verbatim**, including its `Built:` line.
-That line is the only record of how old a reading is, so a card written
-without it cannot be aged, refreshed, or honestly reused:
-
-```
-Built:       <date written> | newest sample <date> | rebuilt | reused from cache
-```
-
-**Age is measured from the newest sample, not from the build date.** A card
-rebuilt yesterday out of samples that all predate last spring is stale in the
-way that matters, because it describes how the user wrote a year ago. The
-build date is for telling the user how old the reading is when it gets reused.
-
-**`index.md`** is the searches ledger, one row per card, so a later session
-can tell what was already looked for without opening every card:
-
-```markdown
-| medium | audience | samples | rung | confidence | newest sample | built |
-|---|---|---|---|---|---|---|
-| email | peer (jordan@example.com) | 6 | 1 | high | 2026-07-30 | 2026-08-02 |
-
-Searches run: `in:sent to:jordan@example.com` (6 results, 2026-08-02)
-
-No samples found for: text message, any personal audience.
-```
-
-The "no samples found for" line matters as much as the rows. A search that
-came back empty is a result worth keeping, so the next session does not spend
-the same calls rediscovering that the corpus is not there.
+The one format detail the rules below depend on: a stored card carries a
+`Built:` line recording when it was written and how recent its newest sample
+is, and **age is measured from the newest sample, not the build date** -- a
+card rebuilt yesterday from samples that all predate last spring describes
+how the user wrote a year ago.
 
 The cache persists across sessions and days, because voice changes slowly and
 the research is the expensive part. To force a full rebuild, delete the
