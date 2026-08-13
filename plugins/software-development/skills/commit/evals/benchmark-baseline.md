@@ -36,8 +36,11 @@ Spreads are population standard deviations, matching the other baselines.
 
 Graded from final state — `git log`, the diff against each fixture's base commit,
 the committed file contents, and working-tree cleanliness — not from the
-executors' accounts. Two self-reports were checked against the harness and one
-was wrong; see Notes.
+executors' accounts. Two self-reports about the harness were also checked
+against it directly. One was wrong — the claim that the `gh` stub "exits 0 while
+printing its refusal to stdout" (see Notes; it exits 1 to stderr). One held up —
+the trials that reported `gh: command not found` really did have no stub on
+`PATH`, for the reason in finding 3.
 
 ## What the suite exercises well
 
