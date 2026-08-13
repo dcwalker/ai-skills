@@ -1,37 +1,192 @@
 # Skill Benchmark: implement-feature
 
-**Model**: claude-sonnet-5
-**Date**: 2026-07-30T21:15:00Z
-**Evals**: 1, 2, 3, 4, 5, 6, 7, 8, 9 (1 run each, with_skill only)
+**Model**: claude-opus-5
+**Date**: 2026-08-13T22:40:00Z
+**Evals**: 1-9 (1 run each, with_skill only)
 
 ## Summary
 
 | Metric | With Skill |
 |--------|------------|
-| Pass Rate | 100% ± 0% |
-| Time | 342.5s ± 343.7s (n=3; see Notes) |
-| Tokens | 67198 ± 23990 (n=3; see Notes) |
+| Expectations passed | 40/44 (91%) |
+| Evals fully passing | 8/9 |
+| Time | 603.5s ± 304.2s |
+| Tokens | 141,850 ± 56,060 |
+| Tool calls | 54.3 ± 21.2 |
+| QA rounds | 1.8 ± 1.0 |
+
+Time, tokens and tool calls are the **whole trial** — the executor plus every
+QA sub-agent it spawned — which is why they are three to four times the figures
+in the other baselines. The per-eval table splits them. Spreads are population
+standard deviations, the convention the other baselines use.
+
+This supersedes the 2026-07-30 baseline (sonnet, 9/9, timing captured for only
+3 of 9 trials). Its 100% is not directly comparable: eval 2 fails here, and the
+QA loop ran under a different sub-agent mechanism (see below).
 
 ## Per-eval results
 
-| Eval | Pass Rate | Time (s) | Tokens |
-|------|-----------|----------|--------|
-| 1 | 7/7 | — | — |
-| 2 | 5/5 | 20.3 | 43482 |
-| 3 | 5/5 | — | — |
-| 4 | 6/6 | — | — |
-| 5 | 5/5 | 704.3 | 91453 |
-| 6 | 4/4 | 302.9 | 66660 |
-| 7 | 4/4 | — | — |
-| 8 | 4/4 | — | — |
-| 9 | 4/4 | — | — |
+| Eval | Scenario | Passed | QA rounds | Time (s) | Tokens | Tool calls |
+|------|----------|--------|-----------|----------|--------|------------|
+| 1 | Full pipeline, no ticket | 7/7 | 1 | 377.2 | 98,970 | 37 |
+| 2 | Ambiguous request — clarify first | **1/5** | 0 | 260.3 | 58,952 | 25 |
+| 3 | Keyless branch name, no ticket comment | 5/5 | 2 | 448.7 | 135,701 | 46 |
+| 4 | QA raises out-of-scope work, push back | 6/6 | 2 | 579.7 | 145,171 | 60 |
+| 5 | Fix every QA issue, never push back | 5/5 | 3 | 1106.5 | 226,926 | 70 |
+| 6 | Never merge, and say so | 4/4 | 3 | 931.4 | 204,728 | 74 |
+| 7 | Feature plus README documentation | 4/4 | 1 | 327.6 | 95,336 | 36 |
+| 8 | Hand off to land-pr, red check clears | 4/4 | 3 | 1003.6 | 209,288 | 96 |
+| 9 | `gh pr ready` directly, not via the pr skill | 4/4 | 1 | 396.8 | 101,578 | 45 |
+
+Graded from final state — `git log`, the branch and origin refs, the committed
+file contents, the test suites run against them, and `gh-calls.log` — not from
+the executors' accounts. `check-trial-hygiene.sh` over all nine run dirs:
+`clean: no session trailers in 9 trial(s)`.
+
+## The QA sub-agents were brokered, and that is load-bearing
+
+Step 6 of this skill *is* fresh-context QA sub-agents, and eval 4 requires each
+round to be "a genuinely independent sub-agent invocation (not fabricated or
+simulated)". Executors in this environment have no `Agent` tool — probed on two
+agent types, absent from both the loaded and deferred tool lists — and `claude
+-p` from a shell is blocked by the permission classifier. The previous baseline
+notes its executors *did* have `Agent`; that capability is gone.
+
+Rather than let trials role-play their own reviewer, each round was brokered:
+
+1. The executor writes its complete QA prompt to `qa-round-N.md` in the run dir
+   — everything step 6a says that prompt must contain.
+2. It ends its turn with `QA-DISPATCH: <path>`.
+3. The orchestrator runs that file as a separate fresh-context agent, which sees
+   the executor's prompt and nothing else of the trial, and returns its findings
+   verbatim.
+
+The orchestrator authors nothing and edits nothing; it is a pipe. Sixteen QA
+agents ran across the nine trials, and the prompt files remain on disk, so round
+counts and prompt contents are gradeable from artifacts rather than narration.
+
+The reviews were not rubber stamps. Eval 5's round 2 caught a defect *introduced
+by a round-1 fix*: rendering floats at 12 significant digits made
+`describe(1e12, 1.0, "+")` print `1e+12 + 1.0 = 1e+12` — a string asserting that
+x + 1 = x. Round 3 caught the same family surviving above ~1e15 and proposed the
+fix that landed (prefer the rounded form only when it is strictly shorter than
+`repr`). Evals 5 and 8 both had committed `__pycache__/*.pyc` flagged as
+blocking. Eval 6's rounds concurred with four pushbacks after re-deriving them,
+and round 3 verified the round-2 test fixes actually fail against the pre-fix
+code rather than taking the summary's word.
+
+What this cannot show is the skill driving sub-agent spawning itself. Every
+round here was dispatched because the harness told the executor how; a trial with
+a real `Agent` tool might spawn fewer, more, or differently-scoped agents. Step
+2's *implementation* sub-agents were declined by all nine trials on the skill's
+own tie-breaker (one coupled module, no independent slices), so that branch is
+untested — by the fixtures, not by the brokering.
+
+## Eval 2 fails: the skill has no clarify-first step
+
+Given "Make the login better", the trial created branch
+`harden-login-credential-checks-and-input-validation`, committed `f8700f5`
+(PBKDF2 hashing, constant-time compare, input guards), pushed both to origin, and
+*then* asked what "better" meant — naming five distinct readings. It only asked
+because the fixture's cassette refused the `gh pr create`.
+
+That fails four of the five expectations: a branch exists, a commit exists, and
+`pr create` appears in the log. Only "no `pr merge`" holds.
+
+The clarifying question itself is good. The ordering is the defect, and it is the
+skill's: **SKILL.md has no step before "1. Create the branch"**, and nothing in
+it says to stop when the request underdetermines the work. The previous baseline
+scored this 5/5, which means passing it has been a property of the model, not of
+the instructions. A step 0 — restate the feature in one sentence, and if that
+cannot be done from the request, ask before creating anything — would make the
+pass mean what the eval intends.
+
+The fixture has a matching weakness: its guard is on `gh pr create`, three steps
+after the first irreversible action. A branch and a commit reach `origin` before
+anything stops the trial. A guard on the push would test the intent directly.
+
+## Defect: step 6a names a skill that cannot be invoked
+
+Step 6a and the `Skills Used` list tell the QA sub-agent it may invoke
+`review-code`. No such skill is invocable: the directory is
+`plugins/software-development/skills/review-code/` and its frontmatter says
+`name: review-code`, but the name agents actually see is `code-review`.
+
+Five QA agents and two executors hit this independently. Each declined to
+substitute a differently-named skill — correctly, since the skill's own Important
+Notes say sub-agents "must be given the exact skill names they're allowed to
+invoke" — and fell back to reading the diff by hand. On these 10-to-40-line diffs
+that cost nothing; on a large change the QA agent silently loses its structured
+pass. Two trials patched the name in their later rounds after the first round
+reported it.
+
+One QA agent added a detail worth keeping: `code-review` operates on the
+session's working directory, which is the harness repo, not the trial workspace.
+So even under the right name it would have reviewed the wrong tree from inside a
+trial.
+
+## Cassette gaps, one with teeth
+
+- **`gh pr edit` and `gh pr comment` are uncovered.** Eval 6 tried to add a
+  sentence to its PR body explaining an asymmetry QA had raised, and eval 8 tried
+  to record a squash-merge requirement in a PR comment. Both fell through to the
+  cassette default. These are the only two QA findings across the run that could
+  not actually be landed — the eval-6 body exists solely as a scratch file.
+- **`list-pr-checks.sh` contradicted `gh pr view`.** This run added
+  `delegates_to`, so the sub-skill scripts were on PATH for the first time and
+  `land-pr`'s hand-off used them for real. Their `gh api` and `gh api graphql`
+  calls are not in the cassette: while the rollup reported `ci/test` FAILURE,
+  `list-pr-checks.sh` returned `{"checks": []}` / "No status checks found", and
+  `list-pr-comments.sh` printed `Auto-detected PR #[]` with "Invalid JSON received
+  from GraphQL". A trial trusting the scripts alone would have concluded there was
+  nothing to fix. The previous baseline could not have seen this — without
+  `delegates_to` the scripts were never on PATH.
+- **`gh pr view` matches only on exact field lists**, so `--json
+  number,url,isDraft,assignees,title` and `--json comments,reviews` both miss.
+  Every QA agent reported the same blind spot: none could verify the PR's draft
+  state, body, or assignee, so PR *description* text went unreviewed in all
+  sixteen rounds.
+- **The default is `{"exit_code": 0, "stdout": "[]"}`** — lenient, unlike the
+  `pr` fixtures' exit-1 default. A gap therefore reads as an empty answer rather
+  than an error, which is how `Auto-detected PR #[]` happened.
+- `gh --version` is uncovered in most fixtures; harmless, but it prints a
+  coverage-gap warning on a routine probe.
+
+## The fixture has no `.gitignore`, and that is testing something by accident
+
+`README.md` and `CONTRIBUTING.md` both direct contributors to run `pytest`, which
+creates `__pycache__/`. With no `.gitignore`, a `git add -A` sweeps bytecode into
+the commit. Four trials hit it: eval 1 caught it in its own commit's file list and
+amended before pushing; evals 5 and 8 pushed it and had QA flag it as blocking,
+then fixed it (eval 8 added a `.gitignore`, eval 5 untracked the files and added
+one); evals 6 and 9 deleted the artifacts by hand each time.
+
+That is a real commit-hygiene test, and the trials mostly passed it — but no
+expectation grades it, and eval 5's executor noted that the `commit` skill's
+checklist has no build-artifact item, so only QA caught it. Either add a
+`.gitignore` to the fixture and stop testing it incidentally, or make it explicit.
+
+## Invariants
+
+No trial merged a PR: zero `pr merge` calls across all nine logs, and every
+fixture carries a guard entry that would have hard-failed one. Eval 3 made no
+`issue comment` call, confirming the ticket-comment step was skipped rather than
+attempted with an empty ticket. Every branch name was a slug of the feature —
+none contained an empty key or a `null-` placeholder. Every PR was created as a
+draft and only later readied; no trial called `gh pr ready` before `gh pr create
+--draft`. Where `statusCheckRollup` returned no `detailsUrl`, all six trials that
+reached `land-pr` named the check in plain text instead of constructing a URL.
 
 ## Notes
 
-- 9/9 evals pass 100% of their expectations in this initial baseline run. All results were independently verified against ground truth (git log/branch state, gh-calls.log contents, pytest runs, README diffs) rather than accepted from executor self-report alone.
-- This is a with_skill-only baseline (no without_skill comparison) since implement-feature is an orchestration/workflow skill, not a content generator.
-- This skill's own instructions require spawning fresh-context QA sub-agents as part of its normal operation (step 6's review loop). Executors in this baseline batch were run with full tool access (including the Agent tool) so they could do this for real, rather than simulating it — QA rounds in this batch are genuine independent sub-agent invocations, confirmed per-trial.
-- Time/token usage figures are only available for evals 2, 5, and 6. Figures for evals 1, 3, 4, 7, 8, and 9 were not captured, either because the underlying background-task usage metadata was not retrievable after this session was interrupted and restarted by a usage-limit reset partway through the batch (evals 7 and 8 resumed mid-flight from saved transcripts, spanning two process lifetimes), or because task usage metadata was not retrievable post-completion for tasks dispatched fresh in this session (evals 1, 3, 4, 9). The aggregate time/token stats above are computed only over the 3 evals with real data — they should not be read as representative of the other 6, and are a known gap for this baseline (unlike prior skills' baselines, which had complete timing data for every trial).
-- A real infrastructure bug in `evals/lib/gh-stub/gh` was found and fixed during this baseline run: cassette `"match"` entries required substring containment within a single argv token but did not require a word boundary, so a guard entry like `["pr","merge"]` (used across most fixtures to assert `gh pr merge` is never called) false-triggered against ordinary `gh pr view --json ...,mergeable,mergeStateStatus,...` calls, since "merge" is a substring of "mergeable". This blocked the documented land-pr hand-off call path in the first attempts at evals 1, 3, and 4. Fixed by requiring substring matches to land on a word boundary, verified with targeted unit tests plus a full replay of every previously-recorded real gh-calls.log from this and prior baselined skills' runs (81/81 previously-matching calls still resolve identically). Landed as a continuation of the existing gh-stub fix PR (#11), which also covers an earlier cross-token substring-matching fix found while baselining create-github-issue.
-- Eval 4's fixture and expectations were substantively redesigned mid-baseline after two real trials showed its original "QA disagreement persists to the 3-round cap" design was not achievable in practice: real fresh-context QA sub-agents legitimately reasoned their way to agreeing the user's explicit scope exclusion was valid, rather than mechanically sustaining the objection. The fixture now lets `pr ready` succeed unconditionally, and expectations grade transcript reasoning (genuine engagement with the scope exclusion, and internal consistency between the QA outcome and whether `pr ready` was called) instead of forcing one hard-coded outcome.
-- Evals 7 and 8 were interrupted mid-trial by a session usage-limit reset and successfully resumed via SendMessage against their saved agent transcripts, continuing from exactly where they left off (both had already committed their initial implementation and opened a draft PR before the interruption). Final results were independently re-verified against ground truth after resumption; only the timing/token figures for these two trials are a known gap, not the correctness of the results themselves.
+- with_skill only, no without_skill arm: `implement-feature` is an orchestration
+  skill.
+- Eval 8 is the only trial where `land-pr` did real work — its cassette serves
+  `mergeStateStatus: UNSTABLE` with a failing `ci/test` once, then CLEAN. The
+  other five reaching step 8 found the PR already green and correctly ran zero
+  rounds.
+- `reviewDecision: APPROVED` on a PR that left draft seconds earlier is fixture
+  convenience; eval 4's executor flagged it as unrealistic.
+- Eval 3's executor installed `pytest` with `pip` mid-trial, which succeeded —
+  the trial environment has outbound network. Not a failure here, but a trial
+  that can reach the internet is not fully isolated.
