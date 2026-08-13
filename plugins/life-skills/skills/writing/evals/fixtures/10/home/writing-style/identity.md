@@ -7,6 +7,8 @@ Code host: rokonkwo
 Org:      Othercorp, othercorp.example
 Team:     Data Platform
 
+Last verified: 2026-05-02
+
 ## Relationships
 
 jordan.blake@example.com: peer — former colleague
