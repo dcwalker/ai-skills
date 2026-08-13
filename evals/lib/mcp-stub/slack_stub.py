@@ -92,10 +92,41 @@ from mcp.server.mcpserver import MCPServer  # noqa: E402
 server = MCPServer("slack-stub")
 
 _NO_MORE = "End of results - No more pages available.\\n"
+_NOT_FOUND = "slack-stub: channel_not_found: "
+_DETAILED = "detailed"
+_SEARCH_HEADER = "# Search Results for: "
+_PUBLIC = "public_channel"
+_PAGINATION = "pagination_info"
+_RESULT = "### Result "
+
+
+def _search_body(query: str, section: str, rows: list) -> str:
+    """The shared shape of every search response: a header, then either the
+    no-results line or a `## <section> (N results)` block."""
+    if not rows:
+        return f"{_SEARCH_HEADER}{query}\n\nNo results found.\n"
+    return (f"{_SEARCH_HEADER}{query}\n\n## {section} ({len(rows)} results)\n"
+            + "".join(rows))
+
+
+def _search_response(body: str) -> dict:
+    return {"results": body, _PAGINATION: _NO_MORE}
+
+
+def _read_response(body: str, note: str) -> dict:
+    return {"messages": body, _PAGINATION: note}
 
 
 def _user(user_id: str) -> dict:
     return state.data["users"].get(user_id, {"id": user_id, "name": "", "real_name": "", "email": ""})
+
+
+def _require_channel(channel_id: str) -> dict:
+    """Resolve a channel or raise the server's own not-found error."""
+    channel = _channel(channel_id)
+    if channel is None:
+        raise ValueError(f"{_NOT_FOUND}{channel_id!r}")
+    return channel
 
 
 def _channel(channel_id: str) -> dict | None:
@@ -219,7 +250,7 @@ def _render_hit(index: int, total: int, channel: dict, message: dict,
     if replies:
         permalink += f"?thread_ts={message['ts']}&cid={channel['id']}"
     out = (
-        f"### Result {index} of {total}\n"
+        f"{_RESULT}{index} of {total}\n"
         f"Channel: #{channel['name']} (ID: {channel['id']})\n"
         f"From: {_sender(message, with_id_label=True)} \n"
         f"Time: {message.get('time', '')}\n"
@@ -234,14 +265,31 @@ def _render_hit(index: int, total: int, channel: dict, message: dict,
 
 
 def _render_hits(query: str, hits: list, include_context: bool) -> str:
-    if not hits:
-        return f"# Search Results for: {query}\n\nNo results found.\n"
-    body = f"# Search Results for: {query}\n\n## Messages ({len(hits)} results)\n"
-    seen = set()
+    seen, rows = set(), []
     for index, (channel, message) in enumerate(hits, start=1):
-        body += _render_hit(index, len(hits), channel, message, seen, include_context)
+        rows.append(_render_hit(index, len(hits), channel, message, seen, include_context))
         seen.add(message["ts"])
-    return body
+    return _search_body(query, "Messages", rows)
+
+
+def _searchable(channel_id: str, query: str) -> list:
+    """Messages in one channel that ordinary search can see. Thread replies
+    live in their thread, so they surface only for an explicit is:thread."""
+    wants_threads = "is:thread" in query.lower()
+    return [m for m in _messages_in(channel_id)
+            if wants_threads or not _is_thread_reply(m)]
+
+
+def _collect_hits(query: str, limit: int, sort_dir: str) -> list:
+    hits = []
+    for channel_id in state.data["messages"]:
+        channel = _channel(channel_id)
+        if channel is None:
+            continue
+        hits += [(channel, m) for m in _searchable(channel_id, query)
+                 if _matches(m, channel, query)]
+    hits.sort(key=lambda pair: pair[1]["ts"], reverse=(sort_dir != "asc"))
+    return hits[:min(limit, 20)]
 
 
 @server.tool()
@@ -258,7 +306,7 @@ def slack_search_public_and_private(
     only_my_channels: bool = False,
     max_context_length: int = 0,
     context_channel_id: str = "",
-    response_format: str = "detailed",
+    response_format: str = _DETAILED,
     before: str = "",
     after: str = "",
 ) -> dict:
@@ -266,23 +314,10 @@ def slack_search_public_and_private(
     channels, private channels, DMs, and group DMs. Supports a documented
     subset of Slack search syntax: in:, from:, is:thread, before:/after:/on:,
     quoted phrases, bare words, and '-' negation."""
-    hits = []
-    for channel_id, messages in state.data["messages"].items():
-        channel = _channel(channel_id)
-        if not channel:
-            continue
-        wants_threads = "is:thread" in query.lower()
-        for message in messages:
-            if _is_thread_reply(message) and not wants_threads:
-                continue
-            if _matches(message, channel, query):
-                hits.append((channel, message))
-    hits.sort(key=lambda pair: pair[1]["ts"], reverse=(sort_dir != "asc"))
-    hits = hits[:min(limit, 20)]
-
+    hits = _collect_hits(query, limit, sort_dir)
     body = _render_hits(query, hits, include_context)
 
-    result = {"results": body, "pagination_info": _NO_MORE}
+    result = _search_response(body)
     state.log_call("slack_search_public_and_private",
                    {"query": query, "limit": limit, "sort": sort,
                     "include_context": include_context}, result)
@@ -296,13 +331,11 @@ def slack_read_channel(
     cursor: str = "",
     oldest: str = "",
     latest: str = "",
-    response_format: str = "detailed",
+    response_format: str = _DETAILED,
 ) -> dict:
     """Reads messages from a Slack channel in reverse chronological order
     (newest first). To read DM history, use a user_id as channel_id."""
-    channel = _channel(channel_id)
-    if not channel:
-        raise ValueError(f"slack-stub: channel_not_found: {channel_id!r}")
+    channel = _require_channel(channel_id)
     messages = sorted((m for m in _messages_in(channel["id"]) if not _is_thread_reply(m)),
                       key=lambda m: m["ts"], reverse=True)[:limit]
 
@@ -323,8 +356,7 @@ def slack_read_channel(
             body += f"\nReactions: {rendered}"
         body += "\n"
 
-    result = {"messages": body.rstrip("\n"),
-              "pagination_info": "There are no more messages available.\n"}
+    result = _read_response(body.rstrip("\n"), "There are no more messages available.\n")
     state.log_call("slack_read_channel",
                    {"channel_id": channel_id, "limit": limit}, result)
     return result
@@ -338,13 +370,11 @@ def slack_read_thread(
     cursor: str = "",
     oldest: str = "",
     latest: str = "",
-    response_format: str = "detailed",
+    response_format: str = _DETAILED,
 ) -> dict:
     """Reads messages from a specific Slack thread (parent message + all
     replies), oldest first."""
-    channel = _channel(channel_id)
-    if not channel:
-        raise ValueError(f"slack-stub: channel_not_found: {channel_id!r}")
+    channel = _require_channel(channel_id)
     messages = _messages_in(channel["id"])
     parent = next((m for m in messages if m["ts"] == message_ts), None)
     if parent is None:
@@ -367,8 +397,7 @@ def slack_read_thread(
     for index, reply in enumerate(replies, start=1):
         body += f"\n--- Reply {index} of {len(replies)} ---\n{block(reply)}"
 
-    result = {"messages": body,
-              "pagination_info": "There are no more messages in this thread.\n"}
+    result = _read_response(body, "There are no more messages in this thread.\n")
     state.log_call("slack_read_thread",
                    {"channel_id": channel_id, "message_ts": message_ts}, result)
     return result
@@ -376,7 +405,7 @@ def slack_read_thread(
 
 @server.tool()
 def slack_search_users(query: str, limit: int = 20, cursor: str = "",
-                       response_format: str = "detailed") -> dict:
+                       response_format: str = _DETAILED) -> dict:
     """Search for Slack users by name, email, or profile attributes."""
     terms = query.lower().split()
     hits = []
@@ -388,64 +417,56 @@ def slack_search_users(query: str, limit: int = 20, cursor: str = "",
             hits.append(user)
     hits = hits[:min(limit, 20)]
 
-    if not hits:
-        body = f"# Search Results for: {query}\n\nNo results found.\n"
-    else:
-        body = f"# Search Results for: {query}\n\n## Users ({len(hits)} results)\n"
-        for index, user in enumerate(hits, start=1):
-            body += (
-                f"### Result {index} of {len(hits)}\n"
-                f"Name: {user.get('real_name', '')}\n"
-                f"User ID: {user.get('id', '')}\n"
-                f"Title: {user.get('title', '')}\n"
-                f"Email: {user.get('email', '')}\n"
-                f"Timezone: {user.get('timezone', '')}\n"
-                f"Profile Pic: [Photo](https://example.com/avatar/{user.get('id', '')}.jpg)\n"
-                f"Permalink: [link](https://example.slack.com/team/{user.get('id', '')})\n"
-                "\n---\n\n"
-            )
-    result = {"results": body, "pagination_info": _NO_MORE}
+    rows = []
+    for index, user in enumerate(hits, start=1):
+        rows.append(
+            f"{_RESULT}{index} of {len(hits)}\n"
+            f"Name: {user.get('real_name', '')}\n"
+            f"User ID: {user.get('id', '')}\n"
+            f"Title: {user.get('title', '')}\n"
+            f"Email: {user.get('email', '')}\n"
+            f"Timezone: {user.get('timezone', '')}\n"
+            f"Profile Pic: [Photo](https://example.com/avatar/{user.get('id', '')}.jpg)\n"
+            f"Permalink: [link](https://example.slack.com/team/{user.get('id', '')})\n"
+            "\n---\n\n")
+    result = _search_response(_search_body(query, "Users", rows))
     state.log_call("slack_search_users", {"query": query, "limit": limit}, result)
     return result
 
 
 @server.tool()
 def slack_search_channels(query: str, limit: int = 20, cursor: str = "",
-                          channel_types: str = "public_channel",
+                          channel_types: str = _PUBLIC,
                           include_archived: bool = False,
-                          response_format: str = "detailed") -> dict:
+                          response_format: str = _DETAILED) -> dict:
     """Search for Slack channels by name or description."""
     lowered = query.lower()
     hits = [c for c in state.data["channels"].values()
-            if c.get("type", "public_channel") != "im"
+            if c.get("type", _PUBLIC) != "im"
             and (lowered in c["name"].lower() or lowered in c.get("purpose", "").lower())
             and (include_archived or not c.get("is_archived"))][:min(limit, 20)]
 
-    if not hits:
-        body = f"# Search Results for: {query}\n\nNo results found.\n"
-    else:
-        body = f"# Search Results for: {query}\n\n## Channels ({len(hits)} results)\n"
-        for index, channel in enumerate(hits, start=1):
-            creator = _user(channel.get("creator", ""))
-            body += (
-                f"### Result {index} of {len(hits)}\n"
-                f"Name: #{channel['name']}\n"
-                f"Creator: {creator.get('real_name', '')} (<@{creator.get('id', '')})\n"
-                f"Created: {channel.get('created', '')}\n"
-                f"Purpose: {channel.get('purpose', '')}\n"
-                f"Permalink: [link](https://example.slack.com/archives/{channel['id']})\n"
-                f"Is Archived: {str(bool(channel.get('is_archived'))).lower()}\n"
-                f"Channel Type: {channel.get('type', 'public_channel')}\n"
-                "\n---\n\n"
-            )
-    result = {"results": body, "pagination_info": _NO_MORE}
+    rows = []
+    for index, channel in enumerate(hits, start=1):
+        creator = _user(channel.get("creator", ""))
+        rows.append(
+            f"{_RESULT}{index} of {len(hits)}\n"
+            f"Name: #{channel['name']}\n"
+            f"Creator: {creator.get('real_name', '')} (<@{creator.get('id', '')})\n"
+            f"Created: {channel.get('created', '')}\n"
+            f"Purpose: {channel.get('purpose', '')}\n"
+            f"Permalink: [link](https://example.slack.com/archives/{channel['id']})\n"
+            f"Is Archived: {str(bool(channel.get('is_archived'))).lower()}\n"
+            f"Channel Type: {channel.get('type', _PUBLIC)}\n"
+            "\n---\n\n")
+    result = _search_response(_search_body(query, "Channels", rows))
     state.log_call("slack_search_channels", {"query": query, "limit": limit}, result)
     return result
 
 
 @server.tool()
 def slack_read_user_profile(user_id: str = "", include_locale: bool = False,
-                            response_format: str = "detailed") -> dict:
+                            response_format: str = _DETAILED) -> dict:
     """Retrieves detailed profile information for a Slack user. Defaults to
     the current user if user_id is not provided."""
     me = state.data.get("me", {})
@@ -479,9 +500,7 @@ def slack_send_message(channel_id: str, message: str, thread_ts: str = "",
                        unfurl_app_links: bool = False) -> dict:
     """Sends a message to a Slack channel or user. To DM a user, use their
     user_id as channel_id."""
-    channel = _channel(channel_id)
-    if not channel:
-        raise ValueError(f"slack-stub: channel_not_found: {channel_id!r}")
+    channel = _require_channel(channel_id)
     me = state.data.get("me", {})
     existing = state.data["messages"].setdefault(channel["id"], [])
     ts = f"{1800000000 + len(existing)}.000100"
