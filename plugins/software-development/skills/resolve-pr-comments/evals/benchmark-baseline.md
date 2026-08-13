@@ -12,7 +12,7 @@
 | Expectation pass rate | 55/56 (98.2%) |
 | Time | 86.2s ± 15.6s (n=13) |
 | Tokens | 43,948 ± 1,400 (n=13) |
-| Tool calls | 10.4 ± 2.2 (n=13) |
+| Tool calls | 10.3 ± 2.2 (n=13) |
 
 The one non-passing expectation is a defect in the eval, not in the skill. See
 Findings.
@@ -25,14 +25,14 @@ Findings.
 | 2 | Question, not a defect: retry backoff rationale | 4/4 | 92.0 | 43,427 | 9 |
 | 3 | Already fixed before the run | 4/4 | 58.9 | 41,956 | 7 |
 | 4 | Scoped to bot comments only | 4/5 | 75.4 | 42,742 | 9 |
-| 5 | Scoped to human comments only | 4/4 | 93.3 | 43,531 | 11 |
+| 5 | Scoped to human comments only | 5/5 | 93.3 | 43,531 | 11 |
 | 6 | Two comments: one valid, one invalid | 5/5 | 93.6 | 44,110 | 11 |
-| 7 | No comments on the PR | 4/4 | 88.2 | 46,167 | 10 |
+| 7 | No comments on the PR | 3/3 | 88.2 | 46,167 | 10 |
 | 8 | Request that violates a project convention | 4/4 | 65.9 | 42,197 | 7 |
 | 9 | Magic number → shared constant | 4/4 | 99.5 | 43,999 | 12 |
 | 10 | Hardcoded credential | 4/4 | 83.9 | 43,485 | 12 |
-| 11 | Two independent valid defects | 4/4 | 108.7 | 45,821 | 14 |
-| 12 | Sole comment already resolved | 4/4 | 64.0 | 41,558 | 7 |
+| 11 | Two independent valid defects | 5/5 | 108.7 | 45,821 | 14 |
+| 12 | Sole comment already resolved | 3/3 | 64.0 | 41,558 | 7 |
 | 13 | Comment links in the report (added in #41) | 5/5 | 88.0 | 44,551 | 12 |
 
 Grading read each trial's final state — commits since the fixture baseline,
