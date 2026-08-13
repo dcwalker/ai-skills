@@ -1,0 +1,98 @@
+{
+  "skill_name": "writing",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Write an email to Jordan letting them know the staging deploy is blocked on the migration and that I need their review on the cache PR before end of day. Jordan is jordan.blake@example.com. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The skill searches the user's own sent mail scoped to Jordan, presents a style card citing those samples (tier 2 quick note: lowercase 'hey Jordan,' opening, ask in the first sentence, roughly 40 to 60 words, lowercase 'thanks / alex' sign-off) before any drafted email text, and then drafts an email carrying those markers. Nothing is written to the mailbox.",
+      "expectations": [
+        "At least one search_threads call in the Gmail call log is scoped to mail the user sent to Jordan (a query pairing in:sent or from:me with to:jordan.blake@example.com), rather than only an inbox or unscoped search.",
+        "A style card reporting the sample count, the audience it is scoped to, and a polish tier appears in the transcript before any drafted email text.",
+        "The card's observations match the sent samples: a lowercase 'hey Jordan,' opening, a lowercase sign-off in the 'thanks / alex' form, short length, and no em dashes.",
+        "The draft carries those markers and contains none of these: 'I hope this finds you well', 'I wanted to reach out', a closing offer of further help, an em dash, or a formal sign-off such as 'Best regards'.",
+        "The formal quoted reply chain inside the June 19 thread (Jordan's 'Kind regards' text) is not attributed to the user or reflected in the card as the user's own style.",
+        "No draft is created in Gmail: the drafts object in the final Gmail state is still empty."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Draft an email introducing myself to Dana Okafor at Riverbend Logistics as their new account contact. Her address is dana.okafor@riverbend.example. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "Finding no prior mail to Dana, the skill says so, infers an external-professional relationship, substitutes the user's mail to other external clients (Marcus Webb, Lena Ortiz), and names that substitution on the style card before drafting at the higher polish tier those samples show.",
+      "expectations": [
+        "The absence of any mail to dana.okafor@riverbend.example is established from the user's own sent mail before a fallback corpus is used, whether by a recipient-scoped query or by an enumeration of sent mail wide enough to cover it.",
+        "The transcript states explicitly that there are no samples for this recipient and names the substitution it made (mail to other external clients), rather than presenting a profile as if it were built on messages to Dana.",
+        "The style card is scoped to the external-professional class and reports the markers those samples actually show ('Hi <first name>,' opening, complete sentences, numbered items, 'Best, Alex Reyes' sign-off), not the peer markers from the Jordan mail in the same mailbox.",
+        "The draft follows the external-client conventions rather than the peer ones: it does not open with a lowercase 'hey Dana,' or close with the lowercase 'thanks / alex' sign-off.",
+        "The draft invents no facts about Dana, Riverbend, or the account beyond what the prompt supplies (no invented dates, contract terms, prior conversations, or predecessor's name)."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Write an email to my landlord asking them to get the water heater fixed. It has been out since Sunday.",
+      "expected_output": "The mailbox contains no mail the user wrote, so the skill reports the empty searches plainly, declines to present an evidence-backed style card, and asks for a pasted sample or offers a short calibration (polish tier, greeting preference, length) instead of quietly producing generic assistant prose.",
+      "expectations": [
+        "The Gmail call log shows at least one search of the user's own sent mail, and the transcript reports that it came back empty rather than omitting the failure.",
+        "No style card asserting observed habits (opening, sign-off, sentence length, vocabulary) is presented, since no samples were found; any card shown is explicitly labeled as having no evidence behind it.",
+        "The transcript asks the user to supply an example of their own writing, or offers an explicit calibration of polish tier, greeting, and length, rather than proceeding as if the voice were known.",
+        "If a draft is offered anyway, it is explicitly labeled as unresearched or uncalibrated, and it is not claimed to match the user's voice.",
+        "No draft is created in Gmail: the drafts object in the final Gmail state is still empty."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "I need to write an email about last night's outage.",
+      "expected_output": "Because voice is audience-dependent and no recipient was named, the skill asks who the email is for before researching a corpus or presenting a profile, and produces no draft.",
+      "expectations": [
+        "The reply asks who the email goes to, or which audience it is for, before any style card or drafted email text appears.",
+        "No drafted email text appears anywhere in the transcript.",
+        "The skill does not pick a recipient on its own from the topic (for example assuming the manager, the team, or affected customers) and does not present a style card scoped to an audience the user never confirmed.",
+        "Any corpus research it does perform is not used to justify a profile for an unconfirmed audience."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Two things please. First, a Slack message to Jordan (jordan.blake@example.com) saying the migration slipped to Thursday and asking them to hold the cache branch until then. Second, an email to Priya (priya.raman@example.com) summarizing the slip and what we are doing about it. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The skill builds two separately scoped profiles rather than one, says that no Slack source is connected and names the adjacent-medium substitution it used for the Slack piece, and produces two drafts that differ measurably in polish: a short informal note to Jordan and a bottom-line-first, short-bulleted email to Priya.",
+      "expectations": [
+        "Two distinct profiles appear, one scoped to the Slack message to Jordan and one to the email to Priya, rather than a single profile applied to both artifacts.",
+        "The transcript states that no Slack source is reachable in this session and names the substitution used for that artifact (short sent email to the same person as an adjacent medium), rather than implying Slack messages were read.",
+        "The two drafts differ in the ways the samples support: the Jordan message is short and informal with the observed lowercase opening and no bullet list, while the Priya email leads with the outcome and uses the observed short bullet list and 'Alex' sign-off.",
+        "No identical search_threads query is issued twice in the Gmail call log; research done for the first artifact is reused for the second rather than repeated.",
+        "No draft is created in Gmail: the drafts object in the final Gmail state is still empty."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Here is a draft another tool generated for an email to Marcus Webb at Northwind (mwebb@northwind.example). Make it sound like me.\n\nHi Marcus,\n\nI hope this email finds you well! I wanted to reach out and circle back regarding the sandbox credentials - I am pleased to report that our security team has now approved the request and the credentials are ready to go.\n\nYou will be able to leverage the sandbox for testing, validation, and training ahead of the 5 August walkthrough. I have included the details below, and I would be more than happy to jump on a call if that would be helpful.\n\nPlease don't hesitate to reach out if you have any questions!\n\nBest regards,\nAlex I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The skill researches the user's sent mail to Marcus first, presents the profile those samples support, and returns a rewrite that keeps every fact from the original while stripping the assistant tells and matching the observed external-client conventions.",
+      "expectations": [
+        "The Gmail call log shows a search for mail the user sent to mwebb@northwind.example before any rewrite is produced.",
+        "The rewrite removes the assistant tells present in the original: no 'I hope this email finds you well', no 'I wanted to reach out', no 'circle back', no 'leverage', no 'don't hesitate to reach out', and no rule-of-three list ('testing, validation, and training') unless the sent samples actually show that pattern.",
+        "Every fact in the original survives the rewrite (security team approved the request, credentials are ready, sandbox is available ahead of the 5 August walkthrough) and no new fact is introduced.",
+        "The rewrite keeps the external-client conventions the samples show ('Hi Marcus,' opening, complete sentences, an explicit next step, the 'Best, Alex Reyes' sign-off) rather than dropping to the informality of the peer mail in the same mailbox."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Don't go digging through my email for this, just write it: a quick email to Jordan asking if they can cover standup tomorrow, I have a dentist appointment.",
+      "expected_output": "The skill honors the explicit override, drafts without researching, and says once that the draft is unresearched, without presenting a style card or claiming the draft matches the user's voice.",
+      "expectations": [
+        "The Gmail call log contains no search_threads or get_thread calls: the instruction to skip the research was honored rather than overridden.",
+        "The transcript notes once, plainly, that the draft was written without researching the user's prior messages, and does not present an evidence-backed style card or claim the draft matches their voice.",
+        "A draft is still produced: the skill complies with the override rather than refusing or insisting on research first.",
+        "The draft adds no facts beyond the prompt (no invented appointment time, no invented stand-in, no invented agenda)."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Write my journal entry for today. The migration slipped to Thursday, I ran the incident call, and I am annoyed we did not catch it in staging. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "Recognizing the audience is the user themselves, the skill reads the existing entries under journal/ in the workspace rather than the mailbox, presents a profile of their observed conventions, and writes an entry that matches the format and blunt first-person tone while containing only the three facts given.",
+      "expectations": [
+        "The skill does not ask who the entry is addressed to: it treats the audience as the user themselves and proceeds.",
+        "The existing entries under journal/ in the workspace are read and used as the corpus; the profile is built from them rather than from the mailbox.",
+        "The profile and the entry match the observed conventions: a '# <date> <lowercase weekday>' title line, the lowercase '## what happened' and '## tomorrow' section headers used in the existing entries, first person, short paragraphs, and no greeting or sign-off.",
+        "The entry contains only the facts the user gave (the slip to Thursday, running the incident call, the annoyance about staging) with no invented meetings, names, or outcomes, and it does not soften the stated annoyance into upbeat framing the existing entries never use."
+      ]
+    }
+  ]
+}

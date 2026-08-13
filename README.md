@@ -12,7 +12,7 @@ Personal Claude Code plugins and skills, distributed as a plugin marketplace.
 
 ## Plugins
 
-- **life-skills** — Personal life-organization skills: `conduct-interview`, `organize-meeting-notes`, `triage`.
+- **life-skills** — Personal life-organization skills: `conduct-interview`, `organize-meeting-notes`, `triage`, `writing`.
 - **software-development** — Software development workflow skills: `analyze-logs`, `commit`, `create-branch`, `create-github-issue`, `fix-pr-checks`, `implement-feature`, `land-pr`, `pr`, `resolve-pr-comments`, `resolve-sonarqube-issues`, `review-code`, `review-readme`, `tidy-workspace`, `update-dependabot-bulk`.
 
 ## Usage
@@ -137,7 +137,8 @@ underlying data.
 **life-skills:**
 [conduct-interview](plugins/life-skills/skills/conduct-interview/evals/benchmark-baseline.md) ·
 [organize-meeting-notes](plugins/life-skills/skills/organize-meeting-notes/evals/benchmark-baseline.md) ·
-[triage](plugins/life-skills/skills/triage/evals/benchmark-baseline.md)
+[triage](plugins/life-skills/skills/triage/evals/benchmark-baseline.md) ·
+[writing](plugins/life-skills/skills/writing/evals/benchmark-baseline.md)
 
 **software-development:**
 [analyze-logs](plugins/software-development/skills/analyze-logs/evals/benchmark-baseline.md) ·
@@ -165,11 +166,12 @@ dates, and totals.
   prepares an isolated trial (scratch repo, stubs on `PATH`, fixture env
   vars); the executor is then a Claude subagent pointed at the prepared
   workspace.
-- MCP-backed skills (`triage`): trials must be real `claude -p` subprocesses,
-  so run `bash plugins/life-skills/skills/triage/evals/run-trials.sh` from a
-  logged-in terminal; it wires the MCP stubs via `evals/lib/run-mcp-eval.sh`
-  and saves per-trial transcripts, call logs, final state, and metrics for
-  grading.
+- MCP-backed skills (`triage`, `writing`): trials must be real `claude -p`
+  subprocesses. Run `bash evals/lib/run-mcp-trials.sh <skill-evals-dir>` from a
+  logged-in terminal (`triage` has its own equivalent driver at
+  `plugins/life-skills/skills/triage/evals/run-trials.sh`); it wires the MCP
+  stubs via `evals/lib/run-mcp-eval.sh` and saves per-trial transcripts, call
+  logs, final state, and metrics for grading.
 - One-time setup for the MCP stubs (isolated venv):
 
   ```bash
