@@ -214,10 +214,11 @@ loudly rather than quietly reach a live account. Before this was enforced,
 developer's real Trello credentials were exported by their shell profile, and
 a trial created three real cards on a real personal board.
 
-## MCP stub servers (Trello, Gmail, Jira)
+## MCP stub servers (Trello, Gmail, Jira, Slack)
 
-`triage` depends on real MCP tools (Trello, Gmail, and Jira) rather than a
-CLI on `PATH`, so it needs a different mocking seam than `gh`/Sonar. `evals/lib/mcp-stub/` holds real,
+`triage` and `writing` depend on real MCP tools (Trello, Gmail, Jira, and
+Slack) rather than a CLI on `PATH`, so they need a different mocking seam
+than `gh`/Sonar. `evals/lib/mcp-stub/` holds real,
 protocol-compliant MCP stdio servers (built on the official `mcp` Python SDK,
 not a hand-rolled JSON-RPC shim) that stand in for the real third-party
 server -- `trello_stub.py` implements the subset of Trello tools `triage`
@@ -225,12 +226,20 @@ actually calls, `gmail_stub.py` the six Gmail operations its email workflow
 (Step 4b) names, and `jira_stub.py` the Atlassian MCP's Jira subset
 (including the cloudId-discovery flow via getAccessibleAtlassianResources
 and a documented JQL subset that fails loudly on unsupported constructs),
-each backed by an in-memory fake "database" seeded from a fixture file. Tool names and parameter schemas were confirmed against
+and `slack_stub.py` the search and read operations a corpus-building skill
+calls, each backed by an in-memory fake "database" seeded from a fixture
+file. Tool names and parameter schemas were confirmed against
 live connected MCP servers, not guessed from prose, so a skill's real tool
 calls (including name-based list/board resolution and `update_card`'s batch
 form) match the stub instead of silently no-oping. Like the real Gmail MCP,
 `gmail_stub.py` deliberately has no send operation -- create_draft only
 stores a draft, so "sending stayed with the user" holds by construction.
+`slack_stub.py` goes the other way and can post, because the real connector
+can: a trial where a skill posts unasked has to be a finding about the skill
+rather than something the harness made impossible. It is also the one stub
+whose *responses* had to be copied rather than shaped, since Slack's tools
+return human-readable text in a thin JSON envelope with a different layout
+per tool, not structured objects.
 Its query subset also covers `in:sent`, `to:`, and `me` resolution (against
 an optional top-level `"me"` address in the fixture), which is what a corpus
 search for "mail I wrote to this person" needs; a fixture that declares no

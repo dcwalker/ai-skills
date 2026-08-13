@@ -114,8 +114,9 @@ against ground truth instead of trusting the executor's self-report.
 - Every trial runs in an isolated scratch environment. External systems are
   mocked at their natural seam: a fixture-driven fake `gh` CLI on `PATH` for
   GitHub-touching skills, opt-in fixture hooks for SonarQube and the Trello
-  CLI script, and real protocol-compliant MCP stub servers (Trello, Gmail, Jira) for
-  MCP-dependent skills, swapped in via `claude --strict-mcp-config`.
+  CLI script, and real protocol-compliant MCP stub servers (Trello, Gmail,
+  Jira, Slack) for MCP-dependent skills, swapped in via
+  `claude --strict-mcp-config`.
 - An executor runs the skill against the trial's prompt; grading then checks
   the actual final state: files and git history, stub call logs, and final
   stub-state snapshots diffed against the seed.
@@ -138,7 +139,7 @@ underlying data.
 [conduct-interview](plugins/life-skills/skills/conduct-interview/evals/benchmark-baseline.md) ·
 [organize-meeting-notes](plugins/life-skills/skills/organize-meeting-notes/evals/benchmark-baseline.md) ·
 [triage](plugins/life-skills/skills/triage/evals/benchmark-baseline.md) ·
-[writing](plugins/life-skills/skills/writing/evals/benchmark-baseline.md)
+writing (eval suite committed, baseline not yet established)
 
 **software-development:**
 [analyze-logs](plugins/software-development/skills/analyze-logs/evals/benchmark-baseline.md) ·
