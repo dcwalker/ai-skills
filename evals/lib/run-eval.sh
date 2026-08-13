@@ -84,18 +84,61 @@ else
   mkdir -p "$WORKSPACE_DIR"
 fi
 
-SKILL_SCRIPTS_DIR="$(dirname "$SKILL_EVALS_DIR")/scripts"
+SKILL_DIR="$(dirname "$SKILL_EVALS_DIR")"
+SKILLS_ROOT="$(dirname "$SKILL_DIR")"
+SKILL_SCRIPTS_DIR="$SKILL_DIR/scripts"
+
+# An orchestrating skill's own scripts/ dir is not enough. When it invokes a
+# sub-skill, a real session activates that sub-skill and puts ITS scripts/ dir
+# on PATH too -- so `land-pr`, which has no scripts of its own and exists to
+# delegate, needs `list-pr-comments.sh` and `list-pr-checks.sh` from
+# `resolve-pr-comments` and `fix-pr-checks`. Without them the sub-steps quietly
+# degrade to raw `gh` and the trial measures the fallback rather than the
+# skill. Declare the delegates in evals.json:
+#
+#   { "delegates_to": ["resolve-pr-comments", "fix-pr-checks"], "evals": [...] }
+#
+# Declared rather than inferred: parsing SKILL.md prose for skill names would
+# guess, and a typo that silently adds nothing reproduces the very bug this
+# fixes -- so an unresolvable name is a hard error here.
+DELEGATE_SKILLS=$(python3 -c "
+import json
+data = json.load(open('$SKILL_EVALS_DIR/evals.json'))
+print('\n'.join(data.get('delegates_to', [])))
+")
+
+FIXTURE_REPO=$(python3 -c "
+import json
+data = json.load(open('$SKILL_EVALS_DIR/evals.json'))
+print(data.get('repo', ''))
+")
+
+SCRIPTS_PATH=""
+add_scripts_dir() {
+  [[ -d "$1" ]] || return 0
+  if [[ -z "$SCRIPTS_PATH" ]]; then SCRIPTS_PATH="$1"; else SCRIPTS_PATH="$SCRIPTS_PATH:$1"; fi
+}
+
+add_scripts_dir "$SKILL_SCRIPTS_DIR"
+while read -r delegate; do
+  [[ -n "$delegate" ]] || continue
+  if [[ ! -d "$SKILLS_ROOT/$delegate" ]]; then
+    echo "run-eval: evals.json declares delegates_to \"$delegate\", but there is no skill at $SKILLS_ROOT/$delegate" >&2
+    exit 1
+  fi
+  add_scripts_dir "$SKILLS_ROOT/$delegate/scripts"
+done <<< "$DELEGATE_SKILLS"
 
 ENV_FILE="$RUN_DIR/env.sh"
 {
   echo "export WORKSPACE_DIR=\"$WORKSPACE_DIR\""
-  if [[ -d "$SKILL_SCRIPTS_DIR" ]]; then
+  if [[ -n "$SCRIPTS_PATH" ]]; then
     # Real Claude Code sessions put an active skill's bundled scripts/ dir on
     # PATH automatically; a subagent executor trial doesn't inherit that, so
     # reproduce it here rather than relying on the executor to guess a path.
     # emit_isolation_env below prepends the gh stub, so it still wins over any
     # real gh regardless of what this adds.
-    echo "export PATH=\"$SKILL_SCRIPTS_DIR:\$PATH\""
+    echo "export PATH=\"$SCRIPTS_PATH:\$PATH\""
   fi
   echo "export GH_STUB_LOG=\"$RUN_DIR/gh-calls.log\""
   echo "export GH_STUB_COUNTS_DIR=\"$RUN_DIR\""
@@ -135,6 +178,17 @@ ENV_FILE="$RUN_DIR/env.sh"
 
   if [[ -f "$FIXTURE_DIR/gh-cassette.json" ]]; then
     echo "export GH_STUB_CASSETTE=\"$FIXTURE_DIR/gh-cassette.json\""
+
+    # Same reasoning as the sandbox branch's GH_REPO above, for stub trials: a
+    # fixture's origin is a local bare repo, so anything deriving owner/repo
+    # from the remote gets a filesystem path. Declare the slug the cassette's
+    # responses are written against, in evals.json:
+    #
+    #   { "repo": "example/widget-service", "evals": [...] }
+    if [[ -n "$FIXTURE_REPO" ]]; then
+      echo "export GH_REPO=\"$FIXTURE_REPO\""
+      echo "export GITHUB_REPOSITORY=\"$FIXTURE_REPO\""
+    fi
   fi
 
   if [[ -f "$FIXTURE_DIR/sonar-fixture.json" ]]; then

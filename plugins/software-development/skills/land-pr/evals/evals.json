@@ -1,5 +1,11 @@
 {
   "skill_name": "land-pr",
+  "repo": "example/widget-service",
+  "delegates_to": [
+    "resolve-pr-comments",
+    "resolve-sonarqube-issues",
+    "fix-pr-checks"
+  ],
   "evals": [
     {
       "id": 1,
@@ -41,13 +47,15 @@
     {
       "id": 4,
       "prompt": "Keep working this PR until it's mergeable.",
-      "expected_output": "Every round's `gh pr view` reports the same failing `ci/test` check (mergeStateStatus UNSTABLE) -- the cassette never resolves it, simulating an issue fix-pr-checks cannot actually fix. The skill runs the full 5 rounds, then stops and reports the round cap was hit with `ci/test` still outstanding, rather than looping forever or falsely claiming success.",
+      "expected_output": "Each round resolves the check the previous one addressed and a new failing check appears in its place -- ci/lint, then ci/test, typecheck, integration, e2e -- so every round makes real progress and none of step 2f's early exits apply. The PR never reaches green. The skill runs the full 5 rounds, then stops at the cap and reports ci/security still outstanding, rather than looping forever or falsely claiming success.",
       "expectations": [
-        "The transcript shows 5 distinct rounds of the loop (fetch/sync + fix attempts + re-check), not fewer and not an unbounded number.",
-        "The final report explicitly states the 5-round cap was reached and ci/test is still failing -- it does not claim the PR is green or mergeable.",
+        "The loop runs 5 distinct rounds -- 6 `pr view` reads in gh-calls.log, the initial status plus one refresh per round -- and no more.",
+        "The skill does not stop early: each round found a new failing check and fixed the previous one, so none of step 2f's three early-exit cases (nothing to fix, a fix that did not take, no new information) is satisfied.",
+        "The final report states the 5-round cap was reached with ci/security still failing -- it does not claim the PR is green or mergeable.",
         "The report asks the user how to proceed rather than silently giving up or continuing past round 5.",
+        "The per-round summary names what each round resolved, so the progression across the five rounds is legible rather than reported as one flat outcome.",
         "The gh-stub log contains no `pr merge` call.",
-        "No more than 5 matches are consumed against the `pr view` cassette entry (i.e. the skill doesn't re-check status far more than once per round)."
+        "Each check named in the report is linked to the detailsUrl it carried, and the PR to https://github.com/example/widget-service/pull/504."
       ]
     },
     {
@@ -75,10 +83,10 @@
     {
       "id": 7,
       "prompt": "Please land this PR.",
-      "expected_output": "Round 1's `gh pr view` shows ci/test FAILURE (mergeStateStatus UNSTABLE). The skill invokes fix-pr-checks (or otherwise addresses it), then re-checks: the refreshed `gh pr view` now reports ci/test SUCCESS and mergeStateStatus CLEAN. The loop stops after round 2 and reports success.",
+      "expected_output": "Round 1's `gh pr view` shows ci/test FAILURE (mergeStateStatus UNSTABLE). The skill invokes fix-pr-checks (or otherwise addresses it), then re-checks: the refreshed `gh pr view` now reports ci/test SUCCESS and mergeStateStatus CLEAN, so the loop exits after a single round and reports success.",
       "expectations": [
-        "The loop runs exactly 2 rounds, not 5 -- it stops as soon as the second `gh pr view` comes back clean.",
-        "The per-round summary log (per the skill's 'log a one-line summary after each round' instruction) shows round 1 finding ci/test failing and round 2 finding it resolved.",
+        "The loop runs 1 round -- 2 `pr view` reads, the initial status and round 1's refresh, which is every state the cassette defines. It stops as soon as that refresh comes back clean rather than running up to 5.",
+        "The per-round summary log (per the skill's 'log a one-line summary after each round' instruction) shows the round finding ci/test failing and the refresh finding it resolved.",
         "The final report states the PR is now green/mergeable.",
         "The gh-stub log contains no `pr merge` call."
       ]
@@ -86,10 +94,10 @@
     {
       "id": 8,
       "prompt": "Drive this PR to mergeable -- there's a bit going on with it.",
-      "expected_output": "Round 1 shows both a real merge conflict (mergeable CONFLICTING) against config.py's VERSION line and a failing ci/test check. The skill resolves the conflict for real (fetch/merge/resolve/commit/push) in round 1; round 2's refresh shows the conflict resolved but ci/test still failing; round 3's refresh shows everything clean. The skill correctly continues looping across multiple concurrent blocker types instead of stopping after fixing only the first one it noticed.",
+      "expected_output": "Round 1 shows both a real merge conflict (mergeable CONFLICTING) against config.py's VERSION line and a failing ci/test check. The skill resolves the conflict for real (fetch/merge/resolve/commit/push) in round 1; round 1's refresh shows the conflict gone but ci/test still failing, so it keeps going; round 2's refresh shows everything clean. The skill correctly continues looping across multiple concurrent blocker types instead of stopping after fixing only the first one it noticed.",
       "expectations": [
         "config.py has no leftover conflict markers in the final state, and the branch history shows main's change ('Bump version to 1.2.0 on main') was merged in.",
-        "The loop runs 3 rounds (not fewer -- checks were still failing after the conflict fix in round 1; not 5 -- everything was clean by round 3).",
+        "The loop runs 2 rounds -- 3 `pr view` reads, which is every state the cassette defines (DIRTY+FAILURE, then UNSTABLE+FAILURE, then CLEAN+SUCCESS). Not 1: the check was still failing after the conflict fix, so round 1's refresh must not have been treated as green. Not 5: everything was clean by the end of round 2.",
         "The final report distinguishes what was fixed in which round (conflict in round 1, checks in round 2-3) rather than describing it as one flat step.",
         "The gh-stub log contains no `pr merge` call.",
         "No force-push or `--no-verify` appears in the transcript."

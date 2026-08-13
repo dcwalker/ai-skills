@@ -1,7 +1,135 @@
 {
   "calls": [
-    {"match": ["auth", "status"], "exit_code": 0},
-    {"match": ["pr", "view"], "exit_code": 1, "stderr": "no pull requests found for branch \"feature/no-pr-yet\"\n"}
+    {
+      "match": [
+        "auth",
+        "status"
+      ],
+      "exit_code": 0
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--json",
+        "comments,reviews"
+      ],
+      "stdout_json": {
+        "comments": [],
+        "reviews": []
+      }
+    },
+    {
+      "match": [
+        "reviewThreads"
+      ],
+      "stdout_json": {
+        "data": {
+          "repository": {
+            "pullRequest": {
+              "reviewThreads": {
+                "nodes": []
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "match": [
+        "pr",
+        "checks"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "no checks reported on this branch\n"
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--json",
+        "title"
+      ],
+      "stdout_json": {
+        "title": "Feature work",
+        "body": "",
+        "author": {
+          "login": "dev"
+        },
+        "headRefName": "HEAD",
+        "files": []
+      }
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--json",
+        "statusCheckRollup"
+      ],
+      "stdout_json": {
+        "statusCheckRollup": []
+      }
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--comments"
+      ],
+      "stdout": ""
+    },
+    {
+      "match": [
+        "run",
+        "view"
+      ],
+      "exit_code": 1,
+      "stderr": "no logs are available for this run\n"
+    },
+    {
+      "match": [
+        "/logs"
+      ],
+      "exit_code": 1,
+      "stderr": "gh: Not Found (HTTP 404)\n"
+    },
+    {
+      "match": [
+        "check-runs"
+      ],
+      "stdout_json": {
+        "total_count": 0,
+        "check_runs": []
+      }
+    },
+    {
+      "match": [
+        "/status"
+      ],
+      "stdout_json": {
+        "state": "success",
+        "statuses": []
+      }
+    },
+    {
+      "match": [
+        "run",
+        "list"
+      ],
+      "stdout": ""
+    },
+    {
+      "match": [
+        "pr",
+        "view"
+      ],
+      "stdout": ""
+    }
   ],
-  "default": {"exit_code": 0, "stdout": "[]"}
+  "default": {
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call"
+  }
 }
