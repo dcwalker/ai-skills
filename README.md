@@ -139,7 +139,7 @@ underlying data.
 [conduct-interview](plugins/life-skills/skills/conduct-interview/evals/benchmark-baseline.md) ·
 [organize-meeting-notes](plugins/life-skills/skills/organize-meeting-notes/evals/benchmark-baseline.md) ·
 [triage](plugins/life-skills/skills/triage/evals/benchmark-baseline.md) ·
-writing (eval suite committed, baseline not yet established)
+[writing](plugins/life-skills/skills/writing/evals/benchmark-baseline.md)
 
 **software-development:**
 [analyze-logs](plugins/software-development/skills/analyze-logs/evals/benchmark-baseline.md) ·
