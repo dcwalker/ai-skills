@@ -163,7 +163,8 @@ def _term_matches(message: dict, channel: dict, term: str) -> bool:
     return lowered.strip('"') in message["text"].lower()
 
 
-def _matches(message: dict, channel: dict, query: str) -> bool:
+def _split_terms(query: str) -> list:
+    """Split on spaces, except inside a "quoted phrase"."""
     terms, buffer, in_quotes = [], "", False
     for char in query:
         if char == '"':
@@ -177,12 +178,13 @@ def _matches(message: dict, channel: dict, query: str) -> bool:
             buffer += char
     if buffer:
         terms.append(buffer)
+    return terms
 
-    for term in terms:
-        if term.startswith("-"):
-            if _term_matches(message, channel, term[1:]):
-                return False
-        elif not _term_matches(message, channel, term):
+
+def _matches(message: dict, channel: dict, query: str) -> bool:
+    for term in _split_terms(query):
+        negated = term.startswith("-")
+        if _term_matches(message, channel, term[1:] if negated else term) == negated:
             return False
     return True
 
@@ -206,6 +208,40 @@ def _render_context(channel_id: str, message: dict, seen: set) -> str:
             else:
                 out += f"- {head} \n  Message_ts: {neighbour['ts']}\n  {neighbour['text']}\n"
     return out
+
+
+def _render_hit(index: int, total: int, channel: dict, message: dict,
+                seen: set, include_context: bool) -> str:
+    """One `### Result i of N` block, laid out as the live server lays it out."""
+    replies = _reply_count(channel["id"], message["ts"])
+    permalink = (f"https://example.slack.com/archives/{channel['id']}"
+                 f"/p{message['ts'].replace('.', '')}")
+    if replies:
+        permalink += f"?thread_ts={message['ts']}&cid={channel['id']}"
+    out = (
+        f"### Result {index} of {total}\n"
+        f"Channel: #{channel['name']} (ID: {channel['id']})\n"
+        f"From: {_sender(message, with_id_label=True)} \n"
+        f"Time: {message.get('time', '')}\n"
+        f"Message_ts: {message['ts']}\n"
+    )
+    if replies:
+        out += f"Reply count: {replies}\n"
+    out += f"Permalink: [link]({permalink})\nText: \n{message['text']}\n"
+    if include_context:
+        out += _render_context(channel["id"], message, seen)
+    return out + "\n---\n\n"
+
+
+def _render_hits(query: str, hits: list, include_context: bool) -> str:
+    if not hits:
+        return f"# Search Results for: {query}\n\nNo results found.\n"
+    body = f"# Search Results for: {query}\n\n## Messages ({len(hits)} results)\n"
+    seen = set()
+    for index, (channel, message) in enumerate(hits, start=1):
+        body += _render_hit(index, len(hits), channel, message, seen, include_context)
+        seen.add(message["ts"])
+    return body
 
 
 @server.tool()
@@ -244,31 +280,7 @@ def slack_search_public_and_private(
     hits.sort(key=lambda pair: pair[1]["ts"], reverse=(sort_dir != "asc"))
     hits = hits[:min(limit, 20)]
 
-    if not hits:
-        body = f"# Search Results for: {query}\n\nNo results found.\n"
-    else:
-        body = f"# Search Results for: {query}\n\n## Messages ({len(hits)} results)\n"
-        seen = set()
-        for index, (channel, message) in enumerate(hits, start=1):
-            replies = _reply_count(channel["id"], message["ts"])
-            body += (
-                f"### Result {index} of {len(hits)}\n"
-                f"Channel: #{channel['name']} (ID: {channel['id']})\n"
-                f"From: {_sender(message, with_id_label=True)} \n"
-                f"Time: {message.get('time', '')}\n"
-                f"Message_ts: {message['ts']}\n"
-            )
-            if replies:
-                body += f"Reply count: {replies}\n"
-            permalink = (f"https://example.slack.com/archives/{channel['id']}"
-                         f"/p{message['ts'].replace('.', '')}")
-            if replies:
-                permalink += f"?thread_ts={message['ts']}&cid={channel['id']}"
-            body += f"Permalink: [link]({permalink})\nText: \n{message['text']}\n"
-            if include_context:
-                body += _render_context(channel["id"], message, seen)
-            seen.add(message["ts"])
-            body += "\n---\n\n"
+    body = _render_hits(query, hits, include_context)
 
     result = {"results": body, "pagination_info": _NO_MORE}
     state.log_call("slack_search_public_and_private",
