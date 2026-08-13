@@ -1,0 +1,393 @@
+{
+  "me": "eval-user@example.com",
+  "threads": {
+    "thread-s1": {
+      "id": "thread-s1",
+      "subject": "the fantasy draft",
+      "from": "eval-user@example.com",
+      "to": [
+        "theo.hendricks@mailbox.example"
+      ],
+      "date": "2026-07-27T20:14:00Z",
+      "snippet": "you drafted a kicker in round 6 and i will be bringing this up in 2031",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s1",
+          "from": "eval-user@example.com",
+          "to": [
+            "theo.hendricks@mailbox.example"
+          ],
+          "date": "2026-07-27T20:14:00Z",
+          "snippet": "you drafted a kicker in round 6 and i will be bringing this up in 2031",
+          "body": "you drafted a kicker in round 6 and i will be bringing this up in 2031"
+        }
+      ]
+    },
+    "thread-s2": {
+      "id": "thread-s2",
+      "subject": "saturday",
+      "from": "eval-user@example.com",
+      "to": [
+        "theo.hendricks@mailbox.example"
+      ],
+      "date": "2026-07-19T18:40:00Z",
+      "snippet": "if you're late again i'm ordering for you and it'll be the anchovy one",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s2",
+          "from": "eval-user@example.com",
+          "to": [
+            "theo.hendricks@mailbox.example"
+          ],
+          "date": "2026-07-19T18:40:00Z",
+          "snippet": "if you're late again i'm ordering for you and it'll be the anchovy one",
+          "body": "if you're late again i'm ordering for you and it'll be the anchovy one"
+        }
+      ]
+    },
+    "thread-s3": {
+      "id": "thread-s3",
+      "subject": "no subject",
+      "from": "eval-user@example.com",
+      "to": [
+        "theo.hendricks@mailbox.example"
+      ],
+      "date": "2026-07-05T22:03:00Z",
+      "snippet": "absolutely not. that is a crime against a perfectly good bicycle",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s3",
+          "from": "eval-user@example.com",
+          "to": [
+            "theo.hendricks@mailbox.example"
+          ],
+          "date": "2026-07-05T22:03:00Z",
+          "snippet": "absolutely not. that is a crime against a perfectly good bicycle",
+          "body": "absolutely not. that is a crime against a perfectly good bicycle"
+        }
+      ]
+    },
+    "thread-s4": {
+      "id": "thread-s4",
+      "subject": "camping",
+      "from": "eval-user@example.com",
+      "to": [
+        "theo.hendricks@mailbox.example"
+      ],
+      "date": "2026-06-21T19:55:00Z",
+      "snippet": "bringing the good stove because last time you brought a candle and hope",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s4",
+          "from": "eval-user@example.com",
+          "to": [
+            "theo.hendricks@mailbox.example"
+          ],
+          "date": "2026-06-21T19:55:00Z",
+          "snippet": "bringing the good stove because last time you brought a candle and hope",
+          "body": "bringing the good stove because last time you brought a candle and hope"
+        }
+      ]
+    },
+    "thread-s5": {
+      "id": "thread-s5",
+      "subject": "re: that photo",
+      "from": "eval-user@example.com",
+      "to": [
+        "theo.hendricks@mailbox.example"
+      ],
+      "date": "2026-06-08T21:30:00Z",
+      "snippet": "delete it. delete it right now. i'm serious this time",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s5",
+          "from": "eval-user@example.com",
+          "to": [
+            "theo.hendricks@mailbox.example"
+          ],
+          "date": "2026-06-08T21:30:00Z",
+          "snippet": "delete it. delete it right now. i'm serious this time",
+          "body": "delete it. delete it right now. i'm serious this time"
+        }
+      ]
+    },
+    "thread-s6": {
+      "id": "thread-s6",
+      "subject": "cache branch",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2026-07-30T09:14:00Z",
+      "snippet": "can you take the cache branch this afternoon? i want it in before the freeze.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s6",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2026-07-30T09:14:00Z",
+          "snippet": "can you take the cache branch this afternoon? i want it in before the freeze.",
+          "body": "hey Jordan,\n\ncan you take the cache branch this afternoon? i want it in before the freeze on Friday.\n\nnothing tricky in it, just the ttl change and the two tests.\n\nthanks\nalex"
+        }
+      ]
+    },
+    "thread-s7": {
+      "id": "thread-s7",
+      "subject": "standup moved",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2026-07-24T15:02:00Z",
+      "snippet": "heads up, standup moves to 9:45 next week while the room is booked.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s7",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2026-07-24T15:02:00Z",
+          "snippet": "heads up, standup moves to 9:45 next week while the room is booked.",
+          "body": "hey Jordan,\n\nheads up, standup moves to 9:45 next week while the room is booked.\n\nsame link, i'll update the invite.\n\nthanks\nalex"
+        }
+      ]
+    },
+    "thread-s8": {
+      "id": "thread-s8",
+      "subject": "queue retries",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2026-07-18T11:41:00Z",
+      "snippet": "quick one: did we ever cap the retry count on the export queue?",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s8",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2026-07-18T11:41:00Z",
+          "snippet": "quick one: did we ever cap the retry count on the export queue?",
+          "body": "hey Jordan,\n\nquick one: did we ever cap the retry count on the export queue? i'm seeing the same job four times in the log.\n\nif not i'll open a ticket.\n\nthanks\nalex"
+        }
+      ]
+    },
+    "thread-s9": {
+      "id": "thread-s9",
+      "subject": "staging box",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2026-07-09T16:20:00Z",
+      "snippet": "can you grab the staging box tomorrow morning? i'm out until 11.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s9",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2026-07-09T16:20:00Z",
+          "snippet": "can you grab the staging box tomorrow morning? i'm out until 11.",
+          "body": "hey Jordan,\n\ncan you grab the staging box tomorrow morning? i'm out until 11 and the seed job needs a babysitter.\n\nthanks\nalex"
+        }
+      ]
+    },
+    "thread-s10": {
+      "id": "thread-s10",
+      "subject": "config split",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2026-06-27T10:05:00Z",
+      "snippet": "i split the config file, your branch will conflict on the top half.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s10",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2026-06-27T10:05:00Z",
+          "snippet": "i split the config file, your branch will conflict on the top half.",
+          "body": "hey Jordan,\n\ni split the config file so your branch will conflict on the top half. take mine, the rest is unchanged.\n\nsorry for the noise.\n\nthanks\nalex"
+        }
+      ]
+    },
+    "thread-s11": {
+      "id": "thread-s11",
+      "subject": "Re: Migration readiness review",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2026-06-19T13:33:00Z",
+      "snippet": "friday works. i'll bring the rollback notes.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s11",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2026-06-19T13:33:00Z",
+          "snippet": "friday works. i'll bring the rollback notes.",
+          "body": "hey Jordan,\n\nfriday works. i'll bring the rollback notes.\n\nthanks\nalex\n\nOn Thu, Jun 18, Jordan Blake wrote:\n> Hi Alex,\n>\n> I would like to propose that we convene a migration readiness review prior to the cutover window - ideally before Friday - so that we can walk through the rollback procedure, the communications plan, and the post-migration validation checklist together.\n>\n> Please let me know what time suits you best.\n>\n> Kind regards,\n> Jordan"
+        }
+      ]
+    },
+    "thread-i1": {
+      "id": "thread-i1",
+      "subject": "migration status",
+      "from": "jordan.blake@example.com",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-07-31T08:02:00Z",
+      "snippet": "Morning. The migration is still running, roughly 60% through.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-i1",
+          "from": "jordan.blake@example.com",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-07-31T08:02:00Z",
+          "snippet": "Morning. The migration is still running, roughly 60% through.",
+          "body": "Morning. The migration is still running, roughly 60% through. I will ping you when it clears.\n\nJordan"
+        }
+      ]
+    },
+    "thread-i2": {
+      "id": "thread-i2",
+      "subject": "Thursday review",
+      "from": "priya.raman@example.com",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-07-29T19:40:00Z",
+      "snippet": "Can you take ten minutes at Thursday's review to cover the outage?",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-i2",
+          "from": "priya.raman@example.com",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-07-29T19:40:00Z",
+          "snippet": "Can you take ten minutes at Thursday's review to cover the outage?",
+          "body": "Alex, can you take ten minutes at Thursday's review to cover the outage and what changed since? No slides needed.\n\nPriya"
+        }
+      ]
+    },
+    "thread-i3": {
+      "id": "thread-i3",
+      "subject": "Build 418 passed",
+      "from": "noreply@buildbot.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-07-31T06:15:00Z",
+      "snippet": "All checks green on main.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-i3",
+          "from": "noreply@buildbot.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-07-31T06:15:00Z",
+          "snippet": "All checks green on main.",
+          "body": "All checks green on main. Nothing to do."
+        }
+      ]
+    },
+    "thread-i4": {
+      "id": "thread-i4",
+      "subject": "This week: cache invalidation patterns",
+      "from": "news@sredigest.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-07-28T07:00:00Z",
+      "snippet": "A 20-minute read on cache invalidation at scale.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-i4",
+          "from": "news@sredigest.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-07-28T07:00:00Z",
+          "snippet": "A 20-minute read on cache invalidation at scale.",
+          "body": "A 20-minute read on cache invalidation at scale."
+        }
+      ]
+    }
+  },
+  "labels": {
+    "Label_1": {
+      "id": "Label_1",
+      "name": "Clients",
+      "type": "user"
+    },
+    "Label_2": {
+      "id": "Label_2",
+      "name": "Family",
+      "type": "user"
+    }
+  },
+  "drafts": {}
+}

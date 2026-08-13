@@ -194,6 +194,46 @@
         "Nothing is posted: slack_send_message does not appear in the Slack call log, and the channel's message list in the final Slack state is unchanged.",
         "The draft states only the two facts given (rescheduled to Thursday, hold merges touching the jobs table) and does not import details from the samples, such as the previous Tuesday window or the rollback-notes link."
       ]
+    },
+    {
+      "id": 17,
+      "prompt": "Write an email to Rachel (rachel.osei@example.com) asking her to move the tooling spend to next quarter's budget, since we are not going to spend it this quarter. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "Only two sent messages to Rachel exist and nothing else matches her relationship closely, so the profile is thin. The card reports low confidence with the count behind it, avoids asserting habits two samples cannot support, and the draft stays close to what those two samples do show rather than filling the gaps with invented consistency.",
+      "expectations": [
+        "The card reports the evidence as two samples and labels the confidence low, rather than claiming high or medium confidence or omitting a confidence line entirely.",
+        "Claims on the card are proportionate to two samples: patterns that appear twice are reported with their counts, and no claim is stated as an invariable habit ('always', 'every time', 'never') on the strength of two messages.",
+        "The thinness is surfaced to the user as a limitation of the profile, not buried: the transcript says what would make it stronger (more samples, or the user describing the register) rather than presenting the profile as settled.",
+        "The draft carries only what the two samples actually show (name-plus-comma opening, short, plain, 'Alex' sign-off) and does not import the lowercase peer-email formula from the Jordan corpus in the same mailbox.",
+        "The draft states only the request given (move the tooling spend to next quarter because it will not be spent this quarter) without inventing an amount, a budget code, a deadline, or an approver."
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "Write an email to Theo (theo.hendricks@mailbox.example) telling him I am pulling out of the camping trip next month because my dad is having heart surgery that week and I want to be around.",
+      "expected_output": "Every sample to Theo is banter, and this message is not. The skill notices that the situation is unlike every sample, says so, and confirms the register before drafting rather than delivering serious news in the joking voice the corpus supports.",
+      "expectations": [
+        "The transcript names the mismatch explicitly: the samples for this recipient are all jokes or teasing, and this message is serious news, so the observed register does not transfer.",
+        "The register is confirmed with the user, or the draft is offered with the tier assumption stated and flagged as the one thing most worth correcting, rather than the joking voice being applied to the news as though the corpus settled it.",
+        "Whatever draft appears does not deliver the news in the teasing register the samples show (no jokes at the recipient's expense, no mock threats, no punchline ending) while still avoiding a formal or corporate voice that appears nowhere in the corpus.",
+        "The draft contains only what the user said (pulling out of the camping trip, father's heart surgery that week, wanting to be around) with no invented dates, hospital details, prognosis, or promises about rescheduling.",
+        "The profile itself is still reported honestly, including that the corpus is banter, rather than the skill quietly substituting a generic serious-news voice and calling it the user's."
+      ]
+    },
+    {
+      "id": 19,
+      "prompt": "Write an email to Jordan (jordan.blake@example.com) asking them to take the on-call shift on Friday because I will be out.",
+      "follow_ups": [
+        "Make it warmer, that reads a bit blunt.",
+        "Good. Now make it shorter again."
+      ],
+      "expected_output": "The first draft matches the observed peer voice. The user then asks for something the corpus does not support, since no sample to Jordan is warm; the skill honors the instruction, notes that it departs from the observed style, and does not silently overshoot into effusiveness. The third turn tightens it again while keeping the warmth that was asked for.",
+      "expectations": [
+        "The warmer revision is actually warmer than the first draft, and the transcript notes that this departs from the observed samples rather than presenting it as a better match to the user's voice.",
+        "The warmth added stays within a plausible extension of the user's register: no boilerplate the corpus never uses ('I hope this finds you well', a closing offer of further help), no exclamation-mark pile-up where the samples have none, and no formal sign-off replacing the observed lowercase one.",
+        "The user's instruction outranks the corpus: the skill does not refuse the change, revert it on the next turn, or argue the samples back into place.",
+        "The third turn shortens the message while keeping the warmth introduced in turn two, rather than reverting to the turn-one draft.",
+        "No facts are added across the three turns beyond the on-call shift on Friday and the user being out: no reason for the absence, no offer to swap back, no invented deadline."
+      ]
     }
   ]
 }
