@@ -22,6 +22,7 @@ evals/
 │   ├── gh-stub/gh        Fake `gh` executable, fixture/cassette-driven.
 │   ├── git-fixture.sh    Builds a scratch git repo from a fixture spec.
 │   ├── run-eval.sh       Per-eval harness: wires fixture + gh-stub + env vars.
+│   ├── run-mcp-trials.sh Batch driver for a skill's MCP-backed trials.
 │   ├── sandbox/check.sh  Gate for the small set of live sandbox-repo cases.
 │   └── sandbox/askpass.sh  Supplies the sandbox token to git without putting
 │                         it in the remote URL.
@@ -228,6 +229,10 @@ calls (including name-based list/board resolution and `update_card`'s batch
 form) match the stub instead of silently no-oping. Like the real Gmail MCP,
 `gmail_stub.py` deliberately has no send operation -- create_draft only
 stores a draft, so "sending stayed with the user" holds by construction.
+Its query subset also covers `in:sent`, `to:`, and `me` resolution (against
+an optional top-level `"me"` address in the fixture), which is what a corpus
+search for "mail I wrote to this person" needs; a fixture that declares no
+`"me"` makes `from:me`/`to:me` match nothing rather than everything.
 
 Requires a one-time local dependency install (isolated venv, not system
 Python -- see `evals/lib/mcp-stub/requirements.txt`):
@@ -267,10 +272,26 @@ After the trial, grade per service by diffing `$RUN_DIR/<service>-state-out.json
 philosophy as every other eval in this repo, not by trusting the
 subprocess's stdout self-report.
 
-`plugins/life-skills/skills/triage/evals/run-trials.sh` is the batch driver
-for triage's trials: it runs each eval's `claude -p` subprocess with
-`--output-format json` and extracts real wall-clock duration and token
+`evals/lib/run-mcp-trials.sh <skill-evals-dir> [id ...]` is the batch driver
+for any skill's MCP-backed trials: it runs each eval's `claude -p` subprocess
+with `--output-format json` and extracts real wall-clock duration and token
 usage into a per-trial `metrics.json` alongside `transcript.txt`.
+`plugins/life-skills/skills/triage/evals/run-trials.sh` predates it and still
+carries its own copy of that loop.
+
+Two things the shared driver does that a hand-run trial must do for itself:
+
+- It copies the skill under test into the trial workspace as a project skill
+  (`.claude/skills/<name>/`). A trial subprocess otherwise sees only the
+  skills the machine happens to have installed, so on a machine without the
+  plugin installed a whole benchmark can measure the skill's *absence* and
+  report it as the skill's behavior. Copying also means a benchmark grades
+  the working tree rather than the last installed release.
+- It passes an explicit `--allowedTools` allowlist instead of
+  `--dangerously-skip-permissions`, which refuses to run as root and so rules
+  out containers and CI. Each stub server is allowed wholesale, write tools
+  included, so "the skill wrote nothing" stays a finding about the skill
+  rather than an artifact of the harness blocking the call.
 
 ## Live sandbox cases
 
