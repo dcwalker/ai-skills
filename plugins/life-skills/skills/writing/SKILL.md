@@ -451,6 +451,12 @@ you work; they are not facts about the user to be written into the message.
 Present the draft, then a short note of any place the request forced a
 departure from the card.
 
+**Present it, do not place it.** The draft goes in the reply. It does not get
+saved as a mail draft, posted, or written into a tracker, however convenient
+that would be and however clearly the user has said they are unavailable. If
+the medium has a natural home for it, say the text is unsaved and offer to put
+it there; that offer costs one line and leaves the decision where it belongs.
+
 ---
 
 ## Step 8: Revise and Feed Back
@@ -471,8 +477,17 @@ departure from the card.
 ## Delivery and Privacy Rules
 
 - Research is read-only. Never send, post, or reply while gathering samples.
-- Never send or post the deliverable. Save a draft only after the user confirms
-  the text, and tell them where it landed.
+- **The draft stays in the conversation until the user says otherwise.** Never
+  send or post it, and do not save it into their mailbox, chat client, tracker,
+  or any other external system without their explicit say-so on the text you
+  are about to write. Once they agree, save it and tell them where it landed.
+- **Being told the user is unavailable is not permission to write.** "I will
+  not be around", "just send it", "don't wait for me" and the like are about
+  how the drafting should proceed, and they authorize drafting without a
+  confirmation pause. They do not authorize touching an external system,
+  because the user cannot correct a draft they never saw and a draft in their
+  mailbox is a side effect outside this conversation. Show them the text and
+  say it is unsaved. If they want it saved, they will say so next time.
 - Keep excerpts on the style card short, only long enough to evidence a claim.
 - Do not carry content from someone else's message into the deliverable, and do
   not quote a third party's writing as the user's own style.
@@ -506,3 +521,5 @@ departure from the card.
   like errors.
 - Update the cache with every correction the user makes.
 - The user's stated preference always outranks the corpus.
+- Nothing leaves the conversation without a specific yes to the specific text.
+  An unavailable user has authorized a draft, never a write.
