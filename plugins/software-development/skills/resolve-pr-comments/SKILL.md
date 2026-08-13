@@ -68,14 +68,9 @@ If the comment identifies a valid issue that needs to be addressed:
 
 3. Note the short commit SHA from the commit.
 
-4. Reply to the PR comment with "Addressed in [SHA]." using:
+4. Reply to the PR comment and resolve it in one call:
    ```bash
-   list-pr-comments.sh --reply <comment-id> "Addressed in [SHA]."
-   ```
-
-5. Resolve the comment using:
-   ```bash
-   list-pr-comments.sh --resolve <comment-id>
+   list-pr-comments.sh -c <comment-id> --reply "Addressed in [SHA]." --resolve
    ```
 
 ### Workflow 2: Issue Already Fixed
@@ -86,14 +81,9 @@ If the issue was previously addressed:
 
 2. Find the commit SHA where the fix was made.
 
-3. Reply to the PR comment with "Addressed in [SHA]." using:
+3. Reply to the PR comment and resolve it in one call:
    ```bash
-   list-pr-comments.sh --reply <comment-id> "Addressed in [SHA]."
-   ```
-
-4. Resolve the comment using:
-   ```bash
-   list-pr-comments.sh --resolve <comment-id>
+   list-pr-comments.sh -c <comment-id> --reply "Addressed in [SHA]." --resolve
    ```
 
 ### Workflow 3: Invalid or Not Applicable Comment
@@ -102,14 +92,9 @@ If the comment is not valid or not applicable:
 
 1. Draft a brief, polite, and professional explanation of why the comment is not valid or applicable. This response will be public.
 
-2. Reply to the PR comment with your explanation using:
+2. Reply to the PR comment with your explanation and resolve it in one call:
    ```bash
-   list-pr-comments.sh --reply <comment-id> "Your explanation here"
-   ```
-
-3. Resolve the comment using:
-   ```bash
-   list-pr-comments.sh --resolve <comment-id>
+   list-pr-comments.sh -c <comment-id> --reply "Your explanation here" --resolve
    ```
 
 ## Final Report
