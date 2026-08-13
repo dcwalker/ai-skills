@@ -237,9 +237,23 @@
     {
       "match": [
         "pr",
+        "view",
+        "--json",
+        "number"
+      ],
+      "stdout_json": {
+        "number": 503
+      }
+    },
+    {
+      "match": [
+        "pr",
         "view"
       ],
-      "stdout": "PR #503\n"
+      "stdout_json": {
+        "number": 503,
+        "url": "https://github.com/example/widget-service/pull/503"
+      }
     }
   ],
   "default": {

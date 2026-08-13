@@ -1,18 +1,24 @@
 {
   "_comment": [
-    "Five rounds of real progress that never reach green, so the round cap in step 3 --",
-    "not the early exit in step 2f -- is what stops the loop.",
+    "Five failing checks that map to five real defects in config.py -- unused import,",
+    "division by zero, missing return annotation, hardcoded credential, over-long line",
+    "-- plus ci/audit, which is a third-party licence review that no code change can",
+    "clear.",
     "",
-    "Each round resolves the check the previous one addressed and surfaces a new failing",
-    "one, with its own failure summary, so every round has something genuinely new to act",
-    "on. That matters: this fixture used to return one unchanging FAILURE state, and under",
-    "step 2f ('a fix did not take' / 'no new information') a correct run now stops at round",
-    "2 against it. Testing the cap needs a PR that keeps moving without ever arriving.",
+    "What this exercises: the skill fixes everything genuinely fixable, then stops via",
+    "step 2f with an accurate account of the one thing it cannot, and does NOT report",
+    "the PR as green. Earlier versions of this fixture tried to drive the five-round",
+    "cap by revealing one new failure per round. That does not survive contact with a",
+    "real trial: the skill re-reads status inside a round after each fix, so a",
+    "per-round state machine desynchronises immediately, and check detail served from",
+    "a separate counter starts contradicting the rollup mid-round. The cap is",
+    "deliberately not fixtured here -- see the baseline's Findings for why.",
     "",
-    "`pr checks`, the check-runs API and the status API are sequenced in lockstep with the",
-    "status reads, so the several views of CI never disagree about which check is red in a",
-    "given round. The last of each is uncapped: a trial that overruns the cap keeps seeing",
-    "red rather than being handed a green light it did not earn."
+    "Every failure the cassette reports is visible by reading config.py, except",
+    "ci/audit, which is explicitly external. A fixture that reports failures in files",
+    "the repo does not contain gives the skill nothing to attempt, and a correct run",
+    "then stops early -- which is what happened when this cassette named integration/",
+    "and e2e/ paths that do not exist here."
   ],
   "calls": [
     {
@@ -29,6 +35,7 @@
         "--json",
         "number,url,state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,baseRefName,reviewDecision"
       ],
+      "times": 1,
       "stdout_json": {
         "number": 504,
         "url": "https://github.com/example/widget-service/pull/504",
@@ -41,234 +48,95 @@
         "statusCheckRollup": [
           {
             "name": "ci/lint",
-            "conclusion": "FAILURE",
             "status": "COMPLETED",
+            "conclusion": "FAILURE",
             "detailsUrl": "https://github.com/example/widget-service/actions/runs/54001"
-          }
-        ]
-      },
-      "times": 1
-    },
-    {
-      "match": [
-        "pr",
-        "view",
-        "--json",
-        "number,url,state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,baseRefName,reviewDecision"
-      ],
-      "stdout_json": {
-        "number": 504,
-        "url": "https://github.com/example/widget-service/pull/504",
-        "state": "OPEN",
-        "isDraft": false,
-        "mergeable": "MERGEABLE",
-        "mergeStateStatus": "UNSTABLE",
-        "baseRefName": "main",
-        "reviewDecision": "APPROVED",
-        "statusCheckRollup": [
-          {
-            "name": "ci/lint",
-            "conclusion": "SUCCESS",
-            "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54002"
           },
           {
             "name": "ci/test",
-            "conclusion": "FAILURE",
             "status": "COMPLETED",
+            "conclusion": "FAILURE",
+            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54002"
+          },
+          {
+            "name": "ci/typecheck",
+            "status": "COMPLETED",
+            "conclusion": "FAILURE",
             "detailsUrl": "https://github.com/example/widget-service/actions/runs/54003"
-          }
-        ]
-      },
-      "times": 1
-    },
-    {
-      "match": [
-        "pr",
-        "view",
-        "--json",
-        "number,url,state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,baseRefName,reviewDecision"
-      ],
-      "stdout_json": {
-        "number": 504,
-        "url": "https://github.com/example/widget-service/pull/504",
-        "state": "OPEN",
-        "isDraft": false,
-        "mergeable": "MERGEABLE",
-        "mergeStateStatus": "UNSTABLE",
-        "baseRefName": "main",
-        "reviewDecision": "APPROVED",
-        "statusCheckRollup": [
-          {
-            "name": "ci/lint",
-            "conclusion": "SUCCESS",
-            "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54002"
-          },
-          {
-            "name": "ci/test",
-            "conclusion": "SUCCESS",
-            "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54005"
-          },
-          {
-            "name": "ci/typecheck",
-            "conclusion": "FAILURE",
-            "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54006"
-          }
-        ]
-      },
-      "times": 1
-    },
-    {
-      "match": [
-        "pr",
-        "view",
-        "--json",
-        "number,url,state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,baseRefName,reviewDecision"
-      ],
-      "stdout_json": {
-        "number": 504,
-        "url": "https://github.com/example/widget-service/pull/504",
-        "state": "OPEN",
-        "isDraft": false,
-        "mergeable": "MERGEABLE",
-        "mergeStateStatus": "UNSTABLE",
-        "baseRefName": "main",
-        "reviewDecision": "APPROVED",
-        "statusCheckRollup": [
-          {
-            "name": "ci/lint",
-            "conclusion": "SUCCESS",
-            "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54002"
-          },
-          {
-            "name": "ci/test",
-            "conclusion": "SUCCESS",
-            "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54005"
-          },
-          {
-            "name": "ci/typecheck",
-            "conclusion": "SUCCESS",
-            "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54009"
-          },
-          {
-            "name": "ci/integration",
-            "conclusion": "FAILURE",
-            "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54010"
-          }
-        ]
-      },
-      "times": 1
-    },
-    {
-      "match": [
-        "pr",
-        "view",
-        "--json",
-        "number,url,state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,baseRefName,reviewDecision"
-      ],
-      "stdout_json": {
-        "number": 504,
-        "url": "https://github.com/example/widget-service/pull/504",
-        "state": "OPEN",
-        "isDraft": false,
-        "mergeable": "MERGEABLE",
-        "mergeStateStatus": "UNSTABLE",
-        "baseRefName": "main",
-        "reviewDecision": "APPROVED",
-        "statusCheckRollup": [
-          {
-            "name": "ci/lint",
-            "conclusion": "SUCCESS",
-            "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54002"
-          },
-          {
-            "name": "ci/test",
-            "conclusion": "SUCCESS",
-            "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54005"
-          },
-          {
-            "name": "ci/typecheck",
-            "conclusion": "SUCCESS",
-            "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54009"
-          },
-          {
-            "name": "ci/integration",
-            "conclusion": "SUCCESS",
-            "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54014"
-          },
-          {
-            "name": "ci/e2e",
-            "conclusion": "FAILURE",
-            "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54015"
-          }
-        ]
-      },
-      "times": 1
-    },
-    {
-      "match": [
-        "pr",
-        "view",
-        "--json",
-        "number,url,state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,baseRefName,reviewDecision"
-      ],
-      "stdout_json": {
-        "number": 504,
-        "url": "https://github.com/example/widget-service/pull/504",
-        "state": "OPEN",
-        "isDraft": false,
-        "mergeable": "MERGEABLE",
-        "mergeStateStatus": "UNSTABLE",
-        "baseRefName": "main",
-        "reviewDecision": "APPROVED",
-        "statusCheckRollup": [
-          {
-            "name": "ci/lint",
-            "conclusion": "SUCCESS",
-            "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54002"
-          },
-          {
-            "name": "ci/test",
-            "conclusion": "SUCCESS",
-            "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54005"
-          },
-          {
-            "name": "ci/typecheck",
-            "conclusion": "SUCCESS",
-            "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54009"
-          },
-          {
-            "name": "ci/integration",
-            "conclusion": "SUCCESS",
-            "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54014"
-          },
-          {
-            "name": "ci/e2e",
-            "conclusion": "SUCCESS",
-            "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54020"
           },
           {
             "name": "ci/security",
-            "conclusion": "FAILURE",
             "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54021"
+            "conclusion": "FAILURE",
+            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54004"
+          },
+          {
+            "name": "ci/style",
+            "status": "COMPLETED",
+            "conclusion": "FAILURE",
+            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54005"
+          },
+          {
+            "name": "ci/audit",
+            "status": "COMPLETED",
+            "conclusion": "FAILURE",
+            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54006"
+          }
+        ]
+      }
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--json",
+        "number,url,state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,baseRefName,reviewDecision"
+      ],
+      "stdout_json": {
+        "number": 504,
+        "url": "https://github.com/example/widget-service/pull/504",
+        "state": "OPEN",
+        "isDraft": false,
+        "mergeable": "MERGEABLE",
+        "mergeStateStatus": "UNSTABLE",
+        "baseRefName": "main",
+        "reviewDecision": "APPROVED",
+        "statusCheckRollup": [
+          {
+            "name": "ci/lint",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54101"
+          },
+          {
+            "name": "ci/test",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54102"
+          },
+          {
+            "name": "ci/typecheck",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54103"
+          },
+          {
+            "name": "ci/security",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54104"
+          },
+          {
+            "name": "ci/style",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54105"
+          },
+          {
+            "name": "ci/audit",
+            "status": "COMPLETED",
+            "conclusion": "FAILURE",
+            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54006"
           }
         ]
       }
@@ -278,10 +146,10 @@
         "pr",
         "checks"
       ],
+      "times": 1,
       "exit_code": 1,
-      "stdout": "ci/lint\tfail\t1m20s\thttps://github.com/example/widget-service/actions/runs/54001\n",
-      "stderr": "Some checks were not successful\nconfig.py:2:1: E999 unused import 'os'\n",
-      "times": 1
+      "stdout": "ci/lint\tfail\t1m20s\thttps://github.com/example/widget-service/actions/runs/54001\nci/test\tfail\t1m20s\thttps://github.com/example/widget-service/actions/runs/54002\nci/typecheck\tfail\t1m20s\thttps://github.com/example/widget-service/actions/runs/54003\nci/security\tfail\t1m20s\thttps://github.com/example/widget-service/actions/runs/54004\nci/style\tfail\t1m20s\thttps://github.com/example/widget-service/actions/runs/54005\nci/audit\tfail\t1m20s\thttps://github.com/example/widget-service/actions/runs/54006\n",
+      "stderr": "Some checks were not successful\nconfig.py:1:1: F401 'os' imported but unused\ntest_config.py::test_ratio - ZeroDivisionError: division by zero\nconfig.py:7: error: Function is missing a return type annotation\nconfig.py:5: hardcoded credential detected (rule B105)\nconfig.py:11: E501 line too long (152 > 120 characters)\nthird-party licence audit: 1 dependency pending legal review\n"
     },
     {
       "match": [
@@ -289,55 +157,16 @@
         "checks"
       ],
       "exit_code": 1,
-      "stdout": "ci/lint\tpass\t1m20s\thttps://github.com/example/widget-service/actions/runs/54002\nci/test\tfail\t1m20s\thttps://github.com/example/widget-service/actions/runs/54003\n",
-      "stderr": "Some checks were not successful\ntest_config.py::test_broken - ZeroDivisionError: division by zero\n",
-      "times": 1
-    },
-    {
-      "match": [
-        "pr",
-        "checks"
-      ],
-      "exit_code": 1,
-      "stdout": "ci/lint\tpass\t1m20s\thttps://github.com/example/widget-service/actions/runs/54002\nci/test\tpass\t1m20s\thttps://github.com/example/widget-service/actions/runs/54005\nci/typecheck\tfail\t1m20s\thttps://github.com/example/widget-service/actions/runs/54006\n",
-      "stderr": "Some checks were not successful\nconfig.py:2: error: Function is missing a return type annotation\n",
-      "times": 1
-    },
-    {
-      "match": [
-        "pr",
-        "checks"
-      ],
-      "exit_code": 1,
-      "stdout": "ci/lint\tpass\t1m20s\thttps://github.com/example/widget-service/actions/runs/54002\nci/test\tpass\t1m20s\thttps://github.com/example/widget-service/actions/runs/54005\nci/typecheck\tpass\t1m20s\thttps://github.com/example/widget-service/actions/runs/54009\nci/integration\tfail\t1m20s\thttps://github.com/example/widget-service/actions/runs/54010\n",
-      "stderr": "Some checks were not successful\nintegration/test_widget.py::test_roundtrip - AssertionError: expected 200, got 500\n",
-      "times": 1
-    },
-    {
-      "match": [
-        "pr",
-        "checks"
-      ],
-      "exit_code": 1,
-      "stdout": "ci/lint\tpass\t1m20s\thttps://github.com/example/widget-service/actions/runs/54002\nci/test\tpass\t1m20s\thttps://github.com/example/widget-service/actions/runs/54005\nci/typecheck\tpass\t1m20s\thttps://github.com/example/widget-service/actions/runs/54009\nci/integration\tpass\t1m20s\thttps://github.com/example/widget-service/actions/runs/54014\nci/e2e\tfail\t1m20s\thttps://github.com/example/widget-service/actions/runs/54015\n",
-      "stderr": "Some checks were not successful\ne2e/checkout.spec.ts:14 - Timed out waiting for selector '#submit'\n",
-      "times": 1
-    },
-    {
-      "match": [
-        "pr",
-        "checks"
-      ],
-      "exit_code": 1,
-      "stdout": "ci/lint\tpass\t1m20s\thttps://github.com/example/widget-service/actions/runs/54002\nci/test\tpass\t1m20s\thttps://github.com/example/widget-service/actions/runs/54005\nci/typecheck\tpass\t1m20s\thttps://github.com/example/widget-service/actions/runs/54009\nci/integration\tpass\t1m20s\thttps://github.com/example/widget-service/actions/runs/54014\nci/e2e\tpass\t1m20s\thttps://github.com/example/widget-service/actions/runs/54020\nci/security\tfail\t1m20s\thttps://github.com/example/widget-service/actions/runs/54021\n",
-      "stderr": "Some checks were not successful\nconfig.py:2: hardcoded credential detected (rule B105)\n"
+      "stdout": "ci/lint\tpass\t1m20s\thttps://github.com/example/widget-service/actions/runs/54101\nci/test\tpass\t1m20s\thttps://github.com/example/widget-service/actions/runs/54102\nci/typecheck\tpass\t1m20s\thttps://github.com/example/widget-service/actions/runs/54103\nci/security\tpass\t1m20s\thttps://github.com/example/widget-service/actions/runs/54104\nci/style\tpass\t1m20s\thttps://github.com/example/widget-service/actions/runs/54105\nci/audit\tfail\t1m20s\thttps://github.com/example/widget-service/actions/runs/54006\n",
+      "stderr": "Some checks were not successful\nthird-party licence audit: 1 dependency pending legal review\n"
     },
     {
       "match": [
         "check-runs"
       ],
+      "times": 1,
       "stdout_json": {
-        "total_count": 1,
+        "total_count": 6,
         "check_runs": [
           {
             "id": 90000,
@@ -346,211 +175,67 @@
             "conclusion": "failure",
             "html_url": "https://github.com/example/widget-service/actions/runs/54001",
             "output": {
-              "title": "Failing",
-              "summary": "config.py:2:1: E999 unused import 'os'"
-            }
-          }
-        ]
-      },
-      "times": 1
-    },
-    {
-      "match": [
-        "check-runs"
-      ],
-      "stdout_json": {
-        "total_count": 2,
-        "check_runs": [
-          {
-            "id": 90000,
-            "name": "ci/lint",
-            "status": "completed",
-            "conclusion": "success",
-            "html_url": "https://github.com/example/widget-service/actions/runs/54002",
-            "output": {
-              "title": "Passing",
+              "title": "",
               "summary": ""
             }
           },
           {
             "id": 90001,
             "name": "ci/test",
+            "status": "completed",
+            "conclusion": "failure",
+            "html_url": "https://github.com/example/widget-service/actions/runs/54002",
+            "output": {
+              "title": "",
+              "summary": ""
+            }
+          },
+          {
+            "id": 90002,
+            "name": "ci/typecheck",
             "status": "completed",
             "conclusion": "failure",
             "html_url": "https://github.com/example/widget-service/actions/runs/54003",
             "output": {
-              "title": "Failing",
-              "summary": "test_config.py::test_broken - ZeroDivisionError: division by zero"
-            }
-          }
-        ]
-      },
-      "times": 1
-    },
-    {
-      "match": [
-        "check-runs"
-      ],
-      "stdout_json": {
-        "total_count": 3,
-        "check_runs": [
-          {
-            "id": 90000,
-            "name": "ci/lint",
-            "status": "completed",
-            "conclusion": "success",
-            "html_url": "https://github.com/example/widget-service/actions/runs/54002",
-            "output": {
-              "title": "Passing",
-              "summary": ""
-            }
-          },
-          {
-            "id": 90001,
-            "name": "ci/test",
-            "status": "completed",
-            "conclusion": "success",
-            "html_url": "https://github.com/example/widget-service/actions/runs/54005",
-            "output": {
-              "title": "Passing",
-              "summary": ""
-            }
-          },
-          {
-            "id": 90002,
-            "name": "ci/typecheck",
-            "status": "completed",
-            "conclusion": "failure",
-            "html_url": "https://github.com/example/widget-service/actions/runs/54006",
-            "output": {
-              "title": "Failing",
-              "summary": "config.py:2: error: Function is missing a return type annotation"
-            }
-          }
-        ]
-      },
-      "times": 1
-    },
-    {
-      "match": [
-        "check-runs"
-      ],
-      "stdout_json": {
-        "total_count": 4,
-        "check_runs": [
-          {
-            "id": 90000,
-            "name": "ci/lint",
-            "status": "completed",
-            "conclusion": "success",
-            "html_url": "https://github.com/example/widget-service/actions/runs/54002",
-            "output": {
-              "title": "Passing",
-              "summary": ""
-            }
-          },
-          {
-            "id": 90001,
-            "name": "ci/test",
-            "status": "completed",
-            "conclusion": "success",
-            "html_url": "https://github.com/example/widget-service/actions/runs/54005",
-            "output": {
-              "title": "Passing",
-              "summary": ""
-            }
-          },
-          {
-            "id": 90002,
-            "name": "ci/typecheck",
-            "status": "completed",
-            "conclusion": "success",
-            "html_url": "https://github.com/example/widget-service/actions/runs/54009",
-            "output": {
-              "title": "Passing",
+              "title": "",
               "summary": ""
             }
           },
           {
             "id": 90003,
-            "name": "ci/integration",
+            "name": "ci/security",
             "status": "completed",
             "conclusion": "failure",
-            "html_url": "https://github.com/example/widget-service/actions/runs/54010",
+            "html_url": "https://github.com/example/widget-service/actions/runs/54004",
             "output": {
-              "title": "Failing",
-              "summary": "integration/test_widget.py::test_roundtrip - AssertionError: expected 200, got 500"
-            }
-          }
-        ]
-      },
-      "times": 1
-    },
-    {
-      "match": [
-        "check-runs"
-      ],
-      "stdout_json": {
-        "total_count": 5,
-        "check_runs": [
-          {
-            "id": 90000,
-            "name": "ci/lint",
-            "status": "completed",
-            "conclusion": "success",
-            "html_url": "https://github.com/example/widget-service/actions/runs/54002",
-            "output": {
-              "title": "Passing",
-              "summary": ""
-            }
-          },
-          {
-            "id": 90001,
-            "name": "ci/test",
-            "status": "completed",
-            "conclusion": "success",
-            "html_url": "https://github.com/example/widget-service/actions/runs/54005",
-            "output": {
-              "title": "Passing",
-              "summary": ""
-            }
-          },
-          {
-            "id": 90002,
-            "name": "ci/typecheck",
-            "status": "completed",
-            "conclusion": "success",
-            "html_url": "https://github.com/example/widget-service/actions/runs/54009",
-            "output": {
-              "title": "Passing",
-              "summary": ""
-            }
-          },
-          {
-            "id": 90003,
-            "name": "ci/integration",
-            "status": "completed",
-            "conclusion": "success",
-            "html_url": "https://github.com/example/widget-service/actions/runs/54014",
-            "output": {
-              "title": "Passing",
+              "title": "",
               "summary": ""
             }
           },
           {
             "id": 90004,
-            "name": "ci/e2e",
+            "name": "ci/style",
             "status": "completed",
             "conclusion": "failure",
-            "html_url": "https://github.com/example/widget-service/actions/runs/54015",
+            "html_url": "https://github.com/example/widget-service/actions/runs/54005",
             "output": {
-              "title": "Failing",
-              "summary": "e2e/checkout.spec.ts:14 - Timed out waiting for selector '#submit'"
+              "title": "",
+              "summary": ""
+            }
+          },
+          {
+            "id": 90005,
+            "name": "ci/audit",
+            "status": "completed",
+            "conclusion": "failure",
+            "html_url": "https://github.com/example/widget-service/actions/runs/54006",
+            "output": {
+              "title": "",
+              "summary": ""
             }
           }
         ]
-      },
-      "times": 1
+      }
     },
     {
       "match": [
@@ -564,9 +249,9 @@
             "name": "ci/lint",
             "status": "completed",
             "conclusion": "success",
-            "html_url": "https://github.com/example/widget-service/actions/runs/54002",
+            "html_url": "https://github.com/example/widget-service/actions/runs/54101",
             "output": {
-              "title": "Passing",
+              "title": "",
               "summary": ""
             }
           },
@@ -575,9 +260,9 @@
             "name": "ci/test",
             "status": "completed",
             "conclusion": "success",
-            "html_url": "https://github.com/example/widget-service/actions/runs/54005",
+            "html_url": "https://github.com/example/widget-service/actions/runs/54102",
             "output": {
-              "title": "Passing",
+              "title": "",
               "summary": ""
             }
           },
@@ -586,97 +271,47 @@
             "name": "ci/typecheck",
             "status": "completed",
             "conclusion": "success",
-            "html_url": "https://github.com/example/widget-service/actions/runs/54009",
+            "html_url": "https://github.com/example/widget-service/actions/runs/54103",
             "output": {
-              "title": "Passing",
+              "title": "",
               "summary": ""
             }
           },
           {
             "id": 90003,
-            "name": "ci/integration",
+            "name": "ci/security",
             "status": "completed",
             "conclusion": "success",
-            "html_url": "https://github.com/example/widget-service/actions/runs/54014",
+            "html_url": "https://github.com/example/widget-service/actions/runs/54104",
             "output": {
-              "title": "Passing",
+              "title": "",
               "summary": ""
             }
           },
           {
             "id": 90004,
-            "name": "ci/e2e",
+            "name": "ci/style",
             "status": "completed",
             "conclusion": "success",
-            "html_url": "https://github.com/example/widget-service/actions/runs/54020",
+            "html_url": "https://github.com/example/widget-service/actions/runs/54105",
             "output": {
-              "title": "Passing",
+              "title": "",
               "summary": ""
             }
           },
           {
             "id": 90005,
-            "name": "ci/security",
+            "name": "ci/audit",
             "status": "completed",
             "conclusion": "failure",
-            "html_url": "https://github.com/example/widget-service/actions/runs/54021",
+            "html_url": "https://github.com/example/widget-service/actions/runs/54006",
             "output": {
-              "title": "Failing",
-              "summary": "config.py:2: hardcoded credential detected (rule B105)"
+              "title": "",
+              "summary": ""
             }
           }
         ]
       }
-    },
-    {
-      "match": [
-        "/status"
-      ],
-      "stdout_json": {
-        "state": "failure",
-        "statuses": []
-      },
-      "times": 1
-    },
-    {
-      "match": [
-        "/status"
-      ],
-      "stdout_json": {
-        "state": "failure",
-        "statuses": []
-      },
-      "times": 1
-    },
-    {
-      "match": [
-        "/status"
-      ],
-      "stdout_json": {
-        "state": "failure",
-        "statuses": []
-      },
-      "times": 1
-    },
-    {
-      "match": [
-        "/status"
-      ],
-      "stdout_json": {
-        "state": "failure",
-        "statuses": []
-      },
-      "times": 1
-    },
-    {
-      "match": [
-        "/status"
-      ],
-      "stdout_json": {
-        "state": "failure",
-        "statuses": []
-      },
-      "times": 1
     },
     {
       "match": [
@@ -744,7 +379,7 @@
         "title"
       ],
       "stdout_json": {
-        "title": "Always red",
+        "title": "Add config helpers",
         "body": "",
         "author": {
           "login": "dev"
@@ -764,41 +399,52 @@
         "statusCheckRollup": [
           {
             "name": "ci/lint",
-            "conclusion": "SUCCESS",
             "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54002"
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54101"
           },
           {
             "name": "ci/test",
-            "conclusion": "SUCCESS",
             "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54005"
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54102"
           },
           {
             "name": "ci/typecheck",
-            "conclusion": "SUCCESS",
             "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54009"
-          },
-          {
-            "name": "ci/integration",
             "conclusion": "SUCCESS",
-            "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54014"
-          },
-          {
-            "name": "ci/e2e",
-            "conclusion": "SUCCESS",
-            "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54020"
+            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54103"
           },
           {
             "name": "ci/security",
-            "conclusion": "FAILURE",
             "status": "COMPLETED",
-            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54021"
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54104"
+          },
+          {
+            "name": "ci/style",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54105"
+          },
+          {
+            "name": "ci/audit",
+            "status": "COMPLETED",
+            "conclusion": "FAILURE",
+            "detailsUrl": "https://github.com/example/widget-service/actions/runs/54006"
           }
         ]
+      }
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--json",
+        "number"
+      ],
+      "stdout_json": {
+        "number": 504
       }
     },
     {
@@ -836,7 +482,10 @@
         "pr",
         "view"
       ],
-      "stdout": "PR #504\n"
+      "stdout_json": {
+        "number": 504,
+        "url": "https://github.com/example/widget-service/pull/504"
+      }
     }
   ],
   "default": {
