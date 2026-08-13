@@ -96,7 +96,7 @@ that draw on it. Cache what is found, and reuse it until there is a reason
 not to.
 
 **Location.** Not every environment has a disk that survives the session, so
-take the first of these that this one actually offers:
+there are two cases:
 
 1. **A persistent local filesystem:** `$HOME/writing-style/`, created
    `chmod 700` on first use. In plain sight rather than buried in a cache
@@ -104,20 +104,15 @@ take the first of these that this one actually offers:
    a shared temp path: these files hold observations derived from private
    correspondence, and a world-readable location exposes them to every other
    user and session on the machine.
-2. **A connected document store**, when the filesystem is ephemeral or absent:
-   a `writing-style` folder in the user's own Drive, Dropbox, or equivalent.
-   This is the portable option, and it is the one that survives moving
-   between a desktop, a browser session, and a phone. Ask before creating it;
-   a cloud folder is a place the user may already have opinions about.
-3. **The conversation itself**, when nothing persists: keep the profile in the
+2. **The conversation itself**, when nothing persists: keep the profile in the
    session, and at the end offer it as a block the user can paste somewhere
    durable, such as a project's instructions or knowledge files, so the next
    session starts from it rather than from nothing.
 
-An ephemeral container is case 2 or 3, not case 1: writing to `$HOME` there
-is not wrong, but it is gone with the container, so say so rather than
-implying the research was saved. Never persist the profile to a location the
-user has not agreed to.
+An ephemeral container is case 2: writing to `$HOME` there is not wrong, but
+it is gone when the container is, so say so rather than implying the research
+was saved. Never copy the profile to cloud storage or any other location
+outside the machine.
 
 Contents:
 
