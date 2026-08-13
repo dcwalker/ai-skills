@@ -293,7 +293,7 @@ def _collect_hits(query: str, limit: int, sort_dir: str) -> list:
 
 
 @server.tool()
-def slack_search_public_and_private(
+def slack_search_public_and_private(  # NOSONAR(S107) 15 params = the real tool's schema
     query: str,
     limit: int = 20,
     cursor: str = "",
