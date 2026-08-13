@@ -68,11 +68,20 @@ claude plugin install life-skills@dcwalker-skills --scope user || true
 claude plugin install software-development@dcwalker-skills --scope user || true
 ```
 
-The `|| true` matters: a setup script that exits non-zero fails the session, so
-a transient network error during install would cost you the session rather than
-just the plugins. Claude Code snapshots the filesystem after the script
-succeeds and reuses that snapshot, so the install runs once per environment
-rather than once per session.
+The `|| true` matters, and it cuts both ways. A setup script that exits
+non-zero fails the session outright, so without it a transient network error
+during an install would cost you the whole session rather than one plugin. But
+exiting zero is also what tells Claude Code the script succeeded, and it
+snapshots the filesystem at that point and starts every later session from that
+snapshot. A swallowed install error is therefore cached rather than retried:
+the environment comes back missing that plugin every time, because the script
+runs once per environment rather than once per session.
+
+To check whether that happened, run `claude plugin list` in a session — the
+`/plugin` command itself is unavailable in cloud sessions. To recover, edit the
+setup script: any change to it, or to the environment's allowed network hosts,
+rebuilds the snapshot and re-runs the install. Left alone, the cache rebuilds
+by itself after roughly seven days.
 
 Two consequences worth knowing:
 
