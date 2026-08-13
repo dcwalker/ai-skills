@@ -524,5 +524,33 @@
         }
       ]
     }
-  ]
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 0.9846,
+        "stddev": 0.0533,
+        "min": 0.8,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 86.2308,
+        "stddev": 15.5635,
+        "min": 58.9,
+        "max": 109.6
+      },
+      "tokens": {
+        "mean": 43948.8462,
+        "stddev": 1719.8722,
+        "min": 41558,
+        "max": 47791
+      },
+      "tool_calls": {
+        "mean": 10.3077,
+        "stddev": 2.2663,
+        "min": 7,
+        "max": 14
+      }
+    }
+  }
 }
