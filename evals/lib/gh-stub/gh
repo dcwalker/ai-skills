@@ -262,12 +262,12 @@ def _apply_jq(stdout: str, expression: str) -> str:
     if not expression or not stdout.strip():
         return stdout
     try:
-        json.loads(stdout)
+        payload = json.dumps(json.loads(stdout))
     except json.JSONDecodeError:
         return stdout
     try:
         result = subprocess.run(
-            ["jq", "-r", expression], input=stdout,
+            ["jq", "-r", expression], input=payload,
             capture_output=True, text=True, timeout=10,
         )
     except (OSError, subprocess.SubprocessError):
