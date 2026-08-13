@@ -19,6 +19,14 @@
 #   source "$(evals/lib/run-eval.sh <skill-evals-dir> <eval-id> <run-dir>)"
 #   cd "$WORKSPACE_DIR"
 #
+# That is only safe while the trial stays in ONE shell. If each command runs in
+# a fresh shell -- an agent driving the trial through a per-call shell tool, a
+# CI step per command -- the isolation env.sh installs is gone from the second
+# command onward, silently. Use the wrapper this also writes instead:
+#   <run-dir>/in-trial.sh git status
+#   <run-dir>/in-trial.sh 'git add -A && git commit -m "..."'
+# It sources env.sh and cd's to the workspace every time.
+#
 # Exit 77 means SKIP, not fail: the eval is marked `"sandbox": true` in
 # evals.json and the disposable GitHub repo it needs is not configured on this
 # machine. Callers must treat 77 as "not run" rather than as a failure -- see
@@ -208,6 +216,50 @@ ENV_FILE="$RUN_DIR/env.sh"
     echo "export TRELLO_FIXTURE_LOG=\"$RUN_DIR/trello-calls.log\""
   fi
 } > "$ENV_FILE"
+
+# Everything that makes a trial safe lives in env.sh: the credential unsets, the
+# git-config neutralisation, and the PATH entry that shadows the real `gh` with
+# the stub. All of it applies only to a shell that sourced it.
+#
+# An executor driving a trial through a tool that starts a fresh shell per
+# command -- which is the normal case -- gets one sourced shell and then a
+# series of unsourced ones. In those, the developer's real TRELLO_*, SONAR_*,
+# GH_TOKEN/GITHUB_TOKEN and ATLASSIAN_*/JIRA_* are back, the host's git config
+# (including url.<base>.insteadOf rewrites) is back, and `gh` resolves to the
+# real binary rather than the stub. The trial is then neither isolated nor
+# deterministic, and nothing announces it: on a machine with no real `gh` the
+# only symptom is "command not found", which reads as an ordinary missing tool.
+#
+# So give callers one command that is correct every time, rather than asking
+# them to remember. Two forms, because a commit benchmark of all things must not
+# have its quoting mangled:
+#
+#   in-trial.sh git commit -m "two words"   # argv, passed through untouched
+#   in-trial.sh 'git add -A && git commit'  # single arg, run as a shell snippet
+TRIAL_WRAPPER="$RUN_DIR/in-trial.sh"
+cat > "$TRIAL_WRAPPER" <<'WRAPPER'
+#!/usr/bin/env bash
+# Run a command inside this trial's environment, from the workspace.
+#
+# Use this for EVERY command in the trial. Sourcing env.sh once is not enough
+# when each command gets a fresh shell -- see the note in run-eval.sh.
+set -euo pipefail
+_TRIAL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null && pwd)"
+# shellcheck disable=SC1091
+source "$_TRIAL_DIR/env.sh"
+cd "$WORKSPACE_DIR"
+if [[ $# -eq 0 ]]; then
+  echo "in-trial.sh: nothing to run. Pass a command, e.g. in-trial.sh git status" >&2
+  exit 2
+fi
+# One argument is a shell snippet (so && and pipes work); several are an argv
+# vector run without a second round of word splitting.
+if [[ $# -eq 1 ]]; then
+  exec bash -c "$1"
+fi
+exec "$@"
+WRAPPER
+chmod +x "$TRIAL_WRAPPER"
 
 # A sandbox fixture's setup runs last, with the trial environment already
 # sourced, because it needs what env.sh provides: the resolved repo, the token,

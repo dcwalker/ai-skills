@@ -21,8 +21,12 @@ evals/
 ├── lib/
 │   ├── gh-stub/gh        Fake `gh` executable, fixture/cassette-driven.
 │   ├── git-fixture.sh    Builds a scratch git repo from a fixture spec.
-│   ├── run-eval.sh       Per-eval harness: wires fixture + gh-stub + env vars.
+│   ├── run-eval.sh       Per-eval harness: wires fixture + gh-stub + env vars,
+│   │                     and writes <run-dir>/in-trial.sh to run commands
+│   │                     inside that environment.
 │   ├── run-mcp-trials.sh Batch driver for a skill's MCP-backed trials.
+│   ├── check-trial-hygiene.sh  Flags trials whose commits carry the
+│   │                     orchestrating session's own trailers.
 │   ├── sandbox/check.sh  Gate for the small set of live sandbox-repo cases.
 │   └── sandbox/askpass.sh  Supplies the sandbox token to git without putting
 │                         it in the remote URL.
@@ -68,6 +72,55 @@ spawning it is the orchestrating agent's job: point the subagent at
 `$WORKSPACE_DIR` as its cwd and hand it the eval's `prompt` from `evals.json`.
 
 Teardown is just `rm -rf /tmp/eval-run` -- there's no separate script.
+
+### One sourced shell is not enough
+
+The snippet above is only safe while the whole trial stays in a single shell.
+Everything that makes a trial isolated lives in `env.sh` -- the credential
+`unset`s, the git-config neutralisation, and the `PATH` entry that shadows the
+real `gh` with the stub -- and all of it applies only to a shell that sourced
+it.
+
+An executor usually drives a trial through a tool that starts a **fresh shell
+per command**. It sources `env.sh` once, and every command after that runs
+without any of it: the developer's real `TRELLO_*`, `SONAR_*`,
+`GH_TOKEN`/`GITHUB_TOKEN` and `ATLASSIAN_*`/`JIRA_*` are back, the host's git
+config is back (`url.<base>.insteadOf` included), and `gh` resolves to the real
+binary. Nothing announces this. On a machine with no real `gh` the only symptom
+is `command not found`, which reads as an ordinary missing tool -- that is how
+it went unnoticed through a whole `commit` benchmark, where trials disagreed
+about whether `gh` even existed.
+
+So use the wrapper `run-eval.sh` writes next to `env.sh`, for every command:
+
+```bash
+/tmp/eval-run/in-trial.sh git status
+/tmp/eval-run/in-trial.sh 'git add -A && git commit -m "..."'
+```
+
+It sources `env.sh` and `cd`s to the workspace each time. One argument is run as
+a shell snippet, so `&&` and pipes work; several are passed through as an argv
+vector with no second round of word splitting, so quoted commit messages survive
+intact.
+
+### What an executor must be told
+
+Two clauses belong in every executor prompt, because neither is enforceable from
+the harness side:
+
+1. **Run every command through `in-trial.sh`.** Per the section above.
+2. **The executor's own session conventions do not apply inside the trial.**
+   The only conventions in scope are the skill's and the fixture's own
+   `AGENTS.md`/`CONTRIBUTING.md`. This matters most for commit messages: a
+   session instructed to sign commits with `Co-Authored-By: Claude ...` /
+   `Claude-Session: ...` will carry that into fixture commits, and in a `commit`
+   benchmark the commit message *is* the graded artifact. It happened in 2 of 13
+   trials -- intermittent, so it looked like variance rather than a constant
+   offset.
+
+`lib/check-trial-hygiene.sh <run-dir>...` is the backstop for the second one.
+Run it over the run dirs before writing a baseline; it exits non-zero and names
+the offending commits if any trial's messages carry session trailers.
 
 ## Two optional keys in `evals.json`
 
