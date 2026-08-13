@@ -1,0 +1,112 @@
+name: Sonar report
+
+# Publishes the current SonarQube findings into GitHub so they can be read
+# without holding a Sonar credential. The report is printed to the job log,
+# uploaded as an artifact (text + JSON), and rendered in the job summary.
+# SONAR_TOKEN stays in this repository's Actions secrets and never leaves the
+# runner, which is what makes this usable from environments that have no
+# secrets store of their own (e.g. Claude Code cloud sessions, which can read
+# job logs and artifacts through their GitHub proxy).
+#
+# This reports what the Sonar server currently holds; it does not run an
+# analysis. This repo uses SonarCloud Automatic Analysis, which publishes on
+# push, so dispatch this after the analysis for the commit you care about has
+# finished. The quality-gate check on the PR tells you when that has happened.
+#
+# Dispatch-only on purpose: workflow_dispatch runs only on refs in this
+# repository, so secrets are never exposed to a fork's code.
+#
+# Setup: add a SONAR_TOKEN repository secret (a Sonar user token with browse
+# permission on the project). Optionally set a SONAR_HOST_URL repository
+# variable for a self-hosted server; it defaults to https://sonarcloud.io.
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: 'Pull request number to report on. Leave empty to auto-detect from the branch, falling back to the whole project.'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  report:
+    name: Sonar report
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Resolve scope
+        id: scope
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_INPUT: ${{ inputs.pr }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          pr="$PR_INPUT"
+          if [ -z "$pr" ]; then
+            # No explicit PR: report on the open PR for this branch, if there is one.
+            pr="$(gh pr list -R "$GITHUB_REPOSITORY" --head "$REF_NAME" --state open \
+                    --json number --jq '.[0].number // empty')"
+          fi
+          if [ -n "$pr" ]; then
+            echo "Reporting on PR #$pr"
+          else
+            echo "No PR resolved; reporting on the whole project"
+          fi
+          echo "pr=$pr" >> "$GITHUB_OUTPUT"
+
+      - name: Fetch findings
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL || 'https://sonarcloud.io' }}
+          PR: ${{ steps.scope.outputs.pr }}
+          # The script wraps output to the terminal width, defaulting to 80.
+          COLUMNS: '120'
+        run: |
+          set -euo pipefail
+          if [ -z "${SONAR_TOKEN:-}" ]; then
+            echo "::error::SONAR_TOKEN is not set. Add it as a repository secret (Settings > Secrets and variables > Actions)."
+            exit 1
+          fi
+          script=plugins/software-development/skills/resolve-sonarqube-issues/scripts/list-sonar-issues.py
+          if [ -n "$PR" ]; then
+            set -- -pr "$PR"
+          else
+            set -- --all
+          fi
+          python3 "$script" "$@" | tee sonar-report.txt
+          python3 "$script" "$@" --json > sonar-report.json
+
+      - name: Write job summary
+        if: always()
+        run: |
+          set -euo pipefail
+          [ -f sonar-report.txt ] || exit 0
+          {
+            echo '## Sonar report'
+            echo
+            echo '```'
+            # The job summary caps at 1 MiB; leave headroom for the fences.
+            head -c 900000 sonar-report.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonar-report
+          path: |
+            sonar-report.txt
+            sonar-report.json
+          if-no-files-found: ignore
+          retention-days: 14
