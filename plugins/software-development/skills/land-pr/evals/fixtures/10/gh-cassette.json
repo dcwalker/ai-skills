@@ -123,34 +123,13 @@
     },
     {
       "match": [
-        "commits/f1x7u4e/check-runs"
+        "pr",
+        "checks"
       ],
-      "stdout_json": {
-        "total_count": 2,
-        "check_runs": [
-          {
-            "name": "ci/test",
-            "conclusion": "success",
-            "status": "completed",
-            "html_url": "https://github.com/example/widget-service/actions/runs/51003"
-          },
-          {
-            "name": "ci/build",
-            "conclusion": "success",
-            "status": "completed",
-            "html_url": "https://github.com/example/widget-service/actions/runs/51002"
-          }
-        ]
-      }
-    },
-    {
-      "match": [
-        "commits/f1x7u4e/status"
-      ],
-      "stdout_json": {
-        "state": "success",
-        "statuses": []
-      }
+      "times": 1,
+      "exit_code": 1,
+      "stdout": "ci/test\tfail\t1m20s\thttps://github.com/example/widget-service/actions/runs/51001\nci/build\tpass\t1m20s\thttps://github.com/example/widget-service/actions/runs/51002\n",
+      "stderr": "Some checks were not successful\ntest_report.py::test_reporting - AssertionError: expected True\n"
     },
     {
       "match": [
@@ -229,6 +208,39 @@
       "match": [
         "check-runs"
       ],
+      "times": 1,
+      "stdout_json": {
+        "total_count": 2,
+        "check_runs": [
+          {
+            "id": 90000,
+            "name": "ci/test",
+            "status": "completed",
+            "conclusion": "failure",
+            "html_url": "https://github.com/example/widget-service/actions/runs/51001",
+            "output": {
+              "title": "Failing",
+              "summary": "test_report.py::test_reporting - AssertionError: expected True"
+            }
+          },
+          {
+            "id": 90001,
+            "name": "ci/build",
+            "status": "completed",
+            "conclusion": "success",
+            "html_url": "https://github.com/example/widget-service/actions/runs/51002",
+            "output": {
+              "title": "Passing",
+              "summary": ""
+            }
+          }
+        ]
+      }
+    },
+    {
+      "match": [
+        "check-runs"
+      ],
       "stdout_json": {
         "total_count": 2,
         "check_runs": [
@@ -253,6 +265,16 @@
             "html_url": "https://github.com/example/widget-service/actions/runs/51002"
           }
         ]
+      }
+    },
+    {
+      "match": [
+        "/status"
+      ],
+      "times": 1,
+      "stdout_json": {
+        "state": "failure",
+        "statuses": []
       }
     },
     {
@@ -296,5 +318,14 @@
   "default": {
     "exit_code": 1,
     "stderr": "gh-stub: no fixture match for this call"
-  }
+  },
+  "_comment": [
+    "",
+    "The `pr checks`, check-runs and status entries come in pairs: a times:1 red",
+    "variant matching the round-1 `pr view` snapshot above, then the green one.",
+    "fix-pr-checks' Phase 1 reads commits/<sha>/check-runs and .../status, so without",
+    "the red variant its diagnostic would report nothing failing in the same round",
+    "`pr view` reported a failure -- the skill would be handed a contradiction, and",
+    "eval 10 in particular would never see the red detailsUrl its expectation names."
+  ]
 }

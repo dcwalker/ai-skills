@@ -61,10 +61,12 @@ d. **Fix failing checks** — invoke the `fix-pr-checks` skill for any other fai
 
 e. Re-run the `gh pr view` command from step 1 to refresh status before deciding whether another round is needed.
 
-f. **Stop early if the round made no progress.** Another round is only worth running if this one changed something. After a–e, if `mergeStateStatus` is still not `CLEAN`, stop looping immediately — do not burn the remaining rounds — when any of these holds:
+f. **Stop early if the round made no progress.** Another round is only worth running if this one changed something. "Something" means any blocker resolved — a conflict merged, a comment addressed, a check turned green — not merely that work was attempted.
+
+   So the test is: **did this round resolve anything at all?** If it did, keep going even if something else is still failing; the next round starts from a genuinely different state, and step 3's cap is the limit. If it resolved nothing and `mergeStateStatus` is still not `CLEAN`, stop immediately rather than burning the remaining rounds. The three shapes that take:
 
    - **Nothing to fix.** Steps a–d found no conflicts, no comments, no SonarQube findings, and no failing checks. Report what is still blocking. When `reviewDecision` is `REVIEW_REQUIRED` (or similar), name it: the PR is waiting on a human approving review, which none of the four sub-steps can satisfy.
-   - **A fix did not take.** The same check or comment that a–d just addressed is still failing. Per the Important Notes below, that means the fix was wrong, not that it needs repeating — re-running identical work is what the round cap exists to prevent, and hitting the cap that way tells the user nothing the second round did not.
+   - **A fix did not take, and nothing else moved.** A check or comment that a–d addressed is still failing, *and* the round resolved nothing else. Per the Important Notes below, a fix that leaves the same item failing was the wrong fix, not one to repeat. Note the second half: a round that clears a merge conflict and also attempts a check that stays red has still made progress, so it does not stop here.
    - **No new information.** The refreshed `gh pr view` is identical to the previous round's, and the sub-steps surfaced nothing they had not already surfaced. There is no reason to expect round *n+1* to differ from round *n*.
 
    In each case, report what remains outstanding and ask the user how to proceed. Stopping at round 2 with an accurate account beats stopping at round 5 with the same account.
@@ -99,4 +101,4 @@ Summarize:
 
 - **Never merges the PR.** Merging affects shared state and requires separate, explicit approval — this skill's job ends at "green and mergeable."
 - Never force-pushes without explicit user approval, and never bypasses hooks with `--no-verify`.
-- If the same check or comment keeps failing after being "fixed," treat that as a sign the fix is wrong rather than re-attempting the same change — stop and ask. This is step 2f's second case; it takes precedence over the round cap, so honouring it means stopping well before round 5.
+- If the same check or comment keeps failing after being "fixed," treat that as a sign the fix is wrong rather than re-attempting the same change — stop and ask. This is step 2f's second case, and it is scoped there: it stops the loop when the round resolved nothing else, not when a still-red check sits alongside real progress.

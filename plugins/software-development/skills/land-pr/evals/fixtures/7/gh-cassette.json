@@ -109,28 +109,13 @@
     },
     {
       "match": [
-        "commits/f1x7u4e/check-runs"
+        "pr",
+        "checks"
       ],
-      "stdout_json": {
-        "total_count": 1,
-        "check_runs": [
-          {
-            "name": "ci/test",
-            "conclusion": "success",
-            "status": "completed",
-            "html_url": ""
-          }
-        ]
-      }
-    },
-    {
-      "match": [
-        "commits/f1x7u4e/status"
-      ],
-      "stdout_json": {
-        "state": "success",
-        "statuses": []
-      }
+      "times": 1,
+      "exit_code": 1,
+      "stdout": "ci/test\tfail\t1m20s\t\n",
+      "stderr": "Some checks were not successful\ntest_flaky.py::test_flaky - AssertionError: transient failure\n"
     },
     {
       "match": [
@@ -202,6 +187,28 @@
       "match": [
         "check-runs"
       ],
+      "times": 1,
+      "stdout_json": {
+        "total_count": 1,
+        "check_runs": [
+          {
+            "id": 90000,
+            "name": "ci/test",
+            "status": "completed",
+            "conclusion": "failure",
+            "html_url": "",
+            "output": {
+              "title": "Failing",
+              "summary": "test_flaky.py::test_flaky - AssertionError: transient failure"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "match": [
+        "check-runs"
+      ],
       "stdout_json": {
         "total_count": 1,
         "check_runs": [
@@ -216,6 +223,16 @@
             "html_url": ""
           }
         ]
+      }
+    },
+    {
+      "match": [
+        "/status"
+      ],
+      "times": 1,
+      "stdout_json": {
+        "state": "failure",
+        "statuses": []
       }
     },
     {
@@ -259,5 +276,14 @@
   "default": {
     "exit_code": 1,
     "stderr": "gh-stub: no fixture match for this call"
-  }
+  },
+  "_comment": [
+    "",
+    "The `pr checks`, check-runs and status entries come in pairs: a times:1 red",
+    "variant matching the round-1 `pr view` snapshot above, then the green one.",
+    "fix-pr-checks' Phase 1 reads commits/<sha>/check-runs and .../status, so without",
+    "the red variant its diagnostic would report nothing failing in the same round",
+    "`pr view` reported a failure -- the skill would be handed a contradiction, and",
+    "eval 10 in particular would never see the red detailsUrl its expectation names."
+  ]
 }
