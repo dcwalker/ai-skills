@@ -132,6 +132,36 @@ samples are the user's, plus their org, team, and known relationships;
 `general.md` records only the traits that survive every audience, which is
 what a request with no card of its own falls back to.
 
+**A stored card is the Step 6 block verbatim**, including its `Built:` line.
+That line is the only record of how old a reading is, so a card written
+without it cannot be aged, refreshed, or honestly reused:
+
+```
+Built:       <date written> | newest sample <date> | rebuilt | reused from cache
+```
+
+**Age is measured from the newest sample, not from the build date.** A card
+rebuilt yesterday out of samples that all predate last spring is stale in the
+way that matters, because it describes how the user wrote a year ago. The
+build date is for telling the user how old the reading is when it gets reused.
+
+**`index.md`** is the searches ledger, one row per card, so a later session
+can tell what was already looked for without opening every card:
+
+```markdown
+| medium | audience | samples | rung | confidence | newest sample | built |
+|---|---|---|---|---|---|---|
+| email | peer (jordan@example.com) | 6 | 1 | high | 2026-07-30 | 2026-08-02 |
+
+Searches run: `in:sent to:jordan@example.com` (6 results, 2026-08-02)
+
+No samples found for: text message, any personal audience.
+```
+
+The "no samples found for" line matters as much as the rows. A search that
+came back empty is a result worth keeping, so the next session does not spend
+the same calls rediscovering that the corpus is not there.
+
 The cache persists across sessions and days, because voice changes slowly and
 the research is the expensive part. To force a full rebuild, delete the
 directory; to rebuild one profile, delete its card.
@@ -156,11 +186,15 @@ Cache rules:
   keep the audience findings, research the medium fresh.
 - Corpus notes are reusable across cards. A sample found while building one
   card counts as evidence for another if it matches that card's scope.
-- **Refresh on age or on drift.** A card older than about six months gets a
-  quick re-check against the newest samples before it is used, and the card
-  records the date of the newest sample behind it. A relationship that has
-  visibly changed (a peer became a manager, a client became a friend) invalidates
-  the card regardless of age.
+- **Refresh on age or on drift.** When the card's newest sample is more than
+  about six months old, re-check against current samples before using it, and
+  say that the reading was refreshed. A card with no `Built:` line has no
+  age and gets rebuilt rather than trusted.
+- **Drift invalidates a card regardless of age.** When the relationship
+  recorded on the card contradicts what `identity.md` or a directory now says
+  (the card reads peer, the user has since recorded them as a manager), the
+  register the card describes is the wrong one. Rebuild it, and say why the
+  cached one was not used rather than silently swapping it out.
 - New samples extend a card rather than replacing it. Re-running research adds
   the messages written since, and updates the counts.
 - The cache holds derived observations and short excerpts only, never bulk

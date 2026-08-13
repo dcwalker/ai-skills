@@ -234,6 +234,19 @@
         "The third turn shortens the message while keeping the warmth introduced in turn two, rather than reverting to the turn-one draft.",
         "No facts are added across the three turns beyond the on-call shift on Friday and the user being out: no reason for the absence, no offer to swap back, no invented deadline."
       ]
+    },
+    {
+      "id": 20,
+      "prompt": "Write an email to Priya (priya.raman@example.com) letting her know the migration slipped to Thursday, that the cause was a table lock during cutover, and that we are chunking it before the next attempt. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The cached card for this pair is stale twice over: its newest sample is roughly eight months old, and it records Priya as a peer where identity.md now records her as the manager who took over the org in March. The skill rebuilds rather than reuses, says why, and the new card reflects the current leadership register in the mailbox rather than the cached peer voice.",
+      "expectations": [
+        "The cached card is not used as the profile. The transcript says why, naming at least one of the two triggers: the newest sample behind it is about eight months old, or the peer relationship it records contradicts the manager relationship in identity.md.",
+        "Fresh research actually runs: the Gmail call log shows a search of the user's sent mail scoped to priya.raman@example.com, and the resulting card cites the 2026 messages rather than the 2025 sample dates carried on the cached card.",
+        "The rebuilt card describes the current register the mailbox shows -- 'Priya,' opening, the outcome or ask in the first sentence, a short bullet list, 'Alex' sign-off -- and not the cached peer markers ('hey Priya,' lowercase opening, 'thanks / alex' close, no bullets).",
+        "The draft carries the current register rather than the stale one: it does not open with a lowercase 'hey Priya,' or close with the lowercase 'thanks / alex' sign-off.",
+        "The staleness is surfaced to the user rather than handled silently: the transcript makes clear a cached profile existed and was replaced, instead of presenting the rebuild as if no cache had been there.",
+        "The draft states only the three facts given (slipped to Thursday, a table lock during cutover, chunking before the next attempt) with no invented downtime figures, customer impact, or new date beyond Thursday."
+      ]
     }
   ]
 }
