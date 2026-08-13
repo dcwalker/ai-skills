@@ -2,9 +2,9 @@
   "metadata": {
     "skill_name": "resolve-pr-comments",
     "skill_path": "plugins/software-development/skills/resolve-pr-comments",
-    "executor_model": "claude-sonnet-5",
-    "analyzer_model": "claude-sonnet-5",
-    "timestamp": "2026-07-30T22:30:00Z",
+    "executor_model": "claude-opus-5",
+    "analyzer_model": "claude-opus-5",
+    "timestamp": "2026-08-13T05:20:00Z",
     "evals_run": [
       1,
       2,
@@ -17,7 +17,8 @@
       9,
       10,
       11,
-      12
+      12,
+      13
     ],
     "runs_per_configuration": 1
   },
@@ -31,39 +32,38 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": null,
+        "time_seconds": 109.6,
+        "tokens": 47791,
+        "tool_calls": 13,
         "errors": null
       },
       "expectations": [
         {
           "text": "src/discount.js's loop condition was changed from `i <= items.length` to `i < items.length` (or an equivalent fix that stops iteration at the last valid index).",
           "passed": true,
-          "evidence": "src/discount.js's loop condition changed from `i <= items.length` to `i < items.length` -- independently verified by reading the file directly."
+          "evidence": "1 commit on top of fixture; src/discount.js loop bound i<=\u2192i<; reply POST to comments/3001/replies (call 6) then resolveReviewThread (call 9) \u2014 resolve strictly after reply; no other files touched."
         },
         {
           "text": "Exactly one new commit was created on top of the fixture's initial commit, and its message references PR comment #3001 or its URL.",
           "passed": true,
-          "evidence": "Exactly one new commit (6845724) beyond the initial commit, message references the PR comment URL for #3001 -- independently verified via `git log --oneline`."
+          "evidence": "1 commit on top of fixture; src/discount.js loop bound i<=\u2192i<; reply POST to comments/3001/replies (call 6) then resolveReviewThread (call 9) \u2014 resolve strictly after reply; no other files touched."
         },
         {
           "text": "A `gh api repos/acme/widgets/pulls/42/comments/3001/replies` call (or equivalent reply call for comment 3001) happened, with reply text containing the short SHA of the new commit.",
           "passed": true,
-          "evidence": "A reply call for comment 3001 occurred with the commit SHA in the text (`body=Addressed in 6845724.`) -- independently verified via direct read of gh-calls.log."
+          "evidence": "1 commit on top of fixture; src/discount.js loop bound i<=\u2192i<; reply POST to comments/3001/replies (call 6) then resolveReviewThread (call 9) \u2014 resolve strictly after reply; no other files touched."
         },
         {
           "text": "A `resolveReviewThread` GraphQL mutation call happened for the thread containing comment 3001, and it happened only after the fix commit already exists (i.e. after the reply/commit, not before).",
           "passed": true,
-          "evidence": "The `resolveReviewThread` mutation occurred after the reply/commit (reply at 22:22:18.684, resolve at 22:22:18.787) -- independently verified via timestamps in gh-calls.log."
+          "evidence": "1 commit on top of fixture; src/discount.js loop bound i<=\u2192i<; reply POST to comments/3001/replies (call 6) then resolveReviewThread (call 9) \u2014 resolve strictly after reply; no other files touched."
         },
         {
           "text": "No other files were modified.",
           "passed": true,
-          "evidence": "No other files were modified -- independently verified via `git diff --stat` against the initial commit (1 file, 1 line changed)."
+          "evidence": "1 commit on top of fixture; src/discount.js loop bound i<=\u2192i<; reply POST to comments/3001/replies (call 6) then resolveReviewThread (call 9) \u2014 resolve strictly after reply; no other files touched."
         }
-      ],
-      "notes": []
+      ]
     },
     {
       "eval_id": 2,
@@ -74,34 +74,33 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 63.351,
-        "tokens": 49503,
-        "tool_calls": null,
+        "time_seconds": 92.0,
+        "tokens": 43427,
+        "tool_calls": 9,
         "errors": null
       },
       "expectations": [
         {
           "text": "No files in the repository were modified and no new commit was created.",
           "passed": true,
-          "evidence": "No files modified, no new commit -- independently verified via `git status` (clean) and `git log --oneline` (only initial commit)."
+          "evidence": "No commit, tree clean at fixture HEAD; reply POST to comments/3002/replies answering the backoff rationale (not 'Addressed in'); resolveReviewThread for PRT_thread_3002."
         },
         {
           "text": "A reply call was made for comment #3002 whose text answers the 'why' question (addresses the design reasoning) rather than saying 'Addressed in <SHA>'.",
           "passed": true,
-          "evidence": "Reply call for comment #3002 posted a substantive multi-sentence explanation of the fixed-delay-vs-backoff design reasoning, not a boilerplate 'Addressed in' message -- independently verified via direct read of gh-calls.log."
+          "evidence": "No commit, tree clean at fixture HEAD; reply POST to comments/3002/replies answering the backoff rationale (not 'Addressed in'); resolveReviewThread for PRT_thread_3002."
         },
         {
           "text": "A `resolveReviewThread` GraphQL mutation call happened for the thread containing comment 3002.",
           "passed": true,
-          "evidence": "A `resolveReviewThread` mutation occurred for thread PRT_thread_3002 -- independently verified via direct read of gh-calls.log."
+          "evidence": "No commit, tree clean at fixture HEAD; reply POST to comments/3002/replies answering the backoff rationale (not 'Addressed in'); resolveReviewThread for PRT_thread_3002."
         },
         {
           "text": "The reply was not a boilerplate 'Addressed in' message, since no fix was made.",
           "passed": true,
-          "evidence": "The reply was not boilerplate -- confirmed same as above (full reasoning text, no fix claimed)."
+          "evidence": "No commit, tree clean at fixture HEAD; reply POST to comments/3002/replies answering the backoff rationale (not 'Addressed in'); resolveReviewThread for PRT_thread_3002."
         }
-      ],
-      "notes": []
+      ]
     },
     {
       "eval_id": 3,
@@ -112,77 +111,75 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 65.312,
-        "tokens": 49092,
-        "tool_calls": null,
+        "time_seconds": 58.9,
+        "tokens": 41956,
+        "tool_calls": 7,
         "errors": null
       },
       "expectations": [
         {
           "text": "No new commit was created; the git log after the run has exactly the same commits as before the run (the initial commit plus the pre-existing 'Require an @ symbol in validateEmail' commit).",
           "passed": true,
-          "evidence": "No new commit created; git log after the run has the same 2 commits as before (92b69df pre-existing fix, 6811c6e initial) -- independently verified."
+          "evidence": "No new commit (2 total = fixture + pre-existing b0e554e); src/validate.js untouched during run; reply to comments/3003 citing b0e554e; resolveReviewThread issued."
         },
         {
           "text": "src/validate.js was not modified during the run (it already contained the fix).",
           "passed": true,
-          "evidence": "src/validate.js was not modified -- independently verified via `git diff` (empty) and the executor's reported diff."
+          "evidence": "No new commit (2 total = fixture + pre-existing b0e554e); src/validate.js untouched during run; reply to comments/3003 citing b0e554e; resolveReviewThread issued."
         },
         {
           "text": "A reply call was made for comment #3003 whose text is 'Addressed in <SHA>' (or similar) citing the SHA of the pre-existing 'Require an @ symbol in validateEmail' commit, not a newly created SHA.",
           "passed": true,
-          "evidence": "Reply call for comment #3003 is 'Addressed in 92b69df.' citing the PRE-EXISTING commit's SHA -- independently verified via direct read of gh-calls.log."
+          "evidence": "No new commit (2 total = fixture + pre-existing b0e554e); src/validate.js untouched during run; reply to comments/3003 citing b0e554e; resolveReviewThread issued."
         },
         {
           "text": "A `resolveReviewThread` GraphQL mutation call happened for the thread containing comment 3003.",
           "passed": true,
-          "evidence": "A `resolveReviewThread` mutation occurred for thread PRT_thread_3003 -- independently verified via direct read of gh-calls.log."
+          "evidence": "No new commit (2 total = fixture + pre-existing b0e554e); src/validate.js untouched during run; reply to comments/3003 citing b0e554e; resolveReviewThread issued."
         }
-      ],
-      "notes": []
+      ]
     },
     {
       "eval_id": 4,
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 1.0,
-        "passed": 5,
-        "failed": 0,
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
         "total": 5,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": null,
+        "time_seconds": 75.4,
+        "tokens": 42742,
+        "tool_calls": 9,
         "errors": null
       },
       "expectations": [
         {
           "text": "src/parse-config.js was changed to handle a JSON.parse failure (e.g. wrapped in try/catch or the parsed result validated) addressing comment #3004.",
           "passed": true,
-          "evidence": "src/parse-config.js changed to handle a JSON.parse failure via try/catch, addressing comment #3004 -- independently verified by reading the file directly."
+          "evidence": "1 new commit touching only src/parse-config.js (try/catch around JSON.parse); reply+resolve for 3004; zero gh calls referencing 3005 or its thread."
         },
         {
           "text": "Exactly one new commit was created, referencing comment #3004 or the JSON.parse bug.",
           "passed": true,
-          "evidence": "Exactly one new commit (765d9a6), referencing the JSON.parse bug/comment #3004 -- independently verified via `git log --oneline`."
+          "evidence": "1 new commit touching only src/parse-config.js (try/catch around JSON.parse); reply+resolve for 3004; zero gh calls referencing 3005 or its thread."
         },
         {
           "text": "A reply and a `resolveReviewThread` mutation happened for the thread containing comment #3004.",
           "passed": true,
-          "evidence": "A reply and `resolveReviewThread` mutation happened for comment #3004's thread -- independently verified via direct read of gh-calls.log."
+          "evidence": "1 new commit touching only src/parse-config.js (try/catch around JSON.parse); reply+resolve for 3004; zero gh calls referencing 3005 or its thread."
         },
         {
           "text": "No `gh` call (reply or resolve) referencing comment #3005 or its thread appears in the call log -- the human's comment was left untouched.",
           "passed": true,
-          "evidence": "No gh call (reply or resolve) references comment #3005 or its thread anywhere in the log -- independently verified via grep (0 matches)."
+          "evidence": "1 new commit touching only src/parse-config.js (try/catch around JSON.parse); reply+resolve for 3004; zero gh calls referencing 3005 or its thread."
         },
         {
           "text": "The `list-pr-comments.sh` invocation(s) used to gather comments included the `--bots` filter.",
-          "passed": true,
-          "evidence": "The `list-pr-comments.sh` invocation used the `--bots` filter -- confirmed via the executor's reported command history."
+          "passed": false,
+          "evidence": "Not observable from final state: gh-calls.log records gh invocations, and list-pr-comments.sh issues one GraphQL query then filters client-side, so no --bots flag ever reaches the log. The outcome this is proxying for (only the bot comment acted on) is already covered by expectation 4 and did pass. Expectation grades method rather than outcome; recommend rewriting or dropping."
         }
-      ],
-      "notes": []
+      ]
     },
     {
       "eval_id": 5,
@@ -193,39 +190,38 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": null,
+        "time_seconds": 93.3,
+        "tokens": 43531,
+        "tool_calls": 11,
         "errors": null
       },
       "expectations": [
         {
           "text": "src/parse-config.js's `module.exports = parseConfig;` was changed to a named export `module.exports = { parseConfig };` (or equivalent), addressing comment #3007.",
           "passed": true,
-          "evidence": "src/parse-config.js's export changed from default (`module.exports = parseConfig;`) to named (`module.exports = { parseConfig };`), addressing comment #3007 -- independently verified by reading the file directly."
+          "evidence": "1 new commit touching only src/parse-config.js (named export); reply+resolve for human comment 3007; zero gh calls referencing bot comment 3006."
         },
         {
           "text": "Exactly one new commit was created, referencing comment #3007 or the export-shape change.",
           "passed": true,
-          "evidence": "Exactly one new commit (76f5a60), referencing the export-shape change -- independently verified via `git log --oneline`."
+          "evidence": "1 new commit touching only src/parse-config.js (named export); reply+resolve for human comment 3007; zero gh calls referencing bot comment 3006."
         },
         {
           "text": "A reply and a `resolveReviewThread` mutation happened for the thread containing comment #3007.",
           "passed": true,
-          "evidence": "A reply and `resolveReviewThread` mutation happened for comment #3007's thread -- independently verified via direct read of gh-calls.log."
+          "evidence": "1 new commit touching only src/parse-config.js (named export); reply+resolve for human comment 3007; zero gh calls referencing bot comment 3006."
         },
         {
           "text": "No `gh` call (reply or resolve) referencing comment #3006 or its thread appears in the call log -- the bot's comment was left untouched.",
           "passed": true,
-          "evidence": "No gh call references comment #3006 or its thread anywhere in the log -- independently verified via grep (0 matches)."
+          "evidence": "1 new commit touching only src/parse-config.js (named export); reply+resolve for human comment 3007; zero gh calls referencing bot comment 3006."
         },
         {
           "text": "The `list-pr-comments.sh` invocation(s) used to gather comments included the `--humans` filter.",
           "passed": true,
-          "evidence": "The `list-pr-comments.sh` invocation used the `--humans` filter, which returned 'Total human comments: 1 (from 2 review)' -- confirmed via the executor's reported command output."
+          "evidence": "1 new commit touching only src/parse-config.js (named export); reply+resolve for human comment 3007; zero gh calls referencing bot comment 3006."
         }
-      ],
-      "notes": []
+      ]
     },
     {
       "eval_id": 6,
@@ -236,39 +232,38 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": null,
+        "time_seconds": 93.6,
+        "tokens": 44110,
+        "tool_calls": 11,
         "errors": null
       },
       "expectations": [
         {
           "text": "src/inventory.js's reserveStock function was changed to avoid mutating the `inventory` argument in place (e.g. clones/returns a new object) addressing comment #3008.",
           "passed": true,
-          "evidence": "src/inventory.js's reserveStock changed to avoid mutating the `inventory` argument in place (clones via `{ ...inventory }` and returns a new object), addressing comment #3008 -- independently verified by reading the file directly."
+          "evidence": "1 new commit (src/inventory.js clone-not-mutate) for 3008; replies to both 3008 and 3009; 2 resolveReviewThread calls; 3009 declined on JS-naming grounds with explanation."
         },
         {
           "text": "Exactly one new commit was created, and it references comment #3008 (the mutation bug), not comment #3009.",
           "passed": true,
-          "evidence": "Exactly one new commit (3d29984), referencing comment #3008 (the mutation bug), not #3009 -- independently verified via `git log --oneline`."
+          "evidence": "1 new commit (src/inventory.js clone-not-mutate) for 3008; replies to both 3008 and 3009; 2 resolveReviewThread calls; 3009 declined on JS-naming grounds with explanation."
         },
         {
           "text": "A reply was posted for comment #3008 citing the fix commit's SHA, and a separate reply was posted for comment #3009 explaining why the rename isn't appropriate (not a fix commit).",
           "passed": true,
-          "evidence": "A reply was posted for comment #3008 citing the fix commit's SHA ('Addressed in 3d29984.'), and a separate reply was posted for #3009 explaining why the rename isn't appropriate -- independently verified via direct read of gh-calls.log."
+          "evidence": "1 new commit (src/inventory.js clone-not-mutate) for 3008; replies to both 3008 and 3009; 2 resolveReviewThread calls; 3009 declined on JS-naming grounds with explanation."
         },
         {
           "text": "`resolveReviewThread` mutations happened for both thread 3008 and thread 3009.",
           "passed": true,
-          "evidence": "`resolveReviewThread` mutations happened for both PRT_thread_3008 and PRT_thread_3009 -- independently verified via direct read of gh-calls.log."
+          "evidence": "1 new commit (src/inventory.js clone-not-mutate) for 3008; replies to both 3008 and 3009; 2 resolveReviewThread calls; 3009 declined on JS-naming grounds with explanation."
         },
         {
           "text": "The two comments were not lumped into a single reply or a single combined explanation -- each has its own distinct reply text.",
           "passed": true,
-          "evidence": "The two replies are distinct texts, not a single combined message -- confirmed via direct read of the two separate POST call bodies in gh-calls.log."
+          "evidence": "1 new commit (src/inventory.js clone-not-mutate) for 3008; replies to both 3008 and 3009; 2 resolveReviewThread calls; 3009 declined on JS-naming grounds with explanation."
         }
-      ],
-      "notes": []
+      ]
     },
     {
       "eval_id": 7,
@@ -279,29 +274,28 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": 42.143,
-        "tokens": 45551,
-        "tool_calls": null,
+        "time_seconds": 88.2,
+        "tokens": 46167,
+        "tool_calls": 10,
         "errors": null
       },
       "expectations": [
         {
           "text": "No files in the repository were modified and no new commit was created.",
           "passed": true,
-          "evidence": "No files modified, no new commit -- independently verified via `git status`/`git log --oneline` (only initial commit)."
+          "evidence": "Zero comments returned by the cassette; no commit (1 total), no files changed, no reply or resolve calls issued."
         },
         {
           "text": "No reply or `resolveReviewThread`/`minimizeComment` GraphQL call appears anywhere in the gh call log.",
           "passed": true,
-          "evidence": "No reply/resolveReviewThread/minimizeComment call appears anywhere in gh-calls.log -- independently verified (3 entries total, all read-only: pr view, auth status, graphql fetch)."
+          "evidence": "Zero comments returned by the cassette; no commit (1 total), no files changed, no reply or resolve calls issued."
         },
         {
           "text": "The final report clearly states there were no unresolved comments to process, rather than fabricating or inventing an action.",
           "passed": true,
-          "evidence": "Final report states 'Unresolved: None -- list-pr-comments.sh found no review comments and no issue comments' -- clearly states nothing to process, no fabricated action."
+          "evidence": "Zero comments returned by the cassette; no commit (1 total), no files changed, no reply or resolve calls issued."
         }
-      ],
-      "notes": []
+      ]
     },
     {
       "eval_id": 8,
@@ -312,34 +306,33 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 64.488,
-        "tokens": 48935,
-        "tool_calls": null,
+        "time_seconds": 65.9,
+        "tokens": 42197,
+        "tool_calls": 7,
         "errors": null
       },
       "expectations": [
         {
           "text": "src/pricing.js was not modified; finalPrice still uses Math.round.",
           "passed": true,
-          "evidence": "src/pricing.js was not modified; finalPrice still uses Math.round -- independently verified by reading the file directly."
+          "evidence": "No commit (1 total), no files changed; reply to 3010 declining the Math.floor request citing CONTRIBUTING.md's Math.round rule; resolveReviewThread issued."
         },
         {
           "text": "No new commit was created.",
           "passed": true,
-          "evidence": "No new commit created -- independently verified via `git log --oneline` (only initial commit)."
+          "evidence": "No commit (1 total), no files changed; reply to 3010 declining the Math.floor request citing CONTRIBUTING.md's Math.round rule; resolveReviewThread issued."
         },
         {
           "text": "A reply was posted for comment #3010 explaining that the current Math.round behavior is intentional per project convention (not a boilerplate 'Addressed in' message).",
           "passed": true,
-          "evidence": "Reply for comment #3010 explains the Math.round convention citing CONTRIBUTING.md, not a boilerplate 'Addressed in' message -- independently verified via direct read of gh-calls.log."
+          "evidence": "No commit (1 total), no files changed; reply to 3010 declining the Math.floor request citing CONTRIBUTING.md's Math.round rule; resolveReviewThread issued."
         },
         {
           "text": "A `resolveReviewThread` mutation happened for the thread containing comment #3010.",
           "passed": true,
-          "evidence": "A `resolveReviewThread` mutation happened for comment #3010's thread -- independently verified via direct read of gh-calls.log."
+          "evidence": "No commit (1 total), no files changed; reply to 3010 declining the Math.floor request citing CONTRIBUTING.md's Math.round rule; resolveReviewThread issued."
         }
-      ],
-      "notes": []
+      ]
     },
     {
       "eval_id": 9,
@@ -350,34 +343,33 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": null,
+        "time_seconds": 99.5,
+        "tokens": 43999,
+        "tool_calls": 12,
         "errors": null
       },
       "expectations": [
         {
           "text": "Both src/order-total.js and src/format.js were changed to reference the TAX_RATE constant from src/constants.js instead of a hardcoded 1.07/0.07 literal.",
           "passed": true,
-          "evidence": "Both src/order-total.js and src/format.js changed to reference the TAX_RATE constant instead of a hardcoded 1.07 literal -- independently verified by reading both files directly."
+          "evidence": "1 new commit touching src/order-total.js and src/format.js replacing 1.07 literals with shared TAX_RATE; reply to 3011; resolveReviewThread issued."
         },
         {
           "text": "Exactly one new commit was created covering both files, and its message references comment #3011.",
           "passed": true,
-          "evidence": "Exactly one new commit (4cfab66) covering both files, referencing comment #3011 -- independently verified via `git log --oneline`."
+          "evidence": "1 new commit touching src/order-total.js and src/format.js replacing 1.07 literals with shared TAX_RATE; reply to 3011; resolveReviewThread issued."
         },
         {
           "text": "A reply was posted for comment #3011 citing that commit's SHA, and a `resolveReviewThread` mutation happened for its thread.",
           "passed": true,
-          "evidence": "A reply was posted for comment #3011 citing commit 4cfab66's SHA, and a `resolveReviewThread` mutation happened for its thread -- independently verified via direct read of gh-calls.log."
+          "evidence": "1 new commit touching src/order-total.js and src/format.js replacing 1.07 literals with shared TAX_RATE; reply to 3011; resolveReviewThread issued."
         },
         {
           "text": "src/constants.js itself was not modified (TAX_RATE already existed there).",
           "passed": true,
-          "evidence": "src/constants.js was not modified -- confirmed via the executor's report and consistent with the single-commit diff scope."
+          "evidence": "1 new commit touching src/order-total.js and src/format.js replacing 1.07 literals with shared TAX_RATE; reply to 3011; resolveReviewThread issued."
         }
-      ],
-      "notes": []
+      ]
     },
     {
       "eval_id": 10,
@@ -388,34 +380,33 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 79.576,
-        "tokens": 50627,
-        "tool_calls": null,
+        "time_seconds": 83.9,
+        "tokens": 43485,
+        "tool_calls": 12,
         "errors": null
       },
       "expectations": [
         {
           "text": "src/notify.js no longer contains the literal string 'xoxb-hardcoded-token-do-not-ship' or any other hardcoded credential.",
           "passed": true,
-          "evidence": "src/notify.js no longer contains the literal hardcoded Slack token string -- independently verified by reading the file directly."
+          "evidence": "1 new commit replacing the hardcoded Slack token in src/notify.js with the config/secrets.js loader; reply to 3012; resolveReviewThread issued."
         },
         {
           "text": "src/notify.js was changed to obtain the Slack token via config/secrets.js's getSecret (or equivalent use of an environment-backed loader), not a hardcoded literal.",
           "passed": true,
-          "evidence": "src/notify.js changed to obtain the Slack token via config/secrets.js's getSecret loader, not a hardcoded literal -- independently verified by reading the file directly."
+          "evidence": "1 new commit replacing the hardcoded Slack token in src/notify.js with the config/secrets.js loader; reply to 3012; resolveReviewThread issued."
         },
         {
           "text": "Exactly one new commit was created referencing comment #3012 or the credential leak.",
           "passed": true,
-          "evidence": "Exactly one new commit (1e4668e) referencing comment #3012/the credential leak -- independently verified via `git log --oneline`."
+          "evidence": "1 new commit replacing the hardcoded Slack token in src/notify.js with the config/secrets.js loader; reply to 3012; resolveReviewThread issued."
         },
         {
           "text": "A reply was posted for comment #3012 citing the fix commit's SHA, and a `resolveReviewThread` mutation happened for its thread.",
           "passed": true,
-          "evidence": "A reply was posted for comment #3012 citing the fix commit's SHA, and a `resolveReviewThread` mutation happened for its thread -- independently verified via direct read of gh-calls.log."
+          "evidence": "1 new commit replacing the hardcoded Slack token in src/notify.js with the config/secrets.js loader; reply to 3012; resolveReviewThread issued."
         }
-      ],
-      "notes": []
+      ]
     },
     {
       "eval_id": 11,
@@ -426,39 +417,38 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": null,
+        "time_seconds": 108.7,
+        "tokens": 45821,
+        "tool_calls": 14,
         "errors": null
       },
       "expectations": [
         {
           "text": "src/cart.js's removeItem was changed from `!=` to `!==` (or equivalent strict comparison) addressing comment #3013.",
           "passed": true,
-          "evidence": "src/cart.js's removeItem changed from `!=` to `!==`, addressing comment #3013 -- independently verified by reading the file directly."
+          "evidence": "2 single-concern commits (src/cart.js strict equality; src/shipping.js empty-list guard); replies to both 3013 and 3014; 2 resolveReviewThread calls."
         },
         {
           "text": "src/shipping.js's estimateShipping was changed to guard against an empty `items` array (e.g. avoid dividing by zero/using Math.max(items.length, 1)) addressing comment #3014.",
           "passed": true,
-          "evidence": "src/shipping.js's estimateShipping changed to guard against an empty items array, addressing comment #3014 -- independently verified by reading the file directly."
+          "evidence": "2 single-concern commits (src/cart.js strict equality; src/shipping.js empty-list guard); replies to both 3013 and 3014; 2 resolveReviewThread calls."
         },
         {
           "text": "Exactly two new commits were created: one touching only src/cart.js and referencing comment #3013, and one touching only src/shipping.js and referencing comment #3014 -- not a single commit touching both files.",
           "passed": true,
-          "evidence": "Exactly two new commits: ffbd8e2 touching only src/cart.js, and 2cfce84 touching only src/shipping.js -- independently verified via `git show --stat` on each commit (1 file changed each, no overlap)."
+          "evidence": "2 single-concern commits (src/cart.js strict equality; src/shipping.js empty-list guard); replies to both 3013 and 3014; 2 resolveReviewThread calls."
         },
         {
           "text": "Separate reply calls were made for comment #3013 and comment #3014, each citing its own commit's SHA.",
           "passed": true,
-          "evidence": "Separate reply calls were made for #3013 ('Addressed in ffbd8e2.') and #3014 ('Addressed in 2cfce84.'), each citing its own commit's SHA -- independently verified via direct read of gh-calls.log."
+          "evidence": "2 single-concern commits (src/cart.js strict equality; src/shipping.js empty-list guard); replies to both 3013 and 3014; 2 resolveReviewThread calls."
         },
         {
           "text": "`resolveReviewThread` mutations happened for both threads.",
           "passed": true,
-          "evidence": "`resolveReviewThread` mutations happened for both PRT_thread_3013 and PRT_thread_3014 -- independently verified via direct read of gh-calls.log."
+          "evidence": "2 single-concern commits (src/cart.js strict equality; src/shipping.js empty-list guard); replies to both 3013 and 3014; 2 resolveReviewThread calls."
         }
-      ],
-      "notes": []
+      ]
     },
     {
       "eval_id": 12,
@@ -469,61 +459,98 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": 52.345,
-        "tokens": 46729,
-        "tool_calls": null,
+        "time_seconds": 64.0,
+        "tokens": 41558,
+        "tool_calls": 7,
         "errors": null
       },
       "expectations": [
         {
           "text": "No files in the repository were modified and no new commit was created.",
           "passed": true,
-          "evidence": "No files modified, no new commit created -- independently verified via `git log --oneline` (only 2 pre-existing commits: 9843909 pre-existing fix, 082af0f initial) and `git status` (clean)."
+          "evidence": "Sole comment 3015 already resolved in the cassette; no new commit, no reply, no resolve \u2014 correctly declined to re-touch a resolved thread."
         },
         {
           "text": "No reply or `resolveReviewThread`/`minimizeComment` GraphQL call appears anywhere in the gh call log.",
           "passed": true,
-          "evidence": "No reply/resolveReviewThread/minimizeComment call appears anywhere in gh-calls.log -- independently verified (6 entries total, all read-only: pr view, auth status, graphql query x2)."
+          "evidence": "Sole comment 3015 already resolved in the cassette; no new commit, no reply, no resolve \u2014 correctly declined to re-touch a resolved thread."
         },
         {
           "text": "The final report does not claim to have fixed or resolved comment #3015 during this run (it was already resolved beforehand), and does not fabricate a new action against it.",
           "passed": true,
-          "evidence": "Final report explicitly states comment #3015 'was already resolved before this run started; no action was taken against it' -- does not claim to have fixed or resolved it during this run."
+          "evidence": "Sole comment 3015 already resolved in the cassette; no new commit, no reply, no resolve \u2014 correctly declined to re-touch a resolved thread."
         }
-      ],
-      "notes": []
+      ]
+    },
+    {
+      "eval_id": 13,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 88.0,
+        "tokens": 44551,
+        "tool_calls": 12,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "src/discount.js's loop bound is changed to `i < items.length` and the `Math.floor` call is replaced with `Math.round`.",
+          "passed": true,
+          "evidence": "2 single-concern commits on src/discount.js (i<=\u2192i<, Math.floor\u2192Math.round); replies to 6401 and 6402 with distinct #discussion_r URLs; final report links PR #64 and both comments as markdown hyperlinks, no fabricated URLs."
+        },
+        {
+          "text": "The final report references comment 6401 as a link to https://github.com/acme/widgets/pull/64#discussion_r6401 and comment 6402 as a link to https://github.com/acme/widgets/pull/64#discussion_r6402 -- bare ids with no URL fail this expectation.",
+          "passed": true,
+          "evidence": "2 single-concern commits on src/discount.js (i<=\u2192i<, Math.floor\u2192Math.round); replies to 6401 and 6402 with distinct #discussion_r URLs; final report links PR #64 and both comments as markdown hyperlinks, no fabricated URLs."
+        },
+        {
+          "text": "Each comment is linked to its own URL; the two comments are not both pointed at the same link.",
+          "passed": true,
+          "evidence": "2 single-concern commits on src/discount.js (i<=\u2192i<, Math.floor\u2192Math.round); replies to 6401 and 6402 with distinct #discussion_r URLs; final report links PR #64 and both comments as markdown hyperlinks, no fabricated URLs."
+        },
+        {
+          "text": "The report references PR #64 as a clickable link to https://github.com/acme/widgets/pull/64, not as a bare '#64'.",
+          "passed": true,
+          "evidence": "2 single-concern commits on src/discount.js (i<=\u2192i<, Math.floor\u2192Math.round); replies to 6401 and 6402 with distinct #discussion_r URLs; final report links PR #64 and both comments as markdown hyperlinks, no fabricated URLs."
+        },
+        {
+          "text": "No comment URL appears that the tooling did not return for that comment.",
+          "passed": true,
+          "evidence": "2 single-concern commits on src/discount.js (i<=\u2192i<, Math.floor\u2192Math.round); replies to 6401 and 6402 with distinct #discussion_r URLs; final report links PR #64 and both comments as markdown hyperlinks, no fabricated URLs."
+        }
+      ]
     }
   ],
   "run_summary": {
     "with_skill": {
       "pass_rate": {
-        "mean": 1.0,
-        "stddev": 0.0,
-        "min": 1.0,
+        "mean": 0.9846,
+        "stddev": 0.0533,
+        "min": 0.8,
         "max": 1.0
       },
       "time_seconds": {
-        "mean": 61.2025,
-        "stddev": 12.7405,
-        "min": 42.143,
-        "max": 79.576
+        "mean": 86.2308,
+        "stddev": 15.5635,
+        "min": 58.9,
+        "max": 109.6
       },
       "tokens": {
-        "mean": 48406.1667,
-        "stddev": 1889.4465,
-        "min": 45551,
-        "max": 50627
+        "mean": 43948.8462,
+        "stddev": 1719.8722,
+        "min": 41558,
+        "max": 47791
+      },
+      "tool_calls": {
+        "mean": 10.3077,
+        "stddev": 2.2663,
+        "min": 7,
+        "max": 14
       }
     }
-  },
-  "notes": [
-    "12/12 evals pass 100% of their expectations in this initial baseline run. All results were independently verified against ground truth (direct file reads, git log/show, and gh-calls.log contents) rather than accepted from executor self-report alone.",
-    "This is a with_skill-only baseline (no without_skill comparison) since resolve-pr-comments is a workflow skill, not a content generator.",
-    "Time/token usage figures are only available for evals 2, 3, 7, 8, 10, and 12. Figures for evals 1, 4, 5, 6, 9, and 11 were not captured because task usage metadata was not retrievable via a blocking TaskOutput poll for those trials -- the same known tooling gap noted in prior baselines this session. The aggregate time/token stats are computed only over the 6 evals with real data.",
-    "A serious real gh-stub bug was found and fixed during this baseline run (extending PR #16): _bounded_contains required a non-alphanumeric character on BOTH sides of a match, unconditionally -- but a path-fragment match entry like [\"pulls/comments/\"] deliberately ends in a delimiter, and the character that follows it in a real call is always a numeric comment ID (alphanumeric), so the entry could never match for any comment ID. This blocked the reply/resolve step of every eval in this skill's first pass (evals 1-4 all hit it independently; two executors correctly diagnosed the identical root cause and stopped rather than patching shared infrastructure themselves). Fixed by only enforcing a boundary check on a side where the match substring's own edge character is alphanumeric -- a substring already ending in a delimiter needs no check on that side, since nothing that follows it (digit or otherwise) can extend it into a different word. Verified with unit tests and a full replay of 241 previously-recorded gh-calls.log entries across every baselined skill: 231 resolve identically, and the remaining 10 are this bug plus the earlier bare-subcommand fix being corrected (including 6 resolve-pr-comments calls that previously had no match at all).",
-    "Evals 1-4 were run twice: the first pass hit the gh-stub bug above and stopped cleanly (no fabricated success, no code left half-fixed in a way that would corrupt a retry), and the second pass (reported here) ran cleanly against the fixed stub. This is noted for transparency, not as a finding about the resolve-pr-comments skill itself, which behaved correctly in both passes up to the point of the infrastructure blocker.",
-    "This batch covered a strong mix of scenarios per the guide's balance principle: valid single-file fixes (1, 8-decline, 10-security), a genuine non-code clarifying question (2), an already-fixed-by-later-commit case (3), bot/human filtering in both directions (4, 5), independent multi-comment handling with one valid + one invalid (6), zero-comments (7), a cross-file single-issue fix (9), fully independent multi-comment handling with two valid issues (11), and an already-resolved-thread no-op (12).",
-    "The `tool_calls` and `errors` fields on every run were hardcoded to 0, not measured -- they aren't wired up in the executor/grader pipeline yet. Set to null here (matching how the timing/token gap above is already disclosed) rather than left as a silent 0 that could be mistaken for \"measured, zero tool calls,\" including on the 6 runs that DO have real timing/token data.",
-    "run_summary.delta is omitted: this is a with_skill-only baseline (no without_skill comparison was run), so a computed \"+X\" delta against an implicit zero baseline would be misleading -- consistent with the Markdown summary, which never had a delta row to begin with."
-  ]
+  }
 }
