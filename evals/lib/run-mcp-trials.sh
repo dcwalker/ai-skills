@@ -145,7 +145,7 @@ else:
       cd "$WORKSPACE_DIR"
       HOME="$TRIAL_HOME" TMPDIR="$RUN_DIR/tmp" \
         claude -p --permission-mode acceptEdits \
-        --allowedTools "Bash Read Write Edit Glob Grep WebFetch TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian" \
+        --allowedTools "Bash Read Write Edit Glob Grep WebFetch TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian mcp__slack" \
         --strict-mcp-config --verbose "${resume_flag[@]}" \
         --mcp-config "$MCP_CONFIG_PATH" --output-format stream-json -- "$turn_prompt"
     ) >> "$RUN_DIR/events.jsonl" 2>> "$RUN_DIR/stderr.txt" || \
