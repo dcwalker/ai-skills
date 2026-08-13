@@ -16,18 +16,32 @@ set -euo pipefail
 WORKSPACE_DIR="$1"
 cd "$WORKSPACE_DIR"
 
-ISSUE_NUMBER=1
+# The number is sandbox-specific and must match the eval prompt, which names
+# it. It is not necessarily 1: GitHub numbers issues and pull requests from the
+# same sequence, so any PR opened in the sandbox before the fixture issue --
+# a plumbing smoke test, say -- takes that number first. Point this and the
+# prompt in evals.json at whatever number the fixture issue actually got.
+ISSUE_NUMBER=2
+ISSUE_TITLE="Support keyboard navigation in the dropdown menu"
 BRANCH_PREFIX="gh-${ISSUE_NUMBER}-"
 
 git remote add origin "https://github.com/${EVAL_GH_SANDBOX_REPO}.git"
 
-# Seed check. The eval prompt names issue #1 by number, so the repo has to have
-# it; fail loudly with the fix rather than letting the trial run and grade a
-# `gh issue comment` failure as a skill defect.
-if ! gh issue view "$ISSUE_NUMBER" --json number > /dev/null 2>&1; then
-  echo "create-branch/15: sandbox repo ${EVAL_GH_SANDBOX_REPO} has no issue #${ISSUE_NUMBER}." >&2
-  echo "  Seed it once:  gh issue create --repo ${EVAL_GH_SANDBOX_REPO} \\" >&2
-  echo "    --title 'Support keyboard navigation in the dropdown menu' --body 'Eval fixture issue.'" >&2
+# Seed check, on the title rather than mere existence. Checking only that the
+# number resolves would let a sandbox whose numbering differs pass here and
+# then have the trial comment on some unrelated issue, which grades as a skill
+# defect. Fail loudly with the fix instead.
+FOUND_TITLE="$(gh issue view "$ISSUE_NUMBER" --json title --jq .title 2>/dev/null || true)"
+if [[ "$FOUND_TITLE" != "$ISSUE_TITLE" ]]; then
+  echo "create-branch/15: ${EVAL_GH_SANDBOX_REPO} issue #${ISSUE_NUMBER} is not the fixture issue." >&2
+  if [[ -z "$FOUND_TITLE" ]]; then
+    echo "  No issue #${ISSUE_NUMBER}. Seed it once:" >&2
+    echo "    gh issue create --repo ${EVAL_GH_SANDBOX_REPO} --title '${ISSUE_TITLE}' --body 'Eval fixture issue.'" >&2
+    echo "  If the new issue is not #${ISSUE_NUMBER}, update ISSUE_NUMBER here and the prompt in evals.json to match." >&2
+  else
+    echo "  Expected: ${ISSUE_TITLE}" >&2
+    echo "  Found:    ${FOUND_TITLE}" >&2
+  fi
   exit 1
 fi
 
