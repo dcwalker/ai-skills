@@ -8,7 +8,9 @@ description: >
   meeting notes, status update, comment, or any other prose artifact. Also
   triggers for: "write a message to", "draft an email", "help me reply",
   "write a post", "journal about", "take notes on", "make this sound like me",
-  "does this sound like me", "rewrite this in my voice".
+  "does this sound like me", "rewrite this in my voice". Applies to short and
+  throwaway requests too ("just write it", "quick note to", "don't overthink
+  it"), where the research is skipped but the voice still matters.
 metadata:
   category: life-skills
 ---
@@ -80,8 +82,13 @@ are to the user rather than guessing from the name.
 Research is expensive and the same session often produces several artifacts.
 Cache what is found.
 
-**Location:** use the agent's session scratch directory if it has one,
-otherwise `${TMPDIR:-/tmp}/writing-style/`. Contents:
+**Location:** the cache is private to this session. Use the agent's own
+session scratch directory if it has one. If it does not, create a fresh
+private directory once (`mktemp -d` with `chmod 700`) and keep using that
+path for the rest of the session. Never write to, or read from, a fixed
+shared path such as `/tmp/writing-style/`: these files hold observations
+derived from private correspondence, and a predictable path exposes them to
+every other user and session on the machine. Contents:
 
 ```
 index.md                          Searches already run and what they returned
@@ -90,7 +97,11 @@ card-<medium>-<audience-slug>.md  One style card per (medium, audience) pair
 
 Cache rules:
 
-- On every run, read `index.md` first. Never re-run a search it records.
+- Read nothing this session did not write. A card found at a path the session
+  did not create belongs to some other session, and possibly some other
+  person; it is not evidence about this user. Ignore it and research fresh.
+- Within the session, read `index.md` first and never re-run a search it
+  records.
 - An exact `(medium, audience)` hit is reused directly. Say so ("reusing the
   Slack/teammate profile built earlier in this session") rather than silently
   skipping the research step.
@@ -99,8 +110,6 @@ Cache rules:
   keep the audience findings, research the medium fresh.
 - Corpus notes are reusable across cards. A sample found while building one
   card counts as evidence for another if it matches that card's scope.
-- A card written on an earlier date may be reused, but say when it was built
-  and offer to refresh it.
 - The cache holds derived observations and short excerpts only, never bulk
   copies of correspondence.
 
@@ -281,8 +290,11 @@ not present an unevidenced card as if it were researched. Instead:
    the Step 5 ladder, greeting and sign-off preference, and target length. Draft
    from that, and label the card `Confidence: none, user-declared`.
 
-If the user asks to skip the research entirely, do it, and say once that the
-draft is unresearched so they read it with that in mind.
+If the user asks to skip the research entirely ("just write it", "don't go
+digging"), honor it. Two things still hold: say once, in a single line, that
+the draft is unresearched so they read it with that in mind, and add no facts
+they did not give you. A skipped research step lowers the confidence of the
+voice, never the standard for the content.
 
 ---
 
@@ -312,8 +324,27 @@ Remove these unless a sample actually shows them:
 Match the observed length. If the samples run 40 words, a 200-word draft is
 wrong even if every sentence is in voice.
 
-Never fabricate facts to fill the draft. If something needed is unknown, mark
-it (`[confirm date]`, `[name TBD]`) and say so, rather than inventing it.
+**Copy style from the samples. Never copy facts from them.** The corpus is
+evidence about how the user writes, not about what is true today. A running
+joke, a recurring to-do, a project thread, a person who appears in every
+sample: reproducing any of those puts a claim in the artifact that the user
+did not make. This is the failure mode that voice matching invites, because
+continuity feels like fidelity. It is fabrication.
+
+Never fabricate facts to fill the draft, from the corpus or from anywhere
+else. If something needed is unknown, mark it (`[confirm date]`, `[name TBD]`)
+and say so, rather than inventing it. Filling a section because the samples
+always have one is not a reason: write the shorter artifact.
+
+Do not sharpen what the user left vague. "Tomorrow" does not become "tomorrow
+morning", "next week" does not become "Tuesday", "a few" does not become
+"three", and "the migration" does not acquire a cause. Added precision reads
+as harmless because it is small and plausible, and it is still invention: the
+user has to notice and undo it before sending.
+
+Instructions about the conversation are not content for the artifact. "I will
+not be around to answer", "keep it short", "make it sound friendlier" shape how
+you work; they are not facts about the user to be written into the message.
 
 Present the draft, then a short note of any place the request forced a
 departure from the card.
@@ -357,7 +388,10 @@ departure from the card.
 - Report the rung the evidence came from, and report empty searches rather than
   hiding them.
 - Ask for the audience when it is missing. Never infer it from the topic.
-- Never invent facts, names, dates, or events to fill a draft.
+- Never invent facts, names, dates, or events to fill a draft, and never
+  import them from the samples. Style is copied; content never is.
+- Keep the cache private to the session, and treat any profile the session did
+  not write as belonging to someone else.
 - Match observed length, punctuation, and polish, including habits that look
   like errors.
 - Update the cache with every correction the user makes.
