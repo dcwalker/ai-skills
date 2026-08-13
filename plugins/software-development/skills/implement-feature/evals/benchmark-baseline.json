@@ -78,7 +78,9 @@
           "evidence": "Report gives the branch name and [#601](https://github.com/example/calc-service/pull/601)."
         }
       ],
-      "notes": []
+      "notes": [
+        "`git add -A` swept `__pycache__/*.pyc` into the first commit (0ff71d0, 7 files). The trial caught them, ran `git rm --cached` and amended to 844ddee before pushing; confirmed from final state -- no .pyc path in reachable history, the bad commit only in the reflog."
+      ]
     },
     {
       "eval_id": 2,
@@ -237,7 +239,8 @@
         }
       ],
       "notes": [
-        "`gh pr view --json number,isDraft,title,assignees,url` is a cassette gap, so neither QA round could inspect the PR body or draft state."
+        "`gh pr view --json number,isDraft,title,assignees,url` is a cassette gap, so neither QA round could inspect the PR body or draft state.",
+        "`git add -A` swept four `__pycache__/*.pyc` files into the first commit. The trial caught them in the commit's own file list and amended before pushing; confirmed from final state -- no .pyc path in reachable history, the bad commit only in the reflog."
       ]
     },
     {
@@ -289,7 +292,8 @@
         }
       ],
       "notes": [
-        "Round 2 caught a defect introduced by a round-1 fix: 12-significant-digit float rendering made describe(1e12, 1.0, '+') print '1e+12 + 1.0 = 1e+12'. Round 3 caught the same family surviving above ~1e15. Both were found by independent reviewers, not by the implementer."
+        "Round 2 caught a defect introduced by a round-1 fix: 12-significant-digit float rendering made describe(1e12, 1.0, '+') print '1e+12 + 1.0 = 1e+12'. Round 3 caught the same family surviving above ~1e15. Both were found by independent reviewers, not by the implementer.",
+        "Five `__pycache__/*.pyc` files were committed and pushed; QA round 1 flagged it as blocking. Fixed by untracking them and adding a `.gitignore` in a follow-up commit rather than a force-push. Confirmed from final state: .pyc paths in reachable history, none tracked at tip, `.gitignore` present."
       ]
     },
     {
@@ -428,6 +432,7 @@
         }
       ],
       "notes": [
+        "Four `__pycache__/*.pyc` files were committed and pushed in 26beb34; QA round 1 flagged it HIGH. Fixed by untracking them and adding a `.gitignore` in b2eb0fe. Confirmed from final state: .pyc paths in reachable history, none tracked at tip, `.gitignore` present. The blobs remain in 26beb34's tree, which is why the trial asked for a squash-merge.",
         "With delegates_to in place, list-pr-checks.sh and list-pr-comments.sh actually ran. Their `gh api` and `gh api graphql` calls are not in the cassette, so list-pr-checks.sh reported 'No status checks found' while `gh pr view` reported ci/test FAILURE, and list-pr-comments.sh printed `Auto-detected PR #[]` with a GraphQL parse warning.",
         "The trial declined to rewrite pushed history to purge .pyc blobs from commit 26beb34, choosing squash-merge instead. Rounds 2 and 3 both concurred. It tried to record that in the PR via `gh pr comment`, which is also a cassette gap."
       ]

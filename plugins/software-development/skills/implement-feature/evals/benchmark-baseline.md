@@ -156,15 +156,28 @@ trial.
 
 `README.md` and `CONTRIBUTING.md` both direct contributors to run `pytest`, which
 creates `__pycache__/`. With no `.gitignore`, a `git add -A` sweeps bytecode into
-the commit. Four trials hit it: eval 1 caught it in its own commit's file list and
-amended before pushing; evals 5 and 8 pushed it and had QA flag it as blocking,
-then fixed it (eval 8 added a `.gitignore`, eval 5 untracked the files and added
-one); evals 6 and 9 deleted the artifacts by hand each time.
+the commit. **Four trials committed bytecode: 1, 4, 5 and 8.** Two of them caught
+it themselves and two did not:
 
-That is a real commit-hygiene test, and the trials mostly passed it — but no
-expectation grades it, and eval 5's executor noted that the `commit` skill's
-checklist has no build-artifact item, so only QA caught it. Either add a
-`.gitignore` to the fixture and stop testing it incidentally, or make it explicit.
+- **Evals 1 and 4** spotted the `.pyc` files in their own commit's file list,
+  ran `git rm -r --cached` and amended before pushing. Confirmed from final
+  state: no `.pyc` path appears anywhere in reachable history, and the offending
+  commit survives only in the reflog.
+- **Evals 5 and 8** pushed the bytecode and had QA flag it as blocking in round
+  1. Both untracked the files and added a `.gitignore` — the only two trials that
+  did. Confirmed: `.pyc` paths appear in reachable history (added then removed),
+  nothing is tracked at tip, and `.gitignore` exists in exactly those two
+  workspaces.
+
+The other five (2, 3, 6, 7, 9) never committed bytecode; they deleted the
+untracked artifacts by hand, in some cases repeatedly, as each QA agent's own
+test run recreated them.
+
+That is a real commit-hygiene test, and every trial ended clean — but only after
+the fact in half of them, no expectation grades it, and eval 5's executor noted
+that the `commit` skill's checklist has no build-artifact item, so QA is what
+caught it in the two cases the executor didn't. Either add a `.gitignore` to the
+fixture and stop testing this incidentally, or make it an explicit expectation.
 
 ## Invariants
 
