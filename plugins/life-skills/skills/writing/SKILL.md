@@ -123,73 +123,14 @@ index.md                          Searches already run and what they returned
 card-<medium>-<audience-slug>.md  One style card per (medium, audience) pair
 ```
 
-### identity.md
-
-The single most useful thing in the cache. Authorship matching needs the
-user's account identifiers, relationship inference needs their team and org,
-and both are otherwise rediscovered from scratch every session. Written once,
-edited by hand whenever something changes:
-
-```markdown
-# Identity
-
-Name:       <full name>, and any other form that appears as a display name
-Mail:       <address>, <alias>, <alias>
-Chat:       <workspace>: <user id> (@<handle>)
-Code host:  <github/gitlab/bitbucket handle>
-Tracker:    <jira/linear account id>
-Org:        <employer>, <primary email domain>
-Team:       <team name>, <how the team is named in the directory or tracker>
-
-## Relationships
-
-<name or address>: <class> — <note>
-```
-
-Rules for identity.md:
-
-- **The user's declarations win over inference.** A relationship recorded here
-  is the answer; the Step 4 signals only fill what it does not cover. If a
-  directory contradicts it, say so rather than silently overriding either.
-- **It is a matcher, not a claim about the world.** Use the identifiers to
-  decide which samples are the user's. Do not use the file's contents as facts
-  in a draft.
-- **Verify before trusting a stale entry.** An identifier that matches no
-  connected account is worth mentioning once; accounts get renamed.
-- **Offer to write it, do not assume it.** On the first run, discover what the
-  connected accounts report, show the user what would be recorded, and write
-  it only if they agree. It persists, and it is theirs.
-- **Identifiers only.** Never passwords, tokens, API keys, or session
-  cookies. Nothing in this file should be a credential.
-
-### general.md
-
-The traits that hold no matter who the user is writing to. Registers differ
-wildly by audience, but a few habits survive every one of them, and those are
-what make an unfamiliar situation still sound like the same person. This is
-the fallback when a request has no card and no samples behind it.
-
-```markdown
-# General style
-
-Holds across <N> cards, spanning <which audiences>.
-
-<trait>  — <n of N cards> — <the evidence, briefly>
-```
-
-Rules for it:
-
-- **A trait qualifies only by surviving contrast.** It has to hold across at
-  least three cards covering two different relationship classes. A habit
-  visible only in work email is a fact about work email.
-- **Rebuild it whenever a card is added or changed**, and drop any trait the
-  new card contradicts. Two cards' worth of agreement is a coincidence.
-- **Expect it to be short.** Punctuation habits, a few recurring words, how
-  bad news gets delivered, whether the point comes first, and length instincts
-  relative to the medium. Greetings, sign-offs, and formality almost never
-  qualify, because those are exactly what audience changes.
-- **It is rung 5 evidence, cached.** Label it that way when it is used: it
-  says how the user writes in general, never how they write to this person.
+`identity.md` and `general.md` are the two a person writes and edits by
+hand, and they are the reason the cache is worth having. Their formats and
+rules are in [references/cache-files.md](references/cache-files.md): read it
+before writing either file, and before relying on what one of them says.
+In short, `identity.md` records the account identifiers that decide which
+samples are the user's, plus their org, team, and known relationships;
+`general.md` records only the traits that survive every audience, which is
+what a request with no card of its own falls back to.
 
 The cache persists across sessions and days, because voice changes slowly and
 the research is the expensive part. To force a full rebuild, delete the
@@ -242,36 +183,13 @@ filesystem search before looking where the session is already standing is how
 a corpus in plain sight gets missed, and a depth-capped `find /` will not
 reach a working directory that is nested more than a few levels deep.
 
-Common sources, by what they hold:
-
-| Source | Yields |
-|---|---|
-| Email (Gmail MCP or equivalent) | Sent mail: the richest and most reliably attributable corpus |
-| Team chat (a chat MCP, or a workspace export on disk) | Short-form professional voice, per-channel and per-DM |
-| Local files (`~/journal`, notes dirs, repo Markdown, Obsidian vaults) | Journal entries, notes, drafts, long-form |
-| Google Drive / Docs | Long-form documents, meeting notes, published drafts |
-| Issue trackers (Jira, Trello, GitHub) | Comments, descriptions, status updates |
-| Wikis (Confluence, Notion, GitHub wikis and Pages, repo docs) | Explanatory long-form written for colleagues, usually the most structured register |
-| A personal site or blog | Public long-form at the highest polish tier |
-
-Wikis are worth reaching for early. They hold the register between a ticket
-comment and a published post, they are attributable through page history, and
-most people have more of this writing than they have blog posts.
-
-Chat is the highest-volume medium most people have, and the one most often
-unreachable. When no chat tool is connected, look for a workspace export on
-disk before giving up: an export is a directory of per-channel, per-day JSON
-with the author recorded as a user id, which is better evidence than the API
-would give and needs no connector. Match on that id, and keep channel samples
-separate from direct-message samples, because the same person writes those two
-places differently.
-
-A personal site is the one source to approach carefully. Do not search the
-open web for the user's name and treat what comes back as theirs: names are
-shared, and a misattributed site poisons every observation drawn from it. Use
-a site only when the user names it, or when an authenticated source links to
-it (a profile page on a connected account, a repository the user owns). If
-authorship cannot be established that way, skip it and say so.
+The sources worth checking, what each one is good for, and the two that
+need care (a personal site, which is easy to misattribute, and chat, which
+is the highest-volume medium and the most often unreachable) are in
+[references/finding-samples.md](references/finding-samples.md), along with
+how to establish a recipient's relationship class and how to confirm the
+user actually wrote a sample. Read it before building a corpus for an
+audience with no cached card.
 
 Text and SMS rarely have a tool seam. Do not fabricate one. Fall back down the
 ladder in Step 4 and say which substitution was made.
@@ -286,7 +204,7 @@ Record which rung supplied each sample; the style card reports it.
 1. **Same medium, same audience.** Prior messages the user sent to this exact
    person or channel.
 2. **Same medium, same relationship class.** Other recipients who stand in the
-   same relation to the user (see the table below).
+   same relation to the user.
 3. **Adjacent medium, same audience.** Chat and text are adjacent; chat and
    short email are adjacent; journal and personal notes are adjacent; blog and
    long-form documents are adjacent.
@@ -299,74 +217,12 @@ Record which rung supplied each sample; the style card reports it.
 Never skip a rung silently. Dropping from rung 1 to rung 3 is a finding the
 user should see.
 
-### Inferring the relationship class
-
-When there are no samples for a named recipient, infer the relationship from
-evidence, not from the name.
-
-**Start from what the user has already told you.** A relationship recorded in
-`identity.md` is settled; so is the team named there, which turns "is this
-person a teammate" into a membership check rather than a guess.
-
-**Then check a directory service when one is reachable.** A workspace
-directory, an org chart, or an HR or identity system states the reporting line
-and team membership as fact, where channel membership and meeting patterns only
-hint at them. People sit in channels they do not work in and skip meetings they
-do belong to; a directory entry says who reports to whom. Use the inferred
-signals below to fill what the directory does not cover, or when there is no
-directory at all.
-
-Secondary signals: the address book entry and its groups, the email domain
-(shared employer, client, vendor, personal provider), shared calendar events
-and their size and recurrence, message frequency and time of day, and how the
-recipient addresses the user.
-
-| Class | Typical signals |
-|---|---|
-| Close personal | Personal email domain or phone, family or friend group in contacts, off-hours contact, informal salutations |
-| Peer / teammate | Same team in the directory; failing that, same employer domain, recurring team meetings, shared channels and tickets |
-| Manager / leadership | The directory's reporting line; failing that, a recurring one-on-one plus escalation or approval language |
-| Direct report | The directory's reporting line, read the other way; failing that, a recurring one-on-one plus delegation or feedback language |
-| External professional | Different domain, scheduled calls, contract or account context |
-| Cold / unknown | No prior contact anywhere |
-| Public / broadcast | No single recipient: a blog, an announcement, a channel post to a wide audience |
-
-State the inferred class and the signals behind it. If the signals conflict, or
-none are found, ask rather than guessing.
-
-### Authorship filter
-
-A sample only counts if the user wrote it, and a display name is not proof
-that they did. Names are shared, accounts get renamed, and one wrong
-attribution contaminates every count on the card.
-
-**Establish the user's identifiers first.** Take them from the cache's
-`identity.md` when it has them, and otherwise from the connected accounts
-themselves rather than from the conversation: the email addresses and aliases
-the mail account actually sends from, the chat workspace's user ID, the code
-host handle (GitHub, GitLab) of the authenticated account, the tracker
-account ID.
-Anything discovered this way is worth writing back to `identity.md`, with the
-user's agreement, so the next session starts from it.
-Then match samples on those identifiers. Fall back to a name match only when
-no identifier is available, and mark anything attributed that way as
-provisional evidence on the card.
-
-- Email: search sent mail (`in:sent`, `from:me`), matched on the account's own
-  addresses. Strip quoted reply chains, forwarded bodies, and signature blocks
-  before analyzing.
-- Chat: only messages whose author ID is the user's, not whose display name
-  looks right. Exclude pasted links, quoted text, and bot or automation output.
-- Documents and wiki pages: attribute through revision history rather than the
-  document's owner or last editor. Page history, `git blame`, and per-revision
-  diffs identify which passages the user actually wrote, which is what makes a
-  collaborative document usable instead of disqualifying. Skip only what the
-  history cannot resolve.
-- Exclude anything auto-generated: out-of-office replies, templates, calendar
-  invitations, form letters, and text the user pasted from elsewhere.
-
-Prefer samples from the last 12 to 24 months. If the only samples are older,
-say so; voice drifts.
+Rungs 2 and 4 need a relationship class for the recipient, and every rung
+needs samples the user actually wrote. Both are in
+[references/finding-samples.md](references/finding-samples.md): infer the
+class from a directory service and the user's own declarations before
+guessing from message patterns, and match authorship on account
+identifiers rather than display names, which collide.
 
 ---
 
