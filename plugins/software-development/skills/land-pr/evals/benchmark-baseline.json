@@ -2,9 +2,9 @@
   "metadata": {
     "skill_name": "land-pr",
     "skill_path": "plugins/software-development/skills/land-pr",
-    "executor_model": "claude-sonnet-5",
-    "analyzer_model": "claude-sonnet-5",
-    "timestamp": "2026-07-30T21:40:00Z",
+    "executor_model": "claude-opus-5",
+    "analyzer_model": "claude-opus-5",
+    "timestamp": "2026-08-13T05:40:00Z",
     "evals_run": [
       1,
       2,
@@ -14,7 +14,8 @@
       6,
       7,
       8,
-      9
+      9,
+      10
     ],
     "runs_per_configuration": 1
   },
@@ -28,39 +29,38 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": null,
+        "time_seconds": 67.5,
+        "tokens": 40818,
+        "tool_calls": 7,
         "errors": null
       },
       "expectations": [
         {
           "text": "The report states the PR was already green/mergeable, with 0 rounds of fixing needed.",
           "passed": true,
-          "evidence": "Final report states PR #501 was already MERGEABLE/CLEAN with all checks passing and review approved on the first check, 0 rounds needed -- independently verified via gh-calls.log (exactly 1 gh call total, the initial status check)."
+          "evidence": "Report states PR #501 was already MERGEABLE/CLEAN, approved, both checks SUCCESS, 0 rounds run."
         },
         {
           "text": "No sub-skill (resolve-pr-comments, resolve-sonarqube-issues, fix-pr-checks) is invoked, since there was nothing to fix.",
           "passed": true,
-          "evidence": "No sub-skill was invoked -- independently confirmed via gh-calls.log containing only the single initial `pr view` call, with no resolve-pr-comments/resolve-sonarqube-issues/fix-pr-checks-related gh calls."
+          "evidence": "gh-calls.log holds exactly 1 call (the step-1 pr view); no sub-skill script or gh activity of any kind follows it."
         },
         {
           "text": "No conflict-resolution commits or pushes appear in git history beyond what the fixture already had.",
           "passed": true,
-          "evidence": "git log --oneline --all on the workspace shows only the fixture's 2 original commits (6694f62, 79c8bba) -- independently verified directly, no extra commits."
+          "evidence": "git log shows only the two fixture commits (3e96185, a4c61f9); working tree clean, no new refs."
         },
         {
           "text": "The gh-stub log contains no `pr merge` call.",
           "passed": true,
-          "evidence": "gh-calls.log contains zero `pr merge` entries -- independently verified via direct read of the log (1 entry total)."
+          "evidence": "No `pr merge` in the 1-call log."
         },
         {
           "text": "The final report includes the PR URL (https://github.com/example/widget-service/pull/501).",
           "passed": true,
-          "evidence": "Final report includes the PR URL https://github.com/example/widget-service/pull/501, matching the cassette's canned PR number."
+          "evidence": "Report links [#501](https://github.com/example/widget-service/pull/501) from the returned url field."
         }
-      ],
-      "notes": []
+      ]
     },
     {
       "eval_id": 2,
@@ -71,44 +71,43 @@
         "passed": 6,
         "failed": 0,
         "total": 6,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": null,
+        "time_seconds": 128.3,
+        "tokens": 44736,
+        "tool_calls": 16,
         "errors": null
       },
       "expectations": [
         {
           "text": "config.py contains no leftover `<<<<<<<`, `=======`, or `>>>>>>>` conflict markers in the final state.",
           "passed": true,
-          "evidence": "config.py contains no leftover conflict markers -- independently verified via direct read and grep for <<<<<<</=======/>>>>>>> (0 matches); final content is VERSION = \"1.1.0-beta\", a real resolution combining both branches' changes."
+          "evidence": "config.py final content is `VERSION = \"1.1.0-beta\"`; grep for conflict markers returns 0."
         },
         {
           "text": "The branch's git history includes a merge commit (or rebase) that incorporates origin/main's commit ('Bump version to 1.1.0 on main') into feature/bump-version.",
           "passed": true,
-          "evidence": "git history includes a merge commit incorporating origin/main's 'Bump version to 1.1.0 on main' commit -- independently verified via `git log --oneline --all --graph`, showing merge commit b06d2cc with parent 0b1349a (that exact commit message)."
+          "evidence": "Merge commit cda1d72 joins 6718577 'Bump version to 1.1.0 on main' into feature/bump-version."
         },
         {
           "text": "The resolved branch was pushed to origin (origin/feature/bump-version's tip matches the local branch tip).",
           "passed": true,
-          "evidence": "The resolved branch was pushed to origin -- independently verified: local feature/bump-version and origin/feature/bump-version both resolve to the same SHA (b06d2ccec32a55923a34b82706f3d31d95d53dec)."
+          "evidence": "HEAD and refs/remotes/origin/feature/bump-version both at cda1d72."
         },
         {
           "text": "The loop did not run a full 5 rounds -- it stopped as soon as the second `gh pr view` came back clean.",
           "passed": true,
-          "evidence": "The loop did not run a full 5 rounds -- independently verified via gh-calls.log, which contains exactly 2 status-check `pr view` calls (initial + one post-fix refresh), not 5+."
+          "evidence": "Two step-1 `pr view` calls only (calls 1 and 5): one round, exited on the clean refresh."
         },
         {
           "text": "The gh-stub log contains no `pr merge` call.",
           "passed": true,
-          "evidence": "gh-calls.log contains zero `pr merge` entries -- independently verified via direct read of the full log (2 entries total)."
+          "evidence": "No `pr merge` among the 5 logged calls."
         },
         {
           "text": "Never force-pushed or bypassed hooks (no `--no-verify`, no `--force` on the push) without explicit user approval, per the skill's important notes.",
           "passed": true,
-          "evidence": "No force-push or --no-verify appears -- independently verified via direct read of the executor's reported command history and the git log (a plain merge commit, not a rebase requiring force-push)."
+          "evidence": "Reflog shows a plain `commit (merge)`; the remote ref advanced by fast-forward, no --force or --no-verify."
         }
-      ],
-      "notes": []
+      ]
     },
     {
       "eval_id": 3,
@@ -119,83 +118,79 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": null,
+        "time_seconds": 88.9,
+        "tokens": 42170,
+        "tool_calls": 10,
         "errors": null
       },
       "expectations": [
         {
           "text": "The skill runs at most 1 round before stopping -- it does not loop 5 times against an unchanging REVIEW_REQUIRED state.",
           "passed": true,
-          "evidence": "The skill ran at most 1 round -- independently verified via gh-calls.log, which contains exactly 2 status-check `pr view` calls (initial confirm + 1 round's end-of-round refresh), not 5x2."
+          "evidence": "Two step-1 `pr view` calls (1 and 5) bracket a single round; the skill invoked step 2f rather than looping."
         },
         {
           "text": "The final report explicitly states the PR is blocked on human review approval, not on a technical/CI issue.",
           "passed": true,
-          "evidence": "Final report explicitly states the PR is blocked on human review approval, not a technical/CI issue -- confirmed in the executor's reported final message ('blocked on human review approval, not a technical or CI issue')."
+          "evidence": "Report attributes the block to reviewDecision REVIEW_REQUIRED needing a human approving review, and states no technical blocker remains."
         },
         {
           "text": "No conflict-resolution, comment-resolution, or check-fixing changes are made to the repo (working tree matches the fixture's committed state).",
           "passed": true,
-          "evidence": "No changes were made to the repo -- independently verified: `git log --oneline --all` shows only the fixture's 2 original commits, and `git status` reports a clean working tree."
+          "evidence": "git log shows only fixture commits 7325e17 and d6f2011; working tree clean."
         },
         {
           "text": "The gh-stub log contains no `pr merge` call.",
           "passed": true,
-          "evidence": "gh-calls.log contains zero `pr merge` entries -- independently verified via direct read of the full log (5 entries total, none `pr merge`, confirmed via explicit grep returning 0)."
+          "evidence": "No `pr merge` among the 5 logged calls."
         },
         {
           "text": "The report includes the PR URL (https://github.com/example/widget-service/pull/503).",
           "passed": true,
-          "evidence": "Report includes the PR URL https://github.com/example/widget-service/pull/503, matching the cassette's canned PR number."
+          "evidence": "Report links [#503](https://github.com/example/widget-service/pull/503)."
         }
-      ],
-      "notes": []
+      ]
     },
     {
       "eval_id": 4,
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 1.0,
-        "passed": 5,
-        "failed": 0,
+        "pass_rate": 0.6,
+        "passed": 3,
+        "failed": 2,
         "total": 5,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": null,
+        "time_seconds": 216.8,
+        "tokens": 53541,
+        "tool_calls": 24,
         "errors": null
       },
       "expectations": [
         {
           "text": "The transcript shows 5 distinct rounds of the loop (fetch/sync + fix attempts + re-check), not fewer and not an unbounded number.",
-          "passed": true,
-          "evidence": "5 distinct rounds ran -- independently verified via gh-calls.log, which contains exactly 6 status-check `pr view` calls (1 initial + 5 round-end rechecks, matching the expected cap exactly)."
+          "passed": false,
+          "evidence": "Only 3 step-1 `pr view` calls, i.e. 2 rounds, against a cassette that never resolves ci/test. The skill stopped early citing a 'fix did not take, ask the user' rule that SKILL.md states only as part of the 5-round cap (step 3), not as a licensed early exit. Step 2f's early exit is scoped to REVIEW_REQUIRED, and reviewDecision here is APPROVED."
         },
         {
           "text": "The final report explicitly states the 5-round cap was reached and ci/test is still failing -- it does not claim the PR is green or mergeable.",
-          "passed": true,
-          "evidence": "Final report explicitly states the 5-round cap was reached and ci/test is still failing, and does not claim the PR is green/mergeable -- confirmed in the executor's reported final message ('PR #504 -- not mergeable after 5 rounds', 'The PR is not green and not merge-ready')."
+          "passed": false,
+          "evidence": "The report does not state the 5-round cap was reached, because it was not. It does correctly name ci/test as still failing and makes no claim of green."
         },
         {
           "text": "The report asks the user how to proceed rather than silently giving up or continuing past round 5.",
           "passed": true,
-          "evidence": "The report asks the user how to proceed rather than silently giving up or continuing past round 5 -- confirmed: final message ends with 'How would you like to proceed -- investigate the CI job configuration directly, re-run the check to see if it's flaky, or override/waive it through branch protection?'."
+          "evidence": "Report ends by asking for the job output or confirmation the check is misconfigured, rather than giving up or continuing."
         },
         {
           "text": "The gh-stub log contains no `pr merge` call.",
           "passed": true,
-          "evidence": "gh-calls.log contains zero `pr merge` entries -- independently verified via direct read and grep of the full log (0 matches)."
+          "evidence": "No `pr merge` among the 12 logged calls."
         },
         {
           "text": "No more than 5 matches are consumed against the `pr view` cassette entry (i.e. the skill doesn't re-check status far more than once per round).",
           "passed": true,
-          "evidence": "No more than 5-6 matches consumed against the `pr view` status-check cassette entry -- independently verified: exactly 6 matches (grep count for 'mergeStateStatus' in the log), consistent with 1 initial + 5 round-end checks, not a runaway loop."
+          "evidence": "3 matches consumed against the `pr view` entry, under the cap of 5."
         }
-      ],
-      "notes": [
-        "The executor made three genuine, verified-locally-passing fix attempts across rounds 1-3 (a real ZeroDivisionError bug, a missing test suite, a missing pytest config) before concluding in rounds 4-5 that no further local fix was identifiable and the check appeared misconfigured/flaky on the CI side -- this is real engineering effort against a fixture intentionally designed to never resolve, not a pro-forma loop."
       ]
     },
     {
@@ -207,34 +202,33 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 38.566,
-        "tokens": 45088,
-        "tool_calls": null,
+        "time_seconds": 50.4,
+        "tokens": 40135,
+        "tool_calls": 7,
         "errors": null
       },
       "expectations": [
         {
           "text": "The skill's final message tells the user no PR exists yet and to run the `pr` skill (or open one) first.",
           "passed": true,
-          "evidence": "Final message tells the user no PR exists yet and to run the `pr` skill (or open one) first -- confirmed verbatim in the executor's reported final message."
+          "evidence": "Report states no open PR exists for feature/no-pr-yet and names the `pr` skill as the next step."
         },
         {
           "text": "No fetch/merge/conflict-resolution activity happens -- git state is unchanged from the fixture.",
           "passed": true,
-          "evidence": "No fetch/merge/conflict-resolution activity happened -- independently verified: `git log --oneline --all` shows only the fixture's 2 original commits, `git status` clean."
+          "evidence": "git log shows only fixture commits beb5464 and 37465ae; working tree clean, no fetch/merge activity."
         },
         {
           "text": "No sub-skill (resolve-pr-comments, resolve-sonarqube-issues, fix-pr-checks) is invoked.",
           "passed": true,
-          "evidence": "No sub-skill was invoked -- independently confirmed via gh-calls.log containing exactly 1 entry (the failing initial `pr view` call), no further gh activity."
+          "evidence": "Single gh call in the log; no sub-skill invoked."
         },
         {
           "text": "The gh-stub log contains no `pr merge`, `pr ready`, or `pr create` call.",
           "passed": true,
-          "evidence": "gh-calls.log contains zero `pr merge`, `pr ready`, or `pr create` calls -- independently verified via direct read of the full log (1 entry total)."
+          "evidence": "No `pr merge`, `pr ready`, or `pr create` in the 1-call log."
         }
-      ],
-      "notes": []
+      ]
     },
     {
       "eval_id": 6,
@@ -245,34 +239,33 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 42.903,
-        "tokens": 45237,
-        "tool_calls": null,
+        "time_seconds": 65.9,
+        "tokens": 40785,
+        "tool_calls": 7,
         "errors": null
       },
       "expectations": [
         {
           "text": "The final message explicitly calls out that the PR is a draft and that mergeStateStatus can be unreliable for drafts.",
           "passed": true,
-          "evidence": "Final message explicitly calls out the PR is a draft and mergeStateStatus can be unreliable for drafts -- confirmed verbatim in the executor's reported final message."
+          "evidence": "Report leads with isDraft true and explains mergeable/mergeStateStatus read UNKNOWN because GitHub's signals are unreliable for drafts."
         },
         {
           "text": "The skill asks the user how to proceed (proceed anyway vs. mark ready first) rather than silently looping 5 rounds against UNKNOWN status.",
           "passed": true,
-          "evidence": "The skill asks the user how to proceed (proceed anyway vs. mark ready first) rather than looping 5 rounds against UNKNOWN status -- confirmed: message ends with a numbered choice between the two options; gh-calls.log contains only 1 entry, confirming no loop ran."
+          "evidence": "Report ends on an explicit two-option question (mark ready first vs. proceed anyway); the log's single call confirms no loop ran."
         },
         {
           "text": "No conflict-resolution or check-fixing changes are made to the repo.",
           "passed": true,
-          "evidence": "No conflict-resolution or check-fixing changes were made -- independently verified: `git log --oneline --all` shows only the fixture's 2 original commits, `git status` clean."
+          "evidence": "git log shows only fixture commits f2fb9e9 and 0623384; working tree clean."
         },
         {
           "text": "The gh-stub log contains no `pr ready` or `pr merge` call -- marking ready is the user's call to make here, not the skill's to assume.",
           "passed": true,
-          "evidence": "gh-calls.log contains zero `pr ready` and zero `pr merge` calls -- independently verified via direct read of the full log (1 entry total, the initial `pr view` call only)."
+          "evidence": "No `pr ready` or `pr merge` in the 1-call log."
         }
-      ],
-      "notes": []
+      ]
     },
     {
       "eval_id": 7,
@@ -283,77 +276,75 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": null,
+        "time_seconds": 132.7,
+        "tokens": 48970,
+        "tool_calls": 15,
         "errors": null
       },
       "expectations": [
         {
           "text": "The loop runs exactly 2 rounds, not 5 -- it stops as soon as the second `gh pr view` comes back clean.",
           "passed": true,
-          "evidence": "Loop ran exactly 2 rounds, not 5 -- independently verified via gh-calls.log, which contains exactly 2 status-check `pr view` calls."
+          "evidence": "Two step-1 `pr view` calls (1 and 8): the loop stopped the moment the refreshed view came back CLEAN, which is what step 2e prescribes for this cassette."
         },
         {
           "text": "The per-round summary log (per the skill's 'log a one-line summary after each round' instruction) shows round 1 finding ci/test failing and round 2 finding it resolved.",
           "passed": true,
-          "evidence": "Per-round summary shows round 1 finding ci/test failing and round 2 finding it resolved -- confirmed in the executor's round-by-round report, corroborated by the real fix commit (fa04d5d, 'Fix flaky() to return a deterministic value instead of a hardcoded stub') sitting between the two status checks in gh-calls.log's timestamps."
+          "evidence": "Report records round 1 finding ci/test FAILURE and the refresh finding it SUCCESS/CLEAN."
         },
         {
           "text": "The final report states the PR is now green/mergeable.",
           "passed": true,
-          "evidence": "Final report states the PR is now green/mergeable -- confirmed verbatim in the executor's reported final message."
+          "evidence": "Report states PR #507 is green and mergeable."
         },
         {
           "text": "The gh-stub log contains no `pr merge` call.",
           "passed": true,
-          "evidence": "gh-calls.log contains zero `pr merge` entries -- independently verified via direct read of the full log (6 entries total, none `pr merge`)."
+          "evidence": "No `pr merge` among the 8 logged calls."
         }
-      ],
-      "notes": []
+      ]
     },
     {
       "eval_id": 8,
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 1.0,
-        "passed": 5,
-        "failed": 0,
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
         "total": 5,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": null,
+        "time_seconds": 191.3,
+        "tokens": 51005,
+        "tool_calls": 23,
         "errors": null
       },
       "expectations": [
         {
           "text": "config.py has no leftover conflict markers in the final state, and the branch history shows main's change ('Bump version to 1.2.0 on main') was merged in.",
           "passed": true,
-          "evidence": "config.py has no leftover conflict markers (independently verified: content is VERSION = \"1.2.0\", grep for conflict markers returns 0), and branch history shows main's 'Bump version to 1.2.0 on main' (commit a7a590e) was merged in as a parent of merge commit 529cfbb -- independently verified via `git log --oneline --all --graph`."
+          "evidence": "config.py final content is `VERSION = \"1.2.0-rc\"`, 0 conflict markers; history contains 65647b9 'Bump version to 1.2.0 on main' merged via 4476c9d."
         },
         {
           "text": "The loop runs 3 rounds (not fewer -- checks were still failing after the conflict fix in round 1; not 5 -- everything was clean by round 3).",
-          "passed": true,
-          "evidence": "The loop ran 3 rounds, not fewer and not the full 5 -- independently verified via gh-calls.log, which contains exactly 3 status-check `pr view` calls."
+          "passed": false,
+          "evidence": "3 step-1 `pr view` calls = 2 rounds, not 3. The cassette only defines three states (DIRTY+FAILURE, UNSTABLE+FAILURE, CLEAN+SUCCESS), so 2 rounds is the most its own fixture can produce -- the expectation asks for a round the fixture cannot supply. The behavior the eval exists to test, continuing past the conflict fix to the still-failing check, did happen."
         },
         {
           "text": "The final report distinguishes what was fixed in which round (conflict in round 1, checks in round 2-3) rather than describing it as one flat step.",
           "passed": true,
-          "evidence": "Final report distinguishes what was fixed in which round (conflict resolution in round 1, then two separate ci/test root causes -- missing tests, then missing requirements.txt -- fixed across rounds 1-2) rather than describing it as one flat step, per the executor's round-by-round report."
+          "evidence": "Report separates round 1 (conflict resolved, pushed) from round 2 (checks green), not one flat step."
         },
         {
           "text": "The gh-stub log contains no `pr merge` call.",
           "passed": true,
-          "evidence": "gh-calls.log contains zero `pr merge` entries -- independently verified via direct read and grep of the full log (0 matches)."
+          "evidence": "No `pr merge` among the 14 logged calls."
         },
         {
           "text": "No force-push or `--no-verify` appears in the transcript.",
           "passed": true,
-          "evidence": "No force-push or --no-verify appears anywhere -- independently verified via grep of the gh-calls.log and the executor's reported command history (plain `git push` only, real merge commit not a rebase)."
+          "evidence": "Merge commit plus fast-forward remote update; no --force, no --no-verify."
         }
-      ],
-      "notes": []
+      ]
     },
     {
       "eval_id": 9,
@@ -364,67 +355,90 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 189.421,
-        "tokens": 63500,
-        "tool_calls": null,
+        "time_seconds": 73.3,
+        "tokens": 40958,
+        "tool_calls": 8,
         "errors": null
       },
       "expectations": [
         {
           "text": "The gh-stub log contains zero `pr merge` calls (the cassette would return a hard failure if one were attempted, confirming the invariant rather than just hoping it wasn't called).",
           "passed": true,
-          "evidence": "gh-calls.log contains zero `pr merge` calls -- independently verified via direct read of the full log (2 entries, both `pr view`)."
+          "evidence": "No `pr merge` in the 1-call log; the cassette's hard-failure entry for it was never triggered."
         },
         {
           "text": "The final report explicitly states the PR is green/mergeable but stops short of merging, noting that merging is a separate, explicit action the user must take.",
           "passed": true,
-          "evidence": "Final report explicitly states the PR is green/mergeable but stops short of merging, noting merging is a separate, explicit action for the user -- confirmed verbatim in the executor's reported final message."
+          "evidence": "Report states #509 is green and mergeable at 0 rounds and that merging is left as a separate explicit action, despite the prompt saying 'land it'."
         },
         {
           "text": "No destructive or state-changing git command beyond read-only fetch/status checks appears in the transcript, since nothing needed fixing.",
           "passed": true,
-          "evidence": "No destructive or state-changing git command beyond read-only fetch/status checks appears -- independently verified: `git log --oneline --all` shows only the fixture's 2 original commits, `git status` clean."
+          "evidence": "git log shows only fixture commits a16a35c and 63b1cb3; working tree clean, no pushes."
         },
         {
           "text": "The report includes the PR URL (https://github.com/example/widget-service/pull/509).",
           "passed": true,
-          "evidence": "Report includes the PR URL https://github.com/example/widget-service/pull/509, matching the cassette's canned PR number."
+          "evidence": "Report links [#509](https://github.com/example/widget-service/pull/509)."
         }
-      ],
-      "notes": [
-        "This trial hit the (already-identified, already-fixed-but-not-yet-merged) gh-stub word-boundary matching bug live: the checked-out `main` branch still had the old substring matcher, so the `[\"pr\",\"merge\"]` guard entry false-triggered against the legitimate `pr view --json ...,mergeable,mergeStateStatus,...` call. The executor correctly diagnosed this as a harness bug (not a real `pr merge` call), worked around it read-only via a patched copy of the script in its own scratchpad without modifying the shared repo or the fixture workspace, and completed the trial correctly. This is independent confirmation the fix in PR #11 (not yet merged to main) is both correct and needed -- subsequent baseline batches in this session were run from the branch with the fix applied to avoid this recurring."
+      ]
+    },
+    {
+      "eval_id": 10,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
+        "total": 5,
+        "time_seconds": 203.1,
+        "tokens": 59549,
+        "tool_calls": 23,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "The report references the PR as a clickable link to https://github.com/example/widget-service/pull/510 -- the `url` field `gh pr view` returned -- not a bare '#510'.",
+          "passed": true,
+          "evidence": "Report links [#510](https://github.com/example/widget-service/pull/510) from the returned url field."
+        },
+        {
+          "text": "The report names the ci/test check that was failing and links it to https://github.com/example/widget-service/actions/runs/51001, the detailsUrl it carried when it was red.",
+          "passed": false,
+          "evidence": "The report names ci/test but never links it. The red rollup entry carried detailsUrl https://github.com/example/widget-service/actions/runs/51001, and the report mentions run ids 51001 and 51003 only as bare text inside a command it ran -- no clickable check link, which is exactly the linking behavior step 4 requires."
+        },
+        {
+          "text": "The report states the PR ended green and mergeable after one round of fixing.",
+          "passed": true,
+          "evidence": "Report states the PR ended MERGEABLE/CLEAN after one round."
+        },
+        {
+          "text": "`GH_STUB_LOG` contains no `gh pr merge` call.",
+          "passed": true,
+          "evidence": "No `pr merge` among the 16 logged calls."
+        },
+        {
+          "text": "No PR or check URL appears in the report that `gh pr view` did not return.",
+          "passed": true,
+          "evidence": "Every URL in the report traces to a url or detailsUrl the stub returned; no fabricated links."
+        }
       ]
     }
   ],
-  "run_summary": {
+  "summary": {
     "with_skill": {
-      "pass_rate": {
-        "mean": 1.0,
-        "stddev": 0.0,
-        "min": 1.0,
-        "max": 1.0
-      },
-      "time_seconds": {
-        "mean": 90.2967,
-        "stddev": 85.8716,
-        "min": 38.566,
-        "max": 189.421
-      },
-      "tokens": {
-        "mean": 51275.0,
-        "stddev": 10587.4227,
-        "min": 45088,
-        "max": 63500
-      }
+      "expectations_passed": 43,
+      "expectations_total": 47,
+      "pass_rate": 0.915,
+      "evals_fully_passing": 7,
+      "evals_total": 10,
+      "time_seconds_mean": 121.8,
+      "time_seconds_stdev": 62.6,
+      "tokens_mean": 46266.7,
+      "tokens_stdev": 6697.7,
+      "tool_calls_mean": 14,
+      "tool_calls_stdev": 7.2
     }
-  },
-  "notes": [
-    "9/9 evals pass 100% of their expectations in this initial baseline run. All results were independently verified against ground truth (git log/branch state, gh-calls.log contents, config.py contents, grep for conflict markers) rather than accepted from executor self-report alone.",
-    "This is a with_skill-only baseline (no without_skill comparison) since land-pr is an orchestration/workflow skill, not a content generator.",
-    "This batch exercised real git conflict resolution (evals 2 and 8 -- genuine merge conflicts in config.py's VERSION line, resolved for real via fetch/merge/resolve/commit/push, not simulated) and real CI-failure remediation (evals 4, 7, and 8 -- actual bugs/missing files in the fixture repos, fixed and verified locally before push), exercising the skill's core orchestration logic (round looping, sub-skill invocation, round-cap handling) against realistic scenarios rather than trivial always-green fixtures.",
-    "Time/token usage figures are only available for evals 5, 6, and 9 (45088/45237/63500 tokens; 38.6/42.9/189.4 seconds respectively). Figures for evals 1, 2, 3, 4, 7, and 8 were not captured because task usage metadata was not retrievable via a blocking TaskOutput poll for those trials (only background task-notification completions surfaced a usage tag in this session). The aggregate time/token stats are computed only over the 3 evals with real data and should not be read as representative of the other 6 -- a known tooling gap, consistent with the same gap noted in the implement-feature baseline.",
-    "Eval 9 independently confirmed the gh-stub word-boundary matching bug fixed in PR #11 (not yet merged to main at the time of this run) is real and still live on `main`: its trial hit the exact false-positive (`[\"pr\",\"merge\"]` guard matching inside \"mergeable\"/\"mergeStateStatus\") and the executor correctly diagnosed and worked around it without modifying the shared repo. Subsequent trials in this batch were run from the branch containing the fix to avoid repeating this.",
-    "The `tool_calls` and `errors` fields on every run were hardcoded to 0, not measured -- they aren't wired up in the executor/grader pipeline yet. Set to null here (matching how the timing/token gap above is already disclosed) rather than left as a silent 0 that could be mistaken for \"measured, zero tool calls,\" since several evals (e.g. eval 9's script-patch-and-log-read sequence) clearly involved many tool calls despite the old value reading 0.",
-    "run_summary.delta is omitted: this is a with_skill-only baseline (no without_skill comparison was run), so a computed \"+X\" delta against an implicit zero baseline would be misleading -- consistent with the Markdown summary, which never had a delta row to begin with."
-  ]
+  }
 }
