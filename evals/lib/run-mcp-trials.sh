@@ -123,6 +123,18 @@ else:
   # events name every tool call -- which is how a grader tells "the skill
   # ran and chose not to search" from "the skill never loaded", two things
   # that look identical in a plain transcript.
+  # A trial can still reach the real home directory: HOME is reassigned, but
+  # /root (or wherever the account actually lives) stays readable, and a
+  # capable model that notices the mismatch will look there. State left by an
+  # earlier, non-isolated run is therefore still reachable, which is how a
+  # writing trial once rebuilt nothing and reused a style card from a previous
+  # session. Warn loudly rather than deleting someone's real data.
+  REAL_HOME="$(getent passwd "$(id -un)" | cut -d: -f6)"
+  if [[ -n "$REAL_HOME" && -d "$REAL_HOME/writing-style" ]]; then
+    echo "  WARNING: $REAL_HOME/writing-style exists and a trial may read it;" \
+         "remove it before trusting these results"
+  fi
+
   TRIAL_HOME="$RUN_DIR/home"
   mkdir -p "$RUN_DIR/tmp" "$TRIAL_HOME"
   for CONFIG in .claude .claude.json .config; do

@@ -17,7 +17,7 @@ Common sources, by what they hold:
 | Google Drive / Docs | Long-form documents, meeting notes, published drafts |
 | Issue trackers (Jira, Trello, GitHub) | Comments, descriptions, status updates |
 | Wikis (Confluence, Notion, GitHub wikis and Pages, repo docs) | Explanatory long-form written for colleagues, usually the most structured register |
-| A personal site or blog | Public long-form at the highest polish tier |
+| A personal site or blog | Public long-form, usually the most edited writing a person has |
 
 Wikis are worth reaching for early. They hold the register between a ticket
 comment and a published post, they are attributable through page history, and
@@ -30,6 +30,10 @@ with the author recorded as a user id, which is better evidence than the API
 would give and needs no connector. Match on that id, and keep channel samples
 separate from direct-message samples, because the same person writes those two
 places differently.
+
+Do not assume a tier for any of these. A blog is edited, but plenty of people
+write theirs in fragments and lowercase; the tier comes from the samples, as
+Step 5 says, not from what the medium sounds like it should be.
 
 A personal site is the one source to approach carefully. Do not search the
 open web for the user's name and treat what comes back as theirs: names are

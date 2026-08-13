@@ -90,7 +90,7 @@
       "expectations": [
         "The skill does not ask who the entry is addressed to: it treats the audience as the user themselves and proceeds.",
         "The existing entries under journal/ in the workspace are read and used as the corpus; the profile is built from them rather than from the mailbox.",
-        "The profile and the entry match the observed conventions: a '# <date> <lowercase weekday>' title line, the lowercase '## what happened' and '## tomorrow' section headers used in the existing entries, first person, short paragraphs, and no greeting or sign-off.",
+        "The profile and the entry match the observed conventions: a '# <date> <lowercase weekday>' title line, the lowercase '## ' section-header style used in the existing entries, first person, short paragraphs, and no greeting or sign-off. Sections the user supplied nothing for may be omitted rather than padded, per the skill's rule against filling a section just because the samples always have one.",
         "The entry contains only the facts the user gave (the slip to Thursday, running the incident call, the annoyance about staging) with no invented meetings, names, or outcomes, and it does not soften the stated annoyance into upbeat framing the existing entries never use."
       ]
     },
@@ -138,7 +138,7 @@
       "expected_output": "The corpus for a public long-form piece is the user's existing posts under blog/ in the workspace, not their mail. The style card reflects what those posts show (first person, a concrete opening scene, plain declaratives, an explicitly unresolved ending, no headings or lists) and the draft matches it at that polish tier.",
       "expectations": [
         "The existing posts under blog/ are read and used as the corpus for this artifact; mail is not substituted for them without saying so, and any use of mail samples is labeled as a cross-medium observation rather than as blog evidence.",
-        "The style card is scoped to the blog medium and a public audience, at the highest polish tier, rather than reusing an email profile from the same workspace.",
+        "The style card is scoped to the blog medium and a public audience, at whatever polish tier the sample posts actually support, rather than reusing an email profile from the same workspace or assuming a tier from the medium.",
         "The card's observations trace to the posts: first person throughout, an opening that starts from a concrete incident, plain declarative sentences, no headings or bullet lists inside the body, and an ending that declines to resolve neatly ('I do not have a tidy conclusion', 'If you want the tooling answer, I do not have one for you').",
         "The draft carries those markers: no headings or bullet lists, no call to action, no summary paragraph restating the piece, and an ending consistent with the observed refusal to tie things off.",
         "The draft contains only the reasons the user gave (speaking order, quiet dissent, objections surfacing in writing) with no invented anecdotes, metrics, or team details, even though the sample posts are rich in specifics of their own."
