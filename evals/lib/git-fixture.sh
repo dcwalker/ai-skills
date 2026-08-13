@@ -55,7 +55,29 @@ else
 fi
 
 if [[ -f "$FIXTURE_DIR/setup.sh" ]]; then
-  bash "$FIXTURE_DIR/setup.sh" "$WORKSPACE_DIR"
+  # Pin init.defaultBranch for the setup subprocess. The workspace repo above
+  # is created with an explicit --initial-branch=main, but a fixture that
+  # builds its own bare origin with a plain `git init --bare` inherits the
+  # HOST's default instead. On a machine where init.defaultBranch is unset,
+  # that origin comes up with HEAD -> refs/heads/master while the fixture only
+  # ever pushes main, so a later `git remote set-head origin --auto` cannot
+  # resolve and aborts the whole fixture under `set -e`.
+  #
+  # The failure is total and early: run-eval.sh dies before writing env.sh or
+  # in-trial.sh, so the trial is unrunnable rather than merely odd. It is also
+  # invisible on any machine that happens to set init.defaultBranch=main, which
+  # is why 25 fixtures across `pr` and `create-branch` carried it unnoticed --
+  # every one of the 15 `pr` trials in the first benchmark run hit it and had to
+  # work around it by hand.
+  #
+  # Set here rather than in each fixture so new fixtures inherit the guarantee.
+  # A fixture passing --initial-branch explicitly still wins: the command line
+  # beats config. The triplet is scoped to this subprocess and never reaches
+  # env.sh, which unsets it for the trial itself.
+  GIT_CONFIG_COUNT=1 \
+  GIT_CONFIG_KEY_0=init.defaultBranch \
+  GIT_CONFIG_VALUE_0=main \
+    bash "$FIXTURE_DIR/setup.sh" "$WORKSPACE_DIR"
 fi
 
 if [[ -f "$FIXTURE_DIR/meta.json" ]]; then
