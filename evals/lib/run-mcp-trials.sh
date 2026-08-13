@@ -108,22 +108,29 @@ else:
   # nothing" stays a finding about the skill rather than an artifact of the
   # harness blocking the call.
   #
-  # A private TMPDIR and XDG_CACHE_HOME per trial: a skill that caches
-  # anything would otherwise read what an earlier trial left behind, which is
-  # both a contaminated trial and a leak between two runs that represent
-  # different people. It also puts whatever the skill cached under $RUN_DIR
-  # where a grader can see it. A fixture's optional cache/ directory is
-  # copied in first, which is how a trial can start with a cache already
-  # populated (or populated by somebody else).
+  # A private HOME and TMPDIR per trial: a skill that stores anything for
+  # the user -- a cache, a profile, a preferences file -- writes it under
+  # $HOME, and without this each trial would read what an earlier one left
+  # behind. That is both a contaminated trial and a leak between two runs
+  # that represent different people. Credentials and config are symlinked
+  # back so `claude` still authenticates, and whatever the skill wrote stays
+  # under $RUN_DIR/home for the grader to read. A fixture's optional home/
+  # directory is copied in first, which is how a trial can start with state
+  # already in place (its own, or somebody else's).
   #
   # stream-json keeps the per-event record. The final result event carries
   # the same usage and duration the json format returns, and the assistant
   # events name every tool call -- which is how a grader tells "the skill
   # ran and chose not to search" from "the skill never loaded", two things
   # that look identical in a plain transcript.
-  mkdir -p "$RUN_DIR/tmp" "$RUN_DIR/cache"
-  if [[ -d "$EVALS_DIR/fixtures/$ID/cache" ]]; then
-    cp -R "$EVALS_DIR/fixtures/$ID/cache/." "$RUN_DIR/cache/"
+  TRIAL_HOME="$RUN_DIR/home"
+  mkdir -p "$RUN_DIR/tmp" "$TRIAL_HOME"
+  for CONFIG in .claude .claude.json .config; do
+    [[ -e "$HOME/$CONFIG" && ! -e "$TRIAL_HOME/$CONFIG" ]] && \
+      ln -s "$HOME/$CONFIG" "$TRIAL_HOME/$CONFIG"
+  done
+  if [[ -d "$EVALS_DIR/fixtures/$ID/home" ]]; then
+    cp -R "$EVALS_DIR/fixtures/$ID/home/." "$TRIAL_HOME/"
   fi
 
   # run_turn <prompt> [session-id]: one claude turn, events appended to
@@ -136,7 +143,7 @@ else:
     [[ -n "$resume_id" ]] && resume_flag=(--resume "$resume_id")
     (
       cd "$WORKSPACE_DIR"
-      TMPDIR="$RUN_DIR/tmp" XDG_CACHE_HOME="$RUN_DIR/cache" \
+      HOME="$TRIAL_HOME" TMPDIR="$RUN_DIR/tmp" \
         claude -p --permission-mode acceptEdits \
         --allowedTools "Bash Read Write Edit Glob Grep WebFetch TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian" \
         --strict-mcp-config --verbose "${resume_flag[@]}" \

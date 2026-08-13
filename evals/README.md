@@ -45,8 +45,8 @@ plugins/<plugin>/skills/<skill>/evals/
         │                      sonar-project.properties file in repo/.
         ├── trello-fixture.json Optional: canned create-trello-task.sh
         │                      responses (organize-meeting-notes).
-        ├── cache/             Optional: seeds the trial's XDG_CACHE_HOME,
-        │                      for skills that cache across sessions.
+        ├── home/              Optional: seeds the trial's private HOME,
+        │                      for skills that keep state across sessions.
         └── sandbox-setup.sh   Optional, `"sandbox": true` evals only: runs
                                with the trial environment sourced, to point
                                origin at the sandbox repo and clear what the
@@ -303,14 +303,16 @@ Four things the shared driver does that a hand-run trial must do for itself:
   out containers and CI. Each stub server is allowed wholesale, write tools
   included, so "the skill wrote nothing" stays a finding about the skill
   rather than an artifact of the harness blocking the call.
-- It gives each trial a private `TMPDIR` and `XDG_CACHE_HOME` under the run
-  directory, so a skill that caches anything cannot read what an earlier
-  trial left behind. That is both a contamination guard and a privacy one:
-  two trials represent two different people. Whatever the skill cached stays
-  under `$RUN_DIR/cache` for the grader to read.
-- It seeds that cache from the fixture's optional `cache/` directory, which
-  is how a trial starts with a cache already populated. A fixture can hand
-  the trial its own prior cache, or somebody else's, and grade what the skill
+- It gives each trial a private `HOME` and `TMPDIR` under the run directory,
+  so a skill that keeps state for the user cannot read what an earlier trial
+  left behind. That is both a contamination guard and a privacy one: two
+  trials represent two different people. `.claude`, `.claude.json`, and
+  `.config` are symlinked back into the trial home so `claude` still
+  authenticates, and whatever the skill wrote stays under `$RUN_DIR/home`
+  for the grader to read.
+- It seeds that home from the fixture's optional `home/` directory, which is
+  how a trial starts with state already in place. A fixture can hand the
+  trial its own prior cache, or somebody else's, and grade what the skill
   does with each.
 
 ## Live sandbox cases
