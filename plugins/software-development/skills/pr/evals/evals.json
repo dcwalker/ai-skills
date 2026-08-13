@@ -39,7 +39,7 @@
       "prompt": "Open a PR for the search filter work. Yes, please use the repo's PR template as the base for the description.",
       "expected_output": "The skill finds the short PR template, shows it to the user, and (per the user's go-ahead) uses its section structure (Summary / How to test / Checklist) as the basis for the PR body.",
       "expectations": [
-        "The transcript shows the assistant surfacing the PR template found at .github/pull_request_template.md and asking whether to use it, before creating the PR",
+        "The transcript surfaces the PR template found at .github/pull_request_template.md, together with the 'do you want to use it?' question and how that question was resolved -- the prompt pre-answers it, so re-asking is not required",
         "GH_STUB_LOG contains a `gh pr create` call with --draft",
         "The --body value reflects the template's structure (e.g. contains a 'How to test' or 'Checklist' style section) rather than only the skill's default Value/Changes/Related template"
       ]
@@ -49,7 +49,7 @@
       "prompt": "Open a PR for the bulk delete feature. Yes, use the template, a summary of it is fine.",
       "expected_output": "The skill finds the long (30+ line) PR template and, because it is long, summarizes it briefly for the user rather than pasting it in full, then asks before using it as the description base.",
       "expectations": [
-        "The transcript shows the assistant asking whether to use the PR template before creating the PR",
+        "The transcript surfaces the 'do you want to use the PR template?' question and how it was resolved -- the prompt pre-answers it, so re-asking is not required",
         "The transcript's presentation of the template is a brief summary of its sections, not a verbatim reproduction of all 30+ lines",
         "GH_STUB_LOG contains a `gh pr create` call with --draft"
       ]
@@ -57,9 +57,9 @@
     {
       "id": 6,
       "prompt": "Create a PR for the dark mode toggle. Yes, assign it to me.",
-      "expected_output": "The skill asks about assignment and, per the user's yes, creates the PR with itself assigned via --assignee @me.",
+      "expected_output": "The skill treats assignment as a decision to surface rather than one to make silently and, per the user's yes, creates the PR with itself assigned via --assignee @me.",
       "expectations": [
-        "The transcript shows the assistant asking whether to assign the PR before creating it",
+        "The transcript surfaces the assignment question and how it was resolved, rather than assigning silently -- the prompt pre-answers it, so re-asking is not required",
         "GH_STUB_LOG contains a `gh pr create` call that includes `--assignee @me`"
       ]
     },
@@ -97,8 +97,8 @@
       "prompt": "Refresh the PR description for this branch to reflect the multi-select work.",
       "expected_output": "The existing PR's title (\"Fix typo in header\") is clearly stale given the real content (multi-select feature). The skill flags this and asks before changing the title rather than silently renaming it, since the user only asked to update the description.",
       "expectations": [
-        "The transcript shows the assistant explicitly noting the current title looks inaccurate/stale relative to the actual change, and asking whether to update it",
-        "No `gh pr edit` call in GH_STUB_LOG silently changes --title to a new value without that question appearing first in the transcript",
+        "The transcript explicitly notes the current title looks inaccurate/stale relative to the actual change, and surfaces the question of whether to update it",
+        "No `gh pr edit` call in GH_STUB_LOG changes --title to a new value without that question, and the answer taken, appearing in the transcript",
         "The PR body is still updated to describe the multi-select work (a `gh pr edit` call with an updated --body occurs)"
       ]
     },
