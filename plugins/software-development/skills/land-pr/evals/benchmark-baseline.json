@@ -169,12 +169,12 @@
         {
           "text": "The transcript shows 5 distinct rounds of the loop (fetch/sync + fix attempts + re-check), not fewer and not an unbounded number.",
           "passed": false,
-          "evidence": "Only 3 step-1 `pr view` calls, i.e. 2 rounds, against a cassette that never resolves ci/test. The skill stopped early citing a 'fix did not take, ask the user' rule that SKILL.md states only as part of the 5-round cap (step 3), not as a licensed early exit. Step 2f's early exit is scoped to REVIEW_REQUIRED, and reviewDecision here is APPROVED."
+          "evidence": "Only 3 step-1 `pr view` calls, i.e. 2 rounds, against a cassette that never resolves ci/test. The trial was following SKILL.md's last Important Note -- \"if the same check keeps failing after being 'fixed', treat that as a sign the fix is wrong ... stop and ask\" -- which contradicts step 3's five-round cap that this expectation encodes. The defect is the contradiction in the skill, not the run; see Finding 1."
         },
         {
           "text": "The final report explicitly states the 5-round cap was reached and ci/test is still failing -- it does not claim the PR is green or mergeable.",
           "passed": false,
-          "evidence": "The report does not state the 5-round cap was reached, because it was not. It does correctly name ci/test as still failing and makes no claim of green."
+          "evidence": "The report does not state the 5-round cap was reached, because it was not. It correctly names ci/test as still failing and makes no claim of green. Same root cause as above."
         },
         {
           "text": "The report asks the user how to proceed rather than silently giving up or continuing past round 5.",

@@ -33,11 +33,13 @@ Every result was graded from final state — `git log`/`git diff`, the working t
 
 ## Findings
 
-### 1. The skill has no stated early exit for "this round learned nothing" (eval 4, real)
+### 1. The skill contradicts itself about when to stop (eval 4, real)
 
-Fixture 4's cassette never resolves `ci/test`; it exists to prove the 5-round cap works. The trial stopped after 2 rounds, reasoning that a check still red after a fix means the fix was wrong and the user must decide. That reasoning is sound, but SKILL.md does not license it. Step 2f's early exit is scoped to `reviewDecision: REVIEW_REQUIRED`, and this PR is `APPROVED`; the "stop after repeated failures" language appears only in step 3, describing what to do *after* five rounds. So the skill text and the sensible behavior disagree, and the eval encodes the text.
+Fixture 4's cassette never resolves `ci/test`; it exists to prove the 5-round cap works. The trial stopped after 2 rounds, reasoning that a check still red after a fix means the fix was wrong and the user must decide.
 
-This is worth resolving in the skill rather than the eval. Rounds 3–5 here would have been pure no-ops — nothing changed between round 1 and round 2, and nothing would have changed by round 5. A generalized step 2f ("if a round found nothing new to fix and status is unchanged, stop and report") would make the observed behavior correct and keep eval 4 meaningful by testing the cap with a fixture where each round genuinely has something to attempt.
+The trial was following the skill. SKILL.md's last Important Note says exactly that: "If the same check or comment keeps failing after being 'fixed,' treat that as a sign the fix is wrong rather than re-attempting the same change — stop and ask." Step 3 says the opposite — run five rounds, then report the cap — and eval 4 encodes step 3. Two rules, contradictory, and whichever one a run follows the other calls it wrong.
+
+So the defect is in the skill, not the run, and rounds 3–5 here would have been pure no-ops: nothing changed between round 1 and round 2, and nothing would have changed by round 5. The fix is to give step 2f the early exit outright — nothing to fix, a fix that did not take, or a round with no new information — restate step 3 as the backstop for rounds that *do* keep making progress, and point the Important Note at 2f. Fixture 4 then has to change too: under that rule a correct run stops at round 2 against an unchanging state, so testing the cap needs a fixture where each round genuinely has something to attempt.
 
 ### 2. The report did not link the failing check (eval 10, real)
 
