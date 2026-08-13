@@ -237,9 +237,23 @@
     {
       "match": [
         "pr",
+        "view",
+        "--json",
+        "number"
+      ],
+      "stdout_json": {
+        "number": 507
+      }
+    },
+    {
+      "match": [
+        "pr",
         "view"
       ],
-      "stdout": "PR #507\n"
+      "stdout_json": {
+        "number": 507,
+        "url": "https://github.com/example/widget-service/pull/507"
+      }
     }
   ],
   "default": {

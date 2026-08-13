@@ -53,6 +53,7 @@ silently.
 import json
 import os
 import re
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -190,6 +191,47 @@ def _resolve_stdout(entry: dict, cassette_dir: Path) -> str:
     return entry.get("stdout", "")
 
 
+def _jq_expression(argv: list) -> str:
+    """The expression given to gh's -q/--jq, or "" if none was."""
+    for i, tok in enumerate(argv):
+        if tok in ("-q", "--jq") and i + 1 < len(argv):
+            return argv[i + 1]
+        if tok.startswith("--jq="):
+            return tok[len("--jq="):]
+    return ""
+
+
+def _apply_jq(stdout: str, expression: str) -> str:
+    """Filter `stdout` through jq, the way real gh does for -q/--jq.
+
+    Ignoring the flag is not harmless. `list-pr-comments.sh` auto-detects its
+    PR with `gh pr view --json number -q .number`; unfiltered, it took the
+    whole response as the number and went on to build
+    `pullRequest(number: PR #510)` in a GraphQL query.
+
+    Falls back to the unfiltered text whenever the filter cannot sensibly
+    apply -- output that is not JSON, a jq that errors, or no jq on the box.
+    Cassettes predating this could bake the post-filter value straight into
+    `stdout`, and those must keep working rather than start erroring.
+    """
+    if not expression or not stdout.strip():
+        return stdout
+    try:
+        json.loads(stdout)
+    except json.JSONDecodeError:
+        return stdout
+    try:
+        result = subprocess.run(
+            ["jq", "-r", expression], input=stdout,
+            capture_output=True, text=True, timeout=10,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return stdout
+    if result.returncode != 0:
+        return stdout
+    return result.stdout
+
+
 def main() -> int:
     argv = sys.argv[1:]
     argv_str = " ".join(argv)
@@ -214,6 +256,7 @@ def main() -> int:
     cassette = json.loads(cassette_path.read_text())
     cassette_dir = cassette_path.parent
     counts = _load_counts(cassette_path)
+    jq_expr = _jq_expression(argv)
 
     for idx, entry in enumerate(cassette.get("calls", [])):
         if not _matches(entry, argv, argv_str):
@@ -224,7 +267,7 @@ def main() -> int:
             continue
         counts[str(idx)] = used + 1
         _save_counts(cassette_path, counts)
-        sys.stdout.write(_resolve_stdout(entry, cassette_dir))
+        sys.stdout.write(_apply_jq(_resolve_stdout(entry, cassette_dir), jq_expr))
         stderr = entry.get("stderr", "")
         if stderr:
             sys.stderr.write(stderr)
