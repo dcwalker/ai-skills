@@ -33,9 +33,14 @@ SESSION_TRAILERS='Claude-Session:|Co-Authored-By: Claude|Generated with \[Claude
 found=0
 checked=0
 
+skipped=()
+
 for run_dir in "$@"; do
   ws="$run_dir/workspace"
-  [[ -d "$ws/.git" ]] || continue
+  if [[ ! -d "$ws/.git" ]]; then
+    skipped+=("$run_dir")
+    continue
+  fi
   checked=$((checked + 1))
 
   # Only commits the trial added; the fixture's own base commit is not its doing.
@@ -52,6 +57,24 @@ for run_dir in "$@"; do
     fi
   done < <(git -C "$ws" rev-list "$range" 2>/dev/null)
 done
+
+# Checking nothing is not the same as finding nothing, and this script exists
+# precisely to stop a silent pass. `check-trial-hygiene.sh .../eval-*` is the
+# documented invocation, and bash leaves a non-matching glob as a literal, so a
+# typo or a run that never created its workspaces would otherwise print "clean:
+# ... in 0 trial(s)" and exit 0 -- the same answer as a real all-clear.
+if [[ $checked -eq 0 ]]; then
+  echo "check-trial-hygiene: no run dir with a workspace/.git among: $*" >&2
+  echo "check-trial-hygiene: checked nothing, so this is not a pass." >&2
+  exit 2
+fi
+
+# A partial run is a weaker version of the same trap: 3 of 13 checked still
+# reports "clean". Name what was skipped so the count cannot be read as total.
+if [[ ${#skipped[@]} -gt 0 ]]; then
+  echo "warning: ${#skipped[@]} argument(s) had no workspace/.git and were not checked:" >&2
+  for s in "${skipped[@]}"; do echo "  $s" >&2; done
+fi
 
 if [[ $found -gt 0 ]]; then
   echo
