@@ -23,6 +23,9 @@ Tracker:    <jira/linear account id>
 Org:        <employer>, <primary email domain>
 Team:       <team name>, <how the team is named in the directory or tracker>
 
+Former:     <identifier> until <date> — <what it was>
+Last verified: <date>
+
 ## Relationships
 
 <name or address>: <class> — <note>
@@ -36,8 +39,30 @@ Rules for identity.md:
 - **It is a matcher, not a claim about the world.** Use the identifiers to
   decide which samples are the user's. Do not use the file's contents as facts
   in a draft.
-- **Verify before trusting a stale entry.** An identifier that matches no
-  connected account is worth mentioning once; accounts get renamed.
+- **Verify on read, and stamp it.** Compare the recorded identifiers against
+  the accounts this session is actually connected to. When they agree, update
+  `Last verified`. When one no longer resolves, or an account reports an
+  identifier the file does not have, say so once and offer to update the file.
+  A file with no `Last verified` date has never been checked, which is worth
+  knowing before leaning on it.
+- **Never delete a superseded identifier, retire it.** An address or handle
+  that changed still owns everything written under it, and the older corpus is
+  only findable by searching for it. Move it to `Former:` with the date it
+  stopped being current, and keep searching both. Deleting it silently shrinks
+  the evidence for every card built afterwards.
+- **A team change ages the relationships, not the identifiers.** Classes
+  derived from team membership stop being reliable the moment the team
+  changes: yesterday's peers may now be another team, and the manager
+  relationship has usually moved. Re-derive the classes rather than trusting
+  the recorded ones, and treat the affected cards under the drift rule in
+  SKILL.md Step 2.
+- **An employer change ages nearly everything audience-shaped.** The
+  professional corpus belongs to a former context: those recipients are no
+  longer being written to, and the register that suited them may not transfer
+  to their counterparts at the new place. `general.md` survives, since it
+  describes the person rather than the audience. Cards for work audiences do
+  not, and should be rebuilt from samples at the new employer rather than
+  carried across.
 - **Offer to write it, do not assume it.** On the first run, discover what the
   connected accounts report, show the user what would be recorded, and write
   it only if they agree. It persists, and it is theirs.
