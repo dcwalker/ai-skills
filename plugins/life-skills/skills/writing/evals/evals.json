@@ -124,10 +124,10 @@
     {
       "id": 11,
       "prompt": "Quick email to Jordan (jordan.blake@example.com) asking them to hold the cache branch until Thursday. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
-      "expected_output": "A cache built from this session's own accounts already holds an email/peer card for Jordan, so the skill reuses it, says so along with the date it was built, and does not re-run the research it records.",
+      "expected_output": "A cache built from this session's own accounts already holds an email/peer card for Jordan, so the skill reuses it, says so along with the date it was built, and at most confirms it with a bounded check for newer samples rather than re-reading the corpus.",
       "expectations": [
         "The cached email/peer card for Jordan is reused rather than rebuilt, and the transcript says so explicitly, naming when it was built.",
-        "The searches the cached index records are not re-run: the Gmail call log shows no repeat of the recorded recipient-scoped sent-mail search.",
+        "The cached card is confirmed rather than rebuilt: at most one bounded search for samples newer than the card's newest sample appears in the Gmail call log, not a re-read of the six threads the card was built from.",
         "The draft carries the markers the cached card describes (lowercase 'hey Jordan,' opening, 'thanks / alex' sign-off, two or three short lines).",
         "Reuse is reported as reuse: the card is not presented as fresh research, and its age is available to the user rather than hidden."
       ]
@@ -154,6 +154,19 @@
         "The card records the platform conventions the samples show: @mention form for people ('@Jordan') rather than written-out full names, 'PR #NNN' references rather than pasted URLs, no greeting, and no sign-off.",
         "The drafted comment carries those conventions: lowercase status-first opening, two or three sentences, no greeting, no 'Kind regards' sign-off.",
         "No comment is posted to Jira: addCommentToJiraIssue does not appear in the Atlassian call log, and ENG-455's comment list in the final state is unchanged."
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "Post a message in #platform-eng: the migration is rescheduled to Thursday, and people should hold merges that touch the jobs table until it lands. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The corpus is the user's own messages in the Slack export under slack-export/ in the workspace, attributed by user id U0ALEX rather than display name, and scoped to the channel rather than the DM. The card records the chat conventions the samples show (<@U...> mentions, labeled links, occasional :white_check_mark: in channel and none in DMs, lowercase throughout, no greeting or sign-off) and the draft matches them.",
+      "expectations": [
+        "The Slack export in the workspace is used as the corpus for this artifact rather than the mailbox, and any use of mail samples is labeled as a cross-medium substitution instead of presented as chat evidence.",
+        "Messages are attributed by user id (U0ALEX): the messages from U0ALEX2, who shares the display name 'Alex Reyes' and writes formally ('Thank you for the detailed analysis', 'Please let me know if I can assist'), are excluded from the profile rather than blended into it.",
+        "The profile is scoped to the channel rather than the DM, and says so: the #platform-eng samples are the basis, with the DM messages either excluded or explicitly noted as a different, terser register.",
+        "The card records the platform conventions the channel samples show: <@U...> mention form rather than written-out names, links given descriptive labels rather than pasted bare, and emoji present but sparse (:white_check_mark: in 2 of 3 dated files) with none in the DM samples.",
+        "The draft carries those conventions: lowercase, two or three lines, no greeting and no sign-off, and no email register imported from the mailbox.",
+        "The draft states only the two facts given (rescheduled to Thursday, hold merges touching the jobs table) without inventing a cause, a window, or a rollback plan, even though the samples contain such details of their own."
       ]
     }
   ]

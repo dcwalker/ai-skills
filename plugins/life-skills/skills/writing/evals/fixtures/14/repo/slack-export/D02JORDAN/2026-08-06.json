@@ -1,0 +1,10 @@
+[
+  {"type": "message", "user": "U0ALEX", "ts": "1754470800.000100",
+   "text": "you around? the seed job is stuck again"},
+  {"type": "message", "user": "U0JORDAN", "ts": "1754470860.000200",
+   "text": "give me five"},
+  {"type": "message", "user": "U0ALEX", "ts": "1754470920.000300",
+   "text": "no rush. same table lock as last time i think"},
+  {"type": "message", "user": "U0ALEX", "ts": "1754471400.000400",
+   "text": "cleared it. was the lock"}
+]

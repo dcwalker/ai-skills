@@ -83,11 +83,12 @@ Research is expensive, and voice changes far more slowly than the requests
 that draw on it. Cache what is found, and reuse it until there is a reason
 not to.
 
-**Location:** `${XDG_CACHE_HOME:-$HOME/.cache}/writing-style/`, created
-`chmod 700` on first use. It lives in the user's home directory, not in a
-shared temp path: these files hold observations derived from private
-correspondence, and a world-readable location exposes them to every other
-user and session on the machine. Contents:
+**Location:** `$HOME/writing-style/`, created `chmod 700` on first use. It
+sits in the user's home directory, in plain sight rather than buried in a
+cache path, because it is meant to be read and edited by hand. It is
+deliberately not a shared temp path: these files hold observations derived
+from private correspondence, and a world-readable location exposes them to
+every other user and session on the machine. Contents:
 
 ```
 identity.md                       Who the user is, in identifiers
@@ -148,6 +149,11 @@ Cache rules:
 - An exact `(medium, audience)` hit is reused directly. Say so, with the date
   it was built ("reusing the Slack/teammate profile from 14 March"), rather
   than silently skipping the research step.
+- **Confirm a hit cheaply, do not rebuild it.** A card inside its refresh
+  window earns at most one search for samples newer than its newest sample.
+  If that turns up nothing, use the card as it stands. If it turns up a few,
+  fold them in and update the counts. Re-reading the whole corpus a card was
+  built from defeats the point of having cached it.
 - A partial hit is a starting point, not an answer. Same person, different
   medium means the relationship read carries over and the mechanics do not:
   keep the audience findings, research the medium fresh.
@@ -177,7 +183,7 @@ Common sources, by what they hold:
 | Source | Yields |
 |---|---|
 | Email (Gmail MCP or equivalent) | Sent mail: the richest and most reliably attributable corpus |
-| Team chat (Slack MCP or export) | Short-form professional voice, per-channel and per-DM |
+| Team chat (a chat MCP, or a workspace export on disk) | Short-form professional voice, per-channel and per-DM |
 | Local files (`~/journal`, notes dirs, repo Markdown, Obsidian vaults) | Journal entries, notes, drafts, long-form |
 | Google Drive / Docs | Long-form documents, meeting notes, published drafts |
 | Issue trackers (Jira, Trello, GitHub) | Comments, descriptions, status updates |
@@ -187,6 +193,14 @@ Common sources, by what they hold:
 Wikis are worth reaching for early. They hold the register between a ticket
 comment and a published post, they are attributable through page history, and
 most people have more of this writing than they have blog posts.
+
+Chat is the highest-volume medium most people have, and the one most often
+unreachable. When no chat tool is connected, look for a workspace export on
+disk before giving up: an export is a directory of per-channel, per-day JSON
+with the author recorded as a user id, which is better evidence than the API
+would give and needs no connector. Match on that id, and keep channel samples
+separate from direct-message samples, because the same person writes those two
+places differently.
 
 A personal site is the one source to approach carefully. Do not search the
 open web for the user's name and treat what comes back as theirs: names are

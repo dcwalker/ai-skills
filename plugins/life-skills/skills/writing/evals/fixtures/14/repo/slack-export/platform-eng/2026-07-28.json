@@ -1,0 +1,10 @@
+[
+  {"type": "message", "user": "U0ALEX", "ts": "1753704840.000100",
+   "text": "412 is out, latency held under 200ms all day :white_check_mark:"},
+  {"type": "message", "user": "U0ALEX", "ts": "1753704900.000200",
+   "text": "adding a cardinality alert this week so the next one pages us instead of a customer. <@U0JORDAN> i'll put it behind the same dashboard, shout if you want it somewhere else."},
+  {"type": "message", "user": "U0PRIYA", "ts": "1753705200.000300",
+   "text": "Great. Can you cover this at Thursday's review?"},
+  {"type": "message", "user": "U0ALEX", "ts": "1753705320.000400",
+   "text": "yep, ten minutes, no slides."}
+]
