@@ -19,11 +19,13 @@ checks with model-based judgment where the outcome is inherently subjective.
 ```
 evals/
 ├── lib/
-│   ├── gh-stub/gh       Fake `gh` executable, fixture/cassette-driven.
-│   ├── git-fixture.sh   Builds a scratch git repo from a fixture spec.
-│   ├── run-eval.sh      Per-eval harness: wires fixture + gh-stub + env vars.
-│   └── sandbox/check.sh Gate for the small set of live sandbox-repo cases.
-└── README.md            This file.
+│   ├── gh-stub/gh        Fake `gh` executable, fixture/cassette-driven.
+│   ├── git-fixture.sh    Builds a scratch git repo from a fixture spec.
+│   ├── run-eval.sh       Per-eval harness: wires fixture + gh-stub + env vars.
+│   ├── sandbox/check.sh  Gate for the small set of live sandbox-repo cases.
+│   └── sandbox/askpass.sh  Supplies the sandbox token to git without putting
+│                         it in the remote URL.
+└── README.md             This file.
 
 plugins/<plugin>/skills/<skill>/evals/
 ├── evals.json                 Eval definitions (skill-creator schema).
@@ -40,8 +42,12 @@ plugins/<plugin>/skills/<skill>/evals/
         │                      SONAR_PROJECT_KEY when sonar-fixture.json is
         │                      present -- lets a fixture skip shipping a
         │                      sonar-project.properties file in repo/.
-        └── trello-fixture.json Optional: canned create-trello-task.sh
-                               responses (organize-meeting-notes).
+        ├── trello-fixture.json Optional: canned create-trello-task.sh
+        │                      responses (organize-meeting-notes).
+        └── sandbox-setup.sh   Optional, `"sandbox": true` evals only: runs
+                               with the trial environment sourced, to point
+                               origin at the sandbox repo and clear what the
+                               previous trial left behind.
 ```
 
 ## Running one eval trial
@@ -122,6 +128,19 @@ preserve when adding a stub, a fixture hook, or a bundled script:
   `list-sonar-issues.py` do this.
 - `gh-stub` is the reference: it refuses when `GH_STUB_CASSETTE` is unset and
   never execs the real `gh`.
+
+The same preamble also neutralizes the host's git configuration
+(`GIT_CONFIG_GLOBAL`/`GIT_CONFIG_SYSTEM` and the `GIT_CONFIG_COUNT`/`KEY`/
+`VALUE` triplet). That is a correctness guard rather than an isolation one: a
+fixture sets `origin` to a literal URL and skills derive owner/repo from
+`git remote get-url origin`, but `url.<base>.insteadOf` rewrites that value
+before the skill sees it. With a proxy rewrite configured,
+`https://github.com/acme/widgets.git` comes back as
+`http://proxy.internal/git/acme/widgets.git`, every bundled script's
+`sed`-based repo detection derives a repo that does not exist, and the
+resulting mess grades as a skill defect. Per-repo config is left alone --
+`git-fixture.sh` sets identity there and the fixture's own remotes must
+survive.
 
 **Scrubbing credentials is necessary but not sufficient.** A CLI with its own
 stored auth ignores the environment entirely — `gh` authenticates from its
@@ -206,9 +225,44 @@ repo instead of the stub, to catch stub/reality drift. They need
 `EVAL_GH_SANDBOX_REPO` (`owner/repo`) and `EVAL_GH_SANDBOX_TOKEN` set to a
 token scoped to that repo only -- **never point this at a real project
 repo**, these evals create and mutate PRs/issues/branches as part of normal
-operation. Check `lib/sandbox/check.sh` before running one; it exits `77`
-(skip, not fail) when the sandbox isn't configured, so the rest of the suite
-runs fine without it.
+operation. `run-eval.sh` handles the gate itself: for a `"sandbox": true` eval
+it calls `lib/sandbox/check.sh` and, when the sandbox isn't configured, exits
+`77` (skip, not fail) before building a workspace. Callers must treat `77` as
+"not run" rather than as a failure, so the rest of the suite runs fine on a
+machine that has no sandbox.
+
+When the sandbox *is* configured, the trial environment differs from every
+other eval's in exactly three ways:
+
+- The `gh` stub stays off `PATH`, so the real `gh` runs, holding
+  `EVAL_GH_SANDBOX_TOKEN` as `GH_TOKEN` and pinned to the sandbox by
+  `GH_REPO`. Every non-GitHub credential is still scrubbed -- "may reach one
+  throwaway repo" is not "may reach Trello, Sonar, and Jira."
+- git authenticates through `GIT_ASKPASS=lib/sandbox/askpass.sh` instead of a
+  token embedded in the remote URL. That is deliberate: skills derive URLs
+  from `git remote get-url origin` and then *publish* them to issues and PR
+  comments, so a token in the remote would be republished. A clean remote
+  makes the worst case a broken link.
+- The token is passed by reference, never written into `env.sh` -- so the
+  shell that sources `env.sh` must still have `EVAL_GH_SANDBOX_TOKEN`
+  exported. `env.sh` says so loudly if it doesn't.
+
+The fixture's optional `sandbox-setup.sh` runs last, with that environment
+sourced. It owns pointing `origin` at the sandbox repo and clearing what the
+previous trial left behind -- these evals mutate a real repo, so each one has
+to start from a known state instead of inheriting the last run's branches.
+`create-branch`'s eval 15 is the worked example, and it also shows the one
+thing a sandbox eval can need that a fixture can't provide: a seeded issue.
+It checks for it and prints the `gh issue create` to run rather than failing
+obscurely.
+
+Reach for a sandbox eval when the behavior genuinely cannot be reproduced
+offline, not merely because it touches GitHub. `create-branch` 15 is the
+case: the skill only publishes when `git ls-remote --exit-code origin HEAD`
+succeeds, and derives its link from `git remote get-url origin`. A fabricated
+`github.com` origin satisfies the second and fails the first, and no offline
+remote satisfies both -- which is why eval 14 can cover only the negative
+half ("don't invent a link when none can be derived").
 
 ## Adding a new eval
 
