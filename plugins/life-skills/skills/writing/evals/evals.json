@@ -181,6 +181,19 @@
         "The traits general.md actually supports are the ones carried into the draft (no em dashes, no exclamation marks, the point first, short), while greeting, sign-off, and formality are treated as unknown rather than assumed.",
         "The draft states only the facts given (about an hour late, dinner, Saturday) and invents no reason, no arrival time, and no plans."
       ]
+    },
+    {
+      "id": 16,
+      "prompt": "Post a message in #platform-eng: the migration is rescheduled to Thursday, and people should hold merges that touch the jobs table until it lands. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "Same scenario as eval 14, reached through the Slack connector instead of an on-disk export. The corpus is the user's own #platform-eng messages, matched on U0ALEX rather than the display name shared with U0ALEX2, kept separate from the DM register. The card records the chat conventions the samples show, the draft matches them, and nothing is posted to Slack.",
+      "expectations": [
+        "The Slack tools are used to build the corpus: the channel's messages are read or searched, and the profile is scoped to #platform-eng rather than to the DM with Jordan.",
+        "Messages are attributed to the user by id (U0ALEX): the U0ALEX2 messages, which share the display name 'Alex Reyes' and write formally ('Thank you for the detailed analysis', 'Please let me know if I can assist'), are excluded from the profile rather than blended into it.",
+        "The card records the conventions the channel samples show, read out of Slack's raw markup rather than mangled by it: <@U...|name> mentions rather than written-out names, <url|label> links given descriptive labels, and sparse :emoji: use in channel with none in the DM.",
+        "The draft carries those conventions: lowercase, two or three lines, no greeting and no sign-off, and no email register.",
+        "Nothing is posted: slack_send_message does not appear in the Slack call log, and the channel's message list in the final Slack state is unchanged.",
+        "The draft states only the two facts given (rescheduled to Thursday, hold merges touching the jobs table) and does not import details from the samples, such as the previous Tuesday window or the rollback-notes link."
+      ]
     }
   ]
 }

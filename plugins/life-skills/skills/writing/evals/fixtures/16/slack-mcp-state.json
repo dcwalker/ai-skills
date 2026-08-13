@@ -1,0 +1,201 @@
+{
+  "me": {
+    "id": "U0ALEX",
+    "name": "alex",
+    "display_name": "alex",
+    "real_name": "Alex Reyes",
+    "email": "eval-user@example.com",
+    "title": "Staff Engineer",
+    "timezone": "America/Los_Angeles",
+    "org": "example-co"
+  },
+  "users": {
+    "U0ALEX": {
+      "id": "U0ALEX",
+      "name": "alex",
+      "display_name": "alex",
+      "real_name": "Alex Reyes",
+      "email": "eval-user@example.com",
+      "title": "Staff Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0ALEX2": {
+      "id": "U0ALEX2",
+      "name": "alex.reyes",
+      "display_name": "areyes",
+      "real_name": "Alex Reyes",
+      "email": "alex.reyes@example.com",
+      "title": "Program Manager",
+      "timezone": "America/New_York"
+    },
+    "U0JORDAN": {
+      "id": "U0JORDAN",
+      "name": "jordan",
+      "display_name": "jordan",
+      "real_name": "Jordan Blake",
+      "email": "jordan.blake@example.com",
+      "title": "Senior Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0PRIYA": {
+      "id": "U0PRIYA",
+      "name": "priya",
+      "display_name": "priya",
+      "real_name": "Priya Raman",
+      "email": "priya.raman@example.com",
+      "title": "VP Engineering",
+      "timezone": "America/Los_Angeles"
+    }
+  },
+  "channels": {
+    "C0PLATENG": {
+      "id": "C0PLATENG",
+      "name": "platform-eng",
+      "purpose": "Platform engineering team channel",
+      "creator": "U0PRIYA",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "public_channel"
+    },
+    "D02JORDAN": {
+      "id": "D02JORDAN",
+      "name": "jordan",
+      "purpose": "",
+      "creator": "U0ALEX",
+      "created": "2026-01-06 08:00:00 PST",
+      "is_archived": false,
+      "type": "im"
+    }
+  },
+  "messages": {
+    "C0PLATENG": [
+      {
+        "ts": "1753099320.000100",
+        "time": "2026-07-21 07:02:00 PDT",
+        "user": "U0ALEX",
+        "text": "search latency is the cache key, not the query planner. every tenant gets its own suffix so cardinality just grows. numbers in <https://git.example.com/pr/412|PR 412> if anyone wants them :white_check_mark:",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1753099500.000200",
+        "time": "2026-07-21 07:05:00 PDT",
+        "user": "U0JORDAN",
+        "text": "nice find. does that explain the p99 spikes on tuesday too?",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1753099680.000300",
+        "time": "2026-07-21 07:08:00 PDT",
+        "user": "U0ALEX",
+        "text": "<@U0JORDAN|jordan> yep same cause. tuesday was the tenant import so cardinality doubled in an hour.",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1753100000.000400",
+        "time": "2026-07-21 07:13:00 PDT",
+        "user": "U0ALEX2",
+        "text": "Thank you for the detailed analysis, Alex. I would suggest that we document this in the runbook so that the on-call engineer has the relevant context available going forward. Please let me know if I can assist.",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1753704840.000100",
+        "time": "2026-07-28 09:14:00 PDT",
+        "user": "U0ALEX",
+        "text": "412 is out, latency held under 200ms all day :white_check_mark:",
+        "thread_ts": null,
+        "reactions": [
+          {
+            "name": "tada",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "ts": "1753704900.000200",
+        "time": "2026-07-28 09:15:00 PDT",
+        "user": "U0ALEX",
+        "text": "adding a cardinality alert this week so the next one pages us instead of a customer. <@U0JORDAN|jordan> i'll put it behind the same dashboard, shout if you want it somewhere else.",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1753705200.000300",
+        "time": "2026-07-28 09:20:00 PDT",
+        "user": "U0PRIYA",
+        "text": "Great. Can you cover this at Thursday's review?",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1753705320.000400",
+        "time": "2026-07-28 09:22:00 PDT",
+        "user": "U0ALEX",
+        "text": "yep, ten minutes, no slides.",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1754382600.000100",
+        "time": "2026-08-05 05:30:00 PDT",
+        "user": "U0ALEX",
+        "text": "heads up, migration window moved to next tuesday. nothing changes for anyone outside the jobs table, but hold merges that touch it until it lands.",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1754382900.000200",
+        "time": "2026-08-05 05:35:00 PDT",
+        "user": "U0JORDAN",
+        "text": "got it, my branch touches it. i'll sit on it.",
+        "thread_ts": "1754382600.000100",
+        "reactions": []
+      },
+      {
+        "ts": "1754383080.000300",
+        "time": "2026-08-05 05:38:00 PDT",
+        "user": "U0ALEX",
+        "text": "<@U0JORDAN|jordan> thanks. rollback notes are in <https://wiki.example.com/migration-cutover|the cutover page> if you want to read ahead.",
+        "thread_ts": "1754382600.000100",
+        "reactions": []
+      }
+    ],
+    "D02JORDAN": [
+      {
+        "ts": "1754470800.000100",
+        "time": "2026-08-06 06:00:00 PDT",
+        "user": "U0ALEX",
+        "text": "you around? the seed job is stuck again",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1754470860.000200",
+        "time": "2026-08-06 06:01:00 PDT",
+        "user": "U0JORDAN",
+        "text": "give me five",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1754470920.000300",
+        "time": "2026-08-06 06:02:00 PDT",
+        "user": "U0ALEX",
+        "text": "no rush. same table lock as last time i think",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1754471400.000400",
+        "time": "2026-08-06 06:10:00 PDT",
+        "user": "U0ALEX",
+        "text": "cleared it. was the lock",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ]
+  }
+}
