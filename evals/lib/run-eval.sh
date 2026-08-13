@@ -115,8 +115,9 @@ print(data.get('repo', ''))
 
 SCRIPTS_PATH=""
 add_scripts_dir() {
-  [[ -d "$1" ]] || return 0
-  if [[ -z "$SCRIPTS_PATH" ]]; then SCRIPTS_PATH="$1"; else SCRIPTS_PATH="$SCRIPTS_PATH:$1"; fi
+  local dir="$1"
+  [[ -d "$dir" ]] || return 0
+  if [[ -z "$SCRIPTS_PATH" ]]; then SCRIPTS_PATH="$dir"; else SCRIPTS_PATH="$SCRIPTS_PATH:$dir"; fi
 }
 
 add_scripts_dir "$SKILL_SCRIPTS_DIR"
