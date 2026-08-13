@@ -11,8 +11,8 @@
 | Eval pass rate | 13/13 (100%) |
 | Expectation pass rate | 55/56 (98.2%) |
 | Time | 86.2s ± 15.6s (n=13) |
-| Tokens | 43,948 ± 1,400 (n=13) |
-| Tool calls | 10.3 ± 2.2 (n=13) |
+| Tokens | 43,948 ± 1,720 (n=13) |
+| Tool calls | 10.3 ± 2.3 (n=13) |
 
 The one non-passing expectation is a defect in the eval, not in the skill. See
 Findings.
