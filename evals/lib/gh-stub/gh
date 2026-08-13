@@ -200,11 +200,17 @@ def _is_write(argv: list, argv_str: str) -> bool:
 
     Covers the two shapes skills actually use: `gh api ... -X POST|PATCH|PUT|DELETE`
     and a GraphQL mutation passed as the query body.
+
+    The "mutation" test is scoped to `gh api graphql` deliberately. Unscoped, it
+    is a bare substring search over the whole argv, so any read carrying the
+    word in free text -- a reply body, a PR title, a commit message discussing
+    a mutation -- would classify as a write and corrupt the read-after-write
+    bookkeeping below.
     """
     for method in ("POST", "PATCH", "PUT", "DELETE"):
         if method in argv:
             return True
-    return "mutation" in argv_str
+    return "graphql" in argv and "mutation" in argv_str
 
 
 def _resolve_stdout(entry: dict, cassette_dir: Path) -> str:
@@ -244,11 +250,7 @@ def main() -> int:
     # indistinguishable from a write that failed. Say so once, on stderr, so a
     # trial does not burn turns diagnosing the harness instead of doing the task.
     writing = _is_write(argv, argv_str)
-    if writing:
-        if not counts.get(_WROTE_KEY):
-            counts[_WROTE_KEY] = True
-            _save_counts(cassette_path, counts)
-    elif counts.get(_WROTE_KEY) and not counts.get(_NOTED_KEY):
+    if not writing and counts.get(_WROTE_KEY) and not counts.get(_NOTED_KEY):
         counts[_NOTED_KEY] = True
         _save_counts(cassette_path, counts)
         sys.stderr.write(_REPLAY_NOTE)
@@ -261,12 +263,22 @@ def main() -> int:
         if times is not None and used >= times:
             continue
         counts[str(idx)] = used + 1
+        exit_code = entry.get("exit_code", 0)
+        # Only a write that SUCCEEDED arms the note. Recording the intent
+        # instead would mean a fixture modelling a rejected write -- a 422 on a
+        # protected branch, say -- makes the next read announce that writes are
+        # not reflected here, telling the executor its write landed when the
+        # cassette just said it did not. That is the exact ambiguity the note
+        # exists to remove, so it must not manufacture it. A write that falls
+        # through to `default` is likewise not a write that landed.
+        if writing and exit_code == 0:
+            counts[_WROTE_KEY] = True
         _save_counts(cassette_path, counts)
         sys.stdout.write(_resolve_stdout(entry, cassette_dir))
         stderr = entry.get("stderr", "")
         if stderr:
             sys.stderr.write(stderr)
-        return entry.get("exit_code", 0)
+        return exit_code
 
     default = cassette.get("default")
     if default is not None:
