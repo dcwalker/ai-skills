@@ -66,6 +66,36 @@ spawning it is the orchestrating agent's job: point the subagent at
 
 Teardown is just `rm -rf /tmp/eval-run` -- there's no separate script.
 
+## Two optional keys in `evals.json`
+
+Both sit at the top level, alongside `skill_name` and `evals`:
+
+```json
+{
+  "skill_name": "land-pr",
+  "repo": "example/widget-service",
+  "delegates_to": ["resolve-pr-comments", "fix-pr-checks"],
+  "evals": [ ... ]
+}
+```
+
+`delegates_to` names the sibling skills this one invokes, and puts each of
+their `scripts/` dirs on `PATH` alongside the skill's own. A real session does
+this implicitly: invoking a sub-skill activates it, bundled scripts included.
+A trial does not, so an orchestrating skill loses the very tools it delegates
+to -- `land-pr` has no `scripts/` of its own and spent ten trials without
+`list-pr-comments.sh` or `list-pr-checks.sh`, quietly measuring a raw-`gh`
+fallback instead of the skill. Names are declared rather than inferred from
+SKILL.md prose, and an unresolvable one is a hard error: a typo that silently
+adds nothing would reproduce the bug this exists to fix.
+
+`repo` is the `owner/repo` slug the cassette's responses are written against,
+exported as `GH_REPO` and `GITHUB_REPOSITORY` for stub trials. A fixture's
+origin is a local bare repo, so anything deriving owner/repo from the remote
+gets a filesystem path and builds requests like
+`gh api repos//tmp/run/origin-4.git/pulls/510`. Sandbox evals already set
+`GH_REPO` for the same reason; this is the stub-side equivalent.
+
 ## The `gh` stub
 
 Set `GH_STUB_CASSETTE` (done automatically by `run-eval.sh` when
@@ -76,6 +106,19 @@ order, so a skill that reaches the same outcome through a different sequence
 of `gh` invocations still passes. An unmatched call fails loudly with the
 attempted argv, so a fixture gap is obvious immediately rather than silently
 returning empty data that makes a grader guess wrong.
+
+A cassette's `default` is the one way to blunt that, and it is worth
+understanding before reaching for it. A permissive default -- `{"exit_code":
+0, "stdout": "[]"}`, say -- keeps a trial moving past calls nobody fixtured,
+but the response it hands back is indistinguishable from a real "nothing
+here": a skill can skip a step it should have taken, and grade as correct for
+it. The `land-pr` cassettes did exactly this, and three separate trials
+reported they could not tell an empty review-comment list from an unfixtured
+call. So falling back to `default` **always** writes the attempted argv to
+stderr, whatever the default's own `exit_code` and `stderr` say. Prefer a
+default that fails (the repo's convention is `{"exit_code": 1, "stderr":
+"gh-stub: no fixture match for this call"}`) and fixture the calls your flow
+legitimately makes -- including the ones whose honest answer is empty.
 
 Every invocation is also appended to `GH_STUB_LOG` (one JSON line per call,
 set automatically by `run-eval.sh`), so a grader can assert on what was or

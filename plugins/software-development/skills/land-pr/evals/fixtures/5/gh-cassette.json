@@ -1,7 +1,20 @@
 {
+  "_comment": [
+    "No PR is open for this branch, so step 1 is a hard stop and nothing past it",
+    "should ever be reached.",
+    "",
+    "The `pr view` entry must stay FIRST and must fail the way real gh fails --",
+    "exit 1 with 'no pull requests found'. An earlier pass at tightening these",
+    "cassettes appended a generic `pr view --json statusCheckRollup` entry to every",
+    "fixture and let it shadow this one, so the trial got exit 0 and an empty",
+    "`{\"statusCheckRollup\": []}` back. That is not a 'no PR' answer, it is a PR with",
+    "no checks, and an agent keying off the exit code would have walked straight",
+    "into the loop. Hence no generic tail entries here: any other call means the",
+    "skill kept going after the stop, and the failing default should say so."
+  ],
   "calls": [
     {"match": ["auth", "status"], "exit_code": 0},
     {"match": ["pr", "view"], "exit_code": 1, "stderr": "no pull requests found for branch \"feature/no-pr-yet\"\n"}
   ],
-  "default": {"exit_code": 0, "stdout": "[]"}
+  "default": {"exit_code": 1, "stderr": "gh-stub: no fixture match for this call"}
 }

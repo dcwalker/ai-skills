@@ -4,8 +4,18 @@
 # Usage: ./list-pr-checks.sh [OPTIONS]
 # Run with -h or --help for full usage information
 
-# Auto-detect repository from git remote
+# Auto-detect repository from git remote.
+#
+# sed passes non-matching input through unchanged, so a remote that is not a
+# github.com URL -- a local path, a mirror, an insteadOf rewrite -- used to
+# yield the whole remote string as "$REPO" instead of an empty one. That is
+# never empty, so the GITHUB_REPOSITORY fallback below could not fire, and the
+# script went on to build requests like `gh api repos//home/me/x.git/pulls/7`.
+# Require the result to look like owner/repo before trusting it.
 REPO=$(git remote get-url origin 2>/dev/null | sed -E 's/.*github.com[:/]([^/]+)\/([^/]+)(\.git)?$/\1\/\2/' | sed 's/\.git$//')
+if ! [[ "$REPO" =~ ^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$ ]]; then
+  REPO=""
+fi
 if [ -z "$REPO" ]; then
   if [ -n "$GITHUB_REPOSITORY" ]; then
     REPO="$GITHUB_REPOSITORY"
