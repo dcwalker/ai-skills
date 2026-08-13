@@ -426,19 +426,32 @@
       ]
     }
   ],
-  "summary": {
+  "run_summary": {
     "with_skill": {
-      "expectations_passed": 43,
-      "expectations_total": 47,
-      "pass_rate": 0.915,
-      "evals_fully_passing": 7,
-      "evals_total": 10,
-      "time_seconds_mean": 121.8,
-      "time_seconds_stdev": 62.6,
-      "tokens_mean": 46266.7,
-      "tokens_stdev": 6697.7,
-      "tool_calls_mean": 14,
-      "tool_calls_stdev": 7.2
+      "pass_rate": {
+        "mean": 0.92,
+        "stddev": 0.1327,
+        "min": 0.6,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 121.82,
+        "stddev": 59.3565,
+        "min": 50.4,
+        "max": 216.8
+      },
+      "tokens": {
+        "mean": 46266.7,
+        "stddev": 6354.0353,
+        "min": 40135,
+        "max": 59549
+      },
+      "tool_calls": {
+        "mean": 14,
+        "stddev": 6.8264,
+        "min": 7,
+        "max": 24
+      }
     }
   }
 }
