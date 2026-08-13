@@ -45,6 +45,8 @@ plugins/<plugin>/skills/<skill>/evals/
         │                      sonar-project.properties file in repo/.
         ├── trello-fixture.json Optional: canned create-trello-task.sh
         │                      responses (organize-meeting-notes).
+        ├── cache/             Optional: seeds the trial's XDG_CACHE_HOME,
+        │                      for skills that cache across sessions.
         └── sandbox-setup.sh   Optional, `"sandbox": true` evals only: runs
                                with the trial environment sourced, to point
                                origin at the sandbox repo and clear what the
@@ -279,7 +281,16 @@ usage into a per-trial `metrics.json` alongside `transcript.txt`.
 `plugins/life-skills/skills/triage/evals/run-trials.sh` predates it and still
 carries its own copy of that loop.
 
-Two things the shared driver does that a hand-run trial must do for itself:
+Multi-turn trials: an eval may carry a `follow_ups` array of later user
+messages alongside its `prompt`. The driver runs the first turn, reads the
+session id off its result event, and resumes that same session for each
+follow-up, so a revision eval ("draft it", "shorter", "now add this") is a
+real conversation rather than one prompt describing three. Every turn's
+events land in the same `events.jsonl`, and `transcript.txt` separates them
+with `===== turn N =====` markers so a grader can see what each revision
+actually changed.
+
+Four things the shared driver does that a hand-run trial must do for itself:
 
 - It copies the skill under test into the trial workspace as a project skill
   (`.claude/skills/<name>/`). A trial subprocess otherwise sees only the
@@ -292,6 +303,15 @@ Two things the shared driver does that a hand-run trial must do for itself:
   out containers and CI. Each stub server is allowed wholesale, write tools
   included, so "the skill wrote nothing" stays a finding about the skill
   rather than an artifact of the harness blocking the call.
+- It gives each trial a private `TMPDIR` and `XDG_CACHE_HOME` under the run
+  directory, so a skill that caches anything cannot read what an earlier
+  trial left behind. That is both a contamination guard and a privacy one:
+  two trials represent two different people. Whatever the skill cached stays
+  under `$RUN_DIR/cache` for the grader to read.
+- It seeds that cache from the fixture's optional `cache/` directory, which
+  is how a trial starts with a cache already populated. A fixture can hand
+  the trial its own prior cache, or somebody else's, and grade what the skill
+  does with each.
 
 ## Live sandbox cases
 

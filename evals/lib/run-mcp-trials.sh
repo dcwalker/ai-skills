@@ -108,34 +108,95 @@ else:
   # nothing" stays a finding about the skill rather than an artifact of the
   # harness blocking the call.
   #
-  # A private TMPDIR per trial: a skill that caches to a shared temp path
-  # would otherwise read what an earlier trial left there, which is both a
-  # contaminated trial and a leak between two runs that represent different
-  # people. It also puts whatever the skill wrote under $RUN_DIR/tmp where a
-  # grader can see it.
+  # A private TMPDIR and XDG_CACHE_HOME per trial: a skill that caches
+  # anything would otherwise read what an earlier trial left behind, which is
+  # both a contaminated trial and a leak between two runs that represent
+  # different people. It also puts whatever the skill cached under $RUN_DIR
+  # where a grader can see it. A fixture's optional cache/ directory is
+  # copied in first, which is how a trial can start with a cache already
+  # populated (or populated by somebody else).
   #
   # stream-json keeps the per-event record. The final result event carries
   # the same usage and duration the json format returns, and the assistant
   # events name every tool call -- which is how a grader tells "the skill
   # ran and chose not to search" from "the skill never loaded", two things
   # that look identical in a plain transcript.
-  mkdir -p "$RUN_DIR/tmp"
-  (
-    cd "$WORKSPACE_DIR"
-    TMPDIR="$RUN_DIR/tmp" claude -p --permission-mode acceptEdits \
-      --allowedTools "Bash Read Write Edit Glob Grep WebFetch TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian" \
-      --strict-mcp-config --verbose \
-      --mcp-config "$MCP_CONFIG_PATH" --output-format stream-json -- "$PROMPT"
-  ) > "$RUN_DIR/events.jsonl" 2> "$RUN_DIR/stderr.txt" || \
-    echo "  WARNING: claude exited non-zero for eval $ID; continuing with the next eval"
+  mkdir -p "$RUN_DIR/tmp" "$RUN_DIR/cache"
+  if [[ -d "$EVALS_DIR/fixtures/$ID/cache" ]]; then
+    cp -R "$EVALS_DIR/fixtures/$ID/cache/." "$RUN_DIR/cache/"
+  fi
+
+  # run_turn <prompt> [session-id]: one claude turn, events appended to
+  # events.jsonl. With a session id it resumes that session, which is what
+  # makes a multi-turn eval (draft, then revise, then revise again) a real
+  # conversation rather than one prompt describing several.
+  run_turn() {
+    local turn_prompt="$1" resume_id="${2:-}"
+    local -a resume_flag=()
+    [[ -n "$resume_id" ]] && resume_flag=(--resume "$resume_id")
+    (
+      cd "$WORKSPACE_DIR"
+      TMPDIR="$RUN_DIR/tmp" XDG_CACHE_HOME="$RUN_DIR/cache" \
+        claude -p --permission-mode acceptEdits \
+        --allowedTools "Bash Read Write Edit Glob Grep WebFetch TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian" \
+        --strict-mcp-config --verbose "${resume_flag[@]}" \
+        --mcp-config "$MCP_CONFIG_PATH" --output-format stream-json -- "$turn_prompt"
+    ) >> "$RUN_DIR/events.jsonl" 2>> "$RUN_DIR/stderr.txt" || \
+      echo "  WARNING: claude exited non-zero for eval $ID; continuing"
+  }
+
+  : > "$RUN_DIR/events.jsonl"
+  : > "$RUN_DIR/stderr.txt"
+  run_turn "$PROMPT"
+
+  # A fixture's follow_ups drive later turns of the same session.
+  FOLLOW_UPS=$(python3 -c "
+import json, sys
+data = json.load(open(sys.argv[1]))
+for e in data['evals']:
+    if str(e['id']) == sys.argv[2]:
+        print(len(e.get('follow_ups', [])))
+        break
+" "$EVALS_DIR/evals.json" "$ID")
+  if [[ "$FOLLOW_UPS" -gt 0 ]]; then
+    SESSION_ID=$(python3 -c "
+import json, sys
+for line in open(sys.argv[1]):
+    try:
+        event = json.loads(line)
+    except json.JSONDecodeError:
+        continue
+    if event.get('type') == 'result' and event.get('session_id'):
+        print(event['session_id'])
+        break
+" "$RUN_DIR/events.jsonl")
+    for (( TURN=0; TURN<FOLLOW_UPS; TURN++ )); do
+      if [[ -z "$SESSION_ID" ]]; then
+        echo "  WARNING: no session id to resume; skipping follow-up turns for eval $ID"
+        break
+      fi
+      NEXT=$(python3 -c "
+import json, sys
+data = json.load(open(sys.argv[1]))
+for e in data['evals']:
+    if str(e['id']) == sys.argv[2]:
+        print(e['follow_ups'][int(sys.argv[3])])
+        break
+" "$EVALS_DIR/evals.json" "$ID" "$TURN")
+      echo "  follow-up $((TURN + 1))/$FOLLOW_UPS"
+      run_turn "$NEXT" "$SESSION_ID"
+    done
+  fi
 
   python3 - "$RUN_DIR" <<'PYEOF'
 import json, sys
 run_dir = sys.argv[1]
 
-# events.jsonl is one JSON object per line: the terminal "result" event
-# carries usage/duration, and each assistant event names the tools it called.
-data, tool_calls = None, []
+# events.jsonl is one JSON object per line, across every turn of the trial:
+# each turn ends with a "result" event carrying that turn's usage and
+# duration, and each assistant event names the tools it called.
+results, tool_calls = [], []
+parse_error = "no terminal result event in events.jsonl"
 try:
     with open(f"{run_dir}/events.jsonl") as f:
         for line in f:
@@ -147,23 +208,21 @@ try:
             except json.JSONDecodeError:
                 continue        # a partial final line on a killed trial
             if event.get("type") == "result":
-                data = event
+                results.append(event)
             elif event.get("type") == "assistant":
                 for block in event.get("message", {}).get("content", []):
                     if block.get("type") == "tool_use":
-                        tool_calls.append({"name": block.get("name"),
+                        tool_calls.append({"turn": len(results) + 1,
+                                           "name": block.get("name"),
                                            "input": block.get("input")})
 except OSError as e:
-    data = None
     parse_error = str(e)
-else:
-    parse_error = "no terminal result event in events.jsonl"
 
 with open(f"{run_dir}/tools.log", "w") as f:
     for call in tool_calls:
         f.write(json.dumps(call) + "\n")
 
-if data is None:
+if not results:
     with open(f"{run_dir}/metrics.json", "w") as f:
         json.dump({"parse_error": parse_error, "tool_calls": len(tool_calls),
                    "note": "events.jsonl was missing or held no result event; "
@@ -171,23 +230,37 @@ if data is None:
     print(f"  WARNING: {parse_error}; wrote placeholder metrics.json and "
           "continuing with the next eval")
     sys.exit(0)
+
+# One transcript for the whole conversation, turns kept separate so a grader
+# can see what each revision actually changed.
 with open(f"{run_dir}/transcript.txt", "w") as f:
-    f.write(data.get("result", ""))
-usage = data.get("usage", {})
+    for turn, result in enumerate(results, start=1):
+        if len(results) > 1:
+            f.write(f"===== turn {turn} =====\n")
+        f.write(result.get("result", ""))
+        f.write("\n")
+
+
+def total(key, source):
+    return sum(source(r).get(key) or 0 for r in results)
+
+
+usage = lambda r: r.get("usage", {})
 metrics = {
-    "duration_seconds": round(data.get("duration_ms", 0) / 1000, 3),
-    "duration_api_seconds": round(data.get("duration_api_ms", 0) / 1000, 3),
-    "num_turns": data.get("num_turns"),
-    "total_cost_usd": data.get("total_cost_usd"),
+    "turns_run": len(results),
+    "duration_seconds": round(total("duration_ms", lambda r: r) / 1000, 3),
+    "duration_api_seconds": round(total("duration_api_ms", lambda r: r) / 1000, 3),
+    "num_turns": total("num_turns", lambda r: r),
+    "total_cost_usd": total("total_cost_usd", lambda r: r),
     "tool_calls": len(tool_calls),
     "skill_invoked": any(c["name"] == "Skill" for c in tool_calls),
     "tokens": {
-        "input": usage.get("input_tokens"),
-        "output": usage.get("output_tokens"),
-        "cache_creation_input": usage.get("cache_creation_input_tokens"),
-        "cache_read_input": usage.get("cache_read_input_tokens"),
+        "input": total("input_tokens", usage),
+        "output": total("output_tokens", usage),
+        "cache_creation_input": total("cache_creation_input_tokens", usage),
+        "cache_read_input": total("cache_read_input_tokens", usage),
     },
-    "is_error": data.get("is_error"),
+    "is_error": any(r.get("is_error") for r in results),
 }
 with open(f"{run_dir}/metrics.json", "w") as f:
     json.dump(metrics, f, indent=2)

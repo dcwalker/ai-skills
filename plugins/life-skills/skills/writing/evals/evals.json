@@ -93,6 +93,68 @@
         "The profile and the entry match the observed conventions: a '# <date> <lowercase weekday>' title line, the lowercase '## what happened' and '## tomorrow' section headers used in the existing entries, first person, short paragraphs, and no greeting or sign-off.",
         "The entry contains only the facts the user gave (the slip to Thursday, running the incident call, the annoyance about staging) with no invented meetings, names, or outcomes, and it does not soften the stated annoyance into upbeat framing the existing entries never use."
       ]
+    },
+    {
+      "id": 9,
+      "prompt": "Write an email to Jordan (jordan.blake@example.com) asking them to review the cache PR before end of day, because the staging deploy is blocked on it.",
+      "follow_ups": [
+        "Shorter please. Cut the explanation and keep the ask.",
+        "Add that I will be offline after 3."
+      ],
+      "expected_output": "Across three turns the voice holds: each revision applies exactly the change asked for, keeps the observed peer-email markers (lowercase 'hey Jordan,' opening, 'thanks / alex' close, short lines, no boilerplate), leaves untouched sentences as they were, and adds no facts beyond the ones given. The corpus is researched once and reused, not re-searched per revision.",
+      "expectations": [
+        "Each revised draft still carries the markers the style card claimed: the lowercase 'hey Jordan,' opening and the lowercase 'thanks / alex' sign-off survive both revisions rather than drifting toward a formal register.",
+        "No assistant tell appears in a later revision that was absent from the first draft (no 'I hope this finds you well', no closing offer of help, no em dash, no 'Best regards'), so the revisions do not regress the voice.",
+        "Each revision makes the change requested and only that change: turn 2 cuts the explanatory sentence while keeping the ask, turn 3 adds the offline-after-3 detail, and the parts the user did not ask about are carried over rather than rewritten.",
+        "The added line about being offline after 3 states only that, without inventing a reason, a return time, or a stand-in reviewer.",
+        "The corpus is not re-searched on the revision turns: no search_threads query issued on turn 1 is repeated on turns 2 or 3."
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Write an email to Jordan (jordan.blake@example.com) asking whether they can take the export queue ticket this sprint. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "A cache is present but its identity.md names accounts that are not this session's, so the skill ignores it, says why, and researches the mailbox fresh rather than describing a stranger's voice as the user's.",
+      "expectations": [
+        "The cached profile is not used as evidence about this user: the style card's observations trace to the mailbox samples read in this trial, not to the cached card's claims (which describe a formal, 'Dear Jordan' / 'Kind regards' voice found nowhere in the sent mail).",
+        "The transcript says that a cache was found but belongs to different accounts, rather than silently ignoring it or silently trusting it.",
+        "The mailbox is actually searched in this trial rather than skipped on the strength of the cache.",
+        "The draft carries the markers of the sent samples (lowercase 'hey Jordan,' opening, 'thanks / alex' sign-off), not the cached card's formal register."
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "Quick email to Jordan (jordan.blake@example.com) asking them to hold the cache branch until Thursday. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "A cache built from this session's own accounts already holds an email/peer card for Jordan, so the skill reuses it, says so along with the date it was built, and does not re-run the research it records.",
+      "expectations": [
+        "The cached email/peer card for Jordan is reused rather than rebuilt, and the transcript says so explicitly, naming when it was built.",
+        "The searches the cached index records are not re-run: the Gmail call log shows no repeat of the recorded recipient-scoped sent-mail search.",
+        "The draft carries the markers the cached card describes (lowercase 'hey Jordan,' opening, 'thanks / alex' sign-off, two or three short lines).",
+        "Reuse is reported as reuse: the card is not presented as fresh research, and its age is available to the user rather than hidden."
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Write a blog post about why we stopped doing synchronous design reviews and moved to written proposals with a comment period. The short version: the meetings favored whoever spoke first, quiet people never disagreed out loud, and the written version surfaced objections we had been missing for months. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The corpus for a public long-form piece is the user's existing posts under blog/ in the workspace, not their mail. The style card reflects what those posts show (first person, a concrete opening scene, plain declaratives, an explicitly unresolved ending, no headings or lists) and the draft matches it at that polish tier.",
+      "expectations": [
+        "The existing posts under blog/ are read and used as the corpus for this artifact; mail is not substituted for them without saying so, and any use of mail samples is labeled as a cross-medium observation rather than as blog evidence.",
+        "The style card is scoped to the blog medium and a public audience, at the highest polish tier, rather than reusing an email profile from the same workspace.",
+        "The card's observations trace to the posts: first person throughout, an opening that starts from a concrete incident, plain declarative sentences, no headings or bullet lists inside the body, and an ending that declines to resolve neatly ('I do not have a tidy conclusion', 'If you want the tooling answer, I do not have one for you').",
+        "The draft carries those markers: no headings or bullet lists, no call to action, no summary paragraph restating the piece, and an ending consistent with the observed refusal to tie things off.",
+        "The draft contains only the reasons the user gave (speaking order, quiet dissent, objections surfacing in writing) with no invented anecdotes, metrics, or team details, even though the sample posts are rich in specifics of their own."
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "Add a comment to ENG-455 with a status update: the chunked migration is written and tested on a copy of the jobs table, and the next cutover attempt is Thursday. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The corpus is the user's own prior Jira comments, identified by accountId (user-alex-1, declared in the cache's identity.md). A second Jira user shares the display name 'Alex Reyes' with a different accountId and a formal voice; those comments are excluded. The card reports the observed comment conventions, including the @mention form and the 'PR #NNN' reference style, and the drafted comment matches. Nothing is posted.",
+      "expectations": [
+        "The corpus is the user's own comments identified by account, and the comments authored by the other 'Alex Reyes' (accountId user-alex-2, the 'Hi team' / 'Kind regards' voice) are excluded from the profile rather than blended into it on the strength of the matching display name.",
+        "The transcript makes the basis of attribution explicit: comments were matched by account identifier (the declared user-alex-1, or the same id resolved from the site), and the display-name collision with the other 'Alex Reyes' is named rather than passed over silently.",
+        "The card records the platform conventions the samples show: @mention form for people ('@Jordan') rather than written-out full names, 'PR #NNN' references rather than pasted URLs, no greeting, and no sign-off.",
+        "The drafted comment carries those conventions: lowercase status-first opening, two or three sentences, no greeting, no 'Kind regards' sign-off.",
+        "No comment is posted to Jira: addCommentToJiraIssue does not appear in the Atlassian call log, and ENG-455's comment list in the final state is unchanged."
+      ]
     }
   ]
 }
