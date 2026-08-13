@@ -1,45 +1,316 @@
 {
   "calls": [
-    {"match": ["auth", "status"], "exit_code": 0},
-    {"match": ["pr", "view", "--json", "number,url,state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,baseRefName,reviewDecision"], "times": 1, "stdout_json": {
-      "number": 508,
-      "url": "https://github.com/example/widget-service/pull/508",
-      "state": "OPEN",
-      "isDraft": false,
-      "mergeable": "CONFLICTING",
-      "mergeStateStatus": "DIRTY",
-      "baseRefName": "main",
-      "reviewDecision": "APPROVED",
-      "statusCheckRollup": [
-        {"name": "ci/test", "conclusion": "FAILURE", "status": "COMPLETED"}
-      ]
-    }},
-    {"match": ["pr", "view", "--json", "number,url,state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,baseRefName,reviewDecision"], "times": 1, "stdout_json": {
-      "number": 508,
-      "url": "https://github.com/example/widget-service/pull/508",
-      "state": "OPEN",
-      "isDraft": false,
-      "mergeable": "MERGEABLE",
-      "mergeStateStatus": "UNSTABLE",
-      "baseRefName": "main",
-      "reviewDecision": "APPROVED",
-      "statusCheckRollup": [
-        {"name": "ci/test", "conclusion": "FAILURE", "status": "COMPLETED"}
-      ]
-    }},
-    {"match": ["pr", "view", "--json", "number,url,state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,baseRefName,reviewDecision"], "stdout_json": {
-      "number": 508,
-      "url": "https://github.com/example/widget-service/pull/508",
-      "state": "OPEN",
-      "isDraft": false,
-      "mergeable": "MERGEABLE",
-      "mergeStateStatus": "CLEAN",
-      "baseRefName": "main",
-      "reviewDecision": "APPROVED",
-      "statusCheckRollup": [
-        {"name": "ci/test", "conclusion": "SUCCESS", "status": "COMPLETED"}
-      ]
-    }}
+    {
+      "match": [
+        "auth",
+        "status"
+      ],
+      "exit_code": 0
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--json",
+        "number,url,state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,baseRefName,reviewDecision"
+      ],
+      "times": 1,
+      "stdout_json": {
+        "number": 508,
+        "url": "https://github.com/example/widget-service/pull/508",
+        "state": "OPEN",
+        "isDraft": false,
+        "mergeable": "CONFLICTING",
+        "mergeStateStatus": "DIRTY",
+        "baseRefName": "main",
+        "reviewDecision": "APPROVED",
+        "statusCheckRollup": [
+          {
+            "name": "ci/test",
+            "conclusion": "FAILURE",
+            "status": "COMPLETED"
+          }
+        ]
+      }
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--json",
+        "number,url,state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,baseRefName,reviewDecision"
+      ],
+      "times": 1,
+      "stdout_json": {
+        "number": 508,
+        "url": "https://github.com/example/widget-service/pull/508",
+        "state": "OPEN",
+        "isDraft": false,
+        "mergeable": "MERGEABLE",
+        "mergeStateStatus": "UNSTABLE",
+        "baseRefName": "main",
+        "reviewDecision": "APPROVED",
+        "statusCheckRollup": [
+          {
+            "name": "ci/test",
+            "conclusion": "FAILURE",
+            "status": "COMPLETED"
+          }
+        ]
+      }
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--json",
+        "number,url,state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,baseRefName,reviewDecision"
+      ],
+      "stdout_json": {
+        "number": 508,
+        "url": "https://github.com/example/widget-service/pull/508",
+        "state": "OPEN",
+        "isDraft": false,
+        "mergeable": "MERGEABLE",
+        "mergeStateStatus": "CLEAN",
+        "baseRefName": "main",
+        "reviewDecision": "APPROVED",
+        "statusCheckRollup": [
+          {
+            "name": "ci/test",
+            "conclusion": "SUCCESS",
+            "status": "COMPLETED"
+          }
+        ]
+      }
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--json",
+        "comments,reviews"
+      ],
+      "stdout_json": {
+        "comments": [],
+        "reviews": []
+      }
+    },
+    {
+      "match": [
+        "reviewThreads"
+      ],
+      "stdout_json": {
+        "data": {
+          "repository": {
+            "pullRequest": {
+              "reviewThreads": {
+                "nodes": []
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "match": [
+        "pulls/508/comments"
+      ],
+      "stdout_json": []
+    },
+    {
+      "match": [
+        "pulls/508"
+      ],
+      "stdout_json": {
+        "number": 508,
+        "head": {
+          "ref": "HEAD",
+          "sha": "f1x7u4e"
+        },
+        "base": {
+          "ref": "main"
+        }
+      }
+    },
+    {
+      "match": [
+        "pr",
+        "checks"
+      ],
+      "times": 2,
+      "exit_code": 1,
+      "stdout": "ci/test\tfail\t1m20s\t\n",
+      "stderr": "Some checks were not successful\ntest_config.py::test_version - AssertionError: VERSION mismatch after merge\n"
+    },
+    {
+      "match": [
+        "pr",
+        "checks"
+      ],
+      "exit_code": 0,
+      "stdout": "ci/test\tpass\t0s\t\n",
+      "stderr": ""
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--json",
+        "title"
+      ],
+      "stdout_json": {
+        "title": "Feature work",
+        "body": "",
+        "author": {
+          "login": "dev"
+        },
+        "headRefName": "HEAD",
+        "files": []
+      }
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--json",
+        "statusCheckRollup"
+      ],
+      "stdout_json": {
+        "statusCheckRollup": [
+          {
+            "name": "ci/test",
+            "conclusion": "SUCCESS",
+            "status": "COMPLETED"
+          }
+        ]
+      }
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--comments"
+      ],
+      "stdout": ""
+    },
+    {
+      "match": [
+        "run",
+        "view"
+      ],
+      "exit_code": 1,
+      "stderr": "no logs are available for this run\n"
+    },
+    {
+      "match": [
+        "/logs"
+      ],
+      "exit_code": 1,
+      "stderr": "gh: Not Found (HTTP 404)\n"
+    },
+    {
+      "match": [
+        "check-runs"
+      ],
+      "times": 2,
+      "stdout_json": {
+        "total_count": 1,
+        "check_runs": [
+          {
+            "id": 90000,
+            "name": "ci/test",
+            "status": "completed",
+            "conclusion": "failure",
+            "html_url": "",
+            "output": {
+              "title": "Failing",
+              "summary": "test_config.py::test_version - AssertionError: VERSION mismatch after merge"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "match": [
+        "check-runs"
+      ],
+      "stdout_json": {
+        "total_count": 1,
+        "check_runs": [
+          {
+            "name": "ci/test",
+            "conclusion": "success",
+            "status": "completed",
+            "output": {
+              "title": "",
+              "summary": ""
+            },
+            "html_url": ""
+          }
+        ]
+      }
+    },
+    {
+      "match": [
+        "/status"
+      ],
+      "times": 2,
+      "stdout_json": {
+        "state": "failure",
+        "statuses": []
+      }
+    },
+    {
+      "match": [
+        "/status"
+      ],
+      "stdout_json": {
+        "state": "success",
+        "statuses": []
+      }
+    },
+    {
+      "match": [
+        "run",
+        "list"
+      ],
+      "stdout": ""
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--json",
+        "number"
+      ],
+      "stdout_json": {
+        "number": 508
+      }
+    },
+    {
+      "match": [
+        "pr",
+        "view"
+      ],
+      "stdout_json": {
+        "number": 508,
+        "url": "https://github.com/example/widget-service/pull/508"
+      }
+    }
   ],
-  "default": {"exit_code": 0, "stdout": "[]"}
+  "default": {
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call"
+  },
+  "_comment": [
+    "",
+    "The `pr checks`, check-runs and status entries come in pairs: a times:1 red",
+    "variant matching the round-1 `pr view` snapshot above, then the green one.",
+    "fix-pr-checks' Phase 1 reads commits/<sha>/check-runs and .../status, so without",
+    "the red variant its diagnostic would report nothing failing in the same round",
+    "`pr view` reported a failure -- the skill would be handed a contradiction, and",
+    "eval 10 in particular would never see the red detailsUrl its expectation names.",
+    "The red variants carry times:2, one per red `pr view` state, so check detail stays red for as long as the rollup does. With times:1 the second diagnostic call inside round 1 flipped green while `pr view` still said FAILURE."
+  ]
 }

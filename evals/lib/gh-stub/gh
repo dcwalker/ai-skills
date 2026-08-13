@@ -40,6 +40,15 @@ remaining uses (per "times") wins. An unmatched call fails loudly (using
 argv on stderr, so gaps in fixture coverage are obvious immediately instead
 of silently returning empty data.
 
+That last part is why falling back to "default" always writes the attempted
+argv to stderr, whatever the default's own exit code and "stderr" say. A
+cassette is free to set a permissive default -- exit 0 with an empty list, to
+keep a trial moving past calls its author did not care to fixture -- but such
+a response is indistinguishable from a real "nothing here" answer, so a skill
+can skip a step it should have taken and still grade as correct. Announcing
+the fallback keeps a permissive default usable without letting it lie
+silently.
+
 Responses are canned, so a read issued after a successful write still returns
 the pre-write fixture state -- resolve a thread and the next listing still
 shows it unresolved. That is inherent to replaying a cassette, but it reads
@@ -48,11 +57,17 @@ resolve-pr-comments benchmark spent turns re-reading, grepping the call log,
 and reasoning it out before concluding the writes had landed. So the first
 read after a write prints a one-line note to stderr (never stdout, which
 callers parse) saying so. It is emitted at most once per trial.
+
+-q/--jq is honoured, filtering the matched response through jq the way real
+gh does. Ignoring it silently is not harmless: a script auto-detecting its PR
+with `gh pr view --json number -q .number` otherwise takes the whole response
+as the number.
 """
 
 import json
 import os
 import re
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -221,6 +236,83 @@ def _resolve_stdout(entry: dict, cassette_dir: Path) -> str:
     return entry.get("stdout", "")
 
 
+def _jq_expression(argv: list) -> str:
+    """The expression given to gh's -q/--jq, or "" if none was."""
+    for i, tok in enumerate(argv):
+        if tok in ("-q", "--jq") and i + 1 < len(argv):
+            return argv[i + 1]
+        if tok.startswith("--jq="):
+            return tok[len("--jq="):]
+    return ""
+
+
+def _apply_jq(stdout: str, expression: str) -> str:
+    """Filter `stdout` through jq, the way real gh does for -q/--jq.
+
+    Ignoring the flag is not harmless. `list-pr-comments.sh` auto-detects its
+    PR with `gh pr view --json number -q .number`; unfiltered, it took the
+    whole response as the number and went on to build
+    `pullRequest(number: PR #510)` in a GraphQL query.
+
+    Falls back to the unfiltered text whenever the filter cannot sensibly
+    apply -- output that is not JSON, a jq that errors, or no jq on the box.
+    Cassettes predating this could bake the post-filter value straight into
+    `stdout`, and those must keep working rather than start erroring.
+    """
+    if not expression or not stdout.strip():
+        return stdout
+    try:
+        payload = json.dumps(json.loads(stdout))
+    except json.JSONDecodeError:
+        return stdout
+    try:
+        result = subprocess.run(
+            ["jq", "-r", expression], input=payload,
+            capture_output=True, text=True, timeout=10,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return stdout
+    if result.returncode != 0:
+        return stdout
+    return result.stdout
+
+
+_UNMATCHED = "gh-stub: no fixture entry matched: gh "
+
+
+def _respond_unmatched(cassette: dict, cassette_dir: Path, cassette_path: Path,
+                       argv_str: str, jq_expr: str) -> int:
+    """Handle a call no cassette entry matched, via `default` or a hard error."""
+    default = cassette.get("default")
+    if default is None:
+        sys.stderr.write(
+            _UNMATCHED + argv_str + "\n"
+            f"cassette: {cassette_path}\n"
+            "Add a `calls` entry (with \"match\" or \"match_regex\") to cover this invocation.\n"
+        )
+        return 1
+
+    has_stdout = any(k in default for k in ("stdout_file", "stdout_json", "stdout"))
+    sys.stdout.write(
+        _apply_jq(_resolve_stdout(default, cassette_dir), jq_expr) if has_stdout else ""
+    )
+    # Always announce the fallback, on top of whatever "stderr" the default
+    # carries. A default that exits non-zero is self-evident, but a permissive
+    # one (exit 0 with an empty list, say) is not: it hands back a plausible
+    # "nothing here" answer that reads exactly like real data. A skill can then
+    # skip a step it should have taken and still look correct, and a grader has
+    # no way to tell coverage from absence. Say which call went uncovered so
+    # the gap is visible in the trial itself.
+    sys.stderr.write(
+        _UNMATCHED + argv_str + "\n"
+        "gh-stub: responding from the cassette's `default`, which is a "
+        "coverage gap and not an answer about the world. If this call "
+        "belongs in the flow, add a `calls` entry for it.\n"
+    )
+    sys.stderr.write(default.get("stderr", ""))
+    return default.get("exit_code", 1)
+
+
 def main() -> int:
     argv = sys.argv[1:]
     argv_str = " ".join(argv)
@@ -245,6 +337,7 @@ def main() -> int:
     cassette = json.loads(cassette_path.read_text())
     cassette_dir = cassette_path.parent
     counts = _load_counts(cassette_path)
+    jq_expr = _jq_expression(argv)
 
     # A read following a write gets the pre-write fixture state back, which is
     # indistinguishable from a write that failed. Say so once, on stderr, so a
@@ -274,26 +367,13 @@ def main() -> int:
         if writing and exit_code == 0:
             counts[_WROTE_KEY] = True
         _save_counts(cassette_path, counts)
-        sys.stdout.write(_resolve_stdout(entry, cassette_dir))
+        sys.stdout.write(_apply_jq(_resolve_stdout(entry, cassette_dir), jq_expr))
         stderr = entry.get("stderr", "")
         if stderr:
             sys.stderr.write(stderr)
         return exit_code
 
-    default = cassette.get("default")
-    if default is not None:
-        sys.stdout.write(_resolve_stdout(default, cassette_dir) if (
-            "stdout_file" in default or "stdout_json" in default or "stdout" in default
-        ) else "")
-        sys.stderr.write(default.get("stderr", ""))
-        return default.get("exit_code", 1)
-
-    sys.stderr.write(
-        f"gh-stub: no fixture entry matched: gh {argv_str}\n"
-        f"cassette: {cassette_path}\n"
-        "Add a `calls` entry (with \"match\" or \"match_regex\") to cover this invocation.\n"
-    )
-    return 1
+    return _respond_unmatched(cassette, cassette_dir, cassette_path, argv_str, jq_expr)
 
 
 if __name__ == "__main__":

@@ -1,17 +1,207 @@
 {
   "calls": [
-    {"match": ["auth", "status"], "exit_code": 0},
-    {"match": ["pr", "view", "--json", "number,url,state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,baseRefName,reviewDecision"], "stdout_json": {
-      "number": 506,
-      "url": "https://github.com/example/widget-service/pull/506",
-      "state": "OPEN",
-      "isDraft": true,
-      "mergeable": "UNKNOWN",
-      "mergeStateStatus": "UNKNOWN",
-      "baseRefName": "main",
-      "reviewDecision": null,
-      "statusCheckRollup": []
-    }}
+    {
+      "match": [
+        "auth",
+        "status"
+      ],
+      "exit_code": 0
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--json",
+        "number,url,state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,baseRefName,reviewDecision"
+      ],
+      "stdout_json": {
+        "number": 506,
+        "url": "https://github.com/example/widget-service/pull/506",
+        "state": "OPEN",
+        "isDraft": true,
+        "mergeable": "UNKNOWN",
+        "mergeStateStatus": "UNKNOWN",
+        "baseRefName": "main",
+        "reviewDecision": null,
+        "statusCheckRollup": []
+      }
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--json",
+        "comments,reviews"
+      ],
+      "stdout_json": {
+        "comments": [],
+        "reviews": []
+      }
+    },
+    {
+      "match": [
+        "reviewThreads"
+      ],
+      "stdout_json": {
+        "data": {
+          "repository": {
+            "pullRequest": {
+              "reviewThreads": {
+                "nodes": []
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "match": [
+        "pulls/506/comments"
+      ],
+      "stdout_json": []
+    },
+    {
+      "match": [
+        "pulls/506"
+      ],
+      "stdout_json": {
+        "number": 506,
+        "head": {
+          "ref": "HEAD",
+          "sha": "f1x7u4e"
+        },
+        "base": {
+          "ref": "main"
+        }
+      }
+    },
+    {
+      "match": [
+        "commits/f1x7u4e/check-runs"
+      ],
+      "stdout_json": {
+        "total_count": 0,
+        "check_runs": []
+      }
+    },
+    {
+      "match": [
+        "commits/f1x7u4e/status"
+      ],
+      "stdout_json": {
+        "state": "success",
+        "statuses": []
+      }
+    },
+    {
+      "match": [
+        "pr",
+        "checks"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "no checks reported on this branch\n"
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--json",
+        "title"
+      ],
+      "stdout_json": {
+        "title": "Feature work",
+        "body": "",
+        "author": {
+          "login": "dev"
+        },
+        "headRefName": "HEAD",
+        "files": []
+      }
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--json",
+        "statusCheckRollup"
+      ],
+      "stdout_json": {
+        "statusCheckRollup": []
+      }
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--comments"
+      ],
+      "stdout": ""
+    },
+    {
+      "match": [
+        "run",
+        "view"
+      ],
+      "exit_code": 1,
+      "stderr": "no logs are available for this run\n"
+    },
+    {
+      "match": [
+        "/logs"
+      ],
+      "exit_code": 1,
+      "stderr": "gh: Not Found (HTTP 404)\n"
+    },
+    {
+      "match": [
+        "check-runs"
+      ],
+      "stdout_json": {
+        "total_count": 0,
+        "check_runs": []
+      }
+    },
+    {
+      "match": [
+        "/status"
+      ],
+      "stdout_json": {
+        "state": "success",
+        "statuses": []
+      }
+    },
+    {
+      "match": [
+        "run",
+        "list"
+      ],
+      "stdout": ""
+    },
+    {
+      "match": [
+        "pr",
+        "view",
+        "--json",
+        "number"
+      ],
+      "stdout_json": {
+        "number": 506
+      }
+    },
+    {
+      "match": [
+        "pr",
+        "view"
+      ],
+      "stdout_json": {
+        "number": 506,
+        "url": "https://github.com/example/widget-service/pull/506"
+      }
+    }
   ],
-  "default": {"exit_code": 0, "stdout": "[]"}
+  "default": {
+    "exit_code": 1,
+    "stderr": "gh-stub: no fixture match for this call"
+  }
 }
