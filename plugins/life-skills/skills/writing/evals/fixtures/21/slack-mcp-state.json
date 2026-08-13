@@ -1,0 +1,120 @@
+{
+  "me": {
+    "id": "U0ALEX",
+    "name": "alex",
+    "display_name": "alex",
+    "real_name": "Alex Reyes",
+    "email": "eval-user@example.com",
+    "title": "Staff Engineer",
+    "timezone": "America/Los_Angeles",
+    "org": "example-co"
+  },
+  "users": {
+    "U0ALEX": {
+      "id": "U0ALEX",
+      "name": "alex",
+      "display_name": "alex",
+      "real_name": "Alex Reyes",
+      "email": "eval-user@example.com",
+      "title": "Staff Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0ALEXOLD": {
+      "id": "U0ALEXOLD",
+      "name": "areyes",
+      "display_name": "areyes",
+      "real_name": "Alex Reyes",
+      "email": "a.reyes@example.com",
+      "title": "Staff Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0JORDAN": {
+      "id": "U0JORDAN",
+      "name": "jordan",
+      "display_name": "jordan",
+      "real_name": "Jordan Blake",
+      "email": "jordan.blake@example.com",
+      "title": "Senior Engineer",
+      "timezone": "America/Los_Angeles"
+    }
+  },
+  "channels": {
+    "C0PLATENG": {
+      "id": "C0PLATENG",
+      "name": "platform-eng",
+      "purpose": "Platform engineering team channel",
+      "creator": "U0JORDAN",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "public_channel"
+    }
+  },
+  "messages": {
+    "C0PLATENG": [
+      {
+        "ts": "1740000000.000100",
+        "time": "2026-01-14 08:20:00 PST",
+        "user": "U0ALEXOLD",
+        "text": "deploy's held until the index finishes backfilling. maybe an hour.",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1740500000.000100",
+        "time": "2026-01-20 09:05:00 PST",
+        "user": "U0ALEXOLD",
+        "text": "<@U0JORDAN|jordan> the flake in checkout_spec is the clock, not you. pinning it in <https://git.example.com/pr/288|PR 288>.",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1741000000.000100",
+        "time": "2026-01-26 07:44:00 PST",
+        "user": "U0ALEXOLD",
+        "text": "rolled back 271. the memory graph is flat again :white_check_mark:",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1741500000.000100",
+        "time": "2026-02-02 10:12:00 PST",
+        "user": "U0ALEXOLD",
+        "text": "no standup thursday, i'm out. post blockers here and i'll read them friday.",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1742000000.000100",
+        "time": "2026-02-08 06:30:00 PST",
+        "user": "U0ALEXOLD",
+        "text": "cache ttl is 30s now, was 5. that's why the dashboard looks slower to update.",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1748000000.000100",
+        "time": "2026-04-18 07:15:00 PDT",
+        "user": "U0ALEX",
+        "text": "queue drained overnight. nothing to do.",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1750000000.000100",
+        "time": "2026-05-11 08:02:00 PDT",
+        "user": "U0ALEX",
+        "text": "<@U0JORDAN|jordan> merged your retry cap, thanks for the tests.",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1752000000.000100",
+        "time": "2026-06-03 09:30:00 PDT",
+        "user": "U0ALEX",
+        "text": "moving the sync to 10:30 so the london half isn't up at 7.",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ]
+  }
+}
