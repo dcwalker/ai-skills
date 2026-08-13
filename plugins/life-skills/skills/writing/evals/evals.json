@@ -33,7 +33,7 @@
       "expectations": [
         "The Gmail call log shows at least one search of the user's own sent mail, and the transcript reports that it came back empty rather than omitting the failure.",
         "No style card asserting observed habits (opening, sign-off, sentence length, vocabulary) is presented, since no samples were found; any card shown is explicitly labeled as having no evidence behind it.",
-        "The transcript asks the user to supply an example of their own writing, or offers an explicit calibration of polish tier, greeting, and length, rather than proceeding as if the voice were known.",
+        "The transcript asks the user to describe how the message should sound in their own words, rather than presenting a menu of formality options as the primary ask; offering to take a pasted sample as an alternative is fine, but a demand for one before anything can proceed is not.",
         "If a draft is offered anyway, it is explicitly labeled as unresearched or uncalibrated, and it is not claimed to match the user's voice.",
         "No draft is created in Gmail: the drafts object in the final Gmail state is still empty."
       ]
@@ -41,10 +41,10 @@
     {
       "id": 4,
       "prompt": "I need to write an email about last night's outage.",
-      "expected_output": "Because voice is audience-dependent and no recipient was named, the skill asks who the email is for before researching a corpus or presenting a profile, and produces no draft.",
+      "expected_output": "No recipient is named and this environment has no general profile to fall back on, so the skill asks who the email is for rather than picking an audience, and produces no draft.",
       "expectations": [
         "The reply asks who the email goes to, or which audience it is for, before any style card or drafted email text appears.",
-        "No drafted email text appears anywhere in the transcript.",
+        "No drafted email text appears anywhere in the transcript: with no audience and no general profile cached, there is nothing to write a register-neutral draft from.",
         "The skill does not pick a recipient on its own from the topic (for example assuming the manager, the team, or affected customers) and does not present a style card scoped to an audience the user never confirmed.",
         "Any corpus research it does perform is not used to justify a profile for an unconfirmed audience."
       ]
@@ -167,6 +167,19 @@
         "The card records the platform conventions the channel samples show: <@U...> mention form rather than written-out names, links given descriptive labels rather than pasted bare, and emoji present but sparse (:white_check_mark: in 2 of 3 dated files) with none in the DM samples.",
         "The draft carries those conventions: lowercase, two or three lines, no greeting and no sign-off, and no email register imported from the mailbox.",
         "The draft states only the two facts given (rescheduled to Thursday, hold merges touching the jobs table) without inventing a cause, a window, or a rollback plan, even though the samples contain such details of their own."
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "Write a text message to my sister letting her know I will be about an hour late to dinner on Saturday. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "There are no text-message samples and no personal-audience samples anywhere: the mailbox holds only work mail, and every cached card is a work relationship. The skill says so, falls back to general.md labeled as cross-medium rung 5 evidence, asks the user to describe the register for this audience, and does not dress the work voice up as a personal one.",
+      "expectations": [
+        "The transcript states that there are no samples in this medium and none for a personal audience, naming what was searched, rather than presenting a profile as if it were evidenced.",
+        "general.md is used as the fallback and labeled for what it is (how the user writes in general, cross-medium, rung 5), not presented as evidence about how they write to their sister.",
+        "The work cards in the cache are not applied to this audience: the draft does not carry the peer or client register (no 'hey Jordan,'-style formula transplanted, no external-client conventions, no work-email structure).",
+        "The user is asked to describe how it should sound, in their own words, rather than being given only a menu of formality tiers or being required to paste a sample before anything can proceed.",
+        "The traits general.md actually supports are the ones carried into the draft (no em dashes, no exclamation marks, the point first, short), while greeting, sign-off, and formality are treated as unknown rather than assumed.",
+        "The draft states only the facts given (about an hour late, dinner, Saturday) and invents no reason, no arrival time, and no plans."
       ]
     }
   ]

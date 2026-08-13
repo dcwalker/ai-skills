@@ -67,10 +67,22 @@ states, ask only about what is genuinely missing, one question at a time.
 | **Purpose** | Inform, ask, decline, persuade, apologize, record, celebrate, vent |
 | **Constraints** | Length, deadline, anything that must or must not appear |
 
-**Audience is not optional.** If the request names a medium but no recipient
-("write an email about the outage"), ask who it goes to before researching.
-Researching the wrong audience produces a confident profile for the wrong
-voice, which is worse than no profile.
+**Audience decides the register, so ask when it is unknown.** If the request
+names a medium but no recipient ("write an email about the outage"), ask who
+it goes to. Some media answer this themselves and need no question: a journal
+entry is to the user, a blog post is to a public readership.
+
+Never invent a recipient. Researching the wrong audience produces a confident
+profile for the wrong voice, which is worse than no profile at all.
+
+**A general profile lets the question be deferred, not skipped.** When
+`general.md` exists (see Step 2) and the user would rather have a draft than
+answer a question, write from it and say plainly what you did: this is the
+user's voice with the register left neutral, because greeting, sign-off,
+formality, length, and emoji are precisely what `general.md` excludes and
+precisely what changes with audience. Name the assumption, keep it correctable
+in one line, and offer to tighten it once the audience is known. What is not
+allowed is quietly choosing an audience and presenting the result as matched.
 
 If the user names a recipient this skill has no way to identify, ask who they
 are to the user rather than guessing from the name.
@@ -83,15 +95,35 @@ Research is expensive, and voice changes far more slowly than the requests
 that draw on it. Cache what is found, and reuse it until there is a reason
 not to.
 
-**Location:** `$HOME/writing-style/`, created `chmod 700` on first use. It
-sits in the user's home directory, in plain sight rather than buried in a
-cache path, because it is meant to be read and edited by hand. It is
-deliberately not a shared temp path: these files hold observations derived
-from private correspondence, and a world-readable location exposes them to
-every other user and session on the machine. Contents:
+**Location.** Not every environment has a disk that survives the session, so
+take the first of these that this one actually offers:
+
+1. **A persistent local filesystem:** `$HOME/writing-style/`, created
+   `chmod 700` on first use. In plain sight rather than buried in a cache
+   path, because it is meant to be read and edited by hand. Deliberately not
+   a shared temp path: these files hold observations derived from private
+   correspondence, and a world-readable location exposes them to every other
+   user and session on the machine.
+2. **A connected document store**, when the filesystem is ephemeral or absent:
+   a `writing-style` folder in the user's own Drive, Dropbox, or equivalent.
+   This is the portable option, and it is the one that survives moving
+   between a desktop, a browser session, and a phone. Ask before creating it;
+   a cloud folder is a place the user may already have opinions about.
+3. **The conversation itself**, when nothing persists: keep the profile in the
+   session, and at the end offer it as a block the user can paste somewhere
+   durable, such as a project's instructions or knowledge files, so the next
+   session starts from it rather than from nothing.
+
+An ephemeral container is case 2 or 3, not case 1: writing to `$HOME` there
+is not wrong, but it is gone with the container, so say so rather than
+implying the research was saved. Never persist the profile to a location the
+user has not agreed to.
+
+Contents:
 
 ```
 identity.md                       Who the user is, in identifiers
+general.md                        What holds true across every card
 index.md                          Searches already run and what they returned
 card-<medium>-<audience-slug>.md  One style card per (medium, audience) pair
 ```
@@ -119,7 +151,7 @@ Team:     <team name>, <how the team is named in the directory or tracker>
 <name or address>: <class> — <note>
 ```
 
-Rules for it:
+Rules for identity.md:
 
 - **The user's declarations win over inference.** A relationship recorded here
   is the answer; the Step 4 signals only fill what it does not cover. If a
@@ -134,6 +166,35 @@ Rules for it:
   it only if they agree. It persists, and it is theirs.
 - **Identifiers only.** Never passwords, tokens, API keys, or session
   cookies. Nothing in this file should be a credential.
+
+### general.md
+
+The traits that hold no matter who the user is writing to. Registers differ
+wildly by audience, but a few habits survive every one of them, and those are
+what make an unfamiliar situation still sound like the same person. This is
+the fallback when a request has no card and no samples behind it.
+
+```markdown
+# General style
+
+Holds across <N> cards, spanning <which audiences>.
+
+<trait>  — <n of N cards> — <the evidence, briefly>
+```
+
+Rules for it:
+
+- **A trait qualifies only by surviving contrast.** It has to hold across at
+  least three cards covering two different relationship classes. A habit
+  visible only in work email is a fact about work email.
+- **Rebuild it whenever a card is added or changed**, and drop any trait the
+  new card contradicts. Two cards' worth of agreement is a coincidence.
+- **Expect it to be short.** Punctuation habits, a few recurring words, how
+  bad news gets delivered, whether the point comes first, and length instincts
+  relative to the medium. Greetings, sign-offs, and formality almost never
+  qualify, because those are exactly what audience changes.
+- **It is rung 5 evidence, cached.** Label it that way when it is used: it
+  says how the user writes in general, never how they write to this person.
 
 The cache persists across sessions and days, because voice changes slowly and
 the research is the expensive part. To force a full rebuild, delete the
@@ -174,9 +235,17 @@ Cache rules:
 ## Step 3: Discover Available Sources
 
 Survey what this session can actually reach before searching. Check which MCP
-servers are connected, which skills are available, which CLIs respond to
-`command -v <tool>`, and which local directories exist. Use only what is
-genuinely reachable. Never imply a source was consulted when it was not.
+servers are connected, which skills are available, and which CLIs respond to
+`command -v <tool>`. Use only what is genuinely reachable. Never imply a
+source was consulted when it was not.
+
+**Look in the working directory first, then the home directory.** List them.
+A corpus that is present at all is almost always sitting in one of those two
+places, under an obvious name: `journal/`, `notes/`, `blog/`, `posts/`,
+`slack-export/`, an Obsidian vault, a docs tree. Reaching for a broad
+filesystem search before looking where the session is already standing is how
+a corpus in plain sight gets missed, and a depth-capped `find /` will not
+reach a working directory that is nested more than a few levels deep.
 
 Common sources, by what they hold:
 
@@ -415,11 +484,25 @@ Say so plainly. Do not fill the gap with a generic professional voice and do
 not present an unevidenced card as if it were researched. Instead:
 
 1. Report which sources were searched and what came back empty.
-2. Ask the user to paste one or two examples of their own writing in this
-   medium, which is the fastest path to a real profile.
-3. If they decline or have none, offer a short calibration: polish tier from
-   the Step 5 ladder, greeting and sign-off preference, and target length. Draft
-   from that, and label the card `Confidence: none, user-declared`.
+2. **Fall back to `general.md`** if the cache has one, and label it for what
+   it is: how this person writes in general, not how they write to this
+   person. It covers punctuation, recurring words, and instincts about length
+   and directness. It cannot tell you the greeting, the sign-off, or the
+   formality, which is precisely what is missing here.
+3. **Ask the user to describe how it should sound**, in their own words.
+   "Blunt, no greeting, two lines" is a better instruction than any ladder of
+   options, and it is faster to give than a pasted sample is to find. Prompt
+   for the register and the relationship if the description leaves them open.
+4. Offer the sample-paste route as an alternative rather than the first ask:
+   one or two real examples turn a described style into an observed one, and
+   the card built from them is reusable next time.
+5. Label the result honestly: `Confidence: none, user-described` when it came
+   from the description, `low, cross-medium` when it leaned on `general.md`.
+
+Whatever the user describes is worth keeping. Write it into the card so the
+next request to this audience starts from it, and mark it as user-described
+rather than observed, so a later run with real samples knows it can be
+replaced.
 
 If the user asks to skip the research entirely ("just write it", "don't go
 digging"), honor it. Two things still hold: say once, in a single line, that
@@ -486,8 +569,10 @@ departure from the card.
 
 - Make requested changes precisely. Do not rewrite approved sentences.
 - Every correction is evidence. When the user changes a word, a greeting, or a
-  length, update the cached card so the next artifact in the session inherits
-  the fix.
+  length, update the cached card so the next artifact inherits the fix.
+- When a card is written or changed, rebuild `general.md` from the current set
+  of cards, keeping only what still holds across at least three of them and
+  two different relationship classes.
 - If a correction contradicts the samples, keep the user's version and note the
   conflict on the card. The user outranks the corpus.
 - If the user asks for another artifact, return to Step 2. The cache makes the
@@ -523,8 +608,11 @@ departure from the card.
 - Ask for the audience when it is missing. Never infer it from the topic.
 - Never invent facts, names, dates, or events to fill a draft, and never
   import them from the samples. Style is copied; content never is.
-- Keep the cache in the user's own home directory, and confirm its recorded
-  identity matches the current accounts before reading it.
+- Keep the cache where the environment can actually persist it, and confirm
+  its recorded identity matches the current accounts before reading it.
+- With no samples, ask the user to describe the style in their own words and
+  fall back to `general.md`, labeled as cross-medium. Never dress up an
+  unevidenced profile as a researched one.
 - Confirm authorship by account identifier, never by display name alone.
 - Match observed length, punctuation, and polish, including habits that look
   like errors.
