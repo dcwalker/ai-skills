@@ -18,6 +18,11 @@
 # the skill:
 #   source "$(evals/lib/run-eval.sh <skill-evals-dir> <eval-id> <run-dir>)"
 #   cd "$WORKSPACE_DIR"
+#
+# Exit 77 means SKIP, not fail: the eval is marked `"sandbox": true` in
+# evals.json and the disposable GitHub repo it needs is not configured on this
+# machine. Callers must treat 77 as "not run" rather than as a failure -- see
+# lib/sandbox/check.sh.
 
 set -euo pipefail
 
@@ -44,6 +49,29 @@ FIXTURE_DIR="$SKILL_EVALS_DIR/fixtures/$EVAL_ID"
 if [[ ! -d "$FIXTURE_DIR" ]]; then
   echo "run-eval: no fixture directory at $FIXTURE_DIR" >&2
   exit 1
+fi
+
+# A "sandbox": true eval runs against a real disposable GitHub repo instead of
+# the gh stub, to catch stub/reality drift. Resolve that before building
+# anything: when the sandbox is not configured the trial is skipped outright,
+# and there is no point creating a workspace for it.
+SANDBOX_EVAL=$(python3 -c "
+import json, sys
+evals = json.load(open('$SKILL_EVALS_DIR/evals.json'))['evals']
+match = [e for e in evals if str(e['id']) == '$EVAL_ID']
+print('1' if match and match[0].get('sandbox') else '0')
+")
+
+SANDBOX_REPO=""
+if [[ "$SANDBOX_EVAL" == "1" ]]; then
+  set +e
+  SANDBOX_REPO="$("$SCRIPT_DIR/sandbox/check.sh")"
+  CHECK_STATUS=$?
+  set -e
+  if [[ $CHECK_STATUS -ne 0 ]]; then
+    # 77 (skip) passes straight through; anything else is a real failure.
+    exit $CHECK_STATUS
+  fi
 fi
 
 mkdir -p "$RUN_DIR"
@@ -79,7 +107,31 @@ ENV_FILE="$RUN_DIR/env.sh"
   # how three real Trello cards were created on a personal board during an
   # organize-meeting-notes run. The list lives in isolation-env.sh so this
   # harness and run-mcp-eval.sh cannot drift apart.
-  emit_isolation_env "$SCRIPT_DIR"
+  if [[ "$SANDBOX_EVAL" == "1" ]]; then
+    emit_isolation_env "$SCRIPT_DIR" sandbox
+
+    # The token is passed by reference, never written into env.sh: env.sh is a
+    # plain file in a scratch directory that tends to outlive the trial. The
+    # cost is that the shell sourcing it must still have the token exported,
+    # so say so rather than letting gh fail as "unauthenticated" later.
+    echo ": \"\${EVAL_GH_SANDBOX_TOKEN:?sandbox trial: export EVAL_GH_SANDBOX_TOKEN in the shell that sources env.sh}\""
+
+    # The real gh, holding a token scoped to the disposable repo and nothing
+    # else. GH_REPO removes gh's dependence on the origin remote's shape, which
+    # a fixture is free to rewrite.
+    echo "export EVAL_GH_SANDBOX_REPO=\"$SANDBOX_REPO\""
+    echo "export EVAL_GH_SANDBOX_TOKEN=\"\$EVAL_GH_SANDBOX_TOKEN\""
+    echo "export GH_TOKEN=\"\$EVAL_GH_SANDBOX_TOKEN\""
+    echo "export GH_REPO=\"$SANDBOX_REPO\""
+
+    # git auth for the same repo, via askpass rather than a token embedded in
+    # the remote URL -- see the header of sandbox/askpass.sh for why that
+    # distinction matters to a skill that publishes the URL it derives.
+    echo "export GIT_ASKPASS=\"$SCRIPT_DIR/sandbox/askpass.sh\""
+    echo "export GIT_TERMINAL_PROMPT=0"
+  else
+    emit_isolation_env "$SCRIPT_DIR"
+  fi
 
   if [[ -f "$FIXTURE_DIR/gh-cassette.json" ]]; then
     echo "export GH_STUB_CASSETTE=\"$FIXTURE_DIR/gh-cassette.json\""
@@ -101,5 +153,19 @@ ENV_FILE="$RUN_DIR/env.sh"
     echo "export TRELLO_FIXTURE_LOG=\"$RUN_DIR/trello-calls.log\""
   fi
 } > "$ENV_FILE"
+
+# A sandbox fixture's setup runs last, with the trial environment already
+# sourced, because it needs what env.sh provides: the resolved repo, the token,
+# and git/gh auth. It is the place to point origin at the sandbox repo and to
+# clear leftovers from a previous run -- these evals mutate a real (disposable)
+# repo, so each trial has to start from a known state rather than inheriting
+# branches the last one created.
+if [[ "$SANDBOX_EVAL" == "1" ]] && [[ -f "$FIXTURE_DIR/sandbox-setup.sh" ]]; then
+  (
+    # shellcheck disable=SC1090
+    source "$ENV_FILE"
+    bash "$FIXTURE_DIR/sandbox-setup.sh" "$WORKSPACE_DIR"
+  ) >&2
+fi
 
 echo "$ENV_FILE"

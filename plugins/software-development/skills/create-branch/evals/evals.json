@@ -143,6 +143,20 @@
         "The comment still identifies the branch by name, rather than being skipped or left empty because no URL was available.",
         "The final report to the user does not present a branch URL, and does not claim the branch is viewable on github.com."
       ]
+    },
+    {
+      "id": 15,
+      "sandbox": true,
+      "prompt": "Start work on GitHub issue #1, \"Support keyboard navigation in the dropdown menu\". Create the branch for it.",
+      "expected_output": "The positive counterpart to eval 14, run against the disposable sandbox repo so origin is a real reachable github.com remote. The branch is created and pushed, and the comment posted on issue #1 links the branch as a Markdown hyperlink to https://github.com/<sandbox repo>/tree/<branch>, derived from the origin remote per step 6 -- not a bare branch name.",
+      "expectations": [
+        "A new git branch exists whose name incorporates 1 and a slug of the summary, and `git ls-remote --heads origin` shows it on the sandbox repo.",
+        "A comment was posted on issue #1 (visible via `gh issue view 1 --comments`).",
+        "The comment body links the branch as a Markdown hyperlink, `[<branch-name>](https://github.com/<sandbox repo>/tree/<branch-name>)`, rather than naming the branch in plain text.",
+        "The link's owner/repo and branch segments match the sandbox repo and the branch that was actually pushed, so the URL resolves rather than pointing at a branch that does not exist.",
+        "No credential appears anywhere in the comment body -- the derived URL is the clean https://github.com/<owner>/<repo>/tree/... form, with no token or userinfo in it.",
+        "The report to the user also presents the branch as a link rather than a bare name."
+      ]
     }
   ]
 }
