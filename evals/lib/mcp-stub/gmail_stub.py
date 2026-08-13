@@ -93,38 +93,41 @@ def _resolve_address(addr: str) -> str:
     return addr.lower()
 
 
+def _in_matches(t: dict, place: str) -> bool:
+    """`in:` names a location, which for this stub is a system label."""
+    if place == "anywhere":
+        return True
+    return {"inbox": "INBOX", "sent": "SENT", "trash": "TRASH"}.get(place, "") in t["labelIds"]
+
+
+# Operators this stub does not implement. Matching nothing keeps a fixture gap
+# loudly visible in the log rather than silently matching everything.
+_UNIMPLEMENTED = ("is:", "has:", "category:", "after:", "before:",
+                  "newer", "older", "size:", "larger:", "smaller:")
+
+# Each entry maps an operator prefix to how its argument is tested.
+_OPERATORS = {
+    "in:": lambda t, arg: _in_matches(t, arg),
+    "from:": lambda t, arg: bool(_resolve_address(arg)) and _resolve_address(arg) in t["from"].lower(),
+    "to:": lambda t, arg: bool(_resolve_address(arg)) and any(
+        _resolve_address(arg) in r.lower() for r in t["to"]),
+    "subject:": lambda t, arg: arg.lower() in t["subject"].lower(),
+    "label:": lambda t, arg: arg in t["labelIds"],
+}
+
+
 def _term_matches(t: dict, term: str) -> bool:
-    if term.startswith("in:"):
-        place = term[3:]
-        if place == "anywhere":
-            return True
-        if place == "inbox":
-            return "INBOX" in t["labelIds"]
-        if place == "sent":
-            return "SENT" in t["labelIds"]
-        if place == "trash":
-            return "TRASH" in t["labelIds"]
-        return False
-    if term.startswith("from:"):
-        addr = _resolve_address(term[5:])
-        return bool(addr) and addr in t["from"].lower()
-    if term.startswith("to:"):
-        addr = _resolve_address(term[3:])
-        return bool(addr) and any(addr in r.lower() for r in t["to"])
-    if term.startswith("subject:"):
-        return term[8:].lower() in t["subject"].lower()
-    if term.startswith("label:"):
-        return term[6:] in t["labelIds"]
     if term == "is:unread":
         return "UNREAD" in t["labelIds"]
     if term == "is:read":
         return "UNREAD" not in t["labelIds"]
-    if term.startswith(("is:", "has:", "category:", "after:", "before:",
-                        "newer", "older", "size:", "larger:", "smaller:")):
-        # Unimplemented operator: match nothing, loudly visible in the log,
-        # rather than silently matching everything.
+    for prefix, test in _OPERATORS.items():
+        if term.startswith(prefix):
+            return test(t, term[len(prefix):])
+    if term.startswith(_UNIMPLEMENTED):
         return False
-    return term.lower() in t["subject"].lower() or term.lower() in t["snippet"].lower()
+    lowered = term.lower()
+    return lowered in t["subject"].lower() or lowered in t["snippet"].lower()
 
 
 def _thread_matches(t: dict, query: str) -> bool:
