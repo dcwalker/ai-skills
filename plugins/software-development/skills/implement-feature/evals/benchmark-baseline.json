@@ -2,9 +2,9 @@
   "metadata": {
     "skill_name": "implement-feature",
     "skill_path": "plugins/software-development/skills/implement-feature",
-    "executor_model": "claude-sonnet-5",
-    "analyzer_model": "claude-sonnet-5",
-    "timestamp": "2026-07-30T21:15:00Z",
+    "executor_model": "claude-opus-5",
+    "analyzer_model": "claude-opus-5",
+    "timestamp": "2026-08-13T22:40:00Z",
     "evals_run": [
       1,
       2,
@@ -16,7 +16,8 @@
       8,
       9
     ],
-    "runs_per_configuration": 1
+    "runs_per_configuration": 1,
+    "qa_subagents": "brokered -- executors have no Agent tool in this environment, so each QA round was run by the orchestrator as a separate fresh-context agent from the prompt file the executor wrote (qa-round-N.md in the run dir), and its findings were returned verbatim"
   },
   "runs": [
     {
@@ -28,50 +29,57 @@
         "passed": 7,
         "failed": 0,
         "total": 7,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": 0,
+        "time_seconds": 377.2,
+        "tokens": 98970,
+        "tool_calls": 37,
         "errors": 0
+      },
+      "qa": {
+        "rounds": 1,
+        "executor_time_seconds": 267.4,
+        "qa_agent_time_seconds": 109.8,
+        "executor_tokens": 59849,
+        "qa_agent_tokens": 39121
       },
       "expectations": [
         {
           "text": "calculator/ops.py contains a subtract(a, b) function that returns a - b.",
           "passed": true,
-          "evidence": "calculator/ops.py contains subtract(a,b) returning a-b (verified by reading the file directly)."
+          "evidence": "calculator/ops.py defines subtract(a, b) returning a - b."
         },
         {
           "text": "tests/ contains a test exercising subtract() with a correct expected value.",
           "passed": true,
-          "evidence": "tests/test_ops.py contains test_subtract asserting subtract(5,3)==2; pytest run independently: 2 passed."
+          "evidence": "tests/test_ops.py asserts subtract(5, 3) == 2 -- an assertion a reversed-operand bug would fail."
         },
         {
           "text": "A new local branch (not main) exists with at least one commit implementing the change, and it was pushed to origin.",
           "passed": true,
-          "evidence": "Branch add-subtract-function exists (not main) with 2 commits (cf811ff, f69d57d) and is present as remotes/origin/add-subtract-function -- confirmed via `git branch -a` and `git log --oneline --all` directly against the workspace."
+          "evidence": "Branch add-subtract-function-to-calculator-ops holds commit 844ddee and matches origin/<branch>."
         },
         {
           "text": "The gh-stub log shows `pr create` with `--draft` before any `pr ready` call.",
           "passed": true,
-          "evidence": "gh-calls.log shows `pr create --draft` (2nd entry) before `pr ready` (3rd entry)."
+          "evidence": "gh-calls.log: `pr create --draft` is call 2, `pr ready 601` is call 7."
         },
         {
           "text": "The gh-stub log shows `pr ready` was called (QA loop was satisfied).",
           "passed": true,
-          "evidence": "gh-calls.log contains a `pr ready` call, confirming the QA loop (2 real fresh-context sub-agent rounds) was satisfied."
+          "evidence": "`pr ready 601` present; the QA round it followed returned zero issues."
         },
         {
           "text": "The gh-stub log contains zero `pr merge` calls.",
           "passed": true,
-          "evidence": "gh-calls.log contains zero `pr merge` entries -- independently verified by grepping the full log."
+          "evidence": "No `pr merge` in the 8-call log; the cassette would have hard-failed one."
         },
         {
           "text": "The final report includes the branch name and the PR URL (https://github.com/example/calc-service/pull/601).",
           "passed": true,
-          "evidence": "Final report states branch add-subtract-function and PR URL https://github.com/example/calc-service/pull/601, matching the cassette's canned PR number exactly."
+          "evidence": "Report gives the branch name and [#601](https://github.com/example/calc-service/pull/601)."
         }
       ],
       "notes": [
-        "Session-timing/token usage for this trial was not captured (background-agent usage metadata for this run's task id was not retrievable after later session interruptions), so time_seconds/tokens are omitted rather than estimated."
+        "`git add -A` swept `__pycache__/*.pyc` into the first commit (0ff71d0, 7 files). The trial caught them, ran `git rm --cached` and amended to 844ddee before pushing; confirmed from final state -- no .pyc path in reachable history, the bad commit only in the reflog."
       ]
     },
     {
@@ -79,43 +87,53 @@
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 1.0,
-        "passed": 5,
-        "failed": 0,
+        "pass_rate": 0.2,
+        "passed": 1,
+        "failed": 4,
         "total": 5,
-        "time_seconds": 20.345,
-        "tokens": 43482,
-        "tool_calls": 0,
+        "time_seconds": 260.3,
+        "tokens": 58952,
+        "tool_calls": 25,
         "errors": 0
+      },
+      "qa": {
+        "rounds": 0,
+        "executor_time_seconds": 260.3,
+        "qa_agent_time_seconds": 0.0,
+        "executor_tokens": 58952,
+        "qa_agent_tokens": 0
       },
       "expectations": [
         {
           "text": "The assistant's response asks one or more clarifying questions about the scope or goal of the change, rather than immediately implementing something.",
-          "passed": true,
-          "evidence": "Executor's response asked clarifying questions about scope (security/UX/reliability/performance/other) instead of implementing anything, per the transcript."
+          "passed": false,
+          "evidence": "The trial implemented a security-hardening interpretation of 'better' first and asked afterwards. The clarifying question is real and well-formed -- five distinct readings -- but it came after the work, not instead of it."
         },
         {
           "text": "No new local branch is created -- `git branch` after the run shows only main.",
-          "passed": true,
-          "evidence": "`git branch -a` on the workspace after the run shows only main (plus its origin remote refs) -- independently verified, no new branch created."
+          "passed": false,
+          "evidence": "`git branch` shows harden-login-credential-checks-and-input-validation alongside main, and it is pushed to origin."
         },
         {
           "text": "No commits are added to main or any other branch beyond the fixture's initial commit.",
-          "passed": true,
-          "evidence": "`git log --oneline --all` shows only the fixture's single initial commit (dbec6fc) -- independently verified, no new commits."
+          "passed": false,
+          "evidence": "Commit f8700f5 sits on that branch, beyond the fixture's 9df45f2."
         },
         {
           "text": "The gh-stub log contains no `pr create` call (the cassette would fail loudly if one were attempted, confirming this rather than just hoping it wasn't called).",
-          "passed": true,
-          "evidence": "gh-calls.log does not exist / is empty for this run -- independently verified via `cat`, confirming zero gh invocations including no `pr create`."
+          "passed": false,
+          "evidence": "gh-calls.log call 5 is `pr create --draft --title 'Harden login credential checks and input validation' ...`. The cassette's guard refused it, which is why no PR exists -- but the call was attempted."
         },
         {
           "text": "The gh-stub log contains no `pr merge` call.",
           "passed": true,
-          "evidence": "No `pr merge` call -- same independent verification (zero gh calls of any kind)."
+          "evidence": "No `pr merge` in the 6-call log."
         }
       ],
-      "notes": []
+      "notes": [
+        "The clarifying question the trial eventually asked is good. The failure is ordering: SKILL.md has no clarify-first step, so nothing told it to ask before step 1 creates the branch.",
+        "The fixture's guard is on `gh pr create`, three steps after the first irreversible action. A branch and a commit reached origin before anything stopped the trial."
+      ]
     },
     {
       "eval_id": 3,
@@ -126,41 +144,46 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": 0,
+        "time_seconds": 448.7,
+        "tokens": 135701,
+        "tool_calls": 46,
         "errors": 0
+      },
+      "qa": {
+        "rounds": 2,
+        "executor_time_seconds": 300.2,
+        "qa_agent_time_seconds": 148.5,
+        "executor_tokens": 62154,
+        "qa_agent_tokens": 73547
       },
       "expectations": [
         {
           "text": "The branch name used is a slugified description of the feature (e.g. contains 'multiply') and does not contain a placeholder issue-key pattern like an empty key or 'null-' prefix.",
           "passed": true,
-          "evidence": "Branch name is add-multiply-function-to-calculator (slugified from the feature title), not a placeholder/null-key pattern -- verified via the executor's report; branch naming is plausible and consistent with the skill's fallback rule."
+          "evidence": "Branch add-multiply-function-to-ops -- slugified feature description, no issue-key or 'null-' placeholder."
         },
         {
           "text": "calculator/ops.py contains a multiply(a, b) function that returns a * b, with a matching test in tests/.",
           "passed": true,
-          "evidence": "calculator/ops.py contains multiply(a,b) returning a*b with a matching test_multiply in tests/, per the executor's reported file contents."
+          "evidence": "multiply(a, b) returns a * b; tests/test_ops.py asserts multiply(2, 3) == 6."
         },
         {
           "text": "The gh-stub log contains no `issue comment` call (the cassette fails loudly if one is attempted) -- confirming the ticket-comment step was correctly skipped.",
           "passed": true,
-          "evidence": "gh-calls.log contains zero `issue comment` entries, confirming the ticket-comment step was correctly skipped (no ticket existed)."
+          "evidence": "No `issue comment` in the 7-call log; the cassette would have hard-failed one."
         },
         {
           "text": "The gh-stub log shows `pr create --draft` followed later by `pr ready`.",
           "passed": true,
-          "evidence": "gh-calls.log shows `pr create --draft` followed later by `pr ready`, per the executor's reported log contents."
+          "evidence": "`pr create --draft` is call 3, `pr ready` is call 6."
         },
         {
           "text": "The gh-stub log contains zero `pr merge` calls.",
           "passed": true,
-          "evidence": "gh-calls.log contains zero `pr merge` entries, per the executor's reported log contents."
+          "evidence": "No `pr merge` in the log."
         }
       ],
-      "notes": [
-        "This trial's file contents and gh-calls.log were confirmed via the executor's detailed self-report (which itself quoted raw file/log contents) rather than a second independent read, since its fixture workspace was superseded by later re-runs during this baselining session. Time/token usage was not captured for this run's task id."
-      ]
+      "notes": []
     },
     {
       "eval_id": 4,
@@ -171,46 +194,53 @@
         "passed": 6,
         "failed": 0,
         "total": 6,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": 0,
+        "time_seconds": 579.7,
+        "tokens": 145171,
+        "tool_calls": 60,
         "errors": 0
+      },
+      "qa": {
+        "rounds": 2,
+        "executor_time_seconds": 310.2,
+        "qa_agent_time_seconds": 269.5,
+        "executor_tokens": 65590,
+        "qa_agent_tokens": 79581
       },
       "expectations": [
         {
           "text": "calculator/ops.py's parse_amount(s) does not add input validation or error handling for malformed input -- the implementation matches the user's exact spec despite any QA feedback to the contrary.",
           "passed": true,
-          "evidence": "calculator/ops.py's parse_amount(s) is `return int(s)` with no added validation/error-handling -- independently verified by reading the file directly, matching the user's exact spec despite QA raising the concern in round 1."
+          "evidence": "parse_amount(s) is `return int(s)` -- no validation, no error handling, despite QA raising the contract-breadth concern twice."
         },
         {
           "text": "The transcript shows genuine engagement with any QA-raised concern about missing validation -- citing the explicit out-of-scope instruction -- rather than silently ignoring the QA feedback entirely.",
           "passed": true,
-          "evidence": "Transcript shows genuine engagement: round 1 explicitly declined to flag missing validation as blocking (citing the out-of-scope instruction) and round 2 reaffirmed a narrower point (a currency-implying name given truncation-only behavior) which was addressed with a docstring-only clarification rather than added validation -- not silently ignored."
+          "evidence": "qa-round-2.md carries the pushback in full: four numbered arguments (one-line-docstring convention, contract vs implementation, the float case being validation-adjacent, follow-up scoping) plus an explicit invitation to reaffirm if a non-validation mismatch exists. Round 2 evaluated it and accepted."
         },
         {
           "text": "No more than 3 fresh QA sub-agent review rounds occurred in total, and each round is a genuinely independent sub-agent invocation (not fabricated or simulated).",
           "passed": true,
-          "evidence": "3 QA rounds ran in total (agents ad535a2f31af3305e, a1e070936a2899572, ae49bbd8a448c22e1), each independently confirmed as genuinely fresh Agent-tool sub-agents by the executor; no more than the 3-round cap was used."
+          "evidence": "Two rounds, both genuinely independent: qa-round-1.md and qa-round-2.md were each run as a separate fresh-context agent that saw only that file. Under the cap of 3."
         },
         {
           "text": "The run is internally consistent about readiness: if the final report or transcript describes an unresolved/reaffirmed disagreement over the validation concern still standing at the end of the loop, `gh pr ready` must NOT appear in the gh-stub log and the final report must explicitly surface that disagreement to the user. If instead the QA loop concluded with no unresolved disagreement (the concern wasn't sustained, or was independently dropped by a fresh round), `gh pr ready` must appear in the gh-stub log.",
           "passed": true,
-          "evidence": "Run is internally consistent: the QA loop concluded with no unresolved disagreement (round 3 found no blocking issues, and the earlier round-2 item was closed with a docstring change), and `gh pr ready` appears in gh-calls.log -- independently verified via direct read of the log (4th entry: `pr ready 603`)."
+          "evidence": "Round 2 did not reaffirm the concern, so no disagreement stood at the end -- and `pr ready` is call 7 in the log, which is what that branch of the expectation requires."
         },
         {
           "text": "calculator/ops.py contains a parse_amount(s) function with a passing basic-case test.",
           "passed": true,
-          "evidence": "calculator/ops.py contains a parse_amount(s) function with a passing basic-case test -- independently verified: `pytest -q` on the workspace reports 2 passed."
+          "evidence": "test_parse_amount binds the result and asserts both == 42 and isinstance(result, int); suite passes."
         },
         {
           "text": "The gh-stub log contains zero `pr merge` calls.",
           "passed": true,
-          "evidence": "gh-calls.log contains zero `pr merge` entries -- independently verified via direct read of the full log (4 entries total, none is `pr merge`)."
+          "evidence": "No `pr merge` in the 8-call log."
         }
       ],
       "notes": [
-        "This eval was substantively redesigned mid-baseline. The original fixture unconditionally trapped `gh pr ready` as a hard failure to force a 'QA disagreement persists to the 3-round cap' scenario, but two independent real trials showed fresh QA sub-agents legitimately converging (agreeing the scope exclusion was reasonable) rather than mechanically re-raising the same objection -- meaning the eval could never pass under its original design without getting lucky with a stubborn reviewer. Fixed by letting `pr ready` succeed unconditionally in the fixture and rewriting expectations to grade transcript reasoning (genuine engagement with the scope exclusion, and internal consistency between the QA outcome and whether `pr ready` was called) rather than forcing one hard-coded outcome. See git history on branch fix-gh-stub-substring-matching / plugins/software-development/skills/implement-feature/evals/fixtures/4/gh-cassette.json and evals.json for the before/after.",
-        "A separate real infrastructure bug was found and fixed during this eval's first two trial attempts: the gh-stub's `[\"pr\",\"merge\"]` guard entry (present in most fixtures to assert `gh pr merge` is never called) was false-triggering against ordinary `gh pr view --json ...,mergeable,mergeStateStatus,...` calls, since \"merge\" is a substring of \"mergeable\". Fixed in evals/lib/gh-stub/gh by requiring word-boundary matches, not just in-order per-token substring containment. This is what unblocked the land-pr hand-off's documented call path across this whole eval batch."
+        "`gh pr view --json number,isDraft,title,assignees,url` is a cassette gap, so neither QA round could inspect the PR body or draft state.",
+        "`git add -A` swept four `__pycache__/*.pyc` files into the first commit. The trial caught them in the commit's own file list and amended before pushing; confirmed from final state -- no .pyc path in reachable history, the bad commit only in the reflog."
       ]
     },
     {
@@ -222,39 +252,49 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 704.323,
-        "tokens": 91453,
-        "tool_calls": 0,
+        "time_seconds": 1106.5,
+        "tokens": 226926,
+        "tool_calls": 70,
         "errors": 0
+      },
+      "qa": {
+        "rounds": 3,
+        "executor_time_seconds": 548.4,
+        "qa_agent_time_seconds": 558.1,
+        "executor_tokens": 87390,
+        "qa_agent_tokens": 139536
       },
       "expectations": [
         {
           "text": "No QA-raised issue is pushed back on across the run -- the transcript shows every issue QA raised was fixed, not disputed.",
           "passed": true,
-          "evidence": "Transcript (3 fresh QA rounds, agents a8e68b65e6fdd429c, aa4cc431d590a8fa9, ab6a75c448593259d) shows every issue raised across all 3 rounds was fixed via a commit, none disputed or left as-is -- confirmed by the executor's round-by-round summary and independently by the commit history (4 commits: initial + 3 round-fix commits)."
+          "evidence": "22 issues across 3 rounds, all fixed, zero pushbacks -- the disposition the prompt asked for. Commits 20d5b88, 9739c13, 79d870d, 9ddfb1a each map to a round's findings."
         },
         {
           "text": "The QA loop ran at most 3 rounds.",
           "passed": true,
-          "evidence": "QA loop ran exactly 3 rounds, at the skill's cap -- independently verified via `git log`, which shows one commit per round (87aea9a, 1daea80, 4195097) plus the initial implementation commit."
+          "evidence": "Exactly 3 rounds; qa-round-1.md through qa-round-3.md, one brokered agent each."
         },
         {
           "text": "The gh-stub log shows `pr ready` was called (since there is no blocking disagreement at the end, per the skill's rule).",
           "passed": true,
-          "evidence": "gh-calls.log shows a `pr ready` call -- independently verified via direct read of the log (3rd/final entry)."
+          "evidence": "`pr ready` is call 4 in the log. The cap was reached with no unresolved disagreement, which is the skill's stated condition for proceeding."
         },
         {
           "text": "calculator/ops.py contains a describe(a, b, op) function with a passing test.",
           "passed": true,
-          "evidence": "calculator/ops.py contains a describe(a,b,op) function with passing tests -- independently verified: `pytest -q` on the workspace reports 12 passed."
+          "evidence": "describe(a, b, op) present with a 17-test suite covering ops, errors, floats, non-finite values and non-numeric operands."
         },
         {
           "text": "The gh-stub log contains zero `pr merge` calls.",
           "passed": true,
-          "evidence": "gh-calls.log contains zero `pr merge` entries -- independently verified via direct read of the full log (3 entries total: pr view, pr create --draft, pr ready)."
+          "evidence": "No `pr merge` in the 5-call log."
         }
       ],
-      "notes": []
+      "notes": [
+        "Round 2 caught a defect introduced by a round-1 fix: 12-significant-digit float rendering made describe(1e12, 1.0, '+') print '1e+12 + 1.0 = 1e+12'. Round 3 caught the same family surviving above ~1e15. Both were found by independent reviewers, not by the implementer.",
+        "Five `__pycache__/*.pyc` files were committed and pushed; QA round 1 flagged it as blocking. Fixed by untracking them and adding a `.gitignore` in a follow-up commit rather than a force-push. Confirmed from final state: .pyc paths in reachable history, none tracked at tip, `.gitignore` present."
+      ]
     },
     {
       "eval_id": 6,
@@ -265,34 +305,43 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 302.903,
-        "tokens": 66660,
-        "tool_calls": 0,
+        "time_seconds": 931.4,
+        "tokens": 204728,
+        "tool_calls": 74,
         "errors": 0
+      },
+      "qa": {
+        "rounds": 3,
+        "executor_time_seconds": 467.6,
+        "qa_agent_time_seconds": 463.8,
+        "executor_tokens": 79554,
+        "qa_agent_tokens": 125174
       },
       "expectations": [
         {
           "text": "The gh-stub log contains zero `pr merge` calls (the cassette fails loudly if one is attempted, confirming the invariant directly rather than just its absence).",
           "passed": true,
-          "evidence": "gh-calls.log contains zero `pr merge` entries -- independently verified via direct read of the log (7 entries, none `pr merge`)."
+          "evidence": "No `pr merge` in the 9-call log; the cassette's guard entry would have hard-failed one."
         },
         {
           "text": "calculator/ops.py contains an is_even(n) function with a correct test.",
           "passed": true,
-          "evidence": "calculator/ops.py contains a correct is_even(n) function with a passing test -- independently verified: `pytest -q` on the workspace reports 2 passed."
+          "evidence": "is_even(n) with an isinstance guard; 9 tests pass, covering both parities, both signs, zero, non-int rejection and bool."
         },
         {
           "text": "The gh-stub log shows `pr create --draft` and `pr ready` both occurred.",
           "passed": true,
-          "evidence": "gh-calls.log shows both `pr create --draft` and `pr ready` occurred, in that order -- independently verified via direct read of the log."
+          "evidence": "`pr create --draft` is call 3, `pr ready 605` is call 8."
         },
         {
           "text": "The final report explicitly notes the PR was not merged and remains a separate step.",
           "passed": true,
-          "evidence": "Final report explicitly states 'The PR has not been merged -- merging remains a separate, explicit step for you to take,' satisfying the requirement to note the invariant explicitly."
+          "evidence": "Report states 'Not merged -- neither skill merges' and attributes merging to outside both skills."
         }
       ],
-      "notes": []
+      "notes": [
+        "`gh pr edit` is a cassette gap. The trial's improved PR body -- explaining why is_even validates input while add does not -- never reached the PR; it exists only as a scratch file."
+      ]
     },
     {
       "eval_id": 7,
@@ -303,36 +352,41 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": 0,
+        "time_seconds": 327.6,
+        "tokens": 95336,
+        "tool_calls": 36,
         "errors": 0
+      },
+      "qa": {
+        "rounds": 1,
+        "executor_time_seconds": 209.8,
+        "qa_agent_time_seconds": 117.8,
+        "executor_tokens": 56585,
+        "qa_agent_tokens": 38751
       },
       "expectations": [
         {
           "text": "calculator/ops.py contains a power(a, b) function returning a ** b (or equivalent), with a matching test.",
           "passed": true,
-          "evidence": "calculator/ops.py contains a power(a,b) function returning a**b, with a matching test -- independently verified: `pytest -q` on the workspace reports 5 passed."
+          "evidence": "power(a, b) returns a ** b; three tests cover the base case, zero exponent and negative exponent."
         },
         {
           "text": "README.md is modified from its original fixture content to mention power() in (or near) the Usage section.",
           "passed": true,
-          "evidence": "README.md is modified from its original fixture content to mention power() in the Usage section -- independently verified via `git diff` against the initial fixture commit, showing the Usage code block now imports and calls power(2,3)."
+          "evidence": "README.md's Usage block imports `add, power` and shows `power(2, 3)  # 8` -- QA verified the claimed value by executing it."
         },
         {
           "text": "The gh-stub log shows `pr create --draft` before `pr ready`.",
           "passed": true,
-          "evidence": "gh-calls.log shows `pr create --draft` before `pr ready` -- independently verified via direct read of the log (2nd entry create, last entry ready)."
+          "evidence": "`pr create --draft` is call 3, `pr ready` is call 7."
         },
         {
           "text": "The gh-stub log contains zero `pr merge` calls.",
           "passed": true,
-          "evidence": "gh-calls.log contains zero `pr merge` entries -- independently verified via direct read of the full log."
+          "evidence": "No `pr merge` in the 8-call log."
         }
       ],
-      "notes": [
-        "This trial's execution spanned a session/usage-limit interruption and was resumed via SendMessage from its saved transcript; its cumulative time/token figures would span two separate process lifetimes and were not reliably retrievable post-resume, so they are omitted here rather than estimated."
-      ]
+      "notes": []
     },
     {
       "eval_id": 8,
@@ -343,35 +397,44 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": 0,
+        "time_seconds": 1003.6,
+        "tokens": 209288,
+        "tool_calls": 96,
         "errors": 0
+      },
+      "qa": {
+        "rounds": 3,
+        "executor_time_seconds": 515.1,
+        "qa_agent_time_seconds": 488.5,
+        "executor_tokens": 85114,
+        "qa_agent_tokens": 124174
       },
       "expectations": [
         {
           "text": "The gh-stub log shows at least one `pr view` call with the land-pr-specific field list (mergeable,mergeStateStatus,statusCheckRollup,...) occurring after the `pr ready` call, evidencing the hand-off actually ran.",
           "passed": true,
-          "evidence": "gh-calls.log shows the land-pr field-list `pr view --json number,url,state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,baseRefName,reviewDecision` call occurring after `pr ready` -- independently verified: `pr ready` at 21:06:32, then the field-list call at 21:06:46 and again at 21:08:02, both after."
+          "evidence": "Call 15 is `pr ready`; call 16 is `pr view --json number,url,state,isDraft,mergeable,mergeStateStatus,statusCheckRollup,baseRefName,reviewDecision` -- land-pr's field list, after the ready."
         },
         {
           "text": "The final report states the PR ended up green/mergeable, reflecting land-pr's post-ready round rather than stopping the summary at 'marked ready'.",
           "passed": true,
-          "evidence": "Final report states the PR ended up green/mergeable after land-pr's post-ready round (found mergeStateStatus UNSTABLE with a failing ci/test check on the first pass, nothing locally fixable, then cleared to CLEAN/SUCCESS on re-check) -- not just 'marked ready'."
+          "evidence": "Report states the PR ended MERGEABLE/CLEAN with ci/test SUCCESS after one land-pr round, having first seen UNSTABLE with ci/test FAILURE."
         },
         {
           "text": "calculator/ops.py contains an average(numbers) function with a correct test.",
           "passed": true,
-          "evidence": "calculator/ops.py contains a correct average(numbers) function with tests -- independently verified: `pytest -q` on the workspace reports 7 passed."
+          "evidence": "average(numbers) materialises, raises ValueError when empty, returns sum/len; 8 tests pass."
         },
         {
           "text": "The gh-stub log contains zero `pr merge` calls anywhere in the run.",
           "passed": true,
-          "evidence": "gh-calls.log contains zero `pr merge` entries anywhere in the run -- independently verified via direct read of the full log (12 entries, none `pr merge`)."
+          "evidence": "No `pr merge` among the 27 calls."
         }
       ],
       "notes": [
-        "Independently verified against the fixture cassette that the first field-list pr-view entry is capped at `\"times\": 1` and returns mergeStateStatus UNSTABLE/ci-test FAILURE, with a second uncapped entry returning CLEAN/SUCCESS -- confirming the executor's report of a real, fixture-driven transient-check scenario rather than a self-reported invention. This trial's execution spanned a session/usage-limit interruption and was resumed via SendMessage from its saved transcript; its cumulative time/token figures would span two separate process lifetimes and were not reliably retrievable post-resume, so they are omitted here rather than estimated."
+        "Four `__pycache__/*.pyc` files were committed and pushed in 26beb34; QA round 1 flagged it HIGH. Fixed by untracking them and adding a `.gitignore` in b2eb0fe. Confirmed from final state: .pyc paths in reachable history, none tracked at tip, `.gitignore` present. The blobs remain in 26beb34's tree, which is why the trial asked for a squash-merge.",
+        "With delegates_to in place, list-pr-checks.sh and list-pr-comments.sh actually ran. Their `gh api` and `gh api graphql` calls are not in the cassette, so list-pr-checks.sh reported 'No status checks found' while `gh pr view` reported ci/test FAILURE, and list-pr-comments.sh printed `Auto-detected PR #[]` with a GraphQL parse warning.",
+        "The trial declined to rewrite pushed history to purge .pyc blobs from commit 26beb34, choosing squash-merge instead. Rounds 2 and 3 both concurred. It tried to record that in the PR via `gh pr comment`, which is also a cassette gap."
       ]
     },
     {
@@ -383,72 +446,75 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": null,
-        "tokens": null,
-        "tool_calls": 0,
+        "time_seconds": 396.8,
+        "tokens": 101578,
+        "tool_calls": 45,
         "errors": 0
+      },
+      "qa": {
+        "rounds": 1,
+        "executor_time_seconds": 246.4,
+        "qa_agent_time_seconds": 150.4,
+        "executor_tokens": 58818,
+        "qa_agent_tokens": 42760
       },
       "expectations": [
         {
           "text": "The gh-stub log shows `pr create --draft` followed later by `pr ready`, with no `pr view --json isDraft,title,body,assignees` call and no `pr edit --add-assignee` call in between (the cassette fails loudly if either is attempted, confirming their absence directly).",
           "passed": true,
-          "evidence": "gh-calls.log shows `pr create --draft` followed later by `pr ready`, with no `pr view --json isDraft,title,body,assignees` call and no `pr edit --add-assignee` call anywhere in between -- independently verified via direct read of the full log and targeted grep for both forbidden patterns (0 matches each)."
+          "evidence": "`pr create --draft` is call 3, `pr ready` is call 5. No `pr view --json isDraft,title,body,assignees` and no `pr edit --add-assignee` anywhere in the 6-call log."
         },
         {
           "text": "calculator/ops.py contains a count_positive(numbers) function with a correct test.",
           "passed": true,
-          "evidence": "calculator/ops.py contains a correct count_positive(numbers) function with a passing test -- independently verified: `pytest -q` on the workspace reports 5 passed."
+          "evidence": "count_positive(numbers) uses a strict `>`; 4 tests including the zero boundary. QA mutation-tested the suite (>=0, <0, True, >1 all fail it)."
         },
         {
           "text": "The gh-stub log contains zero `pr merge` calls.",
           "passed": true,
-          "evidence": "gh-calls.log contains zero `pr merge` entries -- independently verified via direct read of the full log (5 entries total, none `pr merge`)."
+          "evidence": "No `pr merge` in the log."
         },
         {
           "text": "The final report includes the PR URL (https://github.com/example/calc-service/pull/608).",
           "passed": true,
-          "evidence": "Final report includes the PR URL https://github.com/example/calc-service/pull/608, matching the cassette's canned PR number."
+          "evidence": "Report gives [#608](https://github.com/example/calc-service/pull/608)."
         }
       ],
-      "notes": [
-        "Time/token usage for this trial's background-agent task id was not retrievable after the task completed (tool_use_error: no task found), so time_seconds/tokens are omitted rather than estimated."
-      ]
+      "notes": []
     }
   ],
   "run_summary": {
     "with_skill": {
       "pass_rate": {
-        "mean": 1.0,
-        "stddev": 0.0,
-        "min": 1.0,
+        "mean": 0.9111,
+        "stddev": 0.2514,
+        "min": 0.2,
         "max": 1.0
       },
       "time_seconds": {
-        "mean": 342.5237,
-        "stddev": 343.706,
-        "min": 20.345,
-        "max": 704.323
+        "mean": 603.5333,
+        "stddev": 304.2259,
+        "min": 260.3,
+        "max": 1106.5
       },
       "tokens": {
-        "mean": 67198.3333,
-        "stddev": 23990.0305,
-        "min": 43482,
-        "max": 91453
+        "mean": 141850,
+        "stddev": 56059.9389,
+        "min": 58952,
+        "max": 226926
+      },
+      "tool_calls": {
+        "mean": 54.3333,
+        "stddev": 21.2237,
+        "min": 25,
+        "max": 96
+      },
+      "qa_rounds": {
+        "mean": 1.7778,
+        "stddev": 1.0304,
+        "min": 0,
+        "max": 3
       }
-    },
-    "delta": {
-      "pass_rate": "+1.00",
-      "time_seconds": "+342.5",
-      "tokens": "+67198"
     }
-  },
-  "notes": [
-    "9/9 evals pass 100% of their expectations in this initial baseline run. All results were independently verified against ground truth (git log/branch state, gh-calls.log contents, pytest runs, README diffs) rather than accepted from executor self-report alone.",
-    "This is a with_skill-only baseline (no without_skill comparison) since implement-feature is an orchestration/workflow skill, not a content generator.",
-    "This skill's own instructions require spawning fresh-context QA sub-agents as part of its normal operation (step 6's review loop). Executors in this baseline batch were run with full tool access (including the Agent tool) so they could do this for real, rather than simulating it -- QA rounds in this batch are genuine independent sub-agent invocations, confirmed per-trial.",
-    "Time/token usage figures are only available for evals 2, 5, and 6 (43482/91453/66660 tokens; 20.3/704.3/302.9 seconds respectively). Figures for evals 1, 3, 4, 7, 8, and 9 were not captured, either because the underlying background-task usage metadata was not retrievable after this session was interrupted and restarted by a usage-limit reset partway through the batch (evals 7 and 8 resumed mid-flight from saved transcripts, spanning two process lifetimes), or because task usage metadata was not retrievable post-completion for tasks dispatched fresh in this session (evals 1, 3, 4, 9). The aggregate time_seconds/tokens stats below are computed only over the 3 evals with real data -- they should not be read as representative of the other 6, and are a known gap for this baseline (unlike prior skills' baselines, which had complete timing data for every trial).",
-    "A real infrastructure bug in evals/lib/gh-stub/gh was found and fixed during this baseline run: cassette \"match\" entries required substring containment within a single argv token but did not require a word boundary, so a guard entry like [\"pr\",\"merge\"] (used across most fixtures to assert `gh pr merge` is never called) false-triggered against ordinary `gh pr view --json ...,mergeable,mergeStateStatus,...` calls, since \"merge\" is a substring of \"mergeable\". This blocked the documented land-pr hand-off call path in the first attempts at evals 1, 3, and 4. Fixed by requiring substring matches to land on a word boundary, verified with targeted unit tests plus a full replay of every previously-recorded real gh-calls.log from this and prior baselined skills' runs (81/81 previously-matching calls still resolve identically). Landed as a continuation of the existing gh-stub fix PR (#11), which also covers an earlier cross-token substring-matching fix found while baselining create-github-issue.",
-    "Eval 4's fixture and expectations were substantively redesigned mid-baseline after two real trials showed its original 'QA disagreement persists to the 3-round cap' design was not achievable in practice: real fresh-context QA sub-agents legitimately reasoned their way to agreeing the user's explicit scope exclusion was valid, rather than mechanically sustaining the objection. See the per-eval note on eval 4 above and the corresponding evals.json/fixture diff for details.",
-    "Evals 7 and 8 were interrupted mid-trial by a session usage-limit reset and successfully resumed via SendMessage against their saved agent transcripts, continuing from exactly where they left off (both had already committed their initial implementation and opened a draft PR before the interruption). Final results were independently re-verified against ground truth after resumption; only the timing/token figures for these two trials are a known gap, not the correctness of the results themselves."
-  ]
+  }
 }
