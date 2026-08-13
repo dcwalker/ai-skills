@@ -61,13 +61,21 @@ d. **Fix failing checks** — invoke the `fix-pr-checks` skill for any other fai
 
 e. Re-run the `gh pr view` command from step 1 to refresh status before deciding whether another round is needed.
 
-f. If, after a–d, nothing was found to fix (no comments, no SonarQube findings, no failing checks, no conflicts) but `mergeStateStatus` is still not `CLEAN`, check `reviewDecision`: if it's `REVIEW_REQUIRED` (or similar — the PR is blocked purely on a human approval gate none of the four sub-steps can satisfy), stop looping immediately rather than burning the remaining rounds, and report that the PR is waiting on review approval.
+f. **Stop early if the round made no progress.** Another round is only worth running if this one changed something. After a–e, if `mergeStateStatus` is still not `CLEAN`, stop looping immediately — do not burn the remaining rounds — when any of these holds:
+
+   - **Nothing to fix.** Steps a–d found no conflicts, no comments, no SonarQube findings, and no failing checks. Report what is still blocking. When `reviewDecision` is `REVIEW_REQUIRED` (or similar), name it: the PR is waiting on a human approving review, which none of the four sub-steps can satisfy.
+   - **A fix did not take.** The same check or comment that a–d just addressed is still failing. Per the Important Notes below, that means the fix was wrong, not that it needs repeating — re-running identical work is what the round cap exists to prevent, and hitting the cap that way tells the user nothing the second round did not.
+   - **No new information.** The refreshed `gh pr view` is identical to the previous round's, and the sub-steps surfaced nothing they had not already surfaced. There is no reason to expect round *n+1* to differ from round *n*.
+
+   In each case, report what remains outstanding and ask the user how to proceed. Stopping at round 2 with an accurate account beats stopping at round 5 with the same account.
 
 Log a one-line summary after each round: what was fixed, what's still outstanding.
 
 ### 3. Round cap
 
-If 5 rounds complete and the PR is still not green, stop looping. Report exactly what remains outstanding (which checks, which comments, which conflicts) and ask the user how to proceed rather than continuing indefinitely. This mirrors `fix-pr-checks`' own "stop after repeated failures" rule — a persistent failure after several rounds usually needs a decision only the user can make (e.g. the check itself is misconfigured, or the fix requires an out-of-scope change). If `isDraft` was (or still is) true, repeat the step 1 caveat that `mergeStateStatus` can be unreliable for draft PRs — that may be the actual reason nothing read as green.
+The cap is the backstop for the case step 2f does not catch: rounds that *do* keep making progress — each one resolving something real, or surfacing a blocker the last one had not — without ever arriving at green. Five is where that stops being convergence and starts being churn.
+
+If 5 such rounds complete and the PR is still not green, stop looping. Report exactly what remains outstanding (which checks, which comments, which conflicts) and ask the user how to proceed rather than continuing indefinitely. A persistent failure after several rounds usually needs a decision only the user can make (e.g. the check itself is misconfigured, or the fix requires an out-of-scope change). If `isDraft` was (or still is) true, repeat the step 1 caveat that `mergeStateStatus` can be unreliable for draft PRs — that may be the actual reason nothing read as green.
 
 ### 4. Report
 
@@ -75,10 +83,20 @@ Summarize:
 
 - Rounds run and what each resolved (comments, SonarQube issues, checks, conflicts).
 - Final PR state: green and mergeable, or still blocked with specific remaining items.
-- The PR as a clickable link — `[#501](https://github.com/<owner>/<repo>/pull/501)`, using the `url` field `gh pr view` returned, not a bare `#501`. Link every remaining blocked item the same way (a failing check to its check-run URL, an unresolved comment to its comment URL) so the user can go straight to it. Only use URLs `gh` actually returned; if an item came back without one, name it in plain text rather than constructing a URL.
+- **Every referenced item as a clickable link.** This applies to each check and comment you name, not just the PR. Use only URLs `gh` actually returned: the PR's `url` field, and each check's `detailsUrl` from `statusCheckRollup`. A check named in plain text when its `detailsUrl` was right there in the response is a defect — the point is that the user can click straight through to the failure.
+
+  So the report reads:
+
+  > [#501](https://github.com/example/repo/pull/501) is green and mergeable. [ci/test](https://github.com/example/repo/actions/runs/51001) was failing in round 1 and passed after the fix.
+
+  and not:
+
+  > #501 is green and mergeable. ci/test was failing in round 1 and passed after the fix.
+
+  Mentioning a run id in passing, or quoting a command that contains the URL, does not count as linking it. If an item genuinely came back without a URL, name it in plain text — never construct or guess one.
 
 ## Important Notes
 
 - **Never merges the PR.** Merging affects shared state and requires separate, explicit approval — this skill's job ends at "green and mergeable."
 - Never force-pushes without explicit user approval, and never bypasses hooks with `--no-verify`.
-- If the same check or comment keeps failing after being "fixed," treat that as a sign the fix is wrong rather than re-attempting the same change — stop and ask.
+- If the same check or comment keeps failing after being "fixed," treat that as a sign the fix is wrong rather than re-attempting the same change — stop and ask. This is step 2f's second case; it takes precedence over the round cap, so honouring it means stopping well before round 5.
