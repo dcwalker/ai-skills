@@ -82,6 +82,18 @@ set automatically by `run-eval.sh`), so a grader can assert on what was or
 wasn't called -- e.g. "no `pr merge` call happened," "`pr create` was called
 with `--draft`" -- without constraining the exact path taken to get there.
 
+Because responses are canned, a read issued after a write returns the
+pre-write fixture state: resolve a thread, and the next listing still shows it
+unresolved. That is inherent to replaying a cassette, but it looks exactly like
+a write that silently failed. In a 13-trial `resolve-pr-comments` benchmark
+every executor spent turns re-reading, grepping the call log, and reasoning it
+out before concluding its writes had landed — all thirteen reached the right
+answer, and all thirteen paid for it. The stub now prints a one-line note to
+stderr the first time a read follows a write, at most once per trial, so the
+trial spends its turns on the task rather than on the harness. Writes are
+recognized as `-X POST|PATCH|PUT|DELETE` or a GraphQL `mutation`; the note
+never touches stdout, which callers parse.
+
 See the docstring at the top of `lib/gh-stub/gh` for the full cassette
 format.
 
