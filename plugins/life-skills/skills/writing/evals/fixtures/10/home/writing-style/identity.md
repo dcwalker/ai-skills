@@ -3,7 +3,7 @@
 Name:     Rebecca Okonkwo
 Mail:     r.okonkwo@othercorp.example
 Chat:     othercorp: U04RHOKONKWO (@rebecca)
-Forge:    rokonkwo
+Code host: rokonkwo
 Org:      Othercorp, othercorp.example
 Team:     Data Platform
 

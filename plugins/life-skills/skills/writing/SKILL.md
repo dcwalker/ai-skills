@@ -138,13 +138,13 @@ edited by hand whenever something changes:
 ```markdown
 # Identity
 
-Name:     <full name>, and any other form that appears as a display name
-Mail:     <address>, <alias>, <alias>
-Chat:     <workspace>: <user id> (@<handle>)
-Forge:    <github/gitlab handle>
-Tracker:  <jira/linear account id>
-Org:      <employer>, <primary email domain>
-Team:     <team name>, <how the team is named in the directory or tracker>
+Name:       <full name>, and any other form that appears as a display name
+Mail:       <address>, <alias>, <alias>
+Chat:       <workspace>: <user id> (@<handle>)
+Code host:  <github/gitlab/bitbucket handle>
+Tracker:    <jira/linear account id>
+Org:        <employer>, <primary email domain>
+Team:       <team name>, <how the team is named in the directory or tracker>
 
 ## Relationships
 
@@ -348,8 +348,9 @@ attribution contaminates every count on the card.
 **Establish the user's identifiers first.** Take them from the cache's
 `identity.md` when it has them, and otherwise from the connected accounts
 themselves rather than from the conversation: the email addresses and aliases
-the mail account actually sends from, the chat workspace's user ID, the forge
-handle (GitHub, GitLab) of the authenticated account, the tracker account ID.
+the mail account actually sends from, the chat workspace's user ID, the code
+host handle (GitHub, GitLab) of the authenticated account, the tracker
+account ID.
 Anything discovered this way is worth writing back to `identity.md`, with the
 user's agreement, so the next session starts from it.
 Then match samples on those identifiers. Fall back to a name match only when
