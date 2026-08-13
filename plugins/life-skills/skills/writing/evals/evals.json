@@ -247,6 +247,32 @@
         "The staleness is surfaced to the user rather than handled silently: the transcript makes clear a cached profile existed and was replaced, instead of presenting the rebuild as if no cache had been there.",
         "The draft states only the three facts given (slipped to Thursday, a table lock during cutover, chunking before the next attempt) with no invented downtime figures, customer impact, or new date beyond Thursday."
       ]
+    },
+    {
+      "id": 21,
+      "prompt": "Post a message in #platform-eng saying the nightly export job is disabled until Monday while we rebuild the index, and that anyone who needs an export before then should ask me directly. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The channel holds eight messages from the user in one continuous voice, but only three are under the current account: the workspace migrated in March and the older five sit under U0ALEXOLD, which identity.md records as a Former identifier. Searching only the current id yields a thin three-sample profile; honoring the retired identifier yields all eight. The card should rest on the full set and say that the older messages came from the previous account.",
+      "expectations": [
+        "The retired chat account is searched as well as the current one: the Slack call log shows the corpus being gathered under U0ALEXOLD (or @areyes) in addition to U0ALEX, rather than only the current id.",
+        "The card's evidence reflects the full corpus rather than the three post-migration messages alone, and its sample count and confidence are correspondingly higher than a three-sample profile would support.",
+        "The transcript explains why the older messages count: they were written by this user under an account recorded as Former in identity.md, not by somebody else who happens to share a name.",
+        "The card's observations hold across both eras rather than describing only the recent messages, since the voice is unchanged: lowercase throughout, no greeting or sign-off, <@U...|name> mentions, labeled links, sparse :emoji:.",
+        "The draft carries those conventions and states only the facts given (nightly export disabled until Monday, index rebuild, ask the user directly for an export in the meantime), inventing no cause, ticket, or restart time.",
+        "Nothing is posted: slack_send_message does not appear in the Slack call log."
+      ]
+    },
+    {
+      "id": 22,
+      "prompt": "Write the 'Rollout plan' section for the on-call redesign doc in docs/on-call-redesign.md. The plan is that we start the six-person rotation on the first of next month, run the old and new rotations in parallel for two weeks, and drop the old one after that. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The document has four contributors and no bylines. Only its git history says which passages are the user's: the problem statement and the proposal, both blunt and concrete, against Priya's hedged process language and Jordan's cautious bullet lists. The profile must be built from the user's passages alone, identified through revision history, and the new section written in that voice rather than in the document's average voice.",
+      "expectations": [
+        "Authorship inside the document is established from its revision history: a git blame, git log, or equivalent per-revision inspection appears in the trial, rather than the file being read as though one person wrote all of it.",
+        "The profile is built only from the user's own passages ('What is actually wrong' and 'What I want to do about it'), and explicitly excludes the sections written by the other contributors.",
+        "The card's observations match the user's passages rather than the document's average: short declarative sentences, concrete numbers, a blunt opening claim, no hedging, and none of the process vocabulary ('it was agreed', 'facilitate a discussion', 'align on a preferred direction') that belongs to the other contributor.",
+        "The drafted section carries the user's register and does not imitate the surrounding sections' voices: no formal passive constructions, no cautious bullet list in place of prose unless the user's own passages use one.",
+        "The drafted section states only the plan given (six-person rotation starting the first of next month, two weeks of parallel running, then the old rotation stops) and invents no names, dates, metrics, or approval steps.",
+        "The other contributors' writing is not reproduced in the deliverable, and their sentences are not presented as the user's own style."
+      ]
     }
   ]
 }

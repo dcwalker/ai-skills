@@ -197,9 +197,8 @@ The sources worth checking, what each one is good for, and the two that
 need care (a personal site, which is easy to misattribute, and chat, which
 is the highest-volume medium and the most often unreachable) are in
 [references/finding-samples.md](references/finding-samples.md), along with
-how to establish a recipient's relationship class and how to confirm the
-user actually wrote a sample. Read it before building a corpus for an
-audience with no cached card.
+how to establish a recipient's relationship class. Read it before building a
+corpus for an audience with no cached card.
 
 Text and SMS rarely have a tool seam. Do not fabricate one. Fall back down the
 ladder in Step 4 and say which substitution was made.
@@ -226,6 +225,25 @@ Record which rung supplied each sample; the style card reports it.
 
 Never skip a rung silently. Dropping from rung 1 to rung 3 is a finding the
 user should see.
+
+**Two checks before the corpus counts as gathered.** Both cost one extra call
+and both are easy to skip, because in each case a plausible corpus is already
+in hand and the extra work looks redundant. It is not: skipping either one
+silently narrows or contaminates the evidence.
+
+1. **Re-run the search for every retired identifier.** Open `identity.md` and
+   look for `Former:` lines. For each one, issue the same search again under
+   that address, handle, or account id, and add what comes back. A search
+   under the current identifier alone returns only what the user wrote since
+   the change, which on a recent change can be a fraction of what exists. If
+   there are no `Former:` lines, say so and move on; that is a two-second
+   check, not a research step.
+2. **Run blame before treating any document as a sample.** A file or page with
+   more than one author is not one corpus. `git blame`, `git log --author`, or
+   the page history says which passages are the user's; use only those. A
+   collaborative document read as though one person wrote it yields a card
+   averaged across several voices, none of which is the user's, and the
+   average always reads plausible.
 
 Rungs 2 and 4 need a relationship class for the recipient, and every rung
 needs samples the user actually wrote. Both are in
@@ -314,6 +332,11 @@ before drafting.
 Show the card and get a response before drafting. This is the reference the
 draft is written against, and the point at which the user can correct a wrong
 read cheaply.
+
+This holds whatever shape the deliverable takes. When the artifact is an edit
+to a file rather than a message to send, the edit is the draft: the card comes
+first, and writing straight into the file skips the only checkpoint the user
+has.
 
 ```
 Style Card: <medium> to <audience> (<relationship class>)
@@ -414,7 +437,10 @@ always have one is not a reason: write the shorter artifact.
 
 Do not sharpen what the user left vague. "Tomorrow" does not become "tomorrow
 morning", "next week" does not become "Tuesday", "a few" does not become
-"three", and "the migration" does not acquire a cause. Added precision reads
+"three", "the first of next month" does not become a calendar date, and "the
+migration" does not acquire a cause. Resolving a relative date is the most
+tempting of these, because a specific date genuinely reads better. It is still
+the user's date to choose. Added precision reads
 as harmless because it is small and plausible, and it is still invention: the
 user has to notice and undo it before sending.
 
