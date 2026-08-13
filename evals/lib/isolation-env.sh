@@ -73,10 +73,11 @@ emit_git_config_isolation() {
 }
 
 # Emit the isolation preamble. $1 is evals/lib, so the gh stub can be placed
-# ahead of the real gh on PATH. $2 is the mode: "stub" (default) shadows gh and
-# scrubs every credential; "sandbox" is for the handful of evals that run
-# against a real disposable GitHub repo, and deliberately leaves the real gh
-# reachable -- run-eval.sh gives it the sandbox-scoped token and nothing else.
+# ahead of the real gh on PATH. $2 is the mode: "stub" (default) shadows gh;
+# "sandbox" is for the handful of evals that run against a real disposable
+# GitHub repo, and deliberately leaves the real gh reachable -- run-eval.sh
+# gives it the sandbox-scoped token and nothing else. Both modes scrub every
+# credential; the mode only decides whether gh is shadowed.
 emit_isolation_env() {
   local lib_dir="$1"
   local mode="${2:-stub}"
@@ -88,15 +89,21 @@ emit_isolation_env() {
 
   emit_git_config_isolation
 
+  # Every credential is scrubbed in every mode, sandbox included. A sandbox
+  # trial does need a GitHub token, but it gets exactly one: run-eval.sh emits
+  # `export GH_TOKEN="$EVAL_GH_SANDBOX_TOKEN"` *after* this preamble, so the
+  # unset below is what guarantees the host's token cannot survive into the
+  # trial -- only the sandbox-scoped one is put back.
+  #
+  # GITHUB_TOKEN is deliberately never re-exported. gh prefers GH_TOKEN and so
+  # needs nothing else, and leaving GITHUB_TOKEN populated would hand anything
+  # that reads it directly whatever ambient credential the host had. That is
+  # not hypothetical: GitHub Actions injects a GITHUB_TOKEN into every job, so
+  # a sandbox eval run in CI would otherwise inherit the workflow's own,
+  # much broader, token -- exactly the "one throwaway repo, nothing else"
+  # boundary this mode exists to draw.
   local cred
   for cred in "${EVAL_SCRUBBED_CREDENTIALS[@]}"; do
-    # A sandbox trial's whole purpose is to reach the sandbox repo, so its
-    # GitHub token is supplied rather than scrubbed. Every other credential is
-    # still removed: "may talk to one throwaway GitHub repo" is not "may talk
-    # to Trello, Sonar, and Jira."
-    if [[ "$mode" == "sandbox" ]] && [[ "$cred" == "GH_TOKEN" || "$cred" == "GITHUB_TOKEN" ]]; then
-      continue
-    fi
     echo "unset $cred"
   done
 
