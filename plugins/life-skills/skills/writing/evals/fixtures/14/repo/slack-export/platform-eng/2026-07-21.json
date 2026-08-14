@@ -1,0 +1,10 @@
+[
+  {"type": "message", "user": "U0ALEX", "ts": "1753099320.000100",
+   "text": "search latency is the cache key, not the query planner. every tenant gets its own suffix so cardinality just grows. numbers in <https://git.example.com/pr/412|PR 412> if anyone wants them :white_check_mark:"},
+  {"type": "message", "user": "U0JORDAN", "ts": "1753099500.000200",
+   "text": "nice find. does that explain the p99 spikes on tuesday too?"},
+  {"type": "message", "user": "U0ALEX", "ts": "1753099680.000300",
+   "text": "<@U0JORDAN> yep same cause. tuesday was the tenant import so cardinality doubled in an hour."},
+  {"type": "message", "user": "U0ALEX2", "ts": "1753100000.000400",
+   "text": "Thank you for the detailed analysis, Alex. I would suggest that we document this in the runbook so that the on-call engineer has the relevant context available going forward. Please let me know if I can assist."}
+]

@@ -39,16 +39,24 @@ State model (the fake Gmail "database"):
                                "type": "system" or "user"}},
     "drafts": {"<draft_id>": {"id": "...", "to": [...], "cc": [...],
                                "bcc": [...], "subject": "...", "body": "...",
-                               "replyToMessageId": null or "<message_id>"}}
+                               "replyToMessageId": null or "<message_id>"}},
+    "me": "user@example.com"
   }
 
+The optional top-level "me" is the fixture's account owner, and it is what
+`from:me` / `to:me` resolve to, as they do in real Gmail. A fixture that
+omits it makes those two terms match nothing (see below).
+
 Query support in search_threads is a small, documented subset of Gmail
-syntax -- enough for triage's scoped-inbox flow: `in:inbox`, `in:anywhere`,
-`from:<addr>`, `subject:<word>`, `label:<label_id>`, `is:unread`, bare
+syntax -- enough for triage's scoped-inbox flow and writing's corpus
+searches: `in:inbox`, `in:sent`, `in:anywhere`, `from:<addr|me>`,
+`to:<addr|me>`, `subject:<word>`, `label:<label_id>`, `is:unread`, bare
 words (matched against subject+snippet), and `-` negation of any of these.
 Anything fancier matches nothing rather than silently matching everything,
 and the raw query is always logged so a grader can see exactly what was
-asked for.
+asked for. `from:` and `to:` match the thread-level participants, not each
+individual message, so a fixture thread records the correspondent pair it
+should be findable by.
 """
 
 import copy
@@ -75,32 +83,51 @@ def _thread_listing(t: dict) -> dict:
     }
 
 
+def _resolve_address(addr: str) -> str:
+    """`me` resolves to the fixture's account owner, as in real Gmail. A
+    fixture that declares no owner resolves it to the empty string, which
+    _term_matches treats as no match rather than as a match-everything
+    substring."""
+    if addr == "me":
+        return str(state.data.get("me", "")).lower()
+    return addr.lower()
+
+
+def _in_matches(t: dict, place: str) -> bool:
+    """`in:` names a location, which for this stub is a system label."""
+    if place == "anywhere":
+        return True
+    return {"inbox": "INBOX", "sent": "SENT", "trash": "TRASH"}.get(place, "") in t["labelIds"]
+
+
+# Operators this stub does not implement. Matching nothing keeps a fixture gap
+# loudly visible in the log rather than silently matching everything.
+_UNIMPLEMENTED = ("is:", "has:", "category:", "after:", "before:",
+                  "newer", "older", "size:", "larger:", "smaller:")
+
+# Each entry maps an operator prefix to how its argument is tested.
+_OPERATORS = {
+    "in:": lambda t, arg: _in_matches(t, arg),
+    "from:": lambda t, arg: bool(_resolve_address(arg)) and _resolve_address(arg) in t["from"].lower(),
+    "to:": lambda t, arg: bool(_resolve_address(arg)) and any(
+        _resolve_address(arg) in r.lower() for r in t["to"]),
+    "subject:": lambda t, arg: arg.lower() in t["subject"].lower(),
+    "label:": lambda t, arg: arg in t["labelIds"],
+}
+
+
 def _term_matches(t: dict, term: str) -> bool:
-    if term.startswith("in:"):
-        place = term[3:]
-        if place == "anywhere":
-            return True
-        if place == "inbox":
-            return "INBOX" in t["labelIds"]
-        if place == "trash":
-            return "TRASH" in t["labelIds"]
-        return False
-    if term.startswith("from:"):
-        return term[5:].lower() in t["from"].lower()
-    if term.startswith("subject:"):
-        return term[8:].lower() in t["subject"].lower()
-    if term.startswith("label:"):
-        return term[6:] in t["labelIds"]
     if term == "is:unread":
         return "UNREAD" in t["labelIds"]
     if term == "is:read":
         return "UNREAD" not in t["labelIds"]
-    if term.startswith(("is:", "has:", "category:", "after:", "before:",
-                        "newer", "older", "size:", "larger:", "smaller:")):
-        # Unimplemented operator: match nothing, loudly visible in the log,
-        # rather than silently matching everything.
+    for prefix, test in _OPERATORS.items():
+        if term.startswith(prefix):
+            return test(t, term[len(prefix):])
+    if term.startswith(_UNIMPLEMENTED):
         return False
-    return term.lower() in t["subject"].lower() or term.lower() in t["snippet"].lower()
+    lowered = term.lower()
+    return lowered in t["subject"].lower() or lowered in t["snippet"].lower()
 
 
 def _thread_matches(t: dict, query: str) -> bool:
@@ -124,8 +151,9 @@ def search_threads(
     """Lists email threads, filtered by a Gmail-syntax query string. Returns
     listing-level fields only (no message bodies) -- use get_thread for a
     full body. The stub supports a documented subset of query operators:
-    in:inbox, in:anywhere, from:, subject:, label:<id>, is:unread, bare
-    words, and '-' negation."""
+    in:inbox, in:sent, in:anywhere, from:, to:, subject:, label:<id>,
+    is:unread, bare words, and '-' negation. from:me and to:me resolve to
+    the fixture's "me" address."""
     matches = []
     for t in state.data["threads"].values():
         if not includeTrash and "TRASH" in t["labelIds"] and "in:trash" not in query and "in:anywhere" not in query:

@@ -1,0 +1,118 @@
+{
+  "me": "eval-user@example.com",
+  "threads": {
+    "thread-i1": {
+      "id": "thread-i1",
+      "subject": "migration status",
+      "from": "jordan.blake@example.com",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-07-31T08:02:00Z",
+      "snippet": "Morning. The migration is still running, roughly 60% through.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-i1",
+          "from": "jordan.blake@example.com",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-07-31T08:02:00Z",
+          "snippet": "Morning. The migration is still running, roughly 60% through.",
+          "body": "Morning. The migration is still running, roughly 60% through. I will ping you when it clears.\n\nJordan"
+        }
+      ]
+    },
+    "thread-i2": {
+      "id": "thread-i2",
+      "subject": "Thursday review",
+      "from": "priya.raman@example.com",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-07-29T19:40:00Z",
+      "snippet": "Can you take ten minutes at Thursday's review to cover the outage?",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-i2",
+          "from": "priya.raman@example.com",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-07-29T19:40:00Z",
+          "snippet": "Can you take ten minutes at Thursday's review to cover the outage?",
+          "body": "Alex, can you take ten minutes at Thursday's review to cover the outage and what changed since? No slides needed.\n\nPriya"
+        }
+      ]
+    },
+    "thread-i3": {
+      "id": "thread-i3",
+      "subject": "Build 418 passed",
+      "from": "noreply@buildbot.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-07-31T06:15:00Z",
+      "snippet": "All checks green on main.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-i3",
+          "from": "noreply@buildbot.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-07-31T06:15:00Z",
+          "snippet": "All checks green on main.",
+          "body": "All checks green on main. Nothing to do."
+        }
+      ]
+    },
+    "thread-i4": {
+      "id": "thread-i4",
+      "subject": "This week: cache invalidation patterns",
+      "from": "news@sredigest.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-07-28T07:00:00Z",
+      "snippet": "A 20-minute read on cache invalidation at scale.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-i4",
+          "from": "news@sredigest.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-07-28T07:00:00Z",
+          "snippet": "A 20-minute read on cache invalidation at scale.",
+          "body": "A 20-minute read on cache invalidation at scale."
+        }
+      ]
+    }
+  },
+  "labels": {
+    "Label_1": {
+      "id": "Label_1",
+      "name": "Clients",
+      "type": "user"
+    },
+    "Label_2": {
+      "id": "Label_2",
+      "name": "Family",
+      "type": "user"
+    }
+  },
+  "drafts": {}
+}

@@ -30,13 +30,21 @@ State model (the fake Jira "site"):
         "reporter": {"accountId", "displayName"},
         "created": "<ISO>", "updated": "<ISO>",
         "resolution": null or "...", "duedate": null or "YYYY-MM-DD",
-        "comments": [{"id": "...", "body": "...", "created": "<ISO>"}]
+        "comments": [{"id": "...", "body": "...", "created": "<ISO>",
+                       "author": {"accountId": "...", "displayName": "..."}}]
     }},
     "users": [{"accountId": "...", "displayName": "...",
                 "emailAddress": "..."}],
+    "me": {"accountId": "...", "displayName": "..."},
     "transitions": [{"id": "...", "name": "...",
                       "to": {"name": "...", "statusCategory": "..."}}]
   }
+
+A comment's optional "author" is passed through to callers verbatim, and the
+optional top-level "me" identifies the fixture's own account: comments this
+stub creates are stamped with it. Two users with similar display names and
+different accountIds is a fixture worth writing, because attributing writing
+by display name is exactly the mistake this lets an eval catch.
 
 JQL support in searchJiraIssuesUsingJql is a small, documented subset:
 clauses joined by AND, each one of `project = KEY`, `status != NAME`,
@@ -289,6 +297,10 @@ def addCommentToJiraIssue(  # NOSONAR(S1542) camelCase = real MCP tool name
     else:
         result = {"id": f"comment-{len(comments) + 1}", "body": commentBody,
                   "created": _STUB_NOW}
+        # Real comments name their author, and a skill that attributes
+        # writing has to read that field rather than infer from the issue.
+        if state.data.get("me"):
+            result["author"] = dict(state.data["me"])
         comments.append(dict(result))
     issue["updated"] = _STUB_NOW
     state.flush()

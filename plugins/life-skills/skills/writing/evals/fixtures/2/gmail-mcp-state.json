@@ -1,0 +1,518 @@
+{
+  "me": "eval-user@example.com",
+  "threads": {
+    "thread-s1": {
+      "id": "thread-s1",
+      "subject": "Onboarding schedule for Marcus",
+      "from": "eval-user@example.com",
+      "to": [
+        "mwebb@northwind.example"
+      ],
+      "date": "2026-07-25T13:10:00Z",
+      "snippet": "Confirming the onboarding sessions for the first two weeks of August.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s1",
+          "from": "eval-user@example.com",
+          "to": [
+            "mwebb@northwind.example"
+          ],
+          "date": "2026-07-25T13:10:00Z",
+          "snippet": "Confirming the onboarding sessions for the first two weeks of August.",
+          "body": "Hi Marcus,\n\nThank you for sending the account details yesterday. I am confirming the onboarding sessions for the first two weeks of August.\n\n1. Data import walkthrough, Tuesday 5 August, one hour.\n2. Admin and permissions setup, Thursday 7 August, 45 minutes.\n3. Reporting review, Tuesday 12 August, one hour.\n\nIf any of those times do not work, tell me which and I will move them. I will send calendar invitations once you confirm.\n\nBest,\nAlex Reyes"
+        }
+      ]
+    },
+    "thread-s2": {
+      "id": "thread-s2",
+      "subject": "Follow-up on the integration questions",
+      "from": "eval-user@example.com",
+      "to": [
+        "mwebb@northwind.example"
+      ],
+      "date": "2026-07-11T10:26:00Z",
+      "snippet": "Answers to the three questions from our call, plus one open item.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s2",
+          "from": "eval-user@example.com",
+          "to": [
+            "mwebb@northwind.example"
+          ],
+          "date": "2026-07-11T10:26:00Z",
+          "snippet": "Answers to the three questions from our call, plus one open item.",
+          "body": "Hi Marcus,\n\nHere are the answers to the three questions from our call on Tuesday.\n\n1. Yes, the API supports incremental sync and we recommend it for volumes above 50,000 records.\n2. Retention is configurable per environment, and 90 days is the default.\n3. Single sign-on is included at your tier, with no additional cost.\n\nThe one open item is the sandbox credential request, which is with our security team. I expect it back by Friday and will let you know either way.\n\nBest,\nAlex Reyes"
+        }
+      ]
+    },
+    "thread-s3": {
+      "id": "thread-s3",
+      "subject": "Revised timeline",
+      "from": "eval-user@example.com",
+      "to": [
+        "mwebb@northwind.example"
+      ],
+      "date": "2026-06-30T16:02:00Z",
+      "snippet": "The revised timeline moves go-live to 22 September.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s3",
+          "from": "eval-user@example.com",
+          "to": [
+            "mwebb@northwind.example"
+          ],
+          "date": "2026-06-30T16:02:00Z",
+          "snippet": "The revised timeline moves go-live to 22 September.",
+          "body": "Hi Marcus,\n\nAfter reviewing the scope with my team, the revised timeline moves go-live to 22 September. The two-week shift comes entirely from the data migration, which is larger than the estimate we worked from in May.\n\nEverything else in the plan is unchanged, and the training dates hold. I am sorry for the change and I would rather give you an accurate date now than a comfortable one today.\n\nBest,\nAlex Reyes"
+        }
+      ]
+    },
+    "thread-s4": {
+      "id": "thread-s4",
+      "subject": "Onboarding schedule for Lena",
+      "from": "eval-user@example.com",
+      "to": [
+        "lena@brightpath.example"
+      ],
+      "date": "2026-07-25T13:10:00Z",
+      "snippet": "Confirming the onboarding sessions for the first two weeks of August.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s4",
+          "from": "eval-user@example.com",
+          "to": [
+            "lena@brightpath.example"
+          ],
+          "date": "2026-07-25T13:10:00Z",
+          "snippet": "Confirming the onboarding sessions for the first two weeks of August.",
+          "body": "Hi Lena,\n\nThank you for sending the account details yesterday. I am confirming the onboarding sessions for the first two weeks of August.\n\n1. Data import walkthrough, Tuesday 5 August, one hour.\n2. Admin and permissions setup, Thursday 7 August, 45 minutes.\n3. Reporting review, Tuesday 12 August, one hour.\n\nIf any of those times do not work, tell me which and I will move them. I will send calendar invitations once you confirm.\n\nBest,\nAlex Reyes"
+        }
+      ]
+    },
+    "thread-s5": {
+      "id": "thread-s5",
+      "subject": "Follow-up on the integration questions",
+      "from": "eval-user@example.com",
+      "to": [
+        "lena@brightpath.example"
+      ],
+      "date": "2026-07-11T10:26:00Z",
+      "snippet": "Answers to the three questions from our call, plus one open item.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s5",
+          "from": "eval-user@example.com",
+          "to": [
+            "lena@brightpath.example"
+          ],
+          "date": "2026-07-11T10:26:00Z",
+          "snippet": "Answers to the three questions from our call, plus one open item.",
+          "body": "Hi Lena,\n\nHere are the answers to the three questions from our call on Tuesday.\n\n1. Yes, the API supports incremental sync and we recommend it for volumes above 50,000 records.\n2. Retention is configurable per environment, and 90 days is the default.\n3. Single sign-on is included at your tier, with no additional cost.\n\nThe one open item is the sandbox credential request, which is with our security team. I expect it back by Friday and will let you know either way.\n\nBest,\nAlex Reyes"
+        }
+      ]
+    },
+    "thread-s6": {
+      "id": "thread-s6",
+      "subject": "Revised timeline",
+      "from": "eval-user@example.com",
+      "to": [
+        "lena@brightpath.example"
+      ],
+      "date": "2026-06-30T16:02:00Z",
+      "snippet": "The revised timeline moves go-live to 22 September.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s6",
+          "from": "eval-user@example.com",
+          "to": [
+            "lena@brightpath.example"
+          ],
+          "date": "2026-06-30T16:02:00Z",
+          "snippet": "The revised timeline moves go-live to 22 September.",
+          "body": "Hi Lena,\n\nAfter reviewing the scope with my team, the revised timeline moves go-live to 22 September. The two-week shift comes entirely from the data migration, which is larger than the estimate we worked from in May.\n\nEverything else in the plan is unchanged, and the training dates hold. I am sorry for the change and I would rather give you an accurate date now than a comfortable one today.\n\nBest,\nAlex Reyes"
+        }
+      ]
+    },
+    "thread-s7": {
+      "id": "thread-s7",
+      "subject": "cache branch",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2026-07-30T09:14:00Z",
+      "snippet": "can you take the cache branch this afternoon? i want it in before the freeze.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s7",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2026-07-30T09:14:00Z",
+          "snippet": "can you take the cache branch this afternoon? i want it in before the freeze.",
+          "body": "hey Jordan,\n\ncan you take the cache branch this afternoon? i want it in before the freeze on Friday.\n\nnothing tricky in it, just the ttl change and the two tests.\n\nthanks\nalex"
+        }
+      ]
+    },
+    "thread-s8": {
+      "id": "thread-s8",
+      "subject": "standup moved",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2026-07-24T15:02:00Z",
+      "snippet": "heads up, standup moves to 9:45 next week while the room is booked.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s8",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2026-07-24T15:02:00Z",
+          "snippet": "heads up, standup moves to 9:45 next week while the room is booked.",
+          "body": "hey Jordan,\n\nheads up, standup moves to 9:45 next week while the room is booked.\n\nsame link, i'll update the invite.\n\nthanks\nalex"
+        }
+      ]
+    },
+    "thread-s9": {
+      "id": "thread-s9",
+      "subject": "queue retries",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2026-07-18T11:41:00Z",
+      "snippet": "quick one: did we ever cap the retry count on the export queue?",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s9",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2026-07-18T11:41:00Z",
+          "snippet": "quick one: did we ever cap the retry count on the export queue?",
+          "body": "hey Jordan,\n\nquick one: did we ever cap the retry count on the export queue? i'm seeing the same job four times in the log.\n\nif not i'll open a ticket.\n\nthanks\nalex"
+        }
+      ]
+    },
+    "thread-s10": {
+      "id": "thread-s10",
+      "subject": "staging box",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2026-07-09T16:20:00Z",
+      "snippet": "can you grab the staging box tomorrow morning? i'm out until 11.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s10",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2026-07-09T16:20:00Z",
+          "snippet": "can you grab the staging box tomorrow morning? i'm out until 11.",
+          "body": "hey Jordan,\n\ncan you grab the staging box tomorrow morning? i'm out until 11 and the seed job needs a babysitter.\n\nthanks\nalex"
+        }
+      ]
+    },
+    "thread-s11": {
+      "id": "thread-s11",
+      "subject": "config split",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2026-06-27T10:05:00Z",
+      "snippet": "i split the config file, your branch will conflict on the top half.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s11",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2026-06-27T10:05:00Z",
+          "snippet": "i split the config file, your branch will conflict on the top half.",
+          "body": "hey Jordan,\n\ni split the config file so your branch will conflict on the top half. take mine, the rest is unchanged.\n\nsorry for the noise.\n\nthanks\nalex"
+        }
+      ]
+    },
+    "thread-s12": {
+      "id": "thread-s12",
+      "subject": "Re: Migration readiness review",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2026-06-19T13:33:00Z",
+      "snippet": "friday works. i'll bring the rollback notes.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s12",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2026-06-19T13:33:00Z",
+          "snippet": "friday works. i'll bring the rollback notes.",
+          "body": "hey Jordan,\n\nfriday works. i'll bring the rollback notes.\n\nthanks\nalex\n\nOn Thu, Jun 18, Jordan Blake wrote:\n> Hi Alex,\n>\n> I would like to propose that we convene a migration readiness review prior to the cutover window - ideally before Friday - so that we can walk through the rollback procedure, the communications plan, and the post-migration validation checklist together.\n>\n> Please let me know what time suits you best.\n>\n> Kind regards,\n> Jordan"
+        }
+      ]
+    },
+    "thread-s13": {
+      "id": "thread-s13",
+      "subject": "Search latency: fixed",
+      "from": "eval-user@example.com",
+      "to": [
+        "priya.raman@example.com"
+      ],
+      "date": "2026-07-28T08:30:00Z",
+      "snippet": "Search latency is back under 200ms as of this morning.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s13",
+          "from": "eval-user@example.com",
+          "to": [
+            "priya.raman@example.com"
+          ],
+          "date": "2026-07-28T08:30:00Z",
+          "snippet": "Search latency is back under 200ms as of this morning.",
+          "body": "Priya,\n\nSearch latency is back under 200ms as of this morning. No customer escalations came in overnight.\n\n- Root cause was an unbounded cache key, fixed in build 412.\n- We are adding an alert on key cardinality this week.\n- I will fold the write-up into Thursday's review.\n\nNothing needed from you.\n\nAlex"
+        }
+      ]
+    },
+    "thread-s14": {
+      "id": "thread-s14",
+      "subject": "Hiring: one ask",
+      "from": "eval-user@example.com",
+      "to": [
+        "priya.raman@example.com"
+      ],
+      "date": "2026-07-21T17:12:00Z",
+      "snippet": "I need a decision on the second backend req by Wednesday.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s14",
+          "from": "eval-user@example.com",
+          "to": [
+            "priya.raman@example.com"
+          ],
+          "date": "2026-07-21T17:12:00Z",
+          "snippet": "I need a decision on the second backend req by Wednesday.",
+          "body": "Priya,\n\nI need a decision on the second backend req by Wednesday, otherwise the panel slots we are holding get released.\n\n- Two candidates are through onsite and both are hireable.\n- Without the second req we lose one of them to a competing offer.\n\nHappy to walk through the scorecards if that helps.\n\nAlex"
+        }
+      ]
+    },
+    "thread-s15": {
+      "id": "thread-s15",
+      "subject": "Q3 plan, short version",
+      "from": "eval-user@example.com",
+      "to": [
+        "priya.raman@example.com"
+      ],
+      "date": "2026-07-07T09:48:00Z",
+      "snippet": "The plan holds, with one change: billing moves ahead of reporting.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s15",
+          "from": "eval-user@example.com",
+          "to": [
+            "priya.raman@example.com"
+          ],
+          "date": "2026-07-07T09:48:00Z",
+          "snippet": "The plan holds, with one change: billing moves ahead of reporting.",
+          "body": "Priya,\n\nThe plan holds, with one change: billing moves ahead of reporting.\n\n- Billing unblocks two customer commitments in August.\n- Reporting slips by roughly three weeks and no commitment depends on it.\n\nI will update the roadmap page today unless you disagree.\n\nAlex"
+        }
+      ]
+    },
+    "thread-s16": {
+      "id": "thread-s16",
+      "subject": "Incident summary: export outage",
+      "from": "eval-user@example.com",
+      "to": [
+        "priya.raman@example.com"
+      ],
+      "date": "2026-06-24T14:55:00Z",
+      "snippet": "Exports were down for 51 minutes yesterday. Cause and fix below.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s16",
+          "from": "eval-user@example.com",
+          "to": [
+            "priya.raman@example.com"
+          ],
+          "date": "2026-06-24T14:55:00Z",
+          "snippet": "Exports were down for 51 minutes yesterday. Cause and fix below.",
+          "body": "Priya,\n\nExports were down for 51 minutes yesterday afternoon.\n\n- Cause was a bad migration that locked the jobs table.\n- We restored from the standby and reran the failed exports overnight.\n- Two customers noticed and both have been contacted.\n\nFull write-up goes out Friday.\n\nAlex"
+        }
+      ]
+    },
+    "thread-i1": {
+      "id": "thread-i1",
+      "subject": "migration status",
+      "from": "jordan.blake@example.com",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-07-31T08:02:00Z",
+      "snippet": "Morning. The migration is still running, roughly 60% through.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-i1",
+          "from": "jordan.blake@example.com",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-07-31T08:02:00Z",
+          "snippet": "Morning. The migration is still running, roughly 60% through.",
+          "body": "Morning. The migration is still running, roughly 60% through. I will ping you when it clears.\n\nJordan"
+        }
+      ]
+    },
+    "thread-i2": {
+      "id": "thread-i2",
+      "subject": "Thursday review",
+      "from": "priya.raman@example.com",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-07-29T19:40:00Z",
+      "snippet": "Can you take ten minutes at Thursday's review to cover the outage?",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-i2",
+          "from": "priya.raman@example.com",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-07-29T19:40:00Z",
+          "snippet": "Can you take ten minutes at Thursday's review to cover the outage?",
+          "body": "Alex, can you take ten minutes at Thursday's review to cover the outage and what changed since? No slides needed.\n\nPriya"
+        }
+      ]
+    },
+    "thread-i3": {
+      "id": "thread-i3",
+      "subject": "Build 418 passed",
+      "from": "noreply@buildbot.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-07-31T06:15:00Z",
+      "snippet": "All checks green on main.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-i3",
+          "from": "noreply@buildbot.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-07-31T06:15:00Z",
+          "snippet": "All checks green on main.",
+          "body": "All checks green on main. Nothing to do."
+        }
+      ]
+    },
+    "thread-i4": {
+      "id": "thread-i4",
+      "subject": "This week: cache invalidation patterns",
+      "from": "news@sredigest.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-07-28T07:00:00Z",
+      "snippet": "A 20-minute read on cache invalidation at scale.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-i4",
+          "from": "news@sredigest.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-07-28T07:00:00Z",
+          "snippet": "A 20-minute read on cache invalidation at scale.",
+          "body": "A 20-minute read on cache invalidation at scale."
+        }
+      ]
+    }
+  },
+  "labels": {
+    "Label_1": {
+      "id": "Label_1",
+      "name": "Clients",
+      "type": "user"
+    },
+    "Label_2": {
+      "id": "Label_2",
+      "name": "Family",
+      "type": "user"
+    }
+  },
+  "drafts": {}
+}
