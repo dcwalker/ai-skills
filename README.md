@@ -51,7 +51,7 @@ Run `/plugin` to browse installed and available plugins, or to update/remove one
 ### Updating an installed plugin
 
 Installing a plugin copies it at a specific commit, into a directory named after
-that commit:
+that commit — one such directory per plugin, `life-skills` shown here:
 
 ```text
 ~/.claude/plugins/cache/dcwalker-skills/life-skills/
@@ -66,29 +66,43 @@ the plugin keeps loading the skills it was installed with. A skill added after
 you installed will not appear, and nothing reports an error, because from the
 plugin's point of view nothing is wrong.
 
-Updating is therefore two steps, and the second is the one that matters:
+Updating is therefore two stages, and the second is the one that matters:
 
 ```bash
 claude plugin marketplace update dcwalker-skills
 claude plugin update life-skills@dcwalker-skills
+claude plugin update software-development@dcwalker-skills
 ```
 
+The marketplace update is shared; each installed plugin then needs its own
+update. Updating one does not touch the other, so a skill added to
+`software-development` stays missing until that second line runs.
+
 The equivalents live under `/plugin` in the app: update the marketplace, then
-update the plugin (uninstalling and reinstalling has the same effect). Either
+update each plugin (uninstalling and reinstalling has the same effect). Either
 way, **restart afterwards** — the update prints `Restart to apply changes`, and
 skills are enumerated when a session starts, so a session already running keeps
 the old set.
 
-To check that an update actually landed, look for a second commit-named
-directory holding the skill you expected:
+To check that an update actually landed, ask which commit each plugin is pinned
+to:
 
 ```bash
-ls ~/.claude/plugins/cache/dcwalker-skills/life-skills/*/skills/
+claude plugin list
 ```
 
-A new directory containing the skill means the update worked and only a restart
-is missing. Only the original directory means the update did not take, and the
-marketplace update most likely failed first.
+Matching versions across both plugins, at the commit you expect, means the
+update worked and only a restart is missing. A plugin still showing the old
+commit was not updated — most likely its `plugin update` line was skipped, or
+the marketplace update failed first.
+
+Do not judge this by the cache directory. Updating one plugin can materialise a
+new commit directory for the *other* one without repointing it, so
+`ls ~/.claude/plugins/cache/dcwalker-skills/*/*/skills/` will happily show a
+directory containing the new skill for a plugin that is still loading the old
+copy. What decides is the `installPath` recorded per plugin in
+`~/.claude/plugins/installed_plugins.json`, which is what `claude plugin list`
+reports.
 
 ### Claude Code on the web
 
