@@ -48,6 +48,48 @@ Then install a plugin from it:
 
 Run `/plugin` to browse installed and available plugins, or to update/remove one later.
 
+### Updating an installed plugin
+
+Installing a plugin copies it at a specific commit, into a directory named after
+that commit:
+
+```text
+~/.claude/plugins/cache/dcwalker-skills/life-skills/
+├── c2eeda74d2a9/skills/   conduct-interview, organize-meeting-notes, triage
+└── ea42d071a0d5/skills/   the same three, plus writing
+```
+
+That copy is what loads, and it stays pinned to its commit. Refreshing the
+marketplace does not move it: the marketplace is a separate clone holding the
+catalogue, so a refresh gives you a current *listing* of what is available while
+the plugin keeps loading the skills it was installed with. A skill added after
+you installed will not appear, and nothing reports an error, because from the
+plugin's point of view nothing is wrong.
+
+Updating is therefore two steps, and the second is the one that matters:
+
+```bash
+claude plugin marketplace update dcwalker-skills
+claude plugin update life-skills@dcwalker-skills
+```
+
+The equivalents live under `/plugin` in the app: update the marketplace, then
+update the plugin (uninstalling and reinstalling has the same effect). Either
+way, **restart afterwards** — the update prints `Restart to apply changes`, and
+skills are enumerated when a session starts, so a session already running keeps
+the old set.
+
+To check that an update actually landed, look for a second commit-named
+directory holding the skill you expected:
+
+```bash
+ls ~/.claude/plugins/cache/dcwalker-skills/life-skills/*/skills/
+```
+
+A new directory containing the skill means the update worked and only a restart
+is missing. Only the original directory means the update did not take, and the
+marketplace update most likely failed first.
+
 ### Claude Code on the web
 
 The steps above cover a local install. A cloud session gets neither of them:
