@@ -1,0 +1,6 @@
+[
+  {"id": "U0ALEX", "name": "alex", "profile": {"real_name": "Alex Reyes", "display_name": "alex", "email": "eval-user@example.com"}},
+  {"id": "U0ALEX2", "name": "alex.reyes", "profile": {"real_name": "Alex Reyes", "display_name": "areyes", "email": "alex.reyes@example.com"}},
+  {"id": "U0JORDAN", "name": "jordan", "profile": {"real_name": "Jordan Blake", "display_name": "jordan", "email": "jordan.blake@example.com"}},
+  {"id": "U0PRIYA", "name": "priya", "profile": {"real_name": "Priya Raman", "display_name": "priya", "email": "priya.raman@example.com"}}
+]

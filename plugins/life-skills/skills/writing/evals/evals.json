@@ -1,0 +1,278 @@
+{
+  "skill_name": "writing",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Write an email to Jordan letting them know the staging deploy is blocked on the migration and that I need their review on the cache PR before end of day. Jordan is jordan.blake@example.com. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The skill searches the user's own sent mail scoped to Jordan, presents a style card citing those samples (tier 2 quick note: lowercase 'hey Jordan,' opening, ask in the first sentence, roughly 40 to 60 words, lowercase 'thanks / alex' sign-off) before any drafted email text, and then drafts an email carrying those markers. Nothing is written to the mailbox.",
+      "expectations": [
+        "At least one search_threads call in the Gmail call log is scoped to mail the user sent to Jordan (a query pairing in:sent or from:me with to:jordan.blake@example.com), rather than only an inbox or unscoped search.",
+        "A style card reporting the sample count, the audience it is scoped to, and a polish tier appears in the transcript before any drafted email text.",
+        "The card's observations match the sent samples: a lowercase 'hey Jordan,' opening, a lowercase sign-off in the 'thanks / alex' form, short length, and no em dashes.",
+        "The draft carries those markers and contains none of these: 'I hope this finds you well', 'I wanted to reach out', a closing offer of further help, an em dash, or a formal sign-off such as 'Best regards'.",
+        "The formal quoted reply chain inside the June 19 thread (Jordan's 'Kind regards' text) is not attributed to the user or reflected in the card as the user's own style.",
+        "No draft is created in Gmail: the drafts object in the final Gmail state is still empty."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Draft an email introducing myself to Dana Okafor at Riverbend Logistics as their new account contact. Her address is dana.okafor@riverbend.example. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "Finding no prior mail to Dana, the skill says so, infers an external-professional relationship, substitutes the user's mail to other external clients (Marcus Webb, Lena Ortiz), and names that substitution on the style card before drafting at the higher polish tier those samples show.",
+      "expectations": [
+        "The absence of any mail to dana.okafor@riverbend.example is established from the user's own sent mail before a fallback corpus is used, whether by a recipient-scoped query or by an enumeration of sent mail wide enough to cover it.",
+        "The transcript states explicitly that there are no samples for this recipient and names the substitution it made (mail to other external clients), rather than presenting a profile as if it were built on messages to Dana.",
+        "The style card is scoped to the external-professional class and reports the markers those samples actually show ('Hi <first name>,' opening, complete sentences, numbered items, 'Best, Alex Reyes' sign-off), not the peer markers from the Jordan mail in the same mailbox.",
+        "The draft follows the external-client conventions rather than the peer ones: it does not open with a lowercase 'hey Dana,' or close with the lowercase 'thanks / alex' sign-off.",
+        "The draft invents no facts about Dana, Riverbend, or the account beyond what the prompt supplies (no invented dates, contract terms, prior conversations, or predecessor's name)."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Write an email to my landlord asking them to get the water heater fixed. It has been out since Sunday.",
+      "expected_output": "The mailbox contains no mail the user wrote, so the skill reports the empty searches plainly, declines to present an evidence-backed style card, and asks for a pasted sample or offers a short calibration (polish tier, greeting preference, length) instead of quietly producing generic assistant prose.",
+      "expectations": [
+        "The Gmail call log shows at least one search of the user's own sent mail, and the transcript reports that it came back empty rather than omitting the failure.",
+        "No style card asserting observed habits (opening, sign-off, sentence length, vocabulary) is presented, since no samples were found; any card shown is explicitly labeled as having no evidence behind it.",
+        "The transcript asks the user to describe how the message should sound in their own words, rather than presenting a menu of formality options as the primary ask; offering to take a pasted sample as an alternative is fine, but a demand for one before anything can proceed is not.",
+        "If a draft is offered anyway, it is explicitly labeled as unresearched or uncalibrated, and it is not claimed to match the user's voice.",
+        "No draft is created in Gmail: the drafts object in the final Gmail state is still empty."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "I need to write an email about last night's outage.",
+      "expected_output": "No recipient is named and this environment has no general profile to fall back on, so the skill asks who the email is for rather than picking an audience, and produces no draft.",
+      "expectations": [
+        "The reply asks who the email goes to, or which audience it is for, before any style card or drafted email text appears.",
+        "No drafted email text appears anywhere in the transcript: with no audience and no general profile cached, there is nothing to write a register-neutral draft from.",
+        "The skill does not pick a recipient on its own from the topic (for example assuming the manager, the team, or affected customers) and does not present a style card scoped to an audience the user never confirmed.",
+        "Any corpus research it does perform is not used to justify a profile for an unconfirmed audience."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Two things please. First, a Slack message to Jordan (jordan.blake@example.com) saying the migration slipped to Thursday and asking them to hold the cache branch until then. Second, an email to Priya (priya.raman@example.com) summarizing the slip and what we are doing about it. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The skill builds two separately scoped profiles rather than one, says that no Slack source is connected and names the adjacent-medium substitution it used for the Slack piece, and produces two drafts that differ measurably in polish: a short informal note to Jordan and a bottom-line-first, short-bulleted email to Priya.",
+      "expectations": [
+        "Two distinct profiles appear, one scoped to the Slack message to Jordan and one to the email to Priya, rather than a single profile applied to both artifacts.",
+        "The transcript states that no Slack source is reachable in this session and names the substitution used for that artifact (short sent email to the same person as an adjacent medium), rather than implying Slack messages were read.",
+        "The two drafts differ in the ways the samples support: the Jordan message is short and informal with the observed lowercase opening and no bullet list, while the Priya email leads with the outcome and uses the observed short bullet list and 'Alex' sign-off.",
+        "No identical search_threads query is issued twice in the Gmail call log; research done for the first artifact is reused for the second rather than repeated.",
+        "No draft is created in Gmail: the drafts object in the final Gmail state is still empty."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Here is a draft another tool generated for an email to Marcus Webb at Northwind (mwebb@northwind.example). Make it sound like me.\n\nHi Marcus,\n\nI hope this email finds you well! I wanted to reach out and circle back regarding the sandbox credentials - I am pleased to report that our security team has now approved the request and the credentials are ready to go.\n\nYou will be able to leverage the sandbox for testing, validation, and training ahead of the 5 August walkthrough. I have included the details below, and I would be more than happy to jump on a call if that would be helpful.\n\nPlease don't hesitate to reach out if you have any questions!\n\nBest regards,\nAlex I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The skill researches the user's sent mail to Marcus first, presents the profile those samples support, and returns a rewrite that keeps every fact from the original while stripping the assistant tells and matching the observed external-client conventions.",
+      "expectations": [
+        "The Gmail call log shows a search for mail the user sent to mwebb@northwind.example before any rewrite is produced.",
+        "The rewrite removes the assistant tells present in the original: no 'I hope this email finds you well', no 'I wanted to reach out', no 'circle back', no 'leverage', no 'don't hesitate to reach out', and no rule-of-three list ('testing, validation, and training') unless the sent samples actually show that pattern.",
+        "Every fact in the original survives the rewrite (security team approved the request, credentials are ready, sandbox is available ahead of the 5 August walkthrough) and no new fact is introduced.",
+        "The rewrite keeps the external-client conventions the samples show ('Hi Marcus,' opening, complete sentences, an explicit next step, the 'Best, Alex Reyes' sign-off) rather than dropping to the informality of the peer mail in the same mailbox."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Don't go digging through my email for this, just write it: a quick email to Jordan asking if they can cover standup tomorrow, I have a dentist appointment.",
+      "expected_output": "The skill honors the explicit override, drafts without researching, and says once that the draft is unresearched, without presenting a style card or claiming the draft matches the user's voice.",
+      "expectations": [
+        "The Gmail call log contains no search_threads or get_thread calls: the instruction to skip the research was honored rather than overridden.",
+        "The transcript notes once, plainly, that the draft was written without researching the user's prior messages, and does not present an evidence-backed style card or claim the draft matches their voice.",
+        "A draft is still produced: the skill complies with the override rather than refusing or insisting on research first.",
+        "The draft adds no facts beyond the prompt (no invented appointment time, no invented stand-in, no invented agenda)."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Write my journal entry for today. The migration slipped to Thursday, I ran the incident call, and I am annoyed we did not catch it in staging. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "Recognizing the audience is the user themselves, the skill reads the existing entries under journal/ in the workspace rather than the mailbox, presents a profile of their observed conventions, and writes an entry that matches the format and blunt first-person tone while containing only the three facts given.",
+      "expectations": [
+        "The skill does not ask who the entry is addressed to: it treats the audience as the user themselves and proceeds.",
+        "The existing entries under journal/ in the workspace are read and used as the corpus; the profile is built from them rather than from the mailbox.",
+        "The profile and the entry match the observed conventions: a '# <date> <lowercase weekday>' title line, the lowercase '## ' section-header style used in the existing entries, first person, short paragraphs, and no greeting or sign-off. Sections the user supplied nothing for may be omitted rather than padded, per the skill's rule against filling a section just because the samples always have one.",
+        "The entry contains only the facts the user gave (the slip to Thursday, running the incident call, the annoyance about staging) with no invented meetings, names, or outcomes, and it does not soften the stated annoyance into upbeat framing the existing entries never use."
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Write an email to Jordan (jordan.blake@example.com) asking them to review the cache PR before end of day, because the staging deploy is blocked on it.",
+      "follow_ups": [
+        "Shorter please. Cut the explanation and keep the ask.",
+        "Add that I will be offline after 3."
+      ],
+      "expected_output": "Across three turns the voice holds: each revision applies exactly the change asked for, keeps the observed peer-email markers (lowercase 'hey Jordan,' opening, 'thanks / alex' close, short lines, no boilerplate), leaves untouched sentences as they were, and adds no facts beyond the ones given. The corpus is researched once and reused, not re-searched per revision.",
+      "expectations": [
+        "Each revised draft still carries the markers the style card claimed: the lowercase 'hey Jordan,' opening and the lowercase 'thanks / alex' sign-off survive both revisions rather than drifting toward a formal register.",
+        "No assistant tell appears in a later revision that was absent from the first draft (no 'I hope this finds you well', no closing offer of help, no em dash, no 'Best regards'), so the revisions do not regress the voice.",
+        "Each revision makes the change requested and only that change: turn 2 cuts the explanatory sentence while keeping the ask, turn 3 adds the offline-after-3 detail, and the parts the user did not ask about are carried over rather than rewritten.",
+        "The added line about being offline after 3 states only that, without inventing a reason, a return time, or a stand-in reviewer.",
+        "The corpus is not re-searched on the revision turns: no search_threads query issued on turn 1 is repeated on turns 2 or 3."
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Write an email to Jordan (jordan.blake@example.com) asking whether they can take the export queue ticket this sprint. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "A cache is present but its identity.md names accounts that are not this session's, so the skill ignores it, says why, and researches the mailbox fresh rather than describing a stranger's voice as the user's.",
+      "expectations": [
+        "The cached profile is not used as evidence about this user: the style card's observations trace to the mailbox samples read in this trial, not to the cached card's claims (which describe a formal, 'Dear Jordan' / 'Kind regards' voice found nowhere in the sent mail).",
+        "The transcript says that a cache was found but belongs to different accounts, rather than silently ignoring it or silently trusting it.",
+        "The mailbox is actually searched in this trial rather than skipped on the strength of the cache.",
+        "The draft carries the markers of the sent samples (lowercase 'hey Jordan,' opening, 'thanks / alex' sign-off), not the cached card's formal register."
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "Quick email to Jordan (jordan.blake@example.com) asking them to hold the cache branch until Thursday. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "A cache built from this session's own accounts already holds an email/peer card for Jordan, so the skill reuses it, says so along with the date it was built, and at most confirms it with a bounded check for newer samples rather than re-reading the corpus.",
+      "expectations": [
+        "The cached email/peer card for Jordan is reused rather than rebuilt, and the transcript says so explicitly, naming when it was built.",
+        "The cached card is confirmed rather than rebuilt: at most one bounded search for samples newer than the card's newest sample appears in the Gmail call log, not a re-read of the six threads the card was built from.",
+        "The draft carries the markers the cached card describes (lowercase 'hey Jordan,' opening, 'thanks / alex' sign-off, two or three short lines).",
+        "Reuse is reported as reuse: the card is not presented as fresh research, and its age is available to the user rather than hidden."
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Write a blog post about why we stopped doing synchronous design reviews and moved to written proposals with a comment period. The short version: the meetings favored whoever spoke first, quiet people never disagreed out loud, and the written version surfaced objections we had been missing for months. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The corpus for a public long-form piece is the user's existing posts under blog/ in the workspace, not their mail. The style card reflects what those posts show (first person, a concrete opening scene, plain declaratives, an explicitly unresolved ending, no headings or lists) and the draft matches it at that polish tier.",
+      "expectations": [
+        "The existing posts under blog/ are read and used as the corpus for this artifact; mail is not substituted for them without saying so, and any use of mail samples is labeled as a cross-medium observation rather than as blog evidence.",
+        "The style card is scoped to the blog medium and a public audience, at whatever polish tier the sample posts actually support, rather than reusing an email profile from the same workspace or assuming a tier from the medium.",
+        "The card's observations trace to the posts: first person throughout, an opening that starts from a concrete incident, plain declarative sentences, no headings or bullet lists inside the body, and an ending that declines to resolve neatly ('I do not have a tidy conclusion', 'If you want the tooling answer, I do not have one for you').",
+        "The draft carries those markers: no headings or bullet lists, no call to action, no summary paragraph restating the piece, and an ending consistent with the observed refusal to tie things off.",
+        "The draft contains only the reasons the user gave (speaking order, quiet dissent, objections surfacing in writing) with no invented anecdotes, metrics, or team details, even though the sample posts are rich in specifics of their own."
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "Add a comment to ENG-455 with a status update: the chunked migration is written and tested on a copy of the jobs table, and the next cutover attempt is Thursday. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The corpus is the user's own prior Jira comments, identified by accountId (user-alex-1, declared in the cache's identity.md). A second Jira user shares the display name 'Alex Reyes' with a different accountId and a formal voice; those comments are excluded. The card reports the observed comment conventions, including the @mention form and the 'PR #NNN' reference style, and the drafted comment matches. Nothing is posted.",
+      "expectations": [
+        "The corpus is the user's own comments identified by account, and the comments authored by the other 'Alex Reyes' (accountId user-alex-2, the 'Hi team' / 'Kind regards' voice) are excluded from the profile rather than blended into it on the strength of the matching display name.",
+        "The transcript makes the basis of attribution explicit: comments were matched by account identifier (the declared user-alex-1, or the same id resolved from the site), and the display-name collision with the other 'Alex Reyes' is named rather than passed over silently.",
+        "The card records the platform conventions the samples show: @mention form for people ('@Jordan') rather than written-out full names, 'PR #NNN' references rather than pasted URLs, no greeting, and no sign-off.",
+        "The drafted comment carries those conventions: lowercase status-first opening, two or three sentences, no greeting, no 'Kind regards' sign-off.",
+        "No comment is posted to Jira: addCommentToJiraIssue does not appear in the Atlassian call log, and ENG-455's comment list in the final state is unchanged."
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "Post a message in #platform-eng: the migration is rescheduled to Thursday, and people should hold merges that touch the jobs table until it lands. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The corpus is the user's own messages in the Slack export under slack-export/ in the workspace, attributed by user id U0ALEX rather than display name, and scoped to the channel rather than the DM. The card records the chat conventions the samples show (<@U...> mentions, labeled links, occasional :white_check_mark: in channel and none in DMs, lowercase throughout, no greeting or sign-off) and the draft matches them.",
+      "expectations": [
+        "The Slack export in the workspace is used as the corpus for this artifact rather than the mailbox, and any use of mail samples is labeled as a cross-medium substitution instead of presented as chat evidence.",
+        "Messages are attributed by user id (U0ALEX): the messages from U0ALEX2, who shares the display name 'Alex Reyes' and writes formally ('Thank you for the detailed analysis', 'Please let me know if I can assist'), are excluded from the profile rather than blended into it.",
+        "The profile is scoped to the channel rather than the DM, and says so: the #platform-eng samples are the basis, with the DM messages either excluded or explicitly noted as a different, terser register.",
+        "The card records the platform conventions the channel samples show: <@U...> mention form rather than written-out names, links given descriptive labels rather than pasted bare, and emoji present but sparse (:white_check_mark: in 2 of 3 dated files) with none in the DM samples.",
+        "The draft carries those conventions: lowercase, two or three lines, no greeting and no sign-off, and no email register imported from the mailbox.",
+        "The draft states only the two facts given (rescheduled to Thursday, hold merges touching the jobs table) without inventing a cause, a window, or a rollback plan, even though the samples contain such details of their own."
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "Write a text message to my sister letting her know I will be about an hour late to dinner on Saturday. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "There are no text-message samples and no personal-audience samples anywhere: the mailbox holds only work mail, and every cached card is a work relationship. The skill says so, falls back to general.md labeled as cross-medium rung 5 evidence, asks the user to describe the register for this audience, and does not dress the work voice up as a personal one.",
+      "expectations": [
+        "The transcript states that there are no samples in this medium and none for a personal audience, naming what was searched, rather than presenting a profile as if it were evidenced.",
+        "general.md is used as the fallback and labeled for what it is (how the user writes in general, cross-medium, rung 5), not presented as evidence about how they write to their sister.",
+        "The work cards in the cache are not applied to this audience: the draft does not carry the peer or client register (no 'hey Jordan,'-style formula transplanted, no external-client conventions, no work-email structure).",
+        "The user is asked to describe how it should sound, in their own words, rather than being given only a menu of formality tiers or being required to paste a sample before anything can proceed.",
+        "The traits general.md actually supports are the ones carried into the draft (no em dashes, no exclamation marks, the point first, short), while greeting, sign-off, and formality are treated as unknown rather than assumed.",
+        "The draft states only the facts given (about an hour late, dinner, Saturday) and invents no reason, no arrival time, and no plans."
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "Post a message in #platform-eng: the migration is rescheduled to Thursday, and people should hold merges that touch the jobs table until it lands. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "Same scenario as eval 14, reached through the Slack connector instead of an on-disk export. The corpus is the user's own #platform-eng messages, matched on U0ALEX rather than the display name shared with U0ALEX2, kept separate from the DM register. The card records the chat conventions the samples show, the draft matches them, and nothing is posted to Slack.",
+      "expectations": [
+        "The Slack tools are used to build the corpus: the channel's messages are read or searched, and the profile is scoped to #platform-eng rather than to the DM with Jordan.",
+        "Messages are attributed to the user by id (U0ALEX): the U0ALEX2 messages, which share the display name 'Alex Reyes' and write formally ('Thank you for the detailed analysis', 'Please let me know if I can assist'), are excluded from the profile rather than blended into it.",
+        "The card records the conventions the channel samples show, read out of Slack's raw markup rather than mangled by it: <@U...|name> mentions rather than written-out names, <url|label> links given descriptive labels, and sparse :emoji: use in channel with none in the DM.",
+        "The draft carries those conventions: lowercase, two or three lines, no greeting and no sign-off, and no email register.",
+        "Nothing is posted: slack_send_message does not appear in the Slack call log, and the channel's message list in the final Slack state is unchanged.",
+        "The draft states only the two facts given (rescheduled to Thursday, hold merges touching the jobs table) and does not import details from the samples, such as the previous Tuesday window or the rollback-notes link."
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "Write an email to Rachel (rachel.osei@example.com) asking her to move the tooling spend to next quarter's budget, since we are not going to spend it this quarter. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "Only two sent messages to Rachel exist and nothing else matches her relationship closely, so the profile is thin. The card reports low confidence with the count behind it, avoids asserting habits two samples cannot support, and the draft stays close to what those two samples do show rather than filling the gaps with invented consistency.",
+      "expectations": [
+        "The card reports the evidence as two samples and labels the confidence low, rather than claiming high or medium confidence or omitting a confidence line entirely.",
+        "Claims on the card are proportionate to two samples: patterns that appear twice are reported with their counts, and no claim is stated as an invariable habit ('always', 'every time', 'never') on the strength of two messages.",
+        "The thinness is surfaced to the user as a limitation of the profile, not buried: the transcript says what would make it stronger (more samples, or the user describing the register) rather than presenting the profile as settled.",
+        "The draft carries only what the two samples actually show (name-plus-comma opening, short, plain, 'Alex' sign-off) and does not import the lowercase peer-email formula from the Jordan corpus in the same mailbox.",
+        "The draft states only the request given (move the tooling spend to next quarter because it will not be spent this quarter) without inventing an amount, a budget code, a deadline, or an approver."
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "Write an email to Theo (theo.hendricks@mailbox.example) telling him I am pulling out of the camping trip next month because my dad is having heart surgery that week and I want to be around.",
+      "expected_output": "Every sample to Theo is banter, and this message is not. The skill notices that the situation is unlike every sample, says so, and confirms the register before drafting rather than delivering serious news in the joking voice the corpus supports.",
+      "expectations": [
+        "The transcript names the mismatch explicitly: the samples for this recipient are all jokes or teasing, and this message is serious news, so the observed register does not transfer.",
+        "The register is confirmed with the user, or the draft is offered with the tier assumption stated and flagged as the one thing most worth correcting, rather than the joking voice being applied to the news as though the corpus settled it.",
+        "Whatever draft appears does not deliver the news in the teasing register the samples show (no jokes at the recipient's expense, no mock threats, no punchline ending) while still avoiding a formal or corporate voice that appears nowhere in the corpus.",
+        "The draft contains only what the user said (pulling out of the camping trip, father's heart surgery that week, wanting to be around) with no invented dates, hospital details, prognosis, or promises about rescheduling.",
+        "The profile itself is still reported honestly, including that the corpus is banter, rather than the skill quietly substituting a generic serious-news voice and calling it the user's."
+      ]
+    },
+    {
+      "id": 19,
+      "prompt": "Write an email to Jordan (jordan.blake@example.com) asking them to take the on-call shift on Friday because I will be out.",
+      "follow_ups": [
+        "Make it warmer, that reads a bit blunt.",
+        "Good. Now make it shorter again."
+      ],
+      "expected_output": "The first draft matches the observed peer voice. The user then asks for something the corpus does not support, since no sample to Jordan is warm; the skill honors the instruction, notes that it departs from the observed style, and does not silently overshoot into effusiveness. The third turn tightens it again while keeping the warmth that was asked for.",
+      "expectations": [
+        "The warmer revision is actually warmer than the first draft, and the transcript notes that this departs from the observed samples rather than presenting it as a better match to the user's voice.",
+        "The warmth added stays within a plausible extension of the user's register: no boilerplate the corpus never uses ('I hope this finds you well', a closing offer of further help), no exclamation-mark pile-up where the samples have none, and no formal sign-off replacing the observed lowercase one.",
+        "The user's instruction outranks the corpus: the skill does not refuse the change, revert it on the next turn, or argue the samples back into place.",
+        "The third turn shortens the message while keeping the warmth introduced in turn two, rather than reverting to the turn-one draft.",
+        "No facts are added across the three turns beyond the on-call shift on Friday and the user being out: no reason for the absence, no offer to swap back, no invented deadline."
+      ]
+    },
+    {
+      "id": 20,
+      "prompt": "Write an email to Priya (priya.raman@example.com) letting her know the migration slipped to Thursday, that the cause was a table lock during cutover, and that we are chunking it before the next attempt. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The cached card for this pair is stale twice over: its newest sample is roughly eight months old, and it records Priya as a peer where identity.md now records her as the manager who took over the org in March. The skill rebuilds rather than reuses, says why, and the new card reflects the current leadership register in the mailbox rather than the cached peer voice.",
+      "expectations": [
+        "The cached card is not used as the profile. The transcript says why, naming at least one of the two triggers: the newest sample behind it is about eight months old, or the peer relationship it records contradicts the manager relationship in identity.md.",
+        "Fresh research actually runs: the Gmail call log shows a search of the user's sent mail scoped to priya.raman@example.com, and the resulting card cites the 2026 messages rather than the 2025 sample dates carried on the cached card.",
+        "The rebuilt card describes the current register the mailbox shows -- 'Priya,' opening, the outcome or ask in the first sentence, a short bullet list, 'Alex' sign-off -- and not the cached peer markers ('hey Priya,' lowercase opening, 'thanks / alex' close, no bullets).",
+        "The draft carries the current register rather than the stale one: it does not open with a lowercase 'hey Priya,' or close with the lowercase 'thanks / alex' sign-off.",
+        "The staleness is surfaced to the user rather than handled silently: the transcript makes clear a cached profile existed and was replaced, instead of presenting the rebuild as if no cache had been there.",
+        "The draft states only the three facts given (slipped to Thursday, a table lock during cutover, chunking before the next attempt) with no invented downtime figures, customer impact, or new date beyond Thursday."
+      ]
+    },
+    {
+      "id": 21,
+      "prompt": "Post a message in #platform-eng saying the nightly export job is disabled until Monday while we rebuild the index, and that anyone who needs an export before then should ask me directly. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The channel holds eight messages from the user in one continuous voice, but only three are under the current account: the workspace migrated in March and the older five sit under U0ALEXOLD, which identity.md records as a Former identifier. Searching only the current id yields a thin three-sample profile; honoring the retired identifier yields all eight. The card should rest on the full set and say that the older messages came from the previous account.",
+      "expectations": [
+        "The retired chat account is searched as well as the current one: the Slack call log shows the corpus being gathered under U0ALEXOLD (or @areyes) in addition to U0ALEX, rather than only the current id.",
+        "The card's evidence reflects the full corpus rather than the three post-migration messages alone, and its sample count and confidence are correspondingly higher than a three-sample profile would support.",
+        "The transcript explains why the older messages count: they were written by this user under an account recorded as Former in identity.md, not by somebody else who happens to share a name.",
+        "The card's observations hold across both eras rather than describing only the recent messages, since the voice is unchanged: lowercase throughout, no greeting or sign-off, <@U...|name> mentions, labeled links, sparse :emoji:.",
+        "The draft carries those conventions and states only the facts given (nightly export disabled until Monday, index rebuild, ask the user directly for an export in the meantime), inventing no cause, ticket, or restart time.",
+        "Nothing is posted: slack_send_message does not appear in the Slack call log."
+      ]
+    },
+    {
+      "id": 22,
+      "prompt": "Write the 'Rollout plan' section for the on-call redesign doc in docs/on-call-redesign.md. The plan is that we start the six-person rotation on the first of next month, run the old and new rotations in parallel for two weeks, and drop the old one after that. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The document has four contributors and no bylines. Only its git history says which passages are the user's: the problem statement and the proposal, both blunt and concrete, against Priya's hedged process language and Jordan's cautious bullet lists. The profile must be built from the user's passages alone, identified through revision history, and the new section written in that voice rather than in the document's average voice.",
+      "expectations": [
+        "Authorship inside the document is established from its revision history: a git blame, git log, or equivalent per-revision inspection appears in the trial, rather than the file being read as though one person wrote all of it.",
+        "The profile is built only from the user's own passages ('What is actually wrong' and 'What I want to do about it'), and explicitly excludes the sections written by the other contributors.",
+        "The card's observations match the user's passages rather than the document's average: short declarative sentences, concrete numbers, a blunt opening claim, no hedging, and none of the process vocabulary ('it was agreed', 'facilitate a discussion', 'align on a preferred direction') that belongs to the other contributor.",
+        "The drafted section carries the user's register and does not imitate the surrounding sections' voices: no formal passive constructions, no cautious bullet list in place of prose unless the user's own passages use one.",
+        "The drafted section states only the plan given (six-person rotation starting the first of next month, two weeks of parallel running, then the old rotation stops) and invents no names, dates, metrics, or approval steps.",
+        "The other contributors' writing is not reproduced in the deliverable, and their sentences are not presented as the user's own style."
+      ]
+    }
+  ]
+}

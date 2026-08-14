@@ -24,6 +24,7 @@ evals/
 │   ├── run-eval.sh       Per-eval harness: wires fixture + gh-stub + env vars,
 │   │                     and writes <run-dir>/in-trial.sh to run commands
 │   │                     inside that environment.
+│   ├── run-mcp-trials.sh Batch driver for a skill's MCP-backed trials.
 │   ├── check-trial-hygiene.sh  Flags trials whose commits carry the
 │   │                     orchestrating session's own trailers.
 │   ├── sandbox/check.sh  Gate for the small set of live sandbox-repo cases.
@@ -48,6 +49,8 @@ plugins/<plugin>/skills/<skill>/evals/
         │                      sonar-project.properties file in repo/.
         ├── trello-fixture.json Optional: canned create-trello-task.sh
         │                      responses (organize-meeting-notes).
+        ├── home/              Optional: seeds the trial's private HOME,
+        │                      for skills that keep state across sessions.
         └── sandbox-setup.sh   Optional, `"sandbox": true` evals only: runs
                                with the trial environment sourced, to point
                                origin at the sandbox repo and clear what the
@@ -264,10 +267,11 @@ loudly rather than quietly reach a live account. Before this was enforced,
 developer's real Trello credentials were exported by their shell profile, and
 a trial created three real cards on a real personal board.
 
-## MCP stub servers (Trello, Gmail, Jira)
+## MCP stub servers (Trello, Gmail, Jira, Slack)
 
-`triage` depends on real MCP tools (Trello, Gmail, and Jira) rather than a
-CLI on `PATH`, so it needs a different mocking seam than `gh`/Sonar. `evals/lib/mcp-stub/` holds real,
+`triage` and `writing` depend on real MCP tools (Trello, Gmail, Jira, and
+Slack) rather than a CLI on `PATH`, so they need a different mocking seam
+than `gh`/Sonar. `evals/lib/mcp-stub/` holds real,
 protocol-compliant MCP stdio servers (built on the official `mcp` Python SDK,
 not a hand-rolled JSON-RPC shim) that stand in for the real third-party
 server -- `trello_stub.py` implements the subset of Trello tools `triage`
@@ -275,12 +279,24 @@ actually calls, `gmail_stub.py` the six Gmail operations its email workflow
 (Step 4b) names, and `jira_stub.py` the Atlassian MCP's Jira subset
 (including the cloudId-discovery flow via getAccessibleAtlassianResources
 and a documented JQL subset that fails loudly on unsupported constructs),
-each backed by an in-memory fake "database" seeded from a fixture file. Tool names and parameter schemas were confirmed against
+and `slack_stub.py` the search and read operations a corpus-building skill
+calls, each backed by an in-memory fake "database" seeded from a fixture
+file. Tool names and parameter schemas were confirmed against
 live connected MCP servers, not guessed from prose, so a skill's real tool
 calls (including name-based list/board resolution and `update_card`'s batch
 form) match the stub instead of silently no-oping. Like the real Gmail MCP,
 `gmail_stub.py` deliberately has no send operation -- create_draft only
 stores a draft, so "sending stayed with the user" holds by construction.
+`slack_stub.py` goes the other way and can post, because the real connector
+can: a trial where a skill posts unasked has to be a finding about the skill
+rather than something the harness made impossible. It is also the one stub
+whose *responses* had to be copied rather than shaped, since Slack's tools
+return human-readable text in a thin JSON envelope with a different layout
+per tool, not structured objects.
+Its query subset also covers `in:sent`, `to:`, and `me` resolution (against
+an optional top-level `"me"` address in the fixture), which is what a corpus
+search for "mail I wrote to this person" needs; a fixture that declares no
+`"me"` makes `from:me`/`to:me` match nothing rather than everything.
 
 Requires a one-time local dependency install (isolated venv, not system
 Python -- see `evals/lib/mcp-stub/requirements.txt`):
@@ -320,10 +336,46 @@ After the trial, grade per service by diffing `$RUN_DIR/<service>-state-out.json
 philosophy as every other eval in this repo, not by trusting the
 subprocess's stdout self-report.
 
-`plugins/life-skills/skills/triage/evals/run-trials.sh` is the batch driver
-for triage's trials: it runs each eval's `claude -p` subprocess with
-`--output-format json` and extracts real wall-clock duration and token
+`evals/lib/run-mcp-trials.sh <skill-evals-dir> [id ...]` is the batch driver
+for any skill's MCP-backed trials: it runs each eval's `claude -p` subprocess
+with `--output-format json` and extracts real wall-clock duration and token
 usage into a per-trial `metrics.json` alongside `transcript.txt`.
+`plugins/life-skills/skills/triage/evals/run-trials.sh` predates it and still
+carries its own copy of that loop.
+
+Multi-turn trials: an eval may carry a `follow_ups` array of later user
+messages alongside its `prompt`. The driver runs the first turn, reads the
+session id off its result event, and resumes that same session for each
+follow-up, so a revision eval ("draft it", "shorter", "now add this") is a
+real conversation rather than one prompt describing three. Every turn's
+events land in the same `events.jsonl`, and `transcript.txt` separates them
+with `===== turn N =====` markers so a grader can see what each revision
+actually changed.
+
+Four things the shared driver does that a hand-run trial must do for itself:
+
+- It copies the skill under test into the trial workspace as a project skill
+  (`.claude/skills/<name>/`). A trial subprocess otherwise sees only the
+  skills the machine happens to have installed, so on a machine without the
+  plugin installed a whole benchmark can measure the skill's *absence* and
+  report it as the skill's behavior. Copying also means a benchmark grades
+  the working tree rather than the last installed release.
+- It passes an explicit `--allowedTools` allowlist instead of
+  `--dangerously-skip-permissions`, which refuses to run as root and so rules
+  out containers and CI. Each stub server is allowed wholesale, write tools
+  included, so "the skill wrote nothing" stays a finding about the skill
+  rather than an artifact of the harness blocking the call.
+- It gives each trial a private `HOME` and `TMPDIR` under the run directory,
+  so a skill that keeps state for the user cannot read what an earlier trial
+  left behind. That is both a contamination guard and a privacy one: two
+  trials represent two different people. `.claude`, `.claude.json`, and
+  `.config` are symlinked back into the trial home so `claude` still
+  authenticates, and whatever the skill wrote stays under `$RUN_DIR/home`
+  for the grader to read.
+- It seeds that home from the fixture's optional `home/` directory, which is
+  how a trial starts with state already in place. A fixture can hand the
+  trial its own prior cache, or somebody else's, and grade what the skill
+  does with each.
 
 ## Live sandbox cases
 

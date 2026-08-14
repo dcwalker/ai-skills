@@ -7,7 +7,7 @@
     {
       "name": "life-skills",
       "source": "./plugins/life-skills",
-      "description": "Personal life-organization skills. Includes: conduct-interview, organize-meeting-notes, triage."
+      "description": "Personal life-organization skills. Includes: conduct-interview, organize-meeting-notes, triage, writing."
     },
     {
       "name": "software-development",

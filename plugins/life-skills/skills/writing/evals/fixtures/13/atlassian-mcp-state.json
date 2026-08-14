@@ -1,0 +1,142 @@
+{
+  "cloud": {
+    "id": "b7c9e1a2-0000-4000-8000-example00013",
+    "url": "https://example-eng.atlassian.net",
+    "name": "example-eng"
+  },
+  "me": {
+    "accountId": "user-alex-1",
+    "displayName": "Alex Reyes"
+  },
+  "users": [
+    {
+      "accountId": "user-alex-1",
+      "displayName": "Alex Reyes",
+      "emailAddress": "eval-user@example.com"
+    },
+    {
+      "accountId": "user-alex-2",
+      "displayName": "Alex Reyes",
+      "emailAddress": "alex.reyes@example.com"
+    },
+    {
+      "accountId": "user-jordan",
+      "displayName": "Jordan Blake",
+      "emailAddress": "jordan.blake@example.com"
+    }
+  ],
+  "projects": {
+    "ENG": {
+      "key": "ENG",
+      "id": "10010",
+      "name": "Platform Engineering",
+      "issueTypes": ["Task", "Bug", "Story"]
+    }
+  },
+  "issues": {
+    "ENG-311": {
+      "key": "ENG-311",
+      "id": "30311",
+      "project": "ENG",
+      "summary": "Export queue retries the same job indefinitely",
+      "description": "Failed export jobs come back as timeouts and are retried without a cap. The same job id appears four or more times in the log.",
+      "status": {"name": "Done", "statusCategory": "Done"},
+      "issuetype": "Bug",
+      "priority": "High",
+      "labels": ["queue"],
+      "assignee": {"accountId": "user-alex-1", "displayName": "Alex Reyes"},
+      "reporter": {"accountId": "user-jordan", "displayName": "Jordan Blake"},
+      "created": "2026-06-02T09:12:00Z",
+      "updated": "2026-06-09T16:40:00Z",
+      "resolution": "Fixed",
+      "duedate": null,
+      "comments": [
+        {
+          "id": "comment-1",
+          "body": "repro'd on staging. it only loops when the failure comes back as a timeout, an actual error exits fine. cap goes in PR #388.",
+          "created": "2026-06-04T11:20:00Z",
+          "author": {"accountId": "user-alex-1", "displayName": "Alex Reyes"}
+        },
+        {
+          "id": "comment-2",
+          "body": "Hi team,\n\nI would like to note that this issue may have downstream implications for the reporting pipeline, and I would suggest that we schedule a short review before the fix is merged so that all affected parties are aligned.\n\nKind regards,\nAlex",
+          "created": "2026-06-05T08:05:00Z",
+          "author": {"accountId": "user-alex-2", "displayName": "Alex Reyes"}
+        },
+        {
+          "id": "comment-3",
+          "body": "merged. @Jordan the duplicate-job metric is in the same PR, dashboard picks it up on the next deploy.",
+          "created": "2026-06-09T16:38:00Z",
+          "author": {"accountId": "user-alex-1", "displayName": "Alex Reyes"}
+        }
+      ]
+    },
+    "ENG-402": {
+      "key": "ENG-402",
+      "id": "30402",
+      "project": "ENG",
+      "summary": "Search latency spikes above 200ms under cache churn",
+      "description": "Latency climbs whenever the cache key cardinality grows. Suspected unbounded key.",
+      "status": {"name": "Done", "statusCategory": "Done"},
+      "issuetype": "Bug",
+      "priority": "High",
+      "labels": ["search", "cache"],
+      "assignee": {"accountId": "user-alex-1", "displayName": "Alex Reyes"},
+      "reporter": {"accountId": "user-alex-1", "displayName": "Alex Reyes"},
+      "created": "2026-07-14T10:00:00Z",
+      "updated": "2026-07-28T09:15:00Z",
+      "resolution": "Fixed",
+      "duedate": null,
+      "comments": [
+        {
+          "id": "comment-1",
+          "body": "not the query planner. cardinality on the cache key is unbounded, every tenant gets its own suffix. numbers in PR #412.",
+          "created": "2026-07-21T14:02:00Z",
+          "author": {"accountId": "user-alex-1", "displayName": "Alex Reyes"}
+        },
+        {
+          "id": "comment-2",
+          "body": "fixed in 412, held under 200ms all day. @Jordan adding the cardinality alert this week so we catch the next one earlier.",
+          "created": "2026-07-28T09:14:00Z",
+          "author": {"accountId": "user-alex-1", "displayName": "Alex Reyes"}
+        },
+        {
+          "id": "comment-3",
+          "body": "Thank you for the thorough investigation. Please ensure that the runbook is updated accordingly, and do let me know if you require any assistance with the documentation.\n\nKind regards,\nAlex",
+          "created": "2026-07-28T09:15:00Z",
+          "author": {"accountId": "user-alex-2", "displayName": "Alex Reyes"}
+        }
+      ]
+    },
+    "ENG-455": {
+      "key": "ENG-455",
+      "id": "30455",
+      "project": "ENG",
+      "summary": "Migration slipped: jobs table lock during cutover",
+      "description": "The cutover migration takes a table lock long enough that queued jobs back up. Needs a chunked approach before the next attempt.",
+      "status": {"name": "In Progress", "statusCategory": "In Progress"},
+      "issuetype": "Task",
+      "priority": "High",
+      "labels": ["migration"],
+      "assignee": {"accountId": "user-alex-1", "displayName": "Alex Reyes"},
+      "reporter": {"accountId": "user-jordan", "displayName": "Jordan Blake"},
+      "created": "2026-08-05T08:30:00Z",
+      "updated": "2026-08-11T17:05:00Z",
+      "resolution": null,
+      "duedate": null,
+      "comments": [
+        {
+          "id": "comment-1",
+          "body": "Could you post an update on this before Thursday's review? I would like to understand where the chunked approach landed.",
+          "created": "2026-08-11T17:05:00Z",
+          "author": {"accountId": "user-jordan", "displayName": "Jordan Blake"}
+        }
+      ]
+    }
+  },
+  "transitions": [
+    {"id": "11", "name": "To Do", "to": {"name": "To Do", "statusCategory": "To Do"}},
+    {"id": "21", "name": "In Progress", "to": {"name": "In Progress", "statusCategory": "In Progress"}},
+    {"id": "31", "name": "Done", "to": {"name": "Done", "statusCategory": "Done"}}
+  ]
+}

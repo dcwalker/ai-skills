@@ -1,0 +1,8 @@
+[
+  {"type": "message", "user": "U0ALEX", "ts": "1754382600.000100",
+   "text": "heads up, migration window moved to next tuesday. nothing changes for anyone outside the jobs table, but hold merges that touch it until it lands."},
+  {"type": "message", "user": "U0JORDAN", "ts": "1754382900.000200",
+   "text": "got it, my branch touches it. i'll sit on it."},
+  {"type": "message", "user": "U0ALEX", "ts": "1754383080.000300",
+   "text": "<@U0JORDAN> thanks. rollback notes are in <https://wiki.example.com/migration-cutover|the cutover page> if you want to read ahead."}
+]
