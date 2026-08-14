@@ -61,7 +61,7 @@ that commit — one such directory per plugin, `life-skills` shown here:
 
 That copy is what loads, and it stays pinned to its commit. Refreshing the
 marketplace does not move it: the marketplace is a separate clone holding the
-catalogue, so a refresh gives you a current *listing* of what is available while
+catalog, so a refresh gives you a current *listing* of what is available while
 the plugin keeps loading the skills it was installed with. A skill added after
 you installed will not appear, and nothing reports an error, because from the
 plugin's point of view nothing is wrong.
@@ -96,7 +96,7 @@ update worked and only a restart is missing. A plugin still showing the old
 commit was not updated — most likely its `plugin update` line was skipped, or
 the marketplace update failed first.
 
-Do not judge this by the cache directory. Updating one plugin can materialise a
+Do not judge this by the cache directory. Updating one plugin can materialize a
 new commit directory for the *other* one without repointing it, so
 `ls ~/.claude/plugins/cache/dcwalker-skills/*/*/skills/` will happily show a
 directory containing the new skill for a plugin that is still loading the old
