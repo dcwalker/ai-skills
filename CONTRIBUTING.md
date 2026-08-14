@@ -71,6 +71,25 @@ Skills are tested with evals, not unit tests. See [evals/README.md](evals/README
 - A new skill needs a `benchmark-baseline.json` established before merge; an existing skill's changes are benchmarked against its current `benchmark-baseline.json`
 - If a change to an existing skill lowers its benchmark pass rate, or otherwise regresses behavior relative to `benchmark-baseline.json`, justify the regression in the PR description (what tradeoff was made and why it's acceptable) before it can be accepted. Update `benchmark-baseline.json` only after that regression (or an improvement) has been reviewed and accepted
 
+### Adding or Removing a Skill
+
+A skill's name appears in three places besides its own directory, and they drift
+silently because nothing fails when they disagree — the skill still loads, since
+skills are discovered from the `skills/` directory on disk. What breaks is the
+description a user reads when browsing or installing the plugin. Update all
+three in the same PR as the skill itself:
+
+1. `.claude-plugin/marketplace.json` — the `Includes:` list in that plugin's `description`
+2. `plugins/<plugin>/.claude-plugin/plugin.json` — the `Includes:` list in its `description`
+3. `README.md` — the plugin's bullet under [Plugins](README.md#plugins), and, once a
+   baseline exists, a link to `benchmark-baseline.md` under the plugin's heading in
+   the Evals section
+
+The check is mechanical: for each plugin, the `Includes:` list in both manifests
+must match `ls plugins/<plugin>/skills/` exactly, in the same order. A reviewer
+should run that comparison rather than eyeballing it, and a PR that adds a skill
+without touching both manifests is incomplete regardless of how good the skill is.
+
 ## Commit Messages
 
 Clear commit messages help everyone understand the project's evolution:
