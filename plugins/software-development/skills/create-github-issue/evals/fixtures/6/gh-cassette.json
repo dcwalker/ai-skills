@@ -8,6 +8,6 @@
   ],
   "default": {
     "exit_code": 1,
-    "stderr": "gh-stub: no fixture match for this call -- no repository was ever established for this session, so repo-scoped discovery/creation calls are unexpected"
+    "stderr": "gh-stub: no fixture match for this call"
   }
 }
