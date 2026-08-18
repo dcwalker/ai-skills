@@ -4,7 +4,7 @@
     "skill_path": "plugins/software-development/skills/create-github-issue",
     "executor_model": "claude-opus-5",
     "analyzer_model": "claude-opus-5",
-    "timestamp": "2026-08-18T23:10:00Z",
+    "timestamp": "2026-08-18T23:40:00Z",
     "evals_run": [
       1,
       2,
@@ -19,7 +19,7 @@
       11
     ],
     "runs_per_configuration": 1,
-    "execution_note": "Trials were run one at a time. SKILL.md Step 5 hardcodes /tmp/github-issue-body.md, a shared absolute path, so concurrent trials would read and write each other's issue bodies -- and evals 5 and 8 grade body content. Evals 5 and 8 were additionally asked to quote the body file verbatim before cleanup, since --body-file means gh-calls.log records only the path."
+    "execution_note": "All eleven trials ran concurrently, which the skill's previous hardcoded /tmp/github-issue-body.md made unsafe; every trial got its own mktemp path and no two collided. Evals 5 and 8 were asked to quote the body file verbatim before cleanup, since --body-file means gh-calls.log records only the path."
   },
   "runs": [
     {
@@ -31,9 +31,9 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 128.5,
-        "tokens": 44504,
-        "tool_calls": 13,
+        "time_seconds": 146.0,
+        "tokens": 46286,
+        "tool_calls": 14,
         "errors": 0
       },
       "expectations": [
@@ -74,9 +74,9 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 66.6,
-        "tokens": 40484,
-        "tool_calls": 6,
+        "time_seconds": 65.3,
+        "tokens": 40499,
+        "tool_calls": 7,
         "errors": 0
       },
       "expectations": [
@@ -114,9 +114,9 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": 81.0,
-        "tokens": 40773,
-        "tool_calls": 9,
+        "time_seconds": 130.6,
+        "tokens": 44010,
+        "tool_calls": 14,
         "errors": 0
       },
       "expectations": [
@@ -150,9 +150,9 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 146.1,
-        "tokens": 44638,
-        "tool_calls": 15,
+        "time_seconds": 119.7,
+        "tokens": 44946,
+        "tool_calls": 12,
         "errors": 0
       },
       "expectations": [
@@ -188,8 +188,8 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": 149.2,
-        "tokens": 44520,
+        "time_seconds": 134.7,
+        "tokens": 44471,
         "tool_calls": 14,
         "errors": 0
       },
@@ -223,9 +223,9 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 77.2,
-        "tokens": 40380,
-        "tool_calls": 7,
+        "time_seconds": 55.0,
+        "tokens": 39828,
+        "tool_calls": 6,
         "errors": 0
       },
       "expectations": [
@@ -261,9 +261,9 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 138.4,
-        "tokens": 43993,
-        "tool_calls": 11,
+        "time_seconds": 117.8,
+        "tokens": 43935,
+        "tool_calls": 13,
         "errors": 0
       },
       "expectations": [
@@ -299,9 +299,9 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": 130.3,
-        "tokens": 45553,
-        "tool_calls": 11,
+        "time_seconds": 141.6,
+        "tokens": 46333,
+        "tool_calls": 15,
         "errors": 0
       },
       "expectations": [
@@ -332,9 +332,9 @@
         "passed": 2,
         "failed": 2,
         "total": 4,
-        "time_seconds": 111.8,
-        "tokens": 43138,
-        "tool_calls": 13,
+        "time_seconds": 99.2,
+        "tokens": 42710,
+        "tool_calls": 10,
         "errors": 0
       },
       "expectations": [
@@ -372,9 +372,9 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 127.7,
-        "tokens": 43066,
-        "tool_calls": 11,
+        "time_seconds": 111.8,
+        "tokens": 42863,
+        "tool_calls": 9,
         "errors": 0
       },
       "expectations": [
@@ -405,7 +405,7 @@
         }
       ],
       "notes": [
-        "Preserved the draft file on failure rather than deleting it. That is almost certainly right, but the skill never says so: Step 8 covers cleanup after success only, and Error Handling says to 'offer to retry' without addressing the draft. The leftover file had to be cleared before the next trial."
+        "Preserved the draft file on failure rather than deleting it. That is almost certainly right, but the skill never says so: Step 8 covers cleanup after success only, and Error Handling says to 'offer to retry' without addressing the draft."
       ]
     },
     {
@@ -417,9 +417,9 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 110.5,
-        "tokens": 42998,
-        "tool_calls": 12,
+        "time_seconds": 116.8,
+        "tokens": 43078,
+        "tool_calls": 14,
         "errors": 0
       },
       "expectations": [
@@ -456,20 +456,20 @@
         "max": 1.0
       },
       "time_seconds": {
-        "mean": 115.2091,
-        "stddev": 27.3354,
-        "min": 66.6,
-        "max": 149.2
+        "mean": 112.5909,
+        "stddev": 27.9599,
+        "min": 55.0,
+        "max": 146.0
       },
       "tokens": {
-        "mean": 43095.1818,
-        "stddev": 1727.7745,
-        "min": 40380,
-        "max": 45553
+        "mean": 43541.7273,
+        "stddev": 1975.9728,
+        "min": 39828,
+        "max": 46333
       },
       "tool_calls": {
-        "mean": 11.0909,
-        "stddev": 2.6783,
+        "mean": 11.6364,
+        "stddev": 2.9931,
         "min": 6,
         "max": 15
       }
