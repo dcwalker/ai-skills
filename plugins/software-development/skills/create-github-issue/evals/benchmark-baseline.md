@@ -156,25 +156,6 @@ exist, said so in the draft with three options, created with the valid label
 only, and repeated the deviation in its closing message rather than letting the
 user assume both labels landed.
 
-## Measured before the milestone-command fix
-
-These numbers were produced against the skill as it stood at the time of the run,
-with Step 3 calling `gh milestone list` and the nine cassettes answering it. That
-command and those fixtures changed immediately afterwards (a real `gh api ...
-/milestones` call, cassettes re-keyed to match).
-
-The results stand, and were spot-checked rather than assumed. The change alters
-how milestones are fetched, not what comes back — both forms return
-`v1.2 Release`, or `[]` for fixture 11 — so the information reaching each trial
-is unchanged, and only eval 9's two milestone expectations touch the value at
-all. Evals 1 and 9 were re-run against the fixed skill and fixtures: eval 1
-behaved identically, and eval 9 still fails the same two expectations, which is
-the one result that would have moved had the command mattered to grading.
-
-Not re-measured: per-eval time, tokens and tool calls. Step 5's `mktemp` form is
-marginally more work than the old fixed path, so those figures may drift by a
-small amount the next time this suite runs.
-
 ## Notes
 
 - with_skill only, no without_skill arm: `create-github-issue` is a workflow
