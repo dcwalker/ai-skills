@@ -32,9 +32,14 @@ Collect:
 - Location (optional)
 - Attendee emails/names
 - Raw notes text
+- Meeting transcript, if one exists (optional)
 - Any screenshots/photos and URLs
 
 If required information is missing, ask for clarification. Do not guess.
+
+A transcript, when provided, is source material for quotes and for
+clarifying what was said. It does not replace the raw notes, and it does not
+replace the Step 4 interview.
 
 ### Step 1b: Enrich from Available Sources
 
@@ -43,8 +48,8 @@ actually reach (a calendar, email, team chat, a ticket tracker, web
 fetching). Use only what is genuinely available: skip anything that is not
 connected without comment, and never present content as coming from a source
 that was not actually consulted. The user may also paste source material
-(a calendar event, chat excerpts, an email) directly; treat that the same
-way as fetched content.
+(a calendar event, chat excerpts, an email, a meeting transcript) directly;
+treat that the same way as fetched content.
 
 For each available source:
 
@@ -135,6 +140,11 @@ Process:
 - Preserve the user's original tone, word choice, and writing style. Do not sanitize or make the language generic.
 - Avoid repetition and filler language.
 
+When a transcript was provided, use it to inform the interview: ground each
+question in what the transcript shows was said about that line, and note the
+statements worth quoting as you go (see the quote rule in Step 5). The
+transcript sharpens the questions; it does not answer them for the user.
+
 ### Step 5: Clean and Normalize Notes
 
 After the interview is complete, apply these normalization rules:
@@ -166,24 +176,85 @@ Unanchored enrichment rule:
   flow of the meeting, subject to the user's approval; if the user declines,
   drop it rather than forcing it into an unrelated note.
 
+Topic rule:
+- Judge whether the meeting covered clear topics. A topic is clear when
+  several notes share a subject the meeting itself treated as a distinct
+  agenda item, discussion, or decision, not merely a theme visible in
+  hindsight.
+- Divide the notes into sections when three or more clear topics exist.
+  Below that, keep a single flat list.
+- Name each section in the meeting's own language (the agenda item, or the
+  words the attendees used), and keep the name to a few words.
+- Order sections by when each topic came up, and keep the notes within a
+  section in their original order.
+- Every note belongs to exactly one section. If a note fits none of them, ask
+  the user where it belongs rather than inventing a catch-all section.
+- Propose the section names and the note-to-section assignment for approval
+  in Step 7. The user decides whether the meeting is sectioned at all.
+
+Quote rule (only when a transcript was provided):
+- Quote only words that appear verbatim in the transcript. Never quote from
+  the raw notes, from an interview answer, or from memory, and never
+  reconstruct what someone probably said.
+- Use two forms, chosen by significance:
+  - Inline quote: a short quoted fragment inside the note's own sentence, in
+    quotation marks with the speaker named, for wording that matters in
+    itself (a specific commitment, a number, a term the group adopted).
+  - Pull quote: a blockquote for an impactful statement, meaning one that
+    decided something, committed someone, reversed a position, registered a
+    real disagreement, or changed the meeting's direction.
+- Format a pull quote as `> "<exact words>" — <Speaker>` on its own line
+  directly under the note it supports, indented to that note's bullet.
+- Include at most one pull quote per section, or one for the meeting when the
+  notes are not sectioned. Skip any quote that only restates its note in
+  other words: the bar is that a reader would want the speaker's own words.
+- Trim with an ellipsis to cut filler or a false start. Never change,
+  reorder, or clean up the words themselves.
+- Attribute using the attendee names from Step 3, applying the same
+  full-name-then-first-name rule. If the transcript labels speakers
+  generically (for example `Speaker 2`) or names someone the attendee list
+  does not include, ask the user who spoke rather than guessing.
+- Propose every quote for approval in Step 7 alongside the note it attaches
+  to. Where the transcript conflicts with the user's notes, ask; the user's
+  notes stand unless the user says otherwise.
+
 Image rule:
 - For each screenshot/photo, ask the user for a caption describing its significance.
 - Add the caption under each image using italic text (e.g., `*Caption describing the image*`).
-- Interlace images into the notes content based on their captions and context (place each image near the related note).
-- Use image timestamps (from file name or EXIF data) to ensure images are always presented in chronological order.
+- Give every image descriptive alt text in the Markdown itself
+  (`![<alt text>](<path>)`), stating what the image shows.
+- Interlace images with the notes using both signals: the image's content
+  (what it shows, and which note that matches) and its timestamp (from the
+  file name or EXIF data), which fixes where in the meeting it belongs.
+- Keep images in chronological order by timestamp. When content and timestamp
+  disagree about placement, follow the content and ask the user to confirm.
+- When the notes are sectioned, place each image in the section its content
+  belongs to, keeping chronological order within that section.
+- If an image has no recoverable timestamp, ask the user where it belongs
+  rather than guessing a position.
 
 ### Step 6: Format Notes as Bulleted List
 
 After the interview and normalization, format the notes section as a bulleted list:
 - Each note is a bullet point (`- `) containing a complete sentence.
+- When the Step 5 topic rule produced sections, precede each section's
+  bullets with its topic name as a bold line (`**Topic Name**`), separated
+  from the previous section by one blank line. Do not use headings for
+  topics: the Notes section is already an H6, and headings cannot nest below
+  it.
+- When no sections were identified, output a single flat bulleted list.
 - Images should be interlaced at the appropriate position among the bullets based on their chronological timestamp and contextual relevance.
+- Pull quotes sit directly under the note they support, inside that note's
+  section.
 
 ### Step 7: Staged Approval Workflow
 
 1. Propose updates to:
    - Meeting Metadata
    - Attendees
-   - Notes
+   - Notes, including any topic sections, transcript quotes, and image
+     placement
+   - The summary, when the Step 8 length rule applies
 2. Wait for user approval that these are good.
 3. Then identify action items from notes and format as a simple checklist bullet list:
    - Markdown format: `- [ ] ...`
@@ -205,12 +276,37 @@ After the interview and normalization, format the notes section as a bulleted li
 
 When approved, return final Markdown with:
 - Metadata block first (title + metadata line)
+- Then the summary, when the length rule below applies
 - Then `###### Attendees`
 - Then `###### Notes`
 - Then `###### Action Items`
 
-If notes are significantly long:
-- Add a concise italicized summary at the top.
+Summary rule (based on read length):
+- Measure the approved Notes section by its text alone: count the words and
+  lines of the notes, captions, and quotes. Images do not count toward the
+  measurement, so a short meeting does not earn a summary by carrying
+  screenshots.
+- Add a concise italicized summary when either trigger fires:
+  - The Notes section exceeds ~500 words or ~40 lines. These are the same
+    thresholds this project uses to decide when a documentation section is
+    too long to read in place.
+  - The notes are divided into three or more topic sections, however short
+    they are. A reader scanning several sections benefits from knowing the
+    shape of the meeting before reading it.
+- When neither trigger fires, add no summary.
+- Place it directly under the metadata line, and under the schedule note when
+  one exists, before `###### Attendees`.
+- Scale the summary to the read length:
+  - Under ~500 words, where the section count is what triggered the summary:
+    one to two sentences.
+  - ~500 to ~1000 words, or ~40 to ~80 lines: two to three sentences.
+  - Over ~1000 words or ~80 lines: up to five sentences, or one short bullet
+    per topic section.
+- The summary may only restate what the notes already say. It must not add
+  facts, draw a conclusion the meeting did not reach, or list action items.
+- Report the measurement (the word and line count, and the section count when
+  the notes are sectioned) when proposing the document in Step 7, so the user
+  can see why a summary was or was not added.
 
 At the very end, append:
 - `#### YYYY-MM-DD HH:MM: <Meeting Title>`
@@ -219,6 +315,11 @@ At the very end, append:
 ## Quality Rules
 
 - Keep output concise and readable.
+- Quote only from a transcript the user actually provided, verbatim and
+  attributed. Never invent, reconstruct, or paraphrase into a quotation.
+- Add a summary only when the length rule calls for one, and section the
+  notes only when the meeting genuinely had distinct topics. Neither is
+  padding to apply by default.
 - Preserve factual accuracy; do not invent details.
 - Ask clarifying questions when uncertain.
 - Follow requested section order and formatting exactly.
