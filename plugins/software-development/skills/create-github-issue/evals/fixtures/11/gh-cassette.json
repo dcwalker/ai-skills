@@ -15,7 +15,7 @@
       "exit_code": 0
     },
     {
-      "match": ["milestone", "list"],
+      "match": ["api", "milestones"],
       "stdout_json": [],
       "exit_code": 0
     },

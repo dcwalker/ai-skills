@@ -66,8 +66,8 @@ Before prompting the user for field values, discover what is available in the ta
 # Labels
 gh label list --repo "OWNER/REPO" --limit 100
 
-# Milestones
-gh milestone list --repo "OWNER/REPO"
+# Milestones -- gh has no `milestone` subcommand; go through the API
+gh api "repos/OWNER/REPO/milestones" --jq '.[].title'
 
 # Projects
 gh project list --owner "OWNER"
@@ -108,13 +108,22 @@ Apply the repository issue guidance from Step 1 when drafting:
 - Match the structure from `.github/ISSUE_TEMPLATE/*` if present
 - Use exact terms from `docs/glossary.md` where applicable
 
-Write the draft to `/tmp/github-issue-body.md`:
+Write the draft to a temporary file created with `mktemp`. Do not use a fixed
+path: a hardcoded name in a shared temp directory collides with any other
+session running this skill at the same time, and the collision is silent — the
+issue that gets filed is whichever body was written last.
 
 ```bash
-cat > /tmp/github-issue-body.md <<'EOF'
+BODY_FILE="$(mktemp -t github-issue-body-XXXXXX.md)"
+cat > "$BODY_FILE" <<'EOF'
 [Issue body draft aligned to repository guidelines]
 EOF
+echo "$BODY_FILE"
 ```
+
+Note the path it prints — Steps 7 and 8 need it. If each command runs in a fresh
+shell, `$BODY_FILE` does not survive between them; use the literal path from
+here on.
 
 ### Step 6: Present Draft to User
 
@@ -150,7 +159,7 @@ Once approved:
 gh issue create \
   --repo "OWNER/REPO" \
   --title "ISSUE TITLE" \
-  --body-file "/tmp/github-issue-body.md"
+  --body-file "$BODY_FILE"
 ```
 
 Add optional flags only when provided:
@@ -167,7 +176,7 @@ Share the created issue as a clickable link:
 Issue created: [#123](https://github.com/owner/repo/issues/123)
 ```
 
-Clean up `/tmp/github-issue-body.md` after successful creation.
+Clean up the draft file (`rm -f "$BODY_FILE"`, or the literal path from Step 5) after successful creation.
 
 ## Error Handling
 

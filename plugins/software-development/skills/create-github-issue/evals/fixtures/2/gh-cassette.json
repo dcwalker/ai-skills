@@ -8,6 +8,6 @@
   ],
   "default": {
     "exit_code": 1,
-    "stderr": "gh-stub: no fixture match for this call -- the request was too vague to have reached discovery/creation yet"
+    "stderr": "gh-stub: no fixture match for this call"
   }
 }
