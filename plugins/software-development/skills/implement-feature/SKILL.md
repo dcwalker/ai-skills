@@ -30,7 +30,7 @@ Invoke each by name at the relevant step. Do not re-implement their instructions
 
 Before creating anything, state the feature in one sentence: what will exist when this is done that doesn't exist now, and where. If you can write that sentence from the request plus the codebase, go to step 1.
 
-If you can't, stop and ask. The cases that fail this test are requests naming an outcome without saying what changes ("make the login better", "improve error handling", "clean up the dashboard"), and requests where two readings would produce materially different code. Put the readings to the user — name each one and what you'd build under it — and wait for an answer before step 1.
+If you can't, stop and ask. The cases that fail this test are requests naming an outcome without saying what changes ("make the checkout flow better", "improve error handling", "tidy up the settings page"), and requests where two readings would produce materially different code. Put the readings to the user — name each one and what you'd build under it — and wait for an answer before step 1.
 
 This gate is for ambiguity the repository cannot settle, not for detail you could look up. A specific request whose remaining questions the codebase answers is actionable; don't stall it for confirmation, and don't use this step to re-ask something the user already answered in their request.
 
