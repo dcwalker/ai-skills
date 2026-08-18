@@ -26,6 +26,16 @@ Invoke each by name at the relevant step. Do not re-implement their instructions
 
 ## Instructions
 
+### 0. Check the request is actionable
+
+Before creating anything, state the feature in one sentence: what will exist when this is done that doesn't exist now, and where. If you can write that sentence from the request plus the codebase, go to step 1.
+
+If you can't, stop and ask. The cases that fail this test are requests naming an outcome without saying what changes ("make the login better", "improve error handling", "clean up the dashboard"), and requests where two readings would produce materially different code. Put the readings to the user — name each one and what you'd build under it — and wait for an answer before step 1.
+
+This gate is for ambiguity the repository cannot settle, not for detail you could look up. A specific request whose remaining questions the codebase answers is actionable; don't stall it for confirmation, and don't use this step to re-ask something the user already answered in their request.
+
+Ask before step 1 rather than after: steps 1-4 create a branch, a commit and a PR, and the branch and commit reach `origin` before the first `gh` call. A wrong guess there has to be undone in public. A question costs one turn.
+
 ### 1. Create the branch
 
 If there's a linked Jira/GitHub issue, invoke the `create-branch` skill with the issue key and feature title. If there is no ticket, note that `create-branch`'s own instructions expect an issue key and don't define a keyless mode — don't hand it an empty key and expect a fallback that doesn't exist there. Instead, build the branch name directly (a slugified version of the feature name, following `create-branch`'s slugification and length conventions) and follow its remaining mechanics yourself: `git checkout -b <name>`, then check for an `origin` remote and connectivity before `git push -u origin <name>`. Skip its ticket-comment step, since there's no ticket to comment on.
@@ -83,6 +93,7 @@ Summarize:
 
 ## Important Notes
 
+- If step 0's one-sentence statement can't be written, nothing downstream is safe to start — an ambiguous feature request produces a branch name, a commit message and a PR description that all assert a scope the user never chose.
 - Do not mark the PR ready for review, or hand off to `land-pr`, until the QA loop has concluded (satisfied or capped).
 - Sub-agents — implementation or QA — must be given the exact skill names they're allowed to invoke; they do not inherit awareness of this skill or its referenced skills from surrounding context.
 - This skill never merges the PR. That remains a separate, explicit action.
