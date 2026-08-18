@@ -6,13 +6,14 @@
 # the trial (transcript, final state, call log) into .trial-runs/<id>/,
 # gitignored so this never gets committed.
 #
-# Nested `claude` subprocesses can't authenticate inside some sandboxed
-# Claude Code sessions, so this has to be run from a normal logged-in
-# terminal, not delegated to an in-session Bash tool call. See
-# evals/README.md's "MCP stub servers" section for the underlying mechanism.
+# The nested `claude` subprocess inherits the parent session's credentials,
+# so this does run when delegated to an in-session Bash tool call. If it does
+# not authenticate in whatever sandbox you are in, run it from a normal
+# logged-in terminal instead. See evals/README.md's "MCP stub servers"
+# section for the underlying mechanism.
 #
 # Usage: bash plugins/life-skills/skills/triage/evals/run-trials.sh [id ...]
-# Run from the repo root. With no arguments, wipes .trial-runs/ and runs
+# Run from the repo root. Set TRIALS_DIR to write the trials somewhere else. With no arguments, wipes .trial-runs/ and runs
 # every eval in evals.json. With explicit ids (e.g. `run-trials.sh 6 7 8 9`
 # after a partial run died on a session limit), re-runs only those,
 # replacing just their own .trial-runs/<id>/ dirs and leaving completed
@@ -22,7 +23,11 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../../../../.." > /dev/null && pwd)"
-TRIALS_DIR="$SCRIPT_DIR/.trial-runs"
+# Default output lives beside the evals, gitignored. Override it to put the
+# trial workspaces outside the repo: a workspace under evals/ leaves
+# evals.json and fixtures/ three directories up from the trial's own cwd,
+# within reach of an executor that goes looking, and that is the answer key.
+TRIALS_DIR="${TRIALS_DIR:-$SCRIPT_DIR/.trial-runs}"
 
 if [[ $# -gt 0 ]]; then
   IDS="$*"
@@ -56,6 +61,29 @@ for e in data['evals']:
   # shellcheck disable=SC1090
   source "$ENV_FILE"
 
+  # `--dangerously-skip-permissions` is refused outright when the shell is
+  # root, which is the default in most containers. Allow-listing exactly the
+  # stub servers this fixture wired into mcp-config.json gets the same reach
+  # without the flag, so the batch runs unattended either way.
+  if [[ $EUID -eq 0 ]]; then
+    mapfile -t PERM_ARGS < <(python3 -c "
+import json
+config = json.load(open('$MCP_CONFIG_PATH'))
+print('--allowedTools')
+print(' '.join('mcp__' + s for s in config['mcpServers']))
+")
+  else
+    PERM_ARGS=(--dangerously-skip-permissions)
+  fi
+
+  # The subprocess runs with cwd inside $WORKSPACE_DIR, where nothing loads
+  # this repo's plugins, so without staging the skill the trial would measure
+  # the bare model. Copy SKILL.md alone -- a whole-directory copy would put
+  # evals.json and the fixtures inside the workspace, handing the trial its
+  # own answer key.
+  mkdir -p "$WORKSPACE_DIR/.claude/skills/triage"
+  cp "$SCRIPT_DIR/../SKILL.md" "$WORKSPACE_DIR/.claude/skills/triage/SKILL.md"
+
   # JSON output mode captures the subprocess's own wall-clock duration and
   # real token usage alongside the reply -- plain-text mode reports neither,
   # which left earlier baselines approximating time from file mtimes with no
@@ -67,8 +95,9 @@ for e in data['evals']:
   # up in metrics.json's is_error/parse_error fields for the grader.
   (
     cd "$WORKSPACE_DIR"
-    claude -p --dangerously-skip-permissions --strict-mcp-config \
-      --mcp-config "$MCP_CONFIG_PATH" --output-format json -- "$PROMPT"
+    claude -p "${PERM_ARGS[@]}" --strict-mcp-config \
+      --mcp-config "$MCP_CONFIG_PATH" --output-format json -- "$PROMPT" \
+      < /dev/null
   ) > "$RUN_DIR/result.json" 2> "$RUN_DIR/stderr.txt" || \
     echo "  WARNING: claude exited non-zero for eval $ID; continuing with the next eval"
 
