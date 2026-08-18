@@ -17,7 +17,7 @@
       "exit_code": 0
     },
     {
-      "match": ["milestone", "list"],
+      "match": ["api", "milestones"],
       "stdout_json": [{"title": "v1.2 Release"}],
       "exit_code": 0
     },
