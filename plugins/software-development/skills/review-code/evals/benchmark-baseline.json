@@ -2,9 +2,9 @@
   "metadata": {
     "skill_name": "review-code",
     "skill_path": "plugins/software-development/skills/review-code",
-    "executor_model": "claude-sonnet-5",
-    "analyzer_model": "claude-sonnet-5",
-    "timestamp": "2026-07-31T14:30:00Z",
+    "executor_model": "claude-opus-5",
+    "analyzer_model": "claude-opus-5",
+    "timestamp": "2026-08-18T22:10:00Z",
     "evals_run": [
       1,
       2,
@@ -33,38 +33,39 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 99.921,
-        "tokens": 48679,
-        "tool_calls": null,
-        "errors": null
+        "time_seconds": 97.6,
+        "tokens": 45585,
+        "tool_calls": 10,
+        "errors": 0
       },
       "expectations": [
         {
           "text": "The output uses the local/text review format (=== Code Review === with a Risk Score and Issues section), since there is no PR",
           "passed": true,
-          "evidence": "Output verbatim reproduces this exact format."
+          "evidence": "Emitted `=== Code Review ===` with Risk Score 70 and an Issues section; no PR existed so text mode was correct."
         },
         {
           "text": "The output lists CONTRIBUTING.md as a loaded guideline source",
           "passed": true,
-          "evidence": "Output's Guidelines field and PR-level note both cite CONTRIBUTING.md."
+          "evidence": "`Guidelines: CONTRIBUTING.md`."
         },
         {
           "text": "An issue is flagged against src/profile.js / updateDisplayName for missing input validation on userId and/or displayName",
           "passed": true,
-          "evidence": "Two separate findings target this exact function: an IDOR-style authorization gap on userId and missing validation on displayName."
+          "evidence": "src/profile.js:5 flagged High (65) for no validation of userId/displayName before the db write."
         },
         {
           "text": "The issue text references or paraphrases the CONTRIBUTING.md rule about validating user input before use",
           "passed": true,
-          "evidence": "The displayName finding quotes CONTRIBUTING.md's Code Standards line directly."
+          "evidence": "Quotes the rule: every function handling user input must validate it and \"never pass it straight through to a database call\"."
         },
         {
           "text": "The issue (or overall risk score) is rated Medium or higher (>= 40), not Low/None",
           "passed": true,
-          "evidence": "Overall risk score reported as 75/100, High."
+          "evidence": "Finding rated 65 and overall risk 70 \u2014 both well above 40."
         }
-      ]
+      ],
+      "notes": []
     },
     {
       "eval_id": 2,
@@ -75,28 +76,29 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": 97.763,
-        "tokens": 47214,
-        "tool_calls": null,
-        "errors": null
+        "time_seconds": 112.5,
+        "tokens": 47878,
+        "tool_calls": 13,
+        "errors": 0
       },
       "expectations": [
         {
-          "text": "The output includes an explicit note that no repo-specific guideline files were found and that the review used general best practices instead",
+          "text": "The output includes an explicit note that no repo-specific guideline files (CONTRIBUTING.md, AGENTS.md, etc.) were found and that the review used general best practices instead",
           "passed": true,
-          "evidence": "Guidelines field and closing note both state no CONTRIBUTING.md/AGENTS.md/tool-specific files were found and general best practices were used."
+          "evidence": "Output carries the verbatim no-guidelines note and `Guidelines: none found`."
         },
         {
           "text": "The review is not skipped or refused for lack of guideline files",
           "passed": true,
-          "evidence": "A full review with 4 real findings was produced."
+          "evidence": "Full review performed: 3 findings against src/discount.js and repo level."
         },
         {
           "text": "The overall risk score reflects the code's real, minor state -- None/Low/Medium (0-59), not High/Critical -- and any issues raised are genuine defensive-coding gaps actually present in this 4-line function (e.g. missing bounds/NaN validation), not fabricated, security-framed, or wildly inflated beyond what the code actually contains",
           "passed": true,
-          "evidence": "Score 50/100 (Medium). Independently verified the fixture code directly: applyDiscount genuinely has no bounds check on percentOff (can produce a negative price) and no NaN guard -- the findings are real and not inflated into a security framing. Note: the eval's expected_output was originally written assuming this function had 'no real defects,' which a direct read of the fixture code shows is inaccurate; the expectation was corrected to match the code's actual state before grading."
+          "evidence": "Risk 30 (Low). Findings are real gaps in the 4-line function: unclamped percentOff (>100 yields a negative price), NaN passthrough, and unrounded currency float."
         }
-      ]
+      ],
+      "notes": []
     },
     {
       "eval_id": 3,
@@ -107,33 +109,34 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 121.746,
-        "tokens": 52014,
-        "tool_calls": null,
-        "errors": null
+        "time_seconds": 110.7,
+        "tokens": 46083,
+        "tool_calls": 11,
+        "errors": 0
       },
       "expectations": [
         {
           "text": "An issue is flagged against src/search.js / searchUsers for SQL injection via string concatenation of the `name` query parameter",
           "passed": true,
-          "evidence": "Top finding is exactly this, rated Critical."
+          "evidence": "src/search.js:7-9 flagged for SQL injection via concatenation of req.query.name, with a working exploit string."
         },
         {
           "text": "That issue (or the overall risk score) is rated High or Critical (score >= 60)",
           "passed": true,
-          "evidence": "Overall risk score 90/100, Critical."
+          "evidence": "Rated Critical (95); overall 95."
         },
         {
           "text": "The issue references or paraphrases the CONTRIBUTING.md rule requiring parameterized queries",
           "passed": true,
-          "evidence": "Finding quotes CONTRIBUTING.md's parameterized-query rule directly."
+          "evidence": "Quotes CONTRIBUTING.md: \"Use parameterized queries for all database access. Never build SQL by string concatenation...\""
         },
         {
           "text": "The output uses the local/text review format since there is no PR",
           "passed": true,
-          "evidence": "Output verbatim matches the local text format."
+          "evidence": "Text format used; no PR exists."
         }
-      ]
+      ],
+      "notes": []
     },
     {
       "eval_id": 4,
@@ -144,59 +147,64 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": 73.829,
-        "tokens": 47859,
-        "tool_calls": null,
-        "errors": null
+        "time_seconds": 97.5,
+        "tokens": 46088,
+        "tool_calls": 11,
+        "errors": 0
       },
       "expectations": [
         {
           "text": "The overall risk score is in the None/Low band (0-39)",
           "passed": true,
-          "evidence": "Reported 0/100."
+          "evidence": "Risk 25 \u2014 Low band."
         },
         {
           "text": "The output does not flag createOrder for missing input validation, missing parameterized queries, missing test coverage, or missing error handling -- all four are actually present in this fixture",
           "passed": true,
-          "evidence": "Output explicitly confirms all four rules are satisfied (validation, parameterized query, matching test, try/catch error handling) and reports 0 issues."
+          "evidence": "None of the four are flagged as missing. The repo-level note affirmatively verifies each as met: validation, parameterized query, endpoint test, try/catch error handling."
         },
         {
           "text": "Any issues listed, if present at all, are minor/stylistic and clearly not inflated to Medium or higher just to have something to report",
           "passed": true,
-          "evidence": "Vacuously true -- 0 issues were reported."
+          "evidence": "All 4 findings are Low (15-25): untrimmed sku stored, Number() coercion breadth, unchecked rows[0]?.id, and a happy-path test gap that explicitly states the CONTRIBUTING rule is satisfied."
         }
-      ]
+      ],
+      "notes": []
     },
     {
       "eval_id": 5,
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 1.0,
-        "passed": 3,
-        "failed": 0,
+        "pass_rate": 0.6667,
+        "passed": 2,
+        "failed": 1,
         "total": 3,
-        "time_seconds": 83.478,
-        "tokens": 49510,
-        "tool_calls": null,
-        "errors": null
+        "time_seconds": 103.4,
+        "tokens": 49482,
+        "tool_calls": 10,
+        "errors": 0
       },
       "expectations": [
         {
-          "text": "The output does not flag the `any` typed parameters in src/webhooks.ts as a violation, since CONTRIBUTING.md's own exception for narrowed third-party SDK responses applies here",
+          "text": "The output does not flag the `any` typed parameters in src/webhooks.ts (parseSdkEvent's raw param or handleWebhook's rawBody param) as a violation, since CONTRIBUTING.md's own exception for narrowed third-party SDK responses applies here",
           "passed": true,
-          "evidence": "Output explicitly reasons through both any-typed parameters (parseSdkEvent's raw, handleWebhook's rawBody) and concludes both are compliant, citing the exception."
+          "evidence": "A dedicated `Checked and deliberately NOT flagged` block states both `any` uses are compliant under CONTRIBUTING's narrowed-SDK exception."
         },
         {
           "text": "The output does not flag the TODO(PROJ-482) comment as a problem, since CONTRIBUTING.md's own exception for ticket-referenced non-blocking TODOs applies here",
           "passed": true,
-          "evidence": "Output explicitly confirms the TODO matches the exception (tracked ticket, explicitly non-blocking) and does not flag it."
+          "evidence": "The same block states TODO(PROJ-482) is compliant as a TODO under the ticket-referenced exception. The Medium at line 15 is about the comment's factual claim (\"failures are logged\" when no logging exists), not about the TODO being disallowed."
         },
         {
-          "text": "The overall risk score reflects that no real issue was found (None/Low band, 0-39)",
-          "passed": true,
-          "evidence": "Reported 5/100."
+          "text": "The overall risk score reflects that no real issue was found (None/Low band, 0-39), rather than penalizing the code for surface-level patterns that the repo's own guidelines explicitly allow",
+          "passed": false,
+          "evidence": "Risk scored 45 (Medium), outside the required 0-39. Driven by a Medium (45) for handleWebhook accepting webhook bodies with no signature/HMAC verification or replay check \u2014 a finding the fixture did not anticipate, hedged as possibly handled by upstream middleware."
         }
+      ],
+      "notes": [
+        "The failing expectation is the risk band, not the trap avoidance \u2014 both documented exceptions were respected explicitly.",
+        "The finding that broke the band is defensible: handleWebhook authenticates nothing about the sender. Whether fixture 5 is genuinely clean is a question for the eval owner; scored as written."
       ]
     },
     {
@@ -208,28 +216,29 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": 133.801,
-        "tokens": 49743,
-        "tool_calls": null,
-        "errors": null
+        "time_seconds": 102.8,
+        "tokens": 45290,
+        "tool_calls": 10,
+        "errors": 0
       },
       "expectations": [
         {
           "text": "An issue is flagged against src/reports.js / generateNightlyReport for missing error handling around the fetchClient.get and/or fs.writeFile calls",
           "passed": true,
-          "evidence": "Top finding is exactly this."
+          "evidence": "src/reports.js:5-10 flagged High (60) for no try/catch around fetchClient.get and fs.writeFile."
         },
         {
           "text": "The issue references or paraphrases the CONTRIBUTING.md rule requiring async functions calling external services to catch and log errors",
           "passed": true,
-          "evidence": "Finding quotes the CONTRIBUTING.md rule directly."
+          "evidence": "Quotes the rule verbatim: async functions calling external services \"must catch and log errors\"."
         },
         {
           "text": "The issue (or overall risk score) is rated at least Medium (score >= 40)",
           "passed": true,
-          "evidence": "Overall risk score 65/100, High."
+          "evidence": "Rated 60; overall 60."
         }
-      ]
+      ],
+      "notes": []
     },
     {
       "eval_id": 7,
@@ -240,27 +249,30 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": 163.728,
-        "tokens": 53836,
-        "tool_calls": null,
-        "errors": null
+        "time_seconds": 97.3,
+        "tokens": 44698,
+        "tool_calls": 8,
+        "errors": 0
       },
       "expectations": [
         {
-          "text": "An issue is flagged against src/rate-limiter.js for the lack of any time-window reset, meaning users become permanently rate-limited after 10 total requests rather than being limited per-window",
+          "text": "An issue is flagged against src/rate-limiter.js / isRateLimited or requestCounts for the lack of any time-window reset, meaning users become permanently rate-limited after 10 total requests rather than being limited per-window",
           "passed": true,
-          "evidence": "Second-highest finding (High, 65) is exactly this, explicitly noting it's a lifetime cap rather than a real rate limiter."
+          "evidence": "src/rate-limiter.js flagged High (65): no time window and no eviction, so a user is 429'd permanently after 10 requests rather than per-window."
         },
         {
           "text": "The issue connects to the CONTRIBUTING.md guidance about shared in-memory state across concurrent requests",
           "passed": true,
-          "evidence": "The PR-level note explicitly checks the shared-state guidance against the code and discusses it; a related Medium finding also ties unbounded key growth to the same guidance."
+          "evidence": "A separate Medium (50) ties requestCounts to CONTRIBUTING's shared-in-memory-state guidance, noting per-process scope and fragility once an await is introduced."
         },
         {
           "text": "The issue (or overall risk score) is rated Medium or higher (score >= 40), reflecting a real correctness/reliability defect rather than a style nitpick",
           "passed": true,
-          "evidence": "Overall risk score 70/100, High -- driven by a real, empirically-verified prototype-pollution bypass plus the lifetime-cap issue."
+          "evidence": "65 and 50 respectively; overall 75."
         }
+      ],
+      "notes": [
+        "The trial disputed the fixture: the comment on line 25 advertises a TOCTOU race that cannot occur, since isRateLimited's read-check-write is fully synchronous. It flagged the shared state on its real grounds instead."
       ]
     },
     {
@@ -272,32 +284,35 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 117.731,
-        "tokens": 51445,
-        "tool_calls": null,
-        "errors": null
+        "time_seconds": 100.8,
+        "tokens": 45395,
+        "tool_calls": 11,
+        "errors": 0
       },
       "expectations": [
         {
           "text": "The output lists AGENTS.md as a loaded guideline source",
           "passed": true,
-          "evidence": "Guidelines field lists AGENTS.md (no CONTRIBUTING.md present)."
+          "evidence": "`Guidelines: AGENTS.md`."
         },
         {
           "text": "An issue is flagged against src/payments.js / chargeCard for logging the full, unmasked card number",
           "passed": true,
-          "evidence": "Top finding (Critical, 95) is exactly this."
+          "evidence": "src/payments.js:2 flagged for console.log of the full PAN."
         },
         {
           "text": "The issue references or paraphrases the AGENTS.md rule about masking all but the last 4 characters of sensitive values",
           "passed": true,
-          "evidence": "Finding quotes the AGENTS.md masking rule directly."
+          "evidence": "Quotes AGENTS.md: \"Never log full credit card numbers... Mask all but the last 4 characters.\""
         },
         {
           "text": "The issue (or overall risk score) is rated High or higher (score >= 60), reflecting sensitive data exposure",
           "passed": true,
-          "evidence": "Overall risk score 95/100, Critical."
+          "evidence": "Rated Critical (90); overall 90."
         }
+      ],
+      "notes": [
+        "Unrelated fixture bug found and verified against the fixture source: src/payments.js calls gateway.charge(...) but never requires ./gateway, so every call throws ReferenceError. Likely an unintended third defect."
       ]
     },
     {
@@ -309,33 +324,34 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 87.949,
-        "tokens": 48299,
-        "tool_calls": null,
-        "errors": null
+        "time_seconds": 91.4,
+        "tokens": 46098,
+        "tool_calls": 10,
+        "errors": 0
       },
       "expectations": [
         {
           "text": "The output lists CLAUDE.md as a loaded guideline source",
           "passed": true,
-          "evidence": "Guidelines field lists CLAUDE.md (no other guideline files present)."
+          "evidence": "`Guidelines: CLAUDE.md`."
         },
         {
           "text": "An issue is flagged against src/proxy.js / proxyToRecommendations for missing a request timeout on the fetch() call to the downstream recommendations service",
           "passed": true,
-          "evidence": "Top finding (High, 65) is exactly this."
+          "evidence": "src/proxy.js:5 flagged High (70) for the fetch() to the recommendations service having no timeout."
         },
         {
           "text": "The issue references or paraphrases the CLAUDE.md rule requiring explicit timeouts on downstream calls",
           "passed": true,
-          "evidence": "Finding quotes the CLAUDE.md timeout rule directly."
+          "evidence": "Quotes CLAUDE.md's rule that HTTP handlers must set an explicit request timeout."
         },
         {
           "text": "The issue (or overall risk score) is rated at least Medium (score >= 40)",
           "passed": true,
-          "evidence": "Overall risk score 65/100, High."
+          "evidence": "70; overall 70."
         }
-      ]
+      ],
+      "notes": []
     },
     {
       "eval_id": 10,
@@ -346,28 +362,29 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": 76.268,
-        "tokens": 48021,
-        "tool_calls": null,
-        "errors": null
+        "time_seconds": 89.5,
+        "tokens": 46117,
+        "tool_calls": 11,
+        "errors": 0
       },
       "expectations": [
         {
-          "text": "An issue is flagged against src/session.js / getCurrentUserDisplayName for dereferencing session.user.displayName without checking whether session is null/undefined",
+          "text": "An issue is flagged against src/session.js / getCurrentUserDisplayName for dereferencing session.user.displayName without checking whether session (or session.user) is null/undefined",
           "passed": true,
-          "evidence": "Sole finding (High, 70) is exactly this."
+          "evidence": "src/session.js:6 flagged High (70) for dereferencing sessions.get(sessionId).user with no existence check."
         },
         {
           "text": "The issue notes this will throw/crash when the session has expired or never existed, per session-store.js's own documented behavior",
           "passed": true,
-          "evidence": "Finding explicitly cites session-store.js's own comment about returning undefined for expired/nonexistent sessions."
+          "evidence": "Cites session-store.js:4's own comment that get \"Returns undefined if the session has expired or never existed\", and names the resulting TypeError."
         },
         {
           "text": "The issue (or overall risk score) is rated at least Medium (score >= 40), reflecting a real correctness defect rather than a style nitpick",
           "passed": true,
-          "evidence": "Overall risk score 70/100, High."
+          "evidence": "70; overall 70."
         }
-      ]
+      ],
+      "notes": []
     },
     {
       "eval_id": 11,
@@ -378,28 +395,29 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": 109.726,
-        "tokens": 49749,
-        "tool_calls": null,
-        "errors": null
+        "time_seconds": 94.5,
+        "tokens": 48632,
+        "tool_calls": 11,
+        "errors": 0
       },
       "expectations": [
         {
           "text": "An issue is flagged against src/reactions.js / addReaction for missing input validation and/or SQL injection via string concatenation",
           "passed": true,
-          "evidence": "Top finding (Critical, 90) covers both the SQL injection and the missing validation as separate findings."
+          "evidence": "src/reactions.js:7-9 flagged for SQL injection via concatenation, plus a High for missing validation."
         },
         {
           "text": "That issue (or the overall risk score) is rated High or Critical (score >= 60)",
           "passed": true,
-          "evidence": "Overall risk score 90/100, Critical."
+          "evidence": "Rated Critical (95); overall 95."
         },
         {
           "text": "src/comments.js / addComment is not flagged as having a validation or SQL-injection issue -- it already follows the CONTRIBUTING.md pattern correctly",
           "passed": true,
-          "evidence": "Output explicitly confirms comments.js fully complies with both rules and reports no issues there, contrasting it directly against reactions.js."
+          "evidence": "addComment is not flagged for validation or injection \u2014 the review states comments.js:16 \"already shows the correct pattern\" and its only finding there is a Low about missing error handling, a different defect."
         }
-      ]
+      ],
+      "notes": []
     },
     {
       "eval_id": 12,
@@ -410,33 +428,34 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 96.796,
-        "tokens": 48548,
-        "tool_calls": null,
-        "errors": null
+        "time_seconds": 96.2,
+        "tokens": 46706,
+        "tool_calls": 14,
+        "errors": 0
       },
       "expectations": [
         {
           "text": "An issue is flagged against src/exports.js / exportOrdersCsv for lacking an automated test in src/__tests__/",
           "passed": true,
-          "evidence": "Top finding (High, 65) is exactly this."
+          "evidence": "src/exports.js:4 flagged High (70) for exportOrdersCsv having no test in src/__tests__/."
         },
         {
           "text": "The issue references or paraphrases the CONTRIBUTING.md rule requiring a test for every new endpoint",
           "passed": true,
-          "evidence": "Finding quotes the CONTRIBUTING.md rule directly, including the 'will not be merged' language."
+          "evidence": "Quotes the CONTRIBUTING rule that such changes \"will not be merged\"."
         },
         {
           "text": "src/health.js / healthCheck is not flagged for missing test coverage, since it already has a matching test file",
           "passed": true,
-          "evidence": "Output verified via directory listing that src/__tests__/health.test.js exists and covers healthCheck; explicitly notes it is unaffected."
+          "evidence": "healthCheck is not flagged for coverage; the finding names health.test.js as the existing test that covers it."
         },
         {
           "text": "The exports.js issue (or overall risk score) is rated at least Medium (score >= 40)",
           "passed": true,
-          "evidence": "Overall risk score 65/100, High."
+          "evidence": "70; overall 70."
         }
-      ]
+      ],
+      "notes": []
     },
     {
       "eval_id": 13,
@@ -447,37 +466,40 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 111.149,
-        "tokens": 41278,
-        "tool_calls": null,
-        "errors": null
+        "time_seconds": 146.3,
+        "tokens": 49421,
+        "tool_calls": 14,
+        "errors": 0
       },
       "expectations": [
         {
           "text": "The output uses the local/text review format (=== Code Review === with a Risk Score), since there is no PR.",
           "passed": true,
-          "evidence": "Transcript opens with the === Code Review === block, Risk Score 40/100, and states no open PR was found (verified via the gh stub)."
+          "evidence": "Text format with Risk Score 50; no PR."
         },
         {
           "text": "A Skill Quality section is present and names the plan-weekly-review skill (or its path).",
           "passed": true,
-          "evidence": "=== Skill Quality === section present: 'Skill: plan-weekly-review (plugins/life-skills/skills/plan-weekly-review)'."
+          "evidence": "`=== Skill Quality ===` names `plan-weekly-review (plugins/life-skills/skills/plan-weekly-review)`."
         },
         {
           "text": "The Skill Quality section reports static checks (description quality, line budget, naming, bundled resources, and/or eval hygiene -- at least some of these named).",
           "passed": true,
-          "evidence": "All five static checks named with per-check results (description, line budget with actual line count, naming, resources, eval hygiene)."
+          "evidence": "All five static checks reported with verdicts: description \u26a0, line budget \u2713 (45 lines), naming \u2713, resources \u2713, eval hygiene \u26a0."
         },
         {
           "text": "The output explicitly states evals were NOT run for this review (on-request only) and references the checked-in benchmark-baseline as the last verified result; no eval-results table or fresh pass-rate numbers are fabricated.",
           "passed": true,
-          "evidence": "'Evals: not run (on-request only); baseline of record: evals/benchmark-baseline.json (2026-07-15, 2/2 pass)' -- cites the checked-in baseline's own recorded figures, no fresh run fabricated."
+          "evidence": "States `Evals: not run (on-request only); baseline of record: evals/benchmark-baseline.json (100% pass, 2/2 evals, 2026-07-15)`. No eval table, no fresh pass rates."
         },
         {
           "text": "The transcript shows no executor/grader subagents were spawned to run the fixture skill's evals.",
           "passed": true,
-          "evidence": "Trial made 9 tool calls, all read/inspect; the fixture workspace was verified untouched afterward (git status shows only the seeded SKILL.md modification), and the output itself states evals were not run."
+          "evidence": "No subagents were spawned. NOTE: unfalsifiable in this environment \u2014 executors have no Agent tool, so this expectation cannot fail here regardless of the skill's behaviour."
         }
+      ],
+      "notes": [
+        "Expectation 5 (no executor/grader subagents spawned) passes but is unfalsifiable here: these executors have no Agent tool."
       ]
     },
     {
@@ -489,63 +511,64 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 54.965,
-        "tokens": 37313,
-        "tool_calls": null,
-        "errors": null
+        "time_seconds": 107.2,
+        "tokens": 46275,
+        "tool_calls": 13,
+        "errors": 0
       },
       "expectations": [
         {
           "text": "No Skill Quality section appears anywhere in the output, and no skill static checks or eval/baseline references are reported.",
           "passed": true,
-          "evidence": "Transcript contains no === Skill Quality === section and explicitly notes the diff touches no plugins/*/skills/ file so the trigger does not fire."
+          "evidence": "No Skill Quality section and no static checks. The repo-level note explains why Step 4b did not fire \u2014 the diff touches only src/report.js \u2014 which is reasoning about non-applicability, not a skill-quality report."
         },
         {
           "text": "An issue is flagged against src/report.js's searchSummaries for the unvalidated, string-concatenated SQL (injection risk), rated High or Critical (>= 60).",
           "passed": true,
-          "evidence": "Critical (85) finding on src/report.js line 10 naming the string-concatenated LIKE clause and citing CONTRIBUTING.md's user-input rule."
+          "evidence": "src/report.js:10 flagged Critical (90) for SQL injection via string concatenation of `term`."
         },
         {
           "text": "The pre-existing getWeeklySummary function (parameterized query) is not flagged as a SQL injection issue.",
           "passed": true,
-          "evidence": "getWeeklySummary is cited only as the correct parameterized pattern to follow; the additional High finding (missing user scoping) targets searchSummaries, not getWeeklySummary."
+          "evidence": "getWeeklySummary is not flagged; the review cites it as the correct bound-parameter pattern one function above."
         },
         {
           "text": "The output uses the local/text review format and lists CONTRIBUTING.md as a loaded guideline source.",
           "passed": true,
-          "evidence": "=== Code Review === text format used; Guidelines line lists CONTRIBUTING.md."
+          "evidence": "Text format; `Guidelines: CONTRIBUTING.md`."
         }
+      ],
+      "notes": [
+        "The fixture plants plugins/life-skills/skills/plan-weekly-review as a distractor and the diff does not touch it. The trial reasoned this out explicitly and declined Step 4b, which is what the skill prescribes."
       ]
     }
   ],
   "run_summary": {
     "with_skill": {
       "pass_rate": {
-        "mean": 1.0,
-        "stddev": 0.0,
-        "min": 1.0,
+        "mean": 0.9762,
+        "stddev": 0.0858,
+        "min": 0.6667,
         "max": 1.0
       },
       "time_seconds": {
-        "mean": 102.0607,
-        "stddev": 26.5387,
-        "min": 54.965,
-        "max": 163.728
+        "mean": 103.4071,
+        "stddev": 13.5541,
+        "min": 89.5,
+        "max": 146.3
       },
       "tokens": {
-        "mean": 48107.7143,
-        "stddev": 4063.2495,
-        "min": 37313,
-        "max": 53836
+        "mean": 46696.2857,
+        "stddev": 1484.2993,
+        "min": 44698,
+        "max": 49482
+      },
+      "tool_calls": {
+        "mean": 11.2143,
+        "stddev": 1.6552,
+        "min": 8,
+        "max": 14
       }
     }
-  },
-  "notes": [
-    "12/12 evals pass 100% of their expectations in this baseline run. All results were independently verified against ground truth: every eval's target repository was confirmed untouched (git status clean, since review-code should never modify files), and every review finding was checked against the actual fixture source files rather than accepted from executor self-report alone.",
-    "This is a with_skill-only baseline (no without_skill comparison) since review-code is a workflow/analysis skill, not a content generator.",
-    "Eval 2's original expected_output/expectations assumed its fixture function (applyDiscount) had 'no real defects' and mandated a None/Low (0-39) risk score. A direct read of the fixture code shows this assumption was inaccurate: the function genuinely has no bounds check on its percentage argument (can silently produce a negative price) and no NaN guard. Corrected the expectation to grade against the code's real state (a genuine, minor-to-moderate defensive-coding gap, not a security or correctness emergency) rather than an idealized 'this code is perfect' assumption -- consistent with the same class of fixture-narrative corrections made elsewhere in this session's baselines.",
-    "This batch covered a strong mix of scenarios: a broken-object-level-authorization plus missing-validation case (1), a repo with no guideline files at all requiring a fallback to general best practices (2), an unambiguous SQL injection (3), a fully clean fixture that must score near-zero without invented findings (4), a decoy case where surface-level patterns (`any` types, TODO comments) are explicitly permitted by the repo's own guidelines and must not be flagged (5), missing async error handling (6), a rate-limiter with a real, empirically-verified prototype-pollution bypass plus a lifetime-cap design flaw (7), unmasked sensitive data logging governed by an AGENTS.md-specific rule (8), a missing-timeout rule governed by a CLAUDE.md-specific rule (9), a null-dereference crash documented by the callee's own code comments (10), a side-by-side compliant-vs-violating endpoint pair that must be distinguished rather than treated identically (11), and a missing-test-coverage finding that must correctly distinguish an already-covered endpoint from an uncovered new one (12).",
-    "The `tool_calls` and `errors` fields on every run are `null`, not measured -- they aren't wired up in the executor/grader pipeline yet.",
-    "Evals 13-14 added 2026-07-31 to cover the new Step 4b (Skill Quality Review) behavior: 13 verifies the additive skill-quality path on a diff touching a skill file (section present, static checks reported, evals NOT run by default with the checked-in baseline cited as the result of record) and 14 verifies the negative case (a non-skill diff in a repo that contains a skill directory must not trigger the section, while the general review still catches a planted SQL-injection violation). Both pass 5/5 and 4/4 respectively; both independently verified against the trial transcripts and post-trial workspace state (no files modified, no eval subagents spawned) rather than executor self-report. Eval 13's executor also correctly flagged the fixture's deliberately stale baseline as a Medium finding -- consistent with CONTRIBUTING.md's Evals policy -- which the eval's expectations do not require but do not forbid."
-  ]
+  }
 }
