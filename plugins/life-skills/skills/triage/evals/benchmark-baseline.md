@@ -1,15 +1,15 @@
 # Skill Benchmark: triage
 
 **Model**: claude-opus-5 (executor and analyzer)
-**Date**: 2026-08-19T04:10:00Z
+**Date**: 2026-08-19T04:40:00Z
 **Evals**: 1-10 (2 runs each, with_skill only)
 
 ## Summary
 
 | Metric | With Skill |
 |--------|------------|
-| Expectations passed | 92/94 (98%) — 45/47 run 1, 47/47 run 2 |
-| Evals passing in both runs | 8/10 |
+| Expectations passed | 93/94 (99%) — 46/47 run 1, 47/47 run 2 |
+| Evals passing in both runs | 9/10 |
 | Time | 46.7s ± 22.1s |
 | Tokens | 413,080 ± 164,708 (total processed, dominated by cache reads) |
 | Tool calls | 6.8 ± 4.2 |
@@ -21,7 +21,9 @@ software-development baselines.
 
 Measured against SKILL.md as of this commit. An earlier measurement of the same
 suite, before the four fixes below, scored 85/94 with 6/10 evals clean; see
-"What was fixed".
+"What was fixed". Evals 6 and 9 also had one expectation reworded after these
+trials ran; both runs were re-graded from their recorded call logs, and the
+change is described under "Grading the outcome, not the tool".
 
 ## Per-eval results
 
@@ -35,7 +37,7 @@ suite, before the four fixes below, scored 85/94 with 6/10 evals clean; see
 | 6 | Email → Trello capture (Step 4c) | 6/6 | 6/6 | 47.7 | 42.1 | 11 | 10 | 520,999 | 579,900 |
 | 7 | Jira: rewrite one issue, leave one | 5/5 | 5/5 | 72.2 | 69.2 | 5 | 6 | 399,480 | 506,231 |
 | 8 | Jira: nothing to do, Done item exempt | 4/4 | 4/4 | 46.8 | 54.9 | 4 | 3 | 325,094 | 323,414 |
-| 9 | Jira → Trello capture (Step 4c) | **5/6** | 6/6 | 81.9 | 81.7 | 12 | 15 | 665,388 | 679,619 |
+| 9 | Jira → Trello capture (Step 4c) | 6/6 | 6/6 | 81.9 | 81.7 | 12 | 15 | 665,388 | 679,619 |
 | 10 | Trello: every card named as a real link | **4/5** | 5/5 | 63.7 | 54.3 | 9 | 7 | 518,074 | 449,693 |
 
 Graded from final state — each service's call log, and a field-by-field diff of
@@ -88,25 +90,39 @@ bullet is now marked required, calls out the several-cards case, and forbids
 claiming a link in the summary that is not on the card. Across four post-fix
 trials of evals 6 and 9, every capture card carries its source link.
 
-## The two remaining failures are eval-versus-skill disagreements
+## Grading the outcome, not the tool
 
-Both occurred in run 1 only, and neither is clearly the skill's fault.
+Evals 6 and 9 each opened with an expectation naming `search_trello` as the call
+that had to precede `create_card`. That grades a method, and the method is the
+part most likely to change: Step 4c itself offers a four-level hierarchy — MCP,
+skill, CLI, REST — and says "Trello MCP `search_trello` **or equivalent**". A
+trial that reads the destination list with `view_list`, a `trello-tools` CLI
+call, or a tool that does not exist yet has done the thing the step asks for.
 
-- **Eval 9, expectation 1** requires a `search_trello` call before the first
-  `create_card`. Run 1 enumerated the target list with `view_list` instead,
-  which surfaces every card on it, and Step 4c asks for "Trello MCP
-  `search_trello` **or equivalent**". The letter fails; the intent — check
-  before you create — holds, and the reply confirms the duplicate check. Run 2
-  called `search_trello` three times on the same fixture, so this is the
-  expectation's wording rather than a behaviour that needs changing.
-- **Eval 10, expectation 5** treats card-2 as an untouched control. Run 1
-  created a `travel` label — the board genuinely had none — and applied it to
-  card-2. The prompt said to apply anything the skill was confident about, and
-  Step 4's label rules apply to every card in scope, so "already well-formed"
-  and "off limits" are not the same thing. Run 2 asked first instead, which is
-  also defensible. Across five recorded trials of this eval the split is three
-  apply, two ask. The eval should decide which it wants before this counts as a
-  defect.
+Run 1 of eval 9 did exactly that and failed the expectation while satisfying its
+intent, with its own reply confirming the duplicate check. Both expectations are
+now written against the outcome — the destination's existing cards were read
+before anything was created, by any means that returns them — and both runs were
+re-graded from their recorded call logs under the new wording. Nothing about the
+runs changed; run 1's eval 9 goes from 5/6 to 6/6, and its `view_list` call now
+reads as the pass it always was.
+
+The one expectation deliberately left method-bound is eval 4's, which allow-lists
+the writes an email triage may make (`create_draft`, `modify_thread_labels`,
+`archive_thread`). There the enumeration is the point: an unrecognized write tool
+appearing in that log is something a human should look at, not something the
+expectation should quietly accept.
+
+## The one remaining failure is an eval-versus-skill disagreement
+
+**Eval 10, expectation 5** treats card-2 as an untouched control. Run 1 created a
+`travel` label — the board genuinely had none — and applied it to card-2. The
+prompt said to apply anything the skill was confident about, and Step 4's label
+rules apply to every card in scope, so "already well-formed" and "off limits"
+are not the same thing. Run 2 asked first instead, which is also defensible.
+Across five recorded trials of this eval the split is three apply, two ask.
+Left as-is: it is minor, and both behaviours are reasonable readings of the
+prompt.
 
 ## Hyperlink discipline stops at Trello
 

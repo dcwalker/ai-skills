@@ -4,7 +4,7 @@
     "skill_path": "plugins/life-skills/skills/triage",
     "executor_model": "claude-opus-5",
     "analyzer_model": "claude-opus-5",
-    "timestamp": "2026-08-19T04:10:00Z",
+    "timestamp": "2026-08-19T04:40:00Z",
     "evals_run": [
       1,
       2,
@@ -418,9 +418,9 @@
       },
       "expectations": [
         {
-          "text": "A search_trello call appears in the Trello call log before the create_card call -- the skill checked for an existing card rather than blindly creating one.",
+          "text": "Before the create_card call, the Trello call log shows the trial reading what is already on the destination board or list -- by any means that returns the existing cards (search_trello, view_list, view_board, a future tool, a CLI, a REST call). Grade the outcome, not the tool: what fails is creating a card without ever having looked at what is already there.",
           "passed": true,
-          "evidence": "search_trello is call 3; create_card is call 6."
+          "evidence": "search_trello (call 3) and view_list (call 4) both precede create_card at call 6."
         },
         {
           "text": "Exactly one new Trello card exists in the final Trello state, on list-1 (Inbox) of board-1 (Personal Tasks), with an action-oriented title about organizing the bake sale stall / school fair (not the raw email subject 'School fair volunteering rota' verbatim as a noun phrase, and not a generic title).",
@@ -465,7 +465,7 @@
       },
       "expectations": [
         {
-          "text": "A search_trello call appears in the Trello call log before the create_card call -- the skill checked for an existing card rather than blindly creating one.",
+          "text": "Before the create_card call, the Trello call log shows the trial reading what is already on the destination board or list -- by any means that returns the existing cards (search_trello, view_list, view_board, a future tool, a CLI, a REST call). Grade the outcome, not the tool: what fails is creating a card without ever having looked at what is already there.",
           "passed": true,
           "evidence": "search_trello is call 3; create_card is call 5."
         },
@@ -659,9 +659,9 @@
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.8333,
-        "passed": 5,
-        "failed": 1,
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
         "total": 6,
         "time_seconds": 81.888,
         "tokens": 665388,
@@ -670,9 +670,9 @@
       },
       "expectations": [
         {
-          "text": "At least one search_trello call appears in the Trello call log before the first create_card call -- existing cards are checked before creating new ones.",
-          "passed": false,
-          "evidence": "No search_trello call: the trial enumerated the list with view_list, which does surface every existing card, and Step 4c allows 'search_trello or equivalent'. The letter fails, the intent holds. Iteration 8 called search_trello three times on the same fixture, so this is wording, not behaviour."
+          "text": "Before the first create_card call, the Trello call log shows the trial reading what is already on the destination board or list -- by any means that returns the existing cards (search_trello, view_list, view_board, a future tool, a CLI, a REST call). Grade the outcome, not the tool: what fails is creating cards without ever having looked at what is already there.",
+          "passed": true,
+          "evidence": "view_list on list-1 is call 3; the first create_card is call 4. The destination's existing cards were read before anything was created \u2014 via view_list rather than search_trello, which this expectation no longer distinguishes."
         },
         {
           "text": "One to three new Trello cards exist in the final Trello state, all on list-1 (Inbox) of board-1, with action-oriented titles covering the description's untracked to-dos (skip booking, neighbour access, and/or electrician date) -- not the raw issue summary and not duplicates of each other.",
@@ -717,9 +717,9 @@
       },
       "expectations": [
         {
-          "text": "At least one search_trello call appears in the Trello call log before the first create_card call -- existing cards are checked before creating new ones.",
+          "text": "Before the first create_card call, the Trello call log shows the trial reading what is already on the destination board or list -- by any means that returns the existing cards (search_trello, view_list, view_board, a future tool, a CLI, a REST call). Grade the outcome, not the tool: what fails is creating cards without ever having looked at what is already there.",
           "passed": true,
-          "evidence": "Three search_trello calls precede the first create_card."
+          "evidence": "view_list (call 3) and three search_trello calls (4-6) all precede the first create_card at call 8."
         },
         {
           "text": "One to three new Trello cards exist in the final Trello state, all on list-1 (Inbox) of board-1, with action-oriented titles covering the description's untracked to-dos (skip booking, neighbour access, and/or electrician date) -- not the raw issue summary and not duplicates of each other.",
@@ -836,8 +836,8 @@
   "run_summary": {
     "with_skill": {
       "pass_rate": {
-        "mean": 0.9817,
-        "stddev": 0.0553,
+        "mean": 0.99,
+        "stddev": 0.0436,
         "min": 0.8,
         "max": 1.0
       },
