@@ -11,12 +11,16 @@
 # of the loop -- reducing it to a caller of this script is a worthwhile
 # follow-up, not something done here.
 #
-# Nested `claude` subprocesses cannot authenticate inside some sandboxed
-# Claude Code sessions, so run this from a normal logged-in terminal rather
-# than delegating it to an in-session Bash tool call. See evals/README.md's
-# "MCP stub servers" section for the underlying mechanism.
+# The nested `claude` subprocess inherits the parent session's credentials,
+# so this does run when delegated to an in-session Bash tool call, as well as
+# as root, in a container, and in CI -- the allowlist below is what makes the
+# last three work. If it fails to authenticate in whatever sandbox you are in,
+# run it from a normal logged-in terminal instead. See evals/README.md's "MCP
+# stub servers" section for the underlying mechanism.
 #
 # Usage: bash evals/lib/run-mcp-trials.sh <skill-evals-dir> [id ...]
+#
+# Set TRIALS_DIR to write the trials somewhere else (see below).
 #
 #   bash evals/lib/run-mcp-trials.sh plugins/life-skills/skills/writing/evals
 #   bash evals/lib/run-mcp-trials.sh plugins/life-skills/skills/writing/evals 3 7
@@ -45,7 +49,11 @@ SKILL_DIR="$(dirname "$EVALS_DIR")"
 SKILL_NAME="$(basename "$SKILL_DIR")"
 shift
 
-TRIALS_DIR="$EVALS_DIR/.trial-runs"
+# Default output lives beside the evals, gitignored. Override it to put the
+# trial workspaces outside the repo: a workspace under evals/ leaves
+# evals.json and fixtures/ a few directories up from the trial's own cwd,
+# within reach of an executor that goes looking, and that is the answer key.
+TRIALS_DIR="${TRIALS_DIR:-$EVALS_DIR/.trial-runs}"
 
 if [[ $# -gt 0 ]]; then
   IDS="$*"
