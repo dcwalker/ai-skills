@@ -71,6 +71,30 @@ Skills are tested with evals, not unit tests. See [evals/README.md](evals/README
 - A new skill needs a `benchmark-baseline.json` established before merge; an existing skill's changes are benchmarked against its current `benchmark-baseline.json`
 - If a change to an existing skill lowers its benchmark pass rate, or otherwise regresses behavior relative to `benchmark-baseline.json`, justify the regression in the PR description (what tradeoff was made and why it's acceptable) before it can be accepted. Update `benchmark-baseline.json` only after that regression (or an improvement) has been reviewed and accepted
 
+### Skill File Size
+
+Keep `SKILL.md` under ~500 lines. Past that, split reference material into
+`references/<topic>.md` alongside it, replacing it in `SKILL.md` with a short
+summary and a link — the same progressive-disclosure shape the README follows,
+and what `review-code`'s skill-quality mode checks for.
+
+Split by **conditionality, not size**. What belongs in a reference file is
+material the skill consults only when a particular condition arises — a
+platform-specific workflow, a lookup table, a branch that fires on one kind of
+item, background the skill never executes. What stays in `SKILL.md` is the
+procedure every run walks and the rules that always apply. A rule an eval pins
+down should stay inline unless you are prepared to re-measure.
+
+Two consequences worth knowing before you split:
+
+- Anything that launches a skill in a scratch workspace has to stage
+  `references/` with `SKILL.md`. Both MCP trial drivers do; a hand-run trial
+  must too. Stage only `SKILL.md` and every link dangles silently, and the
+  material behind it drops out of whatever you are measuring.
+- Re-run the skill's evals afterward and compare against the committed
+  baseline. Moving prose out of `SKILL.md` changes when the model sees it,
+  which is a behavior change even when the words are identical.
+
 ### Adding or Removing a Skill
 
 A skill's name appears in three places besides its own directory, and they drift
