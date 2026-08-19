@@ -50,6 +50,14 @@ Do not proceed until scope is clear. Accept any of:
 or similar without qualifying the scope, assume `in:inbox`. Do not expand to
 all mail.
 
+**An empty scope is a finished run.** If the confirmed scope turns out to hold
+no items, report that and stop. Zero is a complete answer, not a failed search:
+do not re-query the same scope a different way, and do not reach outside it —
+archived mail, other lists, closed issues, the rest of the account — looking for
+something to work on. Name what you searched, say it came back empty, and offer
+to look elsewhere. Widening the scope needs the user to ask for it, exactly as
+setting the scope did.
+
 **Bounded-read rule for email:** never read full message bodies for the entire
 scoped set up front. Fetch only metadata (subject, from, date, snippet, labels)
 for the corpus. Read full bodies one thread at a time, only on items the user
@@ -303,10 +311,12 @@ approval.
 
 ### Assignee / Recipient
 
-If unassigned and the item is active, ask who should own it. For personal
-boards where the user is the only member, skip this. For an outgoing email
-follow-up captured as a `Waiting For`, the implicit owner is the recipient,
-not the user.
+If unassigned and the item is active, ask who should own it. On a personal
+board or project where the user is the only member, leave the field unassigned
+and do not raise it — assigning the sole member to their own item records
+nothing. Skip the field, not the question: do not read "no need to ask" as
+"assign it yourself". For an outgoing email follow-up captured as a
+`Waiting For`, the implicit owner is the recipient, not the user.
 
 ### Due Date
 
@@ -316,8 +326,10 @@ there is a target date. Do not invent a date.
 ### Priority (Professional items only)
 
 If not set, suggest a priority based on the description, labels, and any
-blocking relationships. Confirm before applying. Skip for personal tasks.
-Priority on a personal board is usually managed by list position.
+blocking relationships. Confirm before applying. On a personal item, leave
+priority unset and do not raise it — position in the list is what orders a
+personal board, and a lone High on a two-item personal project ranks nothing
+against anything.
 
 ### Effort / Story Points (Tier 3 professional items only)
 
@@ -404,10 +416,22 @@ Apply this flow:
    - **List:** the user's default inbox/triage list on that board. If unknown,
      ask.
    - **Title:** lead with the next action verb (Step 4 "Title" rules apply).
-   - **Description:** include a link back to the source item being triaged
-     (Trello card URL, Jira issue URL, or Gmail thread URL or message ID).
+   - **Description:** required, not optional. Include a link back to the source
+     item being triaged (Trello card URL, Jira issue URL, or Gmail thread URL
+     or message ID). A card that does not name its source has lost the thing
+     that made it a capture. When one source yields several cards, write the
+     description on every one of them — the back-link belongs on the cards
+     themselves, not only in the summary you send the user, and never claim in
+     that summary that a card links back unless you put the link on the card.
    - **Labels and due date:** propose based on the source item's context.
-4. **Always confirm before creating or editing.** Never auto-write.
+4. **A capture is not a license to edit the source.** The item you captured
+   *from* gets triaged on its own merits by the normal per-item loop and no
+   other way. In particular, do not rewrite its description to strip out the
+   text you just extracted: capturing an action elsewhere does not make the
+   original wording wrong, and an edit made for tidiness destroys the record of
+   what the item actually said. If the capture is worth recording on the source,
+   add a comment — additive, attributable, and it leaves the original intact.
+5. **Always confirm before creating or editing.** Never auto-write.
 
 For email scope, capturing to Trello replaces the in-Gmail `Action` label
 path for items that are likely to outlive a single inbox review. The
@@ -728,6 +752,8 @@ reference material.
 - One question at a time during the stall interview.
 - Propose each change once, in the final Step 8 summary, not earlier.
 - If scope is ambiguous, stop and ask before proceeding.
+- If the scope is empty, that is the answer. Report it and stop; do not widen
+  past it looking for work.
 - When the user did not specify what to process, the first reply is the
   Step 0 scope question alone, before any discovery. Any later
   sole-candidate proceed happens read-only under a Scope Confirmation block

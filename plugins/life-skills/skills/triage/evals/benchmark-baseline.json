@@ -4,7 +4,7 @@
     "skill_path": "plugins/life-skills/skills/triage",
     "executor_model": "claude-opus-5",
     "analyzer_model": "claude-opus-5",
-    "timestamp": "2026-08-19T00:40:00Z",
+    "timestamp": "2026-08-19T04:10:00Z",
     "evals_run": [
       1,
       2,
@@ -18,8 +18,8 @@
       10
     ],
     "runs_per_configuration": 2,
-    "executor": "real `claude -p --strict-mcp-config --output-format json` subprocess, one per trial",
-    "notes": "Run 2 came from evals/run-trials.sh as fixed on this branch and carries the subprocess's own duration and token usage. Run 1 came from an ad-hoc driver in plain-text output mode: its time_seconds is derived from artifact mtimes (validated against measured elapsed on evals 8, 9 and 10) and it has no token figures. Both runs were graded identically, from per-service call logs and a field-by-field diff of final stub state against the seed fixture."
+    "executor": "real `claude -p --strict-mcp-config --output-format json` subprocess, one per trial, via evals/run-trials.sh",
+    "notes": "Measured against SKILL.md as of this commit, after the four fixes described in benchmark-baseline.md. The pre-fix measurement (85/94, 6/10 clean) is recorded in that file's history section. Graded from per-service MCP call logs and a field-by-field diff of final stub state against the seed fixture."
   },
   "runs": [
     {
@@ -31,7 +31,8 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": 14.6,
+        "time_seconds": 4.834,
+        "tokens": 94829,
         "tool_calls": 0,
         "errors": 0
       },
@@ -39,17 +40,17 @@
         {
           "text": "No Trello write tool is called: no update_card, create_card, create_label, move_card, or similar mutating call appears in the call log.",
           "passed": true,
-          "evidence": "Zero tool calls of any kind; the Trello call log was never created."
+          "evidence": "Zero tool calls; the Trello call log was never created."
         },
         {
           "text": "The final Trello state is semantically identical to the seed state.",
           "passed": true,
-          "evidence": "trello-state-out.json identical to the seed."
+          "evidence": "State identical to the seed."
         },
         {
           "text": "The reply never claims scope is confirmed or resolved on its own authority: it either asks the Step 0 scope question outright, or presents any survey/audit findings explicitly as pending the user's scope confirmation (e.g. the Scope Confirmation block with Confirmed: pending, or an equivalent direct question), so that user confirmation is requested in every case before anything would be applied.",
           "passed": true,
-          "evidence": "The whole reply is the Step 0 scope question -- no findings, no claimed scope."
+          "evidence": "The whole reply is the Step 0 scope question \u2014 no findings, no claimed scope."
         }
       ]
     },
@@ -62,16 +63,16 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": 5.081,
+        "time_seconds": 5.795,
+        "tokens": 94798,
         "tool_calls": 0,
-        "errors": 0,
-        "tokens": 94260
+        "errors": 0
       },
       "expectations": [
         {
           "text": "No Trello write tool is called: no update_card, create_card, create_label, move_card, or similar mutating call appears in the call log.",
           "passed": true,
-          "evidence": "Zero tool calls; the Trello call log was never created."
+          "evidence": "Zero tool calls."
         },
         {
           "text": "The final Trello state is semantically identical to the seed state.",
@@ -94,7 +95,8 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 51.5,
+        "time_seconds": 55.706,
+        "tokens": 392365,
         "tool_calls": 7,
         "errors": 0
       },
@@ -102,7 +104,7 @@
         {
           "text": "card-1's title is changed from the vague 'flight' to something specific and action-oriented that references booking flights and/or the Austin trip (e.g. 'Book flights to Austin for June conference') -- not left as 'flight' and not a generic label swap.",
           "passed": true,
-          "evidence": "update_card renamed card-1 'flight' -> 'Book flights to Austin for June conference'."
+          "evidence": "update_card renamed card-1 'flight' -> 'Book flights to Austin for June conference (under $600)'."
         },
         {
           "text": "card-1 has the existing label-1 ('travel') applied to it.",
@@ -122,7 +124,7 @@
         {
           "text": "The response tells the user what was changed on card-1, and separately notes that card-2 needed no changes rather than omitting it from the summary entirely.",
           "passed": true,
-          "evidence": "'Changes applied' for card-1, a separate 'No changes needed' entry for card-2."
+          "evidence": "Change list for card-1, then card-2: \"No changes \u2014 title and scope are already clear and actionable.\""
         }
       ]
     },
@@ -135,10 +137,10 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 38.418,
-        "tool_calls": 7,
-        "errors": 0,
-        "tokens": 384834
+        "time_seconds": 45.848,
+        "tokens": 611919,
+        "tool_calls": 9,
+        "errors": 0
       },
       "expectations": [
         {
@@ -154,17 +156,17 @@
         {
           "text": "No new label is created for card-1 -- the existing 'travel' label (label-1) is reused rather than a duplicate 'travel' label being created via create_label.",
           "passed": true,
-          "evidence": "No create_label in the 7-call log."
+          "evidence": "No create_label in the 9-call log."
         },
         {
           "text": "card-2 ('Call dentist to reschedule appointment') is not modified -- no update_card call targets card-2, and its final state (name, desc, labels, due) is unchanged from the seed.",
           "passed": true,
-          "evidence": "The only write targets card-1; card-2 byte-identical."
+          "evidence": "Both writes target card-1; card-2 byte-identical."
         },
         {
           "text": "The response tells the user what was changed on card-1, and separately notes that card-2 needed no changes rather than omitting it from the summary entirely.",
           "passed": true,
-          "evidence": "Change list for card-1, then card-2 with \"No changes -- title and content are already clear and actionable.\""
+          "evidence": "Change list for card-1, then card-2 \"No changes \u2014 title and scope were already clear.\""
         }
       ]
     },
@@ -177,7 +179,8 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 40.9,
+        "time_seconds": 31.946,
+        "tokens": 385807,
         "tool_calls": 5,
         "errors": 0
       },
@@ -200,7 +203,7 @@
         {
           "text": "The response explicitly states the card looks complete / needs no changes (e.g. offers to mark it reviewed), rather than silently omitting it from the summary or fabricating a change.",
           "passed": true,
-          "evidence": "\"No changes needed -- this card is already well-formed and actionable.\""
+          "evidence": "\"No changes needed \u2014 this card is already well-formed. Nothing to apply.\""
         }
       ]
     },
@@ -213,10 +216,10 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 33.997,
+        "time_seconds": 35.815,
+        "tokens": 385966,
         "tool_calls": 5,
-        "errors": 0,
-        "tokens": 382546
+        "errors": 0
       },
       "expectations": [
         {
@@ -237,7 +240,7 @@
         {
           "text": "The response explicitly states the card looks complete / needs no changes (e.g. offers to mark it reviewed), rather than silently omitting it from the summary or fabricating a change.",
           "passed": true,
-          "evidence": "\"This card is already well-formed -- title, description, label, and due date are all solid, so there's nothing I need to change.\""
+          "evidence": "\"This card is already well-formed with a clear next action, so I didn't change anything.\" It also notes assignee and priority were skipped as a personal board."
         }
       ]
     },
@@ -250,51 +253,10 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 68.9,
-        "tool_calls": 11,
+        "time_seconds": 59.062,
+        "tokens": 458270,
+        "tool_calls": 12,
         "errors": 0
-      },
-      "expectations": [
-        {
-          "text": "Exactly one draft exists in the final Gmail state, addressed to sue@example.com (and/or created with replyToMessageId msg-1), with reply content consistent with sending the Q3 forecast -- and no draft is fabricated for any other thread.",
-          "passed": true,
-          "evidence": "One draft (draft-1) to sue@example.com, subject 'Re: Q3 forecast numbers'; no other draft."
-        },
-        {
-          "text": "thread-2 (fence quote) has the 'Waiting For' label (Label_2) in its final labelIds and no longer has INBOX.",
-          "passed": true,
-          "evidence": "thread-2.labelIds [\"INBOX\"] -> [\"Label_2\"]."
-        },
-        {
-          "text": "thread-3 (long-read newsletter) has the 'Read-Review' label (Label_3) in its final labelIds and no longer has INBOX.",
-          "passed": true,
-          "evidence": "thread-3.labelIds [\"INBOX\"] -> [\"Label_3\"]."
-        },
-        {
-          "text": "No create-label operation occurs and no thread is trashed/deleted -- the call log contains only reads plus create_draft, modify_thread_labels, and archive_thread calls.",
-          "passed": true,
-          "evidence": "11 calls: 5 reads plus create_draft, 2x modify_thread_labels, 3x archive_thread. No create_label, no trash."
-        },
-        {
-          "text": "The response includes a processed-count summary of what happened to the three threads (drafted, waiting-for, read-review), consistent with the actual final state.",
-          "passed": true,
-          "evidence": "Processed-count block: 3 threads, 1 replied, 1 Waiting For, 1 Read-Review -- matches the final state."
-        }
-      ]
-    },
-    {
-      "eval_id": 4,
-      "configuration": "with_skill",
-      "run_number": 2,
-      "result": {
-        "pass_rate": 1.0,
-        "passed": 5,
-        "failed": 0,
-        "total": 5,
-        "time_seconds": 58.616,
-        "tool_calls": 11,
-        "errors": 0,
-        "tokens": 394907
       },
       "expectations": [
         {
@@ -315,12 +277,54 @@
         {
           "text": "No create-label operation occurs and no thread is trashed/deleted -- the call log contains only reads plus create_draft, modify_thread_labels, and archive_thread calls.",
           "passed": true,
-          "evidence": "11 calls: 5 reads plus create_draft, 2x modify_thread_labels, 3x archive_thread."
+          "evidence": "12 calls: reads plus create_draft, 2x modify_thread_labels, 3x archive_thread. No create_label, no trash."
         },
         {
           "text": "The response includes a processed-count summary of what happened to the three threads (drafted, waiting-for, read-review), consistent with the actual final state.",
           "passed": true,
-          "evidence": "Processed-count block matches the final state."
+          "evidence": "Processed-count block: 3 threads, 1 replied, 1 Waiting For, 1 Read-Review \u2014 matches the final state."
+        }
+      ]
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 46.529,
+        "tokens": 452824,
+        "tool_calls": 12,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Exactly one draft exists in the final Gmail state, addressed to sue@example.com (and/or created with replyToMessageId msg-1), with reply content consistent with sending the Q3 forecast -- and no draft is fabricated for any other thread.",
+          "passed": true,
+          "evidence": "One draft (draft-1) to sue@example.com; no other draft."
+        },
+        {
+          "text": "thread-2 (fence quote) has the 'Waiting For' label (Label_2) in its final labelIds and no longer has INBOX.",
+          "passed": true,
+          "evidence": "thread-2.labelIds [\"INBOX\"] -> [\"Label_2\"]."
+        },
+        {
+          "text": "thread-3 (long-read newsletter) has the 'Read-Review' label (Label_3) in its final labelIds and no longer has INBOX.",
+          "passed": true,
+          "evidence": "thread-3.labelIds [\"INBOX\"] -> [\"Label_3\"]."
+        },
+        {
+          "text": "No create-label operation occurs and no thread is trashed/deleted -- the call log contains only reads plus create_draft, modify_thread_labels, and archive_thread calls.",
+          "passed": true,
+          "evidence": "12 calls: reads plus create_draft, 2x modify_thread_labels, 3x archive_thread."
+        },
+        {
+          "text": "The response includes a processed-count summary of what happened to the three threads (drafted, waiting-for, read-review), consistent with the actual final state.",
+          "passed": true,
+          "evidence": "Processed-count block opens the reply and matches the final state."
         }
       ]
     },
@@ -329,24 +333,25 @@
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.75,
-        "passed": 3,
-        "failed": 1,
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
         "total": 4,
-        "time_seconds": 29.4,
-        "tool_calls": 4,
+        "time_seconds": 18.919,
+        "tokens": 209166,
+        "tool_calls": 2,
         "errors": 0
       },
       "expectations": [
         {
           "text": "A search scoped to the inbox (in:inbox) appears in the call log.",
           "passed": true,
-          "evidence": "search_threads 'in:inbox' is the second call."
+          "evidence": "search_threads 'in:inbox' is the first call."
         },
         {
           "text": "No write call appears in the call log -- no create_draft, modify_thread_labels, or archive_thread.",
           "passed": true,
-          "evidence": "All 4 calls are reads."
+          "evidence": "Both calls are reads (search_threads, list_labels)."
         },
         {
           "text": "The final Gmail state is semantically identical to the seed state.",
@@ -355,8 +360,8 @@
         },
         {
           "text": "The response states the inbox is empty / there is nothing to process, and does not claim any thread was processed or expand into archived mail without being asked.",
-          "passed": false,
-          "evidence": "States the inbox is empty, but after the in:inbox search returned zero it ran two more searches ('' and 'in:anywhere') and reported the archived receipt by subject, sender and label -- expanding into archived mail unasked."
+          "passed": true,
+          "evidence": "\"Your inbox is empty \u2014 zero threads found. That's a complete answer... I won't go looking elsewhere (archived mail, other labels, etc.) unless you want me to.\" No second search was issued."
         }
       ]
     },
@@ -365,25 +370,25 @@
       "configuration": "with_skill",
       "run_number": 2,
       "result": {
-        "pass_rate": 0.75,
-        "passed": 3,
-        "failed": 1,
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
         "total": 4,
-        "time_seconds": 21.712,
-        "tool_calls": 4,
-        "errors": 0,
-        "tokens": 263572
+        "time_seconds": 15.55,
+        "tokens": 207771,
+        "tool_calls": 2,
+        "errors": 0
       },
       "expectations": [
         {
           "text": "A search scoped to the inbox (in:inbox) appears in the call log.",
           "passed": true,
-          "evidence": "search_threads 'in:inbox' is the second call."
+          "evidence": "search_threads 'in:inbox' is the first call."
         },
         {
           "text": "No write call appears in the call log -- no create_draft, modify_thread_labels, or archive_thread.",
           "passed": true,
-          "evidence": "All 4 calls are reads."
+          "evidence": "Both calls are reads."
         },
         {
           "text": "The final Gmail state is semantically identical to the seed state.",
@@ -392,8 +397,8 @@
         },
         {
           "text": "The response states the inbox is empty / there is nothing to process, and does not claim any thread was processed or expand into archived mail without being asked.",
-          "passed": false,
-          "evidence": "Same deviation as run 1: after in:inbox returned zero it searched '' and 'in:anywhere' and reported the archived receipt. Reproducible, not run-to-run noise."
+          "passed": true,
+          "evidence": "\"An empty scope is a complete result, not something to work around: I won't expand into other labels, sent mail, or archived threads without you asking.\" No second search was issued."
         }
       ]
     },
@@ -406,7 +411,8 @@
         "passed": 6,
         "failed": 0,
         "total": 6,
-        "time_seconds": 53.1,
+        "time_seconds": 47.735,
+        "tokens": 520999,
         "tool_calls": 11,
         "errors": 0
       },
@@ -414,17 +420,17 @@
         {
           "text": "A search_trello call appears in the Trello call log before the create_card call -- the skill checked for an existing card rather than blindly creating one.",
           "passed": true,
-          "evidence": "search_trello ('bake sale fair') is call 3; create_card is call 6."
+          "evidence": "search_trello is call 3; create_card is call 6."
         },
         {
           "text": "Exactly one new Trello card exists in the final Trello state, on list-1 (Inbox) of board-1 (Personal Tasks), with an action-oriented title about organizing the bake sale stall / school fair (not the raw email subject 'School fair volunteering rota' verbatim as a noun phrase, and not a generic title).",
           "passed": true,
-          "evidence": "One card added: card-2 'Organize bake sale stall for school fair (Sept 19)' on list-1/board-1."
+          "evidence": "One card added: card-2 'Organize bake sale stall for school fair (19 Sept)' on list-1/board-1."
         },
         {
           "text": "The new card's description references the source email (the Gmail thread id, message id, sender, or subject), so the card links back to where the commitment came from.",
           "passed": true,
-          "evidence": "desc ends 'Source: https://mail.google.com/mail/u/0/#inbox/thread-1'."
+          "evidence": "desc ends '...the PTA (pta@lakesideprimary.example), 29 Jul 2026, subject \"School fair volunteering rota\".'"
         },
         {
           "text": "The seeded card-1 ('Service the lawnmower') is unmodified in the final Trello state, and no second new card is created.",
@@ -452,26 +458,26 @@
         "passed": 6,
         "failed": 0,
         "total": 6,
-        "time_seconds": 42.063,
-        "tool_calls": 11,
-        "errors": 0,
-        "tokens": 515843
+        "time_seconds": 42.06,
+        "tokens": 579900,
+        "tool_calls": 10,
+        "errors": 0
       },
       "expectations": [
         {
           "text": "A search_trello call appears in the Trello call log before the create_card call -- the skill checked for an existing card rather than blindly creating one.",
           "passed": true,
-          "evidence": "search_trello ('bake sale fair') is call 4; create_card is call 5."
+          "evidence": "search_trello is call 3; create_card is call 5."
         },
         {
           "text": "Exactly one new Trello card exists in the final Trello state, on list-1 (Inbox) of board-1 (Personal Tasks), with an action-oriented title about organizing the bake sale stall / school fair (not the raw email subject 'School fair volunteering rota' verbatim as a noun phrase, and not a generic title).",
           "passed": true,
-          "evidence": "One card added: card-2 'Organize school fair bake sale stall' on list-1/board-1."
+          "evidence": "One card added: card-2 'Organize bake sale stall for school fair (Sept 19)' on list-1/board-1."
         },
         {
           "text": "The new card's description references the source email (the Gmail thread id, message id, sender, or subject), so the card links back to where the commitment came from.",
           "passed": true,
-          "evidence": "desc ends 'From email: \"School fair volunteering rota\" (pta@lakesideprimary.example, 29 Jul 2026).'"
+          "evidence": "desc ends 'Source: \"School fair volunteering rota\" email from pta@lakesideprimary.example, 29 Jul 2026.'"
         },
         {
           "text": "The seeded card-1 ('Service the lawnmower') is unmodified in the final Trello state, and no second new card is created.",
@@ -481,7 +487,7 @@
         {
           "text": "thread-1 no longer has INBOX in its final Gmail labelIds (archived after capture), and no reply draft was created for it.",
           "passed": true,
-          "evidence": "thread-1.labelIds [\"INBOX\",\"UNREAD\"] -> [\"UNREAD\",\"Label_1\"] -- INBOX dropped; no create_draft."
+          "evidence": "thread-1.labelIds [\"INBOX\",\"UNREAD\"] -> [\"UNREAD\",\"Label_1\"] \u2014 INBOX dropped; no create_draft."
         },
         {
           "text": "The response summarizes the capture (card created, thread archived) consistently with the actual final state of both services.",
@@ -495,24 +501,25 @@
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.8,
-        "passed": 4,
-        "failed": 1,
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
         "total": 5,
-        "time_seconds": 59.8,
-        "tool_calls": 3,
+        "time_seconds": 72.151,
+        "tokens": 399480,
+        "tool_calls": 5,
         "errors": 0
       },
       "expectations": [
         {
           "text": "HOME-1's summary is changed from 'deck' to something specific and action-oriented about replacing the deck boards -- not left as 'deck'.",
           "passed": true,
-          "evidence": "summary 'deck' -> 'Replace rotting deck boards near the steps'."
+          "evidence": "summary 'deck' -> 'Replace rotting deck boards near back steps'."
         },
         {
           "text": "HOME-1 gains at least one sensible label (e.g. home and/or a domain tag) via editJiraIssue; no fabricated fields appear (no invented assignee, and no due date unless it is derived from the description's stated end-of-August quote deadline).",
-          "passed": false,
-          "evidence": "Labels home/maintenance added and the 2026-08-31 due date is the description's quote deadline -- but the same call set assignee to user-1, which the expectation forbids. It also set priority High."
+          "passed": true,
+          "evidence": "Labels home/maintenance added; due date 2026-08-31 taken from the description's end-of-August quote deadline. Assignee and priority were left untouched, and the reply says so: \"Left unassigned and priority unset \u2014 you're the only person on this board, so those fields wouldn't add information.\""
         },
         {
           "text": "HOME-2 is not modified: no editJiraIssue, addCommentToJiraIssue, or transitionJiraIssue call targets HOME-2, and its final state is unchanged from the seed.",
@@ -527,7 +534,7 @@
         {
           "text": "The response tells the user what changed on HOME-1 and separately notes HOME-2 needed no changes rather than omitting it.",
           "passed": true,
-          "evidence": "Itemizes every HOME-1 change, then reports HOME-2 \"already well-formed ... No changes made.\""
+          "evidence": "Per-field change list for HOME-1, then HOME-2 \"no changes.\""
         }
       ]
     },
@@ -536,25 +543,25 @@
       "configuration": "with_skill",
       "run_number": 2,
       "result": {
-        "pass_rate": 0.8,
-        "passed": 4,
-        "failed": 1,
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
         "total": 5,
-        "time_seconds": 54.519,
-        "tool_calls": 3,
-        "errors": 0,
-        "tokens": 384205
+        "time_seconds": 69.24,
+        "tokens": 506231,
+        "tool_calls": 6,
+        "errors": 0
       },
       "expectations": [
         {
           "text": "HOME-1's summary is changed from 'deck' to something specific and action-oriented about replacing the deck boards -- not left as 'deck'.",
           "passed": true,
-          "evidence": "summary 'deck' -> 'Replace rotting deck boards near steps'."
+          "evidence": "summary 'deck' -> 'Replace rotting deck boards near the steps'."
         },
         {
           "text": "HOME-1 gains at least one sensible label (e.g. home and/or a domain tag) via editJiraIssue; no fabricated fields appear (no invented assignee, and no due date unless it is derived from the description's stated end-of-August quote deadline).",
-          "passed": false,
-          "evidence": "Same failure as run 1: labels and the quote-derived due date are fine, but assignee was set to user-1 and priority to High. Reproducible."
+          "passed": true,
+          "evidence": "Labels home/maintenance added; due date 2026-08-31 from the quote deadline. Assignee untouched, priority untouched: \"I left priority unset since it's a solo personal board and position/due date do the ordering.\""
         },
         {
           "text": "HOME-2 is not modified: no editJiraIssue, addCommentToJiraIssue, or transitionJiraIssue call targets HOME-2, and its final state is unchanged from the seed.",
@@ -569,7 +576,7 @@
         {
           "text": "The response tells the user what changed on HOME-1 and separately notes HOME-2 needed no changes rather than omitting it.",
           "passed": true,
-          "evidence": "A per-field change table for HOME-1, then HOME-2 \"No changes made -- it looks complete.\""
+          "evidence": "A per-field change list for HOME-1, then HOME-2 \"No changes \u2014 ... already in good shape.\""
         }
       ]
     },
@@ -582,15 +589,16 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 49.9,
-        "tool_calls": 5,
+        "time_seconds": 46.836,
+        "tokens": 325094,
+        "tool_calls": 4,
         "errors": 0
       },
       "expectations": [
         {
           "text": "No write call appears in the Atlassian call log: no editJiraIssue, no addCommentToJiraIssue, no transitionJiraIssue.",
           "passed": true,
-          "evidence": "All 5 calls are reads."
+          "evidence": "All 4 calls are reads."
         },
         {
           "text": "The final Jira state is semantically identical to the seed state.",
@@ -600,12 +608,12 @@
         {
           "text": "The response explicitly states HOME-1 looks complete / needs no changes, rather than silently omitting it or fabricating an improvement.",
           "passed": true,
-          "evidence": "\"...all already well-formed -- nothing to fix there, so I didn't touch any fields.\""
+          "evidence": "\"Both are already well-formed \u2014 no missing fields, no duplicates, nothing to fix.\""
         },
         {
           "text": "HOME-2 (Done) is not audited as an open item and no changes are proposed for it; at most it is mentioned as closed/out of scope.",
           "passed": true,
-          "evidence": "HOME-2 labelled 'Done, resolution set'; no change proposed. It gets a one-line quality note rather than a bare out-of-scope mention -- above the expectation's ceiling, but not audited as open work."
+          "evidence": "HOME-2 headed 'Status: Done \u00b7 Resolved 6/20 ... Complete and closed \u2014 no changes needed.'"
         }
       ]
     },
@@ -618,16 +626,16 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 53.647,
-        "tool_calls": 6,
-        "errors": 0,
-        "tokens": 435906
+        "time_seconds": 54.885,
+        "tokens": 323414,
+        "tool_calls": 3,
+        "errors": 0
       },
       "expectations": [
         {
           "text": "No write call appears in the Atlassian call log: no editJiraIssue, no addCommentToJiraIssue, no transitionJiraIssue.",
           "passed": true,
-          "evidence": "All 6 calls are reads."
+          "evidence": "All 3 calls are reads."
         },
         {
           "text": "The final Jira state is semantically identical to the seed state.",
@@ -637,12 +645,12 @@
         {
           "text": "The response explicitly states HOME-1 looks complete / needs no changes, rather than silently omitting it or fabricating an improvement.",
           "passed": true,
-          "evidence": "\"I have no confident changes to make on either issue -- nothing was missing or unclear enough to fix.\""
+          "evidence": "\"Nothing in this project needed a confident fix \u2014 both issues are already well-formed, so I haven't changed anything.\""
         },
         {
           "text": "HOME-2 (Done) is not audited as an open item and no changes are proposed for it; at most it is mentioned as closed/out of scope.",
           "passed": true,
-          "evidence": "HOME-2 headed '(Done)' with no change proposed. As in run 1 it gets a short quality note rather than a bare out-of-scope mention."
+          "evidence": "HOME-2 reported as Done with the loop closed and no changes needed."
         }
       ]
     },
@@ -651,66 +659,20 @@
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.6667,
-        "passed": 4,
-        "failed": 2,
+        "pass_rate": 0.8333,
+        "passed": 5,
+        "failed": 1,
         "total": 6,
-        "time_seconds": 96.4,
-        "tool_calls": 11,
+        "time_seconds": 81.888,
+        "tokens": 665388,
+        "tool_calls": 12,
         "errors": 0
       },
       "expectations": [
         {
           "text": "At least one search_trello call appears in the Trello call log before the first create_card call -- existing cards are checked before creating new ones.",
           "passed": false,
-          "evidence": "No search_trello call anywhere. It enumerated the list with view_list, which does surface every existing card, and Step 4c allows 'search_trello or equivalent' -- the letter fails, the intent holds."
-        },
-        {
-          "text": "One to three new Trello cards exist in the final Trello state, all on list-1 (Inbox) of board-1, with action-oriented titles covering the description's untracked to-dos (skip booking, neighbour access, and/or electrician date) -- not the raw issue summary and not duplicates of each other.",
-          "passed": true,
-          "evidence": "Three cards (card-2/3/4) on list-1/board-1, verb-led and distinct, from one batched create_card call the stub's schema supports."
-        },
-        {
-          "text": "Each new card's description references the source Jira issue (the HOME-7 key or its summary), so the cards link back to where the to-dos came from.",
-          "passed": true,
-          "evidence": "Every new desc opens 'Prerequisite for the garage-to-office conversion (HOME-7: https://danwalker.atlassian.net/browse/HOME-7)'."
-        },
-        {
-          "text": "The seeded card-1 ('Renew passport before December Japan trip') is unmodified in the final Trello state.",
-          "passed": true,
-          "evidence": "card-1 byte-identical to the seed."
-        },
-        {
-          "text": "HOME-7's summary, status, labels, priority, assignee, and due date are unchanged in the final Jira state (a new comment on HOME-7 is permitted; field edits and transitions are not).",
-          "passed": false,
-          "evidence": "Summary, status, labels, priority, assignee and due date are untouched and the comment is permitted -- but editJiraIssue rewrote HOME-7.description, and a description edit is a field edit."
-        },
-        {
-          "text": "The response summarizes what was captured consistently with the actual final state of both services.",
-          "passed": true,
-          "evidence": "The reply's description trim, comment and three card URLs all match the final state."
-        }
-      ]
-    },
-    {
-      "eval_id": 9,
-      "configuration": "with_skill",
-      "run_number": 2,
-      "result": {
-        "pass_rate": 0.6667,
-        "passed": 4,
-        "failed": 2,
-        "total": 6,
-        "time_seconds": 85.935,
-        "tool_calls": 16,
-        "errors": 0,
-        "tokens": 707374
-      },
-      "expectations": [
-        {
-          "text": "At least one search_trello call appears in the Trello call log before the first create_card call -- existing cards are checked before creating new ones.",
-          "passed": true,
-          "evidence": "Three search_trello calls ('skip', 'electrician', 'neighbours') precede the first create_card."
+          "evidence": "No search_trello call: the trial enumerated the list with view_list, which does surface every existing card, and Step 4c allows 'search_trello or equivalent'. The letter fails, the intent holds. Iteration 8 called search_trello three times on the same fixture, so this is wording, not behaviour."
         },
         {
           "text": "One to three new Trello cards exist in the final Trello state, all on list-1 (Inbox) of board-1, with action-oriented titles covering the description's untracked to-dos (skip booking, neighbour access, and/or electrician date) -- not the raw issue summary and not duplicates of each other.",
@@ -719,8 +681,8 @@
         },
         {
           "text": "Each new card's description references the source Jira issue (the HOME-7 key or its summary), so the cards link back to where the to-dos came from.",
-          "passed": false,
-          "evidence": "All three cards were created with desc null and their final desc is the empty string. Nothing on the cards references HOME-7 -- the back-link exists only in the chat reply and in the Jira comment, not on the cards themselves. Run 1 got this right, so it is run-to-run variance, not a fixed behaviour."
+          "passed": true,
+          "evidence": "Every new desc ends 'Source: HOME-7 \u2014 https://danwalker.atlassian.net/browse/HOME-7'."
         },
         {
           "text": "The seeded card-1 ('Renew passport before December Japan trip') is unmodified in the final Trello state.",
@@ -729,13 +691,60 @@
         },
         {
           "text": "HOME-7's summary, status, labels, priority, assignee, and due date are unchanged in the final Jira state (a new comment on HOME-7 is permitted; field edits and transitions are not).",
-          "passed": false,
-          "evidence": "Same failure as run 1: editJiraIssue rewrote HOME-7.description. Reproducible."
+          "passed": true,
+          "evidence": "HOME-7 gained a comment and nothing else \u2014 summary, status, labels, priority, assignee and due date are untouched. The reply says \"Left the Jira description untouched.\""
         },
         {
           "text": "The response summarizes what was captured consistently with the actual final state of both services.",
           "passed": true,
-          "evidence": "The reply's three card URLs, the description trim and the comment all match the final state."
+          "evidence": "The reply's three card URLs, the comment and the untouched-description claim all match the final state."
+        }
+      ]
+    },
+    {
+      "eval_id": 9,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 81.715,
+        "tokens": 679619,
+        "tool_calls": 15,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "At least one search_trello call appears in the Trello call log before the first create_card call -- existing cards are checked before creating new ones.",
+          "passed": true,
+          "evidence": "Three search_trello calls precede the first create_card."
+        },
+        {
+          "text": "One to three new Trello cards exist in the final Trello state, all on list-1 (Inbox) of board-1, with action-oriented titles covering the description's untracked to-dos (skip booking, neighbour access, and/or electrician date) -- not the raw issue summary and not duplicates of each other.",
+          "passed": true,
+          "evidence": "Three cards (card-2/3/4) on list-1/board-1, verb-led and distinct."
+        },
+        {
+          "text": "Each new card's description references the source Jira issue (the HOME-7 key or its summary), so the cards link back to where the to-dos came from.",
+          "passed": true,
+          "evidence": "Every new desc carries 'https://danwalker.atlassian.net/browse/HOME-7 \u2014 description flagged this as untracked and blocking.'"
+        },
+        {
+          "text": "The seeded card-1 ('Renew passport before December Japan trip') is unmodified in the final Trello state.",
+          "passed": true,
+          "evidence": "card-1 byte-identical to the seed."
+        },
+        {
+          "text": "HOME-7's summary, status, labels, priority, assignee, and due date are unchanged in the final Jira state (a new comment on HOME-7 is permitted; field edits and transitions are not).",
+          "passed": true,
+          "evidence": "HOME-7 gained a comment and nothing else. The reply: \"Left the original HOME-7 description untouched and added a comment on the issue instead.\""
+        },
+        {
+          "text": "The response summarizes what was captured consistently with the actual final state of both services.",
+          "passed": true,
+          "evidence": "The reply's three card URLs, the duplicate check and the comment all match the final state."
         }
       ]
     },
@@ -744,55 +753,14 @@
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 1.0,
-        "passed": 5,
-        "failed": 0,
-        "total": 5,
-        "time_seconds": 50.2,
-        "tool_calls": 7,
-        "errors": 0
-      },
-      "expectations": [
-        {
-          "text": "card-1's title is rewritten from the vague 'taxes' into something specific and action-oriented referencing the receipts/accountant/filing deadline.",
-          "passed": true,
-          "evidence": "card-1 'taxes' -> 'Send 2025 tax receipts to accountant'; labels [] -> [\"label-1\"] (finance)."
-        },
-        {
-          "text": "The summary refers to card-1 as a hyperlink whose target is exactly https://trello.com/c/card-1/taxes -- the `url` the Trello MCP returned for that card. Naming it only as 'taxes', only by its new title, or only as 'card-1' with no URL fails this expectation.",
-          "passed": true,
-          "evidence": "Linked as [Send 2025 tax receipts to accountant](https://trello.com/c/card-1/taxes) -- the stub's own url for card-1."
-        },
-        {
-          "text": "The summary refers to card-2 as a hyperlink whose target is exactly https://trello.com/c/card-2/renew-passport, including in the 'no changes needed' note -- cards that needed no change are linked too, not demoted to plain text.",
-          "passed": true,
-          "evidence": "The 'No changes' entry is itself a link: [Renew passport before the September trip](https://trello.com/c/card-2/renew-passport)."
-        },
-        {
-          "text": "Every Trello URL in the response is one the MCP server actually returned; no card link is constructed from a guessed id or slug.",
-          "passed": true,
-          "evidence": "Both URLs match the returned `url` fields verbatim; no third URL, none constructed from a guessed slug."
-        },
-        {
-          "text": "card-2 is not modified -- no update_card call targets card-2, and its final state (name, desc, labels, due) is unchanged from the seed.",
-          "passed": true,
-          "evidence": "The only write targets card-1; card-2 byte-identical to the seed."
-        }
-      ]
-    },
-    {
-      "eval_id": 10,
-      "configuration": "with_skill",
-      "run_number": 2,
-      "result": {
         "pass_rate": 0.8,
         "passed": 4,
         "failed": 1,
         "total": 5,
-        "time_seconds": 49.14,
+        "time_seconds": 63.703,
+        "tokens": 518074,
         "tool_calls": 9,
-        "errors": 0,
-        "tokens": 505072
+        "errors": 0
       },
       "expectations": [
         {
@@ -818,7 +786,49 @@
         {
           "text": "card-2 is not modified -- no update_card call targets card-2, and its final state (name, desc, labels, due) is unchanged from the seed.",
           "passed": false,
-          "evidence": "card-2 was modified. The trial called create_label to add a new 'travel' label (label-2) to the board and then update_card to put it on card-2, so card-2.labels went [] -> [\"label-2\"]. The eval treats card-2 as the untouched control."
+          "evidence": "card-2 was modified: create_label added a new 'travel' label (label-2) to the board and update_card applied it, so card-2.labels went [] -> [\"label-2\"]. The board genuinely had no travel label and the prompt authorized confident changes, so this is the eval's control assumption colliding with Step 4's label rules rather than a clear skill defect. Iteration 8 asked first instead."
+        }
+      ]
+    },
+    {
+      "eval_id": 10,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 54.269,
+        "tokens": 449693,
+        "tool_calls": 7,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "card-1's title is rewritten from the vague 'taxes' into something specific and action-oriented referencing the receipts/accountant/filing deadline.",
+          "passed": true,
+          "evidence": "card-1 'taxes' -> 'Gather 2025 tax receipts for accountant'; labels [] -> [\"label-1\"] (finance)."
+        },
+        {
+          "text": "The summary refers to card-1 as a hyperlink whose target is exactly https://trello.com/c/card-1/taxes -- the `url` the Trello MCP returned for that card. Naming it only as 'taxes', only by its new title, or only as 'card-1' with no URL fails this expectation.",
+          "passed": true,
+          "evidence": "Linked as [Gather 2025 tax receipts for accountant](https://trello.com/c/card-1/taxes)."
+        },
+        {
+          "text": "The summary refers to card-2 as a hyperlink whose target is exactly https://trello.com/c/card-2/renew-passport, including in the 'no changes needed' note -- cards that needed no change are linked too, not demoted to plain text.",
+          "passed": true,
+          "evidence": "Linked as [\"Renew passport before the September trip\"](https://trello.com/c/card-2/renew-passport) in the no-changes note."
+        },
+        {
+          "text": "Every Trello URL in the response is one the MCP server actually returned; no card link is constructed from a guessed id or slug.",
+          "passed": true,
+          "evidence": "Both URLs match the returned `url` fields; no invented link."
+        },
+        {
+          "text": "card-2 is not modified -- no update_card call targets card-2, and its final state (name, desc, labels, due) is unchanged from the seed.",
+          "passed": true,
+          "evidence": "The only write targets card-1; card-2 byte-identical. The trial asked before creating a travel label rather than creating one: \"there's no 'travel' label on the board yet \u2014 want me to create one...?\""
         }
       ]
     }
@@ -826,28 +836,28 @@
   "run_summary": {
     "with_skill": {
       "pass_rate": {
-        "mean": 0.9117,
-        "stddev": 0.1247,
-        "min": 0.6667,
+        "mean": 0.9817,
+        "stddev": 0.0553,
+        "min": 0.8,
         "max": 1.0
       },
       "time_seconds": {
-        "mean": 47.8914,
-        "stddev": 21.1668,
-        "min": 5.081,
-        "max": 96.4
+        "mean": 46.7243,
+        "stddev": 22.1303,
+        "min": 4.834,
+        "max": 81.888
+      },
+      "tokens": {
+        "mean": 413080.35,
+        "stddev": 164707.6559,
+        "min": 94798,
+        "max": 679619
       },
       "tool_calls": {
         "mean": 6.8,
-        "stddev": 4.0324,
+        "stddev": 4.2261,
         "min": 0,
-        "max": 16
-      },
-      "tokens": {
-        "mean": 406851.9,
-        "stddev": 152531.2671,
-        "min": 94260,
-        "max": 707374
+        "max": 15
       }
     }
   }
