@@ -4,7 +4,7 @@
     "skill_path": "plugins/life-skills/skills/triage",
     "executor_model": "claude-opus-5",
     "analyzer_model": "claude-opus-5",
-    "timestamp": "2026-08-19T06:20:00Z",
+    "timestamp": "2026-08-19T08:05:00Z",
     "evals_run": [
       1,
       2,
@@ -19,7 +19,7 @@
     ],
     "runs_per_configuration": 2,
     "executor": "real `claude -p --strict-mcp-config --output-format json` subprocess, one per trial, via evals/run-trials.sh",
-    "notes": "Measured against SKILL.md and run-trials.sh as of this commit, after the four skill fixes and the harness allowlist widening described in benchmark-baseline.md. Graded from per-service MCP call logs and a field-by-field diff of final stub state against the seed fixture."
+    "notes": "Measured against SKILL.md and run-trials.sh as of this commit, after the four skill fixes, the priority-rule reorder, the SKILL.md split into references/, and the harness allowlist widening described in benchmark-baseline.md. Graded from per-service MCP call logs and a field-by-field diff of final stub state against the seed fixture."
   },
   "runs": [
     {
@@ -31,8 +31,8 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": 5.364,
-        "tokens": 98348,
+        "time_seconds": 5.227,
+        "tokens": 94308,
         "tool_calls": 0,
         "errors": 0
       },
@@ -63,8 +63,8 @@
         "passed": 3,
         "failed": 0,
         "total": 3,
-        "time_seconds": 5.032,
-        "tokens": 98340,
+        "time_seconds": 5.412,
+        "tokens": 94302,
         "tool_calls": 0,
         "errors": 0
       },
@@ -95,8 +95,8 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 47.732,
-        "tokens": 569904,
+        "time_seconds": 55.323,
+        "tokens": 434479,
         "tool_calls": 7,
         "errors": 0
       },
@@ -133,12 +133,12 @@
       "configuration": "with_skill",
       "run_number": 2,
       "result": {
-        "pass_rate": 1.0,
-        "passed": 5,
-        "failed": 0,
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
         "total": 5,
-        "time_seconds": 40.01,
-        "tokens": 461605,
+        "time_seconds": 40.063,
+        "tokens": 421284,
         "tool_calls": 7,
         "errors": 0
       },
@@ -150,8 +150,8 @@
         },
         {
           "text": "card-1 has the existing label-1 ('travel') applied to it.",
-          "passed": true,
-          "evidence": "card-1.labels [] -> [\"label-1\"]."
+          "passed": false,
+          "evidence": "card-1.labels stayed []. The trial rewrote the title and stopped; it never proposed the board's existing `travel` label, and the reply does not mention labels at all. The only miss across the two runs, and the only one in either that touches material the references/ split moved -- the per-context label examples now live in references/field-guidance.md. Nine of the ten recorded runs of this eval apply the label, including run 1 here."
         },
         {
           "text": "No new label is created for card-1 -- the existing 'travel' label (label-1) is reused rather than a duplicate 'travel' label being created via create_label.",
@@ -166,7 +166,7 @@
         {
           "text": "The response tells the user what was changed on card-1, and separately notes that card-2 needed no changes rather than omitting it from the summary entirely.",
           "passed": true,
-          "evidence": "Change list for card-1, then card-2 \"already a clear, action-oriented title with nothing to change. No edits made.\""
+          "evidence": "Change list for card-1, then card-2 \"already clear and actionable.\""
         }
       ]
     },
@@ -179,8 +179,8 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 37.458,
-        "tokens": 331925,
+        "time_seconds": 38.224,
+        "tokens": 418381,
         "tool_calls": 5,
         "errors": 0
       },
@@ -216,8 +216,8 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 37.432,
-        "tokens": 444166,
+        "time_seconds": 35.515,
+        "tokens": 373393,
         "tool_calls": 5,
         "errors": 0
       },
@@ -253,8 +253,8 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 54.261,
-        "tokens": 344219,
+        "time_seconds": 57.878,
+        "tokens": 394979,
         "tool_calls": 10,
         "errors": 0
       },
@@ -295,9 +295,9 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 52.967,
-        "tokens": 407570,
-        "tool_calls": 12,
+        "time_seconds": 43.813,
+        "tokens": 441663,
+        "tool_calls": 10,
         "errors": 0
       },
       "expectations": [
@@ -337,8 +337,8 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 17.813,
-        "tokens": 215732,
+        "time_seconds": 16.077,
+        "tokens": 258284,
         "tool_calls": 2,
         "errors": 0
       },
@@ -374,8 +374,8 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 10.249,
-        "tokens": 213527,
+        "time_seconds": 13.451,
+        "tokens": 205518,
         "tool_calls": 2,
         "errors": 0
       },
@@ -411,8 +411,8 @@
         "passed": 6,
         "failed": 0,
         "total": 6,
-        "time_seconds": 48.452,
-        "tokens": 599481,
+        "time_seconds": 47.482,
+        "tokens": 564814,
         "tool_calls": 11,
         "errors": 0
       },
@@ -458,9 +458,9 @@
         "passed": 6,
         "failed": 0,
         "total": 6,
-        "time_seconds": 48.772,
-        "tokens": 539102,
-        "tool_calls": 9,
+        "time_seconds": 47.787,
+        "tokens": 579872,
+        "tool_calls": 11,
         "errors": 0
       },
       "expectations": [
@@ -505,9 +505,9 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 59.701,
-        "tokens": 463992,
-        "tool_calls": 5,
+        "time_seconds": 59.924,
+        "tokens": 375574,
+        "tool_calls": 3,
         "errors": 0
       },
       "expectations": [
@@ -547,9 +547,9 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 66.785,
-        "tokens": 524091,
-        "tool_calls": 6,
+        "time_seconds": 63.473,
+        "tokens": 430141,
+        "tool_calls": 4,
         "errors": 0
       },
       "expectations": [
@@ -589,9 +589,9 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 52.104,
-        "tokens": 454608,
-        "tool_calls": 5,
+        "time_seconds": 43.848,
+        "tokens": 321215,
+        "tool_calls": 2,
         "errors": 0
       },
       "expectations": [
@@ -626,9 +626,9 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 52.058,
-        "tokens": 453564,
-        "tool_calls": 5,
+        "time_seconds": 44.793,
+        "tokens": 258740,
+        "tool_calls": 2,
         "errors": 0
       },
       "expectations": [
@@ -663,8 +663,8 @@
         "passed": 6,
         "failed": 0,
         "total": 6,
-        "time_seconds": 82.223,
-        "tokens": 805135,
+        "time_seconds": 75.003,
+        "tokens": 572818,
         "tool_calls": 12,
         "errors": 0
       },
@@ -710,9 +710,9 @@
         "passed": 6,
         "failed": 0,
         "total": 6,
-        "time_seconds": 91.625,
-        "tokens": 1016236,
-        "tool_calls": 20,
+        "time_seconds": 88.187,
+        "tokens": 694483,
+        "tool_calls": 13,
         "errors": 0
       },
       "expectations": [
@@ -753,13 +753,13 @@
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.8,
-        "passed": 4,
-        "failed": 1,
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
         "total": 5,
-        "time_seconds": 47.664,
-        "tokens": 526229,
-        "tool_calls": 9,
+        "time_seconds": 55.235,
+        "tokens": 381865,
+        "tool_calls": 7,
         "errors": 0
       },
       "expectations": [
@@ -785,8 +785,8 @@
         },
         {
           "text": "card-2 is not modified -- no update_card call targets card-2, and its final state (name, desc, labels, due) is unchanged from the seed.",
-          "passed": false,
-          "evidence": "card-2 was modified: create_label added a new 'travel' label (label-2) and update_card applied it, so card-2.labels went [] -> [\"label-2\"]. The board genuinely had no travel label and the prompt authorized confident changes, so this is the eval's control assumption colliding with Step 4's label rules rather than a clear skill defect. Run 2 asked first instead."
+          "passed": true,
+          "evidence": "The only write targets card-1; card-2 byte-identical. No label was created and none was proposed unprompted."
         }
       ]
     },
@@ -799,8 +799,8 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 47.935,
-        "tokens": 403728,
+        "time_seconds": 66.769,
+        "tokens": 439678,
         "tool_calls": 7,
         "errors": 0
       },
@@ -842,22 +842,22 @@
         "max": 1.0
       },
       "time_seconds": {
-        "mean": 45.2818,
-        "stddev": 22.1378,
-        "min": 5.032,
-        "max": 91.625
+        "mean": 45.2,
+        "stddev": 21.6,
+        "min": 5.227,
+        "max": 88.187
       },
       "tokens": {
-        "mean": 448575.1,
-        "stddev": 210981.1038,
-        "min": 98340,
-        "max": 1016236
+        "mean": 387790,
+        "stddev": 150324,
+        "min": 94302,
+        "max": 694483
       },
       "tool_calls": {
-        "mean": 6.95,
-        "stddev": 4.5878,
+        "mean": 6,
+        "stddev": 4.01,
         "min": 0,
-        "max": 20
+        "max": 13
       }
     }
   }

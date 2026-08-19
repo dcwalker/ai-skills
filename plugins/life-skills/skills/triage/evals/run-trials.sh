@@ -88,11 +88,16 @@ print('Bash Read Write Edit Glob Grep WebFetch TodoWrite Skill '
 
   # The subprocess runs with cwd inside $WORKSPACE_DIR, where nothing loads
   # this repo's plugins, so without staging the skill the trial would measure
-  # the bare model. Copy SKILL.md alone -- a whole-directory copy would put
-  # evals.json and the fixtures inside the workspace, handing the trial its
-  # own answer key.
+  # the bare model. Stage SKILL.md and references/ and nothing else: a
+  # whole-directory copy would put evals.json and the fixtures inside the
+  # workspace, handing the trial its own answer key, while SKILL.md alone
+  # would leave every references/ link in it dangling and silently drop the
+  # material those links carry.
   mkdir -p "$WORKSPACE_DIR/.claude/skills/triage"
   cp "$SCRIPT_DIR/../SKILL.md" "$WORKSPACE_DIR/.claude/skills/triage/SKILL.md"
+  if [[ -d "$SCRIPT_DIR/../references" ]]; then
+    cp -R "$SCRIPT_DIR/../references" "$WORKSPACE_DIR/.claude/skills/triage/"
+  fi
 
   # JSON output mode captures the subprocess's own wall-clock duration and
   # real token usage alongside the reply -- plain-text mode reports neither,
