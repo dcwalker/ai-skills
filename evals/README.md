@@ -316,10 +316,16 @@ CLI subprocess (launched via `claude -p --strict-mcp-config --mcp-config
 ```bash
 source "$(evals/lib/run-mcp-eval.sh plugins/life-skills/skills/triage/evals 1 /tmp/eval-run)"
 cd "$WORKSPACE_DIR"
-claude -p --dangerously-skip-permissions \
+claude -p --allowedTools "Bash Read Write Edit Glob Grep WebFetch TodoWrite Skill mcp__trello" \
   --strict-mcp-config --mcp-config "$MCP_CONFIG_PATH" \
-  -- "<the eval's prompt from evals.json>"
+  -- "<the eval's prompt from evals.json>" < /dev/null
 ```
+
+Name whichever `mcp__<server>` the fixture wired up; `mcp-config.json` lists
+them. An allowlist rather than `--dangerously-skip-permissions` for the reason
+in the driver bullets below — that flag is refused outright when the shell is
+root. `< /dev/null` stops `-p` waiting three seconds for stdin that is not
+coming.
 
 `run-mcp-eval.sh` wires every `<service>-mcp-state.json` a fixture provides
 (`trello-mcp-state.json`, `gmail-mcp-state.json`, `atlassian-mcp-state.json`)
@@ -341,7 +347,13 @@ for any skill's MCP-backed trials: it runs each eval's `claude -p` subprocess
 with `--output-format json` and extracts real wall-clock duration and token
 usage into a per-trial `metrics.json` alongside `transcript.txt`.
 `plugins/life-skills/skills/triage/evals/run-trials.sh` predates it and still
-carries its own copy of that loop.
+carries its own copy of that loop, kept at parity with the shared driver on
+everything below. It adds one thing the shared driver does not have: a
+`TRIALS_DIR` override, so the trial workspaces can be written outside the
+repository. The default `.trial-runs/` lives under `evals/`, which leaves
+`evals.json` and `fixtures/` three directories above each trial's own working
+directory — within reach of an executor that goes looking, which is the
+answer key.
 
 Multi-turn trials: an eval may carry a `follow_ups` array of later user
 messages alongside its `prompt`. The driver runs the first turn, reads the
@@ -359,7 +371,13 @@ Four things the shared driver does that a hand-run trial must do for itself:
   skills the machine happens to have installed, so on a machine without the
   plugin installed a whole benchmark can measure the skill's *absence* and
   report it as the skill's behavior. Copying also means a benchmark grades
-  the working tree rather than the last installed release.
+  the working tree rather than the last installed release. What gets copied is
+  `SKILL.md` plus `references/` and `scripts/` if present — deliberately not
+  the whole directory, which would put `evals.json` and the fixtures inside
+  the workspace and hand the trial its own answer key. Both halves matter: a
+  skill that splits reference material out of `SKILL.md` has every one of
+  those links dangle in the trial copy if only `SKILL.md` is staged, and the
+  material behind them goes missing from the measurement without any error.
 - It passes an explicit `--allowedTools` allowlist instead of
   `--dangerously-skip-permissions`, which refuses to run as root and so rules
   out containers and CI. Each stub server is allowed wholesale, write tools
