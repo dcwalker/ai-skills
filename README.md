@@ -224,11 +224,22 @@ dates, and totals.
   vars); the executor is then a Claude subagent pointed at the prepared
   workspace.
 - MCP-backed skills (`triage`, `writing`): trials must be real `claude -p`
-  subprocesses. Run `bash evals/lib/run-mcp-trials.sh <skill-evals-dir>` from a
-  logged-in terminal (`triage` has its own equivalent driver at
+  subprocesses. Run `bash evals/lib/run-mcp-trials.sh <skill-evals-dir>`
+  (`triage` has its own equivalent driver at
   `plugins/life-skills/skills/triage/evals/run-trials.sh`); it wires the MCP
   stubs via `evals/lib/run-mcp-eval.sh` and saves per-trial transcripts, call
-  logs, final state, and metrics for grading.
+  logs, final state, and metrics for grading. Both drivers pass an explicit
+  `--allowedTools` allowlist rather than `--dangerously-skip-permissions`, so
+  they run as root, in a container, in CI, or delegated to an in-session Bash
+  call — the nested `claude` inherits the parent session's credentials.
+- Trial output defaults to `<skill-evals-dir>/.trial-runs/`, which is
+  gitignored but leaves `evals.json` and `fixtures/` a few directories above
+  each trial's own working directory. Set `TRIALS_DIR` to put the workspaces
+  outside the repo when that matters:
+
+  ```bash
+  TRIALS_DIR=/tmp/triage-trials bash plugins/life-skills/skills/triage/evals/run-trials.sh
+  ```
 - One-time setup for the MCP stubs (isolated venv):
 
   ```bash
