@@ -1,23 +1,25 @@
 # Skill Benchmark: triage
 
 **Model**: claude-opus-5 (executor and analyzer)
-**Date**: 2026-08-19T06:20:00Z
+**Date**: 2026-08-19T08:05:00Z
 **Evals**: 1-10 (2 runs each, with_skill only)
 
 ## Summary
 
 | Metric | With Skill |
 |--------|------------|
-| Expectations passed | 93/94 (99%) — 46/47 run 1, 47/47 run 2 |
+| Expectations passed | 93/94 (99%) — 47/47 run 1, 46/47 run 2 |
 | Evals passing in both runs | 9/10 |
-| Time | 45.3s ± 22.1s |
-| Tokens | 448,575 ± 210,981 (total processed, dominated by cache reads) |
-| Tool calls | 7.0 ± 4.6 |
+| Time | 45.2s ± 21.6s |
+| Tokens | 387,790 ± 150,324 (total processed, dominated by cache reads) |
+| Tool calls | 6.0 ± 4.0 |
 
 Spreads are population standard deviations, the convention the other baselines
 use. Tokens are total processed per trial (input + output + cache creation +
 cache read) and are not comparable to the sub-agent token figures in the
-software-development baselines.
+software-development baselines; they are rounded to whole tokens, since four
+decimal places on a token count is false precision that also reads as a long
+digit run to a secret scanner.
 
 Measured against SKILL.md as of this commit. An earlier measurement of the same
 suite, before the four fixes below, scored 85/94 with 6/10 evals clean; see
@@ -29,16 +31,16 @@ tool".
 
 | Eval | Scenario | Run 1 | Run 2 | Time r1 (s) | Time r2 (s) | Calls r1 | Calls r2 | Tokens r1 | Tokens r2 |
 |------|----------|-------|-------|-------------|-------------|----------|----------|-----------|-----------|
-| 1 | No scope given — ask first | 3/3 | 3/3 | 5.4 | 5.0 | 0 | 0 | 98,348 | 98,340 |
-| 2 | Trello: rewrite one card, leave one | 5/5 | 5/5 | 47.7 | 40.0 | 7 | 7 | 569,904 | 461,605 |
-| 3 | Trello: nothing to do, say so | 4/4 | 4/4 | 37.5 | 37.4 | 5 | 5 | 331,925 | 444,166 |
-| 4 | Email: all three Step 4b branches | 5/5 | 5/5 | 54.3 | 53.0 | 10 | 12 | 344,219 | 407,570 |
-| 5 | Email: inbox already empty | 4/4 | 4/4 | 17.8 | 10.2 | 2 | 2 | 215,732 | 213,527 |
-| 6 | Email → Trello capture (Step 4c) | 6/6 | 6/6 | 48.5 | 48.8 | 11 | 9 | 599,481 | 539,102 |
-| 7 | Jira: rewrite one issue, leave one | 5/5 | 5/5 | 59.7 | 66.8 | 5 | 6 | 463,992 | 524,091 |
-| 8 | Jira: nothing to do, Done item exempt | 4/4 | 4/4 | 52.1 | 52.1 | 5 | 5 | 454,608 | 453,564 |
-| 9 | Jira → Trello capture (Step 4c) | 6/6 | 6/6 | 82.2 | 91.6 | 12 | 20 | 805,135 | 1,016,236 |
-| 10 | Trello: every card named as a real link | **4/5** | 5/5 | 47.7 | 47.9 | 9 | 7 | 526,229 | 403,728 |
+| 1 | No scope given — ask first | 3/3 | 3/3 | 5.2 | 5.4 | 0 | 0 | 94,308 | 94,302 |
+| 2 | Trello: rewrite one card, leave one | 5/5 | **4/5** | 55.3 | 40.1 | 7 | 7 | 434,479 | 421,284 |
+| 3 | Trello: nothing to do, say so | 4/4 | 4/4 | 38.2 | 35.5 | 5 | 5 | 418,381 | 373,393 |
+| 4 | Email: all three Step 4b branches | 5/5 | 5/5 | 57.9 | 43.8 | 10 | 10 | 394,979 | 441,663 |
+| 5 | Email: inbox already empty | 4/4 | 4/4 | 16.1 | 13.5 | 2 | 2 | 258,284 | 205,518 |
+| 6 | Email → Trello capture (Step 4c) | 6/6 | 6/6 | 47.5 | 47.8 | 11 | 11 | 564,814 | 579,872 |
+| 7 | Jira: rewrite one issue, leave one | 5/5 | 5/5 | 59.9 | 63.5 | 3 | 4 | 375,574 | 430,141 |
+| 8 | Jira: nothing to do, Done item exempt | 4/4 | 4/4 | 43.8 | 44.8 | 2 | 2 | 321,215 | 258,740 |
+| 9 | Jira → Trello capture (Step 4c) | 6/6 | 6/6 | 75.0 | 88.2 | 12 | 13 | 572,818 | 694,483 |
+| 10 | Trello: every card named as a real link | 5/5 | 5/5 | 55.2 | 66.8 | 7 | 7 | 381,865 | 439,678 |
 
 Graded from final state — each service's call log, and a field-by-field diff of
 `<service>-state-out.json` against the fixture's seed — never from the
@@ -70,6 +72,13 @@ the trials skipped the question and set the field. Both rules now name the
 outcome instead: leave the field unassigned, leave priority unset, and "skip the
 field, not the question". Post-fix, both runs leave both fields alone and
 explain why unprompted.
+
+The priority half needed a second pass. It slipped once in eight post-fix runs
+— a trial set `High` on a personal issue while correctly leaving assignee
+unset — because the rule still led with "if not set, suggest a priority" and
+put the personal-item exclusion third. The two halves now have the same shape:
+the exclusion leads, and the same "skip the field, not the question" clarifier
+that made the assignee rule hold 8 for 8 now sits on both.
 
 **A capture licensed an edit to its source** (eval 9, failed both pre-fix runs).
 After lifting three untracked to-dos out of HOME-7's description onto Trello,
@@ -114,16 +123,60 @@ the writes an email triage may make (`create_draft`, `modify_thread_labels`,
 appearing in that log is something a human should look at, not something the
 expectation should quietly accept.
 
-## The one remaining failure is an eval-versus-skill disagreement
+## Splitting SKILL.md into references/
 
-**Eval 10, expectation 5** treats card-2 as an untouched control. Run 1 created a
-`travel` label — the board genuinely had none — and applied it to card-2. The
-prompt said to apply anything the skill was confident about, and Step 4's label
-rules apply to every card in scope, so "already well-formed" and "off limits"
-are not the same thing. Run 2 asked first instead, which is also defensible.
-Across five recorded trials of this eval the split is three apply, two ask.
-Left as-is: it is minor, and both behaviours are reasonable readings of the
-prompt.
+SKILL.md was 773 lines, well past the ~500-line guideline. It is now 517, with
+six `references/` files carrying 437 lines between them, each linked from the
+step that needs it.
+
+What moved was chosen by **conditionality**, not by size: material the run
+consults only when a particular condition arises, rather than procedure every
+run executes.
+
+| File | Covers | Fires when |
+|---|---|---|
+| `email-triage.md` | Step 4b's decision tree, email corpus fetching | scope is an inbox |
+| `gathering-context.md` | Steps 3, 5, 6 | the item has links, or a Tier 2/3 item warrants a search |
+| `staleness-and-stalls.md` | Steps 7, 7a, 7b | the item has gone quiet |
+| `field-guidance.md` | title/description/label calibration examples | proposing a rewrite |
+| `sizing-and-tiers.md` | Steps 0.5 and 2a-2c signal tables | context or size is not obvious |
+| `methodology.md` | GTD, the 2-minute rule, Kanban, LEAN | never — it is background |
+
+Every rule the earlier fixes pinned down stayed inline, verbatim: the
+empty-scope rule in Step 0, the assignee and priority rules in Step 4, Step
+4c's source-edit and description rules, Step 8's hyperlink rule and the Quality
+Rules list. What left Step 4 was the per-context *examples* ("for a personal
+task…", "for a professional bug…"), not the rules that always apply.
+
+`run-trials.sh` had to change with it: it staged `SKILL.md` alone, so after the
+split every `references/` link in a trial's copy would have dangled. It now
+stages `SKILL.md` **and** `references/` — still not the whole directory, which
+would hand the trial `evals.json` and the fixtures.
+
+**Measured, not assumed.** Six full passes ran after the split. The two
+recorded here score 93/94 with 9 of 10 evals clean in both — identical to the
+pre-split figure. The failures across all six were single-run misses in three
+different evals (2, 7 and 10), never the same one twice.
+
+Five of those six misses were in prose that never moved, so the split cannot
+explain them. The exception is the one recorded above: run 2's eval 2 rewrote
+card-1's title and never proposed the board's existing `travel` label. The
+label *rule* is still inline; the per-context label *examples* are in
+`field-guidance.md`. Nine of the ten recorded runs of that eval apply the
+label, including run 1 here, so this is most likely the same run-to-run noise
+as the other two — but it is the one miss the split could plausibly have
+caused, and it is worth watching rather than dismissing.
+
+## An eval-versus-skill disagreement, left open
+
+**Eval 10, expectation 5** treats card-2 as an untouched control. Some runs
+create a `travel` label — the board genuinely has none — and apply it to
+card-2. The prompt says to apply anything the skill is confident about, and
+Step 4's label rules apply to every card in scope, so "already well-formed" and
+"off limits" are not the same thing. Other runs ask first, which is also
+defensible; across ten recorded trials the split is three apply, seven ask or
+leave it. Both runs recorded here left it alone. Left as-is: it is minor, and
+both behaviours are reasonable readings of the prompt.
 
 ## Hyperlink discipline stops at Trello
 
@@ -207,9 +260,9 @@ Nothing was deleted or trashed in any service across either run — no
 sent: every reply went to `create_draft`, which is also all the real Gmail MCP
 allows. Both eval-1 trials made **zero** tool calls and answered with the Step 0
 scope question verbatim, which is the preferred shape that eval's notes describe
-rather than merely the invariant it grades. Every "leave this one alone" control
-held except eval 10 run 1: card-2 in eval 2, card-1 in eval 6, card-1 in eval 9
-and HOME-2 in evals 7 and 8 were all byte-identical to their seeds. Both eval-8
+rather than merely the invariant it grades. Every "leave this one alone" control held
+in both runs: card-2 in evals 2 and 10, card-1 in evals 6 and 9, and HOME-2 in
+evals 7 and 8 were all byte-identical to their seeds. Both eval-8
 trials treated the Done issue as closed and proposed nothing for it.
 
 ## Notes
