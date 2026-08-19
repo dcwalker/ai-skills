@@ -348,12 +348,18 @@ with `--output-format json` and extracts real wall-clock duration and token
 usage into a per-trial `metrics.json` alongside `transcript.txt`.
 `plugins/life-skills/skills/triage/evals/run-trials.sh` predates it and still
 carries its own copy of that loop, kept at parity with the shared driver on
-everything below. It adds one thing the shared driver does not have: a
-`TRIALS_DIR` override, so the trial workspaces can be written outside the
-repository. The default `.trial-runs/` lives under `evals/`, which leaves
-`evals.json` and `fixtures/` three directories above each trial's own working
-directory — within reach of an executor that goes looking, which is the
-answer key.
+everything below.
+
+Both honour a `TRIALS_DIR` environment variable. Output otherwise lands in
+`<skill-evals-dir>/.trial-runs/`, which is gitignored but leaves `evals.json`
+and `fixtures/` a few directories above each trial's own working directory —
+within reach of an executor that goes looking, and that is the answer key.
+Point `TRIALS_DIR` outside the repository when that matters:
+
+```bash
+TRIALS_DIR=/tmp/writing-trials bash evals/lib/run-mcp-trials.sh \
+  plugins/life-skills/skills/writing/evals
+```
 
 Multi-turn trials: an eval may carry a `follow_ups` array of later user
 messages alongside its `prompt`. The driver runs the first turn, reads the

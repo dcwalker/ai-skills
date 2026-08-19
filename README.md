@@ -234,11 +234,12 @@ dates, and totals.
   call — the nested `claude` inherits the parent session's credentials.
 - Trial output defaults to `<skill-evals-dir>/.trial-runs/`, which is
   gitignored but leaves `evals.json` and `fixtures/` a few directories above
-  each trial's own working directory. Set `TRIALS_DIR` to put the workspaces
-  outside the repo when that matters:
+  each trial's own working directory. Both drivers honour `TRIALS_DIR`, which
+  puts the workspaces outside the repo:
 
   ```bash
-  TRIALS_DIR=/tmp/triage-trials bash plugins/life-skills/skills/triage/evals/run-trials.sh
+  TRIALS_DIR=/tmp/writing-trials bash evals/lib/run-mcp-trials.sh \
+    plugins/life-skills/skills/writing/evals
   ```
 - One-time setup for the MCP stubs (isolated venv):
 
