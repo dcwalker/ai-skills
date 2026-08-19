@@ -347,8 +347,17 @@ for any skill's MCP-backed trials: it runs each eval's `claude -p` subprocess
 with `--output-format json` and extracts real wall-clock duration and token
 usage into a per-trial `metrics.json` alongside `transcript.txt`.
 `plugins/life-skills/skills/triage/evals/run-trials.sh` predates it and still
-carries its own copy of that loop, kept at parity with the shared driver on
-everything below.
+carries its own copy of that loop. It matches the shared driver on three
+things — the `TRIALS_DIR` override, the skill-plus-`references/` copy, and the
+`--allowedTools` allowlist — and on nothing else below: it has no multi-turn
+`follow_ups` support and no per-trial `HOME`/`TMPDIR` isolation. Neither gap
+fails a trial today — triage's `evals.json` declares no `follow_ups`, none of
+its fixtures carry a `home/`, and the skill writes nothing under `$HOME`. The
+`HOME` gap is not purely theoretical though: Step 5c reads `~/references/`, so
+a triage trial run through its own driver reads whatever that directory holds
+on the machine running it, rather than a fixture-controlled one. Folding it
+into a caller of this script is the fix, and remains the worthwhile follow-up
+its own header calls it.
 
 Both honour a `TRIALS_DIR` environment variable. Output otherwise lands in
 `<skill-evals-dir>/.trial-runs/`, which is gitignored but leaves `evals.json`

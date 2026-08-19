@@ -11,12 +11,12 @@
 # of the loop -- reducing it to a caller of this script is a worthwhile
 # follow-up, not something done here.
 #
-# The nested `claude` subprocess inherits the parent session's credentials,
-# so this does run when delegated to an in-session Bash tool call, as well as
-# as root, in a container, and in CI -- the allowlist below is what makes the
-# last three work. If it fails to authenticate in whatever sandbox you are in,
-# run it from a normal logged-in terminal instead. See evals/README.md's "MCP
-# stub servers" section for the underlying mechanism.
+# The nested `claude` subprocess inherits the parent session's credentials, so
+# this does run when delegated to an in-session Bash tool call. It also runs as
+# root, in a container, and in CI -- the allowlist below is what makes those
+# three work. If it fails to authenticate in whatever sandbox you are in, run
+# it from a normal logged-in terminal instead. See evals/README.md's "MCP stub
+# servers" section for the underlying mechanism.
 #
 # Usage: bash evals/lib/run-mcp-trials.sh <skill-evals-dir> [id ...]
 #
