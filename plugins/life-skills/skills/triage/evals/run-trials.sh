@@ -61,20 +61,30 @@ for e in data['evals']:
   # shellcheck disable=SC1090
   source "$ENV_FILE"
 
-  # `--dangerously-skip-permissions` is refused outright when the shell is
-  # root, which is the default in most containers. Allow-listing exactly the
-  # stub servers this fixture wired into mcp-config.json gets the same reach
-  # without the flag, so the batch runs unattended either way.
-  if [[ $EUID -eq 0 ]]; then
-    mapfile -t PERM_ARGS < <(python3 -c "
+  # An explicit allowlist rather than --dangerously-skip-permissions, matching
+  # evals/lib/run-mcp-trials.sh: that flag is refused outright when the shell
+  # is root, which rules out containers and CI, and an allowlist keeps the
+  # trial's tool surface auditable. One unconditional path rather than a
+  # root-only branch, so the surface cannot silently differ between the
+  # environment a baseline was recorded in and the one it is reproduced in.
+  #
+  # The non-MCP tools are load-bearing, not filler: Step 1 and Step 4c each
+  # define an MCP -> skill -> CLI -> REST hierarchy, and run-mcp-eval.sh
+  # deliberately isolates the two shell paths triage/SKILL.md names (curl to
+  # Jira's REST API, and gh) by scrubbing credentials and shadowing gh, so
+  # those tiers are meant to be exercisable in a trial. Without Bash they can
+  # never fire. Every stub server is allowed wholesale, including its write
+  # tools, so that "the skill wrote nothing" stays a finding about the skill
+  # rather than an artifact of the harness blocking the call. Servers come
+  # from this fixture's own mcp-config.json, so a fixture that wires up a new
+  # service is covered without editing this list.
+  mapfile -t PERM_ARGS < <(python3 -c "
 import json
 config = json.load(open('$MCP_CONFIG_PATH'))
 print('--allowedTools')
-print(' '.join('mcp__' + s for s in config['mcpServers']))
+print('Bash Read Write Edit Glob Grep WebFetch TodoWrite Skill '
+      + ' '.join('mcp__' + s for s in config['mcpServers']))
 ")
-  else
-    PERM_ARGS=(--dangerously-skip-permissions)
-  fi
 
   # The subprocess runs with cwd inside $WORKSPACE_DIR, where nothing loads
   # this repo's plugins, so without staging the skill the trial would measure

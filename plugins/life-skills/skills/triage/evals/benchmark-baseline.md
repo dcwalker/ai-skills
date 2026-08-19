@@ -1,7 +1,7 @@
 # Skill Benchmark: triage
 
 **Model**: claude-opus-5 (executor and analyzer)
-**Date**: 2026-08-19T04:40:00Z
+**Date**: 2026-08-19T06:20:00Z
 **Evals**: 1-10 (2 runs each, with_skill only)
 
 ## Summary
@@ -10,9 +10,9 @@
 |--------|------------|
 | Expectations passed | 93/94 (99%) — 46/47 run 1, 47/47 run 2 |
 | Evals passing in both runs | 9/10 |
-| Time | 46.7s ± 22.1s |
-| Tokens | 413,080 ± 164,708 (total processed, dominated by cache reads) |
-| Tool calls | 6.8 ± 4.2 |
+| Time | 45.3s ± 22.1s |
+| Tokens | 448,575 ± 210,981 (total processed, dominated by cache reads) |
+| Tool calls | 7.0 ± 4.6 |
 
 Spreads are population standard deviations, the convention the other baselines
 use. Tokens are total processed per trial (input + output + cache creation +
@@ -21,24 +21,24 @@ software-development baselines.
 
 Measured against SKILL.md as of this commit. An earlier measurement of the same
 suite, before the four fixes below, scored 85/94 with 6/10 evals clean; see
-"What was fixed". Evals 6 and 9 also had one expectation reworded after these
-trials ran; both runs were re-graded from their recorded call logs, and the
-change is described under "Grading the outcome, not the tool".
+"What was fixed". Evals 6 and 9 also had one expectation reworded, from naming
+`search_trello` to grading the outcome; see "Grading the outcome, not the
+tool".
 
 ## Per-eval results
 
 | Eval | Scenario | Run 1 | Run 2 | Time r1 (s) | Time r2 (s) | Calls r1 | Calls r2 | Tokens r1 | Tokens r2 |
 |------|----------|-------|-------|-------------|-------------|----------|----------|-----------|-----------|
-| 1 | No scope given — ask first | 3/3 | 3/3 | 4.8 | 5.8 | 0 | 0 | 94,829 | 94,798 |
-| 2 | Trello: rewrite one card, leave one | 5/5 | 5/5 | 55.7 | 45.8 | 7 | 9 | 392,365 | 611,919 |
-| 3 | Trello: nothing to do, say so | 4/4 | 4/4 | 31.9 | 35.8 | 5 | 5 | 385,807 | 385,966 |
-| 4 | Email: all three Step 4b branches | 5/5 | 5/5 | 59.1 | 46.5 | 12 | 12 | 458,270 | 452,824 |
-| 5 | Email: inbox already empty | 4/4 | 4/4 | 18.9 | 15.6 | 2 | 2 | 209,166 | 207,771 |
-| 6 | Email → Trello capture (Step 4c) | 6/6 | 6/6 | 47.7 | 42.1 | 11 | 10 | 520,999 | 579,900 |
-| 7 | Jira: rewrite one issue, leave one | 5/5 | 5/5 | 72.2 | 69.2 | 5 | 6 | 399,480 | 506,231 |
-| 8 | Jira: nothing to do, Done item exempt | 4/4 | 4/4 | 46.8 | 54.9 | 4 | 3 | 325,094 | 323,414 |
-| 9 | Jira → Trello capture (Step 4c) | 6/6 | 6/6 | 81.9 | 81.7 | 12 | 15 | 665,388 | 679,619 |
-| 10 | Trello: every card named as a real link | **4/5** | 5/5 | 63.7 | 54.3 | 9 | 7 | 518,074 | 449,693 |
+| 1 | No scope given — ask first | 3/3 | 3/3 | 5.4 | 5.0 | 0 | 0 | 98,348 | 98,340 |
+| 2 | Trello: rewrite one card, leave one | 5/5 | 5/5 | 47.7 | 40.0 | 7 | 7 | 569,904 | 461,605 |
+| 3 | Trello: nothing to do, say so | 4/4 | 4/4 | 37.5 | 37.4 | 5 | 5 | 331,925 | 444,166 |
+| 4 | Email: all three Step 4b branches | 5/5 | 5/5 | 54.3 | 53.0 | 10 | 12 | 344,219 | 407,570 |
+| 5 | Email: inbox already empty | 4/4 | 4/4 | 17.8 | 10.2 | 2 | 2 | 215,732 | 213,527 |
+| 6 | Email → Trello capture (Step 4c) | 6/6 | 6/6 | 48.5 | 48.8 | 11 | 9 | 599,481 | 539,102 |
+| 7 | Jira: rewrite one issue, leave one | 5/5 | 5/5 | 59.7 | 66.8 | 5 | 6 | 463,992 | 524,091 |
+| 8 | Jira: nothing to do, Done item exempt | 4/4 | 4/4 | 52.1 | 52.1 | 5 | 5 | 454,608 | 453,564 |
+| 9 | Jira → Trello capture (Step 4c) | 6/6 | 6/6 | 82.2 | 91.6 | 12 | 20 | 805,135 | 1,016,236 |
+| 10 | Trello: every card named as a real link | **4/5** | 5/5 | 47.7 | 47.9 | 9 | 7 | 526,229 | 403,728 |
 
 Graded from final state — each service's call log, and a field-by-field diff of
 `<service>-state-out.json` against the fixture's seed — never from the
@@ -102,10 +102,11 @@ call, or a tool that does not exist yet has done the thing the step asks for.
 Run 1 of eval 9 did exactly that and failed the expectation while satisfying its
 intent, with its own reply confirming the duplicate check. Both expectations are
 now written against the outcome — the destination's existing cards were read
-before anything was created, by any means that returns them — and both runs were
-re-graded from their recorded call logs under the new wording. Nothing about the
-runs changed; run 1's eval 9 goes from 5/6 to 6/6, and its `view_list` call now
-reads as the pass it always was.
+before anything was created, by any means that returns them. Under the old
+wording that trial scored 5/6; under the new one its `view_list` call reads as
+the pass it always was, and across the four recorded runs of evals 6 and 9 the
+trials split roughly evenly between `search_trello` and `view_list` with no
+difference in what they actually established.
 
 The one expectation deliberately left method-bound is eval 4's, which allow-lists
 the writes an email triage may make (`create_draft`, `modify_thread_labels`,
@@ -155,9 +156,20 @@ already says the right thing.
 ways here before producing anything. All three are fixed:
 
 - **`--dangerously-skip-permissions` is refused outright when the shell is
-  root**, which is the default in most containers. The script now allow-lists
-  exactly the stub servers the fixture wired into `mcp-config.json` when
-  `$EUID` is 0, which gets the same reach without the flag.
+  root**, which is the default in most containers. The script now drops that
+  flag entirely and always passes an explicit `--allowedTools`, matching
+  `evals/lib/run-mcp-trials.sh`: `Bash Read Write Edit Glob Grep WebFetch
+  TodoWrite Skill` plus every stub server named in the fixture's own
+  `mcp-config.json`. One unconditional path rather than a root-only branch, so
+  the tool surface cannot silently differ between the environment a baseline
+  was recorded in and the one it is reproduced in.
+
+  The non-MCP tools are load-bearing rather than filler. Step 1 and Step 4c
+  each define an MCP → skill → CLI → REST hierarchy, and `run-mcp-eval.sh`
+  goes to some trouble to isolate the two shell paths SKILL.md names — a
+  `curl` to Jira's REST API, and `gh` — by scrubbing credentials and shadowing
+  `gh`. Without `Bash` those tiers can never fire, which would have made an
+  isolation the harness deliberately built unreachable.
 - **The subprocess could not see the skill.** It runs with cwd inside
   `$WORKSPACE_DIR`, where nothing loads this repo's plugins — probing a trial
   returned no `triage` skill at all, so the suite would have been measuring the
@@ -172,6 +184,15 @@ The header comment claiming nested `claude` subprocesses cannot authenticate
 from an in-session Bash call was also wrong in this environment — every trial
 recorded here ran that way — so it now says so conditionally rather than as a
 blanket prohibition.
+
+Widening the allowlist changed no result: the suite scores the same 93/94 with
+it as without, and across all twenty trials not one `gh` call reached the stub
+and not one file was written to a workspace. That is the expected outcome rather
+than a disappointment — every fixture wires up an MCP server, so the top tier of
+the hierarchy is always available and correctly preferred. It does mean the CLI
+and REST tiers are still untested by these fixtures: exercising them needs a
+fixture that deliberately wires up **no** MCP server, which does not exist yet.
+The allowlist removes a ceiling; it does not by itself add coverage.
 
 One thing left as a flag rather than a fix: the default `.trial-runs/` sits
 under `evals/`, which leaves `evals.json` and `fixtures/` three directories
