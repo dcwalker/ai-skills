@@ -129,3 +129,64 @@ provisional evidence on the card.
 
 Prefer samples from the last 12 to 24 months. If the only samples are older,
 say so; voice drifts.
+
+## Slugging a channel card
+
+**A channel is an audience in its own right.** Slug it with the channel's own
+name and, where the workspace exposes one, its id:
+`card-slack-platform-eng-C024BE91L.md`. Never slug a card by a category such as
+`private-channel` or `team-channel`. Two channels in one workspace differ in
+who is in them, what they are for, and what they are about, and those are
+precisely the things that set register, so a card spanning both describes
+neither. A channel and a direct message with someone who is in that channel are
+likewise two audiences, not one.
+
+## When no samples exist at all
+
+Say so plainly. Do not fill the gap with a generic professional voice and do
+not present an unevidenced card as if it were researched. Instead:
+
+1. Report which sources were searched and what came back empty.
+2. **Fall back to `general.md`** if the cache has one, and label it for what
+   it is: how this person writes in general, not how they write to this
+   person. It covers punctuation, recurring words, and instincts about length
+   and directness. It cannot tell you the greeting, the sign-off, or the
+   formality, which is precisely what is missing here.
+3. **Ask the user to describe how it should sound**, in their own words.
+   "Blunt, no greeting, two lines" is a better instruction than any ladder of
+   options, and it is faster to give than a pasted sample is to find. Prompt
+   for the register and the relationship if the description leaves them open.
+4. Offer the sample-paste route as an alternative rather than the first ask:
+   one or two real examples turn a described style into an observed one, and
+   the card built from them is reusable next time.
+5. Label the result honestly: `Confidence: none, user-described` when it came
+   from the description, `low, cross-medium` when it leaned on `general.md`.
+
+Whatever the user describes is worth keeping. Write it into the card so the
+next request to this audience starts from it, and mark it as user-described
+rather than observed, so a later run with real samples knows it can be
+replaced.
+
+If the user asks to skip the research entirely ("just write it", "don't go
+digging"), honor it. Two things still hold: say once, in a single line, that
+the draft is unresearched so they read it with that in mind, and add no facts
+they did not give you. A skipped research step lowers the confidence of the
+voice, never the standard for the content.
+
+## Platform conventions worth counting
+
+**Platform conventions.** These are learned habits rather than prose style,
+and getting them wrong reads as "someone else's account" faster than a wrong
+adjective does. Count them the same way:
+
+- **People:** an `@mention` versus a written-out name, first name versus full
+  name, and whether the mention is used for addressing, for crediting, or for
+  pulling someone into a thread.
+- **Links:** a bare URL, a hyperlink on descriptive text, or a reference-style
+  link. Whether the link is explained before it is dropped, and whether the
+  channel's own unfurl is left to do the work.
+- **Images:** how often a screenshot stands in for a description, whether it
+  is annotated, and whether a caption accompanies it or the image goes bare.
+- **Threading and formatting:** replying in-thread versus posting anew, code
+  blocks versus inline backticks, quoting versus paraphrasing, and structural
+  conventions the platform affords that the user does or does not take up.

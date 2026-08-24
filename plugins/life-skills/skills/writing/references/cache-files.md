@@ -161,3 +161,17 @@ No samples found for: text message, any personal audience.
 The "no samples found for" line matters as much as the rows. A search that
 came back empty is a result worth keeping, so the next session does not spend
 the same calls rediscovering that the corpus is not there.
+
+## Why cards are kept rather than expired
+
+The analysis is the expensive part of this skill and voice changes slowly, so a
+card is kept and extended indefinitely rather than aged out. What ages is not
+the card but its recent window: samples fall out of it with the passage of time
+alone, the recent counts thin, and an empty recent window lowers confidence
+rather than discarding the reading.
+
+That is also why a card past a year gets validated rather than rebuilt.
+Re-confirming the relationship class and re-running blame on a sample or two is
+seconds of work, and it is the price of keeping a card forever: a card that is
+only ever extended inherits any contamination it started with and compounds it
+rather than washing it out.

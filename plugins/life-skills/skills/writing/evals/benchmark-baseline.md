@@ -1,79 +1,88 @@
 # Skill Benchmark: writing
 
 **Model**: claude-sonnet-5 (executor), claude-opus-5 (analyzer)
-**Date**: 2026-08-24
+**Date**: 2026-08-25
 **Evals**: 1-27 (1 run each, with_skill only)
 
 ## Summary
 
 | Metric | With Skill |
 |--------|------------|
-| Expectation Pass Rate | 142/142 (100%) |
-| Evals Fully Passed | 27/27 |
-| Time | 115.7s ± 50.4s |
-| Output Tokens | 9542 ± 4037 |
+| Expectation Pass Rate | 139/142 (97.9%) |
+| Evals Fully Passed | 26/27 |
+| Time | 127.1s ± 59.5s |
+| Output Tokens | 10793 ± 5338 |
 | Errors | 0 |
-| Skill invoked | 27/27 trials |
+| Skill invoked | 26/27 trials |
 
-Supersedes 141/142 (2026-08-24), 138/142 (2026-08-23), and 106/111 across the
-older 22-eval suite (2026-08-13).
+Measured after splitting reference material out of SKILL.md (807 to 672 lines).
 
 ## Per-eval results
 
 | Eval | Scenario | Pass Rate | Time (s) | Tokens |
 |------|----------|-----------|----------|--------|
-| 1 | Peer email, rung-1 corpus | 6/6 | 115.5 | 8941 |
-| 2 | New external recipient, rung-2 substitution | 5/5 | 151.8 | 12937 |
-| 3 | No corpus anywhere | 5/5 | 30.3 | 2056 |
-| 4 | Audience missing from the request | 4/4 | 6.2 | 310 |
-| 5 | Two artifacts, two audiences, one run | 5/5 | 196.0 | 17643 |
-| 6 | Rewrite an assistant-sounding draft | 4/4 | 111.3 | 9524 |
-| 7 | Explicit skip-the-research override | 4/4 | 26.8 | 2015 |
-| 8 | Journal entry, audience is self | 4/4 | 139.3 | 11389 |
-| 9 | Voice held across two revisions | 5/5 | 105.7 | 9030 |
-| 10 | Cache belonging to different accounts | 4/4 | 129.8 | 11192 |
-| 11 | Own cache reused and confirmed | 4/4 | 76.0 | 6355 |
-| 12 | Blog post from posts on disk | 5/5 | 181.1 | 15733 |
-| 13 | Jira comment, display-name collision | 5/5 | 116.4 | 9794 |
-| 14 | Slack corpus from an on-disk export | 6/6 | 152.6 | 12733 |
-| 15 | General-profile fallback, personal audience | 6/6 | 78.1 | 5992 |
-| 16 | Slack corpus through the connector | 6/6 | 124.1 | 10754 |
-| 17 | Two-sample corpus, confidence calibration | 5/5 | 117.1 | 9366 |
-| 18 | Register mismatch, banter corpus, serious news | 5/5 | 101.4 | 8300 |
-| 19 | Revision pushing against the observed voice | 5/5 | 124.0 | 10292 |
-| 20 | Stale cached card, relationship drift | 6/6 | 136.2 | 11853 |
-| 21 | Slack channel, retired account identifier | 6/6 | 111.0 | 9537 |
-| 22 | Doc section, multi-author document | 6/6 | 238.8 | 13362 |
-| 23 | Two horizons disagree, card extended | 6/6 | 165.3 | 14917 |
-| 24 | Empty recent window, confidence capped | 6/6 | 98.9 | 8404 |
-| 25 | Channel-scoped card, different channel | 6/6 | 127.4 | 11107 |
-| 26 | Vocabulary slots and evidence thresholds | 6/6 | 96.1 | 8026 |
-| 27 | Ledger appended, not rewritten | 7/7 | 66.2 | 6060 |
+| 1 | Peer email, rung-1 corpus | 6/6 | 153.0 | 12805 |
+| 2 | New external recipient, rung-2 substitution | 5/5 | 162.4 | 13726 |
+| 3 | No corpus anywhere | 5/5 | 51.3 | 3879 |
+| 4 | Audience missing from the request | 4/4 | 9.4 | 507 |
+| 5 | Two artifacts, two audiences, one run | 5/5 | 210.8 | 18668 |
+| 6 | Rewrite an assistant-sounding draft | 4/4 | 179.4 | 15398 |
+| 7 | Explicit skip-the-research override | 4/4 | 19.3 | 1351 |
+| 8 | Journal entry, audience is self | 4/4 | 130.2 | 11038 |
+| 9 | Voice held across two revisions | 5/5 | 135.3 | 10357 |
+| 10 | Cache belonging to different accounts | 4/4 | 186.8 | 14609 |
+| 11 | Own cache reused and confirmed | 4/4 | 54.3 | 4566 |
+| 12 | Blog post from posts on disk | 5/5 | 219.1 | 20518 |
+| 13 | Jira comment, display-name collision | 5/5 | 161.5 | 12739 |
+| 14 | Slack corpus from an on-disk export | 6/6 | 177.6 | 15424 |
+| 15 | General-profile fallback, personal audience | 6/6 | 53.7 | 4053 |
+| 16 | Slack corpus through the connector | 6/6 | 168.4 | 14525 |
+| 17 | Two-sample corpus, confidence calibration | 5/5 | 224.3 | 19581 |
+| 18 | Register mismatch, banter corpus, serious news | 5/5 | 111.3 | 9045 |
+| 19 | Revision pushing against the observed voice | 5/5 | 108.6 | 8204 |
+| 20 | Stale cached card, relationship drift | 6/6 | 125.3 | 11047 |
+| 21 | Slack channel, retired account identifier | 6/6 | 154.4 | 13696 |
+| 22 | Doc section, multi-author document | 3/6 | 64.2 | 5204 |
+| 23 | Two horizons disagree, card extended | 6/6 | 137.3 | 12480 |
+| 24 | Empty recent window, confidence capped | 6/6 | 114.9 | 9948 |
+| 25 | Channel-scoped card, different channel | 6/6 | 137.9 | 11739 |
+| 26 | Vocabulary slots and evidence thresholds | 6/6 | 131.5 | 11653 |
+| 27 | Ledger appended, not rewritten | 7/7 | 50.9 | 4661 |
 
-## What changed since the previous baseline
+## Findings
 
-**Eval 11: 3/4 to 4/4.** The card now names the build date on reuse
-(`reused from cache, built 2026-08-02`). Step 2 had always asked for it, but
-the Step 6 card template offered `reused from cache | rebuilt` with no slot for
-a date, so the instruction had nowhere to land.
+**Eval 22 -- 3/6, the skill was not invoked.** A request naming a file path
+rather than a recipient fires the skill about two thirds of the time; this run
+caught the failing third, so no `git blame` ran on the three-author document.
+Measured, not inferred: 2/3 on the trigger eval set. Worth addressing as a
+description problem rather than a behaviour one.
+
+## What the split cost, and what it did not
+
+SKILL.md went 807 to 672 lines across two passes. The four evals exercising
+relocated mechanics all pass: 23 (two-horizon counts, reported here as a
+consolidated `Drift:` block rather than per-line, which the rule allows), 26
+(vocabulary slots), 27 (ledger extension), and 17 (the polish ladder, now in
+`references/style-card.md`).
+
+**One trim was a real regression and is recorded here so it is not repeated.**
+Compressing the `$HOME` location rule dropped four words -- "the one just
+printed" -- and eval 8 immediately wrote its cache to the developer's real home
+directory instead of the trial's. Escape rate was 0 in 54 trials before the
+trim and 1 in 8 after. The words are back, with an explicit "if you are about
+to type `/Users/`, stop". That paragraph is not prose padding; it is the only
+thing standing between the skill and writing private observations into the
+wrong home.
 
 ## Caveats
 
-**Trial workspaces live inside the repo**, so `AGENTS.md` at the repo root
-applies to every trial. Its "ask before creating new files" rule can suppress
-the skill's own cache write, which this suite grades. It did not fire in this
-run; it did in evals 12 and 22 on 2026-08-22. That intermittency is what makes
-it worth fixing rather than tolerating -- it reads as variance, not as a
-constant offset. The fix is to move trial runs outside the repo, which affects
-every skill's suite.
+**Eval 24's recency cap** is flaky at 2 of 3. It passed here.
 
-**One run per eval.** A clean sweep is not proof of stability: eval 24's
-confidence cap and eval 11's build-date line have each passed and failed across
-runs on identical text. Treat 100% as "nothing is currently known to be broken",
-not as a guarantee.
+**Trial workspaces live inside the repo**, so `AGENTS.md` applies to every
+trial and can suppress the cache write this suite grades.
 
-**Evals 11 and 21 were re-run individually** against the same skill revision as
-the other 25. Eval 21 hit a transient `403 Unable to verify organization
-membership` mid-run; eval 11's results were destroyed by a harness bug found
-while fixing the escape guard (the guard sat after the cleanup that deletes
-prior results, so a refused run still wiped them).
+**Evals 14-27 were re-run** after a session limit interrupted the first pass,
+against the same skill revision as 1-13.
+
+**One run per eval.** Evals 22 and 24 are the demonstrated cases: a single
+trial cannot tell a broken rule from one that lands two times in three.
