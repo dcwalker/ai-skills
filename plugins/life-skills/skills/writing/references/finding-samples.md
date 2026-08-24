@@ -77,6 +77,24 @@ recipient addresses the user.
 State the inferred class and the signals behind it. If the signals conflict, or
 none are found, ask rather than guessing.
 
+**A channel is not a person and does not take a relationship class.** Scope a
+channel card to the channel itself, by name and id. What sets its register is
+not a relation to the user but three properties of the room, and they belong on
+the card, because they are what a later session needs in order to judge whether
+some other channel is a fair substitute:
+
+| Property | Why it moves the register |
+|---|---|
+| Membership | A six-person team channel and a two-hundred-person announcement channel are different rooms, whoever is writing |
+| Purpose | Discussion, incident response, standup, announcements, and social each carry their own conventions |
+| Subject | A channel about one system accumulates shorthand that reads as noise anywhere else |
+
+Rung 2 for a channel therefore means another channel matching on those three,
+not merely another channel in the same workspace. When nothing matches, name
+the channel that was substituted and which of the three it differs on. Treating
+any team channel as interchangeable with any other is the channel-shaped
+version of averaging two people's voices together.
+
 ## Authorship filter
 
 A sample only counts if the user wrote it, and a display name is not proof

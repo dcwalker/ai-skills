@@ -1,0 +1,141 @@
+{
+  "me": "eval-user@example.com",
+  "threads": {
+    "thread-d1": {
+      "id": "thread-d1",
+      "subject": "Q1 integration timeline",
+      "from": "eval-user@example.com",
+      "to": [
+        "dana.okafor@riverbend.example"
+      ],
+      "date": "2023-02-14T10:00:00Z",
+      "snippet": "The integration window moves to the first week of March. I would rather give you an accura",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-d1",
+          "from": "eval-user@example.com",
+          "to": [
+            "dana.okafor@riverbend.example"
+          ],
+          "date": "2023-02-14T10:00:00Z",
+          "snippet": "The integration window moves to the first week of March. I would rather give you an accura",
+          "body": "Dana,\n\nThe integration window moves to the first week of March. I would rather give you an accurate date now than a comfortable one today.\n\n- Sandbox access on the 1st\n- Contract test pack on the 3rd\n\nAlex"
+        }
+      ]
+    },
+    "thread-d2": {
+      "id": "thread-d2",
+      "subject": "sandbox access",
+      "from": "eval-user@example.com",
+      "to": [
+        "dana.okafor@riverbend.example"
+      ],
+      "date": "2023-03-09T09:30:00Z",
+      "snippet": "Sandbox credentials went out this morning. Two accounts, both scoped to the test tenant.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-d2",
+          "from": "eval-user@example.com",
+          "to": [
+            "dana.okafor@riverbend.example"
+          ],
+          "date": "2023-03-09T09:30:00Z",
+          "snippet": "Sandbox credentials went out this morning. Two accounts, both scoped to the test tenant.",
+          "body": "Dana,\n\nSandbox credentials went out this morning. Two accounts, both scoped to the test tenant.\n\nAlex"
+        }
+      ]
+    },
+    "thread-d3": {
+      "id": "thread-d3",
+      "subject": "contract tests",
+      "from": "eval-user@example.com",
+      "to": [
+        "dana.okafor@riverbend.example"
+      ],
+      "date": "2023-04-21T14:15:00Z",
+      "snippet": "The contract test pack is ready. One caveat: the pagination case is still failing on our s",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-d3",
+          "from": "eval-user@example.com",
+          "to": [
+            "dana.okafor@riverbend.example"
+          ],
+          "date": "2023-04-21T14:15:00Z",
+          "snippet": "The contract test pack is ready. One caveat: the pagination case is still failing on our s",
+          "body": "Dana,\n\nThe contract test pack is ready. One caveat: the pagination case is still failing on our side.\n\nAlex"
+        }
+      ]
+    },
+    "thread-d4": {
+      "id": "thread-d4",
+      "subject": "May status",
+      "from": "eval-user@example.com",
+      "to": [
+        "dana.okafor@riverbend.example"
+      ],
+      "date": "2023-05-18T11:45:00Z",
+      "snippet": "Status for May:",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-d4",
+          "from": "eval-user@example.com",
+          "to": [
+            "dana.okafor@riverbend.example"
+          ],
+          "date": "2023-05-18T11:45:00Z",
+          "snippet": "Status for May:",
+          "body": "Dana,\n\nStatus for May:\n\n- Pagination fixed\n- Throughput at 400/s, short of the 600 target\n\nAlex"
+        }
+      ]
+    },
+    "thread-d5": {
+      "id": "thread-d5",
+      "subject": "throughput",
+      "from": "eval-user@example.com",
+      "to": [
+        "dana.okafor@riverbend.example"
+      ],
+      "date": "2023-06-30T16:20:00Z",
+      "snippet": "Throughput is at 610/s as of this morning, so the target is met.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-d5",
+          "from": "eval-user@example.com",
+          "to": [
+            "dana.okafor@riverbend.example"
+          ],
+          "date": "2023-06-30T16:20:00Z",
+          "snippet": "Throughput is at 610/s as of this morning, so the target is met.",
+          "body": "Dana,\n\nThroughput is at 610/s as of this morning, so the target is met.\n\nAlex"
+        }
+      ]
+    }
+  },
+  "labels": {
+    "SENT": {
+      "id": "SENT",
+      "name": "SENT"
+    },
+    "INBOX": {
+      "id": "INBOX",
+      "name": "INBOX"
+    }
+  },
+  "drafts": {}
+}

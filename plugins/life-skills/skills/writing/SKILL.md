@@ -67,6 +67,17 @@ states, ask only about what is genuinely missing, one question at a time.
 | **Purpose** | Inform, ask, decline, persuade, apologize, record, celebrate, vent |
 | **Constraints** | Length, deadline, anything that must or must not appear |
 
+**Only these four attributes can hold up a draft.** Questions in this step are
+about the medium, the audience, the purpose, and the stated constraints, and
+about nothing else. What hours the shift runs, what the handoff involves, who
+else to loop in: those are details of what the message *says*, and a request
+being thin on them is the normal case, not a blocker. Draft anyway and mark
+what is genuinely unknown inline -- `[confirm window]`, `[handoff details]` --
+as Step 7 describes. A request naming the medium, the audience, and the purpose
+is answerable, and holding the draft hostage to detail the user did not think
+to supply fails a request that could have been met. The user can fill a marked
+gap in seconds; they cannot fill one they were never shown.
+
 **Audience decides the register, so ask when it is unknown.** If the request
 names a medium but no recipient ("write an email about the outage"), ask who
 it goes to. Some media answer this themselves and need no question: a journal
@@ -99,7 +110,22 @@ not to.
 there are two cases:
 
 1. **A persistent local filesystem:** `$HOME/writing-style/`, created
-   `chmod 700` on first use. In plain sight rather than buried in a cache
+   `chmod 700` on first use. `$HOME` means whatever the environment reports,
+   read from it directly. A session can legitimately run with `$HOME` set
+   somewhere other than the account's usual home.
+
+   **Where this goes wrong is the handoff to a tool that needs an absolute
+   path.** Reading `$HOME` in a shell and creating the directory there is the
+   easy half. Then a file-writing tool wants a full path, and the conventional
+   `/Users/<name>` or `/home/<name>` form gets substituted from habit -- so the
+   directory is created in the right place and the files land somewhere else
+   entirely. Paste the exact string `$HOME` expanded to, the one just printed,
+   and never a path assembled from a username, from a directory further up the
+   working tree, or from any other absolute path that happens to be visible.
+
+   Writing to the wrong home puts this user's private observations somewhere
+   that is not theirs, and leaves the profile the session was told to keep
+   unwritten -- so the next session redoes the research, and nobody knows why. In plain sight rather than buried in a cache
    path, because it is meant to be read and edited by hand. Deliberately not
    a shared temp path: these files hold observations derived from private
    correspondence, and a world-readable location exposes them to every other
@@ -123,6 +149,15 @@ index.md                          Searches already run and what they returned
 card-<medium>-<audience-slug>.md  One style card per (medium, audience) pair
 ```
 
+**A channel is an audience in its own right.** Slug it with the channel's own
+name and, where the workspace exposes one, its id:
+`card-slack-platform-eng-C024BE91L.md`. Never slug a card by a category such as
+`private-channel` or `team-channel`. Two channels in one workspace differ in
+who is in them, what they are for, and what they are about, and those are
+precisely the things that set register, so a card spanning both describes
+neither. A channel and a direct message with someone who is in that channel are
+likewise two audiences, not one.
+
 All four formats are in
 [references/cache-files.md](references/cache-files.md). Read it before writing
 any of these files, and before relying on what one of them says. In short:
@@ -133,10 +168,12 @@ with no card of its own falls back to; `index.md` is the ledger of searches
 already run, including the ones that came back empty.
 
 The one format detail the rules below depend on: a stored card carries a
-`Built:` line recording when it was written and how recent its newest sample
-is, and **age is measured from the newest sample, not the build date** -- a
-card rebuilt yesterday from samples that all predate last spring describes
-how the user wrote a year ago.
+`Ledger:` block recording the samples its counts were derived from, with a
+date on each. That is what lets a card be extended rather than rebuilt, and
+what lets its counts be split into a recent reading and an all-time one
+without re-reading the corpus. A card with no ledger can still be used; it
+just cannot be split, and counts as all-time only until the next refresh
+builds one.
 
 The cache persists across sessions and days, because voice changes slowly and
 the research is the expensive part. To force a full rebuild, delete the
@@ -152,27 +189,38 @@ Cache rules:
 - An exact `(medium, audience)` hit is reused directly. Say so, with the date
   it was built ("reusing the Slack/teammate profile from 14 March"), rather
   than silently skipping the research step.
-- **Confirm a hit cheaply, do not rebuild it.** A card inside its refresh
-  window earns at most one search for samples newer than its newest sample.
-  If that turns up nothing, use the card as it stands. If it turns up a few,
-  fold them in and update the counts. Re-reading the whole corpus a card was
-  built from defeats the point of having cached it.
+- **Confirm a hit cheaply, do not rebuild it.** Every reuse earns exactly one
+  search for samples newer than the card's newest, and no more. If that turns
+  up nothing, use the card as it stands. If it turns up a few, fold them into
+  the ledger, update the counts, and re-bucket. Re-reading the whole corpus a
+  card was built from defeats the point of having cached it. This single
+  bounded search is what keeps a card current, which is why it runs on every
+  reuse rather than on a timer.
 - A partial hit is a starting point, not an answer. Same person, different
   medium means the relationship read carries over and the mechanics do not:
   keep the audience findings, research the medium fresh.
 - Corpus notes are reusable across cards. A sample found while building one
   card counts as evidence for another if it matches that card's scope.
-- **Refresh on age or on drift.** When the card's newest sample is more than
-  about six months old, re-check against current samples before using it, and
-  say that the reading was refreshed. A card with no `Built:` line has no
-  age and gets rebuilt rather than trusted.
+- **Age never invalidates a card, so do not expire one.** The analysis is the
+  expensive part and voice changes slowly, so cards are kept and extended
+  indefinitely. What ages is not the card but its recent window: samples fall
+  out of it with the passage of time alone, the recent counts thin, and an
+  empty recent window lowers confidence rather than discarding the reading
+  (Step 6). A card with neither a ledger nor a `Built:` line has no provenance
+  at all and gets rebuilt rather than trusted.
+- **Validate a card that has passed a year, rather than rebuilding it.**
+  Re-confirm the relationship class against `identity.md`, and re-run blame on
+  one or two of its samples. That is seconds of work, and it is the price of
+  keeping a card forever: a card that is only ever extended inherits any
+  contamination it started with and compounds it rather than washing it out.
 - **Drift invalidates a card regardless of age.** When the relationship
   recorded on the card contradicts what `identity.md` or a directory now says
   (the card reads peer, the user has since recorded them as a manager), the
   register the card describes is the wrong one. Rebuild it, and say why the
   cached one was not used rather than silently swapping it out.
 - New samples extend a card rather than replacing it. Re-running research adds
-  the messages written since, and updates the counts.
+  the messages written since, appends them to the card's ledger, and updates
+  the counts.
 - The cache holds derived observations and short excerpts only, never bulk
   copies of correspondence.
 
@@ -266,9 +314,36 @@ the rung they came from:
 | 1 to 2 samples, or rung 4 to 5 only | Low |
 | None | See Step 6's no-evidence path |
 
+**Then apply the recency cap, before writing the confidence down.** The table
+counts evidence without asking when any of it was written, so a card built from
+plentiful but old samples lands on High and stays there unless something else
+intervenes. Check the recent window (Step 6) and cap accordingly:
+
+- **No samples in the last twelve months:** cap at medium, or at low if the
+  table already said medium.
+- **One or two:** keep the table's value, and say recent coverage is thin.
+
+Evidence about a period that has ended is a weaker claim about today than the
+same counts drawn from current samples, and a card that says `high` without
+qualification is not making the weaker claim.
+
 Extract only what the samples actually show. Every claim on the style card must
 be traceable to a count ("first name only, 7 of 9 samples"), not to an
 impression.
+
+**Two thresholds decide what earns a line.** A positive claim needs a
+numerator, a negative claim needs a denominator, and the asymmetry is
+deliberate: a positive entry puts words into the draft and risks pastiche,
+while a negative entry only filters and can invent nothing.
+
+| Claim | Requirement |
+|---|---|
+| **Positive** (attested, prefers) | 3 or more samples, and at least a third of the corpus |
+| **Negative** (absent, avoid) | a corpus of 5 or more samples, no occurrence minimum |
+
+Three samples out of two hundred is real but not characteristic, and two out
+of four is too few to trust. An absence observed across two samples is not
+evidence of an absence.
 
 **Structure:** typical length in words or lines, paragraph count and size,
 whether the ask comes first or last, use of bullets versus prose, headers,
@@ -280,8 +355,27 @@ name form used for the recipient, self-reference.
 **Sentences:** median length, variance, fragments, questions, imperatives,
 starting words and connectives.
 
-**Vocabulary:** recurring words and phrases, domain jargon and abbreviations,
-intensifiers, hedges, profanity, filler, words conspicuously absent.
+**Vocabulary.** Record this in slots rather than as a list of words. Fixing the
+slots is what makes the reading specific without making it long: the ceiling is
+set by the slot count rather than by however much the corpus happens to hold,
+and an empty slot is itself a finding. The slots deliberately do not overlap
+`Opening`, `Closing`, `Mechanics`, or `Emoji`, which already cover greetings,
+sign-offs, punctuation, and emoji.
+
+| Slot | What goes in it |
+|---|---|
+| `marker` | discourse markers and connectives: "so", "anyway", "that said", "heads up" |
+| `hedge` | hedges and boosters: "I think", "pretty", "definitely", "kind of" |
+| `stance` | how good and bad get named: "solid", "rough", "fine" |
+| `term` | naming choices for recurring referents: ticket vs issue vs card |
+| `shorthand` | domain jargon and abbreviations, and whether they get expanded |
+| `filler` | filler and profanity |
+| `avoid` | words absent from the corpus, especially assistant escalations |
+
+Every positive entry carries one attested snippet. "heads up" on its own loses
+the frame, and a bare opener, a mid-sentence aside, and an apology softener are
+three different habits. The snippet is also what makes the entry checkable the
+next time the card is extended.
 
 **Tone:** directness, warmth markers, humor and its type, apology and gratitude
 habits, how disagreement and bad news get delivered.
@@ -329,7 +423,20 @@ before drafting.
 
 ## Step 6: Present the Style Card
 
-Show the card and get a response before drafting. This is the reference the
+Show the card, then the draft, in the same reply.
+
+**The card fixes the order, it does not withhold the draft.** The user asked
+for an artifact; a reply carrying only a style card delivers none of it and
+spends a turn on saying so. Leading with the reading still buys the cheap
+correction the card exists for -- they can fix how they were read rather than
+patch a draft built on it -- and they can do that with the draft already in
+hand. Ask the question, then draft under the answer you expect, and say that is
+what you did.
+
+Hold the draft back only when the card cannot be built at all: no audience to
+scope it to (Step 1), or no usable evidence and no description to work from
+(below). A gap in what the message should *say* is not one of those cases; mark
+it and draft, as Step 1 describes. This is the reference the
 draft is written against, and the point at which the user can correct a wrong
 read cheaply.
 
@@ -346,22 +453,165 @@ Evidence:    <N> samples | <sources> | <date range> | rung <n>: <what matched>
 Confidence:  high | medium | low
 Polish:      Tier <n> — <name> (<one line of evidence>)
 
-Opening:     <observed pattern, with counts>
-Structure:   <length, ordering, formatting>
+Opening:     <observed pattern>              <recent> | <all time>
+Structure:   <length, ordering, formatting>   <recent> | <all time>
 Sentences:   <length, rhythm, fragments>
-Vocabulary:  <recurring words, jargon, absences>
+Vocabulary:
+  marker     attested  <observation>          <recent> | <all time>
+                       > <attested snippet>
+  term       prefers   <observation>          <recent> | <all time>
+                       > <attested snippet>
+  hedge      absent    <observation>          <all time>
+  <slot>     <status>  <observation>          <recent> | <all time>
+                       > <attested snippet, on every attested and prefers entry>
 Tone:        <directness, warmth, humor, how hard things get said>
 Mechanics:   <capitalization, punctuation, contractions>
 Emoji:       <which, where, how dense, and to whom none are sent>
 Conventions: <mentions vs written names, links, screenshots, threading>
-Closing:     <observed pattern, with counts>
-Avoid:       <specific tells absent from every sample>
+Closing:     <observed pattern>               <recent> | <all time>
+Avoid:       <structural and mechanical tells absent from every sample>
 
 Gaps:        <what the samples do not cover for this request>
-Built:       <date> | newest sample <date> | reused from cache | rebuilt
+Ledger:      <N> samples, <oldest date> -> <newest date>
+Confirmed:   <date of last delta search> | relationship re-checked <date> |
+             reused from cache | rebuilt
 ```
 
+**Every vocabulary entry carries four things**, and an entry missing any of
+them is not finished:
+
+1. Its **slot name** from the Step 5 table, one slot per line. Do not merge
+   several slots onto one line; `hedge/filler/apology absent throughout` hides
+   three separate findings and can carry only one count.
+2. A **status**: `attested`, `prefers`, or `absent`.
+3. A **count**, on every entry including the absences. `absent throughout` is
+   an impression; `0 of 8` is an observation.
+4. An **attested snippet**, on every `attested` and `prefers` entry, quoted
+   from a sample. A bare word or a parenthetical example is not a snippet: the
+   frame is the finding, and `"heads up"` alone does not say whether it opens
+   the message or sits mid-sentence.
+
+This holds however the card is rendered. Whenever the block gets reformatted
+into prose or into a table cell, the slot names go first, the counts and
+snippets follow, and what is left is the impression this skill exists to
+replace.
+
 Ask: "Does this match how you'd write it? Anything to adjust before I draft?"
+
+### Counts carry two horizons
+
+Every counted line reports what the recent samples show and what the whole
+corpus shows:
+
+```
+Opening:  "hey Jordan," lowercase   8 of 8 (2025-09 -> 2026-08) | 22 of 24 since 2023-04
+```
+
+**Every counted line carries three things**, and a line missing any of them has
+dropped back to the impression this skill exists to replace:
+
+1. The **observation** itself.
+2. A **count**, always. `"Jordan," capitalized` with no figure behind it is not
+   a finding, and a line that loses its count has almost always lost it while
+   being reformatted rather than for want of evidence.
+3. **Both figures whenever the horizons differ**, the recent one and the
+   all-time one. A single figure is right only when the two agree and collapse
+   (rule 3 below), or when there is nothing recent to report (rule 2).
+
+The wording is free. `8 of 8 recent | 22 of 24 all time` and a second line
+reading `was "hey Jordan," lowercase   6 of 6 (2023)` say the same thing, and
+either is fine. What is not free is dropping the older figure once the horizons
+disagree: the disagreement is the finding, and a line showing only the recent
+count has quietly discarded the evidence that made it worth raising.
+
+Recent is the last twelve months, and the card prints the span it actually
+covers. How many samples land in that window decides what happens next:
+
+| Samples in the last 12 months | What the card does |
+|---|---|
+| 3 or more | Split the counts. The recent figure is the reading. |
+| 1 or 2 | Do not split. Use the all-time figure, and say recent coverage is thin, naming the count. |
+| None | Do not split. Use the all-time figure, say the recent window is empty, and **cap confidence at medium**, or at low if it was already medium. |
+
+Do not widen the window to manufacture a recent reading. A correspondent
+written to twice a year genuinely offers no basis for separating current style
+from overall style, and `4 of 4 (2023-11 -> 2026-08)` with a note that nothing
+is recent is the honest card. Stretching the window until three samples fall
+inside it would report a 2023 habit as current.
+
+Re-bucketing happens on read, by comparing the ledger's dates against today.
+It is counting, not searching, and it costs nothing.
+
+**Count into buckets. Never decay-weight.** A weighted "4.7 of 6.2" cannot be
+checked by the user reading the card, cannot be edited by hand, and fails the
+standard that every claim trace to a count.
+
+Which figure the draft is written to:
+
+1. **Recent meets the threshold.** It wins outright, and the all-time figure is
+   context rather than input.
+2. **Recent is empty.** Fall back to all time, and lower the confidence: cap
+   it at medium, or at low if it was already medium. Naming the empty window
+   while leaving `Confidence: high` in place is not lowering it -- the reading
+   is high-quality evidence about a period that has ended, which is a weaker
+   claim about today than the same counts drawn from current mail.
+   *No recent samples* and *habit abandoned* are different facts. Not having
+   written to someone in eighteen months tells you nothing about how they would
+   be written to today, and reporting that as a changed habit invents a finding.
+3. **Both have evidence and they agree.** Collapse to one figure:
+   `no em dashes (0 of 24, since 2023-04)`. Most lines collapse, which is why a
+   slow-moving trait like punctuation costs nothing to carry for years.
+4. **Both have evidence and they disagree.** That is a finding, not
+   bookkeeping. Print both and raise it when the card is shown: "you used to
+   say ticket, the last eight say issue, which is current?" A card kept for
+   years is the only thing that can see a change like this, and the user is the
+   only one who can settle it.
+
+### The ledger
+
+The stored card file holds one block more than the card shown to the user: the
+samples the counts came from, so a later session can extend the card without
+re-reading the corpus.
+
+```
+## Ledger
+| id | date | source | used for |
+|---|---|---|---|
+| <message id> | 2026-07-30 | sent mail | opening, marker, closing |
+```
+
+Identifiers, dates, and the short attested snippets already on the card, never
+message bodies. With a ledger in place, every refresh searches only for what is
+newer than the newest row, folds the delta in, and re-buckets. That is what
+makes a card cheap enough to keep indefinitely.
+
+### Write the card to the cache
+
+Write it when the card is built, not at the end of the run. A card that is only
+narrated is a card the next session has to rebuild from scratch, which is the
+entire cost this cache exists to avoid.
+
+1. Write `card-<medium>-<audience-slug>.md`: the card block above, plus the
+   ledger.
+2. Add or update this card's row in `index.md`, including any search that came
+   back empty.
+3. Rebuild `general.md` if this card is new or changed.
+
+**Say what you actually wrote, and nothing more.** "Cached at
+`~/writing-style/card-...md`" is a claim about the filesystem, and it is false
+unless that file is now there. Do not report a save you did not perform, and do
+not report one you only intended: a user told the research was cached will not
+think to ask for it again, so the next session pays the full research cost with
+nobody aware of why. If the write fails, or the environment has no persistent
+disk (Step 2, case 2), say so plainly and offer the profile as a block the user
+can paste somewhere durable.
+
+**This is not the rule about placing the artifact.** Step 7 forbids saving the
+*draft* into a mailbox, tracker, or channel without being asked, and being told
+the user is unavailable never authorizes that. The cache is this skill's own
+working memory, in the user's own home directory, and writing it is expected on
+every run that builds or changes a card. The two rules point in opposite
+directions on purpose: never place the artifact, always persist the profile.
 
 ### When there is no usable evidence
 

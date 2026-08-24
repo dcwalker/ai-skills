@@ -1,0 +1,291 @@
+{
+  "me": "eval-user@example.com",
+  "threads": {
+    "thread-o1": {
+      "id": "thread-o1",
+      "subject": "ticket 88",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2023-04-11T09:02:00Z",
+      "snippet": "can you take ticket 88 today? the ttl change is small.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-o1",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2023-04-11T09:02:00Z",
+          "snippet": "can you take ticket 88 today? the ttl change is small.",
+          "body": "hey Jordan,\n\ncan you take ticket 88 today? the ttl change is small.\n\nthanks\nalex"
+        }
+      ]
+    },
+    "thread-o2": {
+      "id": "thread-o2",
+      "subject": "ticket 91",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2023-05-03T14:20:00Z",
+      "snippet": "ticket 91 is yours if you have time. no rush on it.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-o2",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2023-05-03T14:20:00Z",
+          "snippet": "ticket 91 is yours if you have time. no rush on it.",
+          "body": "hey Jordan,\n\nticket 91 is yours if you have time. no rush on it.\n\nthanks\nalex"
+        }
+      ]
+    },
+    "thread-o3": {
+      "id": "thread-o3",
+      "subject": "staging",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2023-06-19T08:44:00Z",
+      "snippet": "staging is wedged again, same ticket as last week.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-o3",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2023-06-19T08:44:00Z",
+          "snippet": "staging is wedged again, same ticket as last week.",
+          "body": "hey Jordan,\n\nstaging is wedged again, same ticket as last week.\n\nthanks\nalex"
+        }
+      ]
+    },
+    "thread-o4": {
+      "id": "thread-o4",
+      "subject": "ticket 104",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2023-07-07T11:12:00Z",
+      "snippet": "ticket 104 needs a second pair of eyes before friday.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-o4",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2023-07-07T11:12:00Z",
+          "snippet": "ticket 104 needs a second pair of eyes before friday.",
+          "body": "hey Jordan,\n\nticket 104 needs a second pair of eyes before friday.\n\nthanks\nalex"
+        }
+      ]
+    },
+    "thread-o5": {
+      "id": "thread-o5",
+      "subject": "cache ttl",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2023-08-22T16:01:00Z",
+      "snippet": "i filed a ticket for the cache ttl thing. yours if you want it.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-o5",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2023-08-22T16:01:00Z",
+          "snippet": "i filed a ticket for the cache ttl thing. yours if you want it.",
+          "body": "hey Jordan,\n\ni filed a ticket for the cache ttl thing. yours if you want it.\n\nthanks\nalex"
+        }
+      ]
+    },
+    "thread-o6": {
+      "id": "thread-o6",
+      "subject": "ticket 118",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2023-09-14T10:30:00Z",
+      "snippet": "ticket 118 is blocked on the migration. parking it.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-o6",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2023-09-14T10:30:00Z",
+          "snippet": "ticket 118 is blocked on the migration. parking it.",
+          "body": "hey Jordan,\n\nticket 118 is blocked on the migration. parking it.\n\nthanks\nalex"
+        }
+      ]
+    },
+    "thread-n1": {
+      "id": "thread-n1",
+      "subject": "issue 402",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2026-03-05T09:10:00Z",
+      "snippet": "Can you take issue 402 this week? It is the retry path, not the planner.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-n1",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2026-03-05T09:10:00Z",
+          "snippet": "Can you take issue 402 this week? It is the retry path, not the planner.",
+          "body": "Jordan,\n\nCan you take issue 402 this week? It is the retry path, not the planner.\n\nThanks\nAlex"
+        }
+      ]
+    },
+    "thread-n2": {
+      "id": "thread-n2",
+      "subject": "issue 411",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2026-04-18T13:25:00Z",
+      "snippet": "Issue 411 needs a review before the freeze. Small diff.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-n2",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2026-04-18T13:25:00Z",
+          "snippet": "Issue 411 needs a review before the freeze. Small diff.",
+          "body": "Jordan,\n\nIssue 411 needs a review before the freeze. Small diff.\n\nThanks\nAlex"
+        }
+      ]
+    },
+    "thread-n3": {
+      "id": "thread-n3",
+      "subject": "export job",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2026-06-02T08:55:00Z",
+      "snippet": "I filed an issue for the export job. Assigning it to you.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-n3",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2026-06-02T08:55:00Z",
+          "snippet": "I filed an issue for the export job. Assigning it to you.",
+          "body": "Jordan,\n\nI filed an issue for the export job. Assigning it to you.\n\nThanks\nAlex"
+        }
+      ]
+    },
+    "thread-n4": {
+      "id": "thread-n4",
+      "subject": "issue 430",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2026-07-15T15:40:00Z",
+      "snippet": "Issue 430 is the last blocker on the migration.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-n4",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2026-07-15T15:40:00Z",
+          "snippet": "Issue 430 is the last blocker on the migration.",
+          "body": "Jordan,\n\nIssue 430 is the last blocker on the migration.\n\nThanks\nAlex"
+        }
+      ]
+    },
+    "thread-n5": {
+      "id": "thread-n5",
+      "subject": "issue 437",
+      "from": "eval-user@example.com",
+      "to": [
+        "jordan.blake@example.com"
+      ],
+      "date": "2026-08-11T09:05:00Z",
+      "snippet": "Issue 437 came back overnight. Taking a look this morning.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-n5",
+          "from": "eval-user@example.com",
+          "to": [
+            "jordan.blake@example.com"
+          ],
+          "date": "2026-08-11T09:05:00Z",
+          "snippet": "Issue 437 came back overnight. Taking a look this morning.",
+          "body": "Jordan,\n\nIssue 437 came back overnight. Taking a look this morning.\n\nThanks\nAlex"
+        }
+      ]
+    }
+  },
+  "labels": {
+    "SENT": {
+      "id": "SENT",
+      "name": "SENT"
+    },
+    "INBOX": {
+      "id": "INBOX",
+      "name": "INBOX"
+    }
+  },
+  "drafts": {}
+}
