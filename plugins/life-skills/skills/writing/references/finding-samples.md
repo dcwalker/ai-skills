@@ -17,6 +17,7 @@ Common sources, by what they hold:
 | Google Drive / Docs | Long-form documents, meeting notes, published drafts |
 | Issue trackers (Jira, Trello, GitHub) | Comments, descriptions, status updates |
 | Wikis (Confluence, Notion, GitHub wikis and Pages, repo docs) | Explanatory long-form written for colleagues, usually the most structured register |
+| Git history and the code host (`git log --author`, prior PR descriptions) | Commit bodies and PR narrative: terse, technical, written for whoever reads it later |
 | A personal site or blog | Public long-form, usually the most edited writing a person has |
 
 Wikis are worth reaching for early. They hold the register between a ticket
