@@ -47,6 +47,35 @@ shift
 
 TRIALS_DIR="$EVALS_DIR/.trial-runs"
 
+# A trial can always reach the real home directory: HOME is reassigned, but the
+# account's actual home stays readable, and its own working directory is inside
+# it. So the harness cannot prevent an escape, only detect one -- and detection
+# needs to know the directory was absent beforehand.
+#
+# `getent` is glibc-only; macOS keeps the same record in Directory Services.
+# Either lookup may fail on an unusual account, and an empty result is fine:
+# the checks below then simply do not fire.
+if command -v getent > /dev/null 2>&1; then
+  REAL_HOME="$(getent passwd "$(id -un)" | cut -d: -f6)" || REAL_HOME=""
+else
+  REAL_HOME="$(dscl . -read "/Users/$(id -un)" NFSHomeDirectory 2> /dev/null \
+    | awk '{ print $2 }')" || REAL_HOME=""
+fi
+
+# Refuse to start if a real style cache is already there. Warning and carrying
+# on is not enough: the post-trial check cannot tell "this trial wrote here"
+# from "this was already here", so it would quarantine a developer's own cache
+# as though a trial had created it -- and a later full run does
+# `rm -rf "$TRIALS_DIR"`, taking the quarantined copy with it. Stopping here
+# keeps the decision about someone's own data with them.
+if [[ -n "$REAL_HOME" && -e "$REAL_HOME/writing-style" ]]; then
+  echo "ERROR: $REAL_HOME/writing-style already exists." >&2
+  echo "  Trials cannot run while it is there. The escape check could not tell" >&2
+  echo "  your own cache apart from one a trial created, and would move it aside." >&2
+  echo "  Move or delete it yourself, then re-run. This script will not touch it." >&2
+  exit 1
+fi
+
 if [[ $# -gt 0 ]]; then
   IDS="$*"
   for ID in $IDS; do
@@ -123,26 +152,6 @@ else:
   # events name every tool call -- which is how a grader tells "the skill
   # ran and chose not to search" from "the skill never loaded", two things
   # that look identical in a plain transcript.
-  # A trial can still reach the real home directory: HOME is reassigned, but
-  # /root (or wherever the account actually lives) stays readable, and a
-  # capable model that notices the mismatch will look there. State left by an
-  # earlier, non-isolated run is therefore still reachable, which is how a
-  # writing trial once rebuilt nothing and reused a style card from a previous
-  # session. Warn loudly rather than deleting someone's real data.
-  # `getent` is glibc-only; macOS keeps the same record in Directory Services.
-  # Either lookup may fail on an unusual account, and an empty result is fine --
-  # the check below simply skips the warning.
-  if command -v getent > /dev/null 2>&1; then
-    REAL_HOME="$(getent passwd "$(id -un)" | cut -d: -f6)" || REAL_HOME=""
-  else
-    REAL_HOME="$(dscl . -read "/Users/$(id -un)" NFSHomeDirectory 2> /dev/null \
-      | awk '{ print $2 }')" || REAL_HOME=""
-  fi
-  if [[ -n "$REAL_HOME" && -d "$REAL_HOME/writing-style" ]]; then
-    echo "  WARNING: $REAL_HOME/writing-style exists and a trial may read it;" \
-         "remove it before trusting these results"
-  fi
-
   TRIAL_HOME="$RUN_DIR/home"
   mkdir -p "$RUN_DIR/tmp" "$TRIAL_HOME"
   # $HOME is reassigned, but a trial can still write to the real home if it
@@ -339,15 +348,9 @@ print(f"  duration: {metrics['duration_seconds']}s, "
       f"cache read: {metrics['tokens']['cache_read_input']}")
 PYEOF
 
-  # The pre-run warning only fires when the directory already exists, so it
-  # says nothing about a trial that creates it. That gap let a full run write
-  # 14 cards into the real home before anyone noticed, contaminating every
-  # trial after the first. Check again on the way out.
-  # A trial can always derive the real home: its own working directory is
-  # inside it. Concealing the path is therefore not achievable -- scrubbing
-  # config files removes the identity leak but not this one -- so the harness
-  # does not try. It detects the escape, moves what the trial wrote out of the
-  # way so the next trial cannot read it, and stops the run.
+  # The run refused to start unless $REAL_HOME/writing-style was absent, so
+  # anything here now was written by this trial. That is what makes the move
+  # below safe: it can only ever be trial output, never someone's own cache.
   #
   # Stopping is the point. A run that continues past an escape silently mixes
   # one trial's cards into every later trial's evidence, and the resulting
