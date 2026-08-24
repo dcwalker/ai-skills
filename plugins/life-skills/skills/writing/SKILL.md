@@ -506,7 +506,7 @@ Avoid:       <structural and mechanical tells absent from every sample>
 Gaps:        <what the samples do not cover for this request>
 Ledger:      <N> samples, <oldest date> -> <newest date>
 Confirmed:   <date of last delta search> | relationship re-checked <date> |
-             reused from cache | rebuilt
+             reused from cache, built <date> | rebuilt
 ```
 
 **Every vocabulary entry carries four things**, and an entry missing any of
