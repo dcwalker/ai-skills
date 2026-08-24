@@ -60,6 +60,7 @@ should be findable by.
 """
 
 import copy
+import datetime
 
 from common import StubState
 
@@ -102,8 +103,44 @@ def _in_matches(t: dict, place: str) -> bool:
 
 # Operators this stub does not implement. Matching nothing keeps a fixture gap
 # loudly visible in the log rather than silently matching everything.
-_UNIMPLEMENTED = ("is:", "has:", "category:", "after:", "before:",
+#
+# `after:`/`before:` are implemented (below) rather than listed here because
+# the writing skill's whole caching design rests on one bounded "anything
+# newer than my newest sample?" search. While those operators matched nothing,
+# that search could never return a result, so no eval could exercise a cached
+# card being extended -- the failure looked like "no new samples" every time.
+# The relative forms (`newer_than:2d`) stay unimplemented; nothing needs them.
+_UNIMPLEMENTED = ("is:", "has:", "category:",
                   "newer", "older", "size:", "larger:", "smaller:")
+
+
+def _parse_query_date(arg: str):
+    """Parse a Gmail date argument (2026/05/28, also tolerating 2026-05-28)."""
+    try:
+        return datetime.date(*(int(p) for p in arg.replace("-", "/").split("/")))
+    except (TypeError, ValueError):
+        return None
+
+
+def _thread_date(t: dict):
+    """The thread's date as a date object, or None if it is unparseable."""
+    try:
+        return datetime.date(*(int(p) for p in t["date"][:10].split("-")))
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def _date_matches(t: dict, arg: str, newer: bool) -> bool:
+    """after:/before: -- strictly outside the named day, Gmail's own reading.
+
+    An unparseable argument matches nothing, for the same reason an
+    unimplemented operator does: a silent match-everything would turn a
+    malformed query into a passing trial.
+    """
+    bound, actual = _parse_query_date(arg), _thread_date(t)
+    if bound is None or actual is None:
+        return False
+    return actual > bound if newer else actual < bound
 
 # Each entry maps an operator prefix to how its argument is tested.
 _OPERATORS = {
@@ -113,6 +150,8 @@ _OPERATORS = {
         _resolve_address(arg) in r.lower() for r in t["to"]),
     "subject:": lambda t, arg: arg.lower() in t["subject"].lower(),
     "label:": lambda t, arg: arg in t["labelIds"],
+    "after:": lambda t, arg: _date_matches(t, arg, newer=True),
+    "before:": lambda t, arg: _date_matches(t, arg, newer=False),
 }
 
 
