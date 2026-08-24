@@ -181,14 +181,7 @@ index.md                          Searches already run and what they returned
 card-<medium>-<audience-slug>.md  One style card per (medium, audience) pair
 ```
 
-**A channel is an audience in its own right.** Slug it with the channel's own
-name and, where the workspace exposes one, its id:
-`card-slack-platform-eng-C024BE91L.md`. Never slug a card by a category such as
-`private-channel` or `team-channel`. Two channels in one workspace differ in
-who is in them, what they are for, and what they are about, and those are
-precisely the things that set register, so a card spanning both describes
-neither. A channel and a direct message with someone who is in that channel are
-likewise two audiences, not one.
+**A channel is an audience in its own right**, slugged by its own name and id (`card-slack-platform-eng-C024BE91L.md`), never by a category such as `private-channel`. See [references/finding-samples.md](references/finding-samples.md).
 
 All four formats are in
 [references/cache-files.md](references/cache-files.md). Read it before writing
@@ -233,18 +226,13 @@ Cache rules:
   keep the audience findings, research the medium fresh.
 - Corpus notes are reusable across cards. A sample found while building one
   card counts as evidence for another if it matches that card's scope.
-- **Age never invalidates a card, so do not expire one.** The analysis is the
-  expensive part and voice changes slowly, so cards are kept and extended
-  indefinitely. What ages is not the card but its recent window: samples fall
-  out of it with the passage of time alone, the recent counts thin, and an
-  empty recent window lowers confidence rather than discarding the reading
-  (Step 6). A card with neither a ledger nor a `Built:` line has no provenance
-  at all and gets rebuilt rather than trusted.
+- **Age never invalidates a card, so do not expire one.** Cards are kept and
+  extended indefinitely; what ages is the recent window, not the card. A card
+  with neither a ledger nor a `Built:` line has no provenance and gets rebuilt
+  rather than trusted.
 - **Validate a card that has passed a year, rather than rebuilding it.**
   Re-confirm the relationship class against `identity.md`, and re-run blame on
-  one or two of its samples. That is seconds of work, and it is the price of
-  keeping a card forever: a card that is only ever extended inherits any
-  contamination it started with and compounds it rather than washing it out.
+  one or two of its samples.
 - **Drift invalidates a card regardless of age.** When the relationship
   recorded on the card contradicts what `identity.md` or a directory now says
   (the card reads peer, the user has since recorded them as a manager), the
@@ -387,22 +375,12 @@ name form used for the recipient, self-reference.
 **Sentences:** median length, variance, fragments, questions, imperatives,
 starting words and connectives.
 
-**Vocabulary.** Record this in slots rather than as a list of words. Fixing the
-slots is what makes the reading specific without making it long: the ceiling is
-set by the slot count rather than by however much the corpus happens to hold,
-and an empty slot is itself a finding. The slots deliberately do not overlap
-`Opening`, `Closing`, `Mechanics`, or `Emoji`, which already cover greetings,
-sign-offs, punctuation, and emoji.
-
-| Slot | What goes in it |
-|---|---|
-| `marker` | discourse markers and connectives: "so", "anyway", "that said", "heads up" |
-| `hedge` | hedges and boosters: "I think", "pretty", "definitely", "kind of" |
-| `stance` | how good and bad get named: "solid", "rough", "fine" |
-| `term` | naming choices for recurring referents: ticket vs issue vs card |
-| `shorthand` | domain jargon and abbreviations, and whether they get expanded |
-| `filler` | filler and profanity |
-| `avoid` | words absent from the corpus, especially assistant escalations |
+**Vocabulary.** Record this in slots rather than as a list of words, using the
+seven slots in [references/style-card.md](references/style-card.md): `marker`,
+`hedge`, `stance`, `term`, `shorthand`, `filler`, `avoid`. Fixing the slots is
+what makes the reading specific without making it long -- the ceiling is set by
+the slot count rather than by however much the corpus holds -- and an empty slot
+is itself a finding.
 
 Every positive entry carries one attested snippet. "heads up" on its own loses
 the frame, and a bare opener, a mid-sentence aside, and an apology softener are
@@ -532,90 +510,29 @@ Ask: "Does this match how you'd write it? Anything to adjust before I draft?"
 
 ### Counts carry two horizons
 
-Every counted line reports what the recent samples show and what the whole
-corpus shows:
+A card built from a ledger reports what the recent samples show and what the
+whole corpus shows:
 
 ```
 Opening:  "hey Jordan," lowercase   8 of 8 (2025-09 -> 2026-08) | 22 of 24 since 2023-04
 ```
 
-**Every counted line carries three things**, and a line missing any of them has
-dropped back to the impression this skill exists to replace:
+Every counted line carries the observation, **a count** (always -- a line
+without one has dropped back to the impression this skill exists to replace),
+and **both figures whenever the horizons differ**. Recent is the last twelve
+months; split the counts when three or more samples fall inside it, and the
+recent figure is then the reading. Fewer than three, or none, and the card uses
+the all-time figure and says so -- an empty recent window also caps confidence
+at medium.
 
-1. The **observation** itself.
-2. A **count**, always. `"Jordan," capitalized` with no figure behind it is not
-   a finding, and a line that loses its count has almost always lost it while
-   being reformatted rather than for want of evidence.
-3. **Both figures whenever the horizons differ**, the recent one and the
-   all-time one. A single figure is right only when the two agree and collapse
-   (rule 3 below), or when there is nothing recent to report (rule 2).
+Dropping the older figure once the horizons disagree is the one thing that is
+never right: the disagreement *is* the finding, and it is the user's to settle
+("you used to say ticket, the last eight say issue, which is current?").
 
-The wording is free. `8 of 8 recent | 22 of 24 all time` and a second line
-reading `was "hey Jordan," lowercase   6 of 6 (2023)` say the same thing, and
-either is fine. What is not free is dropping the older figure once the horizons
-disagree: the disagreement is the finding, and a line showing only the recent
-count has quietly discarded the evidence that made it worth raising.
-
-Recent is the last twelve months, and the card prints the span it actually
-covers. How many samples land in that window decides what happens next:
-
-| Samples in the last 12 months | What the card does |
-|---|---|
-| 3 or more | Split the counts. The recent figure is the reading. |
-| 1 or 2 | Do not split. Use the all-time figure, and say recent coverage is thin, naming the count. |
-| None | Do not split. Use the all-time figure, say the recent window is empty, and **cap confidence at medium**, or at low if it was already medium. |
-
-Do not widen the window to manufacture a recent reading. A correspondent
-written to twice a year genuinely offers no basis for separating current style
-from overall style, and `4 of 4 (2023-11 -> 2026-08)` with a note that nothing
-is recent is the honest card. Stretching the window until three samples fall
-inside it would report a 2023 habit as current.
-
-Re-bucketing happens on read, by comparing the ledger's dates against today.
-It is counting, not searching, and it costs nothing.
-
-**Count into buckets. Never decay-weight.** A weighted "4.7 of 6.2" cannot be
-checked by the user reading the card, cannot be edited by hand, and fails the
-standard that every claim trace to a count.
-
-Which figure the draft is written to:
-
-1. **Recent meets the threshold.** It wins outright, and the all-time figure is
-   context rather than input.
-2. **Recent is empty.** Fall back to all time, and lower the confidence: cap
-   it at medium, or at low if it was already medium. Naming the empty window
-   while leaving `Confidence: high` in place is not lowering it -- the reading
-   is high-quality evidence about a period that has ended, which is a weaker
-   claim about today than the same counts drawn from current mail.
-   *No recent samples* and *habit abandoned* are different facts. Not having
-   written to someone in eighteen months tells you nothing about how they would
-   be written to today, and reporting that as a changed habit invents a finding.
-3. **Both have evidence and they agree.** Collapse to one figure:
-   `no em dashes (0 of 24, since 2023-04)`. Most lines collapse, which is why a
-   slow-moving trait like punctuation costs nothing to carry for years.
-4. **Both have evidence and they disagree.** That is a finding, not
-   bookkeeping. Print both and raise it when the card is shown: "you used to
-   say ticket, the last eight say issue, which is current?" A card kept for
-   years is the only thing that can see a change like this, and the user is the
-   only one who can settle it.
-
-### The ledger
-
-The stored card file holds one block more than the card shown to the user: the
-samples the counts came from, so a later session can extend the card without
-re-reading the corpus.
-
-```
-## Ledger
-| id | date | source | used for |
-|---|---|---|---|
-| <message id> | 2026-07-30 | sent mail | opening, marker, closing |
-```
-
-Identifiers, dates, and the short attested snippets already on the card, never
-message bodies. With a ledger in place, every refresh searches only for what is
-newer than the newest row, folds the delta in, and re-buckets. That is what
-makes a card cheap enough to keep indefinitely.
+The window rules, the four precedence cases, why these are counted buckets
+rather than decay weights, and the ledger format that makes any of it possible
+are in [references/style-card.md](references/style-card.md). Read it before
+rendering a card from a ledger, or before writing one.
 
 ### Write the card to the cache
 
@@ -648,34 +565,16 @@ directions on purpose: never place the artifact, always persist the profile.
 ### When there is no usable evidence
 
 Say so plainly. Do not fill the gap with a generic professional voice and do
-not present an unevidenced card as if it were researched. Instead:
+not present an unevidenced card as if it were researched. Report what was
+searched and what came back empty, fall back to `general.md` if the cache has
+one, and ask the user to describe how it should sound in their own words --
+"blunt, no greeting, two lines" beats any ladder of options. Label the result
+for what it is: `Confidence: none, user-described`, or `low, cross-medium` when
+it leaned on `general.md`.
 
-1. Report which sources were searched and what came back empty.
-2. **Fall back to `general.md`** if the cache has one, and label it for what
-   it is: how this person writes in general, not how they write to this
-   person. It covers punctuation, recurring words, and instincts about length
-   and directness. It cannot tell you the greeting, the sign-off, or the
-   formality, which is precisely what is missing here.
-3. **Ask the user to describe how it should sound**, in their own words.
-   "Blunt, no greeting, two lines" is a better instruction than any ladder of
-   options, and it is faster to give than a pasted sample is to find. Prompt
-   for the register and the relationship if the description leaves them open.
-4. Offer the sample-paste route as an alternative rather than the first ask:
-   one or two real examples turn a described style into an observed one, and
-   the card built from them is reusable next time.
-5. Label the result honestly: `Confidence: none, user-described` when it came
-   from the description, `low, cross-medium` when it leaned on `general.md`.
-
-Whatever the user describes is worth keeping. Write it into the card so the
-next request to this audience starts from it, and mark it as user-described
-rather than observed, so a later run with real samples knows it can be
-replaced.
-
-If the user asks to skip the research entirely ("just write it", "don't go
-digging"), honor it. Two things still hold: say once, in a single line, that
-the draft is unresearched so they read it with that in mind, and add no facts
-they did not give you. A skipped research step lowers the confidence of the
-voice, never the standard for the content.
+The full path, including what `general.md` can and cannot tell you and how to
+handle an explicit skip-the-research override, is in
+[references/finding-samples.md](references/finding-samples.md).
 
 ---
 
