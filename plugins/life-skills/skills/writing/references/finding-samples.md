@@ -172,3 +172,21 @@ digging"), honor it. Two things still hold: say once, in a single line, that
 the draft is unresearched so they read it with that in mind, and add no facts
 they did not give you. A skipped research step lowers the confidence of the
 voice, never the standard for the content.
+
+## Platform conventions worth counting
+
+**Platform conventions.** These are learned habits rather than prose style,
+and getting them wrong reads as "someone else's account" faster than a wrong
+adjective does. Count them the same way:
+
+- **People:** an `@mention` versus a written-out name, first name versus full
+  name, and whether the mention is used for addressing, for crediting, or for
+  pulling someone into a thread.
+- **Links:** a bare URL, a hyperlink on descriptive text, or a reference-style
+  link. Whether the link is explained before it is dropped, and whether the
+  channel's own unfurl is left to do the work.
+- **Images:** how often a screenshot stands in for a description, whether it
+  is annotated, and whether a caption accompanies it or the image goes bare.
+- **Threading and formatting:** replying in-thread versus posting anew, code
+  blocks versus inline backticks, quoting versus paraphrasing, and structural
+  conventions the platform affords that the user does or does not take up.

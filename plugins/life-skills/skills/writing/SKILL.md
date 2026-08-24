@@ -138,39 +138,33 @@ Research is expensive, and voice changes far more slowly than the requests
 that draw on it. Cache what is found, and reuse it until there is a reason
 not to.
 
-**Location.** Not every environment has a disk that survives the session, so
-there are two cases:
+**Location.** Where a persistent local filesystem exists, the cache is
+`$HOME/writing-style/`, created `chmod 700` on first use -- in plain sight
+rather than buried in a cache path, because it is meant to be read and edited
+by hand, and deliberately not a shared temp path, since these files hold
+observations derived from private correspondence.
 
-1. **A persistent local filesystem:** `$HOME/writing-style/`, created
-   `chmod 700` on first use. `$HOME` means whatever the environment reports,
-   read from it directly. A session can legitimately run with `$HOME` set
-   somewhere other than the account's usual home.
+`$HOME` means whatever the environment reports, read from it directly; a
+session can legitimately run with it set somewhere other than the account's
+usual home. **Where this goes wrong is the handoff to a tool that needs an
+absolute path.** Reading `$HOME` in a shell and creating the directory there is
+the easy half; then a file-writing tool wants a full path and the conventional
+`/Users/<name>` form gets substituted from habit, so the directory is created
+in the right place and the files land somewhere else entirely. **Paste the
+exact string `$HOME` expanded to, the one just printed**, and never a path
+assembled from a username, from a directory further up the working tree, or
+from any other absolute path that happens to be visible. If you are about to
+type `/Users/` or `/home/` into a file path, stop: that is the mistake, and it
+is invisible afterwards because the shell half was correct.
 
-   **Where this goes wrong is the handoff to a tool that needs an absolute
-   path.** Reading `$HOME` in a shell and creating the directory there is the
-   easy half. Then a file-writing tool wants a full path, and the conventional
-   `/Users/<name>` or `/home/<name>` form gets substituted from habit -- so the
-   directory is created in the right place and the files land somewhere else
-   entirely. Paste the exact string `$HOME` expanded to, the one just printed,
-   and never a path assembled from a username, from a directory further up the
-   working tree, or from any other absolute path that happens to be visible.
+Writing to the wrong home puts this user's private observations somewhere that
+is not theirs and leaves the profile unwritten, so the next session redoes the
+research and nobody knows why.
 
-   Writing to the wrong home puts this user's private observations somewhere
-   that is not theirs, and leaves the profile the session was told to keep
-   unwritten -- so the next session redoes the research, and nobody knows why. In plain sight rather than buried in a cache
-   path, because it is meant to be read and edited by hand. Deliberately not
-   a shared temp path: these files hold observations derived from private
-   correspondence, and a world-readable location exposes them to every other
-   user and session on the machine.
-2. **The conversation itself**, when nothing persists: keep the profile in the
-   session, and at the end offer it as a block the user can paste somewhere
-   durable, such as a project's instructions or knowledge files, so the next
-   session starts from it rather than from nothing.
-
-An ephemeral container is case 2: writing to `$HOME` there is not wrong, but
-it is gone when the container is, so say so rather than implying the research
-was saved. Never copy the profile to cloud storage or any other location
-outside the machine.
+Where nothing persists -- an ephemeral container included -- keep the profile
+in the session and offer it at the end as a block the user can paste somewhere
+durable, saying plainly that it was not saved. Never copy it to cloud storage
+or anywhere else off the machine.
 
 Contents:
 
@@ -399,35 +393,20 @@ a reaction instead of a reply), and how dense they are per message. Note the
 audiences that get none, since that boundary is usually sharp and a stray
 emoji in the wrong register is one of the loudest tells there is.
 
-**Platform conventions.** These are learned habits rather than prose style,
-and getting them wrong reads as "someone else's account" faster than a wrong
-adjective does. Count them the same way:
+**Platform conventions.** Mentions, links, images, threading, and formatting:
+learned habits rather than prose style, and getting them wrong reads as
+"someone else's account" faster than a wrong adjective does. Count them the
+same way. What to look for in each is in
+[references/finding-samples.md](references/finding-samples.md); read it when
+the medium has conventions at all, which chat and trackers do and plain email
+largely does not.
 
-- **People:** an `@mention` versus a written-out name, first name versus full
-  name, and whether the mention is used for addressing, for crediting, or for
-  pulling someone into a thread.
-- **Links:** a bare URL, a hyperlink on descriptive text, or a reference-style
-  link. Whether the link is explained before it is dropped, and whether the
-  channel's own unfurl is left to do the work.
-- **Images:** how often a screenshot stands in for a description, whether it
-  is annotated, and whether a caption accompanies it or the image goes bare.
-- **Threading and formatting:** replying in-thread versus posting anew, code
-  blocks versus inline backticks, quoting versus paraphrasing, and structural
-  conventions the platform affords that the user does or does not take up.
-
-**Polish tier**, on this ladder:
-
-| Tier | Markers |
-|---|---|
-| **1 — Fire-off** | One or two lines, no greeting or sign-off, lowercase, fragments, abbreviations, typos left alone |
-| **2 — Quick note** | First-name greeting or none, contractions, one to three short paragraphs, minimal formatting, one clear ask |
-| **3 — Considered** | Greeting and sign-off, complete sentences, deliberate structure, explicit ask and context, proofread |
-| **4 — Formal / public** | Full structure, careful diction, no slang, edited for a reader who may quote it |
-
-The tier comes from the samples, not from the topic's importance. Where the
-current situation differs from every sample (bad news to someone the user only
-ever jokes with, a first message to a new client), say so and confirm the tier
-before drafting.
+**Polish tier**, from the four-tier ladder in
+[references/style-card.md](references/style-card.md): fire-off, quick note,
+considered, or formal. The tier comes from the samples, not from the topic's
+importance. Where the current situation differs from every sample -- bad news
+to someone the user only ever jokes with, a first message to a new client --
+say so and confirm the tier before drafting.
 
 ---
 
@@ -662,13 +641,9 @@ it there; that offer costs one line and leaves the decision where it belongs.
   send or post it, and do not save it into their mailbox, chat client, tracker,
   or any other external system without their explicit say-so on the text you
   are about to write. Once they agree, save it and tell them where it landed.
-- **Being told the user is unavailable is not permission to write.** "I will
-  not be around", "just send it", "don't wait for me" and the like are about
-  how the drafting should proceed, and they authorize drafting without a
-  confirmation pause. They do not authorize touching an external system,
-  because the user cannot correct a draft they never saw and a draft in their
-  mailbox is a side effect outside this conversation. Show them the text and
-  say it is unsaved. If they want it saved, they will say so next time.
+- **Being told the user is unavailable is not permission to write.** It
+  authorizes drafting without a confirmation pause, never touching an external
+  system: they cannot correct a draft they never saw (Step 7).
 - Keep excerpts on the style card short, only long enough to evidence a claim.
 - Do not carry content from someone else's message into the deliverable, and do
   not quote a third party's writing as the user's own style.
@@ -679,28 +654,19 @@ it there; that offer costs one line and leaves the decision where it belongs.
 
 ---
 
-## Quality Rules
+## Before sending the draft
 
-- Research before drafting. A draft that appears before a style card has skipped
-  the only step that makes it sound like the user.
-- Every claim on the card traces to samples that were actually read. No claim is
+Three checks, because each catches something that survives every earlier step:
+
+- **Did a card come before the draft?** A draft that appears without one has
+  skipped the step that makes it sound like the user.
+- **Does every claim on the card trace to a sample actually read?** No claim
   stated more confidently than its evidence supports.
-- Scope every profile to a (medium, audience) pair. Never reuse a profile across
-  audiences without saying so.
-- Report the rung the evidence came from, and report empty searches rather than
-  hiding them.
-- Ask for the audience when it is missing. Never infer it from the topic.
-- Never invent facts, names, dates, or events to fill a draft, and never
-  import them from the samples. Style is copied; content never is.
-- Keep the cache where the environment can actually persist it, and confirm
-  its recorded identity matches the current accounts before reading it.
-- With no samples, ask the user to describe the style in their own words and
-  fall back to `general.md`, labeled as cross-medium. Never dress up an
-  unevidenced profile as a researched one.
-- Confirm authorship by account identifier, never by display name alone.
-- Match observed length, punctuation, and polish, including habits that look
-  like errors.
-- Update the cache with every correction the user makes.
-- The user's stated preference always outranks the corpus.
-- Nothing leaves the conversation without a specific yes to the specific text.
-  An unavailable user has authorized a draft, never a write.
+- **Did any content come from the samples rather than the request?** Style is
+  copied; content never is.
+
+The rest of what would go in a checklist here is already stated where it
+applies: audience in Step 1, cache identity in Step 2, rungs and authorship in
+Step 4, thresholds in Step 5, the tells list in Step 7, corrections in Step 8.
+Restating them at the end taught nothing and drifted out of step with the
+originals.
