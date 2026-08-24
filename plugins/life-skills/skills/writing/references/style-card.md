@@ -97,3 +97,19 @@ sign-offs, punctuation, and emoji.
 | `shorthand` | domain jargon and abbreviations, and whether they get expanded |
 | `filler` | filler and profanity |
 | `avoid` | words absent from the corpus, especially assistant escalations |
+
+## Polish tiers
+
+**Polish tier**, on this ladder:
+
+| Tier | Markers |
+|---|---|
+| **1 — Fire-off** | One or two lines, no greeting or sign-off, lowercase, fragments, abbreviations, typos left alone |
+| **2 — Quick note** | First-name greeting or none, contractions, one to three short paragraphs, minimal formatting, one clear ask |
+| **3 — Considered** | Greeting and sign-off, complete sentences, deliberate structure, explicit ask and context, proofread |
+| **4 — Formal / public** | Full structure, careful diction, no slang, edited for a reader who may quote it |
+
+The tier comes from the samples, not from the topic's importance. Where the
+current situation differs from every sample (bad news to someone the user only
+ever jokes with, a first message to a new client), say so and confirm the tier
+before drafting.
