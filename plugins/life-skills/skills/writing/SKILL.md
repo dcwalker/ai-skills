@@ -3,14 +3,23 @@ name: writing
 description: >
   Compose prose in the user's own voice by researching what they have already
   written in the same medium to the same kind of audience, then drafting from
-  an evidence-backed style profile. Use whenever the user wants help writing or
-  rewriting a Slack message, email, text message, journal entry, blog post,
-  meeting notes, status update, comment, or any other prose artifact. Also
-  triggers for: "write a message to", "draft an email", "help me reply",
-  "write a post", "journal about", "take notes on", "make this sound like me",
-  "does this sound like me", "rewrite this in my voice". Applies to short and
-  throwaway requests too ("just write it", "quick note to", "don't overthink
-  it"), where the research is skipped but the voice still matters.
+  an evidence-backed style profile. Use whenever the user wants help writing
+  or rewriting any prose artifact: a Slack message, email, text message,
+  journal entry, blog post, meeting notes, status update, or comment, and
+  equally prose that lives in a repository -- a design doc, README, spec, RFC,
+  architecture note, or a single section inside one -- and the written parts
+  of a commit body or pull request description, where `commit` and `pr` own
+  the required structure and this skill supplies the voice within it. A
+  request that names a file path rather than a recipient still needs this
+  skill: the deliverable is sentences someone will read as the user's own
+  writing. Also triggers for: "write a message to", "draft an email", "help me
+  reply", "write a post", "write the X section of", "add a section to",
+  "journal about", "take notes on", "make this sound like me", "does this
+  sound like me", "rewrite this in my voice". Applies to short and throwaway
+  requests too ("just write it", "quick note to", "don't overthink it"), where
+  the research is skipped but the voice still matters. Not for code or
+  configuration, and not when the user asks for someone else's voice or for a
+  fixed template to be filled in.
 metadata:
   category: life-skills
 ---
@@ -40,9 +49,19 @@ reusable by anyone.
 
 ## When Not to Use
 
-- Code, configuration, commit messages, or PR descriptions governed by a repo
-  convention. Follow the convention instead.
+- Code and configuration. Their shape is set by the language, the linter, and
+  the repo, and there is no prose in them to carry a voice.
 - The user explicitly asks for a specific external voice or a template.
+
+**A repository is a location, not an exemption.** The first exclusion is about
+artifacts with no prose in them -- a config file, a lockfile, generated
+output -- not about where a file happens to sit. A design doc, README,
+spec, RFC, architecture note, or a single section inside one is prose with an
+author and an audience, and it is squarely in scope even when it is
+git-tracked, even when the request names a path rather than a recipient. Those
+documents are also the ones most likely to have several authors, which is what
+the blame rule in Step 4 exists for: reading a shared document as though one
+person wrote it produces a voice belonging to nobody.
 
 ## Relationship to Other Skills
 
@@ -52,6 +71,19 @@ reusable by anyone.
   the draft. When the content is already clear, skip the interview.
 - `organize-meeting-notes` owns the structure of journaled meeting notes. This
   skill supplies the voice inside that structure.
+- `commit` and `pr` own the artifact and everything its convention dictates:
+  what gets staged, the issue key, the conventional-commit prefix, a template's
+  required sections, draft status, reviewers. This skill supplies the prose
+  inside that shape -- the commit body explaining why a change was made, the
+  narrative parts of a PR description. When either of them is running, follow
+  its structure exactly and match voice only within it.
+
+  **The convention outranks the corpus.** A subject line has almost no voice
+  latitude: if the repo requires `fix(scope):`, it gets one whether or not a
+  single sample shows it. Voice lives in the body, where someone is explaining
+  a decision to whoever reads it months from now. Departing from a repo
+  convention because the samples do otherwise is the one way this skill can
+  leave a commit or a PR worse than it found it.
 
 ---
 
