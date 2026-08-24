@@ -273,6 +273,72 @@
         "The drafted section states only the plan given (six-person rotation starting the first of next month, two weeks of parallel running, then the old rotation stops) and invents no names, dates, metrics, or approval steps.",
         "The other contributors' writing is not reproduced in the deliverable, and their sentences are not presented as the user's own style."
       ]
+    },
+    {
+      "id": 23,
+      "prompt": "Email Jordan (jordan.blake@example.com) asking them to pick up issue 441 before the freeze. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The cached card for Jordan was built from 2023 samples and its ledger says so. One bounded search for newer mail finds five 2026 messages whose register differs from the card's: capitalised 'Jordan,' rather than lowercase 'hey Jordan,', and 'issue' rather than 'ticket'. The skill folds them in, reports that recent and all-time disagree, drafts to the recent reading, and asks the user to confirm the change.",
+      "expectations": [
+        "At most one bounded search for mail newer than the card's newest ledger row (2023-09-14) appears in the Gmail call log; the six 2023 threads the card was built from are not re-read.",
+        "The card shown carries both horizons for at least the opening, reporting the recent figure and the all-time figure separately rather than a single blended count.",
+        "The disagreement between the recent and all-time readings is surfaced to the user as a finding to confirm, not silently averaged and not silently dropped.",
+        "The draft follows the recent reading: it opens with a capitalised 'Jordan,' and uses 'issue' rather than 'ticket'.",
+        "The card is extended rather than rebuilt from scratch: the 2023 evidence is still present in the reading rather than discarded, and its original ledger rows are retained.",
+        "No draft is created in Gmail: the drafts object in the final Gmail state is still empty."
+      ]
+    },
+    {
+      "id": 24,
+      "prompt": "Email Dana Okafor (dana.okafor@riverbend.example) letting her know the Riverbend integration review is moving to September. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The cached card for Dana is three years old and the mailbox holds nothing newer, so the recent window is empty. The skill keeps and uses the card rather than expiring or rebuilding it, says the recent window is empty and that confidence is therefore lower, and does not claim the user's style has changed.",
+      "expectations": [
+        "The cached card is used rather than discarded, rebuilt from scratch, or treated as expired because of its age.",
+        "The transcript states that no samples fall in the recent window (nothing since 2023-06-30) and that confidence is lower as a result.",
+        "The absence of recent samples is not reported as a change in how the user writes: no claim that a habit was dropped or that the register has shifted.",
+        "The counts are not split into recent and all-time figures, since there is no recent evidence to split on.",
+        "At most one bounded search for mail newer than the card's newest ledger row appears in the Gmail call log, and it returns nothing.",
+        "The draft carries the card's markers ('Dana,' opening, outcome first, 'Alex' on its own line) and states only the fact given, that the review moves to September."
+      ]
+    },
+    {
+      "id": 25,
+      "prompt": "Post a message in #incident-response saying the nightly export job is failing again and I am looking at it now. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The cache holds a card for #platform-eng only. #incident-response is a different channel with different membership, purpose, and subject, so the skill does not apply the platform-eng card to it. It researches #incident-response directly, builds a card scoped to that channel by name and id, and drafts in that channel's status-update register rather than platform-eng's informal one.",
+      "expectations": [
+        "The cached #platform-eng card is not used as the profile for #incident-response; if it is consulted at all, the transcript says why it does not transfer.",
+        "Research is scoped to #incident-response specifically: the Slack call log shows that channel's history being read, not only #platform-eng's.",
+        "Any card written or presented for this request is scoped to the channel by its name or id (#incident-response / C0INCIDENT), not to a category such as 'team channel' or 'public channel'.",
+        "The draft carries the observed #incident-response register: a status prefix such as INVESTIGATING, a stated impact or owner, terse full sentences, and no emoji.",
+        "The draft does not carry the #platform-eng register: no trailing emoji, no lowercase thinking-out-loud phrasing.",
+        "No message is posted to Slack: the final Slack state has no new message in either channel."
+      ]
+    },
+    {
+      "id": 26,
+      "prompt": "Write an email to Rachel (rachel.osei@example.com) letting her know the index rebuild is being postponed to next week. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "No card exists, so the skill researches the eight sent messages to Rachel and reports vocabulary in slots with counts and an attested snippet. 'heads up' opens five of eight and qualifies; 'circling back' appears in two of eight and falls below the threshold, so it is not presented as characteristic; the absence of hedges across eight samples qualifies as an absence.",
+      "expectations": [
+        "Vocabulary is reported as slotted entries with counts (for example a marker entry with an 'n of 8' figure), not as an unquantified prose list of words.",
+        "At least one positive vocabulary entry carries an attested snippet quoted from the samples rather than a bare word or phrase.",
+        "'heads up' is recorded as an attested marker with a count reflecting that it opens five of the eight samples.",
+        "'circling back' is not presented as an attested or characteristic phrase: appearing in two of eight samples, it falls below the threshold for a positive claim.",
+        "The absence of hedges is recorded as an absence, and the draft contains no hedging phrase such as 'I think', 'maybe', or 'sort of'.",
+        "The draft does not use 'circling back', and states only the fact given, that the index rebuild moves to next week."
+      ]
+    },
+    {
+      "id": 27,
+      "prompt": "Write an email to Priya (priya.raman@example.com) with a short status update: the retry backoff is deployed and the on-call load is back to normal. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The cached card for Priya has a six-row ledger ending 2026-05-28. One bounded search finds the two later messages, which are appended to the ledger rather than replacing it, and the counts move from six to eight. The card is reused and confirmed, not rebuilt.",
+      "expectations": [
+        "The card file in the style cache after the run still contains all six original ledger rows (msg-p1 through msg-p6); they are not rewritten or replaced.",
+        "The ledger gains rows for the two newer messages (2026-07-30 and 2026-08-14), and the card's sample count moves from six to eight.",
+        "At most one bounded search for mail newer than 2026-05-28 appears in the Gmail call log; the six threads already in the ledger are not re-read.",
+        "The card is reported as reused and confirmed rather than rebuilt, and the transcript makes its provenance available to the user.",
+        "index.md is updated to reflect the new sample count and the date the card was last confirmed.",
+        "The draft carries the card's markers ('Priya,' opening, outcome first, 'Alex' on its own line) and states only the two facts given.",
+        "No draft is created in Gmail: the drafts object in the final Gmail state is still empty."
+      ]
     }
   ]
 }

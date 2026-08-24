@@ -1,0 +1,182 @@
+{
+  "me": {
+    "id": "U0ALEX",
+    "name": "alex",
+    "display_name": "alex",
+    "real_name": "Alex Reyes",
+    "email": "eval-user@example.com",
+    "title": "Staff Engineer",
+    "timezone": "America/Los_Angeles",
+    "org": "example-co"
+  },
+  "users": {
+    "U0ALEX": {
+      "id": "U0ALEX",
+      "name": "alex",
+      "display_name": "alex",
+      "real_name": "Alex Reyes",
+      "email": "eval-user@example.com",
+      "title": "Staff Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0JORDAN": {
+      "id": "U0JORDAN",
+      "name": "jordan",
+      "display_name": "jordan",
+      "real_name": "Jordan Blake",
+      "email": "jordan.blake@example.com",
+      "title": "Senior Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0PRIYA": {
+      "id": "U0PRIYA",
+      "name": "priya",
+      "display_name": "priya",
+      "real_name": "Priya Raman",
+      "email": "priya.raman@example.com",
+      "title": "VP Engineering",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0SAM": {
+      "id": "U0SAM",
+      "name": "sam",
+      "display_name": "sam",
+      "real_name": "Sam Okonkwo",
+      "email": "sam.okonkwo@example.com",
+      "title": "SRE",
+      "timezone": "America/New_York"
+    }
+  },
+  "channels": {
+    "C0PLATENG": {
+      "id": "C0PLATENG",
+      "name": "platform-eng",
+      "purpose": "Platform engineering team channel",
+      "creator": "U0PRIYA",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "public_channel",
+      "num_members": 9
+    },
+    "C0INCIDENT": {
+      "id": "C0INCIDENT",
+      "name": "incident-response",
+      "purpose": "Live incident coordination. Status updates only, no discussion.",
+      "creator": "U0SAM",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "public_channel",
+      "num_members": 140
+    }
+  },
+  "messages": {
+    "C0PLATENG": [
+      {
+        "ts": "1753099320.000100",
+        "time": "2026-07-21 07:02:00 PDT",
+        "user": "U0ALEX",
+        "text": "search latency is the cache key, not the query planner. every tenant gets its own suffix so cardinality just grows. numbers in <https://git.example.com/pr/412|PR 412> if anyone wants them :white_check_mark:",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1753099500.000200",
+        "time": "2026-07-21 07:05:00 PDT",
+        "user": "U0JORDAN",
+        "text": "nice find. does that explain the p99 spikes on tuesday too?",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1753185900.000300",
+        "time": "2026-07-22 07:05:00 PDT",
+        "user": "U0ALEX",
+        "text": "yep, same shape. i'll write it up properly once the ttl change lands :sweat_smile:",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1753704000.000400",
+        "time": "2026-07-28 06:20:00 PDT",
+        "user": "U0ALEX",
+        "text": "heads up, staging is wedged on the migration again. poking at it now",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1754136000.000500",
+        "time": "2026-08-02 06:20:00 PDT",
+        "user": "U0ALEX",
+        "text": "ttl change is in. p99 down about 40% on the dashboard :chart_with_upwards_trend:",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1754308800.000600",
+        "time": "2026-08-04 06:20:00 PDT",
+        "user": "U0ALEX",
+        "text": "anyone got context on the export job? it's been flaky since friday",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "C0INCIDENT": [
+      {
+        "ts": "1753272300.000100",
+        "time": "2026-07-23 07:05:00 PDT",
+        "user": "U0ALEX",
+        "text": "INVESTIGATING - elevated 5xx on the ingest path. Impact: writes only. Owner: alex.",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1753273200.000200",
+        "time": "2026-07-23 07:20:00 PDT",
+        "user": "U0ALEX",
+        "text": "UPDATE - cause is the retry storm from the export job. Mitigation: rate limit applied. Next update 30m.",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1753275000.000300",
+        "time": "2026-07-23 07:50:00 PDT",
+        "user": "U0ALEX",
+        "text": "RESOLVED - error rate normal for 20m. Follow-up issue filed for the retry backoff.",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1754049600.000400",
+        "time": "2026-08-01 06:20:00 PDT",
+        "user": "U0ALEX",
+        "text": "INVESTIGATING - migration lock contention during cutover. Impact: read latency. Owner: alex.",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1754051400.000500",
+        "time": "2026-08-01 06:50:00 PDT",
+        "user": "U0ALEX",
+        "text": "UPDATE - cutover paused. Chunking the remaining batches. Next update 60m.",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1754055000.000600",
+        "time": "2026-08-01 07:50:00 PDT",
+        "user": "U0ALEX",
+        "text": "RESOLVED - cutover completed in chunks. No data loss. Postmortem to follow.",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1754568000.000700",
+        "time": "2026-08-07 06:20:00 PDT",
+        "user": "U0SAM",
+        "text": "INVESTIGATING - alerting gap on the nightly export. Owner: sam.",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ]
+  }
+}
