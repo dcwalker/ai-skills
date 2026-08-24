@@ -226,7 +226,9 @@ Cache rules:
   rather than trusted.
 - **Validate a card that has passed a year, rather than rebuilding it.**
   Re-confirm the relationship class against `identity.md`, and re-run blame on
-  one or two of its samples.
+  one or two of its samples. Why these two rules rather than an expiry date is
+  in [references/cache-files.md](references/cache-files.md), under *Why cards
+  are kept rather than expired*.
 - **Drift invalidates a card regardless of age.** When the relationship
   recorded on the card contradicts what `identity.md` or a directory now says
   (the card reads peer, the user has since recorded them as a manager), the
@@ -508,10 +510,12 @@ Dropping the older figure once the horizons disagree is the one thing that is
 never right: the disagreement *is* the finding, and it is the user's to settle
 ("you used to say ticket, the last eight say issue, which is current?").
 
-The window rules, the four precedence cases, why these are counted buckets
-rather than decay weights, and the ledger format that makes any of it possible
-are in [references/style-card.md](references/style-card.md). Read it before
-rendering a card from a ledger, or before writing one.
+The window rules, the four precedence cases, and why these are counted buckets
+rather than decay weights are in
+[references/style-card.md](references/style-card.md); the ledger format that
+makes any of it possible is in
+[references/cache-files.md](references/cache-files.md), with the rest of the
+cache formats. Read them before rendering a card from a ledger, or writing one.
 
 ### Write the card to the cache
 
