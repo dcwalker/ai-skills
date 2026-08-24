@@ -138,39 +138,33 @@ Research is expensive, and voice changes far more slowly than the requests
 that draw on it. Cache what is found, and reuse it until there is a reason
 not to.
 
-**Location.** Not every environment has a disk that survives the session, so
-there are two cases:
+**Location.** Where a persistent local filesystem exists, the cache is
+`$HOME/writing-style/`, created `chmod 700` on first use -- in plain sight
+rather than buried in a cache path, because it is meant to be read and edited
+by hand, and deliberately not a shared temp path, since these files hold
+observations derived from private correspondence.
 
-1. **A persistent local filesystem:** `$HOME/writing-style/`, created
-   `chmod 700` on first use. `$HOME` means whatever the environment reports,
-   read from it directly. A session can legitimately run with `$HOME` set
-   somewhere other than the account's usual home.
+`$HOME` means whatever the environment reports, read from it directly; a
+session can legitimately run with it set somewhere other than the account's
+usual home. **Where this goes wrong is the handoff to a tool that needs an
+absolute path.** Reading `$HOME` in a shell and creating the directory there is
+the easy half; then a file-writing tool wants a full path and the conventional
+`/Users/<name>` form gets substituted from habit, so the directory is created
+in the right place and the files land somewhere else entirely. **Paste the
+exact string `$HOME` expanded to, the one just printed**, and never a path
+assembled from a username, from a directory further up the working tree, or
+from any other absolute path that happens to be visible. If you are about to
+type `/Users/` or `/home/` into a file path, stop: that is the mistake, and it
+is invisible afterwards because the shell half was correct.
 
-   **Where this goes wrong is the handoff to a tool that needs an absolute
-   path.** Reading `$HOME` in a shell and creating the directory there is the
-   easy half. Then a file-writing tool wants a full path, and the conventional
-   `/Users/<name>` or `/home/<name>` form gets substituted from habit -- so the
-   directory is created in the right place and the files land somewhere else
-   entirely. Paste the exact string `$HOME` expanded to, the one just printed,
-   and never a path assembled from a username, from a directory further up the
-   working tree, or from any other absolute path that happens to be visible.
+Writing to the wrong home puts this user's private observations somewhere that
+is not theirs and leaves the profile unwritten, so the next session redoes the
+research and nobody knows why.
 
-   Writing to the wrong home puts this user's private observations somewhere
-   that is not theirs, and leaves the profile the session was told to keep
-   unwritten -- so the next session redoes the research, and nobody knows why. In plain sight rather than buried in a cache
-   path, because it is meant to be read and edited by hand. Deliberately not
-   a shared temp path: these files hold observations derived from private
-   correspondence, and a world-readable location exposes them to every other
-   user and session on the machine.
-2. **The conversation itself**, when nothing persists: keep the profile in the
-   session, and at the end offer it as a block the user can paste somewhere
-   durable, such as a project's instructions or knowledge files, so the next
-   session starts from it rather than from nothing.
-
-An ephemeral container is case 2: writing to `$HOME` there is not wrong, but
-it is gone when the container is, so say so rather than implying the research
-was saved. Never copy the profile to cloud storage or any other location
-outside the machine.
+Where nothing persists -- an ephemeral container included -- keep the profile
+in the session and offer it at the end as a block the user can paste somewhere
+durable, saying plainly that it was not saved. Never copy it to cloud storage
+or anywhere else off the machine.
 
 Contents:
 
@@ -181,14 +175,7 @@ index.md                          Searches already run and what they returned
 card-<medium>-<audience-slug>.md  One style card per (medium, audience) pair
 ```
 
-**A channel is an audience in its own right.** Slug it with the channel's own
-name and, where the workspace exposes one, its id:
-`card-slack-platform-eng-C024BE91L.md`. Never slug a card by a category such as
-`private-channel` or `team-channel`. Two channels in one workspace differ in
-who is in them, what they are for, and what they are about, and those are
-precisely the things that set register, so a card spanning both describes
-neither. A channel and a direct message with someone who is in that channel are
-likewise two audiences, not one.
+**A channel is an audience in its own right**, slugged by its own name and id (`card-slack-platform-eng-C024BE91L.md`), never by a category such as `private-channel`. See [references/finding-samples.md](references/finding-samples.md).
 
 All four formats are in
 [references/cache-files.md](references/cache-files.md). Read it before writing
@@ -233,18 +220,15 @@ Cache rules:
   keep the audience findings, research the medium fresh.
 - Corpus notes are reusable across cards. A sample found while building one
   card counts as evidence for another if it matches that card's scope.
-- **Age never invalidates a card, so do not expire one.** The analysis is the
-  expensive part and voice changes slowly, so cards are kept and extended
-  indefinitely. What ages is not the card but its recent window: samples fall
-  out of it with the passage of time alone, the recent counts thin, and an
-  empty recent window lowers confidence rather than discarding the reading
-  (Step 6). A card with neither a ledger nor a `Built:` line has no provenance
-  at all and gets rebuilt rather than trusted.
+- **Age never invalidates a card, so do not expire one.** Cards are kept and
+  extended indefinitely; what ages is the recent window, not the card. A card
+  with neither a ledger nor a `Built:` line has no provenance and gets rebuilt
+  rather than trusted.
 - **Validate a card that has passed a year, rather than rebuilding it.**
   Re-confirm the relationship class against `identity.md`, and re-run blame on
-  one or two of its samples. That is seconds of work, and it is the price of
-  keeping a card forever: a card that is only ever extended inherits any
-  contamination it started with and compounds it rather than washing it out.
+  one or two of its samples. Why these two rules rather than an expiry date is
+  in [references/cache-files.md](references/cache-files.md), under *Why cards
+  are kept rather than expired*.
 - **Drift invalidates a card regardless of age.** When the relationship
   recorded on the card contradicts what `identity.md` or a directory now says
   (the card reads peer, the user has since recorded them as a manager), the
@@ -387,22 +371,12 @@ name form used for the recipient, self-reference.
 **Sentences:** median length, variance, fragments, questions, imperatives,
 starting words and connectives.
 
-**Vocabulary.** Record this in slots rather than as a list of words. Fixing the
-slots is what makes the reading specific without making it long: the ceiling is
-set by the slot count rather than by however much the corpus happens to hold,
-and an empty slot is itself a finding. The slots deliberately do not overlap
-`Opening`, `Closing`, `Mechanics`, or `Emoji`, which already cover greetings,
-sign-offs, punctuation, and emoji.
-
-| Slot | What goes in it |
-|---|---|
-| `marker` | discourse markers and connectives: "so", "anyway", "that said", "heads up" |
-| `hedge` | hedges and boosters: "I think", "pretty", "definitely", "kind of" |
-| `stance` | how good and bad get named: "solid", "rough", "fine" |
-| `term` | naming choices for recurring referents: ticket vs issue vs card |
-| `shorthand` | domain jargon and abbreviations, and whether they get expanded |
-| `filler` | filler and profanity |
-| `avoid` | words absent from the corpus, especially assistant escalations |
+**Vocabulary.** Record this in slots rather than as a list of words, using the
+seven slots in [references/style-card.md](references/style-card.md): `marker`,
+`hedge`, `stance`, `term`, `shorthand`, `filler`, `avoid`. Fixing the slots is
+what makes the reading specific without making it long -- the ceiling is set by
+the slot count rather than by however much the corpus holds -- and an empty slot
+is itself a finding.
 
 Every positive entry carries one attested snippet. "heads up" on its own loses
 the frame, and a bare opener, a mid-sentence aside, and an apology softener are
@@ -421,35 +395,20 @@ a reaction instead of a reply), and how dense they are per message. Note the
 audiences that get none, since that boundary is usually sharp and a stray
 emoji in the wrong register is one of the loudest tells there is.
 
-**Platform conventions.** These are learned habits rather than prose style,
-and getting them wrong reads as "someone else's account" faster than a wrong
-adjective does. Count them the same way:
+**Platform conventions.** Mentions, links, images, threading, and formatting:
+learned habits rather than prose style, and getting them wrong reads as
+"someone else's account" faster than a wrong adjective does. Count them the
+same way. What to look for in each is in
+[references/finding-samples.md](references/finding-samples.md); read it when
+the medium has conventions at all, which chat and trackers do and plain email
+largely does not.
 
-- **People:** an `@mention` versus a written-out name, first name versus full
-  name, and whether the mention is used for addressing, for crediting, or for
-  pulling someone into a thread.
-- **Links:** a bare URL, a hyperlink on descriptive text, or a reference-style
-  link. Whether the link is explained before it is dropped, and whether the
-  channel's own unfurl is left to do the work.
-- **Images:** how often a screenshot stands in for a description, whether it
-  is annotated, and whether a caption accompanies it or the image goes bare.
-- **Threading and formatting:** replying in-thread versus posting anew, code
-  blocks versus inline backticks, quoting versus paraphrasing, and structural
-  conventions the platform affords that the user does or does not take up.
-
-**Polish tier**, on this ladder:
-
-| Tier | Markers |
-|---|---|
-| **1 — Fire-off** | One or two lines, no greeting or sign-off, lowercase, fragments, abbreviations, typos left alone |
-| **2 — Quick note** | First-name greeting or none, contractions, one to three short paragraphs, minimal formatting, one clear ask |
-| **3 — Considered** | Greeting and sign-off, complete sentences, deliberate structure, explicit ask and context, proofread |
-| **4 — Formal / public** | Full structure, careful diction, no slang, edited for a reader who may quote it |
-
-The tier comes from the samples, not from the topic's importance. Where the
-current situation differs from every sample (bad news to someone the user only
-ever jokes with, a first message to a new client), say so and confirm the tier
-before drafting.
+**Polish tier**, from the four-tier ladder in
+[references/style-card.md](references/style-card.md): fire-off, quick note,
+considered, or formal. The tier comes from the samples, not from the topic's
+importance. Where the current situation differs from every sample -- bad news
+to someone the user only ever jokes with, a first message to a new client --
+say so and confirm the tier before drafting.
 
 ---
 
@@ -532,90 +491,31 @@ Ask: "Does this match how you'd write it? Anything to adjust before I draft?"
 
 ### Counts carry two horizons
 
-Every counted line reports what the recent samples show and what the whole
-corpus shows:
+A card built from a ledger reports what the recent samples show and what the
+whole corpus shows:
 
 ```
 Opening:  "hey Jordan," lowercase   8 of 8 (2025-09 -> 2026-08) | 22 of 24 since 2023-04
 ```
 
-**Every counted line carries three things**, and a line missing any of them has
-dropped back to the impression this skill exists to replace:
+Every counted line carries the observation, **a count** (always -- a line
+without one has dropped back to the impression this skill exists to replace),
+and **both figures whenever the horizons differ**. Recent is the last twelve
+months; split the counts when three or more samples fall inside it, and the
+recent figure is then the reading. Fewer than three, or none, and the card uses
+the all-time figure and says so -- an empty recent window also caps confidence
+at medium.
 
-1. The **observation** itself.
-2. A **count**, always. `"Jordan," capitalized` with no figure behind it is not
-   a finding, and a line that loses its count has almost always lost it while
-   being reformatted rather than for want of evidence.
-3. **Both figures whenever the horizons differ**, the recent one and the
-   all-time one. A single figure is right only when the two agree and collapse
-   (rule 3 below), or when there is nothing recent to report (rule 2).
+Dropping the older figure once the horizons disagree is the one thing that is
+never right: the disagreement *is* the finding, and it is the user's to settle
+("you used to say ticket, the last eight say issue, which is current?").
 
-The wording is free. `8 of 8 recent | 22 of 24 all time` and a second line
-reading `was "hey Jordan," lowercase   6 of 6 (2023)` say the same thing, and
-either is fine. What is not free is dropping the older figure once the horizons
-disagree: the disagreement is the finding, and a line showing only the recent
-count has quietly discarded the evidence that made it worth raising.
-
-Recent is the last twelve months, and the card prints the span it actually
-covers. How many samples land in that window decides what happens next:
-
-| Samples in the last 12 months | What the card does |
-|---|---|
-| 3 or more | Split the counts. The recent figure is the reading. |
-| 1 or 2 | Do not split. Use the all-time figure, and say recent coverage is thin, naming the count. |
-| None | Do not split. Use the all-time figure, say the recent window is empty, and **cap confidence at medium**, or at low if it was already medium. |
-
-Do not widen the window to manufacture a recent reading. A correspondent
-written to twice a year genuinely offers no basis for separating current style
-from overall style, and `4 of 4 (2023-11 -> 2026-08)` with a note that nothing
-is recent is the honest card. Stretching the window until three samples fall
-inside it would report a 2023 habit as current.
-
-Re-bucketing happens on read, by comparing the ledger's dates against today.
-It is counting, not searching, and it costs nothing.
-
-**Count into buckets. Never decay-weight.** A weighted "4.7 of 6.2" cannot be
-checked by the user reading the card, cannot be edited by hand, and fails the
-standard that every claim trace to a count.
-
-Which figure the draft is written to:
-
-1. **Recent meets the threshold.** It wins outright, and the all-time figure is
-   context rather than input.
-2. **Recent is empty.** Fall back to all time, and lower the confidence: cap
-   it at medium, or at low if it was already medium. Naming the empty window
-   while leaving `Confidence: high` in place is not lowering it -- the reading
-   is high-quality evidence about a period that has ended, which is a weaker
-   claim about today than the same counts drawn from current mail.
-   *No recent samples* and *habit abandoned* are different facts. Not having
-   written to someone in eighteen months tells you nothing about how they would
-   be written to today, and reporting that as a changed habit invents a finding.
-3. **Both have evidence and they agree.** Collapse to one figure:
-   `no em dashes (0 of 24, since 2023-04)`. Most lines collapse, which is why a
-   slow-moving trait like punctuation costs nothing to carry for years.
-4. **Both have evidence and they disagree.** That is a finding, not
-   bookkeeping. Print both and raise it when the card is shown: "you used to
-   say ticket, the last eight say issue, which is current?" A card kept for
-   years is the only thing that can see a change like this, and the user is the
-   only one who can settle it.
-
-### The ledger
-
-The stored card file holds one block more than the card shown to the user: the
-samples the counts came from, so a later session can extend the card without
-re-reading the corpus.
-
-```
-## Ledger
-| id | date | source | used for |
-|---|---|---|---|
-| <message id> | 2026-07-30 | sent mail | opening, marker, closing |
-```
-
-Identifiers, dates, and the short attested snippets already on the card, never
-message bodies. With a ledger in place, every refresh searches only for what is
-newer than the newest row, folds the delta in, and re-buckets. That is what
-makes a card cheap enough to keep indefinitely.
+The window rules, the four precedence cases, and why these are counted buckets
+rather than decay weights are in
+[references/style-card.md](references/style-card.md); the ledger format that
+makes any of it possible is in
+[references/cache-files.md](references/cache-files.md), with the rest of the
+cache formats. Read them before rendering a card from a ledger, or writing one.
 
 ### Write the card to the cache
 
@@ -648,34 +548,16 @@ directions on purpose: never place the artifact, always persist the profile.
 ### When there is no usable evidence
 
 Say so plainly. Do not fill the gap with a generic professional voice and do
-not present an unevidenced card as if it were researched. Instead:
+not present an unevidenced card as if it were researched. Report what was
+searched and what came back empty, fall back to `general.md` if the cache has
+one, and ask the user to describe how it should sound in their own words --
+"blunt, no greeting, two lines" beats any ladder of options. Label the result
+for what it is: `Confidence: none, user-described`, or `low, cross-medium` when
+it leaned on `general.md`.
 
-1. Report which sources were searched and what came back empty.
-2. **Fall back to `general.md`** if the cache has one, and label it for what
-   it is: how this person writes in general, not how they write to this
-   person. It covers punctuation, recurring words, and instincts about length
-   and directness. It cannot tell you the greeting, the sign-off, or the
-   formality, which is precisely what is missing here.
-3. **Ask the user to describe how it should sound**, in their own words.
-   "Blunt, no greeting, two lines" is a better instruction than any ladder of
-   options, and it is faster to give than a pasted sample is to find. Prompt
-   for the register and the relationship if the description leaves them open.
-4. Offer the sample-paste route as an alternative rather than the first ask:
-   one or two real examples turn a described style into an observed one, and
-   the card built from them is reusable next time.
-5. Label the result honestly: `Confidence: none, user-described` when it came
-   from the description, `low, cross-medium` when it leaned on `general.md`.
-
-Whatever the user describes is worth keeping. Write it into the card so the
-next request to this audience starts from it, and mark it as user-described
-rather than observed, so a later run with real samples knows it can be
-replaced.
-
-If the user asks to skip the research entirely ("just write it", "don't go
-digging"), honor it. Two things still hold: say once, in a single line, that
-the draft is unresearched so they read it with that in mind, and add no facts
-they did not give you. A skipped research step lowers the confidence of the
-voice, never the standard for the content.
+The full path, including what `general.md` can and cannot tell you and how to
+handle an explicit skip-the-research override, is in
+[references/finding-samples.md](references/finding-samples.md).
 
 ---
 
@@ -763,13 +645,9 @@ it there; that offer costs one line and leaves the decision where it belongs.
   send or post it, and do not save it into their mailbox, chat client, tracker,
   or any other external system without their explicit say-so on the text you
   are about to write. Once they agree, save it and tell them where it landed.
-- **Being told the user is unavailable is not permission to write.** "I will
-  not be around", "just send it", "don't wait for me" and the like are about
-  how the drafting should proceed, and they authorize drafting without a
-  confirmation pause. They do not authorize touching an external system,
-  because the user cannot correct a draft they never saw and a draft in their
-  mailbox is a side effect outside this conversation. Show them the text and
-  say it is unsaved. If they want it saved, they will say so next time.
+- **Being told the user is unavailable is not permission to write.** It
+  authorizes drafting without a confirmation pause, never touching an external
+  system: they cannot correct a draft they never saw (Step 7).
 - Keep excerpts on the style card short, only long enough to evidence a claim.
 - Do not carry content from someone else's message into the deliverable, and do
   not quote a third party's writing as the user's own style.
@@ -780,28 +658,19 @@ it there; that offer costs one line and leaves the decision where it belongs.
 
 ---
 
-## Quality Rules
+## Before sending the draft
 
-- Research before drafting. A draft that appears before a style card has skipped
-  the only step that makes it sound like the user.
-- Every claim on the card traces to samples that were actually read. No claim is
+Three checks, because each catches something that survives every earlier step:
+
+- **Did a card come before the draft?** A draft that appears without one has
+  skipped the step that makes it sound like the user.
+- **Does every claim on the card trace to a sample actually read?** No claim
   stated more confidently than its evidence supports.
-- Scope every profile to a (medium, audience) pair. Never reuse a profile across
-  audiences without saying so.
-- Report the rung the evidence came from, and report empty searches rather than
-  hiding them.
-- Ask for the audience when it is missing. Never infer it from the topic.
-- Never invent facts, names, dates, or events to fill a draft, and never
-  import them from the samples. Style is copied; content never is.
-- Keep the cache where the environment can actually persist it, and confirm
-  its recorded identity matches the current accounts before reading it.
-- With no samples, ask the user to describe the style in their own words and
-  fall back to `general.md`, labeled as cross-medium. Never dress up an
-  unevidenced profile as a researched one.
-- Confirm authorship by account identifier, never by display name alone.
-- Match observed length, punctuation, and polish, including habits that look
-  like errors.
-- Update the cache with every correction the user makes.
-- The user's stated preference always outranks the corpus.
-- Nothing leaves the conversation without a specific yes to the specific text.
-  An unavailable user has authorized a draft, never a write.
+- **Did any content come from the samples rather than the request?** Style is
+  copied; content never is.
+
+The rest of what would go in a checklist here is already stated where it
+applies: audience in Step 1, cache identity in Step 2, rungs and authorship in
+Step 4, thresholds in Step 5, the tells list in Step 7, corrections in Step 8.
+Restating them at the end taught nothing and drifted out of step with the
+originals.
