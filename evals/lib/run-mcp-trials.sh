@@ -129,7 +129,15 @@ else:
   # earlier, non-isolated run is therefore still reachable, which is how a
   # writing trial once rebuilt nothing and reused a style card from a previous
   # session. Warn loudly rather than deleting someone's real data.
-  REAL_HOME="$(getent passwd "$(id -un)" | cut -d: -f6)"
+  # `getent` is glibc-only; macOS keeps the same record in Directory Services.
+  # Either lookup may fail on an unusual account, and an empty result is fine --
+  # the check below simply skips the warning.
+  if command -v getent > /dev/null 2>&1; then
+    REAL_HOME="$(getent passwd "$(id -un)" | cut -d: -f6)" || REAL_HOME=""
+  else
+    REAL_HOME="$(dscl . -read "/Users/$(id -un)" NFSHomeDirectory 2> /dev/null \
+      | awk '{ print $2 }')" || REAL_HOME=""
+  fi
   if [[ -n "$REAL_HOME" && -d "$REAL_HOME/writing-style" ]]; then
     echo "  WARNING: $REAL_HOME/writing-style exists and a trial may read it;" \
          "remove it before trusting these results"
@@ -137,10 +145,53 @@ else:
 
   TRIAL_HOME="$RUN_DIR/home"
   mkdir -p "$RUN_DIR/tmp" "$TRIAL_HOME"
-  for CONFIG in .claude .claude.json .config; do
-    [[ -e "$HOME/$CONFIG" && ! -e "$TRIAL_HOME/$CONFIG" ]] && \
-      ln -s "$HOME/$CONFIG" "$TRIAL_HOME/$CONFIG"
-  done
+  # $HOME is reassigned, but a trial can still write to the real home if it
+  # learns the path -- and it does not have to snoop to learn it. Symlinks in
+  # $TRIAL_HOME name their targets, and .claude.json carries a `projects` map
+  # keyed by absolute paths. That is not hypothetical: a full 27-trial run
+  # wrote 14 style cards into the developer's real ~/writing-style, and later
+  # trials then read cards earlier trials had left there, which is precisely
+  # the cross-trial contamination this isolation exists to prevent.
+  #
+  # So: .config is symlinked (gh and git config, needed by other skills'
+  # evals), .claude becomes a real directory holding only what a trial needs,
+  # and .claude.json is copied with every identity- and path-bearing key
+  # removed. Authentication comes from CLAUDE_CODE_OAUTH_TOKEN or the
+  # keychain, never from these files.
+  [[ -e "$HOME/.config" && ! -e "$TRIAL_HOME/.config" ]] && \
+    ln -s "$HOME/.config" "$TRIAL_HOME/.config"
+
+  if [[ -d "$HOME/.claude" && ! -e "$TRIAL_HOME/.claude" ]]; then
+    mkdir -p "$TRIAL_HOME/.claude"
+    for SETTING in settings.json settings.local.json; do
+      [[ -f "$HOME/.claude/$SETTING" ]] && \
+        cp "$HOME/.claude/$SETTING" "$TRIAL_HOME/.claude/$SETTING"
+    done
+    # Plugins are 22M and read-only to a trial, so they stay a symlink rather
+    # than being copied 27 times. The rest of ~/.claude -- projects/, sessions/,
+    # history.jsonl, 268M of transcripts naming the real user -- is left out.
+    [[ -d "$HOME/.claude/plugins" ]] && \
+      ln -s "$HOME/.claude/plugins" "$TRIAL_HOME/.claude/plugins"
+  fi
+
+  if [[ -f "$HOME/.claude.json" && ! -e "$TRIAL_HOME/.claude.json" ]]; then
+    python3 -c '
+import json, sys
+with open(sys.argv[1]) as fh:
+    config = json.load(fh)
+# Identity: Claude Code injects oauthAccount into its own system prompt, which
+# told trials whose machine they were on and made them refuse the fixture
+# persona. Paths: every one of these names the real home directory.
+for key in ("oauthAccount", "userID", "anonymousId", "machineID",
+            "projects", "githubRepoPaths", "appleTerminalBackupPath"):
+    config.pop(key, None)
+with open(sys.argv[2], "w") as fh:
+    json.dump(config, fh)
+' "$HOME/.claude.json" "$TRIAL_HOME/.claude.json" || {
+      echo "  WARNING: could not sanitise .claude.json; trial may reach the real home" >&2
+    }
+  fi
+
   if [[ -d "$EVALS_DIR/fixtures/$ID/home" ]]; then
     cp -R "$EVALS_DIR/fixtures/$ID/home/." "$TRIAL_HOME/"
   fi
@@ -158,7 +209,7 @@ else:
       HOME="$TRIAL_HOME" TMPDIR="$RUN_DIR/tmp" \
         claude -p --permission-mode acceptEdits \
         --allowedTools "Bash Read Write Edit Glob Grep WebFetch TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian mcp__slack" \
-        --strict-mcp-config --verbose "${resume_flag[@]}" \
+        --strict-mcp-config --verbose ${resume_flag[@]+"${resume_flag[@]}"} \
         --mcp-config "$MCP_CONFIG_PATH" --output-format stream-json -- "$turn_prompt"
     ) >> "$RUN_DIR/events.jsonl" 2>> "$RUN_DIR/stderr.txt" || \
       echo "  WARNING: claude exited non-zero for eval $ID; continuing"
@@ -287,6 +338,32 @@ print(f"  duration: {metrics['duration_seconds']}s, "
       f"tokens in/out: {metrics['tokens']['input']}/{metrics['tokens']['output']}, "
       f"cache read: {metrics['tokens']['cache_read_input']}")
 PYEOF
+
+  # The pre-run warning only fires when the directory already exists, so it
+  # says nothing about a trial that creates it. That gap let a full run write
+  # 14 cards into the real home before anyone noticed, contaminating every
+  # trial after the first. Check again on the way out.
+  # A trial can always derive the real home: its own working directory is
+  # inside it. Concealing the path is therefore not achievable -- scrubbing
+  # config files removes the identity leak but not this one -- so the harness
+  # does not try. It detects the escape, moves what the trial wrote out of the
+  # way so the next trial cannot read it, and stops the run.
+  #
+  # Stopping is the point. A run that continues past an escape silently mixes
+  # one trial's cards into every later trial's evidence, and the resulting
+  # numbers look ordinary. Failing here means any run that reaches the end is
+  # known clean.
+  if [[ -n "$REAL_HOME" && -d "$REAL_HOME/writing-style" ]]; then
+    ESCAPE_QUARANTINE="$TRIALS_DIR/escaped-home-$ID"
+    rm -rf "$ESCAPE_QUARANTINE"
+    mv "$REAL_HOME/writing-style" "$ESCAPE_QUARANTINE"
+    echo >&2
+    echo "  ERROR: eval $ID wrote to $REAL_HOME/writing-style, escaping its" >&2
+    echo "  isolated HOME. Moved to $ESCAPE_QUARANTINE for inspection." >&2
+    echo "  Stopping: every later trial would have read what it left there," >&2
+    echo "  and the run's results would look normal while being contaminated." >&2
+    exit 1
+  fi
 
   echo "  -> saved to $RUN_DIR"
   echo

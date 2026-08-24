@@ -73,7 +73,7 @@ fi
 # reports "clean". Name what was skipped so the count cannot be read as total.
 if [[ ${#skipped[@]} -gt 0 ]]; then
   echo "warning: ${#skipped[@]} argument(s) had no workspace/.git and were not checked:" >&2
-  for s in "${skipped[@]}"; do echo "  $s" >&2; done
+  for s in ${skipped[@]+"${skipped[@]}"}; do echo "  $s" >&2; done
 fi
 
 if [[ $found -gt 0 ]]; then
