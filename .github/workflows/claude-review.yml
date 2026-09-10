@@ -11,7 +11,8 @@ name: Claude PR Review
 # opened/ready_for_review/reopened for non-draft PRs; on demand by commenting
 # "/re-review" on the PR (owner/member/collaborator only). The "skip-code-review"
 # label and dependabot PRs are skipped. Pushes do NOT re-run the review; a prior
-# review keeps the gate green via the sticky "code-reviewed" label. A "/re-review"
+# review keeps the gate green only if it posted its summary and rated the PR no
+# or low risk (the sticky "code-reviewed" and risk-level labels). A "/re-review"
 # blocks merging until it completes.
 
 on:
