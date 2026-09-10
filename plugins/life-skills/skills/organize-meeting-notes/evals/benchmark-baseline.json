@@ -4,7 +4,7 @@
     "skill_path": "plugins/life-skills/skills/organize-meeting-notes",
     "executor_model": "claude-sonnet-5",
     "analyzer_model": "claude-opus-5",
-    "timestamp": "2026-08-18T21:24:20Z",
+    "timestamp": "2026-09-10T23:52:14Z",
     "evals_run": [
       1,
       2,
@@ -19,7 +19,13 @@
       11,
       12,
       13,
-      14
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
     ],
     "runs_per_configuration": 1
   },
@@ -27,42 +33,42 @@
     {
       "eval_id": 1,
       "configuration": "with_skill",
-      "run_number": 1,
+      "run_number": 2,
       "result": {
         "pass_rate": 1.0,
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 136.148,
-        "tokens": 61359,
+        "time_seconds": 199.038,
+        "tokens": 88555,
         "tool_calls": null,
         "errors": null
       },
       "expectations": [
         {
-          "text": "Attendees are formatted as 'Sarah Chen' and 'J. Rivera' (title case, -contractor stripped), deduplicated to two people despite the duplicate email, sorted alphabetically by first name.",
+          "text": "Attendees are formatted in title case with -contractor stripped, deduplicated to two people despite the duplicate email, and sorted alphabetically by first name: 'Sarah Chen' and Rivera, whose 'j.' initial is either expanded to the first name the user gives when asked (Step 3) or left as 'J. Rivera', never expanded by guesswork.",
           "passed": true,
-          "evidence": "The trial asked about the 'j.' initial and the doubled sarah.chen address, then listed 'Jordan Rivera' and 'Sarah Chen' -- title case, '-contractor' stripped, deduplicated to two people, alphabetical by first name."
+          "evidence": "Final Attendees lists 'Jamie Rivera' then 'Sarah Chen' as plain lines: '-contractor' stripped, duplicate sarah.chen@acme.com collapsed to one, sorted by first name. The 'j.' initial was expanded only after the assistant asked and the user answered 'Jamie Rivera'."
         },
         {
           "text": "The transcript shows a genuine per-line interview (at least one clarifying question per raw note line) before the notes are finalized as complete sentences -- the skill does not fabricate finished notes without first asking about each line.",
           "passed": true,
-          "evidence": "Each of the three raw note lines drew its own clarifying question, answered and confirmed as a proposed sentence before the next; no note was written before asking."
+          "evidence": "Each of the three raw lines got its own turn with a clarifying question (overrun cause/decision; owner and due date, plus a follow-up resolving the ambiguous 'Friday'; owner, timing, and vendor), each answered and confirmed before the next line, and only then was the full draft shown."
         },
         {
           "text": "Exactly two create-trello-task.sh invocations occur (one per confirmed action item), each with --desc including the meeting title 'Weekly Sync' and a February 2026 date.",
           "passed": true,
-          "evidence": "trello-calls.log holds exactly two entries, each --desc naming 'Weekly Sync' and 'Feb 27, 2026'."
+          "evidence": "trello-calls.log has exactly two lines (counts file shows create_card: 2): the Dan finance email item and the Sarah Chen vendor follow-up item, and both descs begin 'From the Weekly Sync meeting on Feb 27, 2026 (11:00 AM-11:30 AM)'."
         },
         {
           "text": "The final Markdown document's Action Items section links each item as `- [ ] [<text>](<trello card url>)` using the exact URLs the fixture returned, not fabricated URLs.",
           "passed": true,
-          "evidence": "Both Action Items link the exact URLs the log records (omn1a2b3, omn4c5d6); no URL in the document is absent from the log."
+          "evidence": "final.md Action Items are '- [ ] [Dan: Email finance ...](https://trello.com/c/omn1a2b3/email-finance-about-budget-discrepancy)' and '- [ ] [Sarah Chen: Schedule ...](https://trello.com/c/omn4c5d6/schedule-vendor-follow-up-on-pricing)', matching the fixture and log URLs exactly."
         },
         {
           "text": "The final document's section order is exactly: metadata block, ###### Attendees, ###### Notes, ###### Action Items, matching Step 8.",
           "passed": true,
-          "evidence": "Final order is metadata block, ###### Attendees, ###### Notes, ###### Action Items, closing with the 2026-02-27 11:00 line."
+          "evidence": "final.md runs H2 title plus metadata line, ###### Attendees, ###### Notes, ###### Action Items, followed only by the Step 8 trailing '#### 2026-02-27 11:00: Weekly Sync' line; no summary or agenda is inserted, correctly, since neither rule applies."
         }
       ]
     },
@@ -75,8 +81,8 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 106.228,
-        "tokens": 50743,
+        "time_seconds": 118.361,
+        "tokens": 80313,
         "tool_calls": null,
         "errors": null
       },
@@ -84,22 +90,22 @@
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "No trello-calls.log was created for this trial; the script was never invoked."
+          "evidence": "$T/trello-calls.log does not exist, so zero real calls happened; the transcript's only tool call is `ls -la .` in the workspace."
         },
         {
           "text": "The transcript explicitly confirms with the user that there are no action items, rather than silently omitting the section or inventing one.",
           "passed": true,
-          "evidence": "The trial asked 'Confirming: no action items for this meeting?' and the simulated user confirmed before the document was produced."
+          "evidence": "After the notes were approved, the assistant asked \"Can you confirm there are no action items for this meeting before I finalize?\" and the user replied \"Confirmed, no action items.\""
         },
         {
           "text": "The final document's Action Items section reflects that none exist (e.g. states none, or is empty/omitted per the skill's own formatting for this case) rather than containing a fabricated item.",
           "passed": true,
-          "evidence": "The Action Items section reads '*None.*' rather than carrying a fabricated item."
+          "evidence": "final.md contains `###### Action Items` followed only by `_None._`, with no checklist items."
         },
         {
           "text": "The skill never asks 'create Trello tasks?' at all, since Step 7.8 only reaches that question when action items were confirmed.",
           "passed": true,
-          "evidence": "The Trello question was never asked; the transcript moves from the no-action-items confirmation straight to the final document."
+          "evidence": "No Trello question appears anywhere in the transcript; the assistant only stated \"Since there are no action items, I'll skip Trello card creation.\""
         }
       ]
     },
@@ -112,8 +118,8 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 127.893,
-        "tokens": 57090,
+        "time_seconds": 121.339,
+        "tokens": 84723,
         "tool_calls": null,
         "errors": null
       },
@@ -121,36 +127,36 @@
         {
           "text": "The skill explicitly asks whether to create a Trello task for the confirmed action item before proceeding.",
           "passed": true,
-          "evidence": "The trial asked 'Want me to create a Trello card for this action item?' before proceeding."
+          "evidence": "After the user confirmed the action item, the assistant asked \"Should I create a Trello card for this action item?\" and waited for the answer before producing the final document (transcript lines 117-121)."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur, since the user declines.",
           "passed": true,
-          "evidence": "No trello-calls.log entries exist; the script was never invoked after the decline."
+          "evidence": "$T/trello-calls.log does not exist, so zero real calls happened; the transcript shows only one tool call (`ls -la` in the workspace)."
         },
         {
           "text": "The final document's Action Items section contains the item as a plain `- [ ] <text>` line with no Trello link, since no card was created.",
           "passed": true,
-          "evidence": "The action item appears as a plain '- [ ] Draft a proposal for the new tooling budget...' line with no link."
+          "evidence": "final.md line 13 is `- [ ] Alex Kim: Draft a proposal for the new tooling budget by March 20, 2026.` with no Markdown link or Trello URL."
         },
         {
           "text": "The final document is still produced (declining Trello creation does not abort the whole task, per Step 7.8's 'skip Trello creation' framing, not 'stop entirely').",
           "passed": true,
-          "evidence": "The full final document was still produced after the user declined."
+          "evidence": "After the decline the assistant said \"Understood, skipping Trello\" and delivered the full document, which final.md contains: metadata, Attendees, Notes, Action Items, and the closing `#### 2026-03-05 14:00` line."
         }
       ]
     },
     {
       "eval_id": 4,
       "configuration": "with_skill",
-      "run_number": 1,
+      "run_number": 2,
       "result": {
         "pass_rate": 1.0,
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 142.026,
-        "tokens": 63209,
+        "time_seconds": 144.348,
+        "tokens": 82397,
         "tool_calls": null,
         "errors": null
       },
@@ -158,22 +164,22 @@
         {
           "text": "Exactly two create-trello-task.sh invocations are attempted, one per confirmed action item.",
           "passed": true,
-          "evidence": "trello-calls.log records one call for the first action item and three for the second, the extra two being retries of the fixture's planted failure."
+          "evidence": "trello-calls.log has exactly two lines (counts file shows create_card: 2): one for the pricing sheet update and one for looping in procurement, matching the two confirmed action items."
         },
         {
           "text": "The action item whose call succeeded is linked in the final document using the exact fixture-returned URL.",
           "passed": true,
-          "evidence": "The succeeded item links https://trello.com/c/omn7e8f9/update-internal-pricing-sheet, matching the log byte for byte."
+          "evidence": "final.md line 14 links the pricing sheet item to https://trello.com/c/omn7e8f9/update-internal-pricing-sheet, identical to the URL in the first log entry and the fixture."
         },
         {
           "text": "The action item whose call failed is NOT given a fabricated or guessed URL -- it either remains a plain unlinked checklist item with the failure surfaced to the user, or the skill pauses and asks how to proceed before finalizing that item.",
           "passed": true,
-          "evidence": "The failed item stayed unlinked and annotated as not filed, with the failure raised to the user before finalizing rather than given a guessed URL."
+          "evidence": "The assistant paused and asked how to proceed after the failure, and final.md line 15 keeps the procurement item as a plain unlinked checklist item with no URL."
         },
         {
           "text": "The transcript explicitly reports the create-trello-task.sh failure (e.g. its error message) rather than silently treating it as a success or omitting it from the report.",
           "passed": true,
-          "evidence": "The transcript carries the script's real error text, 'Trello API error: rate limit exceeded, try again later'."
+          "evidence": "After the tool calls, the assistant states \"The second card failed to create\" and quotes the error \"Trello API error: rate limit exceeded, try again later\", which matches the logged error."
         }
       ]
     },
@@ -186,8 +192,8 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 85.014,
-        "tokens": 51576,
+        "time_seconds": 142.07,
+        "tokens": 80239,
         "tool_calls": null,
         "errors": null
       },
@@ -195,36 +201,36 @@
         {
           "text": "The final metadata line's End field shows the original 3:30 PM struck through with the corrected 3:45 PM appended, matching the skill's documented mismatch-correction pattern -- not silently left as just 3:30 PM and not silently corrected without showing the original.",
           "passed": true,
-          "evidence": "The End field renders '~~3:30 PM~~ **3:45 PM**', striking the original and appending start plus duration."
+          "evidence": "final.md line 2 reads `Start: **Mar 12, 2026 at 3:00 PM** \u2022 End: ~~3:30 PM~~ **3:45 PM** \u2022 Duration: **45 minutes**`, which strikes through only the original end value and appends start plus duration, matching the Step 2 mismatch pattern."
         },
         {
           "text": "Kim Park's name appears with strikethrough formatting in the final Attendees section, since the user stated she did not attend despite being invited.",
           "passed": true,
-          "evidence": "Kim Park appears as '~~Kim Park~~' in the Attendees section."
+          "evidence": "final.md's Attendees section contains the plain line `~~Kim Park~~`, and the other attendees are not struck through."
         },
         {
-          "text": "The other two attendees ('R. Singh', 'T. Nguyen') are correctly title-cased with '-contractor' stripped from R. Singh.",
+          "text": "The other two attendees (Singh and Nguyen) are correctly title-cased with '-contractor' stripped from Singh, and each 'r.' or 't.' initial is either expanded to the first name the user gives when asked (Step 3) or left as an initial, never expanded by guesswork.",
           "passed": true,
-          "evidence": "The trial asked for the full first names behind the 'r.' and 't.' initials and used the answers, with '-contractor' stripped from Raj Singh."
+          "evidence": "final.md lists `Raj Singh` and `Tam Nguyen`, title-cased with '-contractor' removed. The initials were expanded only after the assistant asked for the full first names (transcript lines 22-23) and the user supplied 'Raj' and 'Tam' (line 27), so nothing was guessed."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur, since no action items exist in this content.",
           "passed": true,
-          "evidence": "No trello-calls.log was created; zero invocations."
+          "evidence": "$T/trello-calls.log does not exist, so zero real create-trello-task.sh calls occurred. The transcript's only tool call is `ls -la .` on the empty workspace."
         }
       ]
     },
     {
       "eval_id": 6,
       "configuration": "with_skill",
-      "run_number": 2,
+      "run_number": 1,
       "result": {
         "pass_rate": 1.0,
-        "passed": 4,
+        "passed": 5,
         "failed": 0,
-        "total": 4,
-        "time_seconds": 137.218,
-        "tokens": 58587,
+        "total": 5,
+        "time_seconds": 153.674,
+        "tokens": 88636,
         "tool_calls": null,
         "errors": null
       },
@@ -232,36 +238,41 @@
         {
           "text": "The transcript shows the skill either asking about the ambiguous initials before finalizing names, or correctly using the full names already supplied in the prompt ('Alex Lee', 'Amy Wong') without guessing a different expansion of the 'a.' initial for either person.",
           "passed": true,
-          "evidence": "The trial used the full names supplied in the prompt without guessing another expansion of the shared 'a.' initial."
+          "evidence": "The first assistant turn acknowledges 'the attendee names (Alex Lee and Amy Wong)' from the prompt and only asks for the user's own name and absences; no other expansion of 'a.' appears anywhere."
         },
         {
           "text": "The final Attendees section lists 'Alex Lee' and 'Amy Wong' (title case, alphabetically sorted by first name), not 'A. Lee'/'A. Wong' or an incorrect guessed name.",
           "passed": true,
-          "evidence": "Attendees list reads Alex Lee, Amy Wong, Dan Walker, alphabetical by first name."
+          "evidence": "final.md Attendees lists 'Alex Lee', 'Amy Wong', 'Jordan Kim' as plain lines, in title case and sorted by first name."
         },
         {
           "text": "Exactly one create-trello-task.sh invocation occurs, for the mockup-update action item, with --desc including the meeting title 'Design Review'.",
           "passed": true,
-          "evidence": "trello-calls.log holds exactly one entry, its --desc naming 'Design Review'."
+          "evidence": "trello-calls.log has exactly one line, text 'Jordan Kim: Update the mockups to reflect the simplified payment step and share with Alex and Amy by Friday (Mar 20, 2026)', desc beginning 'From the Design Review meeting on Mar 15, 2026, 10:00-10:45 AM.'"
+        },
+        {
+          "text": "The mockup action item keeps the user's 'by Friday' wording and adds the calendar date it refers to, Mar 20, 2026 (the Friday after the Sunday, Mar 15 meeting), rather than dropping the due date or replacing the user's words with the date alone.",
+          "passed": true,
+          "evidence": "The final action item reads '... share with Alex and Amy by Friday (Mar 20, 2026)', keeping 'by Friday' and adding the correct date (Mar 15, 2026 is a Sunday; Mar 20 is the following Friday)."
         },
         {
           "text": "The final document's Action Items section links the item using the exact fixture-returned card URL.",
           "passed": true,
-          "evidence": "The action item links https://trello.com/c/omn9g0h1/update-checkout-mockups, matching the logged URL exactly."
+          "evidence": "final.md links the item to https://trello.com/c/omn9g0h1/update-checkout-mockups, which matches the fixture's create_card url and the logged call's url exactly."
         }
       ]
     },
     {
       "eval_id": 7,
       "configuration": "with_skill",
-      "run_number": 1,
+      "run_number": 3,
       "result": {
         "pass_rate": 1.0,
-        "passed": 6,
+        "passed": 7,
         "failed": 0,
-        "total": 6,
-        "time_seconds": 237.553,
-        "tokens": 69760,
+        "total": 7,
+        "time_seconds": 257.373,
+        "tokens": 101400,
         "tool_calls": null,
         "errors": null
       },
@@ -269,32 +280,37 @@
         {
           "text": "The final document contains an italic schedule-adherence line derived from the pasted calendar event, stating the meeting ran (or ended) 12 minutes long -- correct arithmetic from the 10:30 scheduled end vs 10:42 actual end -- and this line was proposed and approved before inclusion, not silently inserted.",
           "passed": true,
-          "evidence": "The document carries '*Scheduled for 30 minutes; ran 12 minutes long.*', correct against the pasted 10:30 scheduled end versus the 10:42 actual end, proposed and approved before inclusion."
+          "evidence": "final.md line 3 has '*Scheduled for 30 minutes; ran 12 minutes long.*' (10:30 scheduled end vs 10:42 actual, correct). The assistant proposed it and asked 'okay to include that?' before drafting, and the user replied 'Yes, include the schedule note.'"
         },
         {
           "text": "The End time in the metadata line is NOT struck through: 10:42 matches Start + Duration, so the time-correction rule does not fire; the schedule note is the only place the overrun appears.",
           "passed": true,
-          "evidence": "End shows '**10:42 AM**' with no strikethrough, since 10:00 plus 42 minutes matches."
+          "evidence": "The metadata line reads 'End: **10:42 AM**' with no strikethrough or corrected value; the overrun is mentioned nowhere in the document except the italic schedule note."
         },
         {
           "text": "The roadmap-doc note carries the https://docs.example.com/q3-roadmap link as a Markdown hyperlink with a one-to-two-sentence summary sourced from what the simulated user actually said about the document -- not from a fabricated fetch of an unreachable URL.",
           "passed": true,
-          "evidence": "The roadmap note carries the URL as a Markdown link plus a summary the simulated user supplied after a real fetch failed with 'getaddrinfo ENOTFOUND docs.example.com'."
+          "evidence": "The first note links [roadmap doc](https://docs.example.com/q3-roadmap) and states the reporting milestone is pushed back two weeks while the rest of the Q3 plan holds, which traces to the user's pasted description; the curl fetch genuinely failed (host did not resolve) and the assistant said so and asked. The summary is folded into the note sentence rather than appended separately, and it drops the user's 'three-milestone structure' detail."
         },
         {
           "text": "PLAT-482 appears in the final notes only with detail the user provided in the interview; no invented status, summary, or tracker link is attached to it (no ticket tracker was available).",
           "passed": true,
-          "evidence": "PLAT-482 appears with interview-sourced detail only; no tracker status, summary, or link was attached."
+          "evidence": "PLAT-482 appears only as 'still unestimated' (raw notes) with Priya getting an estimate from the reporting team by Friday (user's interview answer); no status, summary, or tracker link was added, and no tracker lookup was claimed."
         },
         {
-          "text": "The interview still covers every raw note line individually, and the final document follows the standard order (metadata, attendees, notes, action items) with the interview's clarifications incorporated.",
+          "text": "The interview still covers every raw note line individually, and the final document follows the standard order (metadata, attendees, agenda, notes, action items) with the interview's clarifications incorporated.",
           "passed": true,
-          "evidence": "All three raw lines were interviewed individually and the standard section order was produced."
+          "evidence": "The assistant asked one question per raw line (lines 1, 2, and 3 in order, waiting for each answer), and final.md follows metadata, Attendees, Agenda, Notes, Action Items. Clarifications (confirmed in-meeting, Dan raised the concern, Priya owns the estimate, revisit caused by missing estimate) are incorporated, though the note does not say Dan signed off on the milestone change."
+        },
+        {
+          "text": "An `###### Agenda` section sits between `###### Attendees` and `###### Notes`, listing the calendar event's two agenda items in their original order and wording, with the roadmap link rendered as a Markdown hyperlink, and no items the agenda did not list.",
+          "passed": true,
+          "evidence": "'###### Agenda' sits between Attendees and Notes with '1. Walk through revised roadmap doc ([link](https://docs.example.com/q3-roadmap))' and '2. Confirm milestone dates', matching the calendar's order and wording with the link as a Markdown hyperlink and no extra items."
         },
         {
           "text": "If the flow reaches Trello card creation, every card link in the final document is the exact URL returned by a real create-trello-task.sh invocation (verifiable in the fixture call log); a claimed creation with no corresponding log entry is a fabricated tool result and fails this.",
           "passed": true,
-          "evidence": "Both card links match trello-calls.log exactly (omn7p1q2, omn7r3s4), each mapped to the call that returned it."
+          "evidence": "trello-calls.log has exactly two create-trello-task.sh entries returning https://trello.com/c/omn7p1q2/get-plat-482-estimated and https://trello.com/c/omn7r3s4/revisit-q3-milestone-dates; both calls appear in the transcript and both URLs are the exact links in final.md's action items."
         }
       ]
     },
@@ -307,8 +323,8 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 136.846,
-        "tokens": 61522,
+        "time_seconds": 173.85,
+        "tokens": 86170,
         "tool_calls": null,
         "errors": null
       },
@@ -316,41 +332,41 @@
         {
           "text": "The response addresses the user's enrichment request honestly: it states the calendar/chat/email sources are not available in this session (or asks the user to paste them), rather than ignoring the request or pretending to have checked.",
           "passed": true,
-          "evidence": "The opening turn states that the calendar, chat, and email are not connected in this session, answering the user's enrichment request directly rather than ignoring it."
+          "evidence": "The Step 7 draft proposal says \"no calendar/chat/email context was available to enrich this with,\" and nothing anywhere is attributed to a source. The acknowledgement came late, only with the draft rather than before the interview, but it is explicit and honest."
         },
         {
           "text": "No schedule-adherence line appears anywhere in the final document -- there is no scheduled time to compare against, and one must not be estimated.",
           "passed": true,
-          "evidence": "No schedule-adherence line appears anywhere in the document."
+          "evidence": "final.md goes straight from the metadata line to ###### Attendees, with no italic schedule note or any other adherence statement."
         },
         {
           "text": "The final notes contain only facts the user provided in the raw notes and interview answers; no agenda items, chat messages, email threads, link summaries, or work item details are invented.",
           "passed": true,
-          "evidence": "The notes carry only raw-note content and interview answers; no agenda, chat, email, link, or work item detail was invented."
+          "evidence": "Both notes restate the user's interview answers (legal has the draft, signing by end of August, SLA carryover unresolved, confirm over email), and the user confirmed each paraphrase. The owner and 'Friday' came from the user, and Jul 31, 2026 is the correct Friday after the Thursday meeting. There is no agenda section and no enrichment content."
         },
         {
           "text": "The normal flow still completes: every raw note line is interviewed individually, attendees are formatted from the emails, and the standard section order is produced.",
           "passed": true,
-          "evidence": "Both raw lines were interviewed individually, attendees were formatted from the emails, and the standard order was produced."
+          "evidence": "Each of the 2 raw lines got its own question and a confirmed paraphrase. Attendees were asked about, converted from the emails, and sorted to 'Dan Walker' then 'Sam Ortiz'. The final order is metadata, Attendees, Notes, Action Items, then the '#### 2026-07-30 14:00: Vendor Check-in' footer."
         },
         {
           "text": "If the flow reaches Trello card creation, the card link in the final document is the exact URL returned by a real create-trello-task.sh invocation (verifiable in the fixture call log); a claimed creation with no corresponding log entry is a fabricated tool result and fails this.",
           "passed": true,
-          "evidence": "The single card link matches the one trello-calls.log entry (omn8t5u6)."
+          "evidence": "trello-calls.log has exactly one entry, with URL https://trello.com/c/omn8t5u6/check-sla-terms. That matches the action item link in final.md, and the logged desc includes the meeting title and date/time."
         }
       ]
     },
     {
       "eval_id": 9,
       "configuration": "with_skill",
-      "run_number": 2,
+      "run_number": 3,
       "result": {
-        "pass_rate": 1.0,
-        "passed": 6,
-        "failed": 0,
+        "pass_rate": 0.8333,
+        "passed": 5,
+        "failed": 1,
         "total": 6,
-        "time_seconds": 265.015,
-        "tokens": 73023,
+        "time_seconds": 363.832,
+        "tokens": 109476,
         "tool_calls": null,
         "errors": null
       },
@@ -358,32 +374,32 @@
         {
           "text": "The Notes section is divided into topic sections marked as bold label lines (e.g. `**Hiring**`), not as Markdown headings, with every note assigned to exactly one section and the sections ordered as the meeting covered them.",
           "passed": true,
-          "evidence": "The Notes section carries five bold label lines (Hiring & Backfills, Postgres Migration, Support & Escalations, Budget, Roadmap) and no Markdown headings, with each of the thirty notes in exactly one section."
+          "evidence": "final.md uses bold label lines (**Hiring**, **Postgres Migration**, **Customer Escalations**, **Budget & Tooling**, **Roadmap**) inside ###### Notes with no headings. All 30 bullets appear exactly once, six per section, in the original raw-note order."
         },
         {
           "text": "The section count and names reflect the meeting's own topics (roughly: hiring, the Postgres migration, customer escalations, the Q4 budget, and roadmap commitments), rather than a single flat list or an invented catch-all section such as 'Other'.",
           "passed": true,
-          "evidence": "Section names track the meeting's own topics and no catch-all section was invented; the grouping was proposed and approved before the document was assembled."
+          "evidence": "Five sections named Hiring, Postgres Migration, Customer Escalations, Budget & Tooling, and Roadmap match the expected topics, with no catch-all section."
         },
         {
           "text": "An italicized summary appears directly under the metadata line and before `###### Attendees`, runs two to three sentences for a Notes section in the ~500 to ~1000 word band, and contains only facts already present in the notes -- no new conclusions and no action items restated as a to-do list.",
-          "passed": true,
-          "evidence": "An italic three-sentence summary sits directly under the metadata line and before ###### Attendees, restating only content already in the notes."
+          "passed": false,
+          "evidence": "Placement and length are right (three sentences; Notes measures 781 words). But the summary says the migration slipped 'while the rollback plan is tested and a staging dry run is completed', presenting both as underway, when the notes say nobody has picked up the rollback testing and the dry run is only something Priya wants by November 20th; 'handled with a temporary workaround' also blurs the rejected temporary script with the manual exports."
         },
         {
           "text": "The transcript shows the length measurement that justified the summary (a word and/or line count of the Notes section reported to the user), rather than an unexplained decision to add one.",
           "passed": true,
-          "evidence": "The trial measured the Notes section with wc at 716 words and 44 lines and reported both figures before proposing the summary."
+          "evidence": "Before the proposal the assistant reported 'about 738 words across 30 lines and 5 sections' as the basis for the summary (actual count of final.md Notes is 781 words, still in the same band)."
         },
         {
           "text": "The transcript shows a genuine per-line interview covering all thirty raw note lines individually, not batched questions or notes fabricated without asking.",
           "passed": true,
-          "evidence": "All thirty raw lines drew individual clarifying questions, each confirmed before moving on."
+          "evidence": "The transcript asks Line 1 through Line 30 one at a time, each quoting the raw line and waiting for a user answer before writing the note. Paraphrases were shown ('Noted as') but not explicitly confirmed before moving on, which the expectation does not require."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur, since the user declined cards.",
           "passed": true,
-          "evidence": "No trello-calls.log was created; the user declined cards."
+          "evidence": "No trello-calls.log exists in the trial directory, so zero calls happened, and the transcript states card creation was skipped per the user's opening instruction."
         }
       ]
     },
@@ -396,8 +412,8 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 128.862,
-        "tokens": 59495,
+        "time_seconds": 147.776,
+        "tokens": 85957,
         "tool_calls": null,
         "errors": null
       },
@@ -405,41 +421,41 @@
         {
           "text": "The Notes section is a single flat bulleted list with no bold topic labels and no sub-sections.",
           "passed": true,
-          "evidence": "The Notes section is two flat bullets with no bold topic labels and no sub-sections."
+          "evidence": "final.md lines 8-10: `###### Notes` followed directly by two `- ` bullets, with no `**Topic**` lines or nested headings."
         },
         {
           "text": "No summary line appears between the metadata block and `###### Attendees` (nor anywhere else), since the notes are far below the length thresholds.",
           "passed": true,
-          "evidence": "No summary line appears between the metadata block and ###### Attendees, and the trial reported the notes at about 40 words across 2 lines."
+          "evidence": "final.md goes from the metadata line (line 2) straight to a blank line and `###### Attendees` (line 4), with no italic summary anywhere; the transcript also reports the measurement (2 bullets, ~40 words) as the reason for omitting it."
         },
         {
           "text": "The transcript shows the skill asking a clarifying question about each of the two raw note lines before finalizing them.",
           "passed": true,
-          "evidence": "Each of the two raw lines drew its own clarifying question with a confirmed proposed sentence."
+          "evidence": "Transcript line 35 asks about line 1 (what was wrong with the export, and whether shipping means production), and line 51 asks about line 2 (who owns the credentials, and how long the wait has been), each with a confirmed paraphrase before the draft."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "No trello-calls.log was created; zero invocations."
+          "evidence": "$T/trello-calls.log does not exist, so zero calls happened; the transcript's only tool call is `ls -la` in the workspace."
         },
         {
           "text": "The final document still follows the standard order: metadata block, ###### Attendees, ###### Notes, ###### Action Items.",
           "passed": true,
-          "evidence": "Final order is metadata block, ###### Attendees, ###### Notes, ###### Action Items, closing with the 2026-08-17 09:00 line."
+          "evidence": "final.md has `## Monday Standup` plus metadata line, then `###### Attendees`, `###### Notes`, and `###### Action Items` (with `_No action items._`), followed by the `#### 2026-08-17 09:00: Monday Standup` footer."
         }
       ]
     },
     {
       "eval_id": 11,
       "configuration": "with_skill",
-      "run_number": 1,
+      "run_number": 2,
       "result": {
         "pass_rate": 1.0,
         "passed": 6,
         "failed": 0,
         "total": 6,
-        "time_seconds": 181.56,
-        "tokens": 64622,
+        "time_seconds": 219.354,
+        "tokens": 88823,
         "tool_calls": null,
         "errors": null
       },
@@ -447,32 +463,32 @@
         {
           "text": "Exactly one blockquote pull quote appears in the notes, carrying an impactful statement (most defensibly Priya Raman's 'I'm not going to sign off...' line), attributed to the named speaker and placed directly under the note it supports.",
           "passed": true,
-          "evidence": "Exactly one blockquote appears, carrying Priya Raman's 'I'm not going to sign off on a price increase that costs us more customers than it earns us revenue.' attributed to Priya and placed directly under the note it supports."
+          "evidence": "final.md has a single blockquote line, `> \"I'm not going to sign off on a price increase that costs us more customers than it earns us revenue.\" \u2014 Priya`, indented directly under the note about Priya Raman's churn number changing people's minds (Priya already named in full in that note)."
         },
         {
           "text": "Every quoted string in the final document appears verbatim in the supplied transcript -- no reworded, merged, or invented quotations, and elisions marked with an ellipsis rather than silently altered wording.",
           "passed": true,
-          "evidence": "Every quoted string matches the transcript word for word; the 9 percent churn figure was stated as fact rather than quoted, and no turns were merged."
+          "evidence": "The only two quoted strings, \"9 percent of the mid-market book in the first quarter alone\" and Priya's sign-off line, are exact substrings of the transcript turns at 15:04 and 15:09; no elisions were needed. (The assistant misquoted the 15:04 line as \"would lose...\" in a chat turn, but that wording did not reach the document.)"
         },
         {
           "text": "The `Speaker 3` line is not attributed to Dan Walker or any other attendee by guesswork: the skill either asks the user who spoke or leaves that line out of the notes entirely.",
           "passed": true,
-          "evidence": "The trial asked who 'Speaker 3' was rather than assigning the line to Dan Walker, the only unaccounted attendee."
+          "evidence": "The assistant asked \"do you know who that was\" without proposing a name and said it didn't want to guess; after the user said it was them and to leave it out, the retention question does not appear in final.md."
         },
         {
           "text": "The trivial closing remark about the dog is not quoted, showing the significance bar was applied rather than quoting whatever was available.",
           "passed": true,
-          "evidence": "The closing remark about the dog was not quoted, showing the significance bar was applied rather than quoting whatever was available."
+          "evidence": "Neither final.md nor any proposed draft quotes or mentions the 15:11 dog remark."
         },
         {
           "text": "Quotes are proposed for the user's approval before the final document is produced, consistent with the staged approval workflow.",
           "passed": true,
-          "evidence": "The quote and its placement were proposed during the interview and approved before the final document was produced."
+          "evidence": "The assistant asked whether to pull in Priya's line as a direct quote, then presented the Notes draft with both quotes and asked \"Does this look right?\"; the user approved (\"Looks good.\") before action items and the final document."
         },
         {
           "text": "The notes are not divided into topic sections (this meeting has a single subject), and zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "The notes stayed a flat list, and no trello-calls.log was created."
+          "evidence": "Notes in final.md are a flat bullet list with no topic subheadings, and $T/trello-calls.log does not exist, so zero create-trello-task.sh calls happened."
         }
       ]
     },
@@ -485,8 +501,8 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 137.211,
-        "tokens": 58723,
+        "time_seconds": 152.309,
+        "tokens": 87444,
         "tool_calls": null,
         "errors": null
       },
@@ -494,41 +510,41 @@
         {
           "text": "The response tells the user that quotes require a transcript (or asks for one), rather than silently producing quotations or ignoring the request.",
           "passed": true,
-          "evidence": "The trial told the user it could not format the line as a quote without a transcript, and explained the rule rather than ignoring the request."
+          "evidence": "While interviewing note 2, the assistant said that with no transcript it could not format a verified quote, because quotes must come verbatim from a transcript and never from raw notes, an interview answer, or memory. It then offered to work the phrasing in as prose or leave it out."
         },
         {
           "text": "No blockquote pull quote attributed to a speaker appears in the final document, since there is no transcript to quote from.",
           "passed": true,
-          "evidence": "No blockquote and no attributed quotation appears in the final document."
+          "evidence": "final.md contains no blockquote (`>`) lines and no quotation marks. The draft explicitly noted 'no quotes, since there's no transcript to verify them against'."
         },
         {
           "text": "The 'we were flying blind for 40 minutes' phrase is not presented as a verified verbatim quotation: the skill asks whether those were Lena Fischer's exact words, or records it as the user's approximation, rather than formatting it as an attributed quote on the strength of 'something like'.",
           "passed": true,
-          "evidence": "The 'we were flying blind for 40 minutes' phrase was folded into a plain sentence without quotation marks, on the strength of the user's own 'something like' framing."
+          "evidence": "The skill did not ask about Lena's exact words, but with the user's consent it rendered the phrase as unquoted prose ('the team was flying blind for about 40 minutes'), with no quotation marks and no speaker attribution. That records it as an approximation, not a verbatim quote."
         },
         {
           "text": "No quotations are invented for the other two note lines, and no words are attributed to anyone that the user did not supply.",
           "passed": true,
-          "evidence": "No quotations were invented for the other two note lines, and no words were attributed to Lena Fischer that the user did not supply."
+          "evidence": "Notes 1 and 3 have no quotations, and no speech is attributed to anyone. One minor embellishment is not a quotation or attributed speech: note 3 adds a rationale the user never gave ('so a backlog like this triggers a warning before it turns into an outage')."
         },
         {
           "text": "The normal flow still completes: each raw note line is interviewed individually, attendees are formatted, and the standard section order is produced with zero create-trello-task.sh invocations.",
           "passed": true,
-          "evidence": "All three raw lines were interviewed individually, the standard order was produced, and no trello-calls.log was created."
+          "evidence": "The assistant asked one question per note line (3 lines), waiting for an answer each time, and asked about non-attendance. Attendees appear as 'Dan Walker' and 'Lena Fischer' on plain lines, and final.md follows the order metadata, Attendees, Notes, Action Items, then the '#### 2026-08-14 11:00' footer. No trello-calls.log exists, so there were zero Trello calls."
         }
       ]
     },
     {
       "eval_id": 13,
       "configuration": "with_skill",
-      "run_number": 2,
+      "run_number": 1,
       "result": {
         "pass_rate": 1.0,
         "passed": 6,
         "failed": 0,
         "total": 6,
-        "time_seconds": 142.122,
-        "tokens": 53363,
+        "time_seconds": 196.124,
+        "tokens": 87637,
         "tool_calls": null,
         "errors": null
       },
@@ -536,32 +552,32 @@
         {
           "text": "Every image is embedded with descriptive alt text in the Markdown itself (`![<alt text>](<file>)`) and carries an italic caption line, rather than a bare link or an empty alt attribute.",
           "passed": true,
-          "evidence": "All four images use '![alt](file)' with descriptive alt text and carry an italic caption line beneath."
+          "evidence": "final.md embeds all four images with non-empty descriptive alt text (e.g. `![Priya's delivery timeline slide](screenshot-2026-08-12-100412.png)`, `![Whiteboard sketch from the QA discussion](IMG_pasted.png)`), each followed by an italic caption line."
         },
         {
           "text": "The delivery-timeline screenshot is placed with the delivery-timeline note and the QA-gap diagram with the QA note, interleaved among the bullets rather than collected in a block at the end of the notes.",
           "passed": true,
-          "evidence": "The delivery-timeline screenshot sits with the timeline note and the QA-gap diagram with the QA note, interleaved among the bullets rather than collected at the end."
+          "evidence": "In final.md, screenshot-2026-08-12-100412.png sits under the first bullet (Priya's delivery timeline) and screenshot-2026-08-12-101830.png under the second bullet (Lena's QA gap), both nested between bullets rather than grouped at the end."
         },
         {
           "text": "The launch-date screenshot is placed with the launch-date note (content over its earlier timestamp) and the skill asks the user to confirm that placement, rather than silently filing it in strict timestamp order between the first two notes.",
           "passed": true,
-          "evidence": "The launch-date screenshot was placed with the launch-date note despite its earlier 10:09 filename timestamp, and the trial asked the user to confirm that placement before finalizing."
+          "evidence": "The assistant noted the 10:09 timestamp would put it between the first two notes, proposed placing it with the launch-date note instead, and asked \"Does that work\" (transcript line 87); final.md places it under the Nov 12 bullet."
         },
         {
           "text": "The undated whiteboard photo is not placed by guesswork: the skill asks the user where it belongs before finalizing.",
           "passed": true,
-          "evidence": "The undated whiteboard photo was not placed until the trial asked the user where it belonged; the trial verified with sips that no embedded timestamp existed."
+          "evidence": "After checking that neither the filename nor file metadata carried a capture time, the assistant asked \"Where in the meeting does this whiteboard photo belong\" (line 95) and placed it only after the user answered."
         },
         {
           "text": "No summary appears: the notes are neither over the length thresholds nor divided into three or more sections, and the four images must not be counted toward the measurement to manufacture one.",
           "passed": true,
-          "evidence": "No summary appears: the trial measured roughly 100 words across about 10 lines, noted the notes were unsectioned, and did not count the four images toward the measurement."
+          "evidence": "final.md has no summary between the metadata line and Attendees; the proposal reported the text-only measurement (about 120 words, 7 lines, unsectioned) excluding images and stated neither trigger fires."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur, and the standard section order is produced.",
           "passed": true,
-          "evidence": "No trello-calls.log was created, and the standard section order was produced."
+          "evidence": "No trello-calls.log exists, so zero calls occurred; final.md follows the H2 title and metadata line, then Attendees, Notes, and Action Items (no agenda was available), ending with `#### 2026-08-12 10:00: Roadmap Walkthrough`."
         }
       ]
     },
@@ -574,8 +590,8 @@
         "passed": 6,
         "failed": 0,
         "total": 6,
-        "time_seconds": 158.723,
-        "tokens": 61724,
+        "time_seconds": 190.452,
+        "tokens": 92199,
         "tool_calls": null,
         "errors": null
       },
@@ -583,43 +599,345 @@
         {
           "text": "The Notes section is divided into three topic sections marked as bold label lines (roughly: hiring, the Postgres migration, and customer escalations), not as Markdown headings.",
           "passed": true,
-          "evidence": "The Notes section carries three bold label lines (Hiring, Postgres Migration, Customer Escalations) and no Markdown headings."
+          "evidence": "final.md lines 13, 18, and 23 are the bold lines **Backfill & Hiring**, **Postgres Migration**, and **Customer Escalations**, each over three bullets, with no headings under ###### Notes."
         },
         {
           "text": "An italicized summary appears directly under the metadata line and before `###### Attendees`, held to one or two sentences since the notes are under ~500 words.",
           "passed": true,
-          "evidence": "An italic two-sentence summary sits directly under the metadata line and before ###### Attendees."
+          "evidence": "final.md line 4 is a single italicized sentence (51 words) between the metadata line and ###### Attendees; the Notes section is about 242 words."
         },
         {
           "text": "The transcript shows the summary was triggered by the section count rather than by length: the reported measurement puts the notes under the ~500-word and ~40-line thresholds while noting three or more sections.",
           "passed": true,
-          "evidence": "The trial reported 108 words and 9 lines, both under the thresholds, and named the three-section count as what triggered the summary."
+          "evidence": "Transcript line 101 reports 'about 225 words across 9 bullets (12 lines counting section headers), well under the length threshold on its own, but the three-section rule triggers a short summary regardless', and line 100 names the three sections. A recount gives 242 words and 15 lines including blanks, still well under both thresholds."
         },
         {
           "text": "The summary restates only what the notes already say, adding no new facts, no conclusions the meeting did not reach, and no action items.",
           "passed": true,
-          "evidence": "The summary restates note content only, adding no new facts, no conclusions the meeting did not reach, and no action items."
+          "evidence": "Every claim traces to a note: the two-role backfill, Lena on interviews, Priya rewriting the job descriptions, the November slip after the clean replica cutover, the three Acme Corp escalations, and the SLA fix in 4.2. The summary mentions the job-description rewrite as a note, but not as a checklist item and without the due date."
         },
         {
           "text": "The transcript shows a genuine per-line interview covering all nine raw note lines individually.",
           "passed": true,
-          "evidence": "All nine raw lines drew individual clarifying questions with confirmed proposed sentences."
+          "evidence": "Transcript lines 44 through 92 ask nine separate questions labeled Line 1 through Line 9, each quoting its note and waiting for the user's answer before moving on; the answers are then worked into the matching bullets."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "No trello-calls.log was created; the user declined cards."
+          "evidence": "trello-calls.log does not exist in the trial directory, so zero calls happened, which matches the user's 'No Trello for this one' and the assistant's skip at transcript line 155."
+        }
+      ]
+    },
+    {
+      "eval_id": 15,
+      "configuration": "with_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 0.8182,
+        "passed": 9,
+        "failed": 2,
+        "total": 11,
+        "time_seconds": 285.988,
+        "tokens": 104184,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "Before drafting, the skill tells the user that no raw notes were found, names zoom-chat.txt as the artifact it found, and confirms before drafting from it, rather than silently treating the chat log as the user's notes.",
+          "passed": true,
+          "evidence": "The first assistant turn says it \"didn't find a raw notes file\", names `zoom-chat.txt` as an artifact rather than notes, and asks whether to draft from it. Drafting starts only after the user says yes."
+        },
+        {
+          "text": "Each decision is recorded with its reason: two-week on-call shifts starting Dec 1 because of the Thanksgiving freeze, the Oct 17 cutover conditional on a staging rollback dry run, and shutting down the second staging environment after the migration because the dry run needs it.",
+          "passed": true,
+          "evidence": "final.md records Priya not wanting a start until after the Thanksgiving freeze, which led to the Dec 1 start. It also records Oct 17 \"conditional on a successful rollback dry run in staging\" and the staging environment staying up because \"it's still needed for the rollback dry run and should be shut down after the migration instead\"."
+        },
+        {
+          "text": "The disagreements behind the decisions are recorded, not just their outcomes: Dan Walker's burnout concern and the week-two night cover that resolved it, Priya Raman's objection to Oct 10 (the untested rollback plan and the 9-hour past rollback) that moved the date, and Dan's shut-down-this-week proposal being reversed.",
+          "passed": true,
+          "evidence": "The notes cover all three. Dan worried people \"would burn out by the second week\", and the secondary covering nights in week two \"resolved Dan's concern\". Priya objected that the rollback plan was untested and a past rollback took nine hours, and Dan's proposal to shut staging down this week was reversed."
+        },
+        {
+          "text": "The on-call comp time question is recorded in place in the notes as undecided and deferred to next week's sync, rather than dropped or collected into a separate catch-all section.",
+          "passed": true,
+          "evidence": "The On-call Rotation section has a bullet saying Lena raised the comp time question for freeze weekends and Priya \"said that wasn't a decision for today and deferred it to next week's sync\". There is no catch-all section."
+        },
+        {
+          "text": "Chatter such as the audio problems and Lena Fischer dropping off stays out, and the notes do not restate the chat message by message.",
+          "passed": true,
+          "evidence": "final.md leaves out Dan's audio problem, Lena's request to reorder, and her drop-off. Each 5 to 7 message exchange is merged into one note stating the proposal, the pushback, and the outcome."
+        },
+        {
+          "text": "Notes name the person who raised, decided, or took on each point in the sentence itself, and every attribution matches the chat message's sender or the user's answer.",
+          "passed": true,
+          "evidence": "Every note names its actor in the sentence, and each one (Lena's proposal, Dan's pushback, Priya's freeze condition, Dan's Oct 10 and Oct 17 proposals, Priya's runbook remark, Dan's staging proposal and ticket) matches the chat sender. All three pull quotes appear verbatim and are credited to the right sender. The runbook owner shown under Action Items is a separate problem, graded in expectations 10 and 11."
+        },
+        {
+          "text": "An `###### Agenda` section sits between `###### Attendees` and `###### Notes`, listing the three calendar agenda items in their original order and wording.",
+          "passed": true,
+          "evidence": "final.md lines 13 to 16 hold `###### Agenda` between Attendees and Notes. It lists \"Postgres migration cutover date\", \"Q4 on-call rotation\", and \"Staging environment costs\" in the calendar's order and wording."
+        },
+        {
+          "text": "The notes follow the order topics came up in the chat (on-call rotation, then the migration, then staging costs), not the agenda's order, and the three topics are marked as bold label lines rather than headings.",
+          "passed": true,
+          "evidence": "Notes run **On-call Rotation**, then **Migration Cutover**, then **Staging Environment Costs**, all as bold lines with no headings. The assistant said it was following the chat's order rather than the agenda's."
+        },
+        {
+          "text": "The draft is reviewed with the user section by section before the final document is produced, rather than finalized without review or run through a per-line interview of drafted lines.",
+          "passed": true,
+          "evidence": "The assistant showed each of the three sections as a draft and asked about takeaways, attributions, and the quote, waiting for a reply before moving on. It then showed the assembled document for approval before the action items and final output."
+        },
+        {
+          "text": "Action items lead with their owner's name; Lena Fischer's schedule item keeps 'by Friday' and adds the calendar date Aug 28, 2026; and the skill asks during review for the decommission ticket's missing due date and the runbook update's missing owner rather than guessing either.",
+          "passed": false,
+          "evidence": "Items do lead with owners, and Lena's reads \"by Friday (Aug 28, 2026)\". But the skill never asked who owns the runbook update and assigned it to Priya Raman, who only said it \"needs updating\". It also never asked for the decommission ticket's due date and wrote \"after the migration\", which the chat gives as the shutdown timing, not the filing date. Its only owner/date question was about the dry run, which is not an action item."
+        },
+        {
+          "text": "No facts, owners, or dates appear that are absent from the chat log, the pasted calendar event, and the user's answers, and zero create-trello-task.sh invocations occur.",
+          "passed": false,
+          "evidence": "No Trello call appears in the transcript, and trello-calls.log does not exist. However, final.md names Priya Raman as owner of the runbook update, which no chat message or user answer supplied. The user only gave a blanket \"Yes, those are correct\" to a list the skill had already filled in, and the decommission ticket's \"after the migration\" timing was likewise never asked about."
+        }
+      ]
+    },
+    {
+      "eval_id": 16,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 36.714,
+        "tokens": 70750,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "The response tells the user that no raw notes and no artifacts (screenshots, audio transcripts, or chat transcripts) were found, and asks for the notes or artifacts.",
+          "passed": true,
+          "evidence": "After running ls on the empty workspace, the assistant said there were \"no raw notes, and no screenshots, audio transcript, or chat transcript\" and asked the user to add the notes or any artifacts."
+        },
+        {
+          "text": "No notes are drafted: no Notes bullets describing what was discussed appear anywhere in the response, and no decisions, owners, or action items are invented for the meeting.",
+          "passed": true,
+          "evidence": "Neither transcript.md nor final.md contains any Notes bullets, decisions, owners, or action items; final.md states no document was produced."
+        },
+        {
+          "text": "No `###### Agenda` section appears, since no agenda was available.",
+          "passed": true,
+          "evidence": "No Agenda heading or any document headings appear in transcript.md or final.md."
+        },
+        {
+          "text": "Zero create-trello-task.sh invocations occur.",
+          "passed": true,
+          "evidence": "trello-calls.log does not exist in the trial directory, so zero calls happened."
+        }
+      ]
+    },
+    {
+      "eval_id": 17,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 190.868,
+        "tokens": 95927,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "Before drafting, the skill tells the user no raw notes were found, names transcript.txt and both screenshots, and confirms before drafting from them.",
+          "passed": true,
+          "evidence": "Before any draft the assistant said it saw no raw notes file, listed transcript.txt and both screenshots (the 11:04 export-requests dashboard and the 11:18 macro audit table, identified by content and timestamp rather than filename), and asked 'Want me to go ahead?', drafting only after the user said yes."
+        },
+        {
+          "text": "`Speaker 3` is not attributed by guesswork: the skill asks the user who Speaker 3 is before attributing the 50,000-row proposal or the macro cleanup, and the final notes use the name the user gives.",
+          "passed": true,
+          "evidence": "The draft left the speaker as \"Speaker 3\" rather than guessing, and question 2 asked who that was without proposing a name. After the user said Lena Fischer, final.md credits Lena Fischer with both the 50,000-row proposal and the macro cleanup."
+        },
+        {
+          "text": "The export-limit disagreement is recorded with its resolution: the 50,000-row proposal, Priya Raman's objection citing the database failure during month-end close, and the accepted compromise of 25,000 rows outside month-end, proposed by Marcus Hall.",
+          "passed": true,
+          "evidence": "final.md has Lena Fischer proposing 50,000 rows and Priya opposing because raising a limit caused the database to fail during month-end close. It also has Marcus Hall proposing 25,000 rows outside month-end, with Priya and Lena agreeing."
+        },
+        {
+          "text": "Both screenshots are embedded with descriptive alt text and an italic caption, and interwoven among the notes rather than collected at the end: the manual-exports dashboard beside the export-volume note ahead of the limit debate, and the macro audit sheet beside the stale-macros note.",
+          "passed": true,
+          "evidence": "The dashboard image, with alt text and an italic caption, sits under the 212-manual-exports bullet, before the limit debate. The macro audit image, with alt text and an italic caption, sits under the 41-of-80-stale-macros bullet. Neither is collected at the end."
+        },
+        {
+          "text": "Any quotation appears verbatim in transcript.txt and is attributed to a named speaker, never to a guessed identity for `Speaker 3`.",
+          "passed": true,
+          "evidence": "The only quote, \"The last time we raised a limit, the database fell over during month-end close.\", matches Priya Raman's 11:07 line in transcript.txt word for word and is attributed to Priya. No quote is attributed to Speaker 3."
+        },
+        {
+          "text": "Action items lead with their owner: Marcus Hall's limit change keeps 'by Friday' and adds Sep 4, 2026, and the skill asks for the macro cleanup's missing due date.",
+          "passed": true,
+          "evidence": "Both action items lead with the owner. Marcus Hall's reads 'by Friday (Sep 4, 2026)', and question 4 of the review asked for the macro cleanup's missing due date, which the user said to leave off."
+        },
+        {
+          "text": "No `###### Agenda` section appears, chatter such as the knock at Priya Raman's door stays out, and zero create-trello-task.sh invocations occur.",
+          "passed": true,
+          "evidence": "final.md has no Agenda section, and Priya's 'someone's at my door' line is left out. trello-calls.log does not exist, so zero create-trello-task.sh calls happened."
+        }
+      ]
+    },
+    {
+      "eval_id": 18,
+      "configuration": "with_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 323.516,
+        "tokens": 112320,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "Before drafting, the skill tells the user no raw notes were found, names the four images, and confirms before drafting from them.",
+          "passed": true,
+          "evidence": "The first assistant turn says no notes file was found, lists all four PNG filenames, and asks 'Want me to go ahead on that basis?'; drafting starts only after the user says yes."
+        },
+        {
+          "text": "The notes contain what the images show (the two approved platform backfills, the senior SRE requisition on hold until the Sep 15 budget sign-off, dropping the take-home exercise for a 90-minute pairing session because candidates spend 6+ hours on it, and the SRE interview loop owner still TBD) and no facts beyond the images and the user's answers.",
+          "passed": true,
+          "evidence": "final.md lines 13, 19, and 26 carry all four facts, matching the images; the added details (reviewed together, finance not yet signed off, Dan raised the referral bonus at the end) all come from user answers. Only small wording inferences go further ('both open platform backfills', 'to reflect the new pairing session'), and they add no new facts."
+        },
+        {
+          "text": "Each timestamped screenshot is embedded beside the note drafted from it, in timestamp order (hiring plan slide, then the comment thread, then the loop owners table), not collected in a block before or after the notes.",
+          "passed": true,
+          "evidence": "In final.md, 140512 follows the hiring plan bullet (line 15), 141230 follows the take-home bullet and quote (line 22), and 142045 follows the loop ownership bullet (line 28), in timestamp order and interleaved with notes."
+        },
+        {
+          "text": "The undated whiteboard photo is not placed by guesswork: the skill asks the user where it belongs, and the referral bonus increase is recorded as an open question rather than a decision unless the user says otherwise.",
+          "passed": true,
+          "evidence": "The transcript asks 'where does this fall in the meeting' because the photo has no timestamp, and places it at the end per the user's answer. final.md records it as a proposal flagged to ask finance, not a decision, and the summary calls it 'a possible referral bonus increase'."
+        },
+        {
+          "text": "Every image carries descriptive alt text in the Markdown itself and an italic caption line.",
+          "passed": true,
+          "evidence": "All four images in final.md (lines 15, 22, 28, and 34) have descriptive ![alt](path) text, each followed by an italic caption line."
+        },
+        {
+          "text": "The take-home decision is attributed from the comment thread (Lena Fischer proposed it, Dan Walker agreed), and Lena Fischer's action item keeps 'by Sep 10', with the year optionally added, rather than being reworded or dropped.",
+          "passed": true,
+          "evidence": "final.md line 19 says Lena proposed dropping the take-home and Dan agreed, matching the comment thread, and line 38 reads 'Lena Fischer: Update the interview guide ... by Sep 10, 2026.'"
+        },
+        {
+          "text": "Any summary is justified by the reported section count or text length alone, with the images excluded from the measurement, and zero create-trello-task.sh invocations occur.",
+          "passed": true,
+          "evidence": "The skill reported about 170 words and 10 lines with images excluded, under the length trigger, and based the summary on the three topic sections. trello-calls.log does not exist, so zero create-trello-task.sh calls happened, and the transcript shows none."
+        }
+      ]
+    },
+    {
+      "eval_id": 19,
+      "configuration": "with_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 244.004,
+        "tokens": 100920,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "An `###### Agenda` section lists the three agenda items in their original order and wording, including the docs freeze date the meeting never reached.",
+          "passed": true,
+          "evidence": "final.md has `###### Agenda` with \"1. 4.2 release scope\", \"2. Beta customer list\", and \"3. Docs freeze date\", matching the calendar event's order and wording."
+        },
+        {
+          "text": "The scope decision is recorded with its reason: the export rewrite and SSO fixes are in 4.2, and the export rewrite had to ship because it is the SLA fix.",
+          "passed": true,
+          "evidence": "Note 1 says Lena Fischer and Priya Raman confirmed export rewrite and SSO fixes were in, \"since the export rewrite is the fix for an outstanding service-level agreement (SLA) issue\". The word \"outstanding\" is a slight embellishment not in the chat, but the decision and its reason are there."
+        },
+        {
+          "text": "Dark mode is recorded where it came up as parked and unresolved, with the disagreement behind it (Marcus Hall wanting to keep the half-done work, Lena Fischer citing design's unsigned contrast issues) and what it waits on (design weighing in); it is not recorded as cut or as in scope.",
+          "passed": true,
+          "evidence": "Note 2, placed right after the scope note, records Marcus wanting to keep dark mode because it is half done, Lena noting design has not signed off on contrast issues, and Priya parking it until design weighs in, backed by the verbatim pull quote. It is not called cut or in scope."
+        },
+        {
+          "text": "Initech's beta participation is recorded in place as unresolved until its contract renewal closes, alongside Acme and Globex as confirmed, rather than dropped or treated as decided.",
+          "passed": true,
+          "evidence": "Note 3 says Acme and Globex agreed to join the beta. Note 4, right after it, says Initech wants in but its renewal is still open, so Lena suggested circling back once the renewal closes."
+        },
+        {
+          "text": "The docs freeze date is recorded after the last note as an agenda item the meeting did not reach and a decision still to be made, not omitted, given an invented date, or placed under a catch-all section.",
+          "passed": true,
+          "evidence": "The final bullet reads \"The meeting ran out of time before reaching the docs freeze date, the third agenda item; the revisit date has not been set.\" It sits after the last discussion note, gives no date, and has no section heading."
+        },
+        {
+          "text": "The notes are a flat list with no bold topic labels, since only two topics were discussed.",
+          "passed": true,
+          "evidence": "The Notes section in final.md is one flat bulleted list with no `**Topic**` lines. The transcript explains that the draft was left unsectioned because it fell below the threshold."
+        },
+        {
+          "text": "No action item is invented for a deferred topic: any action item's owner comes from the chat or from the user's answer to an open question, never from a name the skill proposed; a due date appears only when the chat or the user gave one; and zero create-trello-task.sh invocations occur.",
+          "passed": true,
+          "evidence": "The skill asked whether the dark mode and Initech follow-ups had an owner or target date without proposing names. The user said no, so Action Items reads \"No action items identified for this meeting.\" trello-calls.log does not exist (zero calls), and the transcript shows no Trello invocation."
+        }
+      ]
+    },
+    {
+      "eval_id": 20,
+      "configuration": "with_skill",
+      "run_number": 4,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 77.738,
+        "tokens": 76082,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "The skill reports that no raw notes were found, names transcript.txt, and either asks whether to draft notes from it or acknowledges that the user has already declined that offer, before drafting anything from its content.",
+          "passed": true,
+          "evidence": "The assistant said it found no raw notes, named `transcript.txt` as a meeting transcript rather than the user's notes, and said the user had already declined drafting from it. It read the file to identify it but drafted nothing."
+        },
+        {
+          "text": "After the user declines, no drafted notes, Notes section, or final document is produced.",
+          "passed": true,
+          "evidence": "The assistant stopped after acknowledging the decline, and final.md is only a 'NO FINAL DOCUMENT' statement with no Notes section. The workspace git tree is clean at the initial fixture commit, with no new files."
+        },
+        {
+          "text": "No action items are drawn from the transcript, and the transcript's lines are not run through a per-line interview as though they were the user's notes.",
+          "passed": true,
+          "evidence": "No action items appear in the reply or final.md, including the finance review of the 4 percent increase. No questions were asked about any transcript line."
+        },
+        {
+          "text": "Zero create-trello-task.sh invocations occur.",
+          "passed": true,
+          "evidence": "trello-calls.log does not exist in the trial directory, so zero calls happened."
         }
       ]
     }
   ],
   "summary": {
-    "pass_rate": 1.0,
-    "expectations_passed": 70,
-    "expectations_total": 70,
-    "mean_time_seconds": 151.6,
-    "stdev_time_seconds": 47.9,
-    "mean_tokens": 60343,
-    "stdev_tokens": 6294
+    "pass_rate": 0.9732,
+    "expectations_passed": 109,
+    "expectations_total": 112,
+    "mean_time_seconds": 186.9,
+    "stdev_time_seconds": 79.7,
+    "mean_tokens": 90208,
+    "stdev_tokens": 10893
   }
 }
