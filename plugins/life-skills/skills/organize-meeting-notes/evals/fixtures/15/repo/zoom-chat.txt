@@ -1,0 +1,20 @@
+10:01:12 From Lena Fischer to Everyone: can we do on-call first? I have to drop at 10:30
+10:01:40 From Priya Raman to Everyone: works for me
+10:03:05 From Dan Walker to Everyone: sorry, my audio keeps cutting out
+10:06:22 From Lena Fischer to Everyone: Proposal for Q4 rotation: move from weekly to two-week shifts, primary and secondary pairs https://docs.example.com/oncall-q4
+10:07:50 From Dan Walker to Everyone: two weeks is a long time to carry the pager, I'm worried people burn out by week two
+10:09:48 From Priya Raman to Everyone: I'm fine with two-week shifts, but not starting until after the Thanksgiving freeze, nobody should learn a new rotation during a freeze
+10:11:02 From Lena Fischer to Everyone: fair. two-week shifts starting Dec 1, and the secondary covers nights in week two so nobody carries it alone. I'll publish the schedule by Friday
+10:11:30 From Dan Walker to Everyone: ok, with the week-two night cover I'm on board
+10:14:30 From Priya Raman to Everyone: Migration: read replicas are cut over, primary cutover still needs a date
+10:16:10 From Dan Walker to Everyone: I'd like to do it the weekend of Oct 10
+10:17:45 From Priya Raman to Everyone: Oct 10 worries me a lot, the rollback plan has never been tested and last time a rollback took us 9 hours
+10:18:02 From Dan Walker to Everyone: fair, then Oct 17, and only if the rollback dry run passes in staging first
+10:19:40 From Priya Raman to Everyone: Oct 17 it is, conditional on the dry run
+10:21:11 From Priya Raman to Everyone: the runbook needs updating before the cutover too
+10:24:30 From Lena Fischer to Everyone: we should also decide whether on-call gets comp time for the freeze weekends
+10:25:05 From Priya Raman to Everyone: not today, let's take that to next week's sync
+10:29:55 From Lena Fischer to Everyone: dropping off, thanks all
+10:33:20 From Dan Walker to Everyone: Staging costs: second staging env is $4,200/month, mostly idle. I say we shut it down this week
+10:36:45 From Priya Raman to Everyone: can't, we need it for the rollback dry run. shut it down after the migration
+10:37:30 From Dan Walker to Everyone: ok, after the migration then. I'll file the decommission ticket

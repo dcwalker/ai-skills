@@ -1,0 +1,11 @@
+09:02 From Marcus Hall to Everyone: 4.2 scope: export rewrite, SSO fixes, and dark mode are the candidates
+09:05 From Lena Fischer to Everyone: export rewrite has to ship, it's the SLA fix
+09:06 From Priya Raman to Everyone: agreed, export rewrite and SSO fixes are in
+09:09 From Marcus Hall to Everyone: dark mode is half done, I'd hate to cut it
+09:11 From Lena Fischer to Everyone: design hasn't signed off on the contrast issues though
+09:12 From Priya Raman to Everyone: let's parking-lot dark mode until design weighs in
+09:18 From Priya Raman to Everyone: beta list: Acme and Globex have said yes
+09:20 From Marcus Hall to Everyone: Initech wants in but their contract renewal is still open
+09:21 From Lena Fischer to Everyone: let's circle back on Initech once the renewal closes
+09:28 From Priya Raman to Everyone: we're out of time, sorry all
+09:28 From Marcus Hall to Everyone: bye
