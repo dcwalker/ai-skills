@@ -373,10 +373,22 @@ Summary rule (based on read length):
   - ~500 to ~1000 words, or ~40 to ~80 lines: two to three sentences.
   - Over ~1000 words or ~80 lines: up to five sentences, or one short bullet
     per topic section.
-- The summary may only restate what the notes already say. It must not add
-  facts, draw a conclusion the meeting did not reach, connect facts by a cause
-  or effect the notes do not state (for example "driving" or "covering"), or
-  list action items. It also leaves out logistics, such as a reordered agenda.
+- Write the summary as short prose that represents the notes, built from the
+  approved notes rather than from a recollection of the meeting:
+  1. Choose the outcomes it will carry, within the sentence limit above: the
+     most consequential decisions, disagreements, and unresolved topics,
+     favoring one per topic section. Leave out action items and logistics,
+     such as a reordered agenda.
+  2. Give each chosen outcome its own sentence, drawn from a single note. Keep
+     that note's subject and verb so its status survives: a proposal stays
+     proposed, an approval stays approved, a wish stays a wish, an open
+     question stays open. A sentence may give a reason or consequence only
+     when the same note states it.
+  3. Write it as prose, not a list. Vary how the sentences open and build, use
+     no semicolons, and never build a sentence by chaining clauses with "and".
+  4. Before proposing it in Step 7, check each sentence against its note, name
+     the note each sentence came from, and rewrite any sentence whose subject,
+     verb, or claim that note does not support.
 - Report the measurement (the word and line count, and the section count when
   the notes are sectioned) when proposing the document in Step 7, so the user
   can see why a summary was or was not added.

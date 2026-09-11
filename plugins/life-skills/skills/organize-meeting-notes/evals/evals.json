@@ -104,6 +104,7 @@
         "The section count and names reflect the meeting's own topics (roughly: hiring, the Postgres migration, customer escalations, the Q4 budget, and roadmap commitments), rather than a single flat list or an invented catch-all section such as 'Other'.",
         "An italicized summary appears directly under the metadata line and before `###### Attendees`, runs two to three sentences for a Notes section in the ~500 to ~1000 word band, and contains only facts already present in the notes -- no new conclusions and no action items restated as a to-do list.",
         "The transcript shows the length measurement that justified the summary (a word and/or line count of the Notes section reported to the user), rather than an unexplained decision to add one.",
+        "The summary reads as prose rather than a list: it contains no semicolons, and no sentence is built by chaining clauses together with 'and'.",
         "The transcript shows a genuine per-line interview covering all thirty raw note lines individually, not batched questions or notes fabricated without asking.",
         "Zero create-trello-task.sh invocations occur, since the user declined cards."
       ]
@@ -167,6 +168,7 @@
         "An italicized summary appears directly under the metadata line and before `###### Attendees`, held to one or two sentences since the notes are under ~500 words.",
         "The transcript shows the summary was triggered by the section count rather than by length: the reported measurement puts the notes under the ~500-word and ~40-line thresholds while noting three or more sections.",
         "The summary restates only what the notes already say, adding no new facts, no conclusions the meeting did not reach, and no action items.",
+        "The summary reads as prose rather than a list: it contains no semicolons, and no sentence is built by chaining clauses together with 'and'.",
         "The transcript shows a genuine per-line interview covering all nine raw note lines individually.",
         "Zero create-trello-task.sh invocations occur."
       ]

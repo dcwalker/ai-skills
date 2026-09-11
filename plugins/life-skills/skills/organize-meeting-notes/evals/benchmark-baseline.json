@@ -4,7 +4,7 @@
     "skill_path": "plugins/life-skills/skills/organize-meeting-notes",
     "executor_model": "claude-sonnet-5",
     "analyzer_model": "claude-opus-5",
-    "timestamp": "2026-09-10T23:52:14Z",
+    "timestamp": "2026-09-11T01:20:28Z",
     "evals_run": [
       1,
       2,
@@ -359,14 +359,14 @@
     {
       "eval_id": 9,
       "configuration": "with_skill",
-      "run_number": 3,
+      "run_number": 7,
       "result": {
-        "pass_rate": 0.8333,
-        "passed": 5,
-        "failed": 1,
-        "total": 6,
-        "time_seconds": 363.832,
-        "tokens": 109476,
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 383.681,
+        "tokens": 109305,
         "tool_calls": null,
         "errors": null
       },
@@ -374,32 +374,141 @@
         {
           "text": "The Notes section is divided into topic sections marked as bold label lines (e.g. `**Hiring**`), not as Markdown headings, with every note assigned to exactly one section and the sections ordered as the meeting covered them.",
           "passed": true,
-          "evidence": "final.md uses bold label lines (**Hiring**, **Postgres Migration**, **Customer Escalations**, **Budget & Tooling**, **Roadmap**) inside ###### Notes with no headings. All 30 bullets appear exactly once, six per section, in the original raw-note order."
+          "evidence": "final.md uses five bold label lines inside ###### Notes with no headings. All 30 bullets appear exactly once, and both section order and within-section order follow the raw notes. Caveat: the travel-budget note (line 24) sits under Roadmap & Q4 Priorities instead of Budget & Tooling."
         },
         {
           "text": "The section count and names reflect the meeting's own topics (roughly: hiring, the Postgres migration, customer escalations, the Q4 budget, and roadmap commitments), rather than a single flat list or an invented catch-all section such as 'Other'.",
           "passed": true,
-          "evidence": "Five sections named Hiring, Postgres Migration, Customer Escalations, Budget & Tooling, and Roadmap match the expected topics, with no catch-all section."
+          "evidence": "The five sections are Hiring & Recruiting, Postgres Migration, Support Coverage & Customer Escalations, Budget & Tooling, and Roadmap & Q4 Priorities. These map onto the expected topics, and there is no catch-all section. The 'Support Coverage' wording was added to hold the vendor contract and freeze window notes."
         },
         {
           "text": "An italicized summary appears directly under the metadata line and before `###### Attendees`, runs two to three sentences for a Notes section in the ~500 to ~1000 word band, and contains only facts already present in the notes -- no new conclusions and no action items restated as a to-do list.",
-          "passed": false,
-          "evidence": "Placement and length are right (three sentences; Notes measures 781 words). But the summary says the migration slipped 'while the rollback plan is tested and a staging dry run is completed', presenting both as underway, when the notes say nobody has picked up the rollback testing and the dry run is only something Priya wants by November 20th; 'handled with a temporary workaround' also blurs the rejected temporary script with the manual exports."
+          "passed": true,
+          "evidence": "A three-sentence italic summary sits on line 4, between the metadata line and ###### Attendees, and the Notes section measures 789 words. Each sentence traces to one note. The only stretch is that sentence 3 uses 'since' to present the contract-penalty risk as the reason the rewrite is the only hard-dated item, a causal link the note does not state."
         },
         {
           "text": "The transcript shows the length measurement that justified the summary (a word and/or line count of the Notes section reported to the user), rather than an unexplained decision to add one.",
           "passed": true,
-          "evidence": "Before the proposal the assistant reported 'about 738 words across 30 lines and 5 sections' as the basis for the summary (actual count of final.md Notes is 781 words, still in the same band)."
+          "evidence": "Before the draft, the assistant reported 'roughly 720 words across 35 lines (30 notes + 5 section headers)' and five topic sections, and tied the summary to those numbers. The actual count is 789 words and 35 lines, so the word figure is low, but it still falls in the same 500 to 1000 band."
+        },
+        {
+          "text": "The summary reads as prose rather than a list: it contains no semicolons, and no sentence is built by chaining clauses together with 'and'.",
+          "passed": true,
+          "evidence": "The summary contains zero semicolons and does not use the word 'and' at all. It is three prose sentences, each opening differently."
         },
         {
           "text": "The transcript shows a genuine per-line interview covering all thirty raw note lines individually, not batched questions or notes fabricated without asking.",
           "passed": true,
-          "evidence": "The transcript asks Line 1 through Line 30 one at a time, each quoting the raw line and waiting for a user answer before writing the note. Paraphrases were shown ('Noted as') but not explicitly confirmed before moving on, which the expectation does not require."
+          "evidence": "The transcript has thirty separate turns labeled 'Line 1 of 30' through 'Line 30 of 30'. Each asks about a single raw line, waits for the answer, and gets the paraphrase confirmed before moving on."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur, since the user declined cards.",
           "passed": true,
-          "evidence": "No trello-calls.log exists in the trial directory, so zero calls happened, and the transcript states card creation was skipped per the user's opening instruction."
+          "evidence": "trello-calls.log does not exist, so no real calls happened. The transcript agrees: the assistant reconfirmed the skip and reported 'No Trello cards created.'"
+        }
+      ]
+    },
+    {
+      "eval_id": 9,
+      "configuration": "with_skill",
+      "run_number": 8,
+      "result": {
+        "pass_rate": 0.7143,
+        "passed": 5,
+        "failed": 2,
+        "total": 7,
+        "time_seconds": 353.912,
+        "tokens": 111493,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "The Notes section is divided into topic sections marked as bold label lines (e.g. `**Hiring**`), not as Markdown headings, with every note assigned to exactly one section and the sections ordered as the meeting covered them.",
+          "passed": true,
+          "evidence": "final.md marks sections with bold label lines (**Hiring**, **Postgres Migration**, **Vendor Support**, **Customer Escalations**, **Budget**, **Roadmap**) inside ###### Notes, with no headings. All 30 bullets are assigned once (6+4+2+6+6+6) and appear in raw-note order."
+        },
+        {
+          "text": "The section count and names reflect the meeting's own topics (roughly: hiring, the Postgres migration, customer escalations, the Q4 budget, and roadmap commitments), rather than a single flat list or an invented catch-all section such as 'Other'.",
+          "passed": false,
+          "evidence": "The document has six sections, not the meeting's five: lines 11 and 12 were split out of the migration into a separate 'Vendor Support' section. The user tied both to the migration, saying renewal 'is tied to the freeze window discussion' and the freeze is 'around the migration and the holidays'."
+        },
+        {
+          "text": "An italicized summary appears directly under the metadata line and before `###### Attendees`, runs two to three sentences for a Notes section in the ~500 to ~1000 word band, and contains only facts already present in the notes -- no new conclusions and no action items restated as a to-do list.",
+          "passed": true,
+          "evidence": "A three-sentence italic summary sits directly under the metadata line and before ###### Attendees, and the Notes section measures 690 words. Each sentence traces to an approved note (roadmap trimmed to five, migration slipped to November, Acme SLA breach), and no action items are restated."
+        },
+        {
+          "text": "The transcript shows the length measurement that justified the summary (a word and/or line count of the Notes section reported to the user), rather than an unexplained decision to add one.",
+          "passed": true,
+          "evidence": "Before the draft, the assistant reported 'about 690 words across 30 bullets in 6 sections' against the 500-word and 3-section thresholds. That matches a measured 690 words in final.md's Notes section."
+        },
+        {
+          "text": "The summary reads as prose rather than a list: it contains no semicolons, and no sentence is built by chaining clauses together with 'and'.",
+          "passed": false,
+          "evidence": "There are no semicolons, but sentence 3 chains two clauses with 'and': 'with exports that should take an hour running most of a day and the customer threatening to escalate to their executive sponsor'. Those are two separate subject-plus-verb units joined by 'and'."
+        },
+        {
+          "text": "The transcript shows a genuine per-line interview covering all thirty raw note lines individually, not batched questions or notes fabricated without asking.",
+          "passed": true,
+          "evidence": "The transcript asks a separate question for each of Lines 1 through 30, in order, and waits for an answer each time. Every rewritten note is built from the user's reply to its line."
+        },
+        {
+          "text": "Zero create-trello-task.sh invocations occur, since the user declined cards.",
+          "passed": true,
+          "evidence": "trello-calls.log does not exist, so zero create-trello-task.sh calls happened. The transcript shows no Trello invocation and says the step was skipped because the user declined."
+        }
+      ]
+    },
+    {
+      "eval_id": 9,
+      "configuration": "with_skill",
+      "run_number": 9,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 331.182,
+        "tokens": 110451,
+        "tool_calls": null,
+        "errors": null
+      },
+      "expectations": [
+        {
+          "text": "The Notes section is divided into topic sections marked as bold label lines (e.g. `**Hiring**`), not as Markdown headings, with every note assigned to exactly one section and the sections ordered as the meeting covered them.",
+          "passed": true,
+          "evidence": "final.md groups all 30 notes under five bold label lines (**Hiring**, **Postgres Migration**, **Escalations**, **Q4 Budget**, **Roadmap**), not headings. Each section holds six notes, and the notes keep the raw order, so the sections follow the order the meeting covered them."
+        },
+        {
+          "text": "The section count and names reflect the meeting's own topics (roughly: hiring, the Postgres migration, customer escalations, the Q4 budget, and roadmap commitments), rather than a single flat list or an invented catch-all section such as 'Other'.",
+          "passed": true,
+          "evidence": "The five sections match the meeting's own topics (hiring, the Postgres migration, customer escalations, the Q4 budget, and roadmap commitments). There is no flat list and no catch-all section."
+        },
+        {
+          "text": "An italicized summary appears directly under the metadata line and before `###### Attendees`, runs two to three sentences for a Notes section in the ~500 to ~1000 word band, and contains only facts already present in the notes -- no new conclusions and no action items restated as a to-do list.",
+          "passed": true,
+          "evidence": "The three-sentence italic summary sits directly under the metadata line and before ###### Attendees. The Notes section is about 578 to 585 words, within the ~500 to ~1000 band. Each sentence traces to a note: untested rollback plan, SLA breach as the most serious escalation, roadmap trimmed from nine to five. It restates no action items."
+        },
+        {
+          "text": "The transcript shows the length measurement that justified the summary (a word and/or line count of the Notes section reported to the user), rather than an unexplained decision to add one.",
+          "passed": true,
+          "evidence": "Before approval the assistant reported 'about 548 words across 30 lines in 5 topic sections' and said this cleared the length and section-count triggers. The count is low: the Notes section actually has 578 bullet words (585 with labels) and 35 non-blank lines, but the band and the conclusion are unchanged."
+        },
+        {
+          "text": "The summary reads as prose rather than a list: it contains no semicolons, and no sentence is built by chaining clauses together with 'and'.",
+          "passed": true,
+          "evidence": "The summary has no semicolons, and none of its three sentences uses 'and' at all, so no clauses are chained."
+        },
+        {
+          "text": "The transcript shows a genuine per-line interview covering all thirty raw note lines individually, not batched questions or notes fabricated without asking.",
+          "passed": true,
+          "evidence": "The transcript asks about Lines 1 through 30 one at a time, in order. It waits for each answer and confirms each paraphrase before moving on, with no batched lines."
+        },
+        {
+          "text": "Zero create-trello-task.sh invocations occur, since the user declined cards.",
+          "passed": true,
+          "evidence": "trello-calls.log does not exist, so zero create-trello-task.sh calls happened. This matches the transcript, where the assistant asked, the user declined, and it skipped Trello."
         }
       ]
     },
@@ -537,14 +646,14 @@
     {
       "eval_id": 13,
       "configuration": "with_skill",
-      "run_number": 1,
+      "run_number": 3,
       "result": {
         "pass_rate": 1.0,
         "passed": 6,
         "failed": 0,
         "total": 6,
-        "time_seconds": 196.124,
-        "tokens": 87637,
+        "time_seconds": 170.236,
+        "tokens": 91114,
         "tool_calls": null,
         "errors": null
       },
@@ -552,46 +661,46 @@
         {
           "text": "Every image is embedded with descriptive alt text in the Markdown itself (`![<alt text>](<file>)`) and carries an italic caption line, rather than a bare link or an empty alt attribute.",
           "passed": true,
-          "evidence": "final.md embeds all four images with non-empty descriptive alt text (e.g. `![Priya's delivery timeline slide](screenshot-2026-08-12-100412.png)`, `![Whiteboard sketch from the QA discussion](IMG_pasted.png)`), each followed by an italic caption line."
+          "evidence": "final.md lines 11-20 embed all four images with non-empty descriptive alt text (e.g. `![Lena's diagram of the QA environment gap](screenshot-2026-08-12-101830.png)`), each followed by an italic caption line."
         },
         {
           "text": "The delivery-timeline screenshot is placed with the delivery-timeline note and the QA-gap diagram with the QA note, interleaved among the bullets rather than collected in a block at the end of the notes.",
           "passed": true,
-          "evidence": "In final.md, screenshot-2026-08-12-100412.png sits under the first bullet (Priya's delivery timeline) and screenshot-2026-08-12-101830.png under the second bullet (Lena's QA gap), both nested between bullets rather than grouped at the end."
+          "evidence": "In final.md the timeline screenshot (100412) sits under the Priya timeline bullet and the QA diagram (101830) under the Lena QA bullet, each nested between bullets rather than grouped at the end."
         },
         {
           "text": "The launch-date screenshot is placed with the launch-date note (content over its earlier timestamp) and the skill asks the user to confirm that placement, rather than silently filing it in strict timestamp order between the first two notes.",
           "passed": true,
-          "evidence": "The assistant noted the 10:09 timestamp would put it between the first two notes, proposed placing it with the launch-date note instead, and asked \"Does that work\" (transcript line 87); final.md places it under the Nov 12 bullet."
+          "evidence": "Transcript line 89 notes the 10:09 timestamp conflicts with its content and asks 'does that work?' before placing it; final.md lines 18-20 put it under the November 12 launch-date bullet."
         },
         {
           "text": "The undated whiteboard photo is not placed by guesswork: the skill asks the user where it belongs before finalizing.",
           "passed": true,
-          "evidence": "After checking that neither the filename nor file metadata carried a capture time, the assistant asked \"Where in the meeting does this whiteboard photo belong\" (line 95) and placed it only after the user answered."
+          "evidence": "Transcript line 97 states IMG_pasted.png has no recoverable timestamp and asks where in the meeting it was taken; it was placed under the QA note only after the user answered 'during the QA discussion'."
         },
         {
           "text": "No summary appears: the notes are neither over the length thresholds nor divided into three or more sections, and the four images must not be counted toward the measurement to manufacture one.",
           "passed": true,
-          "evidence": "final.md has no summary between the metadata line and Attendees; the proposal reported the text-only measurement (about 120 words, 7 lines, unsectioned) excluding images and stated neither trigger fires."
+          "evidence": "final.md goes directly from the metadata line to `###### Attendees` with no summary, and the notes are a single flat list; transcript line 105 states the notes are well under the summary length."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur, and the standard section order is produced.",
           "passed": true,
-          "evidence": "No trello-calls.log exists, so zero calls occurred; final.md follows the H2 title and metadata line, then Attendees, Notes, and Action Items (no agenda was available), ending with `#### 2026-08-12 10:00: Roadmap Walkthrough`."
+          "evidence": "No trello-calls.log exists, so zero calls occurred, and the transcript shows none. final.md follows metadata, Attendees, Notes, Action Items, then the `#### 2026-08-12 10:00: Roadmap Walkthrough` footer."
         }
       ]
     },
     {
       "eval_id": 14,
       "configuration": "with_skill",
-      "run_number": 1,
+      "run_number": 3,
       "result": {
         "pass_rate": 1.0,
-        "passed": 6,
+        "passed": 7,
         "failed": 0,
-        "total": 6,
-        "time_seconds": 190.452,
-        "tokens": 92199,
+        "total": 7,
+        "time_seconds": 182.865,
+        "tokens": 85989,
         "tool_calls": null,
         "errors": null
       },
@@ -599,32 +708,37 @@
         {
           "text": "The Notes section is divided into three topic sections marked as bold label lines (roughly: hiring, the Postgres migration, and customer escalations), not as Markdown headings.",
           "passed": true,
-          "evidence": "final.md lines 13, 18, and 23 are the bold lines **Backfill & Hiring**, **Postgres Migration**, and **Customer Escalations**, each over three bullets, with no headings under ###### Notes."
+          "evidence": "final.md Notes has three bold label lines, **Platform Role Backfill**, **Postgres Migration**, and **Customer Escalations**, each followed by its three bullets, with no headings used for topics."
         },
         {
           "text": "An italicized summary appears directly under the metadata line and before `###### Attendees`, held to one or two sentences since the notes are under ~500 words.",
           "passed": true,
-          "evidence": "final.md line 4 is a single italicized sentence (51 words) between the metadata line and ###### Attendees; the Notes section is about 242 words."
+          "evidence": "final.md line 4 is a two-sentence italic summary placed between the metadata line and `###### Attendees`."
         },
         {
           "text": "The transcript shows the summary was triggered by the section count rather than by length: the reported measurement puts the notes under the ~500-word and ~40-line thresholds while noting three or more sections.",
           "passed": true,
-          "evidence": "Transcript line 101 reports 'about 225 words across 9 bullets (12 lines counting section headers), well under the length threshold on its own, but the three-section rule triggers a short summary regardless', and line 100 names the three sections. A recount gives 242 words and 15 lines including blanks, still well under both thresholds."
+          "evidence": "Before the draft the assistant says the notes run \"about 169 words / 9 lines (well under the length threshold)\" and that \"three topic sections on their own call for a short summary.\" An independent count of the Notes text (182 words including labels, 14 lines) is also well under both thresholds."
         },
         {
           "text": "The summary restates only what the notes already say, adding no new facts, no conclusions the meeting did not reach, and no action items.",
           "passed": true,
-          "evidence": "Every claim traces to a note: the two-role backfill, Lena on interviews, Priya rewriting the job descriptions, the November slip after the clean replica cutover, the three Acme Corp escalations, and the SLA fix in 4.2. The summary mentions the job-description rewrite as a note, but not as a checklist item and without the due date."
+          "evidence": "Sentence one restates the note that the rollback plan is still untested (a status, not Priya's testing action item). Sentence two combines the notes that three escalations are open from one account and the reporting export SLA breach is the most serious, adding nothing beyond them."
+        },
+        {
+          "text": "The summary reads as prose rather than a list: it contains no semicolons, and no sentence is built by chaining clauses together with 'and'.",
+          "passed": true,
+          "evidence": "The summary is two prose sentences with no semicolons and no occurrence of 'and'."
         },
         {
           "text": "The transcript shows a genuine per-line interview covering all nine raw note lines individually.",
           "passed": true,
-          "evidence": "Transcript lines 44 through 92 ask nine separate questions labeled Line 1 through Line 9, each quoting its note and waiting for the user's answer before moving on; the answers are then worked into the matching bullets."
+          "evidence": "The assistant asks numbered questions 1 through 9, each quoting one raw line in order and waiting for the user's answer before moving on. Several turns bundle two sub-questions about the same line, but no lines are batched together."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "trello-calls.log does not exist in the trial directory, so zero calls happened, which matches the user's 'No Trello for this one' and the assistant's skip at transcript line 155."
+          "evidence": "No trello-calls.log exists in the trial directory, so zero calls happened. The transcript also shows no Trello invocation, and the assistant acknowledged the user's opt-out."
         }
       ]
     },
@@ -932,12 +1046,12 @@
     }
   ],
   "summary": {
-    "pass_rate": 0.9732,
-    "expectations_passed": 109,
-    "expectations_total": 112,
-    "mean_time_seconds": 186.9,
-    "stdev_time_seconds": 79.7,
-    "mean_tokens": 90208,
-    "stdev_tokens": 10893
+    "pass_rate": 0.9688,
+    "expectations_passed": 124,
+    "expectations_total": 128,
+    "mean_time_seconds": 200.5,
+    "stdev_time_seconds": 90.7,
+    "mean_tokens": 91963,
+    "stdev_tokens": 12054
   }
 }
