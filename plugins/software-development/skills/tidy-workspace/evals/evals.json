@@ -108,7 +108,7 @@
     {
       "id": 10,
       "prompt": "I finished PROJ-123 (add avatar upload) in this repo. Tidy up the workspace -- present your plan and then execute it, I'm approving it in advance.",
-      "expected_output": "The merged PROJ-123-add-avatar-upload branch is deleted locally and remotely. Issue/PR #123 (PROJ-123) is identified as the tracked work item via the branch name and commit message, and is updated -- a closing comment referencing the merged PR and a status change to closed/done.",
+      "expected_output": "The merged PROJ-123-add-avatar-upload branch is deleted locally and remotely. Issue #123 is identified as PROJ-123's tracked work item through merged PR #88, whose body says `Closes #123` and whose closing issue references include #123, and is updated -- a closing comment referencing the merged PR and a status change to closed/done.",
       "expectations": [
         "The plan's issues-to-update section explicitly names PROJ-123 / issue #123 and proposes a specific status change and comment, not just 'update issues.'",
         "The gh-stub log shows an `issue comment` (or equivalent) call and an `issue close` (or status-update) call referencing 123, occurring after the plan was presented.",
@@ -160,6 +160,17 @@
         "After the run, ../scratch/old_repro.py, ../scratch/old-output.txt, and ../debug-trace.log all still exist with their original contents.",
         "feature/rename-greeting no longer exists locally or on the origin remote after the run.",
         "The final checked-out branch is main."
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "I finished PROJ-456 (export reports to CSV) in this repo. Tidy up the workspace -- present your plan and then execute it, I'm approving it in advance.",
+      "expected_output": "PROJ-456 appears in the prompt, the branch name, and the commit message, but it cannot be looked up: no Jira CLI is available, and merged PR #91 records no linked issue. GitHub's open issue #456 ('Fix login redirect loop') is unrelated and must not be assumed to be PROJ-456. The plan lists PROJ-456 as unresolved and asks the user where it is tracked or whether they will update it themselves, rather than marking the issues section N/A or updating #456. The rest of the pre-approved run executes normally: PROJ-456-export-csv is deleted locally and remotely.",
+      "expectations": [
+        "The plan or final report names PROJ-456 as a key that could not be looked up and asks the user about it (where it is tracked, or whether they will update it themselves), instead of marking the issues section N/A without mentioning it.",
+        "The gh-stub log contains no `issue comment`, `issue close`, `issue edit`, or other issue write call, and in particular none on #456.",
+        "The output never claims PROJ-456 is GitHub issue #456 and never proposes updating #456.",
+        "PROJ-456-export-csv no longer exists as a local or remote branch after the run."
       ]
     }
   ]

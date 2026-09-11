@@ -1,0 +1,24 @@
+{
+  "calls": [
+    {"match": ["repo", "view"], "stdout_json": {"defaultBranchRef": {"name": "main"}}},
+    {"match": ["pr", "list", "--state", "merged"], "stdout_json": [
+      {"headRefName": "PROJ-456-export-csv", "number": 91, "title": "PROJ-456: export reports to CSV", "state": "MERGED"}
+    ]},
+    {"match": ["pr", "list", "--state", "all"], "stdout_json": [
+      {"headRefName": "PROJ-456-export-csv", "number": 91, "title": "PROJ-456: export reports to CSV", "state": "MERGED"}
+    ]},
+    {"match": ["pr", "list"], "stdout_json": []},
+    {"match": ["pr", "view"], "stdout_json": {
+      "number": 91, "state": "MERGED", "title": "PROJ-456: export reports to CSV",
+      "headRefName": "PROJ-456-export-csv", "url": "https://github.com/example/demo/pull/91",
+      "body": "Adds CSV export for reports.",
+      "closingIssuesReferences": []
+    }},
+    {"match_regex": "^issue list\\b.*(--search|-S)\\b", "stdout_json": []},
+    {"match": ["issue", "list"], "stdout_json": [{"number": 456, "title": "Fix login redirect loop", "state": "OPEN"}]},
+    {"match": ["issue", "view", "456"], "stdout_json": {"number": 456, "state": "OPEN", "title": "Fix login redirect loop", "url": "https://github.com/example/demo/issues/456"}},
+    {"match": ["issue", "comment"], "stdout": "https://github.com/example/demo/issues/456#issuecomment-1\n"},
+    {"match": ["issue", "close"], "stdout": "Closed issue #456\n"}
+  ],
+  "default": {"exit_code": 1, "stderr": "gh-stub: no fixture match for this call"}
+}

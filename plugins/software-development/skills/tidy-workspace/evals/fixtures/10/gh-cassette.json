@@ -2,12 +2,23 @@
   "calls": [
     {"match": ["repo", "view"], "stdout_json": {"defaultBranchRef": {"name": "main"}}},
     {"match": ["pr", "list", "--state", "merged"], "stdout_json": [
-      {"headRefName": "PROJ-123-add-avatar-upload", "number": 88}
+      {"headRefName": "PROJ-123-add-avatar-upload", "number": 88, "title": "PROJ-123: add avatar upload", "state": "MERGED"}
     ]},
-    {"match": ["pr", "view", "88"], "stdout_json": {"number": 88, "state": "MERGED", "url": "https://github.com/example/demo/pull/88", "title": "PROJ-123: add avatar upload"}},
-    {"match": ["issue", "view", "123"], "stdout_json": {"number": 123, "state": "OPEN", "title": "Add avatar upload"}},
+    {"match": ["pr", "list", "--state", "all"], "stdout_json": [
+      {"headRefName": "PROJ-123-add-avatar-upload", "number": 88, "title": "PROJ-123: add avatar upload", "state": "MERGED"}
+    ]},
+    {"match": ["pr", "list"], "stdout_json": []},
+    {"match": ["pr", "view"], "stdout_json": {
+      "number": 88, "state": "MERGED", "title": "PROJ-123: add avatar upload",
+      "headRefName": "PROJ-123-add-avatar-upload", "url": "https://github.com/example/demo/pull/88",
+      "body": "Adds avatar upload.\n\nCloses #123",
+      "closingIssuesReferences": [{"number": 123, "url": "https://github.com/example/demo/issues/123"}]
+    }},
+    {"match_regex": "^issue list\\b.*(--search|-S)\\b", "stdout_json": []},
+    {"match": ["issue", "list"], "stdout_json": [{"number": 123, "title": "Add avatar upload", "state": "OPEN"}]},
+    {"match": ["issue", "view", "123"], "stdout_json": {"number": 123, "state": "OPEN", "title": "Add avatar upload", "url": "https://github.com/example/demo/issues/123"}},
     {"match": ["issue", "comment"], "stdout": "https://github.com/example/demo/issues/123#issuecomment-1\n"},
     {"match": ["issue", "close"], "stdout": "Closed issue #123\n"}
   ],
-  "default": {"exit_code": 0, "stdout": "[]"}
+  "default": {"exit_code": 1, "stderr": "gh-stub: no fixture match for this call"}
 }
