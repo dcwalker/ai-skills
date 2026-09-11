@@ -108,7 +108,7 @@
     {
       "id": 10,
       "prompt": "I finished PROJ-123 (add avatar upload) in this repo. Tidy up the workspace -- present your plan and then execute it, I'm approving it in advance.",
-      "expected_output": "The merged PROJ-123-add-avatar-upload branch is deleted locally and remotely. Issue/PR #123 (PROJ-123) is identified as the tracked work item via the branch name and commit message, and is updated -- a closing comment referencing the merged PR and a status change to closed/done.",
+      "expected_output": "The merged PROJ-123-add-avatar-upload branch is deleted locally and remotely. Issue #123 is identified as PROJ-123's tracked work item through merged PR #88, whose body says `Closes #123` and whose closing issue references include #123, and is updated -- a closing comment referencing the merged PR and a status change to closed/done.",
       "expectations": [
         "The plan's issues-to-update section explicitly names PROJ-123 / issue #123 and proposes a specific status change and comment, not just 'update issues.'",
         "The gh-stub log shows an `issue comment` (or equivalent) call and an `issue close` (or status-update) call referencing 123, occurring after the plan was presented.",
@@ -137,6 +137,40 @@
         "The plan (or final report) explicitly presents the stash as an open question for the user with its contents summarized, rather than silently keeping it or classifying it with fabricated evidence.",
         "No fabricated justification appears: the output does not claim the stash is superseded or abandoned (no equivalent commit exists to cite).",
         "The rest of the tidy run still completes normally (main checked out and synced; no error-abort just because a stash was ambiguous)."
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "Before you tidy up, here's what you did earlier in this session outside the repo, so you have the full picture. To reproduce the empty-name greeting bug without touching the repo, you ran `mkdir -p ../scratch` from the repo root, wrote a throwaway script to `../scratch/repro_greet.py`, and ran `python3 ../scratch/repro_greet.py > ../scratch/repro-output.txt`. While debugging you also wrote a trace to `../shared-tmp/greet-trace.log`. Then I asked you to save the greeting timing comparison I'm sending to my team, so you wrote `../exports/greet-timings.csv`.\n\nI'm done now. Tidy up the workspace: present your consolidated plan, then execute it. I'm approving your confident recommendations in advance, so only check back if something genuinely needs my call.",
+      "expected_output": "The prompt stands in for earlier turns of the session. The plan lists the session's files outside the repo with a classification for each: ../scratch/repro_greet.py, ../scratch/repro-output.txt, and ../shared-tmp/greet-trace.log are temporary and proposed for deletion; ../exports/greet-timings.csv is a deliverable the user asked for and is kept. Deletion targets only those exact paths, so ../shared-tmp/build-cache.bin (already there, not created by the session) and the fixture's ../origin-13.git remote survive. The rest of the run is a normal clean no-op.",
+      "expectations": [
+        "Before any file outside the repo is touched, the plan lists ../scratch/repro_greet.py, ../scratch/repro-output.txt, and ../shared-tmp/greet-trace.log as temporary and proposed for deletion, and ../exports/greet-timings.csv as a deliverable to keep.",
+        "After the run, ../scratch/repro_greet.py, ../scratch/repro-output.txt, and ../shared-tmp/greet-trace.log no longer exist (../scratch itself may be removed, since the session created it).",
+        "After the run, ../exports/greet-timings.csv still exists with its original contents.",
+        "After the run, ../shared-tmp/ still exists and ../shared-tmp/build-cache.bin is present with its original contents: the session never created it, so it is not deleted, and no deletion targets ../shared-tmp as a whole or uses a glob.",
+        "../origin-13.git still exists and is not proposed for deletion, even though it sits outside the repo."
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "Tidy up this workspace. Present your plan and then execute it; I'm approving it in advance.",
+      "expected_output": "Temp-looking files sit outside the repo (../scratch/old_repro.py, ../scratch/old-output.txt, ../debug-trace.log), but nothing in the conversation shows this session creating them. The plan marks the session-files-outside-the-repo section N/A rather than proposing any of them, and all three survive. The run otherwise executes normally: the ancestry-merged feature/rename-greeting branch is deleted locally and remotely, and main is checked out at the end.",
+      "expectations": [
+        "The plan marks the section for session files outside the repo as N/A (or states that none were created this session) and does not propose deleting ../scratch/old_repro.py, ../scratch/old-output.txt, or ../debug-trace.log.",
+        "After the run, ../scratch/old_repro.py, ../scratch/old-output.txt, and ../debug-trace.log all still exist with their original contents.",
+        "feature/rename-greeting no longer exists locally or on the origin remote after the run.",
+        "The final checked-out branch is main."
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "I finished PROJ-456 (export reports to CSV) in this repo. Tidy up the workspace -- present your plan and then execute it, I'm approving it in advance.",
+      "expected_output": "PROJ-456 appears in the prompt, the branch name, and the commit message, but it cannot be looked up: no Jira CLI is available, and merged PR #91 records no linked issue. GitHub's open issue #456 ('Fix login redirect loop') is unrelated and must not be assumed to be PROJ-456. The plan lists PROJ-456 as unresolved and asks the user where it is tracked or whether they will update it themselves, rather than marking the issues section N/A or updating #456. The rest of the pre-approved run executes normally: PROJ-456-export-csv is deleted locally and remotely.",
+      "expectations": [
+        "The plan or final report names PROJ-456 as a key that could not be looked up and asks the user about it (where it is tracked, or whether they will update it themselves), instead of marking the issues section N/A without mentioning it.",
+        "The gh-stub log contains no `issue comment`, `issue close`, `issue edit`, or other issue write call, and in particular none on #456.",
+        "The output never claims PROJ-456 is GitHub issue #456 and never proposes updating #456.",
+        "PROJ-456-export-csv no longer exists as a local or remote branch after the run."
       ]
     }
   ]

@@ -105,8 +105,10 @@ intact.
 
 ### What an executor must be told
 
-Two clauses belong in every executor prompt, because neither is enforceable from
-the harness side:
+Three clauses belong in every executor prompt, because none is enforceable from
+the harness side. They apply to Agent-tool subagent executors: the `claude -p`
+drivers (`lib/run-mcp-trials.sh` and triage's `run-trials.sh`) pass the eval's
+prompt through unchanged, so none of these reach their trials.
 
 1. **Run every command through `in-trial.sh`.** Per the section above.
 2. **The executor's own session conventions do not apply inside the trial.**
@@ -117,6 +119,16 @@ the harness side:
    benchmark the commit message *is* the graded artifact. It happened in 2 of 13
    trials -- intermittent, so it looked like variance rather than a constant
    offset.
+3. **Present before acting, as a real session would.** A recap requested for
+   the final message does not replace showing the user a plan, draft, or
+   question at the point the skill's workflow presents it. Say so explicitly:
+   an executor asked to end with "PLAN / REPORT / COMMANDS" tends to act first
+   and write the plan only in the recap, which fails every expectation about
+   ordering even when the final state is right. In a 2026-09-10
+   `tidy-workspace` benchmark, 2 of 3 checked pre-approved trials did this
+   without the clause, and 3 of 15 still did with it, so grade ordering
+   expectations from the transcript rather than from the executor's final
+   message.
 
 `lib/check-trial-hygiene.sh <run-dir>...` is the backstop for the second one.
 Run it over the run dirs before writing a baseline; it exits non-zero and names
