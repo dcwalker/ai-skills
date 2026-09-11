@@ -74,7 +74,7 @@ Present a single plan to the user covering everything below, then wait for one a
 
 ### 3. Wait for approval
 
-Do not proceed past the plan without explicit confirmation. If the user asks for changes to the plan, revise and re-present before executing. Once approved, run all steps below without pausing for further per-step confirmation.
+Do not proceed past the plan without explicit confirmation. Approval given in advance (for example "present your plan, then go ahead") counts as that confirmation only once the plan has been presented to the user as a message: never run any step in section 4 before the user has been shown the plan it belongs to. If the user asks for changes to the plan, revise and re-present before executing. Once approved, run all steps below without pausing for further per-step confirmation.
 
 ### 4. Execute
 
