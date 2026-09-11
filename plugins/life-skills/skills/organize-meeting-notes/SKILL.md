@@ -1,6 +1,6 @@
 ---
 name: organize-meeting-notes
-description: Clean up and structure meeting notes for a personal journal with strict formatting, guided questioning, and staged approval. Use when the user asks to organize, polish, or journalize meeting notes.
+description: Clean up and structure meeting notes for a personal journal with strict formatting, guided questioning, and staged approval, drafting the notes from screenshots, audio transcripts, or chat transcripts when none were taken. Use when the user asks to organize, polish, or journalize meeting notes.
 metadata:
   category: life-skills
 ---
@@ -10,8 +10,9 @@ metadata:
 Clean and organize raw meeting notes into a journal-ready Markdown format with this final order:
 1. Meeting metadata
 2. Attendees
-3. Notes
-4. Action items
+3. Agenda (only when one is available)
+4. Notes
+5. Action items
 
 ## When to Use
 
@@ -19,6 +20,32 @@ Use this skill when:
 - The user asks to clean up, organize, or rewrite meeting notes
 - The user wants notes converted into a personal journal format
 - The user wants guided clarification of note significance before finalizing
+- No notes were taken, but the meeting left screenshots, an audio transcript,
+  or a chat transcript to draft notes from
+
+## What Notes Should Capture
+
+The finished document is a concise report of the meeting's outcomes and how
+the attendees arrived at them. Outcomes alone do not record why a choice was
+made, so capture the path to each one. Examples of what is worth recording:
+
+- **Action items**: what will be done, who owns it, and when it is due.
+- **Decisions**: the point that was debated, what was agreed, and why it was
+  decided that way.
+- **Controversy or disagreement**: the concern raised, who held which
+  conviction, and how it was resolved, if it was.
+- **Unresolved topics**: agenda items the meeting did not reach, and
+  discussions deferred without resolution, however they were phrased
+  ("parking lot", "put a pin in it", "circle back", "take it offline"). Record
+  a deferred discussion where it came up, and an agenda item the meeting never
+  reached after the last note, each saying what is still open and when it will
+  be revisited, if known. An unreached agenda item does not count as a topic
+  for the Step 5 topic rule.
+
+In the Step 4 interview, these aim the question for each line of the user's
+notes; no line is dropped for fitting none of them. When drafting from
+artifacts, they decide what the draft leads with, and talk that adds nothing
+to an outcome or how it was reached stays out.
 
 ## Instructions
 
@@ -37,9 +64,17 @@ Collect:
 
 If required information is missing, ask for clarification. Do not guess.
 
-A transcript, when provided, is source material for quotes and for
-clarifying what was said. It does not replace the raw notes, and it does not
-replace the Step 4 interview.
+A transcript provided alongside raw notes is source material for quotes and
+for clarifying what was said. It does not replace the raw notes, and it does
+not replace the Step 4 interview.
+
+When no raw notes exist but the meeting left artifacts (screenshots or
+photos, an audio transcript, or a chat transcript), do not treat an artifact
+as the notes. Follow
+[references/draft-notes-from-artifacts.md](references/draft-notes-from-artifacts.md)
+to draft notes from the artifacts and review them with the user. When there
+are neither notes nor artifacts, tell the user and ask for them; never draft
+notes from nothing.
 
 ### Step 1b: Enrich from Available Sources
 
@@ -54,10 +89,11 @@ treat that the same way as fetched content.
 For each available source:
 
 - **Calendar**: find the event matching the meeting title and time. Pull the
-  agenda or event description and the invitee list (cross-check it against
-  the attendees from Step 1). Compare the scheduled start/end against the
-  actual times: note whether the meeting started and ended on time, ended
-  early, or ran long, and by how much (see Step 2 for where this lands).
+  agenda or event description (an agenda feeds the Step 3b Agenda section)
+  and the invitee list (cross-check it against the attendees from Step 1).
+  Compare the scheduled start/end against the actual times: note whether the
+  meeting started and ended on time, ended early, or ran long, and by how much
+  (see Step 2 for where this lands).
 - **Team chat**: look for messages sent by attendees during the meeting's
   start-to-end window. Judge relevance before proposing anything: a message
   matters only if it bears on the meeting topic (a shared link, a decision
@@ -122,7 +158,26 @@ If only an initial is available and the full first name is unknown, ask the user
 Ask the user who did not attend. After response:
 - Apply strikethrough to invited names that did not attend.
 
+### Step 3b: Format Agenda
+
+When an agenda is available (from the calendar event, an email, or material
+the user pasted), capture it in its own section:
+- List the agenda items as given, in their original order and wording. Keep
+  the agenda's numbering when it had one; otherwise use bullets.
+- Render any URL in an agenda item as a Markdown hyperlink.
+- A link listed in the agenda still goes in the note that discusses it, per
+  the Step 5 URL rule; the Agenda section does not replace it.
+- List only what the agenda listed. Topics the meeting covered outside the
+  agenda belong in the notes, not here.
+- Omit the section when no agenda exists; never reconstruct one from the
+  notes or the discussion.
+- Propose the section for approval in Step 7.
+
 ### Step 4: Interview for Significance (Notes)
+
+When the notes were drafted from artifacts, the section-by-section review in
+[references/draft-notes-from-artifacts.md](references/draft-notes-from-artifacts.md)
+replaces this interview; continue with Step 5.
 
 This is the most important step. **Every line** of the raw notes must be reviewed in a back-and-forth interview process with the user. Do not skip any line, even if it seems self-explanatory.
 
@@ -130,7 +185,7 @@ If the raw notes contain N lines, you must ask at least N clarifying questions (
 
 Process:
 - Go through each note line one at a time, in order.
-- For each line, ask a single clarifying question about its meaning, significance, or context.
+- For each line, ask a single clarifying question about its meaning, significance, or context, aimed by [What Notes Should Capture](#what-notes-should-capture): why a decision was made, who disagreed and why, who owns an action and when it is due, or what is still unresolved.
 - Wait for the user's response before moving to the next line.
 - Use the user's response to expand, clarify, or refine that note into a complete, clear sentence.
 - Ask for clarification when details are missing. Do not infer missing facts.
@@ -183,6 +238,9 @@ Topic rule:
   hindsight.
 - Divide the notes into sections when three or more clear topics exist.
   Below that, keep a single flat list.
+- An agenda item the meeting never reached is not a topic. It does not count
+  toward that threshold and gets no section of its own; its note follows the
+  last note, outside any section.
 - Name each section in the meeting's own language (the agenda item, or the
   words the attendees used), and keep the name to a few words.
 - Order sections by when each topic came up, and keep the notes within a
@@ -213,7 +271,8 @@ Quote rule (only when a transcript was provided):
 - Attribute using the attendee names from Step 3, applying the same
   full-name-then-first-name rule. If the transcript labels speakers
   generically (for example `Speaker 2`) or names someone the attendee list
-  does not include, ask the user who spoke rather than guessing.
+  does not include, ask the user who spoke, without proposing a name, rather
+  than guessing.
 - Propose every quote for approval in Step 7 alongside the note it attaches
   to. Where the transcript conflicts with the user's notes, ask; the user's
   notes stand unless the user says otherwise.
@@ -252,6 +311,7 @@ After the interview and normalization, format the notes section as a bulleted li
 1. Propose updates to:
    - Meeting Metadata
    - Attendees
+   - Agenda, when one is available
    - Notes, including any topic sections, transcript quotes, and image
      placement
    - The summary, when the Step 8 length rule applies
@@ -259,6 +319,15 @@ After the interview and normalization, format the notes section as a bulleted li
 3. Then identify action items from notes and format as a simple checklist bullet list:
    - Markdown format: `- [ ] ...`
    - No sub-sections
+   - Lead each item with its owner's name, and include its due date:
+     `- [ ] Lena Fischer: Publish the Q4 on-call schedule by Friday (Aug 28, 2026)`
+   - Keep a due date in the words used in the meeting; adding the year to an
+     otherwise specific date (`by Sep 10, 2026`) is fine. When those words
+     could mean more than one date (a weekday such as "Friday"), add the
+     calendar date they refer to, counted from the meeting date.
+   - When an item's owner or due date is unknown, ask an open question about
+     whichever is missing (who owns this? by when?) without proposing a name
+     or a date. If the user does not know, leave it off; never guess.
 4. Present action items draft for review. Ask: "Are these action items correct?"
 5. It is valid for a meeting to have no action items. If none exist, explicitly confirm this with the user.
 6. Once action items are confirmed, ask whether to create Trello tasks (one per action item).
@@ -269,6 +338,7 @@ After the interview and normalization, format the notes section as a bulleted li
    - Preferred additional context: meeting topic and a short reason the action item exists.
    - After each card is created, capture the returned card URL and replace that checklist item's text with a Markdown link to the card.
    - Use format: `- [ ] [Action item text](https://trello.com/c/...)`
+   - If a card fails to create, do not retry it. Report the error to the user, ask how to proceed, and leave that item unlinked unless the user says otherwise.
 8. If no action items are confirmed, skip Trello creation.
 9. After Trello creation (or skip), produce final Markdown document.
 
@@ -278,6 +348,7 @@ When approved, return final Markdown with:
 - Metadata block first (title + metadata line)
 - Then the summary, when the length rule below applies
 - Then `###### Attendees`
+- Then `###### Agenda`, only when Step 3b captured an agenda
 - Then `###### Notes`
 - Then `###### Action Items`
 
@@ -302,8 +373,22 @@ Summary rule (based on read length):
   - ~500 to ~1000 words, or ~40 to ~80 lines: two to three sentences.
   - Over ~1000 words or ~80 lines: up to five sentences, or one short bullet
     per topic section.
-- The summary may only restate what the notes already say. It must not add
-  facts, draw a conclusion the meeting did not reach, or list action items.
+- Write the summary as short prose that represents the notes, built from the
+  approved notes rather than from a recollection of the meeting:
+  1. Choose the outcomes it will carry, within the sentence limit above: the
+     most consequential decisions, disagreements, and unresolved topics,
+     favoring one per topic section. Leave out action items and logistics,
+     such as a reordered agenda.
+  2. Give each chosen outcome its own sentence, drawn from a single note. Keep
+     that note's subject and verb so its status survives: a proposal stays
+     proposed, an approval stays approved, a wish stays a wish, an open
+     question stays open. A sentence may give a reason or consequence only
+     when the same note states it.
+  3. Write it as prose, not a list. Vary how the sentences open and build, use
+     no semicolons, and never build a sentence by chaining clauses with "and".
+  4. Before proposing it in Step 7, check each sentence against its note, name
+     the note each sentence came from, and rewrite any sentence whose subject,
+     verb, or claim that note does not support.
 - Report the measurement (the word and line count, and the section count when
   the notes are sectioned) when proposing the document in Step 7, so the user
   can see why a summary was or was not added.
@@ -321,6 +406,9 @@ At the very end, append:
   notes only when the meeting genuinely had distinct topics. Neither is
   padding to apply by default.
 - Preserve factual accuracy; do not invent details.
+- Never present an artifact as the user's notes. Notes drafted from artifacts
+  trace to what the artifacts show and are reviewed with the user before
+  finalizing.
 - Ask clarifying questions when uncertain.
 - Follow requested section order and formatting exactly.
 - Enrichment content must trace to a real source that was actually
