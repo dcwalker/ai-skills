@@ -325,9 +325,9 @@ After the interview and normalization, format the notes section as a bulleted li
      otherwise specific date (`by Sep 10, 2026`) is fine. When those words
      could mean more than one date (a weekday such as "Friday"), add the
      calendar date they refer to, counted from the meeting date.
-   - When an item's owner or due date is unknown, ask an open question (who
-     owns this, and by when?) without proposing a name or a date. If the user
-     does not know either, leave it off; never guess.
+   - When an item's owner or due date is unknown, ask an open question about
+     whichever is missing (who owns this? by when?) without proposing a name
+     or a date. If the user does not know, leave it off; never guess.
 4. Present action items draft for review. Ask: "Are these action items correct?"
 5. It is valid for a meeting to have no action items. If none exist, explicitly confirm this with the user.
 6. Once action items are confirmed, ask whether to create Trello tasks (one per action item).
