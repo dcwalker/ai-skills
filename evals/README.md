@@ -249,6 +249,29 @@ that the loop can now iterate at all.
 line per invocation, so a grader can assert that a scan happened without
 constraining the path taken to it.
 
+### Why those expectations read the way they do
+
+Six of this skill's expectations (evals 1, 4, 5, 8, 9 and 10) used to demand
+that "a follow-up scan shows zero". None of them was ever graded that way. The
+recorded baseline passes them on evidence like *"the fix is real and correct
+(verified directly); the static fixture's follow-up check still showed the
+pre-fix count due to the harness's padding; the executor was explicit about
+this rather than fabricating"* -- which is a different, and better, test: did
+the skill actually fix the thing, re-read afterwards, and decline to invent a
+clean result it had not seen?
+
+They now say that. The gap mattered: read literally, all six fail on any run
+where the staged fixture has not advanced, which is most of them, and the suite
+would score around 0.85 while nothing was wrong with the skill. An expectation
+that is graded by one standard and written in another cannot be checked by
+anyone who was not present for the grading.
+
+Note what this does **not** do. It does not change any run's score, because it
+codifies the standard already in use. Convergence is still gated on a read
+budget (see above), and eval 7's expectations, which turn on rescan *count* and
+on a report saying "0 remain", are untouched -- those are a separate question
+about what the loop should do, not about how a scan result is read.
+
 ## The Trello fixture hook
 
 `organize-meeting-notes`'s bundled `create-trello-task.sh` reads
