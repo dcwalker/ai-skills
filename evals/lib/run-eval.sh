@@ -203,6 +203,9 @@ ENV_FILE="$RUN_DIR/env.sh"
   if [[ -f "$FIXTURE_DIR/sonar-fixture.json" ]]; then
     echo "export SONAR_FIXTURE_FILE=\"$FIXTURE_DIR/sonar-fixture.json\""
     echo "export SONAR_FIXTURE_COUNTS_DIR=\"$RUN_DIR\""
+    # One JSON line per sonar-scanner invocation, mirroring GH_STUB_LOG, so a
+    # grader can assert a scan did or did not happen.
+    echo "export SONAR_SCANNER_LOG=\"$RUN_DIR/sonar-scanner-calls.log\""
 
     if [[ -f "$FIXTURE_DIR/sonar-project-key" ]]; then
       PROJECT_KEY="$(cat "$FIXTURE_DIR/sonar-project-key")"
