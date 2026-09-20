@@ -127,7 +127,7 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     -h|--help)
-      echo "Usage: $0 [OPTIONS]"
+      echo "Usage: $(basename "$0") [OPTIONS]"
       echo ""
       echo "Description:"
       echo "  Lists, filters, and manages GitHub pull request comments (both review"

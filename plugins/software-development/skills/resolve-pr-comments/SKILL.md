@@ -32,19 +32,15 @@ After all comments are processed, output a **Final Report** (see below).
 
 Please start by reviewing the AGENTS.md and CONTRIBUTING.md files for project conventions.
 
-This skill uses the `list-pr-comments.sh` script. It lives at:
-
-```
-~/.cursor/skills/resolve-pr-comments/scripts/list-pr-comments.sh
-```
-
-It is also available in your PATH as `list-pr-comments.sh`. Use the PATH form for all commands below.
-
-Review the script's help content first:
+This skill uses the `list-pr-comments.sh` script, which ships alongside it. Run it by name; the plugin puts its `bin/` directory on your PATH:
 
 ```bash
 list-pr-comments.sh --help
 ```
+
+If it is not on your PATH, fall back to the copy bundled with this skill at `scripts/list-pr-comments.sh`, resolved relative to this `SKILL.md`. Do not hard-code an absolute install path: the install location contains a version identifier that changes on every plugin update.
+
+Review the help output before running anything else, so you work from the script's current options rather than only the examples below.
 
 Then, use the script to fetch and review all unresolved GitHub PR comments for this branch's PR:
 

@@ -80,7 +80,7 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     -h|--help)
-      echo "Usage: $0 [OPTIONS]"
+      echo "Usage: $(basename "$0") [OPTIONS]"
       echo ""
       echo "Description:"
       echo "  Lists all open Dependabot pull requests for the repository."
