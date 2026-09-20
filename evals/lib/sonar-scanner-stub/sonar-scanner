@@ -19,9 +19,18 @@ reads clean -- and the trial, correctly refusing to claim a clean result off a
 stale read, was then marked down for it. Convergence depended on how chatty a
 trial happened to be rather than on whether it fixed anything.
 
-This stub publishes nothing and contacts nothing. It reports a successful
-analysis so the loop can proceed to its next read, and the existing staged
-fixtures converge the way they already do -- through reads, not through this.
+This stub publishes nothing and contacts nothing. What it does do is advance
+the staged fixture by one stage, which is precisely what publishing an analysis
+means: entry 0 is the project before any scan, entry 1 after the first, and so
+on. `list-sonar-issues.py` reads whatever stage is current and no longer
+advances it, because reading a published analysis twice on a real server
+returns the same answer both times.
+
+That split is the point. When reads advanced the stages, convergence depended
+on how many times a trial happened to look: one that stopped as soon as two
+reads agreed could never reach the post-fix stage, while a chatty one could
+reach it without having fixed anything. Now a trial converges exactly when it
+fixes the findings and scans, and not otherwise.
 
 Refuses, rather than falling back to a real scan, when AI_SKILLS_EVAL is unset
 or no SONAR_FIXTURE_FILE is configured, and never execs a real sonar-scanner.
@@ -35,6 +44,7 @@ or did not -- without constraining the exact path a trial took to get there.
 
 import json
 import os
+import subprocess
 import sys
 import time
 
@@ -47,6 +57,90 @@ def refuse(message: str) -> None:
         file=sys.stderr,
     )
     sys.exit(1)
+
+
+def code_has_changed() -> bool:
+    """Whether the trial has actually modified the project since the fixture was laid down.
+
+    Scanning unchanged code publishes an analysis reporting the same findings,
+    so the stage must not move for it. Without this check a trial that scans
+    before fixing anything -- which the skill's own workflow invites, since
+    Phase 2 runs a scan -- jumps straight to the post-fix stage and the findings
+    vanish with no work done. That is a fabricated convergence, the precise
+    failure the harness exists to make impossible, and it was observed: an
+    eval 9 trial scanned first, read 100% coverage, and correctly concluded
+    there was nothing to do, having written no tests at all.
+
+    Returns False when git cannot answer. Declining to advance leaves a trial
+    reporting an unconverged project, which is visible and gets investigated;
+    advancing on a guess invents a clean result, which does not.
+    """
+    def git(*args: str) -> "str | None":
+        try:
+            out = subprocess.run(
+                ["git", *args], capture_output=True, text=True, timeout=10
+            )
+        except (OSError, subprocess.SubprocessError):
+            return None
+        return out.stdout.strip() if out.returncode == 0 else None
+
+    if git("rev-parse", "--is-inside-work-tree") != "true":
+        return False
+
+    if git("status", "--porcelain"):
+        return True
+
+    root = git("rev-list", "--max-parents=0", "HEAD")
+    if not root:
+        return False
+    count = git("rev-list", "--count", f"{root.splitlines()[-1]}..HEAD")
+    return bool(count and count != "0")
+
+
+def advance_fixture_stage(fixture_file: str) -> None:
+    """Move every staged endpoint in the fixture on by one published analysis.
+
+    Endpoints whose fixture value is a single response are not staged and are
+    left alone. An index past the end is harmless: the reader clamps to the last
+    entry, so a trial that scans more times than the fixture has stages simply
+    keeps seeing the final state.
+
+    A fixture that cannot be read or a counts file that cannot be written is not
+    worth failing a trial over -- the trial then behaves as it did before, which
+    a grader sees as a project that never converged.
+    """
+    try:
+        fixtures = json.loads(open(fixture_file).read())
+    except (OSError, json.JSONDecodeError):
+        return
+
+    staged = [k for k, v in fixtures.items() if isinstance(v, list)]
+    if not staged:
+        return
+
+    counts_dir = os.environ.get("SONAR_FIXTURE_COUNTS_DIR")
+    if counts_dir:
+        counts_path = os.path.join(
+            counts_dir, os.path.basename(fixture_file) + ".counts.json"
+        )
+    else:
+        counts_path = fixture_file + ".counts.json"
+
+    counts = {}
+    if os.path.exists(counts_path):
+        try:
+            counts = json.loads(open(counts_path).read())
+        except (OSError, json.JSONDecodeError):
+            counts = {}
+
+    for key in staged:
+        counts[key] = counts.get(key, 0) + 1
+
+    try:
+        with open(counts_path, "w") as f:
+            json.dump(counts, f)
+    except OSError:
+        pass
 
 
 def main() -> None:
@@ -77,6 +171,15 @@ def main() -> None:
             project_key = arg.split("=", 1)[1]
 
     host = os.environ.get("SONAR_HOST_URL", "https://sonar.invalid")
+
+    if code_has_changed():
+        advance_fixture_stage(fixture)
+    else:
+        print(
+            "sonar-scanner-stub: project unchanged since the last analysis, so the "
+            "published findings are unchanged too.",
+            file=sys.stderr,
+        )
 
     print("INFO: Scanner configuration file: (stub)")
     print(f"INFO: Analyzing project {project_key}")

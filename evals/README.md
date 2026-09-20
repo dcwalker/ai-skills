@@ -240,10 +240,22 @@ clean result off a stale read was marked down for it. Whether an eval converged
 depended on how many exploratory calls a trial happened to make, not on whether
 it fixed anything.
 
-The stub reports a successful analysis and contacts nothing. It deliberately
-does **not** advance the fixture's staged responses: convergence still happens
-through reads, exactly as the recorded baselines measured it. What changes is
-that the loop can now iterate at all.
+The stub reports a successful analysis and contacts nothing. What it does do is
+**advance the staged fixture by one stage**, which is what publishing an
+analysis means: entry 0 is the project before any scan, entry 1 after the first,
+and so on. `list-sonar-issues.py` reads whichever stage is current and no longer
+advances it, because reading a published analysis twice on a real server returns
+the same answer both times.
+
+That split is the point. While reads advanced the stages, convergence depended
+on how many times a trial happened to look. A disciplined trial that stopped as
+soon as two reads agreed could never reach the post-fix stage; a chatty one
+could reach it without having fixed anything. Fixtures carried four duplicate
+padding entries each to paper over that, and it did not work: measured across
+evals 1, 5 and 7, trials reached reads 4-5 of a 6-stage fixture and stopped one
+or two short. Now a trial converges exactly when it fixes the findings and
+scans, and not otherwise, so the padding is gone -- each staged endpoint is
+simply `[before, after]`.
 
 `run-eval.sh` sets `SONAR_SCANNER_LOG` alongside the fixture vars, one JSON
 line per invocation, so a grader can assert that a scan happened without

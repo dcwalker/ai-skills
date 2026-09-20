@@ -103,14 +103,23 @@ class SonarQubeClient:
 
         Eval-only mechanism, opt-in via the SONAR_FIXTURE_FILE env var. The fixture file is a
         JSON object keyed by endpoint path (e.g. "api/issues/search"). A value can be a single
-        JSON response reused for every call, or a list of responses consumed in call order (the
-        last entry repeats once exhausted) -- this lets a fixture represent a scan loop where the
-        issue list shrinks across successive fetches as fixes land. Call counts are tracked in a
-        `<fixture_file>.counts.json` file since each script invocation is a fresh process. That
-        file is written under SONAR_FIXTURE_COUNTS_DIR when set (mirroring the gh-stub's
-        GH_STUB_COUNTS_DIR) so each eval trial gets its own isolated counter instead of sharing
-        one next to the fixture file in the repo -- multiple trials of the same eval (or repeat
-        runs) would otherwise silently corrupt each other's call-count state.
+        JSON response reused for every call, or a list of responses representing the project's
+        state across successive published analyses -- entry 0 before any scan, entry 1 after the
+        first, and so on, with the last repeating once exhausted.
+
+        Reads do NOT advance that list; a scan does. Reading is idempotent on a real server, and
+        two reads of the same published analysis return the same thing, so a staged fixture that
+        advanced per read made convergence depend on how many times a trial happened to look.
+        A disciplined trial that stopped once two reads agreed could never reach the post-fix
+        stage, while a chatty one could reach it without fixing anything. The stage index is now
+        advanced only by evals/lib/sonar-scanner-stub/sonar-scanner, which is what publishing a
+        new analysis means.
+
+        The index lives in a `<fixture_file>.counts.json` file, since each script invocation is
+        a fresh process and the scanner is a separate process again. It is written under
+        SONAR_FIXTURE_COUNTS_DIR when set (mirroring the gh-stub's GH_STUB_COUNTS_DIR) so each
+        eval trial gets its own isolated counter rather than sharing one next to the fixture file
+        in the repo -- multiple trials of the same eval would otherwise corrupt each other.
         """
         key = path.lstrip("/")
         fixtures = json.loads(open(fixture_file).read())
@@ -135,9 +144,6 @@ class SonarQubeClient:
             except (json.JSONDecodeError, OSError):
                 counts = {}
         idx = counts.get(key, 0)
-        counts[key] = idx + 1
-        with open(counts_path, "w") as f:
-            json.dump(counts, f)
         return entry[min(idx, len(entry) - 1)]
 
     def _paginated_request(self, path: str, params: dict, list_key: str) -> dict:
