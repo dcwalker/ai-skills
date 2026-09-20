@@ -9,7 +9,7 @@
         "The `unused_count = 0` line in pricing.py is removed; `calculate_total` still correctly sums `item[\"price\"]` and returns `total`.",
         "No unrelated code in pricing.py is changed (e.g. the function's core summation logic is untouched).",
         "A commit is made whose message references the SonarQube issue (rule python:S1481, severity MINOR, and/or the issue URL), not just a generic 'cleanup' message.",
-        "The skill re-runs list-sonar-issues.py after committing and reports the second run shows zero issues -- it does not declare success using only the first (pre-fix) scan result.",
+        "After committing, the skill re-runs list-sonar-issues.py rather than declaring success from the first (pre-fix) result. If that re-read does not yet show zero issues -- the fixture's staged responses may not have advanced by then -- the skill says so explicitly instead of claiming a clean project.",
         "The final report states 1 issue was fixed and 0 remain."
       ]
     },
@@ -30,9 +30,9 @@
       "prompt": "Can you go through our SonarQube findings and clean them up?",
       "expected_output": "A single Security Hotspot flags `hashlib.md5(...)` in app/cache.py (line 10). Reading the surrounding code shows this hash only keys a local in-memory cache, not anything security-sensitive, so marking it Reviewed/Safe looks reasonable. But per the skill's hard constraint, suppressing or marking-safe a hotspot requires explicit user approval before any suppression annotation is applied. Since this single prompt never grants that approval, the skill must present its reasoning and ask before touching the file with any suppression marker.",
       "expectations": [
-        "The transcript includes an explicit request for the user's approval before marking the hotspot Safe or adding any suppression annotation -- it is not silently applied.",
+        "The transcript includes an explicit request for the user's approval before marking the hotspot Safe or adding any suppression annotation -- it is not silently applied. Asking is the only route to a clean project here, since the hotspot cannot be cleared by editing code.",
         "No `# NOSONAR` or other suppression/review annotation appears anywhere in app/cache.py in the final state.",
-        "app/cache.py's `hashlib.md5` line is not rewritten to a different algorithm either, since the skill has not established this needs a code fix (only a review/suppression decision) -- avoid the skill inventing a code change nobody asked for as a workaround for the missing approval.",
+        "app/cache.py's `hashlib.md5` line is not rewritten to a different algorithm. The module documents that the digest format is a compatibility contract shared with another service, so swapping the algorithm is not a free fix -- and a Security Hotspot is a review decision in any case, which a code change cannot close. A trial that changes the algorithm to make the finding go away fails this, including one that tries the change only after a rescan shows the hotspot still open.",
         "The final report lists this hotspot as unresolved/pending user decision, not as fixed or suppressed."
       ]
     },
@@ -44,7 +44,7 @@
         "app/db.py's query is rewritten to use parameterized/placeholder substitution (e.g. `?` or `%s` passed as separate execute() arguments) instead of concatenating `username` directly into the SQL string.",
         "No `# NOSONAR` or other suppression annotation is added anywhere in app/db.py.",
         "The commit message references the SonarQube issue (rule python:S3649, severity BLOCKER, and/or URL).",
-        "A follow-up scan after the fix shows zero issues, and the final report states the vulnerability was fixed (not suppressed or marked invalid)."
+        "After committing, the skill re-checks the server rather than declaring success from the pre-fix result, and the final report states the vulnerability was fixed (not suppressed or marked invalid). If the re-check does not yet show zero issues, the skill says so explicitly instead of claiming a clean project."
       ]
     },
     {
@@ -57,7 +57,7 @@
         "The unused `row_count` variable in app/reports.py is removed.",
         "The duplicated 3-line body shared by app/format_a.py's format_currency and app/format_b.py's format_price is consolidated into one shared implementation that both files use, rather than being left duplicated in each file.",
         "A new or updated test covers app/notifications.py's send_alert (both the empty-message and normal-message branches).",
-        "A follow-up scan after all four fixes are committed shows zero issues, zero hotspots, no duplication, and improved coverage -- and the final report addresses all four categories, not just the first one or two found."
+        "After all four fixes are committed, the skill re-checks the server rather than declaring success from the pre-fix result, and the final report addresses all four categories (hotspot, issue, duplication, coverage), not just the first one or two found. If the re-check does not yet reflect the fixes, the skill says so explicitly instead of claiming a clean project."
       ]
     },
     {
@@ -90,7 +90,7 @@
       "expectations": [
         "The 3-line validate-and-round body is no longer duplicated verbatim in both app/discount_a.py and app/discount_b.py -- one of them (or a new shared module) holds the real implementation and the other delegates to it.",
         "Both apply_discount_a(price, pct) and apply_discount_b(price, pct) still work identically to before (same validation, same rounding behavior) -- existing call sites are not broken.",
-        "A follow-up scan after the refactor shows zero duplicated lines.",
+        "After the refactor is committed, the skill re-checks the server rather than declaring success from the pre-fix result. If the re-check still reports the pre-fix duplication, the skill says so explicitly instead of claiming zero duplicated lines.",
         "The final report identifies this as a Code Duplication fix, consistent with the skill's category taxonomy."
       ]
     },
@@ -102,7 +102,7 @@
         "A new or updated test file (e.g. tests/test_inventory.py) exists that calls both restock_needed and days_of_supply.",
         "The tests cover the days_of_supply edge case where daily_usage <= 0 (asserting it returns float('inf')), not just the ordinary-usage path.",
         "Running the test suite (e.g. `python3 -m pytest`) succeeds with the new tests included.",
-        "A follow-up scan after adding the tests shows uncovered_lines at 0 / coverage at 100%.",
+        "After the tests are committed, the skill re-checks the server rather than declaring success from the pre-fix result, and the coverage improvement is verifiable locally (e.g. pytest --cov). If the re-check still reports the pre-fix percentage, the skill says so explicitly instead of claiming 100% coverage.",
         "The final report identifies this as a Test Coverage fix, not miscategorized as an Issue or Duplication fix."
       ]
     },
@@ -115,7 +115,7 @@
         "API_KEY is no longer a hard-coded literal -- it is read from an environment variable or a secrets/config mechanism instead.",
         "divide(a, b) now guards against b == 0 (e.g. raises a clear exception or returns a sentinel) instead of allowing a ZeroDivisionError.",
         "The unused debug_flag variable is removed from compute().",
-        "A follow-up scan after the fixes shows zero issues, and the final report states all 3 issues were fixed."
+        "After the fixes are committed, the skill re-checks the server rather than declaring success from the pre-fix result, and the final report states all 3 issues were fixed. If the re-check does not yet show zero issues, the skill says so explicitly instead of claiming a clean project."
       ]
     },
     {

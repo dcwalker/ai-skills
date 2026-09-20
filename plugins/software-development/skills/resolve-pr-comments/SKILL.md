@@ -32,19 +32,15 @@ After all comments are processed, output a **Final Report** (see below).
 
 Please start by reviewing the AGENTS.md and CONTRIBUTING.md files for project conventions.
 
-This skill uses the `list-pr-comments.sh` script. It lives at:
-
-```
-~/.cursor/skills/resolve-pr-comments/scripts/list-pr-comments.sh
-```
-
-It is also available in your PATH as `list-pr-comments.sh`. Use the PATH form for all commands below.
-
-Review the script's help content first:
+This skill uses the `list-pr-comments.sh` script, which ships alongside it. Run it by name; the plugin puts its `bin/` directory on your PATH:
 
 ```bash
 list-pr-comments.sh --help
 ```
+
+If it is not on your PATH, fall back to the copy bundled with this skill at `scripts/list-pr-comments.sh`, resolved relative to this `SKILL.md`. Do not hard-code an absolute install path: the install location contains a version identifier that changes on every plugin update.
+
+Review the help output before running anything else, so you work from the script's current options rather than only the examples below.
 
 Then, use the script to fetch and review all unresolved GitHub PR comments for this branch's PR:
 
@@ -73,6 +69,9 @@ If the comment identifies a valid issue that needs to be addressed:
    list-pr-comments.sh -c <comment-id> --reply "Addressed in [SHA]." --resolve
    ```
 
+   If the reply text contains backticks, `$`, or other shell metacharacters,
+   use `--reply-file` instead (see [Writing a reply safely](#writing-a-reply-safely)).
+
 ### Workflow 2: Issue Already Fixed
 
 If the issue was previously addressed:
@@ -86,16 +85,48 @@ If the issue was previously addressed:
    list-pr-comments.sh -c <comment-id> --reply "Addressed in [SHA]." --resolve
    ```
 
+   If the reply text contains backticks, `$`, or other shell metacharacters,
+   use `--reply-file` instead (see [Writing a reply safely](#writing-a-reply-safely)).
+
 ### Workflow 3: Invalid or Not Applicable Comment
 
 If the comment is not valid or not applicable:
 
 1. Draft a brief, polite, and professional explanation of why the comment is not valid or applicable. This response will be public.
 
-2. Reply to the PR comment with your explanation and resolve it in one call:
+2. Reply to the PR comment with your explanation and resolve it in one call.
+   An explanation long enough to mention code almost always needs the file form:
    ```bash
-   list-pr-comments.sh -c <comment-id> --reply "Your explanation here" --resolve
+   cat > /tmp/reply.md <<'EOF'
+   Your explanation here, including `identifiers` if useful.
+   EOF
+   list-pr-comments.sh -c <comment-id> --reply-file /tmp/reply.md --resolve
    ```
+
+## Writing a reply safely
+
+Your shell expands backticks and `$(...)` inside a double-quoted `--reply`
+argument **before** `list-pr-comments.sh` runs, so those spans are silently
+deleted from what gets posted, and `$HOME`-style variables are replaced with
+their local values. The script receives text that is already wrong, so it
+cannot warn you. This has posted replies reading "now wraps the  call" in place
+of "now wraps the `JSON.parse` call", and it is public and permanent once sent.
+
+Use `--reply-file` for any reply containing backticks, `$`, quotes, or newlines.
+Write the file with a **quoted** heredoc (`<<'EOF'`, not `<<EOF`) so nothing
+expands:
+
+```bash
+cat > /tmp/reply.md <<'EOF'
+Addressed in abc1234: `parseConfig` now wraps the `JSON.parse` call in a
+try/catch and rethrows a clear error.
+EOF
+list-pr-comments.sh -c <comment-id> --reply-file /tmp/reply.md --resolve
+```
+
+Plain `--reply "Addressed in abc1234."` stays fine for short text with no
+metacharacters. When in doubt, use the file form: `cat` the file before sending
+to confirm the text is intact.
 
 ## Final Report
 

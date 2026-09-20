@@ -1,7 +1,12 @@
 """In-memory response cache keyed by a short hash of the request payload.
 
-This hash is used only to key a local dict cache -- it has no security or
-authentication purpose.
+The hash has no security or authentication purpose -- it only keys a local
+dict cache.
+
+The digest format is a compatibility contract: these same keys are written to
+the shared cache index that the reporting service reads, so changing the hash
+algorithm invalidates every key both services already hold. Do not change it
+without a coordinated migration.
 """
 
 import hashlib

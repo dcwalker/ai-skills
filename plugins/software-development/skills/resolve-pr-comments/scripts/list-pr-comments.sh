@@ -40,6 +40,7 @@ ACTION_RESOLVE=""
 ACTION_REPLY=""
 HIDE_REASON=""
 REPLY_TEXT=""
+REPLY_FILE=""
 NO_PROMPT=""
 GET_HIDE_REASONS=""
 EFFICIENCY_TIP=""
@@ -110,6 +111,17 @@ while [[ $# -gt 0 ]]; do
         shift
       fi
       ;;
+    --reply-file)
+      # Read the reply body from a file so it never crosses shell quoting.
+      # Backticks and $(...) inside a --reply argument are expanded by the
+      # CALLER's shell before this script runs, which silently deletes those
+      # spans from the text posted to the PR. By the time the body reaches
+      # "$2" it is already gone, so nothing here can recover it -- the only
+      # fix is to keep the text out of the command line.
+      ACTION_REPLY="1"
+      REPLY_FILE="$2"
+      shift 2
+      ;;
     --reason)
       HIDE_REASON="$2"
       shift 2
@@ -127,7 +139,7 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     -h|--help)
-      echo "Usage: $0 [OPTIONS]"
+      echo "Usage: $(basename "$0") [OPTIONS]"
       echo ""
       echo "Description:"
       echo "  Lists, filters, and manages GitHub pull request comments (both review"
@@ -157,6 +169,16 @@ while [[ $# -gt 0 ]]; do
       echo "  --reply [text]                Reply to a review comment"
       echo "                               If text is provided, use it; otherwise prompt interactively"
       echo "                               Can be combined with --resolve (reply first, then resolve)"
+      echo "                               Your shell expands backticks and \$(...) inside the text"
+      echo "                               before this script sees it, silently dropping those spans"
+      echo "                               from what gets posted. Use --reply-file for any body"
+      echo "                               containing backticks, \$, or other shell metacharacters."
+      echo "  --reply-file <path>           Reply with the contents of a file, bypassing shell quoting"
+      echo "                               entirely. Write it with a quoted heredoc so nothing expands:"
+      echo "                                 cat > /tmp/reply.md <<'EOF'"
+      echo "                                 Addressed in abc1234: \`parseConfig\` now validates input."
+      echo "                                 EOF"
+      echo "                                 list-pr-comments.sh -c <id> --reply-file /tmp/reply.md --resolve"
       echo "  --bulk                        Apply action to all filtered comments (requires --hide)"
       echo ""
       echo "Action Options:"
@@ -179,6 +201,24 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+
+# Resolve --reply-file into the reply text, once arg parsing is complete, so a
+# missing or empty file fails before any API call is made.
+if [[ -n "$REPLY_FILE" ]]; then
+  if [[ -n "$REPLY_TEXT" ]]; then
+    echo "Error: use either --reply or --reply-file, not both" >&2
+    exit 1
+  fi
+  if [[ ! -f "$REPLY_FILE" ]]; then
+    echo "Error: reply file not found: $REPLY_FILE" >&2
+    exit 1
+  fi
+  REPLY_TEXT=$(cat "$REPLY_FILE")
+  if [[ -z "$REPLY_TEXT" ]]; then
+    echo "Error: reply file is empty: $REPLY_FILE" >&2
+    exit 1
+  fi
+fi
 
 # Auto-detect PR from current branch if not provided
 if [ -z "$PULL_REQUEST" ] && [ -z "$COMMENT_URL" ] && [ -z "$COMMENT_ID" ]; then
@@ -250,10 +290,15 @@ build_suggested_command() {
     cmd="$cmd --resolve"
   fi
   if [ -n "$ACTION_REPLY" ]; then
-    if [ -n "$REPLY_TEXT" ]; then
-      # Escape quotes in reply text
-      local escaped_reply=$(echo "$REPLY_TEXT" | sed "s/\"/\\\\\"/g")
-      cmd="$cmd --reply \"$escaped_reply\""
+    if [[ -n "$REPLY_FILE" ]]; then
+      cmd="$cmd --reply-file \"$REPLY_FILE\""
+    elif [[ -n "$REPLY_TEXT" ]]; then
+      # Single-quote the body, escaping embedded single quotes. A suggested
+      # command is meant to be pasted into a shell, and double quotes would let
+      # backticks and $(...) in the text expand when it is -- re-inflicting the
+      # very corruption --reply-file exists to avoid.
+      local escaped_reply=${REPLY_TEXT//\'/\'\\\'\'}
+      cmd="$cmd --reply '$escaped_reply'"
     else
       cmd="$cmd --reply"
     fi
@@ -792,40 +837,9 @@ if [ -n "$PULL_REQUEST" ]; then
   fi
 fi
 
-if [ "$SHOULD_FETCH_PR" = "true" ]; then
-  # Skip fetching comments if we're only performing actions (no listing needed)
-  # Exception: Always fetch when bulk mode is enabled (needs comments to filter)
-  SHOULD_FETCH_COMMENTS=false
-  if [ -n "$BULK_MODE" ]; then
-    SHOULD_FETCH_COMMENTS=true
-  elif [ -z "$ACTION_HIDE" ] && [ -z "$ACTION_RESOLVE" ] && [ -z "$ACTION_REPLY" ]; then
-    SHOULD_FETCH_COMMENTS=true
-  fi
-  
-  if [ "$SHOULD_FETCH_COMMENTS" = "true" ]; then
-    if [ -z "$JSON_OUTPUT" ]; then
-      echo "Fetching comments for PR #${PULL_REQUEST} in ${REPO}"
-    fi
-  
-    # Extract owner and repo from REPO variable for GraphQL queries
-  OWNER=$(echo "$REPO" | cut -d'/' -f1)
-  REPO_NAME=$(echo "$REPO" | cut -d'/' -f2)
-  
-  # Fetch comments using GraphQL for consistency
-  REVIEW_COMMENTS="[]"
-  ISSUE_COMMENTS="[]"
-  
-  # Build GraphQL query to fetch both review comments and issue comments
-  if [ "$COMMENT_TYPE" = "all" ] || [ "$COMMENT_TYPE" = "review" ] || [ "$COMMENT_TYPE" = "issue" ]; then
-    # GraphQL query to get review threads (with resolved status) and issue comments
-    GRAPHQL_QUERY="{
-      repository(owner: \"$OWNER\", name: \"$REPO_NAME\") {
-        pullRequest(number: $PULL_REQUEST) {
-          reviewThreads(first: 100) {
-            nodes {
-              isResolved
-              comments(first: 100) {
-                nodes {
+# GraphQL selection for a single review comment, defined once so the initial
+# page and the continuation query below cannot drift apart.
+REVIEW_COMMENT_FIELDS="
                   id
                   databaseId
                   bodyText
@@ -841,11 +855,123 @@ if [ "$SHOULD_FETCH_PR" = "true" ]; then
                     }
                   }
                   url
-                }
+"
+
+# Fetch the comments of one review thread beyond its first page.
+#
+# Prints the remaining comment nodes as a JSON array. Returns non-zero if any
+# page fails or comes back malformed, so a partial result is never mistaken for
+# a complete one.
+fetch_remaining_thread_comments() {
+  local thread_id="$1"
+  local cursor="$2"
+  local all_comments="[]"
+  local query response page has_next
+
+  while true; do
+    query="{
+      node(id: \"$thread_id\") {
+        ... on PullRequestReviewThread {
+          comments(first: 100, after: \"$cursor\") {
+            pageInfo { hasNextPage endCursor }
+            nodes {$REVIEW_COMMENT_FIELDS}
+          }
+        }
+      }
+    }"
+
+    response=$(gh api graphql -f query="$query" 2>&1) || return 1
+    echo "$response" | jq empty 2>/dev/null || return 1
+
+    page=$(echo "$response" | jq '.data.node.comments' 2>/dev/null)
+    [[ -n "$page" ]] && [[ "$page" != "null" ]] || return 1
+
+    all_comments=$(jq -n --argjson acc "$all_comments" --argjson page "$page" '$acc + $page.nodes') || return 1
+
+    has_next=$(echo "$page" | jq -r '.pageInfo.hasNextPage')
+    [[ "$has_next" = "true" ]] || break
+    cursor=$(echo "$page" | jq -r '.pageInfo.endCursor')
+  done
+
+  echo "$all_comments"
+}
+
+# Fetch every review thread on a PR, following pagination cursors on both the
+# thread list and each thread's own comment list.
+#
+# Prints the thread nodes as a JSON array. Returns non-zero if any page fails or
+# comes back malformed.
+fetch_all_review_threads() {
+  local owner="$1"
+  local repo_name="$2"
+  local pr="$3"
+  local cursor="null"
+  local all_threads="[]"
+  local query response page has_next idx thread_id thread_cursor extra
+
+  while true; do
+    query="{
+      repository(owner: \"$owner\", name: \"$repo_name\") {
+        pullRequest(number: $pr) {
+          reviewThreads(first: 100, after: $cursor) {
+            pageInfo { hasNextPage endCursor }
+            nodes {
+              id
+              isResolved
+              comments(first: 100) {
+                pageInfo { hasNextPage endCursor }
+                nodes {$REVIEW_COMMENT_FIELDS}
               }
             }
           }
-          comments(first: 100) {
+        }
+      }
+    }"
+
+    response=$(gh api graphql -f query="$query" 2>&1) || return 1
+    echo "$response" | jq empty 2>/dev/null || return 1
+
+    page=$(echo "$response" | jq '.data.repository.pullRequest.reviewThreads' 2>/dev/null)
+    [[ -n "$page" ]] && [[ "$page" != "null" ]] || return 1
+
+    all_threads=$(jq -n --argjson acc "$all_threads" --argjson page "$page" '$acc + $page.nodes') || return 1
+
+    has_next=$(echo "$page" | jq -r '.pageInfo.hasNextPage')
+    [[ "$has_next" = "true" ]] || break
+    cursor="\"$(echo "$page" | jq -r '.pageInfo.endCursor')\""
+  done
+
+  # Top up any thread whose own comment list was truncated at 100.
+  for idx in $(echo "$all_threads" | jq -r 'to_entries[] | select(.value.comments.pageInfo.hasNextPage) | .key'); do
+    thread_id=$(echo "$all_threads" | jq -r ".[$idx].id")
+    thread_cursor=$(echo "$all_threads" | jq -r ".[$idx].comments.pageInfo.endCursor")
+    extra=$(fetch_remaining_thread_comments "$thread_id" "$thread_cursor") || return 1
+    all_threads=$(jq -n --argjson threads "$all_threads" --argjson extra "$extra" --argjson i "$idx" \
+      '$threads | .[$i].comments.nodes += $extra') || return 1
+  done
+
+  echo "$all_threads"
+}
+
+# Fetch every conversation (issue) comment on a PR, following pagination
+# cursors.
+#
+# Prints the comment nodes as a JSON array. Returns non-zero if any page fails
+# or comes back malformed.
+fetch_all_issue_comments() {
+  local owner="$1"
+  local repo_name="$2"
+  local pr="$3"
+  local cursor="null"
+  local all_comments="[]"
+  local query response page has_next
+
+  while true; do
+    query="{
+      repository(owner: \"$owner\", name: \"$repo_name\") {
+        pullRequest(number: $pr) {
+          comments(first: 100, after: $cursor) {
+            pageInfo { hasNextPage endCursor }
             nodes {
               id
               databaseId
@@ -866,18 +992,75 @@ if [ "$SHOULD_FETCH_PR" = "true" ]; then
         }
       }
     }"
-    
-    GRAPHQL_RESPONSE=$(gh api graphql -f query="$GRAPHQL_QUERY" 2>&1)
-    API_EXIT_CODE=$?
-    
-    if [ $API_EXIT_CODE -ne 0 ] || [ -z "$GRAPHQL_RESPONSE" ]; then
-      echo "Warning: Failed to fetch comments via GraphQL (exit code: $API_EXIT_CODE)"
-      if [ -n "$GRAPHQL_RESPONSE" ]; then
-        echo "Error details: $GRAPHQL_RESPONSE" | head -3
-      fi
+
+    response=$(gh api graphql -f query="$query" 2>&1) || return 1
+    echo "$response" | jq empty 2>/dev/null || return 1
+
+    page=$(echo "$response" | jq '.data.repository.pullRequest.comments' 2>/dev/null)
+    [[ -n "$page" ]] && [[ "$page" != "null" ]] || return 1
+
+    all_comments=$(jq -n --argjson acc "$all_comments" --argjson page "$page" '$acc + $page.nodes') || return 1
+
+    has_next=$(echo "$page" | jq -r '.pageInfo.hasNextPage')
+    [[ "$has_next" = "true" ]] || break
+    cursor="\"$(echo "$page" | jq -r '.pageInfo.endCursor')\""
+  done
+
+  echo "$all_comments"
+}
+
+if [[ "$SHOULD_FETCH_PR" = "true" ]]; then
+  # Skip fetching comments if we're only performing actions (no listing needed)
+  # Exception: Always fetch when bulk mode is enabled (needs comments to filter)
+  SHOULD_FETCH_COMMENTS=false
+  if [[ -n "$BULK_MODE" ]]; then
+    SHOULD_FETCH_COMMENTS=true
+  elif [[ -z "$ACTION_HIDE" ]] && [[ -z "$ACTION_RESOLVE" ]] && [[ -z "$ACTION_REPLY" ]]; then
+    SHOULD_FETCH_COMMENTS=true
+  fi
+  
+  if [[ "$SHOULD_FETCH_COMMENTS" = "true" ]]; then
+    if [[ -z "$JSON_OUTPUT" ]]; then
+      echo "Fetching comments for PR #${PULL_REQUEST} in ${REPO}"
+    fi
+  
+    # Extract owner and repo from REPO variable for GraphQL queries
+  OWNER=$(echo "$REPO" | cut -d'/' -f1)
+  REPO_NAME=$(echo "$REPO" | cut -d'/' -f2)
+  
+  # Fetch comments using GraphQL for consistency
+  REVIEW_COMMENTS="[]"
+  ISSUE_COMMENTS="[]"
+  
+  # Fetch review threads and conversation comments, following every pagination
+  # cursor. GitHub caps each connection at 100 nodes per page, and this query
+  # used to request a single page of each, so a PR with more than 100 review
+  # threads, a thread with more than 100 replies, or more than 100 conversation
+  # comments was silently truncated -- the skill then reported fewer outstanding
+  # comments than the PR actually had, and its resolve loop finished early.
+  if [[ "$COMMENT_TYPE" = "all" ]] || [[ "$COMMENT_TYPE" = "review" ]] || [[ "$COMMENT_TYPE" = "issue" ]]; then
+    REVIEW_THREAD_NODES="[]"
+    ISSUE_COMMENT_NODES="[]"
+    FETCH_FAILED=""
+
+    # Fetch only the connection the requested type needs.
+    if [[ "$COMMENT_TYPE" = "all" ]] || [[ "$COMMENT_TYPE" = "review" ]]; then
+      REVIEW_THREAD_NODES=$(fetch_all_review_threads "$OWNER" "$REPO_NAME" "$PULL_REQUEST") || FETCH_FAILED=1
+    fi
+    if [[ "$COMMENT_TYPE" = "all" ]] || [[ "$COMMENT_TYPE" = "issue" ]]; then
+      ISSUE_COMMENT_NODES=$(fetch_all_issue_comments "$OWNER" "$REPO_NAME" "$PULL_REQUEST") || FETCH_FAILED=1
+    fi
+
+    if [[ -n "$FETCH_FAILED" ]]; then
+      echo "Warning: Failed to fetch comments via GraphQL"
     else
-      # Validate it's valid JSON
-      if ! echo "$GRAPHQL_RESPONSE" | jq empty 2>/dev/null; then
+      # Rebuild the single-response shape the extraction below expects.
+      GRAPHQL_RESPONSE=$(jq -n \
+        --argjson threads "$REVIEW_THREAD_NODES" \
+        --argjson issues "$ISSUE_COMMENT_NODES" \
+        '{data: {repository: {pullRequest: {reviewThreads: {nodes: $threads}, comments: {nodes: $issues}}}}}' 2>/dev/null)
+
+      if [[ -z "$GRAPHQL_RESPONSE" ]]; then
         echo "Warning: Invalid JSON received from GraphQL"
       else
         # Extract review comments from review threads and flatten into array
@@ -1273,9 +1456,6 @@ reply_to_review_comment() {
   fi
   
   # Post reply
-  local reply_json
-  reply_json=$(echo "{\"body\": $(echo "$reply_text" | jq -Rs .)}" 2>/dev/null)
-  
   local result
   result=$(gh api "repos/${REPO}/pulls/${pr_number}/comments/${comment_id}/replies" \
     -X POST \
