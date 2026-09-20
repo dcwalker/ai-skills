@@ -40,6 +40,7 @@ ACTION_RESOLVE=""
 ACTION_REPLY=""
 HIDE_REASON=""
 REPLY_TEXT=""
+REPLY_FILE=""
 NO_PROMPT=""
 GET_HIDE_REASONS=""
 EFFICIENCY_TIP=""
@@ -110,6 +111,17 @@ while [[ $# -gt 0 ]]; do
         shift
       fi
       ;;
+    --reply-file)
+      # Read the reply body from a file so it never crosses shell quoting.
+      # Backticks and $(...) inside a --reply argument are expanded by the
+      # CALLER's shell before this script runs, which silently deletes those
+      # spans from the text posted to the PR. By the time the body reaches
+      # "$2" it is already gone, so nothing here can recover it -- the only
+      # fix is to keep the text out of the command line.
+      ACTION_REPLY="1"
+      REPLY_FILE="$2"
+      shift 2
+      ;;
     --reason)
       HIDE_REASON="$2"
       shift 2
@@ -157,6 +169,16 @@ while [[ $# -gt 0 ]]; do
       echo "  --reply [text]                Reply to a review comment"
       echo "                               If text is provided, use it; otherwise prompt interactively"
       echo "                               Can be combined with --resolve (reply first, then resolve)"
+      echo "                               Your shell expands backticks and \$(...) inside the text"
+      echo "                               before this script sees it, silently dropping those spans"
+      echo "                               from what gets posted. Use --reply-file for any body"
+      echo "                               containing backticks, \$, or other shell metacharacters."
+      echo "  --reply-file <path>           Reply with the contents of a file, bypassing shell quoting"
+      echo "                               entirely. Write it with a quoted heredoc so nothing expands:"
+      echo "                                 cat > /tmp/reply.md <<'EOF'"
+      echo "                                 Addressed in abc1234: \`parseConfig\` now validates input."
+      echo "                                 EOF"
+      echo "                                 list-pr-comments.sh -c <id> --reply-file /tmp/reply.md --resolve"
       echo "  --bulk                        Apply action to all filtered comments (requires --hide)"
       echo ""
       echo "Action Options:"
@@ -179,6 +201,24 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+
+# Resolve --reply-file into the reply text, once arg parsing is complete, so a
+# missing or empty file fails before any API call is made.
+if [ -n "$REPLY_FILE" ]; then
+  if [ -n "$REPLY_TEXT" ]; then
+    echo "Error: use either --reply or --reply-file, not both" >&2
+    exit 1
+  fi
+  if [ ! -f "$REPLY_FILE" ]; then
+    echo "Error: reply file not found: $REPLY_FILE" >&2
+    exit 1
+  fi
+  REPLY_TEXT=$(cat "$REPLY_FILE")
+  if [ -z "$REPLY_TEXT" ]; then
+    echo "Error: reply file is empty: $REPLY_FILE" >&2
+    exit 1
+  fi
+fi
 
 # Auto-detect PR from current branch if not provided
 if [ -z "$PULL_REQUEST" ] && [ -z "$COMMENT_URL" ] && [ -z "$COMMENT_ID" ]; then
@@ -250,10 +290,15 @@ build_suggested_command() {
     cmd="$cmd --resolve"
   fi
   if [ -n "$ACTION_REPLY" ]; then
-    if [ -n "$REPLY_TEXT" ]; then
-      # Escape quotes in reply text
-      local escaped_reply=$(echo "$REPLY_TEXT" | sed "s/\"/\\\\\"/g")
-      cmd="$cmd --reply \"$escaped_reply\""
+    if [ -n "$REPLY_FILE" ]; then
+      cmd="$cmd --reply-file \"$REPLY_FILE\""
+    elif [ -n "$REPLY_TEXT" ]; then
+      # Single-quote the body, escaping embedded single quotes. A suggested
+      # command is meant to be pasted into a shell, and double quotes would let
+      # backticks and $(...) in the text expand when it is -- re-inflicting the
+      # very corruption --reply-file exists to avoid.
+      local escaped_reply=${REPLY_TEXT//\'/\'\\\'\'}
+      cmd="$cmd --reply '$escaped_reply'"
     else
       cmd="$cmd --reply"
     fi
@@ -1411,9 +1456,6 @@ reply_to_review_comment() {
   fi
   
   # Post reply
-  local reply_json
-  reply_json=$(echo "{\"body\": $(echo "$reply_text" | jq -Rs .)}" 2>/dev/null)
-  
   local result
   result=$(gh api "repos/${REPO}/pulls/${pr_number}/comments/${comment_id}/replies" \
     -X POST \
