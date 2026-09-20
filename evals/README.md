@@ -278,11 +278,11 @@ would score around 0.85 while nothing was wrong with the skill. An expectation
 that is graded by one standard and written in another cannot be checked by
 anyone who was not present for the grading.
 
-Note what this does **not** do. It does not change any run's score, because it
-codifies the standard already in use. Convergence is still gated on a read
-budget (see above), and eval 7's expectations, which turn on rescan *count* and
-on a report saying "0 remain", are untouched -- those are a separate question
-about what the loop should do, not about how a scan result is read.
+Note what this does **not** do. It did not change any run's score, because it
+codifies the standard already in use. And eval 7's expectations, which turn on
+rescan *count* and on a report saying "0 remain", are untouched -- those are a
+separate question about what the loop should do, not about how a scan result is
+read.
 
 ## The Trello fixture hook
 

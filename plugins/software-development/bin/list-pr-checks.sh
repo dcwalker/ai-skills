@@ -14,7 +14,7 @@ BIN_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 PLUGIN_ROOT=$(cd -- "$BIN_DIR/.." && pwd)
 TARGET="$PLUGIN_ROOT/skills/fix-pr-checks/scripts/list-pr-checks.sh"
 
-if [ ! -f "$TARGET" ]; then
+if [[ ! -f "$TARGET" ]]; then
   echo "Error: could not find $TARGET" >&2
   exit 1
 fi
