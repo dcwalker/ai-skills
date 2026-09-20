@@ -204,17 +204,17 @@ done
 
 # Resolve --reply-file into the reply text, once arg parsing is complete, so a
 # missing or empty file fails before any API call is made.
-if [ -n "$REPLY_FILE" ]; then
-  if [ -n "$REPLY_TEXT" ]; then
+if [[ -n "$REPLY_FILE" ]]; then
+  if [[ -n "$REPLY_TEXT" ]]; then
     echo "Error: use either --reply or --reply-file, not both" >&2
     exit 1
   fi
-  if [ ! -f "$REPLY_FILE" ]; then
+  if [[ ! -f "$REPLY_FILE" ]]; then
     echo "Error: reply file not found: $REPLY_FILE" >&2
     exit 1
   fi
   REPLY_TEXT=$(cat "$REPLY_FILE")
-  if [ -z "$REPLY_TEXT" ]; then
+  if [[ -z "$REPLY_TEXT" ]]; then
     echo "Error: reply file is empty: $REPLY_FILE" >&2
     exit 1
   fi
@@ -290,9 +290,9 @@ build_suggested_command() {
     cmd="$cmd --resolve"
   fi
   if [ -n "$ACTION_REPLY" ]; then
-    if [ -n "$REPLY_FILE" ]; then
+    if [[ -n "$REPLY_FILE" ]]; then
       cmd="$cmd --reply-file \"$REPLY_FILE\""
-    elif [ -n "$REPLY_TEXT" ]; then
+    elif [[ -n "$REPLY_TEXT" ]]; then
       # Single-quote the body, escaping embedded single quotes. A suggested
       # command is meant to be pasted into a shell, and double quotes would let
       # backticks and $(...) in the text expand when it is -- re-inflicting the
@@ -884,12 +884,12 @@ fetch_remaining_thread_comments() {
     echo "$response" | jq empty 2>/dev/null || return 1
 
     page=$(echo "$response" | jq '.data.node.comments' 2>/dev/null)
-    [ -n "$page" ] && [ "$page" != "null" ] || return 1
+    [[ -n "$page" ]] && [[ "$page" != "null" ]] || return 1
 
     all_comments=$(jq -n --argjson acc "$all_comments" --argjson page "$page" '$acc + $page.nodes') || return 1
 
     has_next=$(echo "$page" | jq -r '.pageInfo.hasNextPage')
-    [ "$has_next" = "true" ] || break
+    [[ "$has_next" = "true" ]] || break
     cursor=$(echo "$page" | jq -r '.pageInfo.endCursor')
   done
 
@@ -932,12 +932,12 @@ fetch_all_review_threads() {
     echo "$response" | jq empty 2>/dev/null || return 1
 
     page=$(echo "$response" | jq '.data.repository.pullRequest.reviewThreads' 2>/dev/null)
-    [ -n "$page" ] && [ "$page" != "null" ] || return 1
+    [[ -n "$page" ]] && [[ "$page" != "null" ]] || return 1
 
     all_threads=$(jq -n --argjson acc "$all_threads" --argjson page "$page" '$acc + $page.nodes') || return 1
 
     has_next=$(echo "$page" | jq -r '.pageInfo.hasNextPage')
-    [ "$has_next" = "true" ] || break
+    [[ "$has_next" = "true" ]] || break
     cursor="\"$(echo "$page" | jq -r '.pageInfo.endCursor')\""
   done
 
@@ -997,30 +997,30 @@ fetch_all_issue_comments() {
     echo "$response" | jq empty 2>/dev/null || return 1
 
     page=$(echo "$response" | jq '.data.repository.pullRequest.comments' 2>/dev/null)
-    [ -n "$page" ] && [ "$page" != "null" ] || return 1
+    [[ -n "$page" ]] && [[ "$page" != "null" ]] || return 1
 
     all_comments=$(jq -n --argjson acc "$all_comments" --argjson page "$page" '$acc + $page.nodes') || return 1
 
     has_next=$(echo "$page" | jq -r '.pageInfo.hasNextPage')
-    [ "$has_next" = "true" ] || break
+    [[ "$has_next" = "true" ]] || break
     cursor="\"$(echo "$page" | jq -r '.pageInfo.endCursor')\""
   done
 
   echo "$all_comments"
 }
 
-if [ "$SHOULD_FETCH_PR" = "true" ]; then
+if [[ "$SHOULD_FETCH_PR" = "true" ]]; then
   # Skip fetching comments if we're only performing actions (no listing needed)
   # Exception: Always fetch when bulk mode is enabled (needs comments to filter)
   SHOULD_FETCH_COMMENTS=false
-  if [ -n "$BULK_MODE" ]; then
+  if [[ -n "$BULK_MODE" ]]; then
     SHOULD_FETCH_COMMENTS=true
-  elif [ -z "$ACTION_HIDE" ] && [ -z "$ACTION_RESOLVE" ] && [ -z "$ACTION_REPLY" ]; then
+  elif [[ -z "$ACTION_HIDE" ]] && [[ -z "$ACTION_RESOLVE" ]] && [[ -z "$ACTION_REPLY" ]]; then
     SHOULD_FETCH_COMMENTS=true
   fi
   
-  if [ "$SHOULD_FETCH_COMMENTS" = "true" ]; then
-    if [ -z "$JSON_OUTPUT" ]; then
+  if [[ "$SHOULD_FETCH_COMMENTS" = "true" ]]; then
+    if [[ -z "$JSON_OUTPUT" ]]; then
       echo "Fetching comments for PR #${PULL_REQUEST} in ${REPO}"
     fi
   
@@ -1038,20 +1038,20 @@ if [ "$SHOULD_FETCH_PR" = "true" ]; then
   # threads, a thread with more than 100 replies, or more than 100 conversation
   # comments was silently truncated -- the skill then reported fewer outstanding
   # comments than the PR actually had, and its resolve loop finished early.
-  if [ "$COMMENT_TYPE" = "all" ] || [ "$COMMENT_TYPE" = "review" ] || [ "$COMMENT_TYPE" = "issue" ]; then
+  if [[ "$COMMENT_TYPE" = "all" ]] || [[ "$COMMENT_TYPE" = "review" ]] || [[ "$COMMENT_TYPE" = "issue" ]]; then
     REVIEW_THREAD_NODES="[]"
     ISSUE_COMMENT_NODES="[]"
     FETCH_FAILED=""
 
     # Fetch only the connection the requested type needs.
-    if [ "$COMMENT_TYPE" = "all" ] || [ "$COMMENT_TYPE" = "review" ]; then
+    if [[ "$COMMENT_TYPE" = "all" ]] || [[ "$COMMENT_TYPE" = "review" ]]; then
       REVIEW_THREAD_NODES=$(fetch_all_review_threads "$OWNER" "$REPO_NAME" "$PULL_REQUEST") || FETCH_FAILED=1
     fi
-    if [ "$COMMENT_TYPE" = "all" ] || [ "$COMMENT_TYPE" = "issue" ]; then
+    if [[ "$COMMENT_TYPE" = "all" ]] || [[ "$COMMENT_TYPE" = "issue" ]]; then
       ISSUE_COMMENT_NODES=$(fetch_all_issue_comments "$OWNER" "$REPO_NAME" "$PULL_REQUEST") || FETCH_FAILED=1
     fi
 
-    if [ -n "$FETCH_FAILED" ]; then
+    if [[ -n "$FETCH_FAILED" ]]; then
       echo "Warning: Failed to fetch comments via GraphQL"
     else
       # Rebuild the single-response shape the extraction below expects.
@@ -1060,7 +1060,7 @@ if [ "$SHOULD_FETCH_PR" = "true" ]; then
         --argjson issues "$ISSUE_COMMENT_NODES" \
         '{data: {repository: {pullRequest: {reviewThreads: {nodes: $threads}, comments: {nodes: $issues}}}}}' 2>/dev/null)
 
-      if [ -z "$GRAPHQL_RESPONSE" ]; then
+      if [[ -z "$GRAPHQL_RESPONSE" ]]; then
         echo "Warning: Invalid JSON received from GraphQL"
       else
         # Extract review comments from review threads and flatten into array
