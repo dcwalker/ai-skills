@@ -29,9 +29,15 @@ Adding a transitive package directly will:
 
 Please start by reviewing the AGENTS.md and CONTRIBUTING.md files.
 
-**Finding the script:** Look for `list-dependabot-prs.sh` in the repository (for example under `scripts/` or the project root). If it is not present in the repo, try running it by name (e.g. `list-dependabot-prs.sh`) in case it is installed on the user's PATH. Do not assume a fixed path; paths vary by environment.
+This skill uses the `list-dependabot-prs.sh` script, which ships alongside it. Run it by name; the plugin puts its `bin/` directory on your PATH:
 
-Once located, run the script with `--help` to understand how it works (e.g. `scripts/list-dependabot-prs.sh --help` or `list-dependabot-prs.sh --help`).
+```bash
+list-dependabot-prs.sh --help
+```
+
+If it is not on your PATH, fall back to the copy bundled with this skill at `scripts/list-dependabot-prs.sh`, resolved relative to this `SKILL.md`. Do not hard-code an absolute install path: the install location contains a version identifier that changes on every plugin update. Do not look for the script in the target repository; it ships with the skill, not with the project being worked on.
+
+Review the help output before running anything else, so you work from the script's current options rather than only the examples below.
 
 Next, run the script with no options to list all of the open PRs in this repo from Dependabot.
 
