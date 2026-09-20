@@ -20,6 +20,9 @@ checks with model-based judgment where the outcome is inherently subjective.
 evals/
 ├── lib/
 │   ├── gh-stub/gh        Fake `gh` executable, fixture/cassette-driven.
+│   ├── sonar-scanner-stub/sonar-scanner
+│   │                     Fake `sonar-scanner`; reports a successful analysis
+│   │                     without contacting anything. See below.
 │   ├── git-fixture.sh    Builds a scratch git repo from a fixture spec.
 │   ├── run-eval.sh       Per-eval harness: wires fixture + gh-stub + env vars,
 │   │                     and writes <run-dir>/in-trial.sh to run commands
@@ -220,6 +223,32 @@ also exists, its contents are exported as `SONAR_PROJECT_KEY`, so the fixture
 repo doesn't need a `sonar-project.properties` file just to satisfy the
 script's project-key lookup.
 
+## The sonar-scanner stub
+
+`resolve-sonarqube-issues` runs a scan-fix loop, and its *reads* were fixture-
+driven long before its *scans* were. Until this stub existed, a trial invoked
+whatever real `sonar-scanner` sat on the host's PATH, which broke two things at
+once.
+
+It broke isolation, since the one binary in that skill's flow that talks to a
+server was the one nothing shadowed. And it broke measurement: the real scanner
+fails instantly against the unroutable `SONAR_HOST_URL` the preamble sets, so
+the loop aborted after a single iteration. A staged fixture only advances as
+reads consume it, so a loop that cannot iterate never reaches the stage where
+the project reads clean, and a trial that then (correctly) refused to claim a
+clean result off a stale read was marked down for it. Whether an eval converged
+depended on how many exploratory calls a trial happened to make, not on whether
+it fixed anything.
+
+The stub reports a successful analysis and contacts nothing. It deliberately
+does **not** advance the fixture's staged responses: convergence still happens
+through reads, exactly as the recorded baselines measured it. What changes is
+that the loop can now iterate at all.
+
+`run-eval.sh` sets `SONAR_SCANNER_LOG` alongside the fixture vars, one JSON
+line per invocation, so a grader can assert that a scan happened without
+constraining the path taken to it.
+
 ## The Trello fixture hook
 
 `organize-meeting-notes`'s bundled `create-trello-task.sh` reads
@@ -251,6 +280,10 @@ preserve when adding a stub, a fixture hook, or a bundled script:
   `list-sonar-issues.py` do this.
 - `gh-stub` is the reference: it refuses when `GH_STUB_CASSETTE` is unset and
   never execs the real `gh`.
+- `sonar-scanner-stub` holds the same contract for `sonar-scanner`, and is
+  prepended to `PATH` in *every* mode. The sandbox exception exists for evals
+  that use a real throwaway GitHub repo; there is no disposable SonarQube
+  server, so a real scan from a trial is never wanted.
 
 The same preamble also neutralizes the host's git configuration
 (`GIT_CONFIG_GLOBAL`/`GIT_CONFIG_SYSTEM` and the `GIT_CONFIG_COUNT`/`KEY`/

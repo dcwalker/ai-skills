@@ -122,6 +122,13 @@ emit_isolation_env() {
     echo "export PATH=\"$lib_dir/gh-stub:\$PATH\""
   fi
 
+  # sonar-scanner is shadowed in every mode, sandbox included. The sandbox
+  # exception above exists for evals that talk to a real throwaway GitHub repo;
+  # there is no equivalent disposable SonarQube server, so a real scan from a
+  # trial is never wanted. The stub refuses without a fixture and never execs
+  # the real binary.
+  echo "export PATH=\"$lib_dir/sonar-scanner-stub:\$PATH\""
+
   # Explicit: a caller under `set -e` must not inherit the exit status of
   # whatever the last echo happened to be.
   return 0
