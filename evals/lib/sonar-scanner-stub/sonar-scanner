@@ -1,0 +1,198 @@
+#!/usr/bin/env python3
+"""Fail-closed fake `sonar-scanner` for offline, deterministic skill evals.
+
+`resolve-sonarqube-issues` runs a scan-fix loop: fix, re-scan, re-read, repeat
+until the server reports clean. Its reads were already fixture-driven through
+`list-sonar-issues.py`'s SONAR_FIXTURE_FILE hook, but the scan itself was not
+stubbed, so a trial invoked whatever real `sonar-scanner` happened to be on the
+host's PATH. That broke two things at once.
+
+It broke isolation: the one binary in this skill's flow that talks to a real
+server was the one the harness did not shadow. A trial on a machine with
+sonar-scanner installed reached straight past every credential scrub.
+
+And it broke measurement: the real scanner fails immediately against the
+unroutable SONAR_HOST_URL the preamble sets, so the loop aborted after one
+iteration instead of cycling. A staged fixture only advances as reads consume
+it, so a loop that cannot iterate never reaches the stage where the project
+reads clean -- and the trial, correctly refusing to claim a clean result off a
+stale read, was then marked down for it. Convergence depended on how chatty a
+trial happened to be rather than on whether it fixed anything.
+
+This stub publishes nothing and contacts nothing. What it does do is advance
+the staged fixture by one stage, which is precisely what publishing an analysis
+means: entry 0 is the project before any scan, entry 1 after the first, and so
+on. `list-sonar-issues.py` reads whatever stage is current and no longer
+advances it, because reading a published analysis twice on a real server
+returns the same answer both times.
+
+That split is the point. When reads advanced the stages, convergence depended
+on how many times a trial happened to look: one that stopped as soon as two
+reads agreed could never reach the post-fix stage, while a chatty one could
+reach it without having fixed anything. Now a trial converges exactly when it
+fixes the findings and scans, and not otherwise.
+
+Refuses, rather than falling back to a real scan, when AI_SKILLS_EVAL is unset
+or no SONAR_FIXTURE_FILE is configured, and never execs a real sonar-scanner.
+That is the same contract gh-stub holds: a missing fixture is a loud failure,
+never a live call.
+
+Every invocation is appended to SONAR_SCANNER_LOG (when set) as one JSON object
+per line, mirroring GH_STUB_LOG, so a grader can assert that a scan happened --
+or did not -- without constraining the exact path a trial took to get there.
+"""
+
+import json
+import os
+import subprocess
+import sys
+import time
+
+
+def refuse(message: str) -> None:
+    print(f"sonar-scanner-stub: {message}", file=sys.stderr)
+    print(
+        "sonar-scanner-stub: refusing to run a real scan. This stub only runs "
+        "inside an eval trial with a fixture configured.",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
+
+def code_has_changed() -> bool:
+    """Whether the trial has actually modified the project since the fixture was laid down.
+
+    Scanning unchanged code publishes an analysis reporting the same findings,
+    so the stage must not move for it. Without this check a trial that scans
+    before fixing anything -- which the skill's own workflow invites, since
+    Phase 2 runs a scan -- jumps straight to the post-fix stage and the findings
+    vanish with no work done. That is a fabricated convergence, the precise
+    failure the harness exists to make impossible, and it was observed: an
+    eval 9 trial scanned first, read 100% coverage, and correctly concluded
+    there was nothing to do, having written no tests at all.
+
+    Returns False when git cannot answer. Declining to advance leaves a trial
+    reporting an unconverged project, which is visible and gets investigated;
+    advancing on a guess invents a clean result, which does not.
+    """
+    def git(*args: str) -> "str | None":
+        try:
+            out = subprocess.run(
+                ["git", *args], capture_output=True, text=True, timeout=10
+            )
+        except (OSError, subprocess.SubprocessError):
+            return None
+        return out.stdout.strip() if out.returncode == 0 else None
+
+    if git("rev-parse", "--is-inside-work-tree") != "true":
+        return False
+
+    if git("status", "--porcelain"):
+        return True
+
+    root = git("rev-list", "--max-parents=0", "HEAD")
+    if not root:
+        return False
+    count = git("rev-list", "--count", f"{root.splitlines()[-1]}..HEAD")
+    return bool(count and count != "0")
+
+
+def advance_fixture_stage(fixture_file: str) -> None:
+    """Move every staged endpoint in the fixture on by one published analysis.
+
+    Endpoints whose fixture value is a single response are not staged and are
+    left alone. An index past the end is harmless: the reader clamps to the last
+    entry, so a trial that scans more times than the fixture has stages simply
+    keeps seeing the final state.
+
+    A fixture that cannot be read or a counts file that cannot be written is not
+    worth failing a trial over -- the trial then behaves as it did before, which
+    a grader sees as a project that never converged.
+    """
+    try:
+        fixtures = json.loads(open(fixture_file).read())
+    except (OSError, json.JSONDecodeError):
+        return
+
+    staged = [k for k, v in fixtures.items() if isinstance(v, list)]
+    if not staged:
+        return
+
+    counts_dir = os.environ.get("SONAR_FIXTURE_COUNTS_DIR")
+    if counts_dir:
+        counts_path = os.path.join(
+            counts_dir, os.path.basename(fixture_file) + ".counts.json"
+        )
+    else:
+        counts_path = fixture_file + ".counts.json"
+
+    counts = {}
+    if os.path.exists(counts_path):
+        try:
+            counts = json.loads(open(counts_path).read())
+        except (OSError, json.JSONDecodeError):
+            counts = {}
+
+    for key in staged:
+        counts[key] = counts.get(key, 0) + 1
+
+    try:
+        with open(counts_path, "w") as f:
+            json.dump(counts, f)
+    except OSError:
+        pass
+
+
+def main() -> None:
+    argv = sys.argv[1:]
+
+    if os.environ.get("AI_SKILLS_EVAL") != "1":
+        refuse("AI_SKILLS_EVAL is not set, so this is not an eval trial")
+
+    fixture = os.environ.get("SONAR_FIXTURE_FILE")
+    if not fixture:
+        refuse("SONAR_FIXTURE_FILE is unset, so there is no fixture to scan against")
+
+    log_path = os.environ.get("SONAR_SCANNER_LOG")
+    if log_path:
+        try:
+            with open(log_path, "a") as f:
+                f.write(json.dumps({"argv": argv, "ts": time.time()}) + "\n")
+        except OSError:
+            # A log the grader cannot write is not worth failing a trial over.
+            pass
+
+    # Project key, for output that looks like the real thing. The scanner reads
+    # it from -Dsonar.projectKey, a properties file, or the environment; only
+    # the flag and the env var are worth honouring here.
+    project_key = os.environ.get("SONAR_PROJECT_KEY", "unknown")
+    for arg in argv:
+        if arg.startswith("-Dsonar.projectKey="):
+            project_key = arg.split("=", 1)[1]
+
+    host = os.environ.get("SONAR_HOST_URL", "https://sonar.invalid")
+
+    if code_has_changed():
+        advance_fixture_stage(fixture)
+    else:
+        print(
+            "sonar-scanner-stub: project unchanged since the last analysis, so the "
+            "published findings are unchanged too.",
+            file=sys.stderr,
+        )
+
+    print("INFO: Scanner configuration file: (stub)")
+    print(f"INFO: Analyzing project {project_key}")
+    print("INFO: Load global settings")
+    print("INFO: Analysis report generated")
+    print("INFO: Analysis report uploaded")
+    print(f"INFO: ANALYSIS SUCCESSFUL, you can find the results at: {host}"
+          f"/dashboard?id={project_key}")
+    print("INFO: Note that this analysis was produced by the eval stub; no "
+          "report left this machine.")
+    print("INFO: EXECUTION SUCCESS")
+    sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()

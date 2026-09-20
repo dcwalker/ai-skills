@@ -89,7 +89,7 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     -h|--help)
-      echo "Usage: $0 [OPTIONS]"
+      echo "Usage: $(basename "$0") [OPTIONS]"
       echo ""
       echo "Description:"
       echo "  Lists all status checks for a pull request, including GitHub Actions"

@@ -20,6 +20,9 @@ checks with model-based judgment where the outcome is inherently subjective.
 evals/
 ├── lib/
 │   ├── gh-stub/gh        Fake `gh` executable, fixture/cassette-driven.
+│   ├── sonar-scanner-stub/sonar-scanner
+│   │                     Fake `sonar-scanner`; reports a successful analysis
+│   │                     without contacting anything. See below.
 │   ├── git-fixture.sh    Builds a scratch git repo from a fixture spec.
 │   ├── run-eval.sh       Per-eval harness: wires fixture + gh-stub + env vars,
 │   │                     and writes <run-dir>/in-trial.sh to run commands
@@ -220,6 +223,67 @@ also exists, its contents are exported as `SONAR_PROJECT_KEY`, so the fixture
 repo doesn't need a `sonar-project.properties` file just to satisfy the
 script's project-key lookup.
 
+## The sonar-scanner stub
+
+`resolve-sonarqube-issues` runs a scan-fix loop, and its *reads* were fixture-
+driven long before its *scans* were. Until this stub existed, a trial invoked
+whatever real `sonar-scanner` sat on the host's PATH, which broke two things at
+once.
+
+It broke isolation, since the one binary in that skill's flow that talks to a
+server was the one nothing shadowed. And it broke measurement: the real scanner
+fails instantly against the unroutable `SONAR_HOST_URL` the preamble sets, so
+the loop aborted after a single iteration. A staged fixture only advances as
+reads consume it, so a loop that cannot iterate never reaches the stage where
+the project reads clean, and a trial that then (correctly) refused to claim a
+clean result off a stale read was marked down for it. Whether an eval converged
+depended on how many exploratory calls a trial happened to make, not on whether
+it fixed anything.
+
+The stub reports a successful analysis and contacts nothing. What it does do is
+**advance the staged fixture by one stage**, which is what publishing an
+analysis means: entry 0 is the project before any scan, entry 1 after the first,
+and so on. `list-sonar-issues.py` reads whichever stage is current and no longer
+advances it, because reading a published analysis twice on a real server returns
+the same answer both times.
+
+That split is the point. While reads advanced the stages, convergence depended
+on how many times a trial happened to look. A disciplined trial that stopped as
+soon as two reads agreed could never reach the post-fix stage; a chatty one
+could reach it without having fixed anything. Fixtures carried four duplicate
+padding entries each to paper over that, and it did not work: measured across
+evals 1, 5 and 7, trials reached reads 4-5 of a 6-stage fixture and stopped one
+or two short. Now a trial converges exactly when it fixes the findings and
+scans, and not otherwise, so the padding is gone -- each staged endpoint is
+simply `[before, after]`.
+
+`run-eval.sh` sets `SONAR_SCANNER_LOG` alongside the fixture vars, one JSON
+line per invocation, so a grader can assert that a scan happened without
+constraining the path taken to it.
+
+### Why those expectations read the way they do
+
+Six of this skill's expectations (evals 1, 4, 5, 8, 9 and 10) used to demand
+that "a follow-up scan shows zero". None of them was ever graded that way. The
+recorded baseline passes them on evidence like *"the fix is real and correct
+(verified directly); the static fixture's follow-up check still showed the
+pre-fix count due to the harness's padding; the executor was explicit about
+this rather than fabricating"* -- which is a different, and better, test: did
+the skill actually fix the thing, re-read afterwards, and decline to invent a
+clean result it had not seen?
+
+They now say that. The gap mattered: read literally, all six fail on any run
+where the staged fixture has not advanced, which is most of them, and the suite
+would score around 0.85 while nothing was wrong with the skill. An expectation
+that is graded by one standard and written in another cannot be checked by
+anyone who was not present for the grading.
+
+Note what this does **not** do. It did not change any run's score, because it
+codifies the standard already in use. And eval 7's expectations, which turn on
+rescan *count* and on a report saying "0 remain", are untouched -- those are a
+separate question about what the loop should do, not about how a scan result is
+read.
+
 ## The Trello fixture hook
 
 `organize-meeting-notes`'s bundled `create-trello-task.sh` reads
@@ -251,6 +315,10 @@ preserve when adding a stub, a fixture hook, or a bundled script:
   `list-sonar-issues.py` do this.
 - `gh-stub` is the reference: it refuses when `GH_STUB_CASSETTE` is unset and
   never execs the real `gh`.
+- `sonar-scanner-stub` holds the same contract for `sonar-scanner`, and is
+  prepended to `PATH` in *every* mode. The sandbox exception exists for evals
+  that use a real throwaway GitHub repo; there is no disposable SonarQube
+  server, so a real scan from a trial is never wanted.
 
 The same preamble also neutralizes the host's git configuration
 (`GIT_CONFIG_GLOBAL`/`GIT_CONFIG_SYSTEM` and the `GIT_CONFIG_COUNT`/`KEY`/

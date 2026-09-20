@@ -43,13 +43,15 @@ Review AGENTS.md and CONTRIBUTING.md in the project root (if present). Note any 
 
 ### Phase 1: Check which checks are failing
 
-This skill uses the `list-pr-checks.sh` script. It is available in your PATH as `list-pr-checks.sh`. Use the PATH form for all commands below.
-
-Review the script's help content first:
+This skill uses the `list-pr-checks.sh` script, which ships alongside it. Run it by name; the plugin puts its `bin/` directory on your PATH:
 
 ```bash
 list-pr-checks.sh --help
 ```
+
+If it is not on your PATH, fall back to the copy bundled with this skill at `scripts/list-pr-checks.sh`, resolved relative to this `SKILL.md`. Do not hard-code an absolute install path: the install location contains a version identifier that changes on every plugin update.
+
+Review the help output before running anything else, so you work from the script's current options rather than only the examples below.
 
 Then run it from the repository root to see every check's status and failure details:
 

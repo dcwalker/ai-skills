@@ -15,7 +15,15 @@ Review and systematically resolve SonarQube findings (Issues, Security Hotspots,
 - User intent: fix valid findings, document false positives, or suppress (suppression only with explicit user approval)
 - Environment variables: `SONAR_TOKEN` (required); `SONAR_HOST_URL` (defaults to `https://sonarcloud.io` for cloud projects)
 
-This skill uses `list-sonar-issues.py`. It is available in your PATH as `list-sonar-issues.py` — use the PATH form for all commands below. If it is not on your PATH, look for it in the repository (e.g. under `scripts/`) before falling back to a fixed path; do not assume the target project is a checkout of the `ai-skills` repo itself.
+This skill uses the `list-sonar-issues.py` script, which ships alongside it. Run it by name; the plugin puts its `bin/` directory on your PATH:
+
+```bash
+list-sonar-issues.py --help
+```
+
+If it is not on your PATH, fall back to the copy bundled with this skill at `scripts/list-sonar-issues.py`, resolved relative to this `SKILL.md`. Do not hard-code an absolute install path: the install location contains a version identifier that changes on every plugin update. Do not look for the script in the target repository; it ships with the skill, not with the project being worked on.
+
+Review the help output before running anything else, so you work from the script's current options rather than only the examples below.
 
 ## Required output structure
 
