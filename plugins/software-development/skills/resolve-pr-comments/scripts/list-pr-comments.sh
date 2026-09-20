@@ -792,6 +792,178 @@ if [ -n "$PULL_REQUEST" ]; then
   fi
 fi
 
+# GraphQL selection for a single review comment, defined once so the initial
+# page and the continuation query below cannot drift apart.
+REVIEW_COMMENT_FIELDS="
+                  id
+                  databaseId
+                  bodyText
+                  path
+                  line
+                  diffHunk
+                  createdAt
+                  updatedAt
+                  author {
+                    login
+                    ... on Bot {
+                      id
+                    }
+                  }
+                  url
+"
+
+# Fetch the comments of one review thread beyond its first page.
+#
+# Prints the remaining comment nodes as a JSON array. Returns non-zero if any
+# page fails or comes back malformed, so a partial result is never mistaken for
+# a complete one.
+fetch_remaining_thread_comments() {
+  local thread_id="$1"
+  local cursor="$2"
+  local all_comments="[]"
+  local query response page has_next
+
+  while true; do
+    query="{
+      node(id: \"$thread_id\") {
+        ... on PullRequestReviewThread {
+          comments(first: 100, after: \"$cursor\") {
+            pageInfo { hasNextPage endCursor }
+            nodes {$REVIEW_COMMENT_FIELDS}
+          }
+        }
+      }
+    }"
+
+    response=$(gh api graphql -f query="$query" 2>&1) || return 1
+    echo "$response" | jq empty 2>/dev/null || return 1
+
+    page=$(echo "$response" | jq '.data.node.comments' 2>/dev/null)
+    [ -n "$page" ] && [ "$page" != "null" ] || return 1
+
+    all_comments=$(jq -n --argjson acc "$all_comments" --argjson page "$page" '$acc + $page.nodes') || return 1
+
+    has_next=$(echo "$page" | jq -r '.pageInfo.hasNextPage')
+    [ "$has_next" = "true" ] || break
+    cursor=$(echo "$page" | jq -r '.pageInfo.endCursor')
+  done
+
+  echo "$all_comments"
+}
+
+# Fetch every review thread on a PR, following pagination cursors on both the
+# thread list and each thread's own comment list.
+#
+# Prints the thread nodes as a JSON array. Returns non-zero if any page fails or
+# comes back malformed.
+fetch_all_review_threads() {
+  local owner="$1"
+  local repo_name="$2"
+  local pr="$3"
+  local cursor="null"
+  local all_threads="[]"
+  local query response page has_next idx thread_id thread_cursor extra
+
+  while true; do
+    query="{
+      repository(owner: \"$owner\", name: \"$repo_name\") {
+        pullRequest(number: $pr) {
+          reviewThreads(first: 100, after: $cursor) {
+            pageInfo { hasNextPage endCursor }
+            nodes {
+              id
+              isResolved
+              comments(first: 100) {
+                pageInfo { hasNextPage endCursor }
+                nodes {$REVIEW_COMMENT_FIELDS}
+              }
+            }
+          }
+        }
+      }
+    }"
+
+    response=$(gh api graphql -f query="$query" 2>&1) || return 1
+    echo "$response" | jq empty 2>/dev/null || return 1
+
+    page=$(echo "$response" | jq '.data.repository.pullRequest.reviewThreads' 2>/dev/null)
+    [ -n "$page" ] && [ "$page" != "null" ] || return 1
+
+    all_threads=$(jq -n --argjson acc "$all_threads" --argjson page "$page" '$acc + $page.nodes') || return 1
+
+    has_next=$(echo "$page" | jq -r '.pageInfo.hasNextPage')
+    [ "$has_next" = "true" ] || break
+    cursor="\"$(echo "$page" | jq -r '.pageInfo.endCursor')\""
+  done
+
+  # Top up any thread whose own comment list was truncated at 100.
+  for idx in $(echo "$all_threads" | jq -r 'to_entries[] | select(.value.comments.pageInfo.hasNextPage) | .key'); do
+    thread_id=$(echo "$all_threads" | jq -r ".[$idx].id")
+    thread_cursor=$(echo "$all_threads" | jq -r ".[$idx].comments.pageInfo.endCursor")
+    extra=$(fetch_remaining_thread_comments "$thread_id" "$thread_cursor") || return 1
+    all_threads=$(jq -n --argjson threads "$all_threads" --argjson extra "$extra" --argjson i "$idx" \
+      '$threads | .[$i].comments.nodes += $extra') || return 1
+  done
+
+  echo "$all_threads"
+}
+
+# Fetch every conversation (issue) comment on a PR, following pagination
+# cursors.
+#
+# Prints the comment nodes as a JSON array. Returns non-zero if any page fails
+# or comes back malformed.
+fetch_all_issue_comments() {
+  local owner="$1"
+  local repo_name="$2"
+  local pr="$3"
+  local cursor="null"
+  local all_comments="[]"
+  local query response page has_next
+
+  while true; do
+    query="{
+      repository(owner: \"$owner\", name: \"$repo_name\") {
+        pullRequest(number: $pr) {
+          comments(first: 100, after: $cursor) {
+            pageInfo { hasNextPage endCursor }
+            nodes {
+              id
+              databaseId
+              bodyText
+              createdAt
+              updatedAt
+              author {
+                login
+                ... on Bot {
+                  id
+                }
+              }
+              url
+              isMinimized
+              minimizedReason
+            }
+          }
+        }
+      }
+    }"
+
+    response=$(gh api graphql -f query="$query" 2>&1) || return 1
+    echo "$response" | jq empty 2>/dev/null || return 1
+
+    page=$(echo "$response" | jq '.data.repository.pullRequest.comments' 2>/dev/null)
+    [ -n "$page" ] && [ "$page" != "null" ] || return 1
+
+    all_comments=$(jq -n --argjson acc "$all_comments" --argjson page "$page" '$acc + $page.nodes') || return 1
+
+    has_next=$(echo "$page" | jq -r '.pageInfo.hasNextPage')
+    [ "$has_next" = "true" ] || break
+    cursor="\"$(echo "$page" | jq -r '.pageInfo.endCursor')\""
+  done
+
+  echo "$all_comments"
+}
+
 if [ "$SHOULD_FETCH_PR" = "true" ]; then
   # Skip fetching comments if we're only performing actions (no listing needed)
   # Exception: Always fetch when bulk mode is enabled (needs comments to filter)
@@ -815,69 +987,35 @@ if [ "$SHOULD_FETCH_PR" = "true" ]; then
   REVIEW_COMMENTS="[]"
   ISSUE_COMMENTS="[]"
   
-  # Build GraphQL query to fetch both review comments and issue comments
+  # Fetch review threads and conversation comments, following every pagination
+  # cursor. GitHub caps each connection at 100 nodes per page, and this query
+  # used to request a single page of each, so a PR with more than 100 review
+  # threads, a thread with more than 100 replies, or more than 100 conversation
+  # comments was silently truncated -- the skill then reported fewer outstanding
+  # comments than the PR actually had, and its resolve loop finished early.
   if [ "$COMMENT_TYPE" = "all" ] || [ "$COMMENT_TYPE" = "review" ] || [ "$COMMENT_TYPE" = "issue" ]; then
-    # GraphQL query to get review threads (with resolved status) and issue comments
-    GRAPHQL_QUERY="{
-      repository(owner: \"$OWNER\", name: \"$REPO_NAME\") {
-        pullRequest(number: $PULL_REQUEST) {
-          reviewThreads(first: 100) {
-            nodes {
-              isResolved
-              comments(first: 100) {
-                nodes {
-                  id
-                  databaseId
-                  bodyText
-                  path
-                  line
-                  diffHunk
-                  createdAt
-                  updatedAt
-                  author {
-                    login
-                    ... on Bot {
-                      id
-                    }
-                  }
-                  url
-                }
-              }
-            }
-          }
-          comments(first: 100) {
-            nodes {
-              id
-              databaseId
-              bodyText
-              createdAt
-              updatedAt
-              author {
-                login
-                ... on Bot {
-                  id
-                }
-              }
-              url
-              isMinimized
-              minimizedReason
-            }
-          }
-        }
-      }
-    }"
-    
-    GRAPHQL_RESPONSE=$(gh api graphql -f query="$GRAPHQL_QUERY" 2>&1)
-    API_EXIT_CODE=$?
-    
-    if [ $API_EXIT_CODE -ne 0 ] || [ -z "$GRAPHQL_RESPONSE" ]; then
-      echo "Warning: Failed to fetch comments via GraphQL (exit code: $API_EXIT_CODE)"
-      if [ -n "$GRAPHQL_RESPONSE" ]; then
-        echo "Error details: $GRAPHQL_RESPONSE" | head -3
-      fi
+    REVIEW_THREAD_NODES="[]"
+    ISSUE_COMMENT_NODES="[]"
+    FETCH_FAILED=""
+
+    # Fetch only the connection the requested type needs.
+    if [ "$COMMENT_TYPE" = "all" ] || [ "$COMMENT_TYPE" = "review" ]; then
+      REVIEW_THREAD_NODES=$(fetch_all_review_threads "$OWNER" "$REPO_NAME" "$PULL_REQUEST") || FETCH_FAILED=1
+    fi
+    if [ "$COMMENT_TYPE" = "all" ] || [ "$COMMENT_TYPE" = "issue" ]; then
+      ISSUE_COMMENT_NODES=$(fetch_all_issue_comments "$OWNER" "$REPO_NAME" "$PULL_REQUEST") || FETCH_FAILED=1
+    fi
+
+    if [ -n "$FETCH_FAILED" ]; then
+      echo "Warning: Failed to fetch comments via GraphQL"
     else
-      # Validate it's valid JSON
-      if ! echo "$GRAPHQL_RESPONSE" | jq empty 2>/dev/null; then
+      # Rebuild the single-response shape the extraction below expects.
+      GRAPHQL_RESPONSE=$(jq -n \
+        --argjson threads "$REVIEW_THREAD_NODES" \
+        --argjson issues "$ISSUE_COMMENT_NODES" \
+        '{data: {repository: {pullRequest: {reviewThreads: {nodes: $threads}, comments: {nodes: $issues}}}}}' 2>/dev/null)
+
+      if [ -z "$GRAPHQL_RESPONSE" ]; then
         echo "Warning: Invalid JSON received from GraphQL"
       else
         # Extract review comments from review threads and flatten into array
