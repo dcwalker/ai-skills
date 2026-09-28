@@ -9,7 +9,7 @@ Usage:
   vocabulary.py build [--cache DIR]
 
 --cache is accepted before or after the subcommand. Every path must lie under
-the user's home directory or the temp directory.
+the user's home directory or $TMPDIR (where mktemp creates files).
 
 `save` labels a batch of messages and appends them to corpus/<SLUG>.jsonl.
 Messages from an identifier in identity.md (or --me) are the user's, as are
@@ -1232,8 +1232,8 @@ def main() -> int:
 
 
 def allowed_roots() -> List[str]:
-    """Where this script may read or write: the user's home and the temp directory."""
-    roots = {os.path.expanduser("~"), tempfile.gettempdir(), "/tmp"}
+    """Where this script may read or write: the user's home and $TMPDIR."""
+    roots = {os.path.expanduser("~"), tempfile.gettempdir()}
     return sorted({os.path.realpath(root) for root in roots if os.path.isdir(root)})
 
 
@@ -1245,9 +1245,10 @@ def contained_path(path: str, option: str) -> str:
     """
     resolved = os.path.realpath(os.path.expanduser(path))
     for root in allowed_roots():
-        if os.path.commonpath([resolved, root]) == root:
+        if resolved == root or resolved.startswith(root + os.sep):
             return resolved
-    sys.exit(f"{option} must be inside your home directory or the temp directory; got {path!r}.")
+    sys.exit(f"{option} must be inside your home directory or {tempfile.gettempdir()}; got {path!r}. "
+             "Create temporary files with mktemp.")
 
 
 if __name__ == "__main__":
