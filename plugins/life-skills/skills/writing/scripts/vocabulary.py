@@ -325,10 +325,6 @@ def read_corpus(cache: str) -> Tuple[List[Segment], List[str], List[str]]:
     return segments, files, warnings
 
 
-def bare_id(msg: str) -> str:
-    return msg.split(":", 1)[-1]
-
-
 def read_file(path: str, seen: Set[Tuple[str, str]], warnings: List[str],
               segments: Optional[List[Segment]] = None) -> List[Segment]:
     segments = [] if segments is None else segments
@@ -344,11 +340,11 @@ def read_file(path: str, seen: Set[Tuple[str, str]], warnings: List[str],
             continue
         # The same message saved again (an edit, a relabel, or another card's
         # copy): the latest line for it replaces earlier ones, whoever it says
-        # wrote it. Ids are compared without the source prefix, so "gmail:1"
-        # and "mail:1" are one message.
-        key = (bare_id(record["msg"]), record["kind"])
+        # wrote it. The id keeps its source prefix, so jira:12345 and
+        # git:12345 stay two messages.
+        key = (record["msg"], record["kind"])
         if key in seen:
-            segments[:] = [s for s in segments if (bare_id(s.msg), s.kind) != key]
+            segments[:] = [s for s in segments if (s.msg, s.kind) != key]
         seen.add(key)
         if record["author"] == "user" and record["kind"] != "auto":
             segments.append(Segment(record, medium_of(path)))
