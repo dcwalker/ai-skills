@@ -118,22 +118,31 @@ SIGN_OFF_LINE = re.compile(
     r"|^(?i:best|later|love)[,.!]?( [A-Z][\w'.-]*){0,2}$"
 )
 REPLY_HEADERS = (
-    re.compile(r"^(On|Le|Am|El|Il|Op) .{4,300}(wrote|a écrit|schrieb|escribió|scrisse|schreef)\s*:\s*$",
-               re.IGNORECASE),
+    re.compile(r"^(On|Le|Am|El|Il|Op|Em|Den|Dne) .{4,300}"
+               r"(wrote|a écrit|schrieb|escribió|scrisse|schreef|escreveu|skrev|napsal)\s*:\s*$", re.IGNORECASE),
+    re.compile(r"^[A-Z][\w'.-]+( [A-Z][\w'.-]+){0,3} wrote:\s*$"),
     re.compile(r"^.{1,200}<[^>\s]+@[^>\s]+>\s*(wrote|a écrit|schrieb|escribió)\s*:\s*$", re.IGNORECASE),
     re.compile(r"^-{2,}\s*Original Message\s*-{2,}\s*$", re.IGNORECASE),
     re.compile(r"^_{10,}\s*$"),
 )
-OUTLOOK_FROM = re.compile(r"^\*?From:\*?\s+\S", re.IGNORECASE)
-OUTLOOK_FIELDS = re.compile(r"^\*?(Sent|Date|To|Subject|Cc):\*?\s", re.IGNORECASE)
+OUTLOOK_FROM = re.compile(r"^\*?(From|Von|De|Da|Van|Från|Fra|Od):\*?\s+\S", re.IGNORECASE)
+OUTLOOK_FIELDS = re.compile(
+    r"^\*?(Sent|Date|To|Subject|Cc|Gesendet|Datum|An|Betreff|Envoyé|Date|À|Objet|Inviato|Data|A|Oggetto|"
+    r"Verzonden|Aan|Onderwerp|Skickat|Till|Ämne|Sendt|Til|Emne|Enviado|Para|Assunto|Asunto):\*?\s",
+    re.IGNORECASE,
+)
 FORWARD_HEADER = re.compile(r"^(-{3,}\s*Forwarded message|Begin forwarded message:)", re.IGNORECASE)
 SIGNATURE_DELIMITER = re.compile(r"^--\s*$")
 MOBILE_FOOTER = re.compile(
-    r"^(Sent from (my )?(iPhone|iPad|Android|Samsung|mobile|Outlook|Mail for)|Get Outlook for (iOS|Android))",
+    r"^(Sent from (my )?(iPhone|iPad|Android|Samsung|mobile|Outlook|Mail for)|Get Outlook for (iOS|Android)"
+    r"|\W*(CONFIDENTIALITY NOTICE|CONFIDENTIAL|DISCLAIMER)\b|This (e-?mail|message)( and any attachments)?"
+    r"( \(including any attachments\))? (is|are|may be) (confidential|intended))",
     re.IGNORECASE,
 )
 HTML_BODY = re.compile(r"</(div|p|blockquote|span|table)>|<br\s*/?>", re.IGNORECASE)
 ADDRESS_IN_BRACKETS = re.compile(r"<([^<>\s]+@[^<>\s]+)>")
+NOT_A_NAME = {"honestly", "also", "so", "well", "ok", "okay", "yes", "no", "sure", "update", "fyi", "note",
+              "quick", "actually", "anyway", "first", "second", "finally", "unfortunately", "luckily"}
 COMMON_ONE_WORD_REPLIES = {"yes", "yep", "yeah", "nope", "sure", "thx", "thanks", "done", "agreed", "same",
                            "lgtm", "nice", "great", "cool", "okay", "fine", "noted", "works"}
 IDENTIFIER_NOISE = {"until", "since", "from", "to", "and", "or", "the", "old", "new", "former", "work",
@@ -250,6 +259,7 @@ def clean_text(text: str) -> str:
 
 class Segment:
     def __init__(self, record: dict, medium: str) -> None:
+        self.kind = record["kind"]
         self.counted = record["kind"] == "body"
         self.msg = record["msg"]
         self.text = record["text"]
@@ -286,12 +296,13 @@ def read_corpus(cache: str) -> Tuple[List[Segment], List[str], List[str]]:
     warnings: List[str] = []
     seen: Set[Tuple[str, str]] = set()
     for path in files:
-        segments.extend(read_file(path, seen, warnings))
+        read_file(path, seen, warnings, segments)
     return segments, files, warnings
 
 
-def read_file(path: str, seen: Set[Tuple[str, str]], warnings: List[str]) -> List[Segment]:
-    segments = []
+def read_file(path: str, seen: Set[Tuple[str, str]], warnings: List[str],
+              segments: Optional[List[Segment]] = None) -> List[Segment]:
+    segments = [] if segments is None else segments
     with open(path, encoding="utf-8") as handle:
         for number, line in enumerate(handle, 1):
             if not line.strip():
@@ -308,9 +319,11 @@ def read_file(path: str, seen: Set[Tuple[str, str]], warnings: List[str]) -> Lis
                 continue
             if record["author"] != "user" or record["kind"] == "auto":
                 continue
-            key = (record["msg"], record["text"])
+            key = (record["msg"], record["kind"])
             if key in seen:
-                continue
+                # The same message saved again (an edit, or another card's copy):
+                # the later text replaces the earlier one.
+                segments[:] = [s for s in segments if (s.msg, s.kind) != key]
             seen.add(key)
             segments.append(Segment(record, medium_of(path)))
     return segments
@@ -338,14 +351,27 @@ def identity_line_identifiers(line: str) -> Set[str]:
     if not field:
         return set()
     value = re.split(r"\s(?:until|since)\s|\s[—–]\s", line[len(field):], maxsplit=1)[0]
-    found = set()
+    if field == "Chat:":
+        value = value.rsplit(":", 1)[-1]  # drop the "<workspace>:" label, however many words it has
+    found = {normalize_identifier(handle) for handle in re.findall(r"\(@([\w.-]+)\)", value)}
     for token in re.split(r"[\s,;]+", value):
-        if not token or token.endswith(":") or re.fullmatch(r"\d{4}-\d{2}(-\d{2})?", token):
-            continue
-        normalized = normalize_identifier(token)
-        if normalized and normalized not in IDENTIFIER_NOISE:
-            found.add(normalized)
-    return found
+        token = token.strip(IDENTIFIER_PUNCTUATION)
+        if looks_like_identifier(token, bare_handles=field == "Code host:"):
+            found.add(normalize_identifier(token))
+    return {value for value in found if value}
+
+
+def looks_like_identifier(token: str, bare_handles: bool) -> bool:
+    """An address, an account id with a digit (U024BE7LH, user-alex-1), or,
+    on the code host line only, a bare handle. Plain words on a line, such as
+    the parts of a name, are never identifiers."""
+    if not token or token.startswith("(@") or token.lower() in IDENTIFIER_NOISE:
+        return False
+    if re.fullmatch(r"\d{4}-\d{2}(-\d{2})?", token):
+        return False
+    if "@" in token.lstrip("@") or re.search(r"\d", token):
+        return True
+    return bare_handles and bool(re.fullmatch(r"@?[\w.-]+", token))
 
 
 def normalize_identifier(value: str) -> str:
@@ -398,14 +424,14 @@ def is_reply_header(lines: List[str], index: int) -> bool:
     line = lines[index].strip()
     # Only a line that starts a header may be joined with the next ones, so a
     # wrapped header never swallows the user's own text above it.
-    spans = (1, 2, 3) if re.match(r"(On|Le|Am|El|Il|Op) ", line) else (1,)
+    spans = (1, 2, 3) if re.match(r"(On|Le|Am|El|Il|Op|Em|Den|Dne) ", line) else (1,)
     for span in spans:
         joined = " ".join(part.strip() for part in lines[index:index + span])
         if any(pattern.match(joined) for pattern in REPLY_HEADERS):
             return True
     if OUTLOOK_FROM.match(line):
         following = [part.strip() for part in lines[index + 1:index + 5]]
-        return sum(bool(OUTLOOK_FIELDS.match(part)) for part in following) >= 2
+        return any(OUTLOOK_FIELDS.match(part) for part in following)
     return False
 
 
@@ -435,6 +461,8 @@ def separate_quoted(lines: List[str]) -> Tuple[List[str], List[str]]:
 
 def take_greeting(body: str) -> Tuple[str, str]:
     first, _, rest = body.partition("\n")
+    if first.strip().rstrip(",").lower() in NOT_A_NAME:
+        return "", body
     if rest.strip() and GREETING.match(first.strip()):
         return first.strip(), rest.strip()
     return "", body
@@ -547,6 +575,9 @@ def message_problem(message: object) -> Optional[str]:
 
 
 def save(cache: str, card: str, source: str, input_path: str, extra: List[str]) -> int:
+    source = source.strip().lower()
+    if not re.fullmatch(r"[a-z0-9]+", source):
+        sys.exit(f"--source must be a plain name such as gmail, slack, jira, or git; got {source!r}.")
     card = slugify(card)
     if "-" not in card:
         sys.exit(f"--card must be <medium>-<audience-slug>, like email-jordan-blake; got {card!r}.")
@@ -556,8 +587,6 @@ def save(cache: str, card: str, source: str, input_path: str, extra: List[str]) 
     messages = load_messages(input_path)
     corpus_dir = os.path.join(cache, "corpus")
     os.makedirs(corpus_dir, mode=0o700, exist_ok=True)
-    os.chmod(cache, 0o700)
-    os.chmod(corpus_dir, 0o700)
     path = os.path.join(corpus_dir, f"{card}.jsonl")
     existing = existing_keys(path)
     added = []
@@ -572,12 +601,21 @@ def save(cache: str, card: str, source: str, input_path: str, extra: List[str]) 
         with os.fdopen(descriptor, "a", encoding="utf-8") as handle:
             for record in added:
                 handle.write(json.dumps(record, ensure_ascii=False) + "\n")
-        os.chmod(path, 0o600)
+    make_private(cache)
     report_saved(path, messages, added)
     if messages and not any(record["author"] == "user" for record in added) and not existing_user(path):
         print("  warning: none of these messages matched the user's identifiers; check identity.md, --me, "
               "and that 'from' holds the sender's address or id", file=sys.stderr)
     return 0
+
+
+def make_private(cache: str) -> None:
+    """Keep the cache readable by the user alone: 700 directories, 600 files."""
+    for root, dirs, files in os.walk(cache):
+        dirs[:] = [d for d in dirs if d != ".venv"]
+        os.chmod(root, 0o700)
+        for name in files:
+            os.chmod(os.path.join(root, name), 0o600)
 
 
 def existing_user(path: str) -> bool:
@@ -756,7 +794,8 @@ def header_lines(profile: Profile, files: List[str], fingerprint: str = "") -> L
         "# Vocabulary",
         "",
         f"Built:       {datetime.date.today().isoformat()}",
-        f"Corpus:      {plural(len(files), 'file')}, {len(profile.message_ids)} messages, {profile.total} counted words, {span}",
+        f"Corpus:      {plural(len(files), 'file')}, {plural(len(profile.message_ids), 'message')}, "
+        f"{profile.total} counted words, {span}",
         f"Name match:  {profile.name_match_words} of {profile.total} counted words ({share:.0f}%) from display-name matches",
         f"Reference:   {profile.reference.describe()}",
         "Counted:     segments with author user and kind body only",
@@ -844,7 +883,7 @@ def load_vocabulary(cache: str) -> Tuple[Dict[str, int], Dict[str, float], Set[s
     block = re.search(r"## Lexicon.*?```\n(.*?)```", text, re.DOTALL)
     for line in (block.group(1).splitlines() if block else []):
         word, _, count = line.partition("\t")
-        lexicon[word] = int(count)
+        lexicon[word] = int(count) if count.strip().isdigit() else 0
     top = re.search(r"## Most frequent words\n(.*?)\n## ", text, re.DOTALL)
     rates = {m.group(1): float(m.group(2))
              for m in re.finditer(r"^\| (\S+) \| ([\d.]+) \| ", top.group(1) if top else "", re.MULTILINE)}
@@ -863,13 +902,17 @@ def corpus_files(cache: str) -> List[str]:
 
 
 def inputs_fingerprint(cache: str, reference: Reference) -> str:
-    """What vocabulary.md was built from: every corpus file's name, size, and
-    modification time, plus the reference. Any change, a deleted file or
-    wordfreq becoming available included, means a rebuild."""
+    """What vocabulary.md was built from: every corpus file's name and
+    contents, the reference, and this script. Any change, a deleted file,
+    wordfreq becoming available, or a new version of the script included,
+    means a rebuild. A copied cache keeps its fingerprint."""
     digest = hashlib.sha256(reference.describe().encode())
+    with open(os.path.abspath(__file__), "rb") as handle:
+        digest.update(handle.read())
     for path in sorted(corpus_files(cache)):
-        info = os.stat(path)
-        digest.update(f"{os.path.basename(path)}:{info.st_size}:{info.st_mtime_ns};".encode())
+        digest.update(os.path.basename(path).encode())
+        with open(path, "rb") as handle:
+            digest.update(handle.read())
     return digest.hexdigest()[:16]
 
 
@@ -892,12 +935,10 @@ def check(cache: str, draft_path: str, exempt_path: Optional[str], reference: Re
             print(f"{problem} Check skipped.")
             return 0
     lexicon, rates, never = load_vocabulary(cache)
-    with open(draft_path, encoding="utf-8") as handle:
-        tokens = reference.tokenize(handle.read())
+    tokens = reference.tokenize(read_text(draft_path, "--draft"))
     exempt: Set[str] = set()
     if exempt_path:
-        with open(exempt_path, encoding="utf-8") as handle:
-            request = handle.read()
+        request = read_text(exempt_path, "--exempt")
         exempt = set(reference.tokenize(request)) | set(FALLBACK_TOKEN.findall(request.lower()))
     draft = Counter(t for t in tokens if not any(same_stem(t, word) for word in exempt))
     findings = dropped_request_findings(exempt, tokens, never) + never_used_findings(draft, never) \
@@ -908,6 +949,14 @@ def check(cache: str, draft_path: str, exempt_path: Optional[str], reference: Re
     for finding in findings:
         print(f"- {finding}")
     return 0
+
+
+def read_text(path: str, option: str) -> str:
+    try:
+        with open(path, encoding="utf-8") as handle:
+            return handle.read()
+    except OSError as err:
+        sys.exit(f"Could not read {option} file {path}: {err.strerror}.")
 
 
 def dropped_request_findings(request: Set[str], draft: List[str], never: Set[str]) -> List[str]:
@@ -924,11 +973,18 @@ def dropped_request_findings(request: Set[str], draft: List[str], never: Set[str
 
 
 def same_stem(a: str, b: str) -> bool:
-    """Crude inflection match: "leverage", "leveraged", and "leveraging" match."""
-    def stem(word: str) -> str:
-        return word[:-1] if len(word) > 5 and word.endswith("e") else word
-    shorter, longer = sorted((stem(a), stem(b)), key=len)
-    return len(shorter) >= 4 and longer.startswith(shorter)
+    """Inflections of one word: "leverage", "leverages", "leveraged", and
+    "leveraging" match; "stream" and "streamline" do not."""
+    return inflection_base(a) == inflection_base(b)
+
+
+def inflection_base(word: str) -> str:
+    word = word.replace("’", "'")
+    for suffix in ("'s", "ing", "ed", "es", "s", "d"):
+        if word.endswith(suffix) and len(word) - len(suffix) >= 3:
+            word = word[:-len(suffix)]
+            break
+    return word[:-1] if word.endswith("e") else word
 
 
 def never_used_findings(draft: Counter, never: Set[str]) -> List[str]:
@@ -983,8 +1039,8 @@ def write_vocabulary(cache: str, reference: Reference) -> Optional[str]:
     descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
     with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
         handle.write(render(profile, files, warnings, inputs_fingerprint(cache, reference)))
-    os.chmod(path, 0o600)
-    print(f"Wrote {path}: {len(profile.message_ids)} messages, {profile.total} counted words, "
+    make_private(cache)
+    print(f"Wrote {path}: {plural(len(profile.message_ids), 'message')}, {profile.total} counted words, "
           f"{len(warnings)} warnings. Reference: {reference.describe()}")
     return None
 
