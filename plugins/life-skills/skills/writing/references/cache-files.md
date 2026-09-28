@@ -151,45 +151,59 @@ card's slug: `card-email-jordan-blake.md` pairs with
 without searching the user's accounts again, and it is what
 `scripts/vocabulary.py` reads.
 
-Each line is one **segment**: a stretch of text with a single author. A message
-the user sent with a quoted reply and a signature is three lines.
+**It is written only by `scripts/vocabulary.py save`**, never by hand, because
+the labels are what keep other people's words out of the user's profile. Give
+`save` the messages as they came from the source, one object per message, in a
+JSON file:
 
 ```json
-{"thread":"gmail:18c2f0e7","msg":"gmail:18c2f9a1","date":"2026-07-30T09:14:00-07:00","from":"dan@example.com","author":"user","match":"identifier","kind":"body","text":"hey Jordan, yes I can take it. just swap me out of the 14th"}
-{"thread":"gmail:18c2f0e7","msg":"gmail:18c2f9a1","date":"2026-07-30T09:14:00-07:00","from":"dan@example.com","author":"other","kind":"quoted","text":"> Can you take the first week of August?"}
-{"thread":"gmail:18c2f0e7","msg":"gmail:18c2f0e7","date":"2026-07-29T16:02:00-07:00","from":"jordan@example.com","author":"other","kind":"body","text":"Can you take the first week of August?"}
+{"messages": [
+  {"id": "18c2f0e7", "thread": "18c2f0e7", "date": "2026-07-29T16:02:00-07:00", "from": "jordan@example.com", "text": "Can you take the first week of August?"},
+  {"id": "18c2f9a1", "thread": "18c2f0e7", "date": "2026-07-30T09:14:00-07:00", "from": "dan@example.com", "text": "hey Jordan,\n\nyes I can take it.\n\nthanks\ndan\n\nOn Tue, Jul 29, Jordan wrote:\n> Can you take the first week of August?"}
+]}
+```
+
+`id`, `from`, and `text` are required; `text` is the full body, verbatim.
+Optional keys: `"match": "name"` on a message attributed to the user by display
+name alone, `"auto": true` on an out-of-office reply, template, or bot post, and
+`"rev"` on a document passage (pass only the user's passages, attributed by
+blame). `save` compares `from` with every identifier in `identity.md`,
+including `Former:` ones, plus any `--me` value, and writes one line per
+**segment**, a stretch of text with a single author:
+
+```json
+{"thread":"gmail:18c2f0e7","msg":"gmail:18c2f9a1","date":"2026-07-30T09:14:00-07:00","from":"dan@example.com","author":"user","match":"identifier","kind":"body","text":"yes I can take it."}
+{"thread":"gmail:18c2f0e7","msg":"gmail:18c2f9a1","date":"2026-07-30T09:14:00-07:00","from":"dan@example.com","author":"other","kind":"quoted","text":"On Tue, Jul 29, Jordan wrote:\n> Can you take the first week of August?"}
 ```
 
 | Field | Value |
 |---|---|
-| `thread`, `msg` | Source ids, prefixed with the source (`gmail:`, `slack:C024BE91L:`, `git:`). `msg` is what the card's ledger rows point to |
-| `date` | ISO 8601 with the offset |
+| `thread`, `msg` | Source ids, prefixed with `--source` (`gmail:`, `slack:`, `git:`). `msg` is what the card's ledger rows point to |
+| `date` | As given, ideally ISO 8601 with the offset |
 | `from` | The sender's address, user id, or handle, for every segment, so participants can be told apart |
 | `author` | `user`, `other`, or `unknown` |
-| `match` | On `user` segments only: `identifier` when the sender matched `identity.md` (including `Former:`), `name` when only the display name did |
-| `kind` | `body`, `quoted`, `forwarded`, `pasted`, `signature`, or `auto` |
+| `match` | On `user` segments only: `identifier` when the sender matched, `name` when the input said `"match": "name"` |
+| `kind` | `body`, `greeting`, `closing`, `signature`, `quoted`, `forwarded`, `pasted`, or `auto` |
 | `rev` | On document segments only: the commit or page revision that attributes the passage |
 | `text` | The segment, verbatim |
 
 Rules for the corpus:
 
-- **Only `author: user` and `kind: body` is the user's writing.** Everything
-  else is context, and the vocabulary script never counts it. Getting a label
-  wrong is the one way other people's words reach the user's profile, so when
-  a stretch of text could be either, it is not `user`.
-- **Text someone else wrote is `other`, wherever it sits.** A quoted reply, a
-  forwarded body, or an excerpt pasted into the user's own message is `other`
-  even though the user sent it. Out-of-office replies, templates, and bot
-  output from the user's account are `kind: auto`.
+- **Only `author: user` and `kind: body` is counted.** The greeting, closing,
+  and signature are the user's but are left to the card, which already reads
+  them per audience; counting them would fill the vocabulary with names and
+  sign-offs.
+- **Text someone else wrote is `other`, wherever it sits.** `save` splits
+  reply headers and `>` quotes into `quoted` segments and forwarded bodies into
+  `forwarded` ones, even inside the user's own message. An excerpt the user
+  pasted can't be detected; leave it out of the input text.
 - **`unknown` is for text with no usable author at all.** A display-name match
   is not unknown: it is `user` with `match: name`, and `vocabulary.md` reports
   how much of the profile rests on those.
 - **Keep whole threads for email and chat,** so a reply can be read against
-  what it answered. **For documents, store only the user's passages**, one
-  segment each, with the `rev` that attributes it.
-- **Append; never rewrite.** A refresh adds segments for messages newer than
-  the newest stored, and a `msg` id already present is not added twice. A
-  message found while building one card can be written to another card's file
+  what it answered. **For documents, store only the user's passages.**
+- **Append; never rewrite.** Saving the same message again adds nothing. A
+  message found while building one card can be saved to another card's file
   too; the vocabulary script counts it once.
 - **Corpus text stays on this machine.** It never goes into a draft, the
   repository, a commit, or anywhere off the machine. Style is copied from it;
@@ -198,8 +212,8 @@ Rules for the corpus:
 ## vocabulary.md
 
 The user's vocabulary across every audience, generated from all corpus files
-by `scripts/vocabulary.py build`. Never edit it by hand; rebuild it. It
-holds:
+by `scripts/vocabulary.py`, which rebuilds it whenever `check` finds the
+corpus newer. Never edit it by hand. It holds:
 
 - **Most frequent words**: the top 50, each with the user's rate per 1,000
   words, the general-English rate, and any medium where the user's rate is at

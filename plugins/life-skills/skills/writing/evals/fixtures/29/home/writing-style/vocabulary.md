@@ -1,8 +1,8 @@
 # Vocabulary
 
 Built:       2026-08-18
-Corpus:      1 file, 8 messages, 101 counted words, 2026-01-14 -> 2026-08-14
-Name match:  0 of 101 counted words (0%) from display-name matches
+Corpus:      1 file, 8 messages, 93 counted words, 2026-01-14 -> 2026-08-14
+Name match:  0 of 93 counted words (0%) from display-name matches
 Reference:   wordfreq 3.1.1, English 'large' list
 Counted:     segments with author user and kind body only
 
@@ -12,56 +12,56 @@ Rate per 1,000 words, yours vs general English.
 
 | word | yours | English | by medium |
 |---|---|---|---|
-| the | 89.1 | 53.7 | - |
-| priya | 79.2 | 0.000832 | - |
-| is | 79.2 | 11.7 | - |
-| migration | 39.6 | 0.0138 | - |
-| cutover | 29.7 | 2.69e-05 | - |
-| for | 19.8 | 10.2 | - |
-| through | 19.8 | 0.741 | - |
-| two | 19.8 | 1.26 | - |
-| week | 19.8 | 0.363 | - |
-| export | 19.8 | 0.0174 | - |
-| job | 19.8 | 0.316 | - |
-| on | 9.9 | 8.13 | - |
-| track | 9.9 | 0.105 | - |
-| february | 9.9 | 0.107 | - |
-| chunking | 9.9 | 0.0001 | - |
-| work | 9.9 | 0.912 | - |
-| done | 9.9 | 0.38 | - |
-| and | 9.9 | 25.7 | - |
-| tested | 9.9 | 0.0302 | - |
-| we | 9.9 | 3.47 | - |
-| need | 9.9 | 0.933 | - |
-| another | 9.9 | 0.55 | - |
-| before | 9.9 | 0.851 | - |
-| quarter | 9.9 | 0.0525 | - |
-| ends | 9.9 | 0.0562 | - |
-| happy | 9.9 | 0.224 | - |
-| to | 9.9 | 26.9 | - |
-| walk | 9.9 | 0.12 | - |
-| numbers | 9.9 | 0.0955 | - |
-| slipped | 9.9 | 0.00977 | - |
-| weeks | 9.9 | 0.155 | - |
-| table | 9.9 | 0.112 | - |
-| lock | 9.9 | 0.0324 | - |
-| during | 9.9 | 0.525 | - |
-| cause | 9.9 | 0.224 | - |
-| candidates | 9.9 | 0.0363 | - |
-| loop | 9.9 | 0.0195 | - |
-| this | 9.9 | 6.61 | - |
-| i | 9.9 | 12.3 | - |
-| would | 9.9 | 1.86 | - |
-| hold | 9.9 | 0.155 | - |
-| second | 9.9 | 0.427 | - |
-| one | 9.9 | 2.95 | - |
-| remaining | 9.9 | 0.0427 | - |
-| risk | 9.9 | 0.112 | - |
-| everything | 9.9 | 0.347 | - |
-| else | 9.9 | 0.24 | - |
-| green | 9.9 | 0.135 | - |
-| oncall | 9.9 | 2.51e-05 | - |
-| load | 9.9 | 0.038 | - |
+| the | 96.8 | 53.7 | - |
+| is | 86.0 | 11.7 | - |
+| migration | 43.0 | 0.0138 | - |
+| cutover | 32.3 | 2.69e-05 | - |
+| for | 21.5 | 10.2 | - |
+| through | 21.5 | 0.741 | - |
+| two | 21.5 | 1.26 | - |
+| week | 21.5 | 0.363 | - |
+| export | 21.5 | 0.0174 | - |
+| job | 21.5 | 0.316 | - |
+| on | 10.8 | 8.13 | - |
+| track | 10.8 | 0.105 | - |
+| february | 10.8 | 0.107 | - |
+| chunking | 10.8 | 0.0001 | - |
+| work | 10.8 | 0.912 | - |
+| done | 10.8 | 0.38 | - |
+| and | 10.8 | 25.7 | - |
+| tested | 10.8 | 0.0302 | - |
+| we | 10.8 | 3.47 | - |
+| need | 10.8 | 0.933 | - |
+| another | 10.8 | 0.55 | - |
+| before | 10.8 | 0.851 | - |
+| quarter | 10.8 | 0.0525 | - |
+| ends | 10.8 | 0.0562 | - |
+| happy | 10.8 | 0.224 | - |
+| to | 10.8 | 26.9 | - |
+| walk | 10.8 | 0.12 | - |
+| numbers | 10.8 | 0.0955 | - |
+| slipped | 10.8 | 0.00977 | - |
+| weeks | 10.8 | 0.155 | - |
+| table | 10.8 | 0.112 | - |
+| lock | 10.8 | 0.0324 | - |
+| during | 10.8 | 0.525 | - |
+| cause | 10.8 | 0.224 | - |
+| candidates | 10.8 | 0.0363 | - |
+| loop | 10.8 | 0.0195 | - |
+| this | 10.8 | 6.61 | - |
+| i | 10.8 | 12.3 | - |
+| would | 10.8 | 1.86 | - |
+| hold | 10.8 | 0.155 | - |
+| second | 10.8 | 0.427 | - |
+| one | 10.8 | 2.95 | - |
+| remaining | 10.8 | 0.0427 | - |
+| risk | 10.8 | 0.112 | - |
+| everything | 10.8 | 0.347 | - |
+| else | 10.8 | 0.24 | - |
+| green | 10.8 | 0.135 | - |
+| oncall | 10.8 | 2.51e-05 | - |
+| load | 10.8 | 0.038 | - |
+| up | 10.8 | 2.45 | - |
 
 ## Signature words
 
@@ -69,10 +69,9 @@ Used far more than general English. G2 is the log-likelihood keyness score.
 
 | word | count | messages | G2 | snippet |
 |---|---|---|---|---|
-| priya | 8 | 8 | 167 | Priya, Migration is on track for February. Th... |
-| cutover | 3 | 3 | 77 | ...lipped two weeks. The table lock during cutover is the cause. |
-| migration | 4 | 4 | 56 | Priya, Migration is on track for February. The chunking... |
-| is | 8 | 5 | 17 | Priya, Migration is on track for February. The chunking wor... |
+| cutover | 3 | 3 | 78 | ...lipped two weeks. The table lock during cutover is the cause. |
+| migration | 4 | 4 | 56 | Migration is on track for February. The chunking... |
+| is | 8 | 5 | 18 | Migration is on track for February. The chunking wor... |
 
 ## Recurring phrases
 
@@ -89,12 +88,11 @@ additionally, align, bolster, commendable, comprehensive, crucial, delve, delves
 
 ## Lexicon
 
-Every counted word, 68 in all.
+Every counted word, 67 in all.
 
 ```
 the	9
 is	8
-priya	8
 migration	4
 cutover	3
 export	2

@@ -312,13 +312,14 @@ silently narrows or contaminates the evidence.
    averaged across several voices, none of which is the user's, and the
    average always reads plausible.
 
-**Save what was gathered to the card's corpus file**, one JSON line per
-segment, before analyzing it: `corpus/<medium>-<audience-slug>.jsonl`, in the
-format in [references/cache-files.md](references/cache-files.md). Every segment
-is labeled with who wrote it. Only the user's own message bodies are
-`author: user`, `kind: body`; quoted replies, forwards, pasted text,
-signatures, and other people's messages are kept as context under their own
-labels and never counted. For documents, save only the user's passages.
+**Save what was gathered with the bundled script**, `scripts/vocabulary.py`
+in this skill's base directory (the folder holding this `SKILL.md`; never search
+the filesystem for it). Write the messages to a temporary JSON file and run
+`python3 <skill-dir>/scripts/vocabulary.py save --card <medium>-<audience-slug>
+--source <gmail|slack|jira|git> --input <file>`. The script labels who wrote
+what, so never write corpus lines by hand; the input format is in
+[references/cache-files.md](references/cache-files.md). For documents, pass only
+the user's passages.
 
 Rungs 2 and 4 need a relationship class for the recipient, and every rung
 needs samples the user actually wrote. Both are in
@@ -393,17 +394,6 @@ Every positive entry carries one attested snippet. "heads up" on its own loses
 the frame, and a bare opener, a mid-sentence aside, and an apology softener are
 three different habits. The snippet is also what makes the entry checkable the
 next time the card is extended.
-
-**Then rebuild the cross-audience vocabulary** with the script bundled with
-this skill at `scripts/vocabulary.py`, resolved relative to this `SKILL.md`
-rather than to the working directory: `python3 <skill-dir>/scripts/vocabulary.py
-build`, adding `--cache <dir>` when the cache is not `$HOME/writing-style`. The
-first run installs wordfreq into the cache's `.venv/`. It writes
-`vocabulary.md` from every corpus file: the user's most frequent words against
-general English, signature words and phrases, the AI-leaning words they never
-use, and their full lexicon. Read it
-before drafting. It is rung 5 evidence: it says which words the user reaches
-for in general, and the card still decides what fits this audience.
 
 **Tone:** directness, warmth markers, humor and its type, apology and gratitude
 habits, how disagreement and bad news get delivered.
@@ -550,8 +540,6 @@ entire cost this cache exists to avoid.
 2. Add or update this card's row in `index.md`, including any search that came
    back empty.
 3. Rebuild `general.md` if this card is new or changed.
-4. Confirm the corpus file from Step 4 holds every sample in the ledger, and
-   that `vocabulary.md` was rebuilt after it last changed.
 
 **Say what you actually wrote, and nothing more.** "Cached at
 `~/writing-style/card-...md`" is a claim about the filesystem, and it is false
@@ -608,16 +596,12 @@ Remove these unless a sample actually shows them:
 - Vocabulary that appears nowhere in the corpus, especially escalations like
   "leverage", "utilize", "align", "delve", "robust"
 
-**Check the draft's vocabulary.** Save the draft and the user's request to
-temporary files and run
-`python3 <skill-dir>/scripts/vocabulary.py check --draft <draft> --exempt <request>`. It
-flags AI-leaning words the user never writes, words missing from their corpus
-that are also uncommon in English, and frequent words the draft leans on far
-harder than they do. Words from the request are never flagged, since the user
-chose them. Replace each flagged word with one the user actually uses, or
-keep it and say why in the note after the draft. When there is no
-`vocabulary.md` but the cache has corpus files, build it first; when there is
-no corpus either, say the check was skipped.
+**Check the draft's vocabulary** before presenting it: save the draft and the
+user's request, verbatim, to temporary files outside the cache and run
+`python3 <skill-dir>/scripts/vocabulary.py check --draft <draft> --exempt <request>`.
+Replace a flagged word with one the user actually uses, or keep it and say why.
+Words in the user's request are theirs: never swap them out, even when
+`vocabulary.md` lists them as never used.
 
 Match the observed length. If the samples run 40 words, a 200-word draft is
 wrong even if every sentence is in voice.
