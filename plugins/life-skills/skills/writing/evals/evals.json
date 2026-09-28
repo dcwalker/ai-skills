@@ -339,6 +339,45 @@
         "The draft carries the card's markers ('Priya,' opening, outcome first, 'Alex' on its own line) and states only the two facts given.",
         "No draft is created in Gmail: the drafts object in the final Gmail state is still empty."
       ]
+    },
+    {
+      "id": 28,
+      "prompt": "Email Sam (sam.ortiz@example.com) asking if they can take the release notes for Friday's deploy. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "Six threads with Sam each hold Sam's message and the user's reply, and each reply quotes Sam underneath. Sam writes in corporate register ('circle back', 'leverage', 'bandwidth', 'synergy', 'deliverables', 'actionable'); the user writes lowercase and casual ('tbh', 'ping me', 'heads up'). The skill saves the threads to a corpus file with Sam's messages and the quoted text labeled as someone else's, builds vocabulary.md from only the user's own text, checks the draft against it, and drafts in the user's register with none of Sam's vocabulary.",
+      "expectations": [
+        "A JSON Lines corpus file for Sam exists under the trial's ~/writing-style/corpus/, and the user's six reply bodies are saved as segments with author 'user', kind 'body', and match 'identifier'.",
+        "Sam's own messages are saved with author 'other', and the quoted text under each of the user's replies is a separate segment with author 'other' (kind 'quoted'); no segment labeled author 'user' and kind 'body' contains any of Sam's words such as 'synergy', 'bandwidth', 'deliverables', or 'circle back'.",
+        "vocabulary.md exists in the trial's ~/writing-style/, was written by scripts/vocabulary.py, and none of 'synergy', 'bandwidth', 'deliverables', or 'actionable' appears in its Lexicon section.",
+        "The transcript shows scripts/vocabulary.py check being run on the draft before it is presented.",
+        "The draft uses none of Sam's corporate vocabulary ('circle back', 'leverage', 'bandwidth', 'synergy', 'deliverables', 'actionable', 'going forward') and carries the user's markers: a lowercase 'hey Sam,' opening and a lowercase 'thanks / alex' close.",
+        "No draft is created in Gmail: the drafts object in the final Gmail state is still empty."
+      ]
+    },
+    {
+      "id": 29,
+      "prompt": "Email Priya (priya.raman@example.com): we can leverage the new cache layer to take load off the export job, so I want to move the export rewrite to next quarter. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The cached card and corpus for Priya are current, so one bounded search finds nothing newer and the card is reused; check may rebuild vocabulary.md from the corpus. 'leverage' is on vocabulary.md's never-used list, but the user chose it in the request, so the draft keeps it, the vocabulary check runs with the user's dictated wording as the exempt file, and 'leverage' is not flagged. The draft adds no other never-used word.",
+      "expectations": [
+        "The transcript shows scripts/vocabulary.py check run on the draft with the user's dictated content (including 'leverage', not the instruction about follow-ups) passed through --exempt.",
+        "The draft keeps the user's own word 'leverage' rather than replacing it with a synonym, and does not flag it to the user as out of voice.",
+        "The draft contains no other word from the never-used list in the fixture's vocabulary.md (for example 'robust', 'crucial', 'seamless', 'additionally', 'streamline', 'align').",
+        "The card is reused rather than rebuilt: at most one bounded search for mail newer than 2026-08-14 appears in the Gmail call log, and the eight original ledger rows are kept.",
+        "The corpus file still holds each of its eight messages' segments exactly once; the run adds no duplicate segment.",
+        "The draft carries the card's markers ('Priya,' opening, outcome first, 'Alex' on its own line) and states only the facts given.",
+        "No draft is created in Gmail: the drafts object in the final Gmail state is still empty."
+      ]
+    },
+    {
+      "id": 30,
+      "prompt": "Make this sound like me, it's going to Priya (priya.raman@example.com): \"Hi Priya, I hope this finds you well! I wanted to reach out to let you know that we can leverage the new cache layer to deliver a robust reduction in export load. Additionally, this will streamline our roadmap, so I'd like to move the export rewrite to next quarter. Best regards, Alex\" I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
+      "expected_output": "The pasted text is a draft another tool wrote, not the user's dictation. Its assistant vocabulary ('leverage', 'robust', 'additionally', 'streamline') is on vocabulary.md's never-used list, so the rewrite replaces it with words the user uses, keeps the facts (the new cache layer reduces export load; move the export rewrite to next quarter), and carries the card's markers. The vocabulary check runs without the pasted draft in the exempt file.",
+      "expectations": [
+        "The draft contains none of 'leverage', 'robust', 'additionally', or 'streamline', and none of the pasted draft's boilerplate ('I hope this finds you well', 'I wanted to reach out', 'Best regards').",
+        "The draft keeps the two facts: the new cache layer takes load off the export job, and the export rewrite moves to next quarter; it adds no reason, date, or conclusion beyond them.",
+        "The draft carries the card's markers: 'Priya,' opening, outcome first, 'Alex' on its own line.",
+        "The transcript shows scripts/vocabulary.py check run on the draft, and the file passed to --exempt does not contain the pasted draft's text (it holds no 'leverage' or 'robust').",
+        "No draft is created in Gmail: the drafts object in the final Gmail state is still empty."
+      ]
     }
   ]
 }

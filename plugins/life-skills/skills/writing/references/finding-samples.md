@@ -112,11 +112,18 @@ Anything discovered this way is worth writing back to `identity.md`, with the
 user's agreement, so the next session starts from it.
 Then match samples on those identifiers. Fall back to a name match only when
 no identifier is available, and mark anything attributed that way as
-provisional evidence on the card.
+provisional evidence on the card and as `match: name` in the corpus file.
+
+Whatever this filter excludes stays out of the analysis, not out of the
+corpus. When a thread is saved to the card's corpus file (SKILL.md Step 4),
+the excluded parts are kept as context under their own labels (`author:
+other` with `kind: quoted`, `forwarded`, or `pasted`; the user's own
+signature, greeting, closing, and `auto` footers under their own kinds) so
+none of them is counted.
 
 - Email: search sent mail (`in:sent`, `from:me`), matched on the account's own
-  addresses. Strip quoted reply chains, forwarded bodies, and signature blocks
-  before analyzing.
+  addresses. Separate quoted reply chains, forwarded bodies, and signature
+  blocks from the user's own text before analyzing.
 - Chat: only messages whose author ID is the user's, not whose display name
   looks right. Exclude pasted links, quoted text, and bot or automation output.
 - Documents and wiki pages: attribute through revision history rather than the
