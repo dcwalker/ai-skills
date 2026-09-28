@@ -82,17 +82,22 @@ Word combinations in 3 or more messages (co-selection).
 
 ## Never used
 
+A word the user chose in their request is theirs and stays in the draft, even when it is
+listed here; `check --exempt` never flags it.
+
 AI-leaning words with 0 uses in 8 messages:
 
 additionally, align, bolster, commendable, comprehensive, crucial, delve, delves, delving, elevate, embark, endeavor, foster, furthermore, garner, groundbreaking, harness, holistic, insightful, intricate, invaluable, landscape, leverage, meticulous, meticulously, moreover, multifaceted, notably, noteworthy, nuanced, paramount, pivotal, realm, robust, seamless, seamlessly, showcase, showcasing, streamline, synergy, tapestry, testament, underscore, underscores, utilize, vibrant
 
 ## Lexicon
 
-Every counted word, 67 in all.
+Every word you wrote, 69 in all, including greetings and closings.
 
 ```
 the	9
+alex	8
 is	8
+priya	8
 migration	4
 cutover	3
 export	2

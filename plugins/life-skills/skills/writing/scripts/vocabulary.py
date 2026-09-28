@@ -88,6 +88,7 @@ STRIP_PATTERNS = (
     re.compile(r"<[@#!][^>]*>"),                   # Slack mentions and channels
     re.compile(r"\S+@\S+\.\w+"),                   # email addresses
     re.compile(r"(?<!\w)[@#][\w.-]+"),             # @handles and #channels
+    re.compile(r":[a-z0-9_+-]+:"),                 # emoji shortcodes
 )
 AUTHORS = ("user", "other", "unknown")
 KINDS = ("body", "greeting", "closing", "signature", "quoted", "forwarded", "pasted", "auto")
@@ -652,6 +653,8 @@ def never_used_lines(profile: Profile) -> List[str]:
         return lines + [f"Not enough evidence: {messages} messages, needs {MIN_NEGATIVE_MESSAGES}."]
     unused = [w for w in AI_LEANING_WORDS if not profile.counts[w]]
     used = [f"{w} ({profile.counts[w]})" for w in AI_LEANING_WORDS if profile.counts[w]]
+    lines += ["A word the user chose in their request is theirs and stays in the draft, even when it is",
+              "listed here; `check --exempt` never flags it.", ""]
     lines.append(f"AI-leaning words with 0 uses in {messages} messages:")
     lines.append("")
     lines.append(", ".join(unused) or "(none)")
@@ -749,9 +752,11 @@ def never_used_findings(draft: Counter, never: Set[str]) -> List[str]:
 def unseen_findings(draft: Counter, lexicon: Dict[str, int], never: Set[str], reference: Reference) -> List[str]:
     findings = []
     for word in sorted(draft):
-        if word in lexicon or word in never:
+        # "export's" is "export" plus a possessive, which wordfreq has no entry for.
+        base = word[:-2] if word.endswith(("'s", "’s")) else word
+        if word in lexicon or base in lexicon or word in never:
             continue
-        zipf = reference.zipf(word)
+        zipf = reference.zipf(base)
         if zipf is None:
             findings.append(f"unseen: \"{word}\" (not in your corpus; no English baseline to judge rarity)")
         elif zipf < UNCOMMON_ZIPF:
