@@ -314,7 +314,8 @@ silently narrows or contaminates the evidence.
 
 **Save what was gathered with the bundled script**, `scripts/vocabulary.py`
 in this skill's base directory (the folder holding this `SKILL.md`; never search
-the filesystem for it). Write the messages to a temporary JSON file and run
+the filesystem for it). Write the messages to a temporary JSON file, each body
+unedited with its quoted reply still in it, and run
 `python3 <skill-dir>/scripts/vocabulary.py save --card <medium>-<audience-slug>
 --source <gmail|slack|jira|git> --input <file>`. The script labels who wrote
 what, so never write corpus lines by hand; the input format is in
@@ -594,7 +595,8 @@ Remove these unless a sample actually shows them:
 - Corrected capitalization, expanded abbreviations, or repaired shorthand where
   the user's own habit is otherwise
 - Vocabulary that appears nowhere in the corpus, especially escalations like
-  "leverage", "utilize", "align", "delve", "robust"
+  "leverage", "utilize", "align", "delve", "robust", except a word the user's
+  own request uses: that word is theirs and stays
 
 **Check the draft's vocabulary** before presenting it: save the draft and the
 user's request, verbatim, to temporary files outside the cache and run
