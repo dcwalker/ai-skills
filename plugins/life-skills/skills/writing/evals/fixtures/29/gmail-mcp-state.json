@@ -1,0 +1,216 @@
+{
+  "me": "eval-user@example.com",
+  "threads": {
+    "thread-p1": {
+      "id": "thread-p1",
+      "subject": "January status",
+      "from": "eval-user@example.com",
+      "to": [
+        "priya.raman@example.com"
+      ],
+      "date": "2026-01-14T10:00:00Z",
+      "snippet": "Migration is on track for February. The chunking work is done and tested.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-p1",
+          "from": "eval-user@example.com",
+          "to": [
+            "priya.raman@example.com"
+          ],
+          "date": "2026-01-14T10:00:00Z",
+          "snippet": "Migration is on track for February. The chunking work is done and tested.",
+          "body": "Priya,\n\nMigration is on track for February. The chunking work is done and tested.\n\nAlex"
+        }
+      ]
+    },
+    "thread-p2": {
+      "id": "thread-p2",
+      "subject": "capacity ask",
+      "from": "eval-user@example.com",
+      "to": [
+        "priya.raman@example.com"
+      ],
+      "date": "2026-02-09T11:30:00Z",
+      "snippet": "We need another 2TB before the quarter ends. Happy to walk through the numbers.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-p2",
+          "from": "eval-user@example.com",
+          "to": [
+            "priya.raman@example.com"
+          ],
+          "date": "2026-02-09T11:30:00Z",
+          "snippet": "We need another 2TB before the quarter ends. Happy to walk through the numbers.",
+          "body": "Priya,\n\nWe need another 2TB before the quarter ends. Happy to walk through the numbers.\n\nAlex"
+        }
+      ]
+    },
+    "thread-p3": {
+      "id": "thread-p3",
+      "subject": "March status",
+      "from": "eval-user@example.com",
+      "to": [
+        "priya.raman@example.com"
+      ],
+      "date": "2026-03-11T09:45:00Z",
+      "snippet": "Migration slipped two weeks. The table lock during cutover is the cause.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-p3",
+          "from": "eval-user@example.com",
+          "to": [
+            "priya.raman@example.com"
+          ],
+          "date": "2026-03-11T09:45:00Z",
+          "snippet": "Migration slipped two weeks. The table lock during cutover is the cause.",
+          "body": "Priya,\n\nMigration slipped two weeks. The table lock during cutover is the cause.\n\nAlex"
+        }
+      ]
+    },
+    "thread-p4": {
+      "id": "thread-p4",
+      "subject": "hiring",
+      "from": "eval-user@example.com",
+      "to": [
+        "priya.raman@example.com"
+      ],
+      "date": "2026-04-06T14:10:00Z",
+      "snippet": "Two candidates through the loop this week. I would hold the second one.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-p4",
+          "from": "eval-user@example.com",
+          "to": [
+            "priya.raman@example.com"
+          ],
+          "date": "2026-04-06T14:10:00Z",
+          "snippet": "Two candidates through the loop this week. I would hold the second one.",
+          "body": "Priya,\n\nTwo candidates through the loop this week. I would hold the second one.\n\nAlex"
+        }
+      ]
+    },
+    "thread-p5": {
+      "id": "thread-p5",
+      "subject": "May status",
+      "from": "eval-user@example.com",
+      "to": [
+        "priya.raman@example.com"
+      ],
+      "date": "2026-05-19T08:30:00Z",
+      "snippet": "Export job is the remaining risk. Everything else is green.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-p5",
+          "from": "eval-user@example.com",
+          "to": [
+            "priya.raman@example.com"
+          ],
+          "date": "2026-05-19T08:30:00Z",
+          "snippet": "Export job is the remaining risk. Everything else is green.",
+          "body": "Priya,\n\nExport job is the remaining risk. Everything else is green.\n\nAlex"
+        }
+      ]
+    },
+    "thread-p6": {
+      "id": "thread-p6",
+      "subject": "oncall load",
+      "from": "eval-user@example.com",
+      "to": [
+        "priya.raman@example.com"
+      ],
+      "date": "2026-05-28T16:00:00Z",
+      "snippet": "Oncall load is up 30% since the migration started. Not sustainable past June.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-p6",
+          "from": "eval-user@example.com",
+          "to": [
+            "priya.raman@example.com"
+          ],
+          "date": "2026-05-28T16:00:00Z",
+          "snippet": "Oncall load is up 30% since the migration started. Not sustainable past June.",
+          "body": "Priya,\n\nOncall load is up 30% since the migration started. Not sustainable past June.\n\nAlex"
+        }
+      ]
+    },
+    "thread-p7": {
+      "id": "thread-p7",
+      "subject": "July status",
+      "from": "eval-user@example.com",
+      "to": [
+        "priya.raman@example.com"
+      ],
+      "date": "2026-07-30T09:15:00Z",
+      "snippet": "Export job is fixed. Migration cutover is scheduled for Thursday.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-p7",
+          "from": "eval-user@example.com",
+          "to": [
+            "priya.raman@example.com"
+          ],
+          "date": "2026-07-30T09:15:00Z",
+          "snippet": "Export job is fixed. Migration cutover is scheduled for Thursday.",
+          "body": "Priya,\n\nExport job is fixed. Migration cutover is scheduled for Thursday.\n\nAlex"
+        }
+      ]
+    },
+    "thread-p8": {
+      "id": "thread-p8",
+      "subject": "August status",
+      "from": "eval-user@example.com",
+      "to": [
+        "priya.raman@example.com"
+      ],
+      "date": "2026-08-14T10:05:00Z",
+      "snippet": "Cutover completed in chunks. No data loss. Postmortem next week.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-p8",
+          "from": "eval-user@example.com",
+          "to": [
+            "priya.raman@example.com"
+          ],
+          "date": "2026-08-14T10:05:00Z",
+          "snippet": "Cutover completed in chunks. No data loss. Postmortem next week.",
+          "body": "Priya,\n\nCutover completed in chunks. No data loss. Postmortem next week.\n\nAlex"
+        }
+      ]
+    }
+  },
+  "labels": {
+    "SENT": {
+      "id": "SENT",
+      "name": "SENT"
+    },
+    "INBOX": {
+      "id": "INBOX",
+      "name": "INBOX"
+    }
+  },
+  "drafts": {}
+}

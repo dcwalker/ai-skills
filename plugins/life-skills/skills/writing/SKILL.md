@@ -616,7 +616,8 @@ that are also uncommon in English, and frequent words the draft leans on far
 harder than they do. Words from the request are never flagged, since the user
 chose them. Replace each flagged word with one the user actually uses, or
 keep it and say why in the note after the draft. When there is no
-`vocabulary.md` yet, say the check was skipped.
+`vocabulary.md` but the cache has corpus files, build it first; when there is
+no corpus either, say the check was skipped.
 
 Match the observed length. If the samples run 40 words, a 200-word draft is
 wrong even if every sentence is in voice.
