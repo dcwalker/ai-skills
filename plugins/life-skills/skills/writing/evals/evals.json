@@ -356,13 +356,13 @@
     {
       "id": 29,
       "prompt": "Email Priya (priya.raman@example.com): we can leverage the new cache layer to take load off the export job, so I want to move the export rewrite to next quarter. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
-      "expected_output": "The cached card, corpus, and vocabulary.md for Priya are current, so one bounded search finds nothing newer and the card is reused. 'leverage' is on vocabulary.md's never-used list, but the user chose it in the request, so the vocabulary check runs with the request as the exempt file, 'leverage' is not flagged, and the draft keeps it. The draft adds no other never-used word.",
+      "expected_output": "The cached card, corpus, and vocabulary.md for Priya are current, so one bounded search finds nothing newer and the card is reused. 'leverage' is on vocabulary.md's never-used list, but the user chose it in the request, so the draft keeps it, the vocabulary check runs with the user's dictated wording as the exempt file, and 'leverage' is not flagged. The draft adds no other never-used word.",
       "expectations": [
         "The transcript shows scripts/vocabulary.py check run on the draft with the user's request passed through --exempt.",
         "The draft keeps the user's own word 'leverage' rather than replacing it with a synonym, and does not flag it to the user as out of voice.",
         "The draft contains no other word from the never-used list in the fixture's vocabulary.md (for example 'robust', 'crucial', 'seamless', 'additionally', 'streamline', 'align').",
         "The card is reused rather than rebuilt: at most one bounded search for mail newer than 2026-08-14 appears in the Gmail call log, and the eight original ledger rows are kept.",
-        "The corpus file still holds each of its eight messages once; no msg id is duplicated by the run.",
+        "The corpus file still holds each of its eight messages' segments exactly once; the run adds no duplicate segment.",
         "The draft carries the card's markers ('Priya,' opening, outcome first, 'Alex' on its own line) and states only the facts given.",
         "No draft is created in Gmail: the drafts object in the final Gmail state is still empty."
       ]

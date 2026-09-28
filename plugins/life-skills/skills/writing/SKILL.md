@@ -213,11 +213,11 @@ Cache rules:
   than silently skipping the research step.
 - **Confirm a hit cheaply, do not rebuild it.** Every reuse earns exactly one
   search for samples newer than the card's newest, and no more. If that turns
-  up nothing, use the card as it stands. If it turns up a few, fold them into
-  the ledger, update the counts, and re-bucket. Re-reading the whole corpus a
-  card was built from defeats the point of having cached it. This single
-  bounded search is what keeps a card current, which is why it runs on every
-  reuse rather than on a timer.
+  up nothing, use the card as it stands. If it turns up a few, save them to the
+  corpus (Step 4), fold them into the ledger, update the counts, and
+  re-bucket. Re-reading the whole corpus a card was built from defeats the
+  point of having cached it. This single bounded search is what keeps a card
+  current, which is why it runs on every reuse rather than on a timer.
 - A partial hit is a starting point, not an answer. Same person, different
   medium means the relationship read carries over and the mechanics do not:
   keep the audience findings, research the medium fresh.
@@ -314,13 +314,14 @@ silently narrows or contaminates the evidence.
 
 **Save what was gathered with the bundled script**, `scripts/vocabulary.py`
 in this skill's base directory (the folder holding this `SKILL.md`; never search
-the filesystem for it). Write the messages to a temporary JSON file, each body
-unedited with its quoted reply still in it, and run
+the filesystem for it). Pipe the messages to
 `python3 <skill-dir>/scripts/vocabulary.py save --card <medium>-<audience-slug>
---source <gmail|slack|jira|git> --input <file>`. The script labels who wrote
-what, so never write corpus lines by hand; the input format is in
-[references/cache-files.md](references/cache-files.md). For documents, pass only
-the user's passages.
+--source <gmail|slack|jira|git> --input -` as JSON, each plain-text body
+unedited with its quoted reply still in it. If a file is easier, create it with
+`mktemp` outside any repository and delete it after: it holds other people's
+mail. The script labels who wrote what, so never write corpus lines by hand; the
+input format is in [references/cache-files.md](references/cache-files.md). For
+documents, pass only the user's passages.
 
 Rungs 2 and 4 need a relationship class for the recipient, and every rung
 needs samples the user actually wrote. Both are in
@@ -598,12 +599,15 @@ Remove these unless a sample actually shows them:
   "leverage", "utilize", "align", "delve", "robust", except a word the user's
   own request uses: that word is theirs and stays
 
-**Check the draft's vocabulary** before presenting it: save the draft and the
-user's request, verbatim, to temporary files outside the cache and run
-`python3 <skill-dir>/scripts/vocabulary.py check --draft <draft> --exempt <request>`.
-Replace a flagged word with one the user actually uses, or keep it and say why.
-A "request word dropped" flag means a word from the request is missing from the
-draft: put it back.
+**Check the draft's vocabulary** before presenting it: save the draft, and the
+user's own wording of what the message should say, to temporary files outside
+the cache and any repository, and run
+`python3 <skill-dir>/scripts/vocabulary.py check --draft <draft> --exempt <words>`.
+The exempt file holds only what the user dictated, in their words: never a
+draft they pasted to be rewritten, someone else's message, or instructions
+about the task. Replace a flagged word with one the user actually uses, or keep
+it and say why. A "request word dropped" flag means a word the user dictated is
+missing from the draft: put it back unless they asked for it changed.
 
 Match the observed length. If the samples run 40 words, a 200-word draft is
 wrong even if every sentence is in voice.

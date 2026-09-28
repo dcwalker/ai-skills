@@ -32,11 +32,13 @@ Environment:
 
 import argparse
 import datetime
+import hashlib
 import importlib.util
 import json
 import math
 import os
 import re
+import shutil
 import subprocess
 import sys
 import venv
@@ -74,11 +76,14 @@ AI_LEANING_WORDS = (
     "crucial", "delve", "delves", "delving", "elevate", "embark", "endeavor",
     "foster", "furthermore", "garner", "groundbreaking", "harness", "holistic",
     "insightful", "intricate", "invaluable", "landscape", "leverage",
-    "meticulous", "meticulously", "moreover", "multifaceted", "notably",
-    "noteworthy", "nuanced", "paramount", "pivotal", "realm", "robust",
-    "seamless", "seamlessly", "showcase", "showcasing", "streamline",
-    "synergy", "tapestry", "testament", "underscore", "underscores",
-    "utilize", "vibrant",
+    "leveraged", "leverages", "leveraging", "meticulous", "meticulously",
+    "moreover", "multifaceted", "notably", "noteworthy", "nuanced", "paramount",
+    "pivotal", "realm", "robust", "seamless", "seamlessly", "showcase",
+    "showcased", "showcases", "showcasing", "streamline", "streamlined",
+    "streamlining", "synergy", "tapestry", "testament", "underscore",
+    "underscored", "underscores", "utilize", "utilized", "utilizes",
+    "utilizing", "vibrant", "aligned", "aligning", "fostered", "fostering",
+    "elevated", "elevating", "harnessed", "harnessing", "bolstered",
 )
 
 STRIP_PATTERNS = (
@@ -93,20 +98,46 @@ STRIP_PATTERNS = (
 AUTHORS = ("user", "other", "unknown")
 KINDS = ("body", "greeting", "closing", "signature", "quoted", "forwarded", "pasted", "auto")
 IDENTITY_FIELDS = ("Mail:", "Chat:", "Code host:", "Tracker:", "Former:")
-IDENTIFIER_PUNCTUATION = ",;()<>\"'`"
+IDENTIFIER_PUNCTUATION = ",;()<>\"'`*"
 
+# A greeting word plus at most a name, ending in , ! or : ("hey Jordan,"), or a
+# bare capitalized name with a comma ("Priya,"). Case-insensitive only for the
+# greeting words, so "Honestly," is not a greeting.
 GREETING = re.compile(
-    r"^(hi|hey|hello|dear|morning|good (morning|afternoon|evening)|yo|hiya)\b[^.?!\n]{0,40}[,!:]?\s*$"
-    r"|^[A-Z][\w'-]+( [A-Z][\w'-]+)?,\s*$",
-    re.IGNORECASE,
+    r"^(?i:hi|hey|hello|dear|morning|good morning|good afternoon|good evening|yo|hiya)"
+    r"( [\w'.-]+){0,2}\s*[,!:]\s*$"
+    r"|^(?i:hi|hey|hello|hiya)( [\w'.-]+)?\s*$"
+    r"|^[A-Z][\w'-]+( [A-Z][\w'-]+)?,\s*$"
 )
-SIGN_OFF_WORDS = re.compile(
-    r"\b(thanks|thank you|thx|ty|cheers|best|regards|sincerely|talk soon|later|ttyl|love|xo|warmly)\b",
-    re.IGNORECASE,
+# A sign-off line: the phrase alone, optionally followed by punctuation and a
+# name. "best", "later", and "love" are also everyday words ("later today
+# works"), so after them only a capitalized name may follow.
+SIGN_OFF_LINE = re.compile(
+    r"^(?i:thanks|thank you|thanks again|many thanks|thx|ty|cheers|regards|best regards|kind regards|"
+    r"warm regards|all the best|sincerely|talk soon|ttyl|xo|warmly)[,.!]?( [\w'.-]+){0,2}$"
+    r"|^(?i:best|later|love)[,.!]?( [A-Z][\w'.-]*){0,2}$"
 )
-REPLY_HEADER = re.compile(r"^On .{4,200}wrote:\s*$")
+REPLY_HEADERS = (
+    re.compile(r"^(On|Le|Am|El|Il|Op) .{4,300}(wrote|a écrit|schrieb|escribió|scrisse|schreef)\s*:\s*$",
+               re.IGNORECASE),
+    re.compile(r"^.{1,200}<[^>\s]+@[^>\s]+>\s*(wrote|a écrit|schrieb|escribió)\s*:\s*$", re.IGNORECASE),
+    re.compile(r"^-{2,}\s*Original Message\s*-{2,}\s*$", re.IGNORECASE),
+    re.compile(r"^_{10,}\s*$"),
+)
+OUTLOOK_FROM = re.compile(r"^\*?From:\*?\s+\S", re.IGNORECASE)
+OUTLOOK_FIELDS = re.compile(r"^\*?(Sent|Date|To|Subject|Cc):\*?\s", re.IGNORECASE)
 FORWARD_HEADER = re.compile(r"^(-{3,}\s*Forwarded message|Begin forwarded message:)", re.IGNORECASE)
 SIGNATURE_DELIMITER = re.compile(r"^--\s*$")
+MOBILE_FOOTER = re.compile(
+    r"^(Sent from (my )?(iPhone|iPad|Android|Samsung|mobile|Outlook|Mail for)|Get Outlook for (iOS|Android))",
+    re.IGNORECASE,
+)
+HTML_BODY = re.compile(r"</(div|p|blockquote|span|table)>|<br\s*/?>", re.IGNORECASE)
+ADDRESS_IN_BRACKETS = re.compile(r"<([^<>\s]+@[^<>\s]+)>")
+COMMON_ONE_WORD_REPLIES = {"yes", "yep", "yeah", "nope", "sure", "thx", "thanks", "done", "agreed", "same",
+                           "lgtm", "nice", "great", "cool", "okay", "fine", "noted", "works"}
+IDENTIFIER_NOISE = {"until", "since", "from", "to", "and", "or", "the", "old", "new", "former", "work",
+                    "personal", "address", "account", "handle", "id", "user", "workspace"}
 
 SLACK_LABELED_LINK = re.compile(r"<(?:https?|mailto):[^|>]*\|([^>]*)>")
 FALLBACK_TOKEN = re.compile(r"[^\W\d_]+(?:['’][^\W\d_]+)*")
@@ -128,7 +159,16 @@ def site_packages(cache: str) -> str:
 
 
 def install_wordfreq(cache: str) -> bool:
-    """Create the venv and install the pinned wordfreq. Returns success."""
+    """Create the cache's own venv and install the pinned wordfreq. Returns success.
+
+    Only <cache>/.venv is ever created or replaced; a venv named by
+    WRITING_STYLE_VENV belongs to whoever set it and is never touched. A failed
+    install removes the half-built venv so the next run tries again.
+    """
+    if os.environ.get("WRITING_STYLE_VENV"):
+        print(f"WRITING_STYLE_VENV has no wordfreq for Python {sys.version_info.major}.{sys.version_info.minor}; "
+              "continuing without it.", file=sys.stderr)
+        return False
     target = venv_dir(cache)
     print(f"Installing wordfreq {WORDFREQ_VERSION} into {target} (first run only)...", file=sys.stderr)
     try:
@@ -137,6 +177,7 @@ def install_wordfreq(cache: str) -> bool:
         subprocess.run(pip + [f"wordfreq=={WORDFREQ_VERSION}"], check=True)
         return True
     except (OSError, subprocess.CalledProcessError) as err:
+        shutil.rmtree(target, ignore_errors=True)
         print(f"Could not install wordfreq ({err}); continuing without it.", file=sys.stderr)
         return False
 
@@ -155,7 +196,7 @@ def ensure_wordfreq(cache: str) -> None:
             return
     sys.path.insert(0, site)
     if not importlib.util.find_spec("wordfreq"):
-        print(f"{venv_dir(cache)} has no wordfreq; delete it to reinstall. Continuing without it.", file=sys.stderr)
+        print(f"{venv_dir(cache)} has no wordfreq; continuing without it.", file=sys.stderr)
 
 
 class Reference:
@@ -265,7 +306,7 @@ def read_file(path: str, seen: Set[Tuple[str, str]], warnings: List[str]) -> Lis
             if problem:
                 warnings.append(f"{where}: {problem}, not counted")
                 continue
-            if record["author"] != "user":
+            if record["author"] != "user" or record["kind"] == "auto":
                 continue
             key = (record["msg"], record["text"])
             if key in seen:
@@ -286,21 +327,44 @@ def identifiers(cache: str, extra: List[str]) -> Set[str]:
     if os.path.exists(path):
         with open(path, encoding="utf-8") as handle:
             for line in handle:
-                if line.startswith(IDENTITY_FIELDS):
-                    found.update(normalize_identifier(t) for t in line.split(":", 1)[1].split())
+                found.update(identity_line_identifiers(line))
     return {value for value in found if value}
 
 
+def identity_line_identifiers(line: str) -> Set[str]:
+    """Identifiers on one identity.md field line, without its free-text notes."""
+    line = re.sub(r"^[\s>*-]*\**", "", line)
+    field = next((f for f in IDENTITY_FIELDS if line.lower().startswith(f.lower())), None)
+    if not field:
+        return set()
+    value = re.split(r"\s(?:until|since)\s|\s[—–]\s", line[len(field):], maxsplit=1)[0]
+    found = set()
+    for token in re.split(r"[\s,;]+", value):
+        if not token or token.endswith(":") or re.fullmatch(r"\d{4}-\d{2}(-\d{2})?", token):
+            continue
+        normalized = normalize_identifier(token)
+        if normalized and normalized not in IDENTIFIER_NOISE:
+            found.add(normalized)
+    return found
+
+
 def normalize_identifier(value: str) -> str:
-    return value.strip(IDENTIFIER_PUNCTUATION).lstrip("@").lower()
+    """Lowercased bare identifier; "Dan Walker <dan@x.com>" becomes "dan@x.com"."""
+    bracketed = ADDRESS_IN_BRACKETS.search(value)
+    if bracketed:
+        value = bracketed.group(1)
+    return value.strip().strip(IDENTIFIER_PUNCTUATION).lstrip("@").lower()
 
 
 def split_own_text(text: str, is_document: bool) -> List[Tuple[str, str, str]]:
     """Split a message the user sent into (author, kind, text) segments."""
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
     own, tail = split_off_tail(text.split("\n"))
     segments = [("other", kind, "\n".join(lines).strip()) for kind, lines in tail]
+    own, footer = split_at(own, lambda line: bool(MOBILE_FOOTER.match(line.strip())))
     own, signature = split_at(own, lambda line: bool(SIGNATURE_DELIMITER.match(line)))
     own, quoted = separate_quoted(own)
+    segments = [("user", "auto", "\n".join(footer).strip())] + segments
     body = "\n".join(own).strip()
     greeting = closing = ""
     if not is_document:
@@ -320,21 +384,44 @@ def split_at(lines: List[str], is_marker) -> Tuple[List[str], List[str]]:
 
 
 def split_off_tail(lines: List[str]) -> Tuple[List[str], List[Tuple[str, List[str]]]]:
-    """Cut the text at the first forwarded or reply header."""
+    """Cut the text at the first forwarded or reply header; the rest is someone else's."""
     for index, line in enumerate(lines):
-        joined = line + " " + lines[index + 1] if index + 1 < len(lines) else line
-        if FORWARD_HEADER.match(line):
+        if FORWARD_HEADER.match(line.strip()):
             return lines[:index], [("forwarded", lines[index:])]
-        if REPLY_HEADER.match(line) or (line.startswith("On ") and REPLY_HEADER.match(joined)):
+        if is_reply_header(lines, index):
             return lines[:index], [("quoted", lines[index:])]
     return lines, []
 
 
+def is_reply_header(lines: List[str], index: int) -> bool:
+    """A reply header, wrapped over up to three lines, or an Outlook From:/Sent: block."""
+    line = lines[index].strip()
+    # Only a line that starts a header may be joined with the next ones, so a
+    # wrapped header never swallows the user's own text above it.
+    spans = (1, 2, 3) if re.match(r"(On|Le|Am|El|Il|Op) ", line) else (1,)
+    for span in spans:
+        joined = " ".join(part.strip() for part in lines[index:index + span])
+        if any(pattern.match(joined) for pattern in REPLY_HEADERS):
+            return True
+    if OUTLOOK_FROM.match(line):
+        following = [part.strip() for part in lines[index + 1:index + 5]]
+        return sum(bool(OUTLOOK_FIELDS.match(part)) for part in following) >= 2
+    return False
+
+
 def separate_quoted(lines: List[str]) -> Tuple[List[str], List[str]]:
-    """Move "> " quoted blocks out of the user's own lines."""
+    """Move quoted blocks out of the user's own lines.
+
+    Covers "> " and "&gt; " line quotes, and Slack's ">>>", which quotes
+    everything after it.
+    """
+    for index, line in enumerate(lines):
+        if line.lstrip().startswith((">>>", "&gt;&gt;&gt;")):
+            own, quoted = separate_quoted(lines[:index])
+            return own, quoted + ["\n".join(lines[index:])]
     own, blocks, current = [], [], []
     for line in lines:
-        if line.lstrip().startswith(">"):
+        if line.lstrip().startswith((">", "&gt;")):
             current.append(line)
             continue
         if current:
@@ -359,22 +446,38 @@ def take_closing(body: str) -> Tuple[str, str]:
     if not head.strip():
         return body, ""
     lines = [line.strip() for line in last.strip().split("\n") if line.strip()]
-    words = sum(len(line.split()) for line in lines)
-    signed = SIGN_OFF_WORDS.search(last) and len(lines) <= 3 and all(len(line.split()) <= 4 for line in lines)
-    bare_name = len(lines) == 1 and words <= 3 and not re.search(r"[.?!]$", lines[0])
+    signed = len(lines) <= 3 and bool(SIGN_OFF_LINE.match(lines[0])) and all(len(line.split()) <= 3 for line in lines)
+    bare_name = len(lines) == 1 and looks_like_name(lines[0])
     if signed or bare_name:
         return head.strip(), last.strip()
     return body, ""
 
 
+def looks_like_name(line: str) -> bool:
+    """A sign-off name: "Alex", "Alex Reyes", or one lowercase word like "alex"."""
+    words = line.split()
+    if not words or len(words) > 3 or re.search(r"[.?!,:;]$", line):
+        return False
+    if all(re.fullmatch(r"[A-Z][\w'.-]*", word) for word in words):
+        return True
+    return len(words) == 1 and len(line) >= 3 and line.lower() not in COMMON_ONE_WORD_REPLIES
+
+
 def prefixed(source: str, value: str) -> str:
     """Prefix an id with its source once, even if the caller already added it."""
-    bare = re.sub(rf"^{re.escape(source)}[:_-]", "", value)
+    bare = re.sub(rf"^{re.escape(source)}[:_-]", "", value, flags=re.IGNORECASE)
     return f"{source}:{bare}"
 
 
 def slugify(card: str) -> str:
-    slug = re.sub(r"[^A-Za-z0-9]+", "-", card.strip()).strip("-")
+    """The card's slug: "card-email-sam.ortiz.md" becomes "email-sam-ortiz".
+
+    Case and non-ASCII letters are kept, so the slug matches the card's own
+    file name (channel ids such as C024BE91L are upper case).
+    """
+    name = os.path.basename(card.strip())
+    name = re.sub(r"\.(md|jsonl)$", "", name)
+    slug = re.sub(r"[\W_]+", "-", name).strip("-")
     return slug[len("card-"):] if slug.startswith("card-") else slug
 
 
@@ -388,6 +491,8 @@ def label_message(message: dict, mine: Set[str], source: str) -> List[dict]:
     }
     if message.get("rev"):
         base["rev"] = str(message["rev"])
+    if not sender.strip():
+        return [dict(base, author="unknown", kind="body", text=message["text"])]
     if normalize_identifier(sender) in mine:
         match = "identifier"
     elif message.get("match") == "name":
@@ -406,14 +511,39 @@ def label_message(message: dict, mine: Set[str], source: str) -> List[dict]:
 
 
 def load_messages(path: str) -> List[dict]:
-    with open(path, encoding="utf-8") as handle:
-        data = json.load(handle)
-    messages = data.get("messages", []) if isinstance(data, dict) else data
-    for index, message in enumerate(messages):
-        missing = [f for f in ("id", "from", "text") if not isinstance(message.get(f), str) or not message[f]]
-        if missing:
-            sys.exit(f"Message {index} in {path} is missing {', '.join(missing)}; nothing saved.")
-    return messages
+    """Read and validate the input: {"messages": [...]} or a bare list, from a file or "-" for stdin."""
+    try:
+        if path == "-":
+            data = json.load(sys.stdin)
+        else:
+            with open(path, encoding="utf-8") as handle:
+                data = json.load(handle)
+    except (OSError, json.JSONDecodeError) as err:
+        sys.exit(f"Could not read {path}: {err}; nothing saved.")
+    if isinstance(data, dict):
+        if "messages" not in data:
+            sys.exit(f'{path} has no "messages" key; nothing saved.')
+        data = data["messages"]
+    if not isinstance(data, list):
+        sys.exit(f"{path} must hold a list of messages; nothing saved.")
+    for index, message in enumerate(data):
+        problem = message_problem(message)
+        if problem:
+            sys.exit(f"Message {index} in {path} {problem}; nothing saved.")
+    return data
+
+
+def message_problem(message: object) -> Optional[str]:
+    if not isinstance(message, dict):
+        return "is not an object"
+    missing = [f for f in ("id", "text") if not isinstance(message.get(f), str) or not message[f]]
+    if missing:
+        return f"is missing {', '.join(missing)}"
+    if not isinstance(message.get("from", ""), str):
+        return "has a non-string from"
+    if HTML_BODY.search(message["text"]):
+        return "has an HTML body; pass the plain-text body instead"
+    return None
 
 
 def save(cache: str, card: str, source: str, input_path: str, extra: List[str]) -> int:
@@ -426,6 +556,8 @@ def save(cache: str, card: str, source: str, input_path: str, extra: List[str]) 
     messages = load_messages(input_path)
     corpus_dir = os.path.join(cache, "corpus")
     os.makedirs(corpus_dir, mode=0o700, exist_ok=True)
+    os.chmod(cache, 0o700)
+    os.chmod(corpus_dir, 0o700)
     path = os.path.join(corpus_dir, f"{card}.jsonl")
     existing = existing_keys(path)
     added = []
@@ -435,12 +567,24 @@ def save(cache: str, card: str, source: str, input_path: str, extra: List[str]) 
             if key not in existing:
                 existing.add(key)
                 added.append(record)
-    descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
-    with os.fdopen(descriptor, "a", encoding="utf-8") as handle:
-        for record in added:
-            handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+    if added:
+        descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
+        with os.fdopen(descriptor, "a", encoding="utf-8") as handle:
+            for record in added:
+                handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+        os.chmod(path, 0o600)
     report_saved(path, messages, added)
+    if messages and not any(record["author"] == "user" for record in added) and not existing_user(path):
+        print("  warning: none of these messages matched the user's identifiers; check identity.md, --me, "
+              "and that 'from' holds the sender's address or id", file=sys.stderr)
     return 0
+
+
+def existing_user(path: str) -> bool:
+    if not os.path.exists(path):
+        return False
+    with open(path, encoding="utf-8") as handle:
+        return any('"author": "user"' in line for line in handle)
 
 
 def existing_keys(path: str) -> Set[Tuple[str, str, str]]:
@@ -457,6 +601,9 @@ def existing_keys(path: str) -> Set[Tuple[str, str, str]]:
 
 
 def report_saved(path: str, messages: List[dict], added: List[dict]) -> None:
+    if not added:
+        print(f"Nothing new to save from {len(messages)} messages; {os.path.basename(path)} is unchanged.")
+        return
     print(f"Saved {len(added)} new segments from {len(messages)} messages to {path}")
     by_message: Dict[str, List[str]] = defaultdict(list)
     for record in added:
@@ -589,8 +736,8 @@ class Profile:
 # vocabulary.md
 
 
-def render(profile: Profile, files: List[str], warnings: List[str]) -> str:
-    lines = header_lines(profile, files)
+def render(profile: Profile, files: List[str], warnings: List[str], fingerprint: str) -> str:
+    lines = header_lines(profile, files, fingerprint)
     lines += function_word_lines(profile)
     lines += signature_lines(profile)
     lines += phrase_lines(profile)
@@ -601,7 +748,7 @@ def render(profile: Profile, files: List[str], warnings: List[str]) -> str:
     return "\n".join(lines) + "\n"
 
 
-def header_lines(profile: Profile, files: List[str]) -> List[str]:
+def header_lines(profile: Profile, files: List[str], fingerprint: str = "") -> List[str]:
     dates = sorted(s.date for s in profile.segments if s.date)
     span = f"{dates[0][:10]} -> {dates[-1][:10]}" if dates else "undated"
     share = 100.0 * profile.name_match_words / profile.total if profile.total else 0.0
@@ -613,6 +760,7 @@ def header_lines(profile: Profile, files: List[str]) -> List[str]:
         f"Name match:  {profile.name_match_words} of {profile.total} counted words ({share:.0f}%) from display-name matches",
         f"Reference:   {profile.reference.describe()}",
         "Counted:     segments with author user and kind body only",
+        f"Inputs:      {fingerprint}",
     ]
 
 
@@ -714,20 +862,35 @@ def corpus_files(cache: str) -> List[str]:
     return [os.path.join(corpus_dir, f) for f in os.listdir(corpus_dir) if f.endswith(".jsonl")]
 
 
-def vocabulary_is_stale(cache: str) -> bool:
+def inputs_fingerprint(cache: str, reference: Reference) -> str:
+    """What vocabulary.md was built from: every corpus file's name, size, and
+    modification time, plus the reference. Any change, a deleted file or
+    wordfreq becoming available included, means a rebuild."""
+    digest = hashlib.sha256(reference.describe().encode())
+    for path in sorted(corpus_files(cache)):
+        info = os.stat(path)
+        digest.update(f"{os.path.basename(path)}:{info.st_size}:{info.st_mtime_ns};".encode())
+    return digest.hexdigest()[:16]
+
+
+def vocabulary_is_stale(cache: str, reference: Reference) -> bool:
     path = os.path.join(cache, "vocabulary.md")
     if not os.path.exists(path):
         return True
-    built = os.path.getmtime(path)
-    return any(os.path.getmtime(f) > built for f in corpus_files(cache))
+    with open(path, encoding="utf-8") as handle:
+        recorded = re.search(r"^Inputs:\s+(\S+)", handle.read(), re.MULTILINE)
+    return not recorded or recorded.group(1) != inputs_fingerprint(cache, reference)
 
 
 def check(cache: str, draft_path: str, exempt_path: Optional[str], reference: Reference) -> int:
-    if not corpus_files(cache) and not os.path.exists(os.path.join(cache, "vocabulary.md")):
+    if not corpus_files(cache):
         print("No corpus in the cache yet, so there is no vocabulary to check against. Check skipped.")
         return 0
-    if vocabulary_is_stale(cache):
-        build(cache, reference)
+    if vocabulary_is_stale(cache, reference):
+        problem = write_vocabulary(cache, reference)
+        if problem:
+            print(f"{problem} Check skipped.")
+            return 0
     lexicon, rates, never = load_vocabulary(cache)
     with open(draft_path, encoding="utf-8") as handle:
         tokens = reference.tokenize(handle.read())
@@ -736,8 +899,8 @@ def check(cache: str, draft_path: str, exempt_path: Optional[str], reference: Re
         with open(exempt_path, encoding="utf-8") as handle:
             request = handle.read()
         exempt = set(reference.tokenize(request)) | set(FALLBACK_TOKEN.findall(request.lower()))
-    draft = Counter(t for t in tokens if t not in exempt)
-    findings = dropped_request_findings(exempt, set(tokens), never) + never_used_findings(draft, never) \
+    draft = Counter(t for t in tokens if not any(same_stem(t, word) for word in exempt))
+    findings = dropped_request_findings(exempt, tokens, never) + never_used_findings(draft, never) \
         + unseen_findings(draft, lexicon, never, reference) + overuse_findings(draft, rates, len(tokens))
     print(f"Draft: {len(tokens)} words. Reference: {reference.describe()}")
     if not findings:
@@ -747,14 +910,25 @@ def check(cache: str, draft_path: str, exempt_path: Optional[str], reference: Re
     return 0
 
 
-def dropped_request_findings(request: Set[str], draft: Set[str], never: Set[str]) -> List[str]:
-    """Never-used words the user chose in the request but the draft swapped out.
+def dropped_request_findings(request: Set[str], draft: List[str], never: Set[str]) -> List[str]:
+    """Never-used words the user dictated in the request that the draft doesn't use.
 
-    The request is dictation: its words stay even when the corpus never shows
-    them, and these are exactly the words a voice match is tempted to replace.
+    These are exactly the words a voice match is tempted to swap out. An
+    inflection counts as kept ("leveraging" keeps "leverage"). The --exempt
+    file should hold only what the user dictated, so a word here is one the
+    user chose for the message.
     """
-    return [f"request word dropped: \"{w}\" is in the user's request but not the draft; put it back"
-            for w in sorted(request & never - draft)]
+    return [f"request word dropped: \"{w}\" is in the user's words but not the draft; "
+            "keep it unless the user asked to change it"
+            for w in sorted(request & never) if not any(same_stem(w, token) for token in draft)]
+
+
+def same_stem(a: str, b: str) -> bool:
+    """Crude inflection match: "leverage", "leveraged", and "leveraging" match."""
+    def stem(word: str) -> str:
+        return word[:-1] if len(word) > 5 and word.endswith("e") else word
+    shorter, longer = sorted((stem(a), stem(b)), key=len)
+    return len(shorter) >= 4 and longer.startswith(shorter)
 
 
 def never_used_findings(draft: Counter, never: Set[str]) -> List[str]:
@@ -762,16 +936,16 @@ def never_used_findings(draft: Counter, never: Set[str]) -> List[str]:
 
 
 def unseen_findings(draft: Counter, lexicon: Dict[str, int], never: Set[str], reference: Reference) -> List[str]:
-    findings = []
+    findings: List[str] = []
+    if not reference.available:
+        return findings
     for word in sorted(draft):
         # "export's" is "export" plus a possessive, which wordfreq has no entry for.
         base = word[:-2] if word.endswith(("'s", "’s")) else word
         if word in lexicon or base in lexicon or word in never:
             continue
         zipf = reference.zipf(base)
-        if zipf is None:
-            findings.append(f"unseen: \"{word}\" (not in your corpus; no English baseline to judge rarity)")
-        elif zipf < UNCOMMON_ZIPF:
+        if zipf is not None and zipf < UNCOMMON_ZIPF:
             findings.append(f"unseen and uncommon: \"{word}\" (not in your corpus; Zipf {zipf:.1f} in English)")
     return findings
 
@@ -796,22 +970,29 @@ def overuse_findings(draft: Counter, rates: Dict[str, float], total: int) -> Lis
 # ---------------------------------------------------------------------------
 
 
-def build(cache: str, reference: Reference) -> int:
+def write_vocabulary(cache: str, reference: Reference) -> Optional[str]:
+    """Rebuild vocabulary.md. Returns why nothing was built, or None."""
     segments, files, warnings = read_corpus(cache)
-    if not segments:
-        for warning in warnings:
-            print(f"  warning: {warning}")
-        sys.exit(f"No counted segments in {os.path.join(cache, 'corpus')} "
-                 f"({plural(len(warnings), 'line')} rejected, listed above); nothing to build.")
+    for warning in warnings:
+        print(f"  warning: {warning}")
+    if not any(segment.counted for segment in segments):
+        return (f"No counted segments in {os.path.join(cache, 'corpus')} "
+                f"({plural(len(warnings), 'line')} rejected); no vocabulary to build.")
     profile = Profile(segments, reference)
     path = os.path.join(cache, "vocabulary.md")
     descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
     with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
-        handle.write(render(profile, files, warnings))
+        handle.write(render(profile, files, warnings, inputs_fingerprint(cache, reference)))
+    os.chmod(path, 0o600)
     print(f"Wrote {path}: {len(profile.message_ids)} messages, {profile.total} counted words, "
           f"{len(warnings)} warnings. Reference: {reference.describe()}")
-    for warning in warnings:
-        print(f"  warning: {warning}")
+    return None
+
+
+def build(cache: str, reference: Reference) -> int:
+    problem = write_vocabulary(cache, reference)
+    if problem:
+        sys.exit(problem)
     return 0
 
 
@@ -827,12 +1008,12 @@ def main() -> int:
     save_parser.add_argument("--card", required=True, help="the card's slug, e.g. email-jordan-blake")
     save_parser.add_argument("--source", required=True, help="id prefix, e.g. gmail, slack, jira, git")
     save_parser.add_argument("--input", required=True,
-                             help='JSON file: {"messages": [{"id", "thread", "date", "from", "text"}, ...]}')
+                             help='JSON file, or - for stdin: {"messages": [{"id", "thread", "date", "from", "text"}, ...]}')
     save_parser.add_argument("--me", action="append", default=[], help="a user identifier not in identity.md")
     check_parser = commands.add_parser("check", parents=[after], help="check a draft against vocabulary.md")
     check_parser.add_argument("--draft", required=True, help="file holding the draft text")
     check_parser.add_argument("--exempt", required=True,
-                              help="file holding the user's request, verbatim; its words are never flagged")
+                              help="file holding only what the user dictated for the message, in their words")
     commands.add_parser("build", parents=[after], help="rebuild vocabulary.md from corpus/*.jsonl")
     args = parser.parse_args()
     cache = os.path.abspath(args.cache)
