@@ -98,16 +98,19 @@ Before fetching full detail, get a lightweight count and title-only pass across
 the scoped set.
 
 Under ~15 items, go straight into per-item processing. At 15+, use the
-title-only pass to spot grouping signals (sender, label, list, component,
-keyword) and to agree a pace with the user: Step 8's proposal-and-confirm
-summary runs once per batch of ~10 rather than once at the very end. That
-changes only how often Step 8 runs, never whether a change is confirmed before
-it is applied.
+title-only pass to spot groups of similar items (by sender, label, list,
+component, or keyword) and to agree a pace with the user: work each group's
+items one after another, and present Step 8's proposal-and-confirm summary
+every ~10 items rather than once at the very end. That changes only how often
+Step 8 runs, never whether a change is confirmed before it is applied.
 
-This pass never substitutes for individual review. Every item still runs the
-full per-item loop (Steps 2 through 8).
-[references/sizing-and-tiers.md](references/sizing-and-tiers.md) has the
-wording to propose batching with.
+A group can also take a batch action: one label, move, or archive applied to
+several items at once. Items the action moves out of scope are finished. Every
+item still in scope runs the full per-item loop (Steps 2 through 8) and is
+presented to the user individually, as if the batch had not happened.
+[references/sizing-and-tiers.md](references/sizing-and-tiers.md) has the pace
+wording, the batch membership check, and how a batch is presented; read it
+before proposing a batch action.
 
 ---
 
@@ -391,11 +394,29 @@ confirm the scope before anything else in it. Nothing is applied while the
 block reads pending, no matter how routine the proposals look.
 
 Collect proposals into a summary and ask for confirmation before applying
-anything. For sets processed in batches (Step 0.5), present and confirm this
-summary once per batch of ~10 items; otherwise present it once for the whole
-run. Do not present the same change in multiple places. Items with no
-proposed changes still appear in the summary, flagged as "No changes — looks
-complete. Mark reviewed?" rather than being dropped.
+anything. For sets of 15+ items (Step 0.5), present and confirm this summary
+every ~10 items; otherwise present it once for the whole run. Do not present
+the same change in multiple places. Items with no proposed changes still
+appear in the summary, flagged as "No changes — looks complete. Mark
+reviewed?" rather than being dropped.
+
+A batch action (Step 0.5) gets one entry naming every item in it by link or
+exact title. Every item it leaves in scope also gets its own per-item entry,
+never folded into the batch entry, even when several of those items get
+identical proposals. With no URLs from the platform, a batch entry reads:
+
+```
+Batch: archive (moves these out of the inbox)
+  - "Earn 3% cash back on groceries this autumn"
+  - "Your exclusive mortgage rate offer"
+  - "Refer a friend, get $50"
+```
+
+A batch entry is always this bulleted list, one item per line, each line the
+item's exact title or link. Never write a batch as an inline or
+comma-separated list, a table cell, or a count or paraphrase ("9 promotional
+emails", "survey, webinar invite"). This applies everywhere a batch appears,
+including the closing report after changes are applied.
 
 Every item named in the summary is a hyperlink to itself: use the item's own
 web URL as returned by the platform (a Trello card's `url`/`shortUrl`, a Jira
@@ -405,7 +426,9 @@ rather than a bare title or a bare `PROJ-123`. The same applies to any card,
 issue, or thread mentioned elsewhere in the summary, including newly created
 Trello cards (Step 4c) and linked items. Only ever use a URL the platform
 actually returned — if an item's URL is unavailable, say so and name the item
-in plain text rather than constructing one.
+in plain text rather than constructing one. An item ID is not a URL: never
+write `[Picture day moved](thread-14)` or `[taxes](card-1)`; write
+`"Picture day moved" (thread-14)` instead.
 
 ```
 Proposed changes for [ITEM TITLE] ([KEY or URL]):
@@ -476,6 +499,11 @@ never impose more structure than the work justifies.
   well-formed. A high-quality item still gets a checkpoint ("no changes
   needed, mark as reviewed or complete?") rather than being silently passed
   over. The user decides whether an item needs a change, not you by omission.
+- Groups and batch actions set order and pace, never an item's triage. After
+  a batch action, only items it moved out of scope are finished; every item
+  still in scope is presented to the user individually with its own proposed
+  changes, even when several items' changes are identical, unless a later
+  batch moves it out of scope.
 - Never apply a change without explicit user confirmation.
 - Never invent facts, dates, names, or descriptions. Ask if unknown.
 - Refer to every card, issue, or thread by a hyperlink to the item itself,
