@@ -208,6 +208,7 @@ def clean_text(text: str) -> str:
 
 class Segment:
     def __init__(self, record: dict, medium: str) -> None:
+        self.counted = record["kind"] == "body"
         self.msg = record["msg"]
         self.text = record["text"]
         self.match = record["match"]
@@ -263,7 +264,7 @@ def read_file(path: str, seen: Set[Tuple[str, str]], warnings: List[str]) -> Lis
             if problem:
                 warnings.append(f"{where}: {problem}, not counted")
                 continue
-            if record["author"] != "user" or record["kind"] != "body":
+            if record["author"] != "user":
                 continue
             key = (record["msg"], record["text"])
             if key in seen:
@@ -365,11 +366,20 @@ def take_closing(body: str) -> Tuple[str, str]:
     return body, ""
 
 
+def prefixed(source: str, value: str) -> str:
+    return value if value.startswith(f"{source}:") else f"{source}:{value}"
+
+
+def slugify(card: str) -> str:
+    slug = re.sub(r"[^A-Za-z0-9]+", "-", card.strip()).strip("-")
+    return slug[len("card-"):] if slug.startswith("card-") else slug
+
+
 def label_message(message: dict, mine: Set[str], source: str) -> List[dict]:
     sender = str(message.get("from", ""))
     base = {
-        "thread": f"{source}:{message.get('thread', message['id'])}",
-        "msg": f"{source}:{message['id']}",
+        "thread": prefixed(source, str(message.get("thread", message["id"]))),
+        "msg": prefixed(source, message["id"]),
         "date": str(message.get("date", "")),
         "from": sender,
     }
@@ -404,8 +414,9 @@ def load_messages(path: str) -> List[dict]:
 
 
 def save(cache: str, card: str, source: str, input_path: str, extra: List[str]) -> int:
-    if not re.fullmatch(r"[a-z]+(-[A-Za-z0-9]+)+", card):
-        sys.exit(f"--card {card!r} must be the card's slug, like email-jordan-blake.")
+    card = slugify(card)
+    if "-" not in card:
+        sys.exit(f"--card must be <medium>-<audience-slug>, like email-jordan-blake; got {card!r}.")
     mine = identifiers(cache, extra)
     if not mine:
         sys.exit("No user identifiers: add them to identity.md or pass --me; nothing saved.")
@@ -470,7 +481,13 @@ class Profile:
         self.message_ids: Set[str] = set()
         self.ngrams: Counter = Counter()
         self.ngram_messages: Dict[Tuple[str, ...], Set[str]] = defaultdict(set)
+        # Every word the user wrote, greetings and closings included, so a
+        # recipient's name is never flagged as a word the user doesn't use.
+        self.lexicon: Counter = Counter()
         for segment in segments:
+            self.lexicon.update(self.reference.tokenize(segment.text))
+        self.segments = [segment for segment in segments if segment.counted]
+        for segment in self.segments:
             self._add(segment)
         self.total = sum(self.counts.values())
 
@@ -644,8 +661,9 @@ def never_used_lines(profile: Profile) -> List[str]:
 
 
 def lexicon_lines(profile: Profile) -> List[str]:
-    lines = ["", "## Lexicon", "", f"Every counted word, {len(profile.counts)} in all.", "", "```"]
-    for word, count in sorted(profile.counts.items(), key=lambda item: (-item[1], item[0])):
+    lines = ["", "## Lexicon", "",
+             f"Every word you wrote, {len(profile.lexicon)} in all, including greetings and closings.", "", "```"]
+    for word, count in sorted(profile.lexicon.items(), key=lambda item: (-item[1], item[0])):
         lines.append(f"{word}\t{count}")
     return lines + ["```"]
 
@@ -711,7 +729,8 @@ def check(cache: str, draft_path: str, exempt_path: Optional[str], reference: Re
     exempt: Set[str] = set()
     if exempt_path:
         with open(exempt_path, encoding="utf-8") as handle:
-            exempt = set(reference.tokenize(handle.read()))
+            request = handle.read()
+        exempt = set(reference.tokenize(request)) | set(FALLBACK_TOKEN.findall(request.lower()))
     draft = Counter(t for t in tokens if t not in exempt)
     findings = never_used_findings(draft, never) + unseen_findings(draft, lexicon, never, reference) \
         + overuse_findings(draft, rates, len(tokens))
