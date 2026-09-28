@@ -83,7 +83,7 @@ Word combinations in 3 or more messages (co-selection).
 ## Never used
 
 A word the user chose in their request is theirs and stays in the draft, even when it is
-listed here; `check --exempt` never flags it.
+listed here; `check` flags it if the draft drops it.
 
 AI-leaning words with 0 uses in 8 messages:
 
