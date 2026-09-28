@@ -7,6 +7,8 @@ Usage:
   vocabulary.py build [--cache DIR]
   vocabulary.py check --draft FILE [--exempt FILE] [--cache DIR]
 
+--cache is accepted before or after the subcommand.
+
 `build` reads every corpus/*.jsonl file in the cache and writes vocabulary.md.
 `check` compares a draft with vocabulary.md and prints anything out of voice.
 Only segments with author "user" and kind "body" are ever counted; everything
@@ -52,6 +54,7 @@ FALLBACK_COMMON_WORDS = 20
 # usual cutoff for keywords in corpus linguistics.
 MIN_KEYNESS = 10.83
 DRAFT_OVERUSE_MIN_COUNT = 3
+DRAFT_OVERUSE_MIN_WORDS = 150
 DRAFT_OVERUSE_FACTOR = 3.0
 SNIPPET_RADIUS = 40
 REFERENCE_FLOOR = 1e-9
@@ -477,7 +480,7 @@ def check(cache: str, draft_path: str, exempt_path: Optional[str], reference: Re
             exempt = set(reference.tokenize(handle.read()))
     draft = Counter(t for t in tokens if t not in exempt)
     findings = never_used_findings(draft, never) + unseen_findings(draft, lexicon, never, reference) \
-        + overuse_findings(Counter(tokens), rates, len(tokens))
+        + overuse_findings(draft, rates, len(tokens))
     print(f"Draft: {len(tokens)} words. Reference: {reference.describe()}")
     if not findings:
         print("No vocabulary flags.")
@@ -504,6 +507,13 @@ def unseen_findings(draft: Counter, lexicon: Dict[str, int], never: Set[str], re
 
 
 def overuse_findings(draft: Counter, rates: Dict[str, float], total: int) -> List[str]:
+    """Frequent words the draft leans on much harder than the user does.
+
+    Rates are unreliable in short drafts, so drafts under
+    DRAFT_OVERUSE_MIN_WORDS are not checked.
+    """
+    if total < DRAFT_OVERUSE_MIN_WORDS:
+        return []
     findings = []
     for word, rate in sorted(rates.items()):
         count = draft[word]
@@ -534,11 +544,14 @@ def build(cache: str, reference: Reference) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--cache", default=os.path.join(os.path.expanduser("~"), "writing-style"),
-                        help="style cache directory (default: $HOME/writing-style)")
+    cache_help = "style cache directory (default: $HOME/writing-style)"
+    parser.add_argument("--cache", default=os.path.join(os.path.expanduser("~"), "writing-style"), help=cache_help)
+    # Also accept --cache after the subcommand; SUPPRESS keeps the top-level value when it's absent there.
+    after = argparse.ArgumentParser(add_help=False)
+    after.add_argument("--cache", default=argparse.SUPPRESS, help=cache_help)
     commands = parser.add_subparsers(dest="command", required=True)
-    commands.add_parser("build", help="write vocabulary.md from corpus/*.jsonl")
-    check_parser = commands.add_parser("check", help="check a draft against vocabulary.md")
+    commands.add_parser("build", parents=[after], help="write vocabulary.md from corpus/*.jsonl")
+    check_parser = commands.add_parser("check", parents=[after], help="check a draft against vocabulary.md")
     check_parser.add_argument("--draft", required=True, help="file holding the draft text")
     check_parser.add_argument("--exempt", help="file holding the user's request; its words are never flagged")
     args = parser.parse_args()
