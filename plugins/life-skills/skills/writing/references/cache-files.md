@@ -273,9 +273,10 @@ by Robyn Speer, whose data is licensed CC BY-SA 4.0 and draws on SUBTLEX
 (<http://books.google.com/ngrams>), OpenSubtitles, Wikipedia, and other
 sources listed in its README. The script installs `wordfreq==3.1.1` into
 `.venv/` in the cache on first run, and nothing from wordfreq is copied into
-this repository, at its author's request. Without it (offline, or during an
-eval) the script still builds the profile, but skips keyness and the rarity
-check, and says so.
+this repository, at its author's request. That first run needs network
+access to PyPI. Without wordfreq (offline, or during an eval) the script still
+builds the profile, but skips keyness and the rarity check, and says so; a
+failed install is removed, so the next run with network access tries again.
 
 ## index.md
 
