@@ -20,7 +20,7 @@ edited by hand whenever something changes:
 Name:       <full name>, and any other form that appears as a display name
 Mail:       <address>, <alias>, <alias>
 Chat:       <workspace>: <user id> (@<handle>)
-Code host:  <github/gitlab/bitbucket handle>
+Code host:  <platform>: <handle>
 Tracker:    <jira/linear account id>
 Org:        <employer>, <primary email domain>
 Team:       <team name>, <how the team is named in the directory or tracker>
@@ -175,7 +175,9 @@ address, user id, or handle; `Name <address>` works too. A message with no
 `from` is saved as `unknown` and never counted. Pass `--input -` to read the
 JSON from stdin rather than leaving a file of other people's mail behind.
 Optional keys: `"match": "name"` on a message attributed to the user by display
-name alone, `"auto": true` on an out-of-office reply, template, or bot post, and
+name alone (ignored when `from` is someone else's address or id), `"pasted"`, a
+list of excerpts the user pasted in from someone else without quoting them,
+which become `other`/`pasted` segments, `"auto": true` on an out-of-office reply, template, or bot post, and
 `"rev"` on a document passage (pass only the user's passages, attributed by
 blame). `save` compares `from` with every identifier in `identity.md`,
 including `Former:` ones, plus any `--me` value, and writes one line per
@@ -209,9 +211,10 @@ Rules for the corpus:
   everything from a reply header onward into a `quoted` segment ("On ... wrote:"
   in several languages and wrapped over up to three lines, "Name <address>
   wrote:", Outlook's From/Sent/To block, "Original Message", and a line of
-  underscores), plus `>`, `&gt;`, and Slack `>>>` quotes, and forwarded bodies
+  underscores), plus `>`, `&gt;`, and Slack `>>>` quotes, Jira `{quote}` and
+  `bq.` blocks, and git `Co-authored-by:`-style trailers, and forwarded bodies
   into `forwarded` ones, even inside the user's own message. An excerpt the user
-  pasted without quoting it can't be detected; leave it out of the input text.
+  pasted without quoting it can't be detected; list it under `"pasted"`.
 - **Cards built before the corpus existed have none.** Their samples are not
   fetched again, because a reuse earns one search and no more; the corpus fills
   in as new samples are saved.
@@ -230,8 +233,8 @@ Rules for the corpus:
 ## vocabulary.md
 
 The user's vocabulary across every audience, generated from all corpus files
-by `scripts/vocabulary.py`, which rebuilds it whenever `check` finds the
-corpus newer. Never edit it by hand. It holds:
+by `scripts/vocabulary.py`, which rebuilds it whenever `check` finds its inputs
+changed. Never edit it by hand. It holds:
 
 - **Most frequent words**: the top 50, each with the user's rate per 1,000
   words, the general-English rate, and any medium where the user's rate is at
@@ -252,10 +255,11 @@ The header records how many counted words came from display-name matches, any
 corpus line the script skipped as malformed, and a fingerprint of the corpus
 files, the reference, and the script it was built from: `check` rebuilds
 whenever that changes, including when a corpus file is deleted, wordfreq
-becomes available, or the script is updated. A message saved twice (an edit,
-or a copy under another card) is counted once, from its latest text. Every
-`save` and rebuild makes the whole cache private to the user (700 directories,
-600 files).
+becomes available, or the script is updated. A message saved twice (an edit, a
+relabel, or a copy under another card or source) is counted once, from its
+latest line, so re-saving a message corrects it. Every `save` and rebuild
+removes group and other access from the cache, `corpus/`, and the files
+directly in them.
 
 `vocabulary.md` is read by `check`, not before drafting: reading its
 never-used list led drafts to drop words the user had dictated. It says which

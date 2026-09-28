@@ -117,8 +117,9 @@ provisional evidence on the card and as `match: name` in the corpus file.
 Whatever this filter excludes stays out of the analysis, not out of the
 corpus. When a thread is saved to the card's corpus file (SKILL.md Step 4),
 the excluded parts are kept as context under their own labels (`author:
-other`, `kind: quoted`, `forwarded`, `pasted`, `signature`, or `auto`) so
-they can never be counted as the user's.
+other` with `kind: quoted`, `forwarded`, or `pasted`; the user's own
+signature, greeting, closing, and `auto` footers under their own kinds) so
+none of them is counted.
 
 - Email: search sent mail (`in:sent`, `from:me`), matched on the account's own
   addresses. Separate quoted reply chains, forwarded bodies, and signature

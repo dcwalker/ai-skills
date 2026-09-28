@@ -318,8 +318,9 @@ the filesystem for it). Pipe the messages to
 `python3 <skill-dir>/scripts/vocabulary.py save --card <medium>-<audience-slug>
 --source <gmail|slack|jira|git> --input -` as JSON: whole threads, other
 people's messages included, each plain-text body unedited with its quoted reply
-still in it, except text the user pasted in without quoting it, which is not
-theirs. If a file is easier, create it with
+still in it; list any excerpt the user pasted in without quoting it under
+that message's `"pasted"` key, and leave out a squash or merge commit that
+bundles other people's work. If a file is easier, create it with
 `mktemp` outside any repository and delete it after: it holds other people's
 mail. The script labels who wrote what, so never write corpus lines by hand; the
 input format is in [references/cache-files.md](references/cache-files.md). For
@@ -598,8 +599,8 @@ Remove these unless a sample actually shows them:
 - Corrected capitalization, expanded abbreviations, or repaired shorthand where
   the user's own habit is otherwise
 - Vocabulary that appears nowhere in the corpus, especially escalations like
-  "leverage", "utilize", "align", "delve", "robust", except a word the user's
-  own request uses: that word is theirs and stays
+  "leverage", "utilize", "align", "delve", "robust", except a word the user
+  dictated (not one in a draft they pasted to be rewritten): that word stays
 
 **Check the draft's vocabulary** before presenting it: save the draft, and the
 user's own wording of what the message should say, to temporary files outside
@@ -607,7 +608,8 @@ the cache and any repository, and run
 `python3 <skill-dir>/scripts/vocabulary.py check --draft <draft> --exempt <words>`.
 The exempt file holds only what the user dictated, in their words: never a
 draft they pasted to be rewritten, someone else's message, or instructions
-about the task. Replace a flagged word with one the user actually uses, or keep
+about the task. When they dictated nothing, as when rewriting a pasted draft,
+pass an empty file. Replace a flagged word with one the user actually uses, or keep
 it and say why. A "request word dropped" flag means a word the user dictated is
 missing from the draft: put it back unless they asked for it changed.
 
@@ -639,7 +641,9 @@ Keep the user's words. Where the request words the content ("we can leverage
 the new cache layer"), the draft uses those words, even ones the corpus never
 shows and `vocabulary.md` lists as never used: the request is dictation, and
 voice matching shapes only what the user left unworded. Swapping in a word that
-sounds more like them is rewriting what they said.
+sounds more like them is rewriting what they said. A draft they paste to be
+rewritten, or someone else's message, is not dictation: its wording is what
+they asked to have changed.
 
 Instructions about the conversation are not content for the artifact. "I will
 not be around to answer", "keep it short", "make it sound friendlier" shape how
