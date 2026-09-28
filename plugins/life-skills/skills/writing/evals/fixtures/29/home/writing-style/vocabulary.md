@@ -5,6 +5,7 @@ Corpus:      1 file, 8 messages, 93 counted words, 2026-01-14 -> 2026-08-14
 Name match:  0 of 93 counted words (0%) from display-name matches
 Reference:   wordfreq 3.1.1, English 'large' list
 Counted:     segments with author user and kind body only
+Inputs:      543037cdbd0fb99f
 
 ## Most frequent words
 
@@ -87,7 +88,7 @@ listed here; `check` flags it if the draft drops it.
 
 AI-leaning words with 0 uses in 8 messages:
 
-additionally, align, bolster, commendable, comprehensive, crucial, delve, delves, delving, elevate, embark, endeavor, foster, furthermore, garner, groundbreaking, harness, holistic, insightful, intricate, invaluable, landscape, leverage, meticulous, meticulously, moreover, multifaceted, notably, noteworthy, nuanced, paramount, pivotal, realm, robust, seamless, seamlessly, showcase, showcasing, streamline, synergy, tapestry, testament, underscore, underscores, utilize, vibrant
+additionally, align, bolster, commendable, comprehensive, crucial, delve, delves, delving, elevate, embark, endeavor, foster, furthermore, garner, groundbreaking, harness, holistic, insightful, intricate, invaluable, landscape, leverage, leveraged, leverages, leveraging, meticulous, meticulously, moreover, multifaceted, notably, noteworthy, nuanced, paramount, pivotal, realm, robust, seamless, seamlessly, showcase, showcased, showcases, showcasing, streamline, streamlined, streamlining, synergy, tapestry, testament, underscore, underscored, underscores, utilize, utilized, utilizes, utilizing, vibrant, aligned, aligning, fostered, fostering, elevated, elevating, harnessed, harnessing, bolstered
 
 ## Lexicon
 

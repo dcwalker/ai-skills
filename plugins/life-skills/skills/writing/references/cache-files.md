@@ -163,7 +163,11 @@ JSON file:
 ]}
 ```
 
-`id`, `from`, and `text` are required; `text` is the full body, verbatim.
+`id` and `text` are required; `text` is the full **plain-text** body, verbatim,
+quoted reply included (an HTML body is rejected). `from` is the sender's
+address, user id, or handle; `Name <address>` works too. A message with no
+`from` is saved as `unknown` and never counted. Pass `--input -` to read the
+JSON from stdin rather than leaving a file of other people's mail behind.
 Optional keys: `"match": "name"` on a message attributed to the user by display
 name alone, `"auto": true` on an out-of-office reply, template, or bot post, and
 `"rev"` on a document passage (pass only the user's passages, attributed by
@@ -178,7 +182,7 @@ including `Former:` ones, plus any `--me` value, and writes one line per
 
 | Field | Value |
 |---|---|
-| `thread`, `msg` | Source ids, prefixed with `--source` (`gmail:`, `slack:`, `git:`). `msg` is what the card's ledger rows point to |
+| `thread`, `msg` | Source ids, prefixed with `--source` (`gmail:`, `slack:`, `git:`). A ledger row's id is `msg` without the prefix |
 | `date` | As given, ideally ISO 8601 with the offset |
 | `from` | The sender's address, user id, or handle, for every segment, so participants can be told apart |
 | `author` | `user`, `other`, or `unknown` |
@@ -192,11 +196,19 @@ Rules for the corpus:
 - **Only `author: user` and `kind: body` is counted.** The greeting, closing,
   and signature are the user's but are left to the card, which already reads
   them per audience; counting them would fill the vocabulary with names and
-  sign-offs.
+  sign-offs. They still go into the lexicon, so a recipient's name is never
+  flagged as a word the user doesn't use. `auto` text, including a "Sent from
+  my iPhone" footer, goes into neither.
 - **Text someone else wrote is `other`, wherever it sits.** `save` splits
-  reply headers and `>` quotes into `quoted` segments and forwarded bodies into
-  `forwarded` ones, even inside the user's own message. An excerpt the user
-  pasted can't be detected; leave it out of the input text.
+  everything from a reply header onward into a `quoted` segment ("On ... wrote:"
+  in several languages and wrapped over up to three lines, "Name <address>
+  wrote:", Outlook's From/Sent/To block, "Original Message", and a line of
+  underscores), plus `>`, `&gt;`, and Slack `>>>` quotes, and forwarded bodies
+  into `forwarded` ones, even inside the user's own message. An excerpt the user
+  pasted without quoting it can't be detected; leave it out of the input text.
+- **Cards built before the corpus existed have none.** Their samples are not
+  fetched again, because a reuse earns one search and no more; the corpus fills
+  in as new samples are saved.
 - **`unknown` is for text with no usable author at all.** A display-name match
   is not unknown: it is `user` with `match: name`, and `vocabulary.md` reports
   how much of the profile rests on those.
@@ -227,10 +239,15 @@ corpus newer. Never edit it by hand. It holds:
   messages, which is where co-selection shows.
 - **Never used**: AI-leaning words ("delve", "leverage", "robust", and so on)
   with no occurrence in the corpus, once there are 5 or more messages.
-- **Lexicon**: every counted word with its count.
+- **Lexicon**: every word the user wrote, with its count, greetings and
+  closings included.
 
-The header records how many counted words came from display-name matches, and
-any corpus line the script skipped as malformed.
+The header records how many counted words came from display-name matches, any
+corpus line the script skipped as malformed, and a fingerprint of the corpus
+files and reference it was built from: `check` rebuilds whenever that changes,
+including when a corpus file is deleted or wordfreq becomes available. The
+cache directory, `corpus/`, and every file in them are kept private to the user
+(700 and 600) on each write.
 
 `vocabulary.md` is rung 5 evidence, like `general.md`: it says which words the
 user reaches for in general, never how they write to this audience. Where it
