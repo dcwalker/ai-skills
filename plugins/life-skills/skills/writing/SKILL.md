@@ -610,8 +610,8 @@ Remove these unless a sample actually shows them:
   dictated (not one in a draft they pasted to be rewritten): that word stays
 
 **Check the draft's vocabulary** before presenting it: save the draft, and the
-user's own wording of what the message should say, to temporary files outside
-the cache and any repository, and run
+user's own wording of what the message should say, to files created with
+`mktemp` (the script accepts only paths under `$HOME` or `$TMPDIR`), and run
 `python3 <skill-dir>/scripts/vocabulary.py check --draft <draft> --exempt <words>`.
 The exempt file holds only what the user dictated, in their words: never a
 draft they pasted to be rewritten, someone else's message, or instructions
