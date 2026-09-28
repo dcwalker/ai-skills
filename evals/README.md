@@ -437,7 +437,10 @@ its fixtures carry a `home/`, and the skill writes nothing under `$HOME`. The
 a triage trial run through its own driver reads whatever that directory holds
 on the machine running it, rather than a fixture-controlled one. Folding it
 into a caller of this script is the fix, and remains the worthwhile follow-up
-its own header calls it.
+its own header calls it. In place of the `HOME` isolation, triage's driver keeps
+the running user's instructions out with the `managed-only` instruction-files
+setting and `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1`; without them, a user rule in
+`~/.claude/rules/` loaded into every trial and made trials refuse graded writes.
 
 Both honour a `TRIALS_DIR` environment variable. Output otherwise lands in
 `<skill-evals-dir>/.trial-runs/`, which is gitignored but leaves `evals.json`

@@ -78,7 +78,13 @@ for e in data['evals']:
   # rather than an artifact of the harness blocking the call. Servers come
   # from this fixture's own mcp-config.json, so a fixture that wires up a new
   # service is covered without editing this list.
-  mapfile -t PERM_ARGS < <(python3 -c "
+  #
+  # A read loop rather than `mapfile`, which needs bash 4: macOS ships bash
+  # 3.2 as /bin/bash, and the script failed there before running any trial.
+  PERM_ARGS=()
+  while IFS= read -r line; do
+    PERM_ARGS+=("$line")
+  done < <(python3 -c "
 import json
 config = json.load(open('$MCP_CONFIG_PATH'))
 print('--allowedTools')
@@ -108,9 +114,23 @@ print('Bash Read Write Edit Glob Grep WebFetch TodoWrite Skill '
   # result that reports is_error) must not abort the batch under set -e --
   # its result.json still lands in its own $RUN_DIR and the failure shows
   # up in metrics.json's is_error/parse_error fields for the grader.
+  #
+  # Keep the running user's own instructions out of the trial. Without this,
+  # ~/.claude/rules/, ~/.claude/CLAUDE.md, auto memory, and any AGENTS.md above
+  # the workspace load into every trial wherever it runs, and a user rule such
+  # as "ask before changing data" made trials refuse the writes they were
+  # graded on. The "managed-only" instruction-files setting leaves out user,
+  # project, and local CLAUDE.md files, .claude/rules/ files, and every
+  # AGENTS.md, but not skills, so the staged triage skill still loads.
+  # CLAUDE_CODE_DISABLE_AUTO_MEMORY covers auto memory, which managed-only
+  # keeps. Both are documented at https://code.claude.com/docs/en/memory and
+  # need Claude Code v2.1.277 or later. Triage fixtures carry no instruction
+  # files of their own, so nothing a fixture means to say is lost.
   (
     cd "$WORKSPACE_DIR"
-    claude -p "${PERM_ARGS[@]}" --strict-mcp-config \
+    CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 \
+      claude -p "${PERM_ARGS[@]}" --strict-mcp-config \
+      --settings '{"pluginConfigs":{"agents-md@builtin":{"options":{"instructionFiles":"managed-only"}}}}' \
       --mcp-config "$MCP_CONFIG_PATH" --output-format json -- "$PROMPT" \
       < /dev/null
   ) > "$RUN_DIR/result.json" 2> "$RUN_DIR/stderr.txt" || \
