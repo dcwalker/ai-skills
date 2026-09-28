@@ -1,0 +1,232 @@
+{
+  "me": "eval-user@example.com",
+  "threads": {
+    "thread-s1": {
+      "id": "thread-s1",
+      "subject": "release checklist",
+      "from": "sam.ortiz@example.com",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-03-02T15:30:00Z",
+      "snippet": "yeah the new template is fine by me. tbh i only use the rollback section, so ping me if th",
+      "labelIds": [
+        "INBOX",
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s1a",
+          "from": "sam.ortiz@example.com",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-03-02T09:00:00Z",
+          "snippet": "Can we circle back on the release checklist? I want to leverage the new template so the de",
+          "body": "Hi Alex,\n\nCan we circle back on the release checklist? I want to leverage the new template so the deliverables are actionable going forward.\n\nBest,\nSam"
+        },
+        {
+          "id": "msg-s1b",
+          "from": "eval-user@example.com",
+          "to": [
+            "sam.ortiz@example.com"
+          ],
+          "date": "2026-03-02T15:30:00Z",
+          "snippet": "yeah the new template is fine by me. tbh i only use the rollback section, so ping me if th",
+          "body": "hey Sam,\n\nyeah the new template is fine by me. tbh i only use the rollback section, so ping me if the rest changes.\n\nthanks\nalex\n\nOn 2026-03-02, Sam Ortiz wrote:\n> Hi Alex,\n>\n> Can we circle back on the release checklist? I want to leverage the new template so the deliverables are actionable going forward.\n>\n> Best,\n> Sam"
+        }
+      ]
+    },
+    "thread-s2": {
+      "id": "thread-s2",
+      "subject": "on-call swap",
+      "from": "sam.ortiz@example.com",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-03-19T15:30:00Z",
+      "snippet": "i can take tuesday and wednesday, not monday. ping me if that doesn't work and i'll ask Jo",
+      "labelIds": [
+        "INBOX",
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s2a",
+          "from": "sam.ortiz@example.com",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-03-19T09:00:00Z",
+          "snippet": "Do you have bandwidth to swap on-call next week? Great synergy with the platform team on t",
+          "body": "Hi Alex,\n\nDo you have bandwidth to swap on-call next week? Great synergy with the platform team on the last rotation.\n\nBest,\nSam"
+        },
+        {
+          "id": "msg-s2b",
+          "from": "eval-user@example.com",
+          "to": [
+            "sam.ortiz@example.com"
+          ],
+          "date": "2026-03-19T15:30:00Z",
+          "snippet": "i can take tuesday and wednesday, not monday. ping me if that doesn't work and i'll ask Jo",
+          "body": "hey Sam,\n\ni can take tuesday and wednesday, not monday. ping me if that doesn't work and i'll ask Jordan.\n\nthanks\nalex\n\nOn 2026-03-19, Sam Ortiz wrote:\n> Hi Alex,\n>\n> Do you have bandwidth to swap on-call next week? Great synergy with the platform team on the last rotation.\n>\n> Best,\n> Sam"
+        }
+      ]
+    },
+    "thread-s3": {
+      "id": "thread-s3",
+      "subject": "staging costs",
+      "from": "sam.ortiz@example.com",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-04-08T15:30:00Z",
+      "snippet": "heads up, reserved instances won't help much, staging is off most nights anyway. tbh the d",
+      "labelIds": [
+        "INBOX",
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s3a",
+          "from": "sam.ortiz@example.com",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-04-08T09:00:00Z",
+          "snippet": "Per my last email, we should leverage reserved instances for staging. Let's circle back on",
+          "body": "Hi Alex,\n\nPer my last email, we should leverage reserved instances for staging. Let's circle back once finance weighs in.\n\nBest,\nSam"
+        },
+        {
+          "id": "msg-s3b",
+          "from": "eval-user@example.com",
+          "to": [
+            "sam.ortiz@example.com"
+          ],
+          "date": "2026-04-08T15:30:00Z",
+          "snippet": "heads up, reserved instances won't help much, staging is off most nights anyway. tbh the d",
+          "body": "hey Sam,\n\nheads up, reserved instances won't help much, staging is off most nights anyway. tbh the disk is the real cost.\n\nthanks\nalex\n\nOn 2026-04-08, Sam Ortiz wrote:\n> Hi Alex,\n>\n> Per my last email, we should leverage reserved instances for staging. Let's circle back once finance weighs in.\n>\n> Best,\n> Sam"
+        }
+      ]
+    },
+    "thread-s4": {
+      "id": "thread-s4",
+      "subject": "export alerts",
+      "from": "sam.ortiz@example.com",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-05-12T15:30:00Z",
+      "snippet": "sure. i'd start with one alert on failed runs and skip the latency one for now. ping me wh",
+      "labelIds": [
+        "INBOX",
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s4a",
+          "from": "sam.ortiz@example.com",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-05-12T09:00:00Z",
+          "snippet": "Can we align on actionable alerts for the export job? I want clear deliverables and owners",
+          "body": "Hi Alex,\n\nCan we align on actionable alerts for the export job? I want clear deliverables and ownership going forward.\n\nBest,\nSam"
+        },
+        {
+          "id": "msg-s4b",
+          "from": "eval-user@example.com",
+          "to": [
+            "sam.ortiz@example.com"
+          ],
+          "date": "2026-05-12T15:30:00Z",
+          "snippet": "sure. i'd start with one alert on failed runs and skip the latency one for now. ping me wh",
+          "body": "hey Sam,\n\nsure. i'd start with one alert on failed runs and skip the latency one for now. ping me when you have a draft.\n\nthanks\nalex\n\nOn 2026-05-12, Sam Ortiz wrote:\n> Hi Alex,\n>\n> Can we align on actionable alerts for the export job? I want clear deliverables and ownership going forward.\n>\n> Best,\n> Sam"
+        }
+      ]
+    },
+    "thread-s5": {
+      "id": "thread-s5",
+      "subject": "postmortem",
+      "from": "sam.ortiz@example.com",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-06-23T15:30:00Z",
+      "snippet": "heads up, i'm out thursday. friday works, or Jordan can present, they ran most of the call",
+      "labelIds": [
+        "INBOX",
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s5a",
+          "from": "sam.ortiz@example.com",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-06-23T09:00:00Z",
+          "snippet": "Thanks for the postmortem. Do you have bandwidth to present it Thursday? Great synergy acr",
+          "body": "Hi Alex,\n\nThanks for the postmortem. Do you have bandwidth to present it Thursday? Great synergy across teams on this one.\n\nBest,\nSam"
+        },
+        {
+          "id": "msg-s5b",
+          "from": "eval-user@example.com",
+          "to": [
+            "sam.ortiz@example.com"
+          ],
+          "date": "2026-06-23T15:30:00Z",
+          "snippet": "heads up, i'm out thursday. friday works, or Jordan can present, they ran most of the call",
+          "body": "hey Sam,\n\nheads up, i'm out thursday. friday works, or Jordan can present, they ran most of the call anyway.\n\nthanks\nalex\n\nOn 2026-06-23, Sam Ortiz wrote:\n> Hi Alex,\n>\n> Thanks for the postmortem. Do you have bandwidth to present it Thursday? Great synergy across teams on this one.\n>\n> Best,\n> Sam"
+        }
+      ]
+    },
+    "thread-s6": {
+      "id": "thread-s6",
+      "subject": "q3 planning",
+      "from": "sam.ortiz@example.com",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-07-28T15:30:00Z",
+      "snippet": "tbh i haven't opened the roadmap doc yet. i'll read it tomorrow and ping me if you need nu",
+      "labelIds": [
+        "INBOX",
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "msg-s6a",
+          "from": "sam.ortiz@example.com",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-07-28T09:00:00Z",
+          "snippet": "Let's circle back on Q3 planning and leverage the roadmap doc so the deliverables stay act",
+          "body": "Hi Alex,\n\nLet's circle back on Q3 planning and leverage the roadmap doc so the deliverables stay actionable.\n\nBest,\nSam"
+        },
+        {
+          "id": "msg-s6b",
+          "from": "eval-user@example.com",
+          "to": [
+            "sam.ortiz@example.com"
+          ],
+          "date": "2026-07-28T15:30:00Z",
+          "snippet": "tbh i haven't opened the roadmap doc yet. i'll read it tomorrow and ping me if you need nu",
+          "body": "hey Sam,\n\ntbh i haven't opened the roadmap doc yet. i'll read it tomorrow and ping me if you need numbers before then.\n\nthanks\nalex\n\nOn 2026-07-28, Sam Ortiz wrote:\n> Hi Alex,\n>\n> Let's circle back on Q3 planning and leverage the roadmap doc so the deliverables stay actionable.\n>\n> Best,\n> Sam"
+        }
+      ]
+    }
+  },
+  "labels": {
+    "SENT": {
+      "id": "SENT",
+      "name": "SENT"
+    },
+    "INBOX": {
+      "id": "INBOX",
+      "name": "INBOX"
+    }
+  },
+  "drafts": {}
+}

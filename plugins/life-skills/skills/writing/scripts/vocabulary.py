@@ -372,7 +372,7 @@ def header_lines(profile: Profile, files: List[str]) -> List[str]:
         "# Vocabulary",
         "",
         f"Built:       {datetime.date.today().isoformat()}",
-        f"Corpus:      {len(files)} files, {len(profile.message_ids)} messages, {profile.total} counted words, {span}",
+        f"Corpus:      {plural(len(files), 'file')}, {len(profile.message_ids)} messages, {profile.total} counted words, {span}",
         f"Name match:  {profile.name_match_words} of {profile.total} counted words ({share:.0f}%) from display-name matches",
         f"Reference:   {profile.reference.describe()}",
         "Counted:     segments with author user and kind body only",
@@ -431,6 +431,10 @@ def lexicon_lines(profile: Profile) -> List[str]:
     for word, count in sorted(profile.counts.items(), key=lambda item: (-item[1], item[0])):
         lines.append(f"{word}\t{count}")
     return lines + ["```"]
+
+
+def plural(count: int, noun: str) -> str:
+    return f"{count} {noun}" if count == 1 else f"{count} {noun}s"
 
 
 def table_cell(text: str) -> str:
