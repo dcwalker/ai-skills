@@ -256,8 +256,9 @@ corpus line the script skipped as malformed, and a fingerprint of the corpus
 files, the reference, and the script it was built from: `check` rebuilds
 whenever that changes, including when a corpus file is deleted, wordfreq
 becomes available, or the script is updated. A message saved twice (an edit, a
-relabel, or a copy under another card or source) is counted once, from its
-latest line, so re-saving a message corrects it. Every `save` and rebuild
+relabel, or a copy under another card) is counted once, from its latest line,
+so re-saving a message corrects it. Use the same `--source` name for a service
+every time: ids from different sources are always different messages. Every `save` and rebuild
 removes group and other access from the cache, `corpus/`, and the files
 directly in them.
 
