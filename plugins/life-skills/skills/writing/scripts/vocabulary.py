@@ -656,7 +656,7 @@ def never_used_lines(profile: Profile) -> List[str]:
     unused = [w for w in AI_LEANING_WORDS if not profile.counts[w]]
     used = [f"{w} ({profile.counts[w]})" for w in AI_LEANING_WORDS if profile.counts[w]]
     lines += ["A word the user chose in their request is theirs and stays in the draft, even when it is",
-              "listed here; `check --exempt` never flags it.", ""]
+              "listed here; `check` flags it if the draft drops it.", ""]
     lines.append(f"AI-leaning words with 0 uses in {messages} messages:")
     lines.append("")
     lines.append(", ".join(unused) or "(none)")
@@ -737,14 +737,24 @@ def check(cache: str, draft_path: str, exempt_path: Optional[str], reference: Re
             request = handle.read()
         exempt = set(reference.tokenize(request)) | set(FALLBACK_TOKEN.findall(request.lower()))
     draft = Counter(t for t in tokens if t not in exempt)
-    findings = never_used_findings(draft, never) + unseen_findings(draft, lexicon, never, reference) \
-        + overuse_findings(draft, rates, len(tokens))
+    findings = dropped_request_findings(exempt, set(tokens), never) + never_used_findings(draft, never) \
+        + unseen_findings(draft, lexicon, never, reference) + overuse_findings(draft, rates, len(tokens))
     print(f"Draft: {len(tokens)} words. Reference: {reference.describe()}")
     if not findings:
         print("No vocabulary flags.")
     for finding in findings:
         print(f"- {finding}")
     return 0
+
+
+def dropped_request_findings(request: Set[str], draft: Set[str], never: Set[str]) -> List[str]:
+    """Never-used words the user chose in the request but the draft swapped out.
+
+    The request is dictation: its words stay even when the corpus never shows
+    them, and these are exactly the words a voice match is tempted to replace.
+    """
+    return [f"request word dropped: \"{w}\" is in the user's request but not the draft; put it back"
+            for w in sorted(request & never - draft)]
 
 
 def never_used_findings(draft: Counter, never: Set[str]) -> List[str]:

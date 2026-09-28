@@ -602,8 +602,8 @@ Remove these unless a sample actually shows them:
 user's request, verbatim, to temporary files outside the cache and run
 `python3 <skill-dir>/scripts/vocabulary.py check --draft <draft> --exempt <request>`.
 Replace a flagged word with one the user actually uses, or keep it and say why.
-Words in the user's request are theirs: never swap them out, even when
-`vocabulary.md` lists them as never used.
+A "request word dropped" flag means a word from the request is missing from the
+draft: put it back.
 
 Match the observed length. If the samples run 40 words, a 200-word draft is
 wrong even if every sentence is in voice.
@@ -628,6 +628,12 @@ tempting of these, because a specific date genuinely reads better. It is still
 the user's date to choose. Added precision reads
 as harmless because it is small and plausible, and it is still invention: the
 user has to notice and undo it before sending.
+
+Keep the user's words. Where the request words the content ("we can leverage
+the new cache layer"), the draft uses those words, even ones the corpus never
+shows and `vocabulary.md` lists as never used: the request is dictation, and
+voice matching shapes only what the user left unworded. Swapping in a word that
+sounds more like them is rewriting what they said.
 
 Instructions about the conversation are not content for the artifact. "I will
 not be around to answer", "keep it short", "make it sound friendlier" shape how
