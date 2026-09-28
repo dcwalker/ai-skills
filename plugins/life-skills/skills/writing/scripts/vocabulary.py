@@ -178,8 +178,17 @@ def venv_dir(cache: str) -> str:
 
 def site_packages(cache: str) -> str:
     """The venv's site-packages for this interpreter's Python version."""
+    if os.name == "nt":
+        return os.path.join(venv_dir(cache), "Lib", "site-packages")
     version = f"python{sys.version_info.major}.{sys.version_info.minor}"
     return os.path.join(venv_dir(cache), "lib", version, "site-packages")
+
+
+def venv_python(target: str) -> str:
+    """The venv's interpreter: Scripts\\python.exe on Windows, bin/python3 elsewhere."""
+    if os.name == "nt":
+        return os.path.join(target, "Scripts", "python.exe")
+    return os.path.join(target, "bin", "python3")
 
 
 def install_wordfreq(cache: str) -> bool:
@@ -197,7 +206,7 @@ def install_wordfreq(cache: str) -> bool:
     print(f"Installing wordfreq {WORDFREQ_VERSION} into {target} (first run only)...", file=sys.stderr)
     try:
         venv.create(target, clear=True, with_pip=True)
-        pip = [os.path.join(target, "bin", "python3"), "-m", "pip", "install", "--quiet", "--disable-pip-version-check"]
+        pip = [venv_python(target), "-m", "pip", "install", "--quiet", "--disable-pip-version-check"]
         subprocess.run(pip + [f"wordfreq=={WORDFREQ_VERSION}"], check=True)
         return True
     except (OSError, subprocess.CalledProcessError) as err:
