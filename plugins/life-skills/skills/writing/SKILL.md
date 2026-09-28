@@ -99,6 +99,13 @@ states, ask only about what is genuinely missing, one question at a time.
 | **Purpose** | Inform, ask, decline, persuade, apologize, record, celebrate, vent |
 | **Constraints** | Length, deadline, anything that must or must not appear |
 
+**Separate what the user dictated from text they want rewritten.** When the
+request carries a draft to rework ("make this sound like me: ..."), or someone
+else's message, that text is source: its facts stay and its wording is what
+the user wants changed, so its vocabulary gets no protection. Only the words
+the user writes around it, describing what the message should say, are
+dictation, and only those are kept verbatim (Step 7).
+
 **Only these four attributes can hold up a draft.** Questions in this step are
 about the medium, the audience, the purpose, and the stated constraints, and
 about nothing else. What hours the shift runs, what the handoff involves, who
@@ -173,11 +180,14 @@ identity.md                       Who the user is, in identifiers
 general.md                        What holds true across every card
 index.md                          Searches already run and what they returned
 card-<medium>-<audience-slug>.md  One style card per (medium, audience) pair
+corpus/<medium>-<audience-slug>.jsonl  The raw text behind each card
+vocabulary.md                     The user's vocabulary across every card
+.venv/                            wordfreq, installed by scripts/vocabulary.py
 ```
 
 **A channel is an audience in its own right**, slugged by its own name and id (`card-slack-platform-eng-C024BE91L.md`), never by a category such as `private-channel`. See [references/finding-samples.md](references/finding-samples.md).
 
-All four formats are in
+Every format is in
 [references/cache-files.md](references/cache-files.md). Read it before writing
 any of these files, and before relying on what one of them says. In short:
 `identity.md` records the account identifiers that decide which samples are
@@ -210,11 +220,11 @@ Cache rules:
   than silently skipping the research step.
 - **Confirm a hit cheaply, do not rebuild it.** Every reuse earns exactly one
   search for samples newer than the card's newest, and no more. If that turns
-  up nothing, use the card as it stands. If it turns up a few, fold them into
-  the ledger, update the counts, and re-bucket. Re-reading the whole corpus a
-  card was built from defeats the point of having cached it. This single
-  bounded search is what keeps a card current, which is why it runs on every
-  reuse rather than on a timer.
+  up nothing, use the card as it stands. If it turns up a few, save them to the
+  corpus (Step 4), fold them into the ledger, update the counts, and
+  re-bucket. Re-reading the whole corpus a card was built from defeats the
+  point of having cached it. This single bounded search is what keeps a card
+  current, which is why it runs on every reuse rather than on a timer.
 - A partial hit is a starting point, not an answer. Same person, different
   medium means the relationship read carries over and the mechanics do not:
   keep the audience findings, research the medium fresh.
@@ -237,8 +247,8 @@ Cache rules:
 - New samples extend a card rather than replacing it. Re-running research adds
   the messages written since, appends them to the card's ledger, and updates
   the counts.
-- The cache holds derived observations and short excerpts only, never bulk
-  copies of correspondence.
+- The cache holds the raw corpus behind each card, labeled by author, so the
+  corpus is never fetched twice. It stays on this machine.
 
 ---
 
@@ -308,6 +318,20 @@ silently narrows or contaminates the evidence.
    collaborative document read as though one person wrote it yields a card
    averaged across several voices, none of which is the user's, and the
    average always reads plausible.
+
+**Save what was gathered with the bundled script**, `scripts/vocabulary.py`
+in this skill's base directory (the folder holding this `SKILL.md`; never search
+the filesystem for it). Pipe the messages to
+`python3 <skill-dir>/scripts/vocabulary.py save --card <medium>-<audience-slug>
+--source <gmail|slack|jira|git> --input -` as JSON: whole threads, other
+people's messages included, each plain-text body unedited with its quoted reply
+still in it; list any excerpt the user pasted in without quoting it under
+that message's `"pasted"` key, and leave out a squash or merge commit that
+bundles other people's work. If a file is easier, create it with
+`mktemp` outside any repository and delete it after: it holds other people's
+mail. The script labels who wrote what, so never write corpus lines by hand; the
+input format is in [references/cache-files.md](references/cache-files.md). For
+documents, pass only the user's passages.
 
 Rungs 2 and 4 need a relationship class for the recipient, and every rung
 needs samples the user actually wrote. Both are in
@@ -582,7 +606,19 @@ Remove these unless a sample actually shows them:
 - Corrected capitalization, expanded abbreviations, or repaired shorthand where
   the user's own habit is otherwise
 - Vocabulary that appears nowhere in the corpus, especially escalations like
-  "leverage", "utilize", "align", "delve", "robust"
+  "leverage", "utilize", "align", "delve", "robust", except a word the user
+  dictated (not one in a draft they pasted to be rewritten): that word stays
+
+**Check the draft's vocabulary** before presenting it: save the draft, and the
+user's own wording of what the message should say, to files created with
+`mktemp` (the script accepts only paths under `$HOME` or `$TMPDIR`), and run
+`python3 <skill-dir>/scripts/vocabulary.py check --draft <draft> --exempt <words>`.
+The exempt file holds only what the user dictated, in their words: never a
+draft they pasted to be rewritten, someone else's message, or instructions
+about the task. When they dictated nothing, as when rewriting a pasted draft,
+pass an empty file. Replace a flagged word with one the user actually uses, or keep
+it and say why. A "request word dropped" flag means a word the user dictated is
+missing from the draft: put it back unless they asked for it changed.
 
 Match the observed length. If the samples run 40 words, a 200-word draft is
 wrong even if every sentence is in voice.
@@ -607,6 +643,14 @@ tempting of these, because a specific date genuinely reads better. It is still
 the user's date to choose. Added precision reads
 as harmless because it is small and plausible, and it is still invention: the
 user has to notice and undo it before sending.
+
+Keep the user's words. Where the request words the content ("we can leverage
+the new cache layer"), the draft uses those words, even ones the corpus never
+shows and `vocabulary.md` lists as never used: the request is dictation, and
+voice matching shapes only what the user left unworded. Swapping in a word that
+sounds more like them is rewriting what they said. A draft they paste to be
+rewritten, or someone else's message, is not dictation: its wording is what
+they asked to have changed.
 
 Instructions about the conversation are not content for the artifact. "I will
 not be around to answer", "keep it short", "make it sound friendlier" shape how
@@ -652,9 +696,10 @@ it there; that offer costs one line and leaves the decision where it belongs.
 - Do not carry content from someone else's message into the deliverable, and do
   not quote a third party's writing as the user's own style.
 - Corpus material stays in the cache and out of the deliverable, the
-  repository, and any commit. The cache is the user's own directory, holds
-  derived observations rather than copies of correspondence, and is theirs to
-  delete: say where it lives the first time this skill writes to it.
+  repository, and any commit, and never leaves the machine. The cache is the
+  user's own directory, holds copies of their correspondence along with what
+  was derived from it, and is theirs to delete: say where it lives the first
+  time this skill writes to it.
 
 ---
 
