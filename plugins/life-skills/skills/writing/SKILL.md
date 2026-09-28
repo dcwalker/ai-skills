@@ -173,11 +173,14 @@ identity.md                       Who the user is, in identifiers
 general.md                        What holds true across every card
 index.md                          Searches already run and what they returned
 card-<medium>-<audience-slug>.md  One style card per (medium, audience) pair
+corpus/<medium>-<audience-slug>.jsonl  The raw text behind each card
+vocabulary.md                     The user's vocabulary across every card
+.venv/                            wordfreq, installed by scripts/vocabulary.py
 ```
 
 **A channel is an audience in its own right**, slugged by its own name and id (`card-slack-platform-eng-C024BE91L.md`), never by a category such as `private-channel`. See [references/finding-samples.md](references/finding-samples.md).
 
-All four formats are in
+Every format is in
 [references/cache-files.md](references/cache-files.md). Read it before writing
 any of these files, and before relying on what one of them says. In short:
 `identity.md` records the account identifiers that decide which samples are
@@ -237,8 +240,8 @@ Cache rules:
 - New samples extend a card rather than replacing it. Re-running research adds
   the messages written since, appends them to the card's ledger, and updates
   the counts.
-- The cache holds derived observations and short excerpts only, never bulk
-  copies of correspondence.
+- The cache holds the raw corpus behind each card, labeled by author, so the
+  corpus is never fetched twice. It stays on this machine.
 
 ---
 
@@ -308,6 +311,14 @@ silently narrows or contaminates the evidence.
    collaborative document read as though one person wrote it yields a card
    averaged across several voices, none of which is the user's, and the
    average always reads plausible.
+
+**Save what was gathered to the card's corpus file**, one JSON line per
+segment, before analyzing it: `corpus/<medium>-<audience-slug>.jsonl`, in the
+format in [references/cache-files.md](references/cache-files.md). Every segment
+is labeled with who wrote it. Only the user's own message bodies are
+`author: user`, `kind: body`; quoted replies, forwards, pasted text,
+signatures, and other people's messages are kept as context under their own
+labels and never counted. For documents, save only the user's passages.
 
 Rungs 2 and 4 need a relationship class for the recipient, and every rung
 needs samples the user actually wrote. Both are in
@@ -382,6 +393,17 @@ Every positive entry carries one attested snippet. "heads up" on its own loses
 the frame, and a bare opener, a mid-sentence aside, and an apology softener are
 three different habits. The snippet is also what makes the entry checkable the
 next time the card is extended.
+
+**Then rebuild the cross-audience vocabulary** with the script bundled with
+this skill at `scripts/vocabulary.py`, resolved relative to this `SKILL.md`
+rather than to the working directory: `python3 <skill-dir>/scripts/vocabulary.py
+build`, adding `--cache <dir>` when the cache is not `$HOME/writing-style`. The
+first run installs wordfreq into the cache's `.venv/`. It writes
+`vocabulary.md` from every corpus file: the user's most frequent words against
+general English, signature words and phrases, the AI-leaning words they never
+use, and their full lexicon. Read it
+before drafting. It is rung 5 evidence: it says which words the user reaches
+for in general, and the card still decides what fits this audience.
 
 **Tone:** directness, warmth markers, humor and its type, apology and gratitude
 habits, how disagreement and bad news get delivered.
@@ -528,6 +550,8 @@ entire cost this cache exists to avoid.
 2. Add or update this card's row in `index.md`, including any search that came
    back empty.
 3. Rebuild `general.md` if this card is new or changed.
+4. Confirm the corpus file from Step 4 holds every sample in the ledger, and
+   that `vocabulary.md` was rebuilt after it last changed.
 
 **Say what you actually wrote, and nothing more.** "Cached at
 `~/writing-style/card-...md`" is a claim about the filesystem, and it is false
@@ -583,6 +607,16 @@ Remove these unless a sample actually shows them:
   the user's own habit is otherwise
 - Vocabulary that appears nowhere in the corpus, especially escalations like
   "leverage", "utilize", "align", "delve", "robust"
+
+**Check the draft's vocabulary.** Save the draft and the user's request to
+temporary files and run
+`python3 <skill-dir>/scripts/vocabulary.py check --draft <draft> --exempt <request>`. It
+flags AI-leaning words the user never writes, words missing from their corpus
+that are also uncommon in English, and frequent words the draft leans on far
+harder than they do. Words from the request are never flagged, since the user
+chose them. Replace each flagged word with one the user actually uses, or
+keep it and say why in the note after the draft. When there is no
+`vocabulary.md` yet, say the check was skipped.
 
 Match the observed length. If the samples run 40 words, a 200-word draft is
 wrong even if every sentence is in voice.
@@ -652,9 +686,10 @@ it there; that offer costs one line and leaves the decision where it belongs.
 - Do not carry content from someone else's message into the deliverable, and do
   not quote a third party's writing as the user's own style.
 - Corpus material stays in the cache and out of the deliverable, the
-  repository, and any commit. The cache is the user's own directory, holds
-  derived observations rather than copies of correspondence, and is theirs to
-  delete: say where it lives the first time this skill writes to it.
+  repository, and any commit, and never leaves the machine. The cache is the
+  user's own directory, holds copies of their correspondence along with what
+  was derived from it, and is theirs to delete: say where it lives the first
+  time this skill writes to it.
 
 ---
 
