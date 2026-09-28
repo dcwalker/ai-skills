@@ -1033,7 +1033,16 @@ def check(cache: str, draft_path: str, exempt_path: Optional[str], reference: Re
         request = read_text(exempt_path, "--exempt")
         exempt = set(reference.tokenize(request)) | set(FALLBACK_TOKEN.findall(request.lower()))
     draft = Counter(t for t in tokens if not any(same_stem(t, word) for word in exempt))
-    findings = dropped_request_findings(exempt, tokens, never) + never_used_findings(draft, never) \
+    dictated_never = sorted(exempt & never)
+    suspect = len(dictated_never) >= 2
+    if suspect:
+        # Dictation rarely carries several AI-leaning words; a pasted draft does.
+        print(f"Warning: the --exempt file holds {len(dictated_never)} never-used words "
+              f"({', '.join(dictated_never)}). If any came from a draft the user pasted to be rewritten, "
+              "or from someone else's message, take that text out of the file and check again. "
+              "Dropped-word flags are held back until then.")
+    dropped = [] if suspect else dropped_request_findings(exempt, tokens, never)
+    findings = dropped + never_used_findings(draft, never) \
         + unseen_findings(draft, lexicon, never, reference) + overuse_findings(Counter(tokens), rates, len(tokens))
     print(f"Draft: {len(tokens)} words. Reference: {reference.describe()}")
     if not findings:

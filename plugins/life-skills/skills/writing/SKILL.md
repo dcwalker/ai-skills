@@ -99,6 +99,13 @@ states, ask only about what is genuinely missing, one question at a time.
 | **Purpose** | Inform, ask, decline, persuade, apologize, record, celebrate, vent |
 | **Constraints** | Length, deadline, anything that must or must not appear |
 
+**Separate what the user dictated from text they want rewritten.** When the
+request carries a draft to rework ("make this sound like me: ..."), or someone
+else's message, that text is source: its facts stay and its wording is what
+the user wants changed, so its vocabulary gets no protection. Only the words
+the user writes around it, describing what the message should say, are
+dictation, and only those are kept verbatim (Step 7).
+
 **Only these four attributes can hold up a draft.** Questions in this step are
 about the medium, the audience, the purpose, and the stated constraints, and
 about nothing else. What hours the shift runs, what the handoff involves, who
