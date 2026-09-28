@@ -368,7 +368,9 @@ def take_closing(body: str) -> Tuple[str, str]:
 
 
 def prefixed(source: str, value: str) -> str:
-    return value if value.startswith(f"{source}:") else f"{source}:{value}"
+    """Prefix an id with its source once, even if the caller already added it."""
+    bare = re.sub(rf"^{re.escape(source)}[:_-]", "", value)
+    return f"{source}:{bare}"
 
 
 def slugify(card: str) -> str:
