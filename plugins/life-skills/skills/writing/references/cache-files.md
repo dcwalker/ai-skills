@@ -68,6 +68,12 @@ Rules for identity.md:
 - **Offer to write it, do not assume it.** On the first run, discover what the
   connected accounts report, show the user what would be recorded, and write
   it only if they agree. It persists, and it is theirs.
+- **Write identifiers in a form the corpus script can read.** `vocabulary.py
+  save` takes from the Mail, Chat, Code host, Tracker, and Former lines only
+  what looks like an identifier: an address, an account id containing a digit
+  (`U024BE7LH`, `user-alex-1`), a `(@handle)`, or the code host handle. Plain
+  words, such as the parts of a name or a workspace label, are ignored, so a
+  message is never taken as the user's because the sender shares a first name.
 - **Identifiers only.** Never passwords, tokens, API keys, or session
   cookies. Nothing in this file should be a credential.
 
@@ -244,14 +250,17 @@ corpus newer. Never edit it by hand. It holds:
 
 The header records how many counted words came from display-name matches, any
 corpus line the script skipped as malformed, and a fingerprint of the corpus
-files and reference it was built from: `check` rebuilds whenever that changes,
-including when a corpus file is deleted or wordfreq becomes available. The
-cache directory, `corpus/`, and every file in them are kept private to the user
-(700 and 600) on each write.
+files, the reference, and the script it was built from: `check` rebuilds
+whenever that changes, including when a corpus file is deleted, wordfreq
+becomes available, or the script is updated. A message saved twice (an edit,
+or a copy under another card) is counted once, from its latest text. Every
+`save` and rebuild makes the whole cache private to the user (700 directories,
+600 files).
 
-`vocabulary.md` is rung 5 evidence, like `general.md`: it says which words the
-user reaches for in general, never how they write to this audience. Where it
-and a card disagree, the card wins for that audience.
+`vocabulary.md` is read by `check`, not before drafting: reading its
+never-used list led drafts to drop words the user had dictated. It says which
+words the user reaches for in general, never how they write to this audience;
+where it and a card disagree, the card wins for that audience.
 
 **English frequencies come from wordfreq** (<https://github.com/rspeer/wordfreq>),
 by Robyn Speer, whose data is licensed CC BY-SA 4.0 and draws on SUBTLEX

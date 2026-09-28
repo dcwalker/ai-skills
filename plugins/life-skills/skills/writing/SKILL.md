@@ -316,8 +316,10 @@ silently narrows or contaminates the evidence.
 in this skill's base directory (the folder holding this `SKILL.md`; never search
 the filesystem for it). Pipe the messages to
 `python3 <skill-dir>/scripts/vocabulary.py save --card <medium>-<audience-slug>
---source <gmail|slack|jira|git> --input -` as JSON, each plain-text body
-unedited with its quoted reply still in it. If a file is easier, create it with
+--source <gmail|slack|jira|git> --input -` as JSON: whole threads, other
+people's messages included, each plain-text body unedited with its quoted reply
+still in it, except text the user pasted in without quoting it, which is not
+theirs. If a file is easier, create it with
 `mktemp` outside any repository and delete it after: it holds other people's
 mail. The script labels who wrote what, so never write corpus lines by hand; the
 input format is in [references/cache-files.md](references/cache-files.md). For
