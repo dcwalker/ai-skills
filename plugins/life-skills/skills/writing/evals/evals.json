@@ -358,7 +358,7 @@
       "prompt": "Email Priya (priya.raman@example.com): we can leverage the new cache layer to take load off the export job, so I want to move the export rewrite to next quarter. I will not be around to answer follow-ups, so show me the style you are matching and then the draft in the same reply, and note any call you had to make on your own.",
       "expected_output": "The cached card and corpus for Priya are current, so one bounded search finds nothing newer and the card is reused; check may rebuild vocabulary.md from the corpus. 'leverage' is on vocabulary.md's never-used list, but the user chose it in the request, so the draft keeps it, the vocabulary check runs with the user's dictated wording as the exempt file, and 'leverage' is not flagged. The draft adds no other never-used word.",
       "expectations": [
-        "The transcript shows scripts/vocabulary.py check run on the draft with the user's request passed through --exempt.",
+        "The transcript shows scripts/vocabulary.py check run on the draft with the user's dictated content (including 'leverage', not the instruction about follow-ups) passed through --exempt.",
         "The draft keeps the user's own word 'leverage' rather than replacing it with a synonym, and does not flag it to the user as out of voice.",
         "The draft contains no other word from the never-used list in the fixture's vocabulary.md (for example 'robust', 'crucial', 'seamless', 'additionally', 'streamline', 'align').",
         "The card is reused rather than rebuilt: at most one bounded search for mail newer than 2026-08-14 appears in the Gmail call log, and the eight original ledger rows are kept.",

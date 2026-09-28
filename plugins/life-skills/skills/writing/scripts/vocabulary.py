@@ -11,9 +11,11 @@ Usage:
 --cache is accepted before or after the subcommand.
 
 `save` labels a batch of messages and appends them to corpus/<SLUG>.jsonl.
-Messages from an identifier in identity.md (or --me) are the user's; their
-greeting, closing, signature, quoted replies, and forwarded text are split off
-into their own segments. Everything else is labeled as someone else's.
+Messages from an identifier in identity.md (or --me) are the user's, as are
+messages the caller marks "match": "name" when the sender has no identifier;
+their greeting, closing, signature, footers, quoted replies, forwarded text,
+and any "pasted" excerpts are split off into their own segments. A message
+with no sender is "unknown". Everything else is labeled as someone else's.
 `check` rebuilds vocabulary.md when the corpus has changed, then compares a
 draft with it and prints anything out of voice.
 `build` rebuilds vocabulary.md on its own.
@@ -121,6 +123,10 @@ REPLY_HEADERS = (
     re.compile(r"^(On|Le|Am|El|Il|Op|Em|Den|Dne) .{4,300}"
                r"(wrote|a écrit|schrieb|escribió|scrisse|schreef|escreveu|skrev|napsal)\s*:\s*$", re.IGNORECASE),
     re.compile(r"^[A-Z][\w'.-]+( [A-Z][\w'.-]+){0,3} wrote:\s*$"),
+    re.compile(r"^(Am|Op|Den|Il|El|Le) .{4,200}\b(schrieb|schreef|skrev|scrisse|escribió)\b.{1,200}:\s*$",
+               re.IGNORECASE),
+    re.compile(r"^.{1,200}\bha scritto:\s*$", re.IGNORECASE),
+    re.compile(r"^.{0,120}\d.{0,120}<[^>\s]+@[^>\s]+>\s*:\s*$"),
     re.compile(r"^.{1,200}<[^>\s]+@[^>\s]+>\s*(wrote|a écrit|schrieb|escribió)\s*:\s*$", re.IGNORECASE),
     re.compile(r"^-{2,}\s*Original Message\s*-{2,}\s*$", re.IGNORECASE),
     re.compile(r"^_{10,}\s*$"),
@@ -139,8 +145,10 @@ MOBILE_FOOTER = re.compile(
     r"( \(including any attachments\))? (is|are|may be) (confidential|intended))",
     re.IGNORECASE,
 )
+GIT_TRAILER = re.compile(r"^(Co-authored-by|Signed-off-by|Reviewed-by|Acked-by|Reported-by):", re.IGNORECASE)
 HTML_BODY = re.compile(r"</(div|p|blockquote|span|table)>|<br\s*/?>", re.IGNORECASE)
 ADDRESS_IN_BRACKETS = re.compile(r"<([^<>\s]+@[^<>\s]+)>")
+CODE_HOST_WORDS = {"github", "gitlab", "bitbucket", "on", "at", "via"}
 NOT_A_NAME = {"honestly", "also", "so", "well", "ok", "okay", "yes", "no", "sure", "update", "fyi", "note",
               "quick", "actually", "anyway", "first", "second", "finally", "unfortunately", "luckily"}
 COMMON_ONE_WORD_REPLIES = {"yes", "yep", "yeah", "nope", "sure", "thx", "thanks", "done", "agreed", "same",
@@ -224,7 +232,7 @@ class Reference:
 
     def describe(self) -> str:
         if self._wf:
-            return f"wordfreq {getattr(self._wf, '__version__', WORDFREQ_VERSION)}, English 'large' list"
+            return f"wordfreq {installed_version('wordfreq')}, English 'large' list"
         return "none (wordfreq unavailable): keyness and rarity checks skipped"
 
     def tokenize(self, text: str) -> List[str]:
@@ -244,6 +252,14 @@ class Reference:
         if not self._wf:
             return None
         return self._wf.zipf_frequency(word, "en", wordlist="large")
+
+
+def installed_version(package: str) -> str:
+    try:
+        from importlib import metadata
+        return metadata.version(package)
+    except Exception:  # metadata missing or unreadable; the pin is the best guess
+        return WORDFREQ_VERSION
 
 
 def clean_text(text: str) -> str:
@@ -281,6 +297,8 @@ def validate(record: dict) -> Optional[str]:
         return f"invalid author {record['author']!r}"
     if record["kind"] not in KINDS:
         return f"invalid kind {record['kind']!r}"
+    if not isinstance(record.get("date", ""), str):
+        return "date is not a string"
     if record["author"] == "user" and record.get("match") not in ("identifier", "name"):
         return "user segment without match"
     return None
@@ -300,11 +318,20 @@ def read_corpus(cache: str) -> Tuple[List[Segment], List[str], List[str]]:
     return segments, files, warnings
 
 
+def bare_id(msg: str) -> str:
+    return msg.split(":", 1)[-1]
+
+
 def read_file(path: str, seen: Set[Tuple[str, str]], warnings: List[str],
               segments: Optional[List[Segment]] = None) -> List[Segment]:
     segments = [] if segments is None else segments
-    with open(path, encoding="utf-8") as handle:
-        for number, line in enumerate(handle, 1):
+    try:
+        with open(path, encoding="utf-8") as handle:
+            lines = handle.readlines()
+    except UnicodeDecodeError:
+        warnings.append(f"{os.path.basename(path)}: not UTF-8, skipped")
+        return segments
+    for number, line in enumerate(lines, 1):
             if not line.strip():
                 continue
             where = f"{os.path.basename(path)}:{number}"
@@ -317,15 +344,16 @@ def read_file(path: str, seen: Set[Tuple[str, str]], warnings: List[str],
             if problem:
                 warnings.append(f"{where}: {problem}, not counted")
                 continue
-            if record["author"] != "user" or record["kind"] == "auto":
-                continue
-            key = (record["msg"], record["kind"])
+            # The same message saved again (an edit, a relabel, or another
+            # card's copy): the latest line for it replaces earlier ones,
+            # whoever it says wrote it. Ids are compared without the source
+            # prefix, so "gmail:1" and "mail:1" are one message.
+            key = (bare_id(record["msg"]), record["kind"])
             if key in seen:
-                # The same message saved again (an edit, or another card's copy):
-                # the later text replaces the earlier one.
-                segments[:] = [s for s in segments if (s.msg, s.kind) != key]
+                segments[:] = [s for s in segments if (bare_id(s.msg), s.kind) != key]
             seen.add(key)
-            segments.append(Segment(record, medium_of(path)))
+            if record["author"] == "user" and record["kind"] != "auto":
+                segments.append(Segment(record, medium_of(path)))
     return segments
 
 
@@ -351,14 +379,24 @@ def identity_line_identifiers(line: str) -> Set[str]:
     if not field:
         return set()
     value = re.split(r"\s(?:until|since)\s|\s[—–]\s", line[len(field):], maxsplit=1)[0]
-    if field == "Chat:":
-        value = value.rsplit(":", 1)[-1]  # drop the "<workspace>:" label, however many words it has
     found = {normalize_identifier(handle) for handle in re.findall(r"\(@([\w.-]+)\)", value)}
-    for token in re.split(r"[\s,;]+", value):
-        token = token.strip(IDENTIFIER_PUNCTUATION)
-        if looks_like_identifier(token, bare_handles=field == "Code host:"):
-            found.add(normalize_identifier(token))
+    value = re.sub(r"\([^)]*\)", " ", value)  # other parentheticals are notes, such as a display name
+    for entry in re.split(r"[,;]", value):
+        if field in ("Chat:", "Code host:"):
+            entry = entry.rsplit(":", 1)[-1]  # drop a "<workspace>:" or "<platform>:" label
+        tokens = [t.strip(IDENTIFIER_PUNCTUATION) for t in entry.split()]
+        tokens = [t for t in tokens if t and t.lower() not in CODE_HOST_WORDS]
+        for position, token in enumerate(tokens):
+            # On the code host line a bare handle counts, but only as the entry's first word.
+            if looks_like_identifier(token, bare_handles=field == "Code host:" and position == 0):
+                found.add(normalize_identifier(token))
     return {value for value in found if value}
+
+
+def is_identifier_shaped(sender: str) -> bool:
+    """True for an address or account id, which proves who the author is."""
+    return any(looks_like_identifier(t.strip(IDENTIFIER_PUNCTUATION), bare_handles=False)
+               for t in re.split(r"[\s<>]+", sender))
 
 
 def looks_like_identifier(token: str, bare_handles: bool) -> bool:
@@ -390,6 +428,8 @@ def split_own_text(text: str, is_document: bool) -> List[Tuple[str, str, str]]:
     own, footer = split_at(own, lambda line: bool(MOBILE_FOOTER.match(line.strip())))
     own, signature = split_at(own, lambda line: bool(SIGNATURE_DELIMITER.match(line)))
     own, quoted = separate_quoted(own)
+    own, markup_quoted = separate_markup_quotes(own)
+    quoted += markup_quoted
     segments = [("user", "auto", "\n".join(footer).strip())] + segments
     body = "\n".join(own).strip()
     greeting = closing = ""
@@ -433,6 +473,30 @@ def is_reply_header(lines: List[str], index: int) -> bool:
         following = [part.strip() for part in lines[index + 1:index + 5]]
         return any(OUTLOOK_FIELDS.match(part) for part in following)
     return False
+
+
+def separate_markup_quotes(lines: List[str]) -> Tuple[List[str], List[str]]:
+    """Jira {quote}...{quote} and bq. blocks, and git Co-authored-by style
+    trailers, which name or carry someone else's text."""
+    own, blocks, inside, current = [], [], False, []
+    for line in lines:
+        stripped = line.strip()
+        if inside or stripped.startswith("{quote}"):
+            current.append(line)
+            opens_and_closes = stripped.startswith("{quote}") and stripped.count("{quote}") >= 2
+            if (inside and "{quote}" in stripped) or opens_and_closes:
+                blocks.append("\n".join(current))
+                current, inside = [], False
+            else:
+                inside = True
+            continue
+        if stripped.startswith("bq. ") or GIT_TRAILER.match(stripped):
+            blocks.append(line)
+            continue
+        own.append(line)
+    if current:
+        blocks.append("\n".join(current))
+    return own, blocks
 
 
 def separate_quoted(lines: List[str]) -> Tuple[List[str], List[str]]:
@@ -523,14 +587,23 @@ def label_message(message: dict, mine: Set[str], source: str) -> List[dict]:
         return [dict(base, author="unknown", kind="body", text=message["text"])]
     if normalize_identifier(sender) in mine:
         match = "identifier"
-    elif message.get("match") == "name":
+    elif message.get("match") == "name" and not is_identifier_shaped(sender):
         match = "name"
     else:
+        if message.get("match") == "name":
+            print(f"  warning: {base['msg']} is from {sender!r}, an identifier that isn't the user's, "
+                  "so it is saved as someone else's despite match: name", file=sys.stderr)
         return [dict(base, author="other", kind="auto" if message.get("auto") else "body", text=message["text"])]
     if message.get("auto"):
         return [dict(base, author="user", match=match, kind="auto", text=message["text"])]
+    text = message["text"]
     records = []
-    for author, kind, text in split_own_text(message["text"], bool(message.get("rev"))):
+    for excerpt in message.get("pasted", []):
+        # Text the user pasted in from someone else, marked by the caller: kept as context.
+        if excerpt and excerpt in text:
+            text = text.replace(excerpt, "\n")
+            records.append(dict(base, author="other", kind="pasted", text=excerpt.strip()))
+    for author, kind, text in split_own_text(text, bool(message.get("rev"))):
         record = dict(base, author=author, kind=kind, text=text)
         if author == "user":
             record["match"] = match
@@ -569,9 +642,19 @@ def message_problem(message: object) -> Optional[str]:
         return f"is missing {', '.join(missing)}"
     if not isinstance(message.get("from", ""), str):
         return "has a non-string from"
-    if HTML_BODY.search(message["text"]):
+    if is_html(message["text"]):
         return "has an HTML body; pass the plain-text body instead"
+    pasted = message.get("pasted", [])
+    if not isinstance(pasted, list) or not all(isinstance(p, str) for p in pasted):
+        return "has a pasted value that isn't a list of strings"
     return None
+
+
+def is_html(text: str) -> bool:
+    """An HTML body, not plain text that mentions a tag ("wrap it in a </div>")."""
+    head = text.lstrip()[:200].lower()
+    return head.startswith(("<html", "<!doctype", "<div", "<p>", "<p ", "<body", "<table")) \
+        or len(HTML_BODY.findall(text)) > 3
 
 
 def save(cache: str, card: str, source: str, input_path: str, extra: List[str]) -> int:
@@ -592,7 +675,7 @@ def save(cache: str, card: str, source: str, input_path: str, extra: List[str]) 
     added = []
     for message in messages:
         for record in label_message(message, mine, source):
-            key = (record["msg"], record["kind"], record["text"])
+            key = (record["msg"], record["kind"], record["author"], record["text"])
             if key not in existing:
                 existing.add(key)
                 added.append(record)
@@ -610,12 +693,19 @@ def save(cache: str, card: str, source: str, input_path: str, extra: List[str]) 
 
 
 def make_private(cache: str) -> None:
-    """Keep the cache readable by the user alone: 700 directories, 600 files."""
-    for root, dirs, files in os.walk(cache):
-        dirs[:] = [d for d in dirs if d != ".venv"]
-        os.chmod(root, 0o700)
-        for name in files:
-            os.chmod(os.path.join(root, name), 0o600)
+    """Keep the cache readable by the user alone: remove group and other
+    permissions from the cache, corpus/, and the files directly in them.
+    Execute bits survive, symlinks are left alone, and nothing deeper (such as
+    .venv) is touched."""
+    corpus_dir = os.path.join(cache, "corpus")
+    for directory in (cache, corpus_dir):
+        if not os.path.isdir(directory) or os.path.islink(directory):
+            continue
+        entries = [directory] + [os.path.join(directory, name) for name in os.listdir(directory)]
+        for path in entries:
+            if os.path.islink(path) or (path != directory and os.path.isdir(path)):
+                continue
+            os.chmod(path, os.stat(path).st_mode & ~0o077 & 0o7777)
 
 
 def existing_user(path: str) -> bool:
@@ -625,14 +715,14 @@ def existing_user(path: str) -> bool:
         return any('"author": "user"' in line for line in handle)
 
 
-def existing_keys(path: str) -> Set[Tuple[str, str, str]]:
+def existing_keys(path: str) -> Set[Tuple[str, str, str, str]]:
     keys = set()
     if os.path.exists(path):
         with open(path, encoding="utf-8") as handle:
             for line in handle:
                 try:
                     record = json.loads(line)
-                    keys.add((record.get("msg"), record.get("kind"), record.get("text")))
+                    keys.add((record.get("msg"), record.get("kind"), record.get("author"), record.get("text")))
                 except json.JSONDecodeError:
                     continue
     return keys
@@ -640,9 +730,9 @@ def existing_keys(path: str) -> Set[Tuple[str, str, str]]:
 
 def report_saved(path: str, messages: List[dict], added: List[dict]) -> None:
     if not added:
-        print(f"Nothing new to save from {len(messages)} messages; {os.path.basename(path)} is unchanged.")
+        print(f"Nothing new to save from {plural(len(messages), 'message')}; {os.path.basename(path)} is unchanged.")
         return
-    print(f"Saved {len(added)} new segments from {len(messages)} messages to {path}")
+    print(f"Saved {plural(len(added), 'new segment')} from {plural(len(messages), 'message')} to {path}")
     by_message: Dict[str, List[str]] = defaultdict(list)
     for record in added:
         words = len(record["text"].split())
@@ -840,8 +930,10 @@ def never_used_lines(profile: Profile) -> List[str]:
     lines = ["", "## Never used", ""]
     if messages < MIN_NEGATIVE_MESSAGES:
         return lines + [f"Not enough evidence: {messages} messages, needs {MIN_NEGATIVE_MESSAGES}."]
-    unused = [w for w in AI_LEANING_WORDS if not profile.counts[w]]
-    used = [f"{w} ({profile.counts[w]})" for w in AI_LEANING_WORDS if profile.counts[w]]
+    def uses(word: str) -> int:
+        return sum(count for token, count in profile.counts.items() if same_stem(word, token))
+    unused = [w for w in AI_LEANING_WORDS if not uses(w)]
+    used = [f"{w} ({uses(w)})" for w in AI_LEANING_WORDS if uses(w)]
     lines += ["A word the user chose in their request is theirs and stays in the draft, even when it is",
               "listed here; `check` flags it if the draft drops it.", ""]
     lines.append(f"AI-leaning words with 0 uses in {messages} messages:")
@@ -942,7 +1034,7 @@ def check(cache: str, draft_path: str, exempt_path: Optional[str], reference: Re
         exempt = set(reference.tokenize(request)) | set(FALLBACK_TOKEN.findall(request.lower()))
     draft = Counter(t for t in tokens if not any(same_stem(t, word) for word in exempt))
     findings = dropped_request_findings(exempt, tokens, never) + never_used_findings(draft, never) \
-        + unseen_findings(draft, lexicon, never, reference) + overuse_findings(draft, rates, len(tokens))
+        + unseen_findings(draft, lexicon, never, reference) + overuse_findings(Counter(tokens), rates, len(tokens))
     print(f"Draft: {len(tokens)} words. Reference: {reference.describe()}")
     if not findings:
         print("No vocabulary flags.")
@@ -1041,7 +1133,7 @@ def write_vocabulary(cache: str, reference: Reference) -> Optional[str]:
         handle.write(render(profile, files, warnings, inputs_fingerprint(cache, reference)))
     make_private(cache)
     print(f"Wrote {path}: {plural(len(profile.message_ids), 'message')}, {profile.total} counted words, "
-          f"{len(warnings)} warnings. Reference: {reference.describe()}")
+          f"{plural(len(warnings), 'warning')}. Reference: {reference.describe()}")
     return None
 
 
@@ -1064,12 +1156,14 @@ def main() -> int:
     save_parser.add_argument("--card", required=True, help="the card's slug, e.g. email-jordan-blake")
     save_parser.add_argument("--source", required=True, help="id prefix, e.g. gmail, slack, jira, git")
     save_parser.add_argument("--input", required=True,
-                             help='JSON file, or - for stdin: {"messages": [{"id", "thread", "date", "from", "text"}, ...]}')
+                             help='JSON file, or - for stdin: {"messages": [{"id", "thread", "date", "from", "text"}, ...]}; '
+                                  'optional per message: "match": "name", "auto": true, "rev", "pasted": [excerpts]')
     save_parser.add_argument("--me", action="append", default=[], help="a user identifier not in identity.md")
     check_parser = commands.add_parser("check", parents=[after], help="check a draft against vocabulary.md")
     check_parser.add_argument("--draft", required=True, help="file holding the draft text")
     check_parser.add_argument("--exempt", required=True,
-                              help="file holding only what the user dictated for the message, in their words")
+                              help="file holding only what the user dictated for the message, in their words "
+                                   "(empty when they dictated nothing)")
     commands.add_parser("build", parents=[after], help="rebuild vocabulary.md from corpus/*.jsonl")
     args = parser.parse_args()
     cache = os.path.abspath(args.cache)
@@ -1077,6 +1171,9 @@ def main() -> int:
         os.makedirs(cache, mode=0o700, exist_ok=True)
         return save(cache, args.card, args.source, args.input, args.me)
     if not os.path.isdir(cache):
+        if args.command == "check":
+            print(f"No style cache at {cache}, so there is no vocabulary to check against. Check skipped.")
+            return 0
         sys.exit(f"No style cache at {cache}.")
     ensure_wordfreq(cache)
     reference = Reference()
