@@ -128,7 +128,8 @@
         "thread-10 (September statement) is not treated as noise: it ends either still in INBOX or archived with a label applied (e.g. Finance, Label_4). It is not archived with no label, the way the promotional mailers may be.",
         "Every thread archived out of the inbox is named in the response by its subject or link, including when it was archived as part of a batch. A batch entry that identifies its threads only by count or by summary descriptions ('9 Harbor Bank promos', 'survey, webinar invite, rewards catalog') fails.",
         "Every Harbor Bank thread that still has INBOX in its final labelIds appears in the response with its own entry and disposition. Listing several threads under one shared disposition ('Applies to: ...', 'same treatment') fails, even when their dispositions are identical.",
-        "No draft is created for any Harbor Bank thread."
+        "No draft is created for any Harbor Bank thread.",
+        "No thread is linked to anything but a URL the Gmail stub returned. The stub returns no thread URLs, so the response contains no markdown link to a thread at all: a link such as '[Picture day moved to October 9](thread-14)', whose target is a thread id or any other constructed value, fails. Threads are named by subject in plain text."
       ]
     },
     {
@@ -140,7 +141,8 @@
         "Every Harbor Bank thread is accounted for in the response by its subject or link: either in its own entry with its disposition, or named in a batch entry whose action moved it out of the inbox (e.g. an archive batch of the promotional mailers). Any Harbor Bank thread still in the inbox at the end has its own entry. A combined entry such as '12 threads labeled Finance', or a batch entry that identifies its threads only by count or summary descriptions, fails.",
         "thread-5 (unrecognized charge) and thread-13 (payment due) are each handled as actions: each ends with the 'Action' label (Label_1) or still has INBOX in its final labelIds, and the response describes each as needing action.",
         "thread-10 (September statement) is handled as reference, not as an action and not as noise, in both the final state and the response.",
-        "The nine promotional mailers (thread-1, thread-3, thread-4, thread-6, thread-8, thread-9, thread-12, thread-15, thread-16) are not given the Action label, and the response does not describe them as needing action."
+        "The nine promotional mailers (thread-1, thread-3, thread-4, thread-6, thread-8, thread-9, thread-12, thread-15, thread-16) are not given the Action label, and the response does not describe them as needing action.",
+        "No thread is linked to anything but a URL the Gmail stub returned. The stub returns no thread URLs, so the response contains no markdown link to a thread at all: a link such as '[Picture day moved to October 9](thread-14)', whose target is a thread id or any other constructed value, fails. Threads are named by subject in plain text."
       ]
     }
   ]
