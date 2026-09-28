@@ -1164,6 +1164,8 @@ def main() -> int:
     check_parser.add_argument("--exempt", required=True,
                               help="file holding only what the user dictated for the message, in their words "
                                    "(empty when they dictated nothing)")
+    # check reads every card's corpus; accept a --card copied from a save command and ignore it.
+    check_parser.add_argument("--card", help=argparse.SUPPRESS)
     commands.add_parser("build", parents=[after], help="rebuild vocabulary.md from corpus/*.jsonl")
     args = parser.parse_args()
     cache = os.path.abspath(args.cache)
