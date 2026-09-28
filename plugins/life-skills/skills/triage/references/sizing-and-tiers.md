@@ -7,13 +7,48 @@ this when an item's context or size is not obvious from the first glance.
 
 ## Agreeing a pace on a large set (Step 0.5)
 
-At 15+ items, propose batching before starting, and say why it is not a
+At 15+ items, propose a pace before starting, and say why it is not a
 shortcut:
 
 > "This set has 42 items. I'll still review each one individually and confirm
-> every change before applying it, that's the point, but I'll summarize and
-> confirm proposals in batches of 10 instead of one giant summary at the end.
-> Sound right?"
+> every change before applying it, that's the point, but I'll work similar
+> items together (by sender, list, or label) and summarize and confirm
+> proposals every 10 items instead of one giant summary at the end. Sound
+> right?"
+
+## Batch actions (Step 0.5)
+
+A batch action is one change (a label, a move, an archive) applied to several
+items in a group at once. It is proposed and confirmed like any other change.
+
+**Membership.** Each item's own listing details (subject and snippet, or title
+and description), not just the shared sender or label, must justify its place
+in the batch. A thread that shares a sender with promotional mail but reports
+an unrecognized charge does not belong in an archive batch with the promotions.
+
+**After it is applied**, check each item in the batch against the scope again:
+
+- An item the action moved out of scope (archived out of the inbox, moved off
+  the list being triaged, closed) is finished.
+- An item still in scope is presented to the user individually for triage,
+  with its own entry and its own proposed changes in the Step 8 summary, as if
+  the batch had not happened. A batch action never counts as its triage.
+
+**Presenting it in Step 8.** The batch gets one entry that names every item in
+it by link, or by its exact title or subject when no link is available, so the
+user can pull one out before confirming. A summary description ("9 promotional
+emails", "survey, webinar invite, ...") does not name the items. The entry also
+says whether the action takes those items out of scope. Items it leaves in
+scope get their own per-item entries as well; an entry such as "12 threads
+labeled Finance" never stands in for them.
+
+**Batches in sequence.** Items a first batch leaves in scope can be finished by
+a later batch that moves them out of scope. After a Finance label on every
+Harbor Bank thread, the nine promotional mailers can go into one archive batch,
+presented as one entry naming all nine. What cannot happen is an item staying
+in scope with no entry of its own: a list of items under one shared decision
+("Applies to: ...", "same treatment") that leaves them in scope is group
+triage, not individual review.
 
 ## 2a. Work context
 

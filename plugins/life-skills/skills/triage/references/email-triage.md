@@ -33,7 +33,11 @@ For each thread, decide in this order:
 
 1. **Delete?** If the thread has no future value as either action or reference,
    propose deleting it. When the corpus is large, offer to group by sender and
-   bulk-delete obvious noise.
+   bulk-delete obvious noise as a batch action (SKILL.md Step 0.5). A thread
+   joins the batch only when its own subject and snippet show it is noise,
+   not because it shares a sender with noise. Threads a batch action leaves
+   in the inbox, such as after a batch label, still walk this tree
+   individually.
 2. **2-minute rule?** If a reply or action can be completed in under two
    minutes and is ever going to be done, draft it now via `create_draft`. Show
    the draft, confirm the wording, then leave it in the user's Gmail drafts
