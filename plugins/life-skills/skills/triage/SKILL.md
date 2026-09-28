@@ -403,7 +403,20 @@ reviewed?" rather than being dropped.
 A batch action (Step 0.5) gets one entry naming every item in it by link or
 exact title. Every item it leaves in scope also gets its own per-item entry,
 never folded into the batch entry, even when several of those items get
-identical proposals.
+identical proposals. With no URLs from the platform, a batch entry reads:
+
+```
+Batch: archive (moves these out of the inbox)
+  - "Earn 3% cash back on groceries this autumn"
+  - "Your exclusive mortgage rate offer"
+  - "Refer a friend, get $50"
+```
+
+A batch entry is always this bulleted list, one item per line, each line the
+item's exact title or link. Never write a batch as an inline or
+comma-separated list, a table cell, or a count or paraphrase ("9 promotional
+emails", "survey, webinar invite"). This applies everywhere a batch appears,
+including the closing report after changes are applied.
 
 Every item named in the summary is a hyperlink to itself: use the item's own
 web URL as returned by the platform (a Trello card's `url`/`shortUrl`, a Jira
@@ -413,7 +426,9 @@ rather than a bare title or a bare `PROJ-123`. The same applies to any card,
 issue, or thread mentioned elsewhere in the summary, including newly created
 Trello cards (Step 4c) and linked items. Only ever use a URL the platform
 actually returned — if an item's URL is unavailable, say so and name the item
-in plain text rather than constructing one.
+in plain text rather than constructing one. An item ID is not a URL: never
+write `[Picture day moved](thread-14)` or `[taxes](card-1)`; write
+`"Picture day moved" (thread-14)` instead.
 
 ```
 Proposed changes for [ITEM TITLE] ([KEY or URL]):
