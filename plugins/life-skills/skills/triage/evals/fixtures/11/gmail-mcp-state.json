@@ -1,0 +1,443 @@
+{
+  "threads": {
+    "thread-1": {
+      "id": "thread-1",
+      "subject": "Earn 3% cash back on groceries this autumn",
+      "from": "alerts@harborbank.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-14T08:02:00Z",
+      "snippet": "Activate the autumn cash back offer on your Harbor Rewards card before October 31.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-1",
+          "from": "alerts@harborbank.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-14T08:02:00Z",
+          "snippet": "Activate the autumn cash back offer on your Harbor Rewards card before October 31.",
+          "body": "Activate the autumn cash back offer on your Harbor Rewards card and earn 3% on groceries through October 31. Terms apply."
+        }
+      ]
+    },
+    "thread-2": {
+      "id": "thread-2",
+      "subject": "Budget draft for the offsite",
+      "from": "sue@example.com",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-14T11:20:00Z",
+      "snippet": "Could you look over the offsite budget draft and send me any changes by Thursday?",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-2",
+          "from": "sue@example.com",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-14T11:20:00Z",
+          "snippet": "Could you look over the offsite budget draft and send me any changes by Thursday?",
+          "body": "Hi Dan,\n\nCould you look over the offsite budget draft (attached) and send me any changes by Thursday? Mostly the catering and travel lines.\n\nThanks,\nSue"
+        }
+      ]
+    },
+    "thread-3": {
+      "id": "thread-3",
+      "subject": "Your exclusive mortgage rate offer",
+      "from": "alerts@harborbank.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-15T08:05:00Z",
+      "snippet": "As a valued customer you may qualify for a reduced refinance rate. See if you're eligible.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-3",
+          "from": "alerts@harborbank.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-15T08:05:00Z",
+          "snippet": "As a valued customer you may qualify for a reduced refinance rate. See if you're eligible.",
+          "body": "As a valued customer you may qualify for a reduced refinance rate. See if you're eligible in two minutes on our website."
+        }
+      ]
+    },
+    "thread-4": {
+      "id": "thread-4",
+      "subject": "Refer a friend, get $50",
+      "from": "alerts@harborbank.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-16T08:03:00Z",
+      "snippet": "Share your referral link and you'll both get $50 when your friend opens a checking account.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-4",
+          "from": "alerts@harborbank.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-16T08:03:00Z",
+          "snippet": "Share your referral link and you'll both get $50 when your friend opens a checking account.",
+          "body": "Share your referral link and you'll both get $50 when your friend opens a Harbor checking account."
+        }
+      ]
+    },
+    "thread-5": {
+      "id": "thread-5",
+      "subject": "Action needed: unrecognized charge on card ending 4417",
+      "from": "alerts@harborbank.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-17T14:47:00Z",
+      "snippet": "We noticed a charge of $842.19 at NORTHLINE ELECTRONICS. Please confirm whether you made this purchase.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-5",
+          "from": "alerts@harborbank.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-17T14:47:00Z",
+          "snippet": "We noticed a charge of $842.19 at NORTHLINE ELECTRONICS. Please confirm whether you made this purchase.",
+          "body": "We noticed a charge of $842.19 at NORTHLINE ELECTRONICS on September 17 on your card ending 4417. Please sign in or call the number on the back of your card to confirm whether you made this purchase. If we don't hear from you within 7 days, the card may be restricted."
+        }
+      ]
+    },
+    "thread-6": {
+      "id": "thread-6",
+      "subject": "New in the Harbor Bank app",
+      "from": "alerts@harborbank.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-18T08:01:00Z",
+      "snippet": "Freeze your card, split bills, and set savings goals right from the app.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-6",
+          "from": "alerts@harborbank.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-18T08:01:00Z",
+          "snippet": "Freeze your card, split bills, and set savings goals right from the app.",
+          "body": "Freeze your card, split bills, and set savings goals right from the Harbor Bank app. Update today."
+        }
+      ]
+    },
+    "thread-7": {
+      "id": "thread-7",
+      "subject": "Long read: what we learned running Postgres at scale",
+      "from": "digest@engblogweekly.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-18T07:05:00Z",
+      "snippet": "A 30-minute read on connection pooling, vacuum tuning, and partitioning.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-7",
+          "from": "digest@engblogweekly.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-18T07:05:00Z",
+          "snippet": "A 30-minute read on connection pooling, vacuum tuning, and partitioning.",
+          "body": "This week's long read: lessons from five years of running Postgres at scale. Approximately 30 minutes."
+        }
+      ]
+    },
+    "thread-8": {
+      "id": "thread-8",
+      "subject": "Last chance: travel card sign-up bonus",
+      "from": "alerts@harborbank.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-19T08:04:00Z",
+      "snippet": "Earn 60,000 bonus points when you open a Harbor Voyager card by September 30.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-8",
+          "from": "alerts@harborbank.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-19T08:04:00Z",
+          "snippet": "Earn 60,000 bonus points when you open a Harbor Voyager card by September 30.",
+          "body": "Earn 60,000 bonus points when you open a Harbor Voyager card by September 30."
+        }
+      ]
+    },
+    "thread-9": {
+      "id": "thread-9",
+      "subject": "Save more with a high-yield savings account",
+      "from": "alerts@harborbank.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-20T08:06:00Z",
+      "snippet": "Our high-yield savings rate is now 4.1% APY. Open an account in minutes.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-9",
+          "from": "alerts@harborbank.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-20T08:06:00Z",
+          "snippet": "Our high-yield savings rate is now 4.1% APY. Open an account in minutes.",
+          "body": "Our high-yield savings rate is now 4.1% APY. Open an account in minutes."
+        }
+      ]
+    },
+    "thread-10": {
+      "id": "thread-10",
+      "subject": "Your September statement is ready",
+      "from": "alerts@harborbank.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-21T06:30:00Z",
+      "snippet": "Your statement for the period ending September 20 is now available to view online.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-10",
+          "from": "alerts@harborbank.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-21T06:30:00Z",
+          "snippet": "Your statement for the period ending September 20 is now available to view online.",
+          "body": "Your statement for the period ending September 20 is now available to view online. Statement balance: $1,236.40."
+        }
+      ]
+    },
+    "thread-11": {
+      "id": "thread-11",
+      "subject": "Quote for water heater replacement",
+      "from": "eval-user@example.com",
+      "to": [
+        "office@brightplumbing.example"
+      ],
+      "date": "2026-09-21T16:12:00Z",
+      "snippet": "Following up on the quote for replacing the 40-gallon water heater. When can someone come out?",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-11",
+          "from": "eval-user@example.com",
+          "to": [
+            "office@brightplumbing.example"
+          ],
+          "date": "2026-09-21T16:12:00Z",
+          "snippet": "Following up on the quote for replacing the 40-gallon water heater. When can someone come out?",
+          "body": "Hello,\n\nFollowing up on my request for a quote to replace our 40-gallon water heater. When could someone come out to take a look?\n\nDan"
+        }
+      ]
+    },
+    "thread-12": {
+      "id": "thread-12",
+      "subject": "Harbor Rewards catalog update",
+      "from": "alerts@harborbank.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-22T08:02:00Z",
+      "snippet": "New gift cards and merchandise have been added to the Harbor Rewards catalog.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-12",
+          "from": "alerts@harborbank.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-22T08:02:00Z",
+          "snippet": "New gift cards and merchandise have been added to the Harbor Rewards catalog.",
+          "body": "New gift cards and merchandise have been added to the Harbor Rewards catalog. Redeem your points today."
+        }
+      ]
+    },
+    "thread-13": {
+      "id": "thread-13",
+      "subject": "Reminder: credit card payment due Oct 5",
+      "from": "alerts@harborbank.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-23T09:15:00Z",
+      "snippet": "Your minimum payment of $45.00 on the card ending 4417 is due October 5.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-13",
+          "from": "alerts@harborbank.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-23T09:15:00Z",
+          "snippet": "Your minimum payment of $45.00 on the card ending 4417 is due October 5.",
+          "body": "Your minimum payment of $45.00 on the card ending 4417 is due October 5. Statement balance: $1,236.40. Autopay is not set up on this account."
+        }
+      ]
+    },
+    "thread-14": {
+      "id": "thread-14",
+      "subject": "Picture day moved to October 9",
+      "from": "office@maplewood-elementary.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-24T12:00:00Z",
+      "snippet": "Picture day has moved from October 2 to October 9. Order forms are due the day before.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-14",
+          "from": "office@maplewood-elementary.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-24T12:00:00Z",
+          "snippet": "Picture day has moved from October 2 to October 9. Order forms are due the day before.",
+          "body": "Picture day has moved from October 2 to October 9. Order forms are due the day before."
+        }
+      ]
+    },
+    "thread-15": {
+      "id": "thread-15",
+      "subject": "Webinar: planning for retirement",
+      "from": "alerts@harborbank.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-25T08:03:00Z",
+      "snippet": "Join our free webinar on retirement planning basics on October 8.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-15",
+          "from": "alerts@harborbank.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-25T08:03:00Z",
+          "snippet": "Join our free webinar on retirement planning basics on October 8.",
+          "body": "Join our free webinar on retirement planning basics on October 8. Register on our website."
+        }
+      ]
+    },
+    "thread-16": {
+      "id": "thread-16",
+      "subject": "Tell us how we're doing",
+      "from": "alerts@harborbank.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-26T08:05:00Z",
+      "snippet": "Take our two-minute customer survey for a chance to win a $100 gift card.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-16",
+          "from": "alerts@harborbank.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-26T08:05:00Z",
+          "snippet": "Take our two-minute customer survey for a chance to win a $100 gift card.",
+          "body": "Take our two-minute customer survey for a chance to win a $100 gift card."
+        }
+      ]
+    }
+  },
+  "labels": {
+    "Label_1": {
+      "id": "Label_1",
+      "name": "Action",
+      "type": "user"
+    },
+    "Label_2": {
+      "id": "Label_2",
+      "name": "Waiting For",
+      "type": "user"
+    },
+    "Label_3": {
+      "id": "Label_3",
+      "name": "Read-Review",
+      "type": "user"
+    },
+    "Label_4": {
+      "id": "Label_4",
+      "name": "Finance",
+      "type": "user"
+    }
+  },
+  "drafts": {},
+  "me": "eval-user@example.com"
+}

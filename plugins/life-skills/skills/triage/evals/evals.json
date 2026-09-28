@@ -1,6 +1,6 @@
 {
   "skill_name": "triage",
-  "notes": "MCP-stub-backed batch (see evals/lib/mcp-stub). The executor for these evals is a real, separate `claude -p --strict-mcp-config` subprocess, not an Agent-tool subagent -- see evals/README.md's 'MCP stub servers' section for why and how to run one. Since -p is single-shot with no follow-up turn, prompts that expect the skill to act front-load explicit blanket authorization in the initial message, standing in for the real multi-turn confirmation Step 8 normally requires. Evals 1-3 cover the Trello-scoped path (Steps 0-4, 8); evals 4-6 cover the email workflow (Step 4b) and the capture-to-Trello flow (Step 4c, a cross-service trial wiring both stubs into one mcp-config); evals 7-9 cover the Jira-scoped path via the Atlassian stub (schema-verified against the live connector, including the cloudId-discovery flow), with eval 9 a second cross-service Step 4c trial capturing from Jira into Trello.",
+  "notes": "MCP-stub-backed batch (see evals/lib/mcp-stub). The executor for these evals is a real, separate `claude -p --strict-mcp-config` subprocess, not an Agent-tool subagent -- see evals/README.md's 'MCP stub servers' section for why and how to run one. Since -p is single-shot with no follow-up turn, prompts that expect the skill to act front-load explicit blanket authorization in the initial message, standing in for the real multi-turn confirmation Step 8 normally requires. Evals 1-3 cover the Trello-scoped path (Steps 0-4, 8); evals 4-6 cover the email workflow (Step 4b) and the capture-to-Trello flow (Step 4c, a cross-service trial wiring both stubs into one mcp-config); evals 7-9 cover the Jira-scoped path via the Atlassian stub (schema-verified against the live connector, including the cloudId-discovery flow), with eval 9 a second cross-service Step 4c trial capturing from Jira into Trello. Evals 11-12 share a 16-thread inbox fixture (12 threads from one bank sender with mixed content) and cover Step 0.5 batch actions: eval 11 a batch that moves threads out of scope, eval 12 a directed batch label that leaves every thread in scope, so each must still be presented individually.",
   "evals": [
     {
       "id": 1,
@@ -117,6 +117,30 @@
         "The summary refers to card-2 as a hyperlink whose target is exactly https://trello.com/c/card-2/renew-passport, including in the 'no changes needed' note -- cards that needed no change are linked too, not demoted to plain text.",
         "Every Trello URL in the response is one the MCP server actually returned; no card link is constructed from a guessed id or slug.",
         "card-2 is not modified -- no update_card call targets card-2, and its final state (name, desc, labels, due) is unchanged from the seed."
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "Please triage my email inbox. Go ahead and apply anything you're confident about (labels, archiving, saving reply drafts) without waiting for me to confirm each thread -- just summarize what you did afterward.",
+      "expected_output": "Sixteen inbox threads, twelve from alerts@harborbank.example. Nine of those are promotional mailers (thread-1, thread-3, thread-4, thread-6, thread-8, thread-9, thread-12, thread-15, thread-16) and may be archived together as one batch action; once archived they are out of scope and need no individual review. The other three Harbor Bank threads share the sender but not the content: thread-5 (unrecognized charge, card may be restricted) and thread-13 (payment due October 5) need action, and thread-10 (September statement) is reference. Step 0.5 requires each thread's own subject and snippet to justify its place in a batch, so none of these three belongs in the promotional batch. Every thread a batch removes from the inbox is named in the response.",
+      "expectations": [
+        "thread-5 (unrecognized charge) and thread-13 (payment due) are each handled as actions: each ends with the 'Action' label (Label_1) or still has INBOX in its final labelIds. Neither is archived without the Action label.",
+        "thread-10 (September statement) is not treated as noise: it ends either still in INBOX or archived with a label applied (e.g. Finance, Label_4). It is not archived with no label, the way the promotional mailers may be.",
+        "Every thread archived out of the inbox is named in the response by its subject or link, including when it was archived as part of a batch. A batch entry that identifies its threads only by count or by summary descriptions ('9 Harbor Bank promos', 'survey, webinar invite, rewards catalog') fails.",
+        "Every Harbor Bank thread that still has INBOX in its final labelIds appears in the response with its own entry and disposition. Listing several threads under one shared disposition ('Applies to: ...', 'same treatment') fails, even when their dispositions are identical.",
+        "No draft is created for any Harbor Bank thread."
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Please label everything from Harbor Bank in my inbox as Finance first, then triage my inbox. Go ahead and apply anything you're confident about (labels, archiving, saving reply drafts) without waiting for me to confirm each thread -- just summarize what you did afterward.",
+      "expected_output": "The same sixteen-thread inbox as eval 11. The user directs a batch action up front: apply the existing 'Finance' label (Label_4) to all twelve Harbor Bank threads. Labeling leaves every thread in the inbox, so per Step 0.5 the batch action is not their triage: each Harbor Bank thread is then triaged on its own content, and the dispositions differ where the content differs. thread-5 (unrecognized charge) and thread-13 (payment due) are actions, thread-10 (statement) is reference, and the nine promotional mailers are noise. The promotional mailers may then be finished by a second batch that archives them out of the inbox, presented as one entry naming each thread; any thread left in the inbox gets its own entry.",
+      "expectations": [
+        "All twelve Harbor Bank threads (from alerts@harborbank.example) have the 'Finance' label (Label_4) in their final labelIds, and no other thread does.",
+        "Every Harbor Bank thread is accounted for in the response by its subject or link: either in its own entry with its disposition, or named in a batch entry whose action moved it out of the inbox (e.g. an archive batch of the promotional mailers). Any Harbor Bank thread still in the inbox at the end has its own entry. A combined entry such as '12 threads labeled Finance', or a batch entry that identifies its threads only by count or summary descriptions, fails.",
+        "thread-5 (unrecognized charge) and thread-13 (payment due) are each handled as actions: each ends with the 'Action' label (Label_1) or still has INBOX in its final labelIds, and the response describes each as needing action.",
+        "thread-10 (September statement) is handled as reference, not as an action and not as noise, in both the final state and the response.",
+        "The nine promotional mailers (thread-1, thread-3, thread-4, thread-6, thread-8, thread-9, thread-12, thread-15, thread-16) are not given the Action label, and the response does not describe them as needing action."
       ]
     }
   ]
