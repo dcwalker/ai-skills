@@ -20,7 +20,10 @@
 #
 # Usage: bash evals/lib/run-mcp-trials.sh <skill-evals-dir> [id ...]
 #
-# Set TRIALS_DIR to write the trials somewhere else (see below).
+# Set TRIALS_DIR to write the trials somewhere else (see below). Set
+# SIMULATED_USER=1 to have a model play the user in evals that carry no
+# follow_ups (see "simulated user" below); SIMULATED_USER_MAX_TURNS caps the
+# replies it sends (default 40).
 #
 #   bash evals/lib/run-mcp-trials.sh plugins/life-skills/skills/writing/evals
 #   bash evals/lib/run-mcp-trials.sh plugins/life-skills/skills/writing/evals 3 7
@@ -242,7 +245,8 @@ with open(sys.argv[2], "w") as fh:
         --allowedTools "Bash Read Write Edit Glob Grep WebFetch TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian mcp__slack" \
         --strict-mcp-config --verbose ${resume_flag[@]+"${resume_flag[@]}"} \
         --settings "$TRIAL_SETTINGS" \
-        --mcp-config "$MCP_CONFIG_PATH" --output-format stream-json -- "$turn_prompt"
+        --mcp-config "$MCP_CONFIG_PATH" --output-format stream-json -- "$turn_prompt" \
+        < /dev/null
     ) >> "$RUN_DIR/events.jsonl" 2>> "$RUN_DIR/stderr.txt" || \
       echo "  WARNING: claude exited non-zero for eval $ID; continuing"
   }
@@ -260,8 +264,7 @@ for e in data['evals']:
         print(len(e.get('follow_ups', [])))
         break
 " "$EVALS_DIR/evals.json" "$ID")
-  if [[ "$FOLLOW_UPS" -gt 0 ]]; then
-    SESSION_ID=$(python3 -c "
+  SESSION_ID=$(python3 -c "
 import json, sys
 for line in open(sys.argv[1]):
     try:
@@ -272,6 +275,7 @@ for line in open(sys.argv[1]):
         print(event['session_id'])
         break
 " "$RUN_DIR/events.jsonl")
+  if [[ "$FOLLOW_UPS" -gt 0 ]]; then
     for (( TURN=0; TURN<FOLLOW_UPS; TURN++ )); do
       if [[ -z "$SESSION_ID" ]]; then
         echo "  WARNING: no session id to resume; skipping follow-up turns for eval $ID"
@@ -288,6 +292,61 @@ for e in data['evals']:
       echo "  follow-up $((TURN + 1))/$FOLLOW_UPS"
       run_turn "$NEXT" "$SESSION_ID"
     done
+  elif [[ "${SIMULATED_USER:-}" == "1" ]]; then
+    # Simulated user: an eval whose skill interviews the user cannot be
+    # scripted in advance, because canned replies arrive in a fixed order
+    # whatever the skill asks. Instead a second `claude -p` plays the user,
+    # one reply per turn, from the eval's prompt and the conversation so far.
+    # It never sees expected_output or expectations, which are the answer
+    # key, and it runs with no tools, no MCP servers, and none of the
+    # running user's instructions, in its own empty directory. It replies
+    # DONE once the skill has delivered its result and asks nothing more.
+    # conversation.txt records both sides for the grader; transcript.txt
+    # holds only the skill's turns.
+    SIM_DIR="$RUN_DIR/simulated-user"
+    mkdir -p "$SIM_DIR"
+    SIM_SYSTEM="You are role-playing the user in a test conversation with an AI assistant. The conversation so far follows, starting with your own opening message. Write only your next message to the assistant, in the first person, as that user. Stay consistent with your opening message: never contradict it, and follow any instruction it gives about how you will answer (for example, declining an offer you said you would decline). Answer what the assistant asks; when it asks something your opening message does not cover, give a short, plausible answer that fits it. Do not invent notes, files, or pasted material your opening message does not say you have. Approve the assistant's proposals and drafts unless your opening message says otherwise. Keep replies brief. If the assistant has delivered its final result and asks you nothing more, reply with exactly: DONE"
+    printf 'USER:\n%s\n\n' "$PROMPT" > "$RUN_DIR/conversation.txt"
+    SIM_TURNS=0
+    while (( SIM_TURNS < ${SIMULATED_USER_MAX_TURNS:-40} )); do
+      if [[ -z "$SESSION_ID" ]]; then
+        echo "  WARNING: no session id to resume; stopping the simulated user for eval $ID"
+        break
+      fi
+      python3 -c "
+import json, sys
+last = ''
+for line in open(sys.argv[1]):
+    try:
+        event = json.loads(line)
+    except json.JSONDecodeError:
+        continue
+    if event.get('type') == 'result':
+        last = event.get('result', '')
+print('ASSISTANT:')
+print(last)
+print()
+" "$RUN_DIR/events.jsonl" >> "$RUN_DIR/conversation.txt"
+      REPLY=$(cd "$SIM_DIR" && HOME="$TRIAL_HOME" TMPDIR="$RUN_DIR/tmp" \
+        CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 \
+        claude -p --tools "" --strict-mcp-config --no-session-persistence \
+        --settings '{"pluginConfigs":{"agents-md@builtin":{"options":{"instructionFiles":"managed-only"}}}}' \
+        --system-prompt "$SIM_SYSTEM" --output-format text \
+        -- "$(cat "$RUN_DIR/conversation.txt")" < /dev/null 2>> "$RUN_DIR/stderr.txt") || REPLY=""
+      if [[ -z "$REPLY" ]]; then
+        echo "  WARNING: the simulated user returned nothing; stopping eval $ID here"
+        break
+      fi
+      [[ "$(echo "$REPLY" | tr -d '[:space:]')" == "DONE" ]] && break
+      printf 'USER:\n%s\n\n' "$REPLY" >> "$RUN_DIR/conversation.txt"
+      SIM_TURNS=$((SIM_TURNS + 1))
+      echo "  simulated user reply $SIM_TURNS"
+      run_turn "$REPLY" "$SESSION_ID"
+    done
+    echo "$SIM_TURNS" > "$RUN_DIR/simulated-user-turns"
+    if (( SIM_TURNS >= ${SIMULATED_USER_MAX_TURNS:-40} )); then
+      echo "  WARNING: eval $ID reached the simulated-user turn cap before finishing"
+    fi
   fi
 
   python3 - "$RUN_DIR" "$SKILL_NAME" <<'PYEOF'
