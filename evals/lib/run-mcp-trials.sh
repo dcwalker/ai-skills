@@ -49,6 +49,20 @@ SKILL_DIR="$(dirname "$EVALS_DIR")"
 SKILL_NAME="$(basename "$SKILL_DIR")"
 shift
 
+# The trial's staged copy of the skill (below) is not the only one it can
+# see: the symlinked plugins directory carries the installed release too,
+# as `<plugin>:<skill>`. A trial that picks the installed copy runs stale
+# instructions, and nothing in its transcript says so. Turning the skill's
+# own plugin off for the trial leaves the staged copy as the only one. The
+# other skills in that plugin go with it; no MCP-backed eval relies on a
+# sibling skill today. Hiding just the one skill is not possible: the
+# skillOverrides setting does not apply to plugin skills.
+PLUGIN_NAME="$(basename "$(dirname "$(dirname "$SKILL_DIR")")")"
+MARKETPLACE_FILE="$SCRIPT_DIR/../../.claude-plugin/marketplace.json"
+MARKETPLACE_NAME="$(python3 -c "import json, sys; print(json.load(open(sys.argv[1]))['name'])" \
+  "$MARKETPLACE_FILE")"
+TRIAL_SETTINGS="{\"enabledPlugins\":{\"$PLUGIN_NAME@$MARKETPLACE_NAME\":false}}"
+
 # Default output lives beside the evals, gitignored. Override it to put the
 # trial workspaces outside the repo: a workspace under evals/ leaves
 # evals.json and fixtures/ a few directories up from the trial's own cwd,
@@ -227,6 +241,7 @@ with open(sys.argv[2], "w") as fh:
         claude -p --permission-mode acceptEdits \
         --allowedTools "Bash Read Write Edit Glob Grep WebFetch TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian mcp__slack" \
         --strict-mcp-config --verbose ${resume_flag[@]+"${resume_flag[@]}"} \
+        --settings "$TRIAL_SETTINGS" \
         --mcp-config "$MCP_CONFIG_PATH" --output-format stream-json -- "$turn_prompt"
     ) >> "$RUN_DIR/events.jsonl" 2>> "$RUN_DIR/stderr.txt" || \
       echo "  WARNING: claude exited non-zero for eval $ID; continuing"
@@ -275,9 +290,9 @@ for e in data['evals']:
     done
   fi
 
-  python3 - "$RUN_DIR" <<'PYEOF'
+  python3 - "$RUN_DIR" "$SKILL_NAME" <<'PYEOF'
 import json, sys
-run_dir = sys.argv[1]
+run_dir, skill_name = sys.argv[1], sys.argv[2]
 
 # events.jsonl is one JSON object per line, across every turn of the trial:
 # each turn ends with a "result" event carrying that turn's usage and
@@ -333,6 +348,9 @@ def total(key, source):
 
 
 usage = lambda r: r.get("usage", {})
+installed_calls = [c["input"].get("skill") for c in tool_calls
+                   if c["name"] == "Skill"
+                   and str((c.get("input") or {}).get("skill", "")).endswith(":" + skill_name)]
 metrics = {
     "turns_run": len(results),
     "duration_seconds": round(total("duration_ms", lambda r: r) / 1000, 3),
@@ -341,6 +359,9 @@ metrics = {
     "total_cost_usd": total("total_cost_usd", lambda r: r),
     "tool_calls": len(tool_calls),
     "skill_invoked": any(c["name"] == "Skill" for c in tool_calls),
+    # The staged copy is invoked by its bare name; a plugin-qualified name
+    # (`life-skills:organize-meeting-notes`) means the installed release ran.
+    "installed_skill_invoked": installed_calls,
     "tokens": {
         "input": total("input_tokens", usage),
         "output": total("output_tokens", usage),
@@ -354,6 +375,9 @@ with open(f"{run_dir}/metrics.json", "w") as f:
 print(f"  duration: {metrics['duration_seconds']}s, "
       f"tokens in/out: {metrics['tokens']['input']}/{metrics['tokens']['output']}, "
       f"cache read: {metrics['tokens']['cache_read_input']}")
+if installed_calls:
+    print(f"  WARNING: the trial invoked {installed_calls[0]}, the installed copy, "
+          "not the staged one; this trial measured stale instructions")
 PYEOF
 
   # The run refused to start unless $REAL_HOME/writing-style was absent, so

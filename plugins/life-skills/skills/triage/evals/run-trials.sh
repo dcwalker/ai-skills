@@ -126,11 +126,16 @@ print('Bash Read Write Edit Glob Grep WebFetch TodoWrite Skill '
   # keeps. Both are documented at https://code.claude.com/docs/en/memory and
   # need Claude Code v2.1.277 or later. Triage fixtures carry no instruction
   # files of their own, so nothing a fixture means to say is lost.
+  #
+  # The enabledPlugins entry turns off the installed life-skills plugin, whose
+  # `life-skills:triage` would otherwise sit beside the staged copy, and a
+  # trial that picks it runs the installed release instead of the working
+  # tree. See the matching comment in evals/lib/run-mcp-trials.sh.
   (
     cd "$WORKSPACE_DIR"
     CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 \
       claude -p "${PERM_ARGS[@]}" --strict-mcp-config \
-      --settings '{"pluginConfigs":{"agents-md@builtin":{"options":{"instructionFiles":"managed-only"}}}}' \
+      --settings '{"pluginConfigs":{"agents-md@builtin":{"options":{"instructionFiles":"managed-only"}}},"enabledPlugins":{"life-skills@dcwalker-skills":false}}' \
       --mcp-config "$MCP_CONFIG_PATH" --output-format json -- "$PROMPT" \
       < /dev/null
   ) > "$RUN_DIR/result.json" 2> "$RUN_DIR/stderr.txt" || \
