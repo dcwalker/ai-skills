@@ -1,55 +1,56 @@
 # Skill Benchmark: organize-meeting-notes
 
-**Model**: claude-sonnet-5 (executor) / claude-opus-5 (analyzer)
-**Date**: 2026-09-11T01:20:28Z
-**Evals**: 1-20 (1 recorded run each, 3 for eval 9, with_skill only)
+**Model**: claude-sonnet-5 (executor) / claude-opus-5-5 (analyzer)
+**Date**: 2026-10-01T23:48:24Z
+**Evals**: 1-24 (1 recorded run each, with_skill only)
 
 ## Summary
 
 | Metric | With Skill |
 |--------|------------|
-| Pass Rate | 98% ± 7% |
-| Time | 200.5s ± 90.7s (n=22) |
-| Tokens | 91963 ± 12054 (n=22) |
+| Pass Rate | 94% ± 9% |
+| Time | 114.5s ± 58.5s (n=24) |
+| Tokens | 41331 ± 12237 (n=24) |
 
 ## Per-eval results
 
 | Eval | Pass Rate | Time (s) | Tokens |
 |------|-----------|----------|--------|
-| 1 | 5/5 | 199.0 | 88555 |
-| 2 | 4/4 | 118.4 | 80313 |
-| 3 | 4/4 | 121.3 | 84723 |
-| 4 | 4/4 | 144.3 | 82397 |
-| 5 | 4/4 | 142.1 | 80239 |
-| 6 | 5/5 | 153.7 | 88636 |
-| 7 | 7/7 | 257.4 | 101400 |
-| 8 | 5/5 | 173.8 | 86170 |
-| 9 (run 7) | 7/7 | 383.7 | 109305 |
-| 9 (run 8) | 5/7 | 353.9 | 111493 |
-| 9 (run 9) | 7/7 | 331.2 | 110451 |
-| 10 | 5/5 | 147.8 | 85957 |
-| 11 | 6/6 | 219.4 | 88823 |
-| 12 | 5/5 | 152.3 | 87444 |
-| 13 | 6/6 | 170.2 | 91114 |
-| 14 | 7/7 | 182.9 | 85989 |
-| 15 | 9/11 | 286.0 | 104184 |
-| 16 | 4/4 | 36.7 | 70750 |
-| 17 | 7/7 | 190.9 | 95927 |
-| 18 | 7/7 | 323.5 | 112320 |
-| 19 | 7/7 | 244.0 | 100920 |
-| 20 | 4/4 | 77.7 | 76082 |
+| 1 | 5/5 | 210.0 | 35577 |
+| 2 | 4/4 | 45.3 | 23320 |
+| 3 | 3/4 | 66.0 | 31133 |
+| 4 | 4/4 | 130.1 | 44016 |
+| 5 | 4/4 | 71.7 | 33831 |
+| 6 | 5/5 | 89.2 | 33105 |
+| 7 | 6/7 | 219.9 | 39714 |
+| 8 | 4/5 | 72.4 | 41925 |
+| 9 | 7/7 | 251.6 | 74858 |
+| 10 | 5/5 | 74.1 | 32112 |
+| 11 | 6/6 | 73.2 | 33699 |
+| 12 | 5/5 | 57.6 | 32060 |
+| 13 | 6/6 | 145.1 | 45049 |
+| 14 | 6/7 | 118.8 | 44262 |
+| 15 | 11/11 | 174.3 | 60105 |
+| 16 | 4/4 | 11.8 | 21555 |
+| 17 | 6/7 | 117.9 | 51127 |
+| 18 | 7/7 | 150.8 | 57306 |
+| 19 | 7/7 | 136.2 | 47558 |
+| 20 | 3/4 | 64.3 | 28570 |
+| 21 | 7/7 | 124.4 | 46260 |
+| 22 | 9/10 | 137.9 | 51951 |
+| 23 | 4/5 | 126.9 | 45855 |
+| 24 | 6/6 | 79.8 | 36999 |
 
 ## Notes
 
-- 20 evals and 22 recorded runs pass 124/128 expectations, with 18 evals passing every expectation in every recorded run. Results were verified against ground truth rather than executor self-report: every card URL in a final document was checked against `trello-calls.log`, and graders were told to flag any logged call the transcript does not show.
-- This baseline accompanies drafting notes from meeting artifacts. When no raw notes exist, `references/draft-notes-from-artifacts.md` has the skill list the screenshots, audio transcripts, or chat transcripts it found by file name, confirm before drafting, draft one note per decision or debate with attribution in the sentence, and review the draft section by section. Alongside it: a What Notes Should Capture section (action items, decisions and their reasons, disagreements, unresolved topics), a Step 3b Agenda section for any run with an agenda, action items that lead with an owner and keep due dates as said (adding the calendar date for an ambiguous weekday), no retry when a Trello card fails, and a summary written as prose with one sentence per note.
-- Evals 15-20 are new: 15 (a chat log only, with an agenda, a debate, a deferral, and an ownerless action), 16 (no notes and no artifacts), 17 (an audio transcript with a generic `Speaker 3` plus timestamped screenshots), 18 (screenshots only, including an undated photo), 19 (a "parking lot" deferral and an agenda item the meeting never reached), and 20 (the user declines drafting). Fixture screenshots for 17 and 18 carry legible content, since the images are the only record.
-- Existing evals changed: 7 now expects the Agenda section and keeps its link in the note, 6 checks a "by Friday" due date, 1 and 5 accept an initial expanded to the first name the user gives when asked, which Step 3 requires, and 9 and 14 check that the summary reads as prose with no semicolons and no clauses chained with "and".
-- The summary rule took three designs to pass eval 9. A list of prohibitions failed its accuracy check in three runs, twice by inventing a cause linking two facts. A pick, restate, join, and check procedure failed in three more, promoting proposals and approvals into completed decisions ("Priya proposed dropping staging" became "the team chose to drop" it), and one of those runs skipped its verification step. The PR review flagged the regression. The recorded rule gives each chosen outcome its own sentence drawn from a single note, keeping that note's subject and verb so its status survives, and eval 9's accuracy check passed in all three recorded runs.
-- Eval 9 records all three runs of the current rule rather than the best one. Run 8 still built one sentence by chaining two clauses with "and", and split vendor support into its own section although the user tied it to the migration. Run 7 passed, though its grader noted a "since" in one sentence that implies a cause its note does not state.
-- Recorded runs follow several review rounds. The first full run scored 100/112 and exposed real regressions (the Agenda section pulled a link out of its note, drafts retold chats message by message, the skill proposed names when asking who spoke or who owns an action) alongside eval wording that contradicted the skill. Evals 1, 4, 11, and 17 are recorded at run 2; 7, 13, 14, 15, 18, and 19 at run 3; 20 at run 4; 9 at runs 7 through 9. Eval 5's run 1 was regraded against its updated wording.
-- Three runs were discarded for validity rather than results. Eval 20 run 1: the simulated user pasted notes, contradicting its own opening message. Eval 20 run 3: the prompt pre-declined the drafting offer, so the expectation was widened to accept acknowledging that answer. Eval 7 run 2: the executor made two Trello calls it did not record; run 3 was executed under an instruction to record every call.
-- Eval 15 run 3 assigned the runbook update to its speaker and treated a shutdown timing as a due date without asking; runs 1 and 2 asked correctly, so this is intermittent.
-- Trials ran as subagents with working directories outside the repository and the skill staged with `references/`. One run (eval 1 run 2) used the user's first name from the executor's own session context; it affected no expectation. Evals without a `trello-fixture.json` produce no call log, so their zero-call checks rest on the transcript plus the script's refusal to run without a fixture.
-- Time and token figures rose against the previous baseline (60343 ± 6294 tokens, 151.6 ± 47.9s over 14 evals), driven by the longer skill, the artifact evals, and executors that now write a full transcript file, so they are not directly comparable.
-- Not covered by any expectation: in eval 18 run 3 the skill still asked about Trello after the opening message said "No Trello for this one."
+- 24 evals and 24 recorded runs pass 134/142 expectations, with 16 evals passing every expectation. Results were verified against ground truth rather than executor self-report: grader subagents checked card URLs and call counts against `trello-calls.log` and every claimed source check against the stub call logs, and found no claimed tool call missing from the logs.
+- This baseline accompanies issue #80: Step 1b makes every reachable source mandatory, Team chat reads every direct message, group direct message, and attendee channel inside the meeting's actual window, a chat message about the recording becomes the italic note under the metadata, and Shared links skips summaries a link's own text already provides and asks what an unreadable link holds.
+- The run method changed, so these figures are not directly comparable with the previous baseline (124/128 over 22 runs of evals 1-20). Trials ran through `evals/lib/run-mcp-trials.sh` as `claude -p` sessions limited to stub MCP servers, with the skill's installed plugin turned off so the working tree was measured. Evals 1-20 used `SIMULATED_USER=1`, a tool-less second session playing the user from the eval's prompt alone; evals 21-24 used scripted `follow_ups`. The previous Agent-tool executors and simulated user are no longer safe here, because a subagent sees the session's real connected sources and Step 1b now consults them.
+- Evals 1-20 each carry an empty Slack stub, the minimum the MCP driver needs; eval 8's first expectation was reworded for it.
+- Evals 21-24 are new: 21 (a one-to-one whose transcript stops because the other attendee asked by direct message for the recording to stop), 22 (side conversations in a channel, direct messages, and a group direct message, with a bot post and out-of-window messages), 23 (self-explanatory links beside an unresolvable one), and 24 (a Confluence page that returns an empty body).
+- Against the previous baseline's first recorded run of each eval (112/114 for evals 1-20), this run scores 108/114. Eval 15 rose from 9/11 to 11/11. Evals 3, 7, 8, 14, 17, and 20 each lost one expectation, none in rules this change touches: 3 never reached the Trello question because the simulated user declined early; 7 left the roadmap link only in the Agenda section; 8 asked about both note lines in one message; 14's summary turned "backfill approved" into "backfilled", the summary-fidelity issue the previous baseline recorded for eval 9; 17 drafted from artifacts without asking; 20 never named the transcript it found, after a simulated user that reversed its own "just stop there".
+- Eval 23 never asked what the unresolvable link holds, because the scripted follow-up supplied the answer before the skill reached that line. Eval 22 dropped Lena's join notice without mention.
+- With an empty Slack workspace, trials in evals 1, 4, 7, 8, 15, 17, and 23 searched by keyword, sender, or whole day rather than reading the meeting window; evals 21 and 22, where chat held messages, followed the rule. The empty workspace hid the gap, so no expectation failed on it.
+- The simulated user invented details its opening prompt did not support in several runs (evals 9, 14, 15, 17, and 19) and reversed itself in eval 20. Graders separated those from skill behavior. `conversation.txt` and the simulated user see only each turn's final message, so a question asked earlier in a turn can be missed; graders checked `events.jsonl` where that mattered.
+- Not covered by any expectation: eval 7 searched the whole filesystem for `create-trello-task.sh`, timed out, and finalized without asking about Trello; eval 12 kept a paraphrase in quotation marks marked "(paraphrased)"; eval 24 replaced the user's Confluence URL with the API's tiny link.
+- Tokens are input, output, and cache-creation tokens summed across every turn of the `claude -p` session, excluding cache reads, so they are not comparable with the previous baseline's per-subagent figures.
