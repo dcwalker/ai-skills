@@ -358,7 +358,9 @@ server -- `trello_stub.py` implements the subset of Trello tools `triage`
 actually calls, `gmail_stub.py` the six Gmail operations its email workflow
 (Step 4b) names, and `jira_stub.py` the Atlassian MCP's Jira subset
 (including the cloudId-discovery flow via getAccessibleAtlassianResources
-and a documented JQL subset that fails loudly on unsupported constructs),
+and a documented JQL subset that fails loudly on unsupported constructs,
+plus a getConfluencePage whose response layout is modelled on Confluence's
+REST v2 docs rather than a live response; see its docstring),
 and `slack_stub.py` the search and read operations a corpus-building skill
 calls, each backed by an in-memory fake "database" seeded from a fixture
 file. Tool names and parameter schemas were confirmed against
