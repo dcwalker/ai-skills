@@ -137,6 +137,14 @@ ENV_FILE="$RUN_DIR/env.sh"
   emit_isolation_env "$SCRIPT_DIR"
   echo "export GH_STUB_LOG=\"$RUN_DIR/gh-calls.log\""
   echo "export GH_STUB_COUNTS_DIR=\"$RUN_DIR\""
+  # organize-meeting-notes creates cards through its bundled script rather
+  # than MCP; the same hook run-eval.sh wires serves that script canned
+  # responses. Without it the script refuses to run under AI_SKILLS_EVAL.
+  if [[ -f "$FIXTURE_DIR/trello-fixture.json" ]]; then
+    echo "export TRELLO_FIXTURE_FILE=\"$FIXTURE_DIR/trello-fixture.json\""
+    echo "export TRELLO_FIXTURE_COUNTS_DIR=\"$RUN_DIR\""
+    echo "export TRELLO_FIXTURE_LOG=\"$RUN_DIR/trello-calls.log\""
+  fi
   # Per-service grading artifacts (only for services this fixture wired up):
   for SERVICE in trello gmail atlassian slack; do
     if [[ -f "$FIXTURE_DIR/$SERVICE-mcp-state.json" ]]; then

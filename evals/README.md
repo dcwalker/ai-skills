@@ -464,6 +464,20 @@ events land in the same `events.jsonl`, and `transcript.txt` separates them
 with `===== turn N =====` markers so a grader can see what each revision
 actually changed.
 
+Simulated user: an interview-driven skill cannot be scripted that way,
+because `follow_ups` arrive in a fixed order whatever the skill asks. Run
+the driver with `SIMULATED_USER=1` and each eval without `follow_ups` gets a
+second `claude -p` playing the user, one reply per turn, from the eval's
+prompt and the conversation so far. It never sees `expected_output` or the
+expectations, runs with no tools, no MCP servers, and none of the running
+user's instructions, and replies `DONE` once the skill has delivered its
+result and asks nothing more. `SIMULATED_USER_MAX_TURNS` caps its replies
+(default 40). `conversation.txt` records both sides for the grader, and
+`simulated-user-turns` the number of replies sent. This replaces the
+simulated user that Agent-tool executors used to play, which is no longer
+safe for skills that consult connected sources: a subagent sees the
+session's real MCP servers, not the stubs.
+
 Four things the shared driver does that a hand-run trial must do for itself:
 
 - It copies the skill under test into the trial workspace as a project skill
