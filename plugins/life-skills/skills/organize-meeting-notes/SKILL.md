@@ -84,7 +84,9 @@ fetching). Use only what is genuinely available: skip anything that is not
 connected without comment, and never present content as coming from a source
 that was not actually consulted. Every available source must be consulted:
 none is optional, and no source stands in for another (a transcript or a
-calendar event does not replace checking chat). The user may also paste
+calendar event does not replace checking chat). This holds for every
+meeting, a solo block included: never skip a reachable source because it
+seems unlikely to hold anything. The user may also paste
 source material (a calendar event, chat excerpts, an email, a meeting
 transcript) directly; treat that the same way as fetched content.
 
