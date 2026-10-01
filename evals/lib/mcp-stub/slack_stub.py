@@ -138,6 +138,14 @@ def _channel(channel_id: str) -> dict | None:
     for channel in channels.values():
         if channel["name"].lower() == wanted:
             return channel
+    # A user id reads that user's DM, as slack_read_channel's description
+    # says it does live. A fixture's "im" channel is named for the other
+    # user, so the id resolves through the user's name.
+    user = state.data["users"].get(channel_id)
+    if user:
+        for channel in channels.values():
+            if channel.get("type") == "im" and channel["name"].lower() == user["name"].lower():
+                return channel
     return None
 
 
@@ -324,6 +332,22 @@ def slack_search_public_and_private(
     return result
 
 
+def _bound(value: str) -> float | None:
+    """oldest/latest are Slack timestamps (Unix seconds) live. What the live
+    server does with any other format is unverified, so a value that does
+    not parse as a number bounds nothing rather than guessing at an error."""
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _in_window(message: dict, oldest: str, latest: str) -> bool:
+    ts = float(message["ts"])
+    low, high = _bound(oldest), _bound(latest)
+    return (low is None or ts >= low) and (high is None or ts <= high)
+
+
 @server.tool()
 def slack_read_channel(
     channel_id: str,
@@ -336,7 +360,8 @@ def slack_read_channel(
     """Reads messages from a Slack channel in reverse chronological order
     (newest first). To read DM history, use a user_id as channel_id."""
     channel = _require_channel(channel_id)
-    messages = sorted((m for m in _messages_in(channel["id"]) if not _is_thread_reply(m)),
+    messages = sorted((m for m in _messages_in(channel["id"])
+                       if not _is_thread_reply(m) and _in_window(m, oldest, latest)),
                       key=lambda m: m["ts"], reverse=True)[:limit]
 
     body = f"Channel: #{channel['name']} ({channel['id']})\n"
@@ -358,7 +383,8 @@ def slack_read_channel(
 
     result = _read_response(body.rstrip("\n"), "There are no more messages available.\n")
     state.log_call("slack_read_channel",
-                   {"channel_id": channel_id, "limit": limit}, result)
+                   {"channel_id": channel_id, "limit": limit,
+                    "oldest": oldest, "latest": latest}, result)
     return result
 
 
