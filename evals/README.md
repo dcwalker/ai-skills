@@ -476,6 +476,14 @@ Four things the shared driver does that a hand-run trial must do for itself:
   skill that splits reference material out of `SKILL.md` has every one of
   those links dangle in the trial copy if only `SKILL.md` is staged, and the
   material behind them goes missing from the measurement without any error.
+  Staging is only half of it on a machine where the plugin *is* installed:
+  the trial then sees the installed release too, as `<plugin>:<skill>`, and
+  one 2026-10-01 trial invoked that copy and measured stale instructions. So
+  the driver also passes `--settings` with `enabledPlugins` turning the
+  skill's own plugin off, and `metrics.json` records any plugin-qualified
+  invocation of the skill as `installed_skill_invoked`, with a warning. The
+  plugin's other skills go off with it, since `skillOverrides` does not apply
+  to plugin skills.
 - It passes an explicit `--allowedTools` allowlist instead of
   `--dangerously-skip-permissions`, which refuses to run as root and so rules
   out containers and CI. Each stub server is allowed wholesale, write tools
