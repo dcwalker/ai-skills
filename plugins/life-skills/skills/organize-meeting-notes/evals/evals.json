@@ -254,6 +254,82 @@
         "No action items are drawn from the transcript, and the transcript's lines are not run through a per-line interview as though they were the user's notes.",
         "Zero create-trello-task.sh invocations occur."
       ]
+    },
+    {
+      "id": 21,
+      "prompt": "Organize these meeting notes for my journal. I have the transcript too.\n\nMeeting: 1:1 with Sam\nStart: Sep 28, 2026 at 10:00 AM\nEnd: 11:08 AM\nDuration: 68 minutes\nAttendees: dan.walker@example.com, sam.ortiz@example.com\n\nRaw notes:\n- q4 goals draft is close, sam wants one more pass on the hiring goal\n- talked through sam's concerns about the reorg\n- sam is thinking about a staff promo case for next cycle\n\nTranscript:\n[00:12] Dan Walker: Morning. Want to start with the Q4 goals?\n[01:05] Sam Ortiz: Yeah. I think the draft is close. The hiring goal still reads like a wish list, though.\n[02:40] Dan Walker: Fair. What would make it concrete?\n[03:18] Sam Ortiz: Two named roles and a date for each. Otherwise nobody can tell if we hit it.\n[05:02] Dan Walker: Okay, take one more pass at it and I'll review.\n[07:44] Dan Walker: Okay. Let's switch gears.\n\nInterview me line by line and I'll answer as we go. No Trello.",
+      "expected_output": "The case that motivated the Team chat rewrite. The transcript stops at 07:44 of a 68-minute meeting, and nothing in it says why. No calendar is connected, but Slack is, and Sam's direct message at 10:07:36, eight seconds before the final cue, asks for the recording to be stopped so the reorg can be discussed off the record. The skill must consult Slack without being asked (every available source is mandatory), search direct messages rather than only channels, and bound the window by the meeting's 10:00 AM to 11:08 AM times, so the 9:52 AM and 11:20 AM messages stay out. The recording request is not meeting content: it belongs in the italic line under the metadata line as the reason the transcript is partial, and with no calendar data that line carries only the reason, with no schedule comparison. The notes must not call the cutoff a transcription fault or a recurring pattern, and nothing is invented for the unrecorded part of the meeting.",
+      "expectations": [
+        "The Slack call log shows the skill searched Slack or read the direct message with Sam on its own initiative; the prompt never mentions chat.",
+        "An italic line directly under the metadata line gives Sam's request as the reason the recording stopped, at or near 07:44 (for example `*Recording stopped at 07:44 at Sam's request.*`), or such a line is proposed to the user for approval.",
+        "No scheduled-versus-actual comparison appears anywhere (no calendar data exists), and the italic line carries only the recording reason.",
+        "Nothing in the response or the final document describes the cutoff as a transcription fault, a technical failure, or a possible recurring pattern.",
+        "Neither the 9:52 AM message about running late nor the 11:20 AM message about sending the hiring goal rewrite is presented as chat from during the meeting, and neither becomes a note or action item on the strength of chat alone.",
+        "Notes about the reorg and the promotion case come only from the raw notes and the user's interview answers; nothing is attributed to the unrecorded part of the meeting beyond that.",
+        "Zero create-trello-task.sh invocations occur."
+      ],
+      "follow_ups": [
+        "Answers for the notes: the hiring goal needs two named roles with a date for each; Sam is rewriting it and I'll review. On the reorg, Sam is worried about losing the on-call rotation they built; keep it at that, it was off the record. On the promo, Sam wants to build the staff case over Q4 and I said I'd help scope it. We both attended.",
+        "Yes to what you proposed from chat and to the line under the metadata. Approve everything else as proposed.",
+        "Looks good. Finalize it and give me the final document."
+      ]
+    },
+    {
+      "id": 22,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: Portfolio Review\nStart: Sep 29, 2026 at 1:00 PM\nEnd: 2:00 PM\nDuration: 60 minutes\nAttendees: dan.walker@example.com, priya.raman@example.com, marcus.hall@example.com, lena.fischer@example.com\n\nRaw notes:\n- marcus presented the roadmap burn-up, platform track at 62% of planned points\n- data migration track is green\n- lena asked about Q1 headcount, no answer yet\n\nInterview me line by line and I'll answer as we go. No Trello.",
+      "expected_output": "Tests the widened Team chat relevance rule. During the meeting, Priya Raman and Marcus Hall argued in #portfolio-review that points are the wrong progress measure and agreed to report services cut over instead, noting the services-migrated dashboard is already in staging; none of that was said aloud, and it belongs beside the burn-up note or in time order. Lena Fischer and Dan Walker also held an off-topic direct-message exchange about swapping on-call, and Jordan Lee, who was not in the meeting, messaged Dan asking for the burn-up chart. Marcus Hall also sent a group direct message to Dan and Priya asking to keep the headcount discussion short because budget numbers are not final until Oct 9. Under the new rule all four are proposed rather than discarded as unrelated chatter. Only the Deploy Bot post is excluded as noise; Lena's join notice and Marcus's `:+1:` are kept. Messages at 12:50 PM and 2:20 PM fall outside the actual 1:00 PM to 2:00 PM window. Chat content is proposed for the user's approval, never written in as fact.",
+      "expectations": [
+        "The Slack call log shows the skill searched Slack or read the relevant channel and direct messages on its own initiative; the prompt never mentions chat.",
+        "The #portfolio-review exchange is proposed for the notes: Priya and Marcus agreeing to report services cut over instead of points, with the services-migrated dashboard already in staging, attributed to them and placed beside the burn-up note or in time order.",
+        "The off-topic on-call swap between Lena and Dan is proposed rather than dropped as unrelated to the meeting topic.",
+        "Jordan Lee's direct message asking for the burn-up chart is proposed even though Jordan did not attend.",
+        "Marcus's group direct message to Dan and Priya at 1:25 PM (keep the headcount discussion short because budget numbers aren't final until Oct 9) is proposed, placed in time order or beside the headcount note.",
+        "The Deploy Bot post is not proposed as meeting content.",
+        "Lena's join notice and Marcus's `:+1:` message are not discarded as noise: the response either proposes them or treats them as kept chat items (for example, noting Marcus's agreement to the switch).",
+        "Neither Priya's 12:50 PM pre-read message nor Marcus's 2:20 PM follow-up is presented as chat from during the meeting.",
+        "Chat content is proposed for the user's approval before it reaches the final document; nothing from Slack is written in as a fact the user did not confirm.",
+        "Zero create-trello-task.sh invocations occur."
+      ],
+      "follow_ups": [
+        "Context: Marcus's burn-up showed the platform track at 62% of planned points and he thinks it's on pace. Data migration is green because the read replicas cut over cleanly. Lena wants two more SREs in Q1; Priya will answer after the budget review. Everyone attended.",
+        "Yes, include the Slack items you proposed where they fit, and approve the rest.",
+        "Looks good. Finalize it and give me the final document."
+      ]
+    },
+    {
+      "id": 23,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: Platform Standup\nStart: Sep 30, 2026 at 9:00 AM\nEnd: 9:20 AM\nDuration: 20 minutes\nAttendees: dan.walker@example.com, priya.raman@example.com, lena.fischer@example.com\n\nRaw notes:\n- [PLAT-412: Retire legacy auth proxy](https://jira.example.com/browse/PLAT-412) is blocked on the SSO cutover\n- [PLAT-418: Add rate limits to the export API](https://jira.example.com/browse/PLAT-418) moved to next sprint\n- [PLAT-421: Upgrade Postgres to 16](https://jira.example.com/browse/PLAT-421) is done\n- action: lena to update the [on-call runbook](https://wiki.example.com/runbooks/on-call) with the new escalation path by friday\n- priya shared this, said it changes the plan: https://wiki.example.invalid/x/aB3kQ9\n\nInterview me line by line and I'll answer as we go. No Trello.",
+      "expected_output": "Tests the Shared links relevance filter and the unreadable-link rule. Three work-item links carry their summaries as link text and the runbook link sits inside an action item that explains itself, so none of them gets a separate summary. The bare link is the only one a reader could not place, and its host can never resolve, so it cannot be read. The skill must say so, ask the user what the link holds, and use only the user's answer; it must not guess at the page's content from its URL or the surrounding note. Slack is connected but holds no messages, so the run exercises the link rules with an available chat source that has nothing to add.",
+      "expectations": [
+        "No one-to-two-sentence link summary is added for PLAT-412, PLAT-418, PLAT-421, or the on-call runbook link.",
+        "The response states that the bare wiki.example.invalid link could not be read (whether or not a fetch was attempted) rather than summarizing it.",
+        "The user is asked what the bare link holds.",
+        "Nothing is attributed to the bare link beyond what the raw note and the user's answers say.",
+        "Zero create-trello-task.sh invocations occur."
+      ],
+      "follow_ups": [
+        "Context: PLAT-412 is waiting on the SSO cutover in October. PLAT-418 slipped because the team is short this sprint. PLAT-421 finished Tuesday with no downtime. Lena owns the runbook update, due Friday, Oct 2. Everyone attended.",
+        "The link Priya shared is her Q4 capacity model; it shows we can't take on the rate limit work until November. Approve everything else as proposed.",
+        "Looks good. Finalize it and give me the final document."
+      ]
+    },
+    {
+      "id": 24,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: Export API Planning\nStart: Sep 30, 2026 at 2:00 PM\nEnd: 2:30 PM\nDuration: 30 minutes\nAttendees: dan.walker@example.com, priya.raman@example.com, marcus.hall@example.com\n\nRaw notes:\n- priya walked us through her proposal https://example.atlassian.net/wiki/x/Rk7mQ2, we agreed to start in shadow mode\n- marcus says the dependency tracker is the source of truth for dates https://example.atlassian.net/wiki/spaces/PLAT/pages/40213\n- we'll revisit enforcement in two weeks\n\nInterview me line by line and I'll answer as we go. No Trello.",
+      "expected_output": "Tests the Shared links rule against a connected source that returns an empty body. Both links are bare, so a reader could not place either without a summary, and the skill should read both through the Atlassian connector. The proposal page (tiny link Rk7mQ2) has real content, so it gets a one-to-two-sentence summary grounded in that content (a per-tenant cap on the export API, rolled out in shadow mode first). The dependency tracker page (40213) returns an empty body, as a page built from macros does. The skill must treat that as unreadable rather than as an empty page, say so, and ask the user what the tracker holds, without inferring its content from its title or the note.",
+      "expectations": [
+        "The Atlassian call log shows getConfluencePage was called for both pages (by tiny link Rk7mQ2 or id 40188, and by id 40213).",
+        "A summary for the proposal link is proposed, grounded in the page's content (a per-tenant rate limit on the export API, rolled out in shadow mode before enforcement), and attributed to no detail the page does not contain.",
+        "The dependency tracker is reported as unreadable or as having returned no content, not described as an empty or blank page.",
+        "The user is asked what the dependency tracker holds.",
+        "Nothing is attributed to the dependency tracker beyond its title, the raw note, and the user's answers.",
+        "Zero create-trello-task.sh invocations occur."
+      ],
+      "follow_ups": [
+        "Context: we agreed to run shadow mode for two weeks before enforcing. Marcus owns the dependency tracker. We'll revisit enforcement at the Oct 14 planning meeting. Everyone attended.",
+        "The dependency tracker is a table of every platform team's Q4 milestones with dates and owners. Approve everything else as proposed.",
+        "Looks good. Finalize it and give me the final document."
+      ]
     }
   ]
 }

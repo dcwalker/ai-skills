@@ -1,0 +1,217 @@
+{
+  "me": {
+    "id": "U0DAN",
+    "name": "dan.walker",
+    "display_name": "dan.walker",
+    "real_name": "Dan Walker",
+    "email": "dan.walker@example.com",
+    "title": "Engineering Manager",
+    "timezone": "America/Los_Angeles",
+    "org": "example-co"
+  },
+  "users": {
+    "U0DAN": {
+      "id": "U0DAN",
+      "name": "dan.walker",
+      "display_name": "dan.walker",
+      "real_name": "Dan Walker",
+      "email": "dan.walker@example.com",
+      "title": "Engineering Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0PRIYA": {
+      "id": "U0PRIYA",
+      "name": "priya.raman",
+      "display_name": "priya.raman",
+      "real_name": "Priya Raman",
+      "email": "priya.raman@example.com",
+      "title": "Director of Engineering",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0MARCUS": {
+      "id": "U0MARCUS",
+      "name": "marcus.hall",
+      "display_name": "marcus.hall",
+      "real_name": "Marcus Hall",
+      "email": "marcus.hall@example.com",
+      "title": "Program Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0LENA": {
+      "id": "U0LENA",
+      "name": "lena.fischer",
+      "display_name": "lena.fischer",
+      "real_name": "Lena Fischer",
+      "email": "lena.fischer@example.com",
+      "title": "Engineering Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0JORDAN": {
+      "id": "U0JORDAN",
+      "name": "jordan.lee",
+      "display_name": "jordan.lee",
+      "real_name": "Jordan Lee",
+      "email": "jordan.lee@example.com",
+      "title": "Chief of Staff",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0DEPLOYBOT": {
+      "id": "U0DEPLOYBOT",
+      "name": "deploybot",
+      "display_name": "deploybot",
+      "real_name": "Deploy Bot",
+      "email": "deploybot@example.com",
+      "title": "Integration",
+      "timezone": "America/Los_Angeles"
+    }
+  },
+  "channels": {
+    "C0PORTF": {
+      "id": "C0PORTF",
+      "name": "portfolio-review",
+      "purpose": "Portfolio review discussion",
+      "creator": "U0MARCUS",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "public_channel"
+    },
+    "D0LENA": {
+      "id": "D0LENA",
+      "name": "lena.fischer",
+      "purpose": "",
+      "creator": "U0DAN",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "im"
+    },
+    "D0JORDAN": {
+      "id": "D0JORDAN",
+      "name": "jordan.lee",
+      "purpose": "",
+      "creator": "U0DAN",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "im"
+    },
+    "G0PLATLEADS": {
+      "id": "G0PLATLEADS",
+      "name": "mpdm-dan.walker--priya.raman--marcus.hall-1",
+      "purpose": "Group messaging with: @dan.walker @priya.raman @marcus.hall",
+      "creator": "U0MARCUS",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    }
+  },
+  "messages": {
+    "C0PORTF": [
+      {
+        "ts": "1790711400.000100",
+        "time": "2026-09-29 12:50:00 PDT",
+        "user": "U0PRIYA",
+        "text": "pre-read is in the deck, slides 4-9",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1790712072.000200",
+        "time": "2026-09-29 13:01:12 PDT",
+        "user": "U0LENA",
+        "text": "<@U0LENA|lena.fischer> has joined the channel",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1790712845.000300",
+        "time": "2026-09-29 13:14:05 PDT",
+        "user": "U0PRIYA",
+        "text": "the burn-up on points is going to keep looking fine while the migration slips. we should be tracking services cut over, not points",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1790712930.000400",
+        "time": "2026-09-29 13:15:30 PDT",
+        "user": "U0MARCUS",
+        "text": "agree points are noisy. the services-migrated dashboard is basically done, Lena's team has it in staging",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1790713022.000500",
+        "time": "2026-09-29 13:17:02 PDT",
+        "user": "U0PRIYA",
+        "text": "ok, let's report services cut over from next month and drop the points chart",
+        "thread_ts": null,
+        "reactions": [
+          {
+            "name": "+1",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "ts": "1790713040.000600",
+        "time": "2026-09-29 13:17:20 PDT",
+        "user": "U0MARCUS",
+        "text": ":+1:",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1790713361.000700",
+        "time": "2026-09-29 13:22:41 PDT",
+        "user": "U0DEPLOYBOT",
+        "text": "Deploy of reporting-api v4.2.1 to production succeeded",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1790716800.000800",
+        "time": "2026-09-29 14:20:00 PDT",
+        "user": "U0MARCUS",
+        "text": "following up with the slides after lunch",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "D0LENA": [
+      {
+        "ts": "1790714418.000100",
+        "time": "2026-09-29 13:40:18 PDT",
+        "user": "U0LENA",
+        "text": "totally unrelated, but are you still up for swapping on-call next week? my kid's school thing moved",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1790714462.000200",
+        "time": "2026-09-29 13:41:02 PDT",
+        "user": "U0DAN",
+        "text": "yes, I'll take your Tues-Wed",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "D0JORDAN": [
+      {
+        "ts": "1790713844.000100",
+        "time": "2026-09-29 13:30:44 PDT",
+        "user": "U0JORDAN",
+        "text": "saw the burn-up chart on the shared screen, can I get a copy for Thursday's exec update?",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0PLATLEADS": [
+      {
+        "ts": "1790713509.000100",
+        "time": "2026-09-29 13:25:09 PDT",
+        "user": "U0MARCUS",
+        "text": "can we keep the headcount bit short? budget numbers aren't final until Oct 9",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ]
+  }
+}
