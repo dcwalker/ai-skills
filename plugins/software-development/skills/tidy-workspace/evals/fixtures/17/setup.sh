@@ -6,8 +6,9 @@
 #   Gadget-eqwr...  another project, WorkspacePath missing   -> untouched
 #   Gadget-fzxc...  another project, WorkspacePath exists    -> untouched
 #   ModuleCache.noindex  Xcode's shared cache                -> untouched
-# The build-cache section of the plan is N/A, since the repo tracks no
-# .xcodeproj or .xcworkspace.
+# The build-cache section of the plan is N/A: no folder points into this
+# repo's worktrees, and the repo tracks no .xcodeproj or .xcworkspace to
+# attribute the stale one to.
 set -euo pipefail
 WORKSPACE_DIR="$(cd "$1" && pwd -P)"
 RUN_DIR="$(cd "$WORKSPACE_DIR/.." && pwd -P)"
