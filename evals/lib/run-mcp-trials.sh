@@ -59,12 +59,12 @@ shift
 # own plugin off for the trial leaves the staged copy as the only one. The
 # other skills in that plugin go with it; no MCP-backed eval relies on a
 # sibling skill today. Hiding just the one skill is not possible: the
-# skillOverrides setting does not apply to plugin skills.
+# skillOverrides setting does not apply to plugin skills. The per-trial
+# TRIAL_SETTINGS below carries this enabledPlugins entry.
 PLUGIN_NAME="$(basename "$(dirname "$(dirname "$SKILL_DIR")")")"
 MARKETPLACE_FILE="$SCRIPT_DIR/../../.claude-plugin/marketplace.json"
 MARKETPLACE_NAME="$(python3 -c "import json, sys; print(json.load(open(sys.argv[1]))['name'])" \
   "$MARKETPLACE_FILE")"
-TRIAL_SETTINGS="{\"enabledPlugins\":{\"$PLUGIN_NAME@$MARKETPLACE_NAME\":false}}"
 
 # Default output lives beside the evals, gitignored. Override it to put the
 # trial workspaces outside the repo: a workspace under evals/ leaves
@@ -74,7 +74,9 @@ TRIALS_DIR="${TRIALS_DIR:-$EVALS_DIR/.trial-runs}"
 
 # A trial can always reach the real home directory: HOME is reassigned, but the
 # account's actual home stays readable, and its own working directory is inside
-# it. So the harness cannot prevent an escape, only detect one -- and detection
+# it. Writes there are now refused (see the permission rules and sandbox set up
+# per trial below), and caught afterwards if one gets through; this check for
+# the writing skill's style cache predates both and stays as a backstop. It
 # needs to know the directory was absent beforehand.
 #
 # `getent` is glibc-only; macOS keeps the same record in Directory Services.
@@ -150,6 +152,41 @@ else:
   else
     echo "  WARNING: no SKILL.md at $SKILL_DIR; the trial will run without the skill"
   fi
+
+  # Writes stay inside $RUN_DIR, which holds the workspace, the private HOME,
+  # and TMPDIR. A private HOME alone does not do it: eval 19 of the
+  # organize-meeting-notes benchmark for issue #82 wrote journal.md into the
+  # real home by absolute path. Two documented mechanisms close the two ways a
+  # trial writes files, and each needs the resolved path (/tmp is a symlink
+  # on macOS, and a rule must name the path the tool will see):
+  #
+  # - The Write and Edit tools: Claude Code checks file writes against
+  #   `Edit(path)` rules, and a bare `Write` or `Edit` in --allowedTools
+  #   allows every path, which is how journal.md got through. So the trial
+  #   runs in dontAsk mode, which denies any call that would otherwise
+  #   prompt, with one allow rule for $RUN_DIR (`//` marks an absolute path).
+  #   https://code.claude.com/docs/en/permissions
+  # - Bash: permission rules match command text only, so Bash writes are
+  #   contained by the OS-level sandbox, writable only under $RUN_DIR, with
+  #   no unsandboxed retry and no fallback to running unsandboxed if the
+  #   sandbox cannot start. Its network allowlist starts empty, so a Bash
+  #   command cannot reach the network either; every service a trial talks
+  #   to is a stub. https://code.claude.com/docs/en/sandboxing
+  RUN_DIR_REAL="$(cd "$RUN_DIR" && pwd -P)"
+  TRIAL_SETTINGS="$(python3 -c '
+import json, sys
+plugin, run_dir = sys.argv[1], sys.argv[2]
+print(json.dumps({
+    "enabledPlugins": {plugin: False},
+    "permissions": {"allow": [f"Edit(/{run_dir}/**)"]},
+    "sandbox": {
+        "enabled": True,
+        "allowUnsandboxedCommands": False,
+        "failIfUnavailable": True,
+        "filesystem": {"allowWrite": [run_dir]},
+    },
+}))
+' "$PLUGIN_NAME@$MARKETPLACE_NAME" "$RUN_DIR_REAL")"
 
   # `|| true` on the claude call: a failing trial (session limit, transient
   # API error) must not abort the batch under set -e -- its events.jsonl
@@ -241,8 +278,8 @@ with open(sys.argv[2], "w") as fh:
     (
       cd "$WORKSPACE_DIR"
       HOME="$TRIAL_HOME" TMPDIR="$RUN_DIR/tmp" \
-        claude -p --permission-mode acceptEdits \
-        --allowedTools "Bash Read Write Edit Glob Grep WebFetch TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian mcp__slack" \
+        claude -p --permission-mode dontAsk \
+        --allowedTools "Bash Read Glob Grep WebFetch TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian mcp__slack" \
         --strict-mcp-config --verbose ${resume_flag[@]+"${resume_flag[@]}"} \
         --settings "$TRIAL_SETTINGS" \
         --mcp-config "$MCP_CONFIG_PATH" --output-format stream-json -- "$turn_prompt" \
@@ -349,14 +386,14 @@ print()
     fi
   fi
 
-  python3 - "$RUN_DIR" "$SKILL_NAME" <<'PYEOF'
-import json, sys
-run_dir, skill_name = sys.argv[1], sys.argv[2]
+  python3 - "$RUN_DIR" "$SKILL_NAME" "$RUN_DIR_REAL" "$WORKSPACE_DIR" "$TRIAL_HOME" <<'PYEOF'
+import json, os, re, shlex, sys
+run_dir, skill_name, run_dir_real, workspace, trial_home = sys.argv[1:6]
 
 # events.jsonl is one JSON object per line, across every turn of the trial:
 # each turn ends with a "result" event carrying that turn's usage and
 # duration, and each assistant event names the tools it called.
-results, tool_calls = [], []
+results, tool_calls, failed_ids = [], [], set()
 parse_error = "no terminal result event in events.jsonl"
 try:
     with open(f"{run_dir}/events.jsonl") as f:
@@ -374,14 +411,93 @@ try:
                 for block in event.get("message", {}).get("content", []):
                     if block.get("type") == "tool_use":
                         tool_calls.append({"turn": len(results) + 1,
+                                           "id": block.get("id"),
                                            "name": block.get("name"),
                                            "input": block.get("input")})
+            elif event.get("type") == "user":
+                content = event.get("message", {}).get("content", [])
+                for block in content if isinstance(content, list) else []:
+                    if block.get("type") == "tool_result" and block.get("is_error"):
+                        failed_ids.add(block.get("tool_use_id"))
 except OSError as e:
     parse_error = str(e)
 
 with open(f"{run_dir}/tools.log", "w") as f:
     for call in tool_calls:
-        f.write(json.dumps(call) + "\n")
+        f.write(json.dumps({k: v for k, v in call.items() if k != "id"}) + "\n")
+
+
+# Writes that landed outside $RUN_DIR. The permission rules and sandbox set
+# up above should refuse every one, so a hit here means they did not, and a
+# refused attempt (an errored tool result) is not counted. File tools are
+# checked exactly; Bash is checked by its absolute-path write targets
+# (redirections and the arguments of commands that create, move, or delete
+# files), which catches the common forms but not every way a shell can
+# write. Relative and ~ paths resolve inside the workspace and private HOME.
+def resolve(path):
+    if path == "~" or path.startswith("~/"):
+        path = trial_home + path[1:]
+    path = os.path.join(workspace, os.path.expanduser(path))
+    # The deepest existing ancestor carries any symlinks, such as /tmp on
+    # macOS; the rest of the path did not exist to resolve, or was removed.
+    head, tail = path, []
+    while head and not os.path.exists(head):
+        head, part = os.path.split(head)
+        tail.insert(0, part)
+    return os.path.join(os.path.realpath(head or "/"), *tail)
+
+
+def outside(path):
+    real = resolve(path)
+    return not (real == run_dir_real or real.startswith(run_dir_real + os.sep)) \
+        and not real.startswith("/dev/")
+
+
+# Every argument is written to (mv removes its sources too); for the copy
+# family only the last argument is, and dd writes only to of=.
+WRITES_EVERY_ARG = {"tee", "touch", "mkdir", "rm", "rmdir", "mv", "truncate"}
+WRITES_LAST_ARG = {"cp", "ln", "install", "rsync"}
+
+
+def bash_targets(command):
+    targets = re.findall(r"(?:^|[^<0-9&])>>?\s*([^\s;&|<>()]+)", command)
+    for segment in re.split(r"&&|\|\||[;|\n]", command):
+        try:
+            words = shlex.split(segment)
+        except ValueError:
+            words = segment.split()
+        if not words:
+            continue
+        name = os.path.basename(words[0])
+        operands = [w for w in words[1:] if not w.startswith("-")]
+        if name in WRITES_EVERY_ARG:
+            targets += operands
+        elif name in WRITES_LAST_ARG and operands:
+            targets.append(operands[-1])
+        elif name == "dd":
+            targets += [w[3:] for w in words[1:] if w.startswith("of=")]
+    return [t for t in targets if t.startswith(("/", "~"))]
+
+
+escapes = []
+for call in tool_calls:
+    if call["id"] in failed_ids:
+        continue
+    params = call.get("input") or {}
+    if call["name"] in ("Write", "Edit", "MultiEdit", "NotebookEdit"):
+        paths = [params.get("file_path") or params.get("notebook_path") or ""]
+    elif call["name"] == "Bash":
+        paths = bash_targets(params.get("command", ""))
+    else:
+        continue
+    for path in paths:
+        if path and outside(path):
+            escapes.append({"turn": call["turn"], "tool": call["name"],
+                            "path": path, "resolved": resolve(path)})
+if escapes:
+    with open(f"{run_dir}/escapes.log", "w") as f:
+        for escape in escapes:
+            f.write(json.dumps(escape) + "\n")
 
 if not results:
     with open(f"{run_dir}/metrics.json", "w") as f:
@@ -428,6 +544,7 @@ metrics = {
         "cache_read_input": total("cache_read_input_tokens", usage),
     },
     "is_error": any(r.get("is_error") for r in results),
+    "writes_outside_run_dir": len(escapes),
 }
 with open(f"{run_dir}/metrics.json", "w") as f:
     json.dump(metrics, f, indent=2)
@@ -456,6 +573,23 @@ PYEOF
     echo "  isolated HOME. Moved to $ESCAPE_QUARANTINE for inspection." >&2
     echo "  Stopping: every later trial would have read what it left there," >&2
     echo "  and the run's results would look normal while being contaminated." >&2
+    exit 1
+  fi
+
+  # Any other write that landed outside $RUN_DIR, found from the trial's own
+  # tool calls above. It stops the run for the same reason: the trial wrote
+  # somewhere real, and what it wrote stays there until someone looks.
+  if [[ -s "$RUN_DIR/escapes.log" ]]; then
+    echo >&2
+    echo "  ERROR: eval $ID wrote outside its run directory ($RUN_DIR_REAL):" >&2
+    python3 -c '
+import json, sys
+for line in open(sys.argv[1]):
+    escape = json.loads(line)
+    print("    turn {turn}, {tool}: {resolved}".format(**escape))
+' "$RUN_DIR/escapes.log" >&2
+    echo "  Nothing was moved or deleted. Inspect those paths, then see" >&2
+    echo "  $RUN_DIR/escapes.log and tools.log. Stopping the run." >&2
     exit 1
   fi
 
