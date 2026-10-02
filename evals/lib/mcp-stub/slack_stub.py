@@ -78,7 +78,9 @@ against the YYYY-MM-DD prefix of a message's display time, quoted "exact
 phrases", bare words (AND-ed, matched against text), and `-` negation of
 any of these. Anything else matches nothing rather than silently matching
 everything, and the raw query is always logged so a grader can see exactly
-what was asked for.
+what was asked for. The `before`/`after` parameters bound results by Unix
+timestamp, inclusive at both ends as the live tool documents them, and are
+logged alongside the query.
 """
 
 import copy
@@ -288,14 +290,15 @@ def _searchable(channel_id: str, query: str) -> list:
             if wants_threads or not _is_thread_reply(m)]
 
 
-def _collect_hits(query: str, limit: int, sort_dir: str) -> list:
+def _collect_hits(query: str, limit: int, sort_dir: str,
+                  after: str = "", before: str = "") -> list:
     hits = []
     for channel_id in state.data["messages"]:
         channel = _channel(channel_id)
         if channel is None:
             continue
         hits += [(channel, m) for m in _searchable(channel_id, query)
-                 if _matches(m, channel, query)]
+                 if _matches(m, channel, query) and _in_window(m, after, before)]
     hits.sort(key=lambda pair: pair[1]["ts"], reverse=(sort_dir != "asc"))
     return hits[:min(limit, 20)]
 
@@ -321,13 +324,15 @@ def slack_search_public_and_private(
     """Searches for messages, files in ALL Slack channels, including public
     channels, private channels, DMs, and group DMs. Supports a documented
     subset of Slack search syntax: in:, from:, is:thread, before:/after:/on:,
-    quoted phrases, bare words, and '-' negation."""
-    hits = _collect_hits(query, limit, sort_dir)
+    quoted phrases, bare words, and '-' negation. before/after bound results
+    by Unix timestamp, inclusive at both ends."""
+    hits = _collect_hits(query, limit, sort_dir, after, before)
     body = _render_hits(query, hits, include_context)
 
     result = _search_response(body)
     state.log_call("slack_search_public_and_private",
                    {"query": query, "limit": limit, "sort": sort,
+                    "sort_dir": sort_dir, "after": after, "before": before,
                     "include_context": include_context}, result)
     return result
 
