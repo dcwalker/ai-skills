@@ -106,13 +106,14 @@ if [[ -n "$REAL_HOME" && -e "$REAL_HOME/writing-style" ]]; then
 fi
 
 # Trials require the Bash sandbox (failIfUnavailable, below), and Claude Code
-# exits at startup when it cannot start one. Without this check, every trial
+# exits at startup when it cannot start one. Bash is the one tool offered, so
+# the sandbox has something to start for; the prompt never needs it. Without this check, every trial
 # would fail the same way while the batch reported each as an ordinary
 # non-zero exit and carried on, finishing with nothing measured. It runs
 # before anything under TRIALS_DIR is cleared, so a machine that cannot run
 # trials does not lose the last run's results finding out.
 PREFLIGHT_LOG="$(mktemp)"
-if ! CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 claude -p --tools "" --strict-mcp-config \
+if ! CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 claude -p --tools Bash --strict-mcp-config \
     --no-session-persistence \
     --settings '{"sandbox":{"enabled":true,"failIfUnavailable":true}}' \
     -- "Reply with OK." < /dev/null > /dev/null 2> "$PREFLIGHT_LOG"; then
@@ -198,9 +199,11 @@ else:
   #   sandbox instead, writable only under $RUN_DIR, with no unsandboxed
   #   retry and no fallback to running unsandboxed if the sandbox cannot
   #   start. Its network allowlist holds only what WebFetch(domain:...)
-  #   allow rules add, and the trial has none, so a Bash command cannot
-  #   reach the network either; every service a trial talks to here is a
-  #   stub. https://code.claude.com/docs/en/sandboxing
+  #   allow rules add; the trial adds none, so Bash reaches only hosts such
+  #   a rule in project settings names (see evals/README.md), and every
+  #   service a trial talks to here is a stub. disableAllHooks keeps hooks
+  #   from enabled plugins, which run outside the sandbox, out of the
+  #   trial. https://code.claude.com/docs/en/sandboxing
   RUN_DIR_REAL="$(cd "$RUN_DIR" && pwd -P)"
   TRIAL_SETTINGS="$(python3 -c '
 import json, sys
@@ -208,6 +211,7 @@ plugin, run_dir = sys.argv[1], sys.argv[2]
 print(json.dumps({
     "enabledPlugins": {plugin: False},
     "permissions": {"allow": [f"Edit(/{run_dir}/**)"]},
+    "disableAllHooks": True,
     "sandbox": {
         "enabled": True,
         "allowUnsandboxedCommands": False,
@@ -484,9 +488,14 @@ with open(f"{run_dir}/tools.log", "w") as f:
 
 # Writes aimed outside $RUN_DIR. The permission rules and sandbox set up above
 # should refuse every one, so each is sorted by what became of it:
-#   confirmed    the target exists and changed after the trial started: it was
-#                written, whatever the tool reported (a compound command can
-#                fail in one part after writing in another);
+#   confirmed    the target was created after the trial started (where the
+#                filesystem records creation, as macOS does), or changed after
+#                it started and the tool was not refused. A compound command
+#                can fail in one part after writing in another, so a tool error
+#                alone does not clear a newly created file. A directory's own
+#                timestamps move whenever anything writes inside it, so they
+#                never confirm; a copy into one is judged by the file it would
+#                have put there;
 #   refused      otherwise, when the tool reported an error, or the sandbox's
 #                or permission system's refusal appears in its output;
 #   unconfirmed  otherwise: a deletion, which leaves nothing to look at, or a
@@ -520,12 +529,17 @@ def outside(path):
         and not real.startswith("/dev/")
 
 
-def changed_since_start(real):
+def written(real, refused):
     try:
         info = os.lstat(real)
     except OSError:
         return False
-    return max(info.st_mtime, info.st_ctime) >= trial_start
+    born = getattr(info, "st_birthtime", None)
+    if born is not None and born >= trial_start:
+        return True
+    if os.path.isdir(real) and not os.path.islink(real):
+        return False
+    return not refused and max(info.st_mtime, info.st_ctime) >= trial_start
 
 
 # Every operand is written to (mv removes its sources too); for the copy
@@ -537,8 +551,14 @@ DELETES = {"rm", "rmdir", "mv"}
 IN_PLACE = {"sed", "perl"}
 # Words that can stand before the command itself: wrappers, assignments, and
 # the shell keywords a loop or conditional puts at the start of a segment.
-PREFIXES = {"sudo", "env", "command", "nohup", "time", "xargs", "exec",
-            "do", "then", "else", "elif", "!", "{", "}"}
+PREFIXES = {"sudo", "env", "command", "nohup", "time", "xargs", "exec", "timeout",
+            "nice", "stdbuf", "if", "while", "until", "do", "then", "else",
+            "elif", "!", "{", "}"}
+# Downloaders name their output file with a flag rather than an operand.
+OUTPUT_FLAGS = {"curl": ("-o", "--output"), "wget": ("-O", "--output-document")}
+# Redirections that duplicate a file descriptor (2>&1) take a number, not a
+# path, unless the shell form writes both streams to a file (>& file).
+DUPLICATES = {">&", "<&"}
 SEPARATORS = {";", "&&", "||", "|", "&", "|&", "(", ")"}
 REDIRECTS = {">", ">>", ">|", "&>", "&>>"}
 REFUSAL = re.compile(r"operation not permitted|read-only file system|"
@@ -565,7 +585,9 @@ def strip_heredocs(command):
 
 
 def bash_targets(command):
-    """[(path, is_deletion)] for each absolute or ~ write target."""
+    """[(path, is_deletion, sources)] for each absolute or ~ write target;
+    sources are what the copy family copies, for a target that is a
+    directory."""
     text = strip_heredocs(command).replace("\\\n", " ").replace("\n", " ; ")
     lexer = shlex.shlex(text, posix=True, punctuation_chars=";&|()<>")
     lexer.whitespace_split = True
@@ -579,6 +601,9 @@ def bash_targets(command):
     def flush():
         while words and (words[0] in PREFIXES or re.match(r"^\w+=", words[0])):
             words.pop(0)
+            # a wrapper's own options and numbers (timeout 10, nice -n 5)
+            while words and (words[0].startswith("-") or words[0].isdigit()):
+                words.pop(0)
         if words:
             name = os.path.basename(words[0])
             operands = [w for w in words[1:] if not w.startswith("-")]
@@ -586,36 +611,49 @@ def bash_targets(command):
                               None) or next((w.split("=", 1)[1] for w in words
                                              if w.startswith("--target-directory=")), None)
             if name in WRITES_LAST_ARG and target_dir:
-                targets.append((target_dir, False))
+                targets.append((target_dir, False, [w for w in operands if w != target_dir]))
             elif name in WRITES_LAST_ARG and operands:
-                targets.append((operands[-1], False))
+                targets.append((operands[-1], False, operands[:-1]))
             if name in WRITES_EVERY_ARG:
-                targets.extend((w, name in DELETES) for w in operands
+                targets.extend((w, name in DELETES, []) for w in operands
                                if not (name == "mv" and (w == operands[-1] or w == target_dir)))
             elif name == "dd":
-                targets.extend((w[3:], False) for w in words[1:] if w.startswith("of="))
-            elif name in IN_PLACE and any(w.startswith("-i") for w in words[1:]):
-                targets.extend((w, False) for w in operands[1:])
+                targets.extend((w[3:], False, []) for w in words[1:] if w.startswith("of="))
+            elif name in IN_PLACE and any(w.startswith("-i") or w == "--in-place"
+                                          for w in words[1:]):
+                targets.extend((w, False, []) for w in operands[1:])
+            elif name in OUTPUT_FLAGS:
+                short, long = OUTPUT_FLAGS[name]
+                for k, w in enumerate(words[1:-1], start=1):
+                    if w in (short, long):
+                        targets.append((words[k + 1], False, []))
+                targets.extend((w.split("=", 1)[1], False, []) for w in words
+                               if w.startswith(long + "="))
         words.clear()
 
     i = 0
     while i < len(tokens):
         token = tokens[i]
         if token in REDIRECTS and i + 1 < len(tokens):
-            targets.append((tokens[i + 1], False))
+            targets.append((tokens[i + 1], False, []))
+            i += 2
+            continue
+        if token in DUPLICATES and i + 1 < len(tokens):
+            if token == ">&" and tokens[i + 1] != "-" and not tokens[i + 1].isdigit():
+                targets.append((tokens[i + 1], False, []))
             i += 2
             continue
         if token in SEPARATORS or (token and set(token) <= set(";&|()<>")):
             flush()
-        elif token.startswith("#") and not words:
+        elif token.startswith("#"):
             while i + 1 < len(tokens) and tokens[i + 1] not in SEPARATORS:
                 i += 1      # a comment runs to the end of its line
-        elif not re.fullmatch(r"\d+", token) or i + 1 >= len(tokens) \
-                or tokens[i + 1] not in REDIRECTS:
-            words.append(token)     # an fd number before > is not a word
+        elif not token.isdigit() or i + 1 >= len(tokens) \
+                or tokens[i + 1] not in REDIRECTS | DUPLICATES:
+            words.append(token)     # an fd number before > or >& is not a word
         i += 1
     flush()
-    return [(t, d) for t, d in targets if t.startswith(("/", "~"))]
+    return [(t, d, src) for t, d, src in targets if t.startswith(("/", "~"))]
 
 
 escapes, detection_error = [], None
@@ -623,19 +661,24 @@ try:
     for call in tool_calls:
         params = call.get("input") if isinstance(call.get("input"), dict) else {}
         if call["name"] in ("Write", "Edit", "MultiEdit", "NotebookEdit"):
-            paths = [(params.get("file_path") or params.get("notebook_path") or "", False)]
+            paths = [(params.get("file_path") or params.get("notebook_path") or "", False, [])]
         elif call["name"] == "Bash" and isinstance(params.get("command"), str):
             paths = bash_targets(params["command"])
         else:
             continue
         is_error, text = tool_results.get(call["id"], (False, ""))
-        for path, deletion in paths:
+        refused = is_error or bool(REFUSAL.search(text or ""))
+        for path, deletion, sources in paths:
             if not path or not outside(path):
                 continue
             real = resolve(path)
-            if not deletion and changed_since_start(real):
+            candidates = [real]
+            if sources and os.path.isdir(real) and not os.path.islink(real):
+                candidates = [os.path.join(real, os.path.basename(src.rstrip("/")))
+                              for src in sources]
+            if not deletion and any(written(c, refused) for c in candidates):
                 status = "confirmed"
-            elif is_error or REFUSAL.search(text or ""):
+            elif refused:
                 status = "refused"
             else:
                 status = "unconfirmed"

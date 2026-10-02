@@ -33,7 +33,7 @@ TRIALS_DIR="${TRIALS_DIR:-$SCRIPT_DIR/.trial-runs}"
 # before anything is cleared, rather than fail every trial while the batch
 # carries on; see the matching check in evals/lib/run-mcp-trials.sh.
 PREFLIGHT_LOG="$(mktemp)"
-if ! CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 claude -p --tools "" --strict-mcp-config \
+if ! CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 claude -p --tools Bash --strict-mcp-config \
     --no-session-persistence \
     --settings '{"sandbox":{"enabled":true,"failIfUnavailable":true}}' \
     -- "Reply with OK." < /dev/null > /dev/null 2> "$PREFLIGHT_LOG"; then
@@ -110,7 +110,8 @@ for e in data['evals']:
   # already allows the tool itself). With --output-format json there is no
   # per-call record, so the shared driver's after-the-fact write check is not
   # repeated here; this driver has no private HOME either, so the sandbox is
-  # what keeps a Bash write off the real one.
+  # what keeps a Bash write off the real one. disableAllHooks keeps the
+  # developer's hooks, which run outside the sandbox, out of the trial.
   # https://code.claude.com/docs/en/sandboxing
   #
   # A read loop rather than `mapfile`, which needs bash 4: macOS ships bash
@@ -133,6 +134,7 @@ print(json.dumps({
     "pluginConfigs": {"agents-md@builtin": {"options": {"instructionFiles": "managed-only"}}},
     "enabledPlugins": {"life-skills@dcwalker-skills": False},
     "permissions": {"allow": [f"Edit(/{sys.argv[1]}/**)", "WebFetch(domain:*)"]},
+    "disableAllHooks": True,
     "sandbox": {
         "enabled": True,
         "allowUnsandboxedCommands": False,

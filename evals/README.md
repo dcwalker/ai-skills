@@ -481,8 +481,9 @@ network as before. It has no multi-turn `follow_ups` support, no per-trial
 `HOME`/`TMPDIR` isolation, and no after-the-fact write check, since
 `--output-format json` keeps no per-call record. Without a private `HOME` it
 also cannot strip the developer's settings, so an `Edit` or `Write` allow
-rule or an extra directory in `~/.claude/settings.json` widens a triage
-trial's boundary. None of these gaps fails a trial today: triage's
+rule, an extra directory, or a `sandbox.excludedCommands` or
+`sandbox.filesystem.allowWrite` entry in `~/.claude/settings.json` widens a
+triage trial's boundary; hooks, as in the shared driver, are turned off. None of these gaps fails a trial today: triage's
 `evals.json` declares no `follow_ups`, none of its fixtures carry a `home/`,
 and the skill writes nothing under `$HOME`. The settings gap is about the
 developer's own files rather than the measurement, and the `HOME` gap is not
@@ -580,25 +581,36 @@ Five things the shared driver does that a hand-run trial must do for itself:
   - Bash runs in the [sandbox](https://code.claude.com/docs/en/sandboxing),
     writable only under the run directory, with no unsandboxed retry and no
     fallback if the sandbox cannot start; a preflight checks once that it
-    can. The sandbox also leaves Bash no network, which no eval run through
-    this driver needs, and it gives Bash its own `$TMPDIR`, so
-    `CLAUDE_CODE_TMPDIR` points that into the run directory too. Claude Code
-    documents a fallback to a short system temp directory when that path is
-    long; a 159-character run path did not trigger it.
+    can. Bash reaches only the hosts a `WebFetch(domain:...)` allow rule in
+    the loaded settings names, and the trial adds none, which suits every
+    eval run through this driver: each service it talks to is a stub. The
+    sandbox gives Bash its own `$TMPDIR`, so `CLAUDE_CODE_TMPDIR` points that
+    into the run directory too. Claude Code documents a fallback to a short
+    system temp directory when that path is long; a 159-character run path
+    did not trigger it, and if it does, temp files land there silently
+    rather than in the run directory. `disableAllHooks` keeps hooks from the
+    developer's enabled plugins, which run outside the sandbox, out of the
+    trial.
   - The developer's settings are copied without `permissions`, `sandbox`, or
     `hooks`, which merge across scopes and would widen the boundary or run
     outside it. Project settings are another matter: a trial workspace has no
     `.git` of its own, so under the default `TRIALS_DIR`, inside this
     repository, Claude Code reads the repository's `.claude/settings.local.json`.
-    Keep `Edit` or `Write` allow rules and `additionalDirectories` out of it,
-    or point `TRIALS_DIR` outside the repository.
+    Keep `Edit` or `Write` allow rules, `additionalDirectories`, `sandbox`
+    keys such as `excludedCommands` or `filesystem.allowWrite`, and
+    `WebFetch(domain:...)` rules (which open the sandbox's network) out of
+    it, or point `TRIALS_DIR` outside the repository.
   - After each trial, its Write and Edit calls and its Bash write targets
     (redirections and the operands of commands that write or delete files)
     are checked against the run directory. Each one outside it is listed in
-    `escapes.log` as `refused`, `confirmed` (the file is there now), or
-    `unconfirmed`, and counted in `metrics.json`. A confirmed write stops the
-    run, as the older `~/writing-style` check does; the others are warnings,
-    since a refused save still explains a skill's missing output.
+    `escapes.log` and counted in `metrics.json` as `confirmed` (the target
+    was created after the trial started, or changed after it started without
+    the tool being refused), `refused`, or `unconfirmed` (a deletion, or a
+    command that changed nothing). A directory's own timestamps move whenever
+    anything writes inside it, so a copy into a directory is judged by the
+    file it would have put there. A confirmed write stops the run, as the
+    older `~/writing-style` check does; the others are warnings, since a
+    refused save still explains a skill's missing output.
 - It seeds that home from the fixture's optional `home/` directory, which is
   how a trial starts with state already in place. A fixture can hand the
   trial its own prior cache, or somebody else's, and grade what the skill
