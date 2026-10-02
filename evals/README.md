@@ -56,7 +56,8 @@ plugins/<plugin>/skills/<skill>/evals/
         │                      responses (organize-meeting-notes).
         ├── home/              Optional: seeds the trial's private HOME,
         │                      for skills that keep state across sessions
-        │                      or clean up under $HOME. Both drivers honor it.
+        │                      or clean up under $HOME. run-eval.sh and
+        │                      run-mcp-trials.sh honor it.
         └── sandbox-setup.sh   Optional, `"sandbox": true` evals only: runs
                                with the trial environment sourced, to point
                                origin at the sandbox repo and clear what the
@@ -295,14 +296,20 @@ The real `/usr/bin/trash` moves items into the real user's Trash whatever
 Trash. `trash-stub/trash` is prepended to `PATH` in every mode, moves each path
 into `$HOME/.Trash` instead, and appends its argv to `TRASH_STUB_LOG`
 (`<run-dir>/trash-calls.log`, set by `run-eval.sh`) as one JSON line per call.
-It refuses when `AI_SKILLS_EVAL` is unset or `$HOME` is still the account's
-real home, so an eval that trashes anything needs a fixture `home/` directory.
+It refuses when `AI_SKILLS_EVAL` is unset, when `$HOME` is still the
+account's real home, and for any path outside `$HOME`, since the trial's
+`.Trash` is deleted with the run directory. An eval that trashes anything
+therefore needs a fixture `home/` directory. Only `run-eval.sh` sets
+`TRASH_STUB_LOG`; under the MCP drivers the stub still runs, unlogged. Like
+the gh stub, it only shadows `trash` for commands run through `in-trial.sh`.
 
 `run-eval.sh` copies a fixture's `home/` into `<run-dir>/home` before
 `setup.sh` runs, and exports `HOME` there. `setup.sh` can then add files whose
 contents need the run's absolute paths, such as a DerivedData folder's
 `info.plist`. Fixtures without `home/` keep the developer's `HOME`, as before.
-`defaults read` still reads the real user's preferences under either `HOME`.
+`defaults read` still reads the real user's preferences under either `HOME`,
+so `run-eval.sh` refuses a fixture that seeds `home/Library/Developer/Xcode`
+when the host sets Xcode's `IDECustomDerivedDataLocation`.
 
 ## The Trello fixture hook
 

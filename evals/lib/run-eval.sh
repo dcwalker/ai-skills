@@ -98,6 +98,16 @@ if [[ -d "$FIXTURE_DIR/home" ]]; then
   cp -R "$FIXTURE_DIR/home/." "$TRIAL_HOME/"
 fi
 
+# `defaults read` ignores $HOME and reads the real user's preferences. A
+# fixture that seeds Xcode state under home/ assumes the default DerivedData
+# location; with a custom location set on this machine, the trial would scan
+# the developer's real build caches instead of the fixture's.
+if [[ -d "$FIXTURE_DIR/home/Library/Developer/Xcode" ]] && \
+  defaults read com.apple.dt.Xcode IDECustomDerivedDataLocation > /dev/null 2>&1; then
+  echo "run-eval: this machine sets Xcode's IDECustomDerivedDataLocation, so the trial would read real DerivedData; refusing" >&2
+  exit 1
+fi
+
 if [[ -d "$FIXTURE_DIR/repo" ]] || [[ -f "$FIXTURE_DIR/setup.sh" ]] || [[ -f "$FIXTURE_DIR/meta.json" ]]; then
   "$SCRIPT_DIR/git-fixture.sh" "$FIXTURE_DIR" "$WORKSPACE_DIR" > /dev/null
 else

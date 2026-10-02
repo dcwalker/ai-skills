@@ -7,9 +7,10 @@
 # instead, which run-eval.sh points at a private trial home when the fixture
 # ships a home/ directory, and the grader can read what landed there.
 #
-# Refuses when AI_SKILLS_EVAL is unset, and when $HOME is still the account's
-# real home directory, so it can never move anything into the real Trash.
-# Never execs the real trash.
+# Refuses when AI_SKILLS_EVAL is unset, when $HOME is missing or still the
+# account's real home directory, and for any path outside $HOME. The last
+# rule matters because the trial's .Trash is deleted with the run directory:
+# a real file moved there would be lost for good. Never execs the real trash.
 #
 # Every invocation is appended to TRASH_STUB_LOG (when set) as one JSON line
 # with the argv, so a grader can assert which paths were trashed.
@@ -28,7 +29,12 @@ REAL_HOME="$(dscl . -read "/Users/$(id -un)" NFSHomeDirectory 2> /dev/null | awk
 if [[ -z "$REAL_HOME" ]] && command -v getent > /dev/null; then
   REAL_HOME="$(getent passwd "$(id -un)" | cut -d: -f6)" || REAL_HOME=""
 fi
-if [[ -z "$REAL_HOME" || "$(cd "$HOME" && pwd -P)" == "$(cd "$REAL_HOME" && pwd -P)" ]]; then
+if [[ ! -d "$HOME" ]]; then
+  echo "trash-stub: HOME ($HOME) is not a directory" >&2
+  exit 1
+fi
+TRIAL_HOME="$(cd "$HOME" && pwd -P)"
+if [[ -z "$REAL_HOME" || "$TRIAL_HOME" == "$(cd "$REAL_HOME" && pwd -P)" ]]; then
   echo "trash-stub: HOME is not a private trial home; give the fixture a home/ directory" >&2
   exit 1
 fi
@@ -37,17 +43,32 @@ TRASH_DIR="$HOME/.Trash"
 mkdir -p "$TRASH_DIR"
 
 STATUS=0
+STOP_ON_ERROR=0
+OPTIONS_DONE=0
+fail() {
+  echo "$1" >&2
+  STATUS=1
+  if [[ $STOP_ON_ERROR -eq 1 ]]; then exit 1; fi
+}
 for ARG in "$@"; do
-  case "$ARG" in
-    -h | --help)
-      echo "usage: trash [-v] [-s] FILE [FILE...]"
-      exit 0
-      ;;
-    -v | --verbose | -s | -stopOnError) continue ;;
-  esac
+  if [[ $OPTIONS_DONE -eq 0 ]]; then
+    case "$ARG" in
+      -h | --help)
+        echo "usage: trash [-h] [-s] [-v] FILE [FILE...]"
+        exit 0
+        ;;
+      -v | --verbose) continue ;;
+      -s | -stopOnError | --stopOnError) STOP_ON_ERROR=1; continue ;;
+      --) OPTIONS_DONE=1; continue ;;
+    esac
+  fi
   if [[ ! -e "$ARG" && ! -L "$ARG" ]]; then
-    echo "trash: $ARG: No such file or directory" >&2
-    STATUS=1
+    fail "trash: $ARG: No such file or directory"
+    continue
+  fi
+  RESOLVED="$(cd "$(dirname "$ARG")" && pwd -P)/$(basename "$ARG")"
+  if [[ "$RESOLVED" != "$TRIAL_HOME"/* ]]; then
+    fail "trash-stub: $ARG is outside the trial HOME ($TRIAL_HOME); refusing"
     continue
   fi
   TARGET="$TRASH_DIR/$(basename "$ARG")"
