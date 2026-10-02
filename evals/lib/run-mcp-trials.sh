@@ -14,7 +14,9 @@
 # The nested `claude` subprocess inherits the parent session's credentials, so
 # this does run when delegated to an in-session Bash tool call. It also runs as
 # root, in a container, and in CI -- the allowlist below is what makes those
-# three work. If it fails to authenticate in whatever sandbox you are in, run
+# three work -- provided Claude Code's Bash sandbox can start there (on Linux
+# it needs bubblewrap and socat). A preflight checks that once, before any
+# trial runs. If it fails to authenticate in whatever sandbox you are in, run
 # it from a normal logged-in terminal instead. See evals/README.md's "MCP stub
 # servers" section for the underlying mechanism.
 #
@@ -117,6 +119,25 @@ print(' '.join(str(e['id']) for e in data['evals']))
   rm -rf "$TRIALS_DIR"
 fi
 mkdir -p "$TRIALS_DIR"
+# Every path below derives from the resolved trials directory. A permission
+# rule only matches when the path a tool asks for and the file it resolves to
+# both fall under it, so a run dir reached through a symlink (/tmp on macOS)
+# would name a private HOME no rule covers.
+TRIALS_DIR="$(cd "$TRIALS_DIR" && pwd -P)"
+
+# Trials require the Bash sandbox (failIfUnavailable, below), and Claude Code
+# exits at startup when it cannot start one. Without this check, every trial
+# would fail the same way while the batch reported each as an ordinary
+# non-zero exit and carried on, finishing with nothing measured.
+if ! CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 claude -p --tools "" --strict-mcp-config \
+    --no-session-persistence \
+    --settings '{"sandbox":{"enabled":true,"failIfUnavailable":true}}' \
+    -- "Reply with OK." < /dev/null > /dev/null 2> "$TRIALS_DIR/sandbox-preflight.txt"; then
+  echo "ERROR: Claude Code could not start with its Bash sandbox, which every" >&2
+  echo "  trial requires. Its output is in $TRIALS_DIR/sandbox-preflight.txt." >&2
+  echo "  See https://code.claude.com/docs/en/sandboxing for its requirements." >&2
+  exit 1
+fi
 
 for ID in $IDS; do
   PROMPT=$(python3 -c "
@@ -234,9 +255,20 @@ print(json.dumps({
 
   if [[ -d "$HOME/.claude" && ! -e "$TRIAL_HOME/.claude" ]]; then
     mkdir -p "$TRIAL_HOME/.claude"
+    # Copied without permissions, sandbox, or hooks: permission and sandbox
+    # arrays merge across settings scopes, so a developer's own allow rules
+    # or extra writable paths would widen the boundary set up per trial
+    # below, and their hooks run outside it altogether.
     for SETTING in settings.json settings.local.json; do
-      [[ -f "$HOME/.claude/$SETTING" ]] && \
-        cp "$HOME/.claude/$SETTING" "$TRIAL_HOME/.claude/$SETTING"
+      [[ -f "$HOME/.claude/$SETTING" ]] && python3 -c '
+import json, sys
+with open(sys.argv[1]) as fh:
+    settings = json.load(fh)
+for key in ("permissions", "sandbox", "hooks"):
+    settings.pop(key, None)
+with open(sys.argv[2], "w") as fh:
+    json.dump(settings, fh)
+' "$HOME/.claude/$SETTING" "$TRIAL_HOME/.claude/$SETTING"
     done
     # Plugins are 22M and read-only to a trial, so they stay a symlink rather
     # than being copied 27 times. The rest of ~/.claude -- projects/, sessions/,
@@ -277,7 +309,7 @@ with open(sys.argv[2], "w") as fh:
     [[ -n "$resume_id" ]] && resume_flag=(--resume "$resume_id")
     (
       cd "$WORKSPACE_DIR"
-      HOME="$TRIAL_HOME" TMPDIR="$RUN_DIR/tmp" \
+      HOME="$TRIAL_HOME" TMPDIR="$RUN_DIR/tmp" CLAUDE_CODE_TMPDIR="$RUN_DIR/tmp" \
         claude -p --permission-mode dontAsk \
         --allowedTools "Bash Read Glob Grep WebFetch TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian mcp__slack" \
         --strict-mcp-config --verbose ${resume_flag[@]+"${resume_flag[@]}"} \
@@ -365,6 +397,7 @@ print(last)
 print()
 " "$RUN_DIR/events.jsonl" >> "$RUN_DIR/conversation.txt"
       REPLY=$(cd "$SIM_DIR" && HOME="$TRIAL_HOME" TMPDIR="$RUN_DIR/tmp" \
+        CLAUDE_CODE_TMPDIR="$RUN_DIR/tmp" \
         CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 \
         claude -p --tools "" --strict-mcp-config --no-session-persistence \
         --settings '{"pluginConfigs":{"agents-md@builtin":{"options":{"instructionFiles":"managed-only"}}}}' \
@@ -393,8 +426,15 @@ run_dir, skill_name, run_dir_real, workspace, trial_home = sys.argv[1:6]
 # events.jsonl is one JSON object per line, across every turn of the trial:
 # each turn ends with a "result" event carrying that turn's usage and
 # duration, and each assistant event names the tools it called.
-results, tool_calls, failed_ids = [], [], set()
+results, tool_calls, tool_results = [], [], {}
 parse_error = "no terminal result event in events.jsonl"
+
+
+def blocks(event):
+    content = (event.get("message") or {}).get("content")
+    return [b for b in content if isinstance(b, dict)] if isinstance(content, list) else []
+
+
 try:
     with open(f"{run_dir}/events.jsonl") as f:
         for line in f:
@@ -405,20 +445,24 @@ try:
                 event = json.loads(line)
             except json.JSONDecodeError:
                 continue        # a partial final line on a killed trial
+            if not isinstance(event, dict):
+                continue
             if event.get("type") == "result":
                 results.append(event)
             elif event.get("type") == "assistant":
-                for block in event.get("message", {}).get("content", []):
+                for block in blocks(event):
                     if block.get("type") == "tool_use":
                         tool_calls.append({"turn": len(results) + 1,
                                            "id": block.get("id"),
                                            "name": block.get("name"),
                                            "input": block.get("input")})
             elif event.get("type") == "user":
-                content = event.get("message", {}).get("content", [])
-                for block in content if isinstance(content, list) else []:
-                    if block.get("type") == "tool_result" and block.get("is_error"):
-                        failed_ids.add(block.get("tool_use_id"))
+                for block in blocks(event):
+                    if block.get("type") == "tool_result":
+                        text = block.get("content")
+                        tool_results[block.get("tool_use_id")] = (
+                            bool(block.get("is_error")),
+                            text if isinstance(text, str) else json.dumps(text))
 except OSError as e:
     parse_error = str(e)
 
@@ -427,13 +471,21 @@ with open(f"{run_dir}/tools.log", "w") as f:
         f.write(json.dumps({k: v for k, v in call.items() if k != "id"}) + "\n")
 
 
-# Writes that landed outside $RUN_DIR. The permission rules and sandbox set
-# up above should refuse every one, so a hit here means they did not, and a
-# refused attempt (an errored tool result) is not counted. File tools are
-# checked exactly; Bash is checked by its absolute-path write targets
-# (redirections and the arguments of commands that create, move, or delete
-# files), which catches the common forms but not every way a shell can
-# write. Relative and ~ paths resolve inside the workspace and private HOME.
+# Writes aimed outside $RUN_DIR. The permission rules and sandbox set up above
+# should refuse every one, so each is sorted by what became of it:
+#   refused      the tool reported an error, or the sandbox's or permission
+#                system's refusal appears in its output;
+#   confirmed    not refused, and the target exists now: it was written;
+#   unconfirmed  not refused, but nothing there to show for it (a deletion,
+#                or a write that failed some other way).
+# Only a confirmed write stops the run; the other two are counted and warned
+# about, since a refused save still explains why a skill's output went
+# missing. File tools are checked exactly. Bash is checked by its write
+# targets: redirections, and the operands of commands that create, move, or
+# delete files, read through a shell tokenizer so quoted text and heredoc
+# bodies are not taken for commands. That catches the common forms, not every
+# way a shell can write; the sandbox is what actually contains Bash. Relative
+# and ~ paths resolve inside the workspace and private HOME.
 def resolve(path):
     if path == "~" or path.startswith("~/"):
         path = trial_home + path[1:]
@@ -453,55 +505,122 @@ def outside(path):
         and not real.startswith("/dev/")
 
 
-# Every argument is written to (mv removes its sources too); for the copy
-# family only the last argument is, and dd writes only to of=.
+# Every operand is written to (mv removes its sources too); for the copy
+# family only the last operand is, and dd writes only to of=. Deletions
+# cannot be confirmed by looking for the file afterwards.
 WRITES_EVERY_ARG = {"tee", "touch", "mkdir", "rm", "rmdir", "mv", "truncate"}
 WRITES_LAST_ARG = {"cp", "ln", "install", "rsync"}
+DELETES = {"rm", "rmdir", "mv"}
+PREFIXES = {"sudo", "env", "command", "nohup", "time"}
+SEPARATORS = {";", "&&", "||", "|", "&", "|&", "(", ")"}
+REDIRECTS = {">", ">>", ">|", "&>", "&>>"}
+REFUSAL = re.compile(r"operation not permitted|read-only file system|"
+                     r"permission to use \w+ has been denied", re.I)
+
+
+def strip_heredocs(command):
+    """Drop heredoc bodies: their lines are input, not commands."""
+    out, delimiter = [], None
+    for line in command.split("\n"):
+        if delimiter is not None:
+            if line.strip() == delimiter:
+                delimiter = None
+            continue
+        out.append(line)
+        match = re.search(r"<<-?\s*['\"]?([A-Za-z_][A-Za-z0-9_]*)['\"]?", line)
+        if match:
+            delimiter = match.group(1)
+    return "\n".join(out)
 
 
 def bash_targets(command):
-    targets = re.findall(r"(?:^|[^<0-9&])>>?\s*([^\s;&|<>()]+)", command)
-    for segment in re.split(r"&&|\|\||[;|\n]", command):
-        try:
-            words = shlex.split(segment)
-        except ValueError:
-            words = segment.split()
-        if not words:
+    """[(path, is_deletion)] for each absolute or ~ write target."""
+    lexer = shlex.shlex(strip_heredocs(command).replace("\\\n", " ").replace("\n", " ; "),
+                        posix=True, punctuation_chars=";&|()<>")
+    lexer.whitespace_split = True
+    try:
+        tokens = list(lexer)
+    except ValueError:      # an unbalanced quote: fall back to plain words
+        tokens = command.split()
+    targets, words = [], []
+
+    def flush():
+        while words and (words[0] in PREFIXES or re.match(r"^\w+=", words[0])):
+            words.pop(0)
+        if words:
+            name = os.path.basename(words[0])
+            operands = [w for w in words[1:] if not w.startswith("-")]
+            if name in WRITES_EVERY_ARG:
+                targets.extend((w, name in DELETES) for w in operands)
+            elif name in WRITES_LAST_ARG and operands:
+                targets.append((operands[-1], False))
+            elif name == "dd":
+                targets.extend((w[3:], False) for w in words[1:] if w.startswith("of="))
+        words.clear()
+
+    i = 0
+    while i < len(tokens):
+        token = tokens[i]
+        if token in REDIRECTS and i + 1 < len(tokens):
+            targets.append((tokens[i + 1], False))
+            i += 2
             continue
-        name = os.path.basename(words[0])
-        operands = [w for w in words[1:] if not w.startswith("-")]
-        if name in WRITES_EVERY_ARG:
-            targets += operands
-        elif name in WRITES_LAST_ARG and operands:
-            targets.append(operands[-1])
-        elif name == "dd":
-            targets += [w[3:] for w in words[1:] if w.startswith("of=")]
-    return [t for t in targets if t.startswith(("/", "~"))]
+        if token in SEPARATORS or set(token) <= set(";&|()<>"):
+            flush()
+        elif not re.fullmatch(r"\d+", token) or i + 1 >= len(tokens) \
+                or tokens[i + 1] not in REDIRECTS:
+            words.append(token)     # an fd number before > is not a word
+        i += 1
+    flush()
+    return [(t, d) for t, d in targets if t.startswith(("/", "~"))]
 
 
-escapes = []
-for call in tool_calls:
-    if call["id"] in failed_ids:
-        continue
-    params = call.get("input") or {}
-    if call["name"] in ("Write", "Edit", "MultiEdit", "NotebookEdit"):
-        paths = [params.get("file_path") or params.get("notebook_path") or ""]
-    elif call["name"] == "Bash":
-        paths = bash_targets(params.get("command", ""))
-    else:
-        continue
-    for path in paths:
-        if path and outside(path):
-            escapes.append({"turn": call["turn"], "tool": call["name"],
-                            "path": path, "resolved": resolve(path)})
+escapes, detection_error = [], None
+try:
+    for call in tool_calls:
+        params = call.get("input") if isinstance(call.get("input"), dict) else {}
+        if call["name"] in ("Write", "Edit", "MultiEdit", "NotebookEdit"):
+            paths = [(params.get("file_path") or params.get("notebook_path") or "", False)]
+        elif call["name"] == "Bash" and isinstance(params.get("command"), str):
+            paths = bash_targets(params["command"])
+        else:
+            continue
+        is_error, text = tool_results.get(call["id"], (False, ""))
+        for path, deletion in paths:
+            if not path or not outside(path):
+                continue
+            real = resolve(path)
+            if is_error or REFUSAL.search(text or ""):
+                status = "refused"
+            elif not deletion and os.path.lexists(real):
+                status = "confirmed"
+            else:
+                status = "unconfirmed"
+            escapes.append({"turn": call["turn"], "tool": call["name"], "path": path,
+                            "resolved": real, "status": status})
+except Exception as e:      # a detection bug must not abort the batch
+    detection_error = f"{type(e).__name__}: {e}"
+    print(f"  WARNING: the outside-write check failed ({detection_error}); "
+          "inspect tools.log by hand")
+
 if escapes:
     with open(f"{run_dir}/escapes.log", "w") as f:
         for escape in escapes:
             f.write(json.dumps(escape) + "\n")
+count = {status: sum(e["status"] == status for e in escapes)
+         for status in ("confirmed", "unconfirmed", "refused")}
+outside_writes = {"writes_outside_run_dir": count["confirmed"],
+                  "writes_outside_run_dir_unconfirmed": count["unconfirmed"],
+                  "writes_outside_run_dir_refused": count["refused"],
+                  "outside_write_check_error": detection_error}
+if count["refused"] or count["unconfirmed"]:
+    print(f"  WARNING: {count['refused']} refused and {count['unconfirmed']} unconfirmed "
+          "write(s) aimed outside the run directory; see escapes.log")
 
 if not results:
     with open(f"{run_dir}/metrics.json", "w") as f:
         json.dump({"parse_error": parse_error, "tool_calls": len(tool_calls),
+                   **outside_writes,
                    "note": "events.jsonl was missing or held no result event; "
                            "inspect it manually alongside stderr.txt"}, f, indent=2)
     print(f"  WARNING: {parse_error}; wrote placeholder metrics.json and "
@@ -544,7 +663,7 @@ metrics = {
         "cache_read_input": total("cache_read_input_tokens", usage),
     },
     "is_error": any(r.get("is_error") for r in results),
-    "writes_outside_run_dir": len(escapes),
+    **outside_writes,
 }
 with open(f"{run_dir}/metrics.json", "w") as f:
     json.dump(metrics, f, indent=2)
@@ -577,17 +696,23 @@ PYEOF
   fi
 
   # Any other write that landed outside $RUN_DIR, found from the trial's own
-  # tool calls above. It stops the run for the same reason: the trial wrote
-  # somewhere real, and what it wrote stays there until someone looks.
+  # tool calls above. A confirmed one stops the run for the same reason: the
+  # trial wrote somewhere real, and what it wrote stays there until someone
+  # looks. Refused and unconfirmed attempts were already warned about.
+  CONFIRMED_ESCAPES=""
   if [[ -s "$RUN_DIR/escapes.log" ]]; then
-    echo >&2
-    echo "  ERROR: eval $ID wrote outside its run directory ($RUN_DIR_REAL):" >&2
-    python3 -c '
+    CONFIRMED_ESCAPES="$(python3 -c '
 import json, sys
 for line in open(sys.argv[1]):
     escape = json.loads(line)
-    print("    turn {turn}, {tool}: {resolved}".format(**escape))
-' "$RUN_DIR/escapes.log" >&2
+    if escape["status"] == "confirmed":
+        print("    turn {turn}, {tool}: {resolved}".format(**escape))
+' "$RUN_DIR/escapes.log")"
+  fi
+  if [[ -n "$CONFIRMED_ESCAPES" ]]; then
+    echo >&2
+    echo "  ERROR: eval $ID wrote outside its run directory ($RUN_DIR_REAL):" >&2
+    echo "$CONFIRMED_ESCAPES" >&2
     echo "  Nothing was moved or deleted. Inspect those paths, then see" >&2
     echo "  $RUN_DIR/escapes.log and tools.log. Stopping the run." >&2
     exit 1
