@@ -407,11 +407,15 @@ can: a trial where a skill posts unasked has to be a finding about the skill
 rather than something the harness made impossible. It is also the one stub
 whose *responses* had to be copied rather than shaped, since Slack's tools
 return human-readable text in a thin JSON envelope with a different layout
-per tool, not structured objects.
-Its query subset also covers `in:sent`, `to:`, and `me` resolution (against
-an optional top-level `"me"` address in the fixture), which is what a corpus
-search for "mail I wrote to this person" needs; a fixture that declares no
-`"me"` makes `from:me`/`to:me` match nothing rather than everything.
+per tool, not structured objects. Its search takes `keywords`, `filters`,
+and `query` as the live tool does, honours `before`/`after` Unix-timestamp
+bounds, and logs all of them; its docstring lists the query subset it
+supports and where it diverges from the live server.
+`gmail_stub.py`'s query subset also covers `in:sent`, `to:`, and `me`
+resolution (against an optional top-level `"me"` address in the fixture),
+which is what a corpus search for "mail I wrote to this person" needs; a
+fixture that declares no `"me"` makes `from:me`/`to:me` match nothing rather
+than everything.
 
 Requires a one-time local dependency install (isolated venv, not system
 Python -- see `evals/lib/mcp-stub/requirements.txt`):

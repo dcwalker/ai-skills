@@ -105,17 +105,57 @@ For each available source:
   meeting's actual start and end, not its scheduled times; meeting
   platforms report the two separately. Leave out messages outside the
   window, even when they look useful (a heads-up before the start, a
-  follow-up after the end). Find messages by date and time, not by topic
-  keywords or a sender filter: a keyword search misses the messages that
-  matter most (a request to stop recording names no topic), and a sender
-  filter returns nothing when the search does not accept the identifier
-  given. Report that chat holds nothing only after reading the window
-  itself. Keep every message sent by or to an attendee
-  inside that window, including join and leave notices, reactions, and
-  messages from people outside the meeting; exclude only bot and integration
-  posts. Side conversations count even when they are off the meeting topic,
-  because they show what the attendees were engaged with: propose them in
-  time order, or beside the part of the discussion they ran alongside. Keep
+  follow-up after the end). Read the window before any keyword or sender
+  search, in two steps:
+  1. Find the conversations active in the window with a search bounded only
+     by date, carrying no topic keyword and no sender filter. When the tool
+     takes timestamps, convert the window in the user's own timezone (from
+     the chat profile or the calendar). If the tool refuses a search bounded
+     only by timestamps, retry it with the meeting's date as a date filter
+     (`on:YYYY-MM-DD` in Slack's search syntax); a refused search is never
+     a reason to fall back to keywords. Sort the search by time, and page
+     through it until the results run out or reach past both the actual
+     start and the actual end.
+  2. Read each of those conversations between the actual start and end,
+     with the chat tool's own read operation bounded to the window (in
+     Slack, reading the channel or direct message history). This step is
+     required even when the search results already show the messages:
+     search results and their surrounding context can leave messages out,
+     so they are not a read. Never say a conversation was read unless that
+     read was made.
+
+  When the chat tool cannot search by date alone, list the user's direct
+  messages, group direct messages, and channels instead, read each between
+  the actual start and end, and say so.
+
+  Keyword and sender searches may follow as extras, but they are never the
+  check itself: a keyword search misses the messages that matter most (a
+  request to stop recording names no topic), and a sender filter returns
+  nothing when the search does not accept the identifier given. An empty
+  keyword or sender search says nothing about the window. Report that chat
+  holds nothing only after the window itself came back empty.
+
+  When presenting chat, found or empty, open with one line in this shape,
+  before any finding, filling in every part:
+
+  `Chat: searched <start> to <end> by date only (<date terms used>); read <conversations read>.`
+
+  For example: `Chat: searched 2:00 PM to 2:45 PM by date only
+  (on:2026-10-01); read the direct message with Marcus Hall, the group
+  direct message with Priya Raman and Marcus Hall, and #release-4-2.` When
+  the search found nothing, the line is still required, and ends with
+  `nothing to read` in place of the read part: `Chat: searched 9:00 AM to
+  9:20 AM by date only (on:2026-09-30); nothing to read.` Name
+  every conversation read, including one that came back empty. When the
+  listing fallback replaced the search, write `listed conversations for
+  <start> to <end>` in place of the search part.
+
+  Keep every message sent by or to an attendee inside that window, including
+  join and leave notices, reactions, and messages from people outside the
+  meeting; exclude only bot and integration posts. Side conversations count
+  even when they are off the meeting topic, because they show what the
+  attendees were engaged with: propose them in time order, or beside the
+  part of the discussion they ran alongside. Keep
   each one unless the user declines it, and never suggest dropping one
   because it is off topic or a participant called it unrelated. A
   message about the recording rather than the meeting (a request to stop
