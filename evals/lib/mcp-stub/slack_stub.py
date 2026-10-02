@@ -75,7 +75,8 @@ evals measure and each worth knowing before trusting a diff:
   always reports no more pages, so a fixture with more than 20 matching
   messages is silently truncated.
 - The live search requires at least one of `keywords` or `filters`. The
-  stub refuses a search with neither, but also accepts `query` alone,
+  stub refuses a search with neither, logging the refused call with an
+  `error` result in place of `results`, but also accepts `query` alone,
   since what the live server does with it is unverified.
   `natural_language_query` (semantic reranking) is accepted, logged, and
   ignored, as is `only_my_channels`: every fixture channel is the user's.
@@ -353,8 +354,18 @@ def slack_search_public_and_private(
     results by Unix timestamp, inclusive at both ends. Requires at least one
     of keywords, filters, or query.
     natural_language_query is accepted for semantic reranking and ignored."""
+    args = {"query": query, "keywords": keywords or [], "filters": filters,
+            "natural_language_query": natural_language_query,
+            "limit": limit, "sort": sort,
+            "sort_dir": sort_dir, "after": after, "before": before,
+            "channel_types": channel_types, "only_my_channels": only_my_channels,
+            "include_context": include_context}
     if not (keywords or filters or query):
-        raise ValueError("slack-stub: search requires at least one of keywords or filters")
+        # Logged before refusing, so a grader sees the attempt in the call
+        # log rather than having to find it in the transcript.
+        error = "slack-stub: search requires at least one of keywords or filters"
+        state.log_call("slack_search_public_and_private", args, {"error": error})
+        raise ValueError(error)
     # Keywords are lexical terms live, so quote each one: a keyword such as
     # `on:2026-10-01` or `-release` then matches text, never acts as a modifier.
     literal = [k if len(k) > 1 and k.startswith('"') and k.endswith('"') else f'"{k}"'
@@ -364,13 +375,7 @@ def slack_search_public_and_private(
     body = _render_hits(combined, hits, include_context)
 
     result = _search_response(body)
-    state.log_call("slack_search_public_and_private",
-                   {"query": query, "keywords": keywords or [], "filters": filters,
-                    "natural_language_query": natural_language_query,
-                    "limit": limit, "sort": sort,
-                    "sort_dir": sort_dir, "after": after, "before": before,
-                    "channel_types": channel_types, "only_my_channels": only_my_channels,
-                    "include_context": include_context}, result)
+    state.log_call("slack_search_public_and_private", args, result)
     return result
 
 
