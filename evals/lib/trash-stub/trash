@@ -77,6 +77,11 @@ for ARG in "$@"; do
     TARGET="$TRASH_DIR/$(basename "$ARG") $N"
     N=$((N + 1))
   done
-  mv "$ARG" "$TARGET"
+  mv "$ARG" "$TARGET" || fail "trash: $ARG: could not be moved to the Trash"
+  MOVED=1
 done
+if [[ -z "${MOVED:-}" && $STATUS -eq 0 ]]; then
+  echo "usage: trash [-h] [-s] [-v] FILE [FILE...]" >&2
+  exit 1
+fi
 exit $STATUS

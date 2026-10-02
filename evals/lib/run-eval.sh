@@ -82,6 +82,16 @@ if [[ "$SANDBOX_EVAL" == "1" ]]; then
   fi
 fi
 
+# `defaults read` ignores $HOME and reads the real user's preferences. A
+# fixture that seeds Xcode state under home/ assumes the default DerivedData
+# location; with a custom location set on this machine, the trial would scan
+# the developer's real build caches instead of the fixture's.
+if [[ -d "$FIXTURE_DIR/home/Library/Developer/Xcode" ]] && \
+  defaults read com.apple.dt.Xcode IDECustomDerivedDataLocation > /dev/null 2>&1; then
+  echo "run-eval: this machine sets Xcode's IDECustomDerivedDataLocation, so the trial would read real DerivedData; refusing" >&2
+  exit 1
+fi
+
 mkdir -p "$RUN_DIR"
 RUN_DIR="$(cd "$RUN_DIR" > /dev/null && pwd)"
 WORKSPACE_DIR="$RUN_DIR/workspace"
@@ -96,16 +106,6 @@ if [[ -d "$FIXTURE_DIR/home" ]]; then
   TRIAL_HOME="$RUN_DIR/home"
   mkdir -p "$TRIAL_HOME"
   cp -R "$FIXTURE_DIR/home/." "$TRIAL_HOME/"
-fi
-
-# `defaults read` ignores $HOME and reads the real user's preferences. A
-# fixture that seeds Xcode state under home/ assumes the default DerivedData
-# location; with a custom location set on this machine, the trial would scan
-# the developer's real build caches instead of the fixture's.
-if [[ -d "$FIXTURE_DIR/home/Library/Developer/Xcode" ]] && \
-  defaults read com.apple.dt.Xcode IDECustomDerivedDataLocation > /dev/null 2>&1; then
-  echo "run-eval: this machine sets Xcode's IDECustomDerivedDataLocation, so the trial would read real DerivedData; refusing" >&2
-  exit 1
 fi
 
 if [[ -d "$FIXTURE_DIR/repo" ]] || [[ -f "$FIXTURE_DIR/setup.sh" ]] || [[ -f "$FIXTURE_DIR/meta.json" ]]; then
