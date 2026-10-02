@@ -129,6 +129,11 @@ emit_isolation_env() {
   # the real binary.
   echo "export PATH=\"$lib_dir/sonar-scanner-stub:\$PATH\""
 
+  # trash is shadowed in every mode too. macOS's /usr/bin/trash moves items
+  # into the real user's Trash whatever $HOME says; the stub moves them into
+  # the trial's own $HOME/.Trash and refuses when $HOME is the real home.
+  echo "export PATH=\"$lib_dir/trash-stub:\$PATH\""
+
   # Explicit: a caller under `set -e` must not inherit the exit status of
   # whatever the last echo happened to be.
   return 0

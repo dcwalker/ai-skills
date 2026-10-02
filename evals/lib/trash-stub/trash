@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+# Fail-closed fake `trash` for offline, deterministic skill evals.
+#
+# macOS's /usr/bin/trash moves items into the real user's Trash whatever $HOME
+# says, so a trial that trashes fixture files would leave them in the
+# developer's own Trash. This stub moves each path into "$HOME/.Trash"
+# instead, which run-eval.sh points at a private trial home when the fixture
+# ships a home/ directory, and the grader can read what landed there.
+#
+# Refuses when AI_SKILLS_EVAL is unset, and when $HOME is still the account's
+# real home directory, so it can never move anything into the real Trash.
+# Never execs the real trash.
+#
+# Every invocation is appended to TRASH_STUB_LOG (when set) as one JSON line
+# with the argv, so a grader can assert which paths were trashed.
+set -euo pipefail
+
+if [[ -n "${TRASH_STUB_LOG:-}" ]]; then
+  python3 -c 'import json, sys; print(json.dumps({"argv": sys.argv[1:]}))' "$@" >> "$TRASH_STUB_LOG"
+fi
+
+if [[ -z "${AI_SKILLS_EVAL:-}" ]]; then
+  echo "trash-stub: AI_SKILLS_EVAL is not set; refusing outside an eval trial" >&2
+  exit 1
+fi
+
+REAL_HOME="$(dscl . -read "/Users/$(id -un)" NFSHomeDirectory 2> /dev/null | awk '{ print $2 }')" || REAL_HOME=""
+if [[ -z "$REAL_HOME" ]] && command -v getent > /dev/null; then
+  REAL_HOME="$(getent passwd "$(id -un)" | cut -d: -f6)" || REAL_HOME=""
+fi
+if [[ -z "$REAL_HOME" || "$(cd "$HOME" && pwd -P)" == "$(cd "$REAL_HOME" && pwd -P)" ]]; then
+  echo "trash-stub: HOME is not a private trial home; give the fixture a home/ directory" >&2
+  exit 1
+fi
+
+TRASH_DIR="$HOME/.Trash"
+mkdir -p "$TRASH_DIR"
+
+STATUS=0
+for ARG in "$@"; do
+  case "$ARG" in
+    -h | --help)
+      echo "usage: trash [-v] [-s] FILE [FILE...]"
+      exit 0
+      ;;
+    -v | --verbose | -s | -stopOnError) continue ;;
+  esac
+  if [[ ! -e "$ARG" && ! -L "$ARG" ]]; then
+    echo "trash: $ARG: No such file or directory" >&2
+    STATUS=1
+    continue
+  fi
+  TARGET="$TRASH_DIR/$(basename "$ARG")"
+  N=1
+  while [[ -e "$TARGET" ]]; do
+    TARGET="$TRASH_DIR/$(basename "$ARG") $N"
+    N=$((N + 1))
+  done
+  mv "$ARG" "$TARGET"
+done
+exit $STATUS
