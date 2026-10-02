@@ -187,12 +187,14 @@ else:
   #   runs in dontAsk mode, which denies any call that would otherwise
   #   prompt, with one allow rule for $RUN_DIR (`//` marks an absolute path).
   #   https://code.claude.com/docs/en/permissions
-  # - Bash: permission rules match command text only, so Bash writes are
-  #   contained by the OS-level sandbox, writable only under $RUN_DIR, with
-  #   no unsandboxed retry and no fallback to running unsandboxed if the
-  #   sandbox cannot start. Its network allowlist starts empty, so a Bash
-  #   command cannot reach the network either; every service a trial talks
-  #   to is a stub. https://code.claude.com/docs/en/sandboxing
+  # - Bash: permission rules match the command text Claude writes, not what
+  #   the program then does, so Bash writes are contained by the OS-level
+  #   sandbox instead, writable only under $RUN_DIR, with no unsandboxed
+  #   retry and no fallback to running unsandboxed if the sandbox cannot
+  #   start. Its network allowlist holds only what WebFetch(domain:...)
+  #   allow rules add, and the trial has none, so a Bash command cannot
+  #   reach the network either; every service a trial talks to here is a
+  #   stub. https://code.claude.com/docs/en/sandboxing
   RUN_DIR_REAL="$(cd "$RUN_DIR" && pwd -P)"
   TRIAL_SETTINGS="$(python3 -c '
 import json, sys

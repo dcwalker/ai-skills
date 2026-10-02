@@ -448,8 +448,8 @@ them. An allowlist rather than `--dangerously-skip-permissions` for the reason
 in the driver bullets below — that flag is refused outright when the shell is
 root. `Write` and `Edit` stay off the list and file writes are allowed under
 the run directory only, as the driver bullets below explain; the Bash sandbox
-the shared driver adds is left out of this sketch. `< /dev/null` stops `-p` waiting three seconds for stdin that is not
-coming.
+the shared driver adds is left out of this sketch. `< /dev/null` stops `-p`
+waiting three seconds for stdin that is not coming.
 
 `run-mcp-eval.sh` wires every `<service>-mcp-state.json` a fixture provides
 (`trello-mcp-state.json`, `gmail-mcp-state.json`, `atlassian-mcp-state.json`)
@@ -477,7 +477,9 @@ things — the `TRIALS_DIR` override, the skill-plus-`references/` copy, and the
 directory — and on nothing else below: it has no multi-turn `follow_ups`
 support, no per-trial `HOME`/`TMPDIR` isolation, no Bash sandbox (which would
 also cut off the curl tier its Step 1 names), and no after-the-fact write
-check, since `--output-format json` keeps no per-call record. Neither gap
+check, since `--output-format json` keeps no per-call record. So a triage
+trial's Write and Edit calls are confined to its run directory, but a Bash
+command it runs can still write anywhere, the real home included, unnoticed. Neither gap
 fails a trial today — triage's `evals.json` declares no `follow_ups`, none of
 its fixtures carry a `home/`, and the skill writes nothing under `$HOME`. The
 `HOME` gap is not purely theoretical though: Step 5c reads `~/references/`, so
@@ -523,7 +525,7 @@ simulated user that Agent-tool executors used to play, which is no longer
 safe for skills that consult connected sources: a subagent sees the
 session's real MCP servers, not the stubs.
 
-Four things the shared driver does that a hand-run trial must do for itself:
+Five things the shared driver does that a hand-run trial must do for itself:
 
 - It copies the skill under test into the trial workspace as a project skill
   (`.claude/skills/<name>/`). A trial subprocess otherwise sees only the
@@ -550,29 +552,45 @@ Four things the shared driver does that a hand-run trial must do for itself:
   out containers and CI. Each stub server is allowed wholesale, write tools
   included, so "the skill wrote nothing" stays a finding about the skill
   rather than an artifact of the harness blocking the call.
-- It keeps every write inside the run directory, which holds the workspace,
-  the private `HOME`, and `TMPDIR`. A private `HOME` alone did not: a trial
-  told to save to `~/journal.md` wrote to the real home's absolute path,
-  because a bare `Write` in `--allowedTools` allows every path. So `Write`
-  and `Edit` are off the list, the trial runs in `--permission-mode dontAsk`
-  (anything not allowed is denied rather than prompted), and one
-  `Edit(//<run dir>/**)` rule allows file writes there, which Claude Code
-  applies to the Write tool too. Bash, which permission rules cannot contain,
-  runs in the [sandbox](https://code.claude.com/docs/en/sandboxing),
-  writable only under the run directory, with no unsandboxed retry and no
-  fallback if the sandbox cannot start. The sandbox also leaves Bash no
-  network, which no stub-backed eval needs. After each trial, its successful
-  Write and Edit calls and the absolute-path targets of its Bash writes are
-  checked against the run directory; any outside it are listed in
-  `escapes.log`, counted in `metrics.json` as `writes_outside_run_dir`, and
-  stop the run, as the older `~/writing-style` check does.
 - It gives each trial a private `HOME` and `TMPDIR` under the run directory,
   so a skill that keeps state for the user cannot read what an earlier trial
   left behind. That is both a contamination guard and a privacy one: two
-  trials represent two different people. `.claude`, `.claude.json`, and
-  `.config` are symlinked back into the trial home so `claude` still
-  authenticates, and whatever the skill wrote stays under `$RUN_DIR/home`
-  for the grader to read.
+  trials represent two different people. `.config` and
+  `.claude/plugins` are symlinked back into the trial home; `.claude` is
+  otherwise a real directory holding copies of the developer's settings
+  files, and `.claude.json` a copy stripped of identity and path keys, so
+  `claude` still authenticates without the trial learning whose machine it
+  is on. Whatever the skill wrote stays under `$RUN_DIR/home` for the grader
+  to read.
+- It keeps every write inside the run directory, which holds the workspace
+  and that private `HOME` and `TMPDIR`. A private `HOME` alone did not: a
+  trial told to save to `~/journal.md` wrote to the real home's absolute
+  path, because a bare `Write` in `--allowedTools` allows every path. So:
+  - `Write` and `Edit` are off the list, the trial runs in
+    `--permission-mode dontAsk` (anything not allowed is denied rather than
+    prompted), and one `Edit(//<run dir>/**)` rule allows file writes there,
+    which Claude Code applies to the Write tool too. The trials directory is
+    resolved to its real path first, since a rule must match both the path
+    a tool asks for and the file it resolves to, and `/tmp` is a symlink on
+    macOS.
+  - Bash runs in the [sandbox](https://code.claude.com/docs/en/sandboxing),
+    writable only under the run directory, with no unsandboxed retry and no
+    fallback if the sandbox cannot start; a preflight checks once that it
+    can. The sandbox also leaves Bash no network, which no eval run through
+    this driver needs, and it gives Bash its own `$TMPDIR`, so
+    `CLAUDE_CODE_TMPDIR` points that into the run directory too. Claude Code
+    documents a fallback to a short system temp directory when that path is
+    long; a 159-character run path did not trigger it.
+  - The developer's settings are copied without `permissions`, `sandbox`, or
+    `hooks`, which merge across scopes and would widen the boundary or run
+    outside it.
+  - After each trial, its Write and Edit calls and its Bash write targets
+    (redirections and the operands of commands that write or delete files)
+    are checked against the run directory. Each one outside it is listed in
+    `escapes.log` as `refused`, `confirmed` (the file is there now), or
+    `unconfirmed`, and counted in `metrics.json`. A confirmed write stops the
+    run, as the older `~/writing-style` check does; the others are warnings,
+    since a refused save still explains a skill's missing output.
 - It seeds that home from the fixture's optional `home/` directory, which is
   how a trial starts with state already in place. A fixture can hand the
   trial its own prior cache, or somebody else's, and grade what the skill
