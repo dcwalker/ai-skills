@@ -309,7 +309,8 @@ contents need the run's absolute paths, such as a DerivedData folder's
 `info.plist`. Fixtures without `home/` keep the developer's `HOME`, as before.
 `defaults read` still reads the real user's preferences under either `HOME`,
 so `run-eval.sh` refuses a fixture that seeds `home/Library/Developer/Xcode`
-when the host sets Xcode's `IDECustomDerivedDataLocation`. Fixtures that
+when the host sets Xcode's `IDECustomDerivedDataLocation`. `run-mcp-trials.sh`
+has no such guard, so run Xcode fixtures through `run-eval.sh`. Fixtures that
 write `info.plist` files with `plutil` (tidy-workspace 16 and 17) need macOS.
 Pass a `$HOME` path to `in-trial.sh` as one quoted string, so the trial's
 shell expands it rather than the caller's.
