@@ -23,6 +23,8 @@ evals/
 │   ├── sonar-scanner-stub/sonar-scanner
 │   │                     Fake `sonar-scanner`; reports a successful analysis
 │   │                     without contacting anything. See below.
+│   ├── trash-stub/trash  Fake `trash`; moves paths into the trial's own
+│   │                     $HOME/.Trash, never the real one. See below.
 │   ├── git-fixture.sh    Builds a scratch git repo from a fixture spec.
 │   ├── run-eval.sh       Per-eval harness: wires fixture + gh-stub + env vars,
 │   │                     and writes <run-dir>/in-trial.sh to run commands
@@ -53,7 +55,9 @@ plugins/<plugin>/skills/<skill>/evals/
         ├── trello-fixture.json Optional: canned create-trello-task.sh
         │                      responses (organize-meeting-notes).
         ├── home/              Optional: seeds the trial's private HOME,
-        │                      for skills that keep state across sessions.
+        │                      for skills that keep state across sessions
+        │                      or clean up under $HOME. run-eval.sh and
+        │                      run-mcp-trials.sh honor it.
         └── sandbox-setup.sh   Optional, `"sandbox": true` evals only: runs
                                with the trial environment sourced, to point
                                origin at the sandbox repo and clear what the
@@ -284,6 +288,33 @@ rescan *count* and on a report saying "0 remain", are untouched -- those are a
 separate question about what the loop should do, not about how a scan result is
 read.
 
+## The trash stub
+
+`tidy-workspace` moves Xcode DerivedData folders to the Trash with `trash`.
+The real `/usr/bin/trash` moves items into the real user's Trash whatever
+`$HOME` says, so a trial would leave fixture folders in the developer's own
+Trash. `trash-stub/trash` is prepended to `PATH` in every mode, moves each path
+into `$HOME/.Trash` instead, and appends its argv to `TRASH_STUB_LOG`
+(`<run-dir>/trash-calls.log`, set by `run-eval.sh`) as one JSON line per call.
+It refuses when `AI_SKILLS_EVAL` is unset, when `$HOME` is still the
+account's real home, and for any path outside `$HOME`, since the trial's
+`.Trash` is deleted with the run directory. An eval that trashes anything
+therefore needs a fixture `home/` directory. Only `run-eval.sh` sets
+`TRASH_STUB_LOG`; under the MCP drivers the stub still runs, unlogged. Like
+the gh stub, it only shadows `trash` for commands run through `in-trial.sh`.
+
+`run-eval.sh` copies a fixture's `home/` into `<run-dir>/home` before
+`setup.sh` runs, and exports `HOME` there. `setup.sh` can then add files whose
+contents need the run's absolute paths, such as a DerivedData folder's
+`info.plist`. Fixtures without `home/` keep the developer's `HOME`, as before.
+`defaults read` still reads the real user's preferences under either `HOME`,
+so `run-eval.sh` refuses a fixture that seeds `home/Library/Developer/Xcode`
+when the host sets Xcode's `IDECustomDerivedDataLocation`. `run-mcp-trials.sh`
+has no such guard, so run Xcode fixtures through `run-eval.sh`. Fixtures that
+write `info.plist` files with `plutil` (tidy-workspace 16 and 17) need macOS.
+Pass a `$HOME` path to `in-trial.sh` as one quoted string, so the trial's
+shell expands it rather than the caller's.
+
 ## The Trello fixture hook
 
 `organize-meeting-notes`'s bundled `create-trello-task.sh` reads
@@ -319,6 +350,8 @@ preserve when adding a stub, a fixture hook, or a bundled script:
   prepended to `PATH` in *every* mode. The sandbox exception exists for evals
   that use a real throwaway GitHub repo; there is no disposable SonarQube
   server, so a real scan from a trial is never wanted.
+- `trash-stub` is also prepended in every mode, and refuses unless `$HOME` is
+  a private trial home, so nothing reaches the real Trash.
 
 The same preamble also neutralizes the host's git configuration
 (`GIT_CONFIG_GLOBAL`/`GIT_CONFIG_SYSTEM` and the `GIT_CONFIG_COUNT`/`KEY`/

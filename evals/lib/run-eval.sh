@@ -82,9 +82,31 @@ if [[ "$SANDBOX_EVAL" == "1" ]]; then
   fi
 fi
 
+# `defaults read` ignores $HOME and reads the real user's preferences. A
+# fixture that seeds Xcode state under home/ assumes the default DerivedData
+# location; with a custom location set on this machine, the trial would scan
+# the developer's real build caches instead of the fixture's.
+if [[ -d "$FIXTURE_DIR/home/Library/Developer/Xcode" ]] && \
+  defaults read com.apple.dt.Xcode IDECustomDerivedDataLocation > /dev/null 2>&1; then
+  echo "run-eval: this machine sets Xcode's IDECustomDerivedDataLocation, so the trial would read real DerivedData; refusing" >&2
+  exit 1
+fi
+
 mkdir -p "$RUN_DIR"
 RUN_DIR="$(cd "$RUN_DIR" > /dev/null && pwd)"
 WORKSPACE_DIR="$RUN_DIR/workspace"
+
+# A fixture's optional home/ directory becomes the trial's private HOME, for
+# skills that read or clean up state under $HOME (Xcode's DerivedData, for
+# tidy-workspace). It is copied before setup.sh runs, so setup.sh can add
+# files whose contents need the run's absolute paths. Without home/, HOME
+# stays the developer's own, as it always has for these trials.
+TRIAL_HOME=""
+if [[ -d "$FIXTURE_DIR/home" ]]; then
+  TRIAL_HOME="$RUN_DIR/home"
+  mkdir -p "$TRIAL_HOME"
+  cp -R "$FIXTURE_DIR/home/." "$TRIAL_HOME/"
+fi
 
 if [[ -d "$FIXTURE_DIR/repo" ]] || [[ -f "$FIXTURE_DIR/setup.sh" ]] || [[ -f "$FIXTURE_DIR/meta.json" ]]; then
   "$SCRIPT_DIR/git-fixture.sh" "$FIXTURE_DIR" "$WORKSPACE_DIR" > /dev/null
@@ -151,6 +173,10 @@ ENV_FILE="$RUN_DIR/env.sh"
   fi
   echo "export GH_STUB_LOG=\"$RUN_DIR/gh-calls.log\""
   echo "export GH_STUB_COUNTS_DIR=\"$RUN_DIR\""
+  echo "export TRASH_STUB_LOG=\"$RUN_DIR/trash-calls.log\""
+  if [[ -n "$TRIAL_HOME" ]]; then
+    echo "export HOME=\"$TRIAL_HOME\""
+  fi
 
   # Scrub every real service credential inherited from the caller's shell, and
   # shadow gh. Trials run in the developer's own environment, where these are
