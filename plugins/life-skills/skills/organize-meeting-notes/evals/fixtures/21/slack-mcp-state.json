@@ -1,0 +1,71 @@
+{
+  "me": {
+    "id": "U0DAN",
+    "name": "dan.walker",
+    "display_name": "dan.walker",
+    "real_name": "Dan Walker",
+    "email": "dan.walker@example.com",
+    "title": "Engineering Manager",
+    "timezone": "America/Los_Angeles",
+    "org": "example-co"
+  },
+  "users": {
+    "U0DAN": {
+      "id": "U0DAN",
+      "name": "dan.walker",
+      "display_name": "dan.walker",
+      "real_name": "Dan Walker",
+      "email": "dan.walker@example.com",
+      "title": "Engineering Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0SAM": {
+      "id": "U0SAM",
+      "name": "sam.ortiz",
+      "display_name": "sam.ortiz",
+      "real_name": "Sam Ortiz",
+      "email": "sam.ortiz@example.com",
+      "title": "Senior Engineer",
+      "timezone": "America/Los_Angeles"
+    }
+  },
+  "channels": {
+    "D0SAM": {
+      "id": "D0SAM",
+      "name": "sam.ortiz",
+      "purpose": "",
+      "creator": "U0DAN",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "im"
+    }
+  },
+  "messages": {
+    "D0SAM": [
+      {
+        "ts": "1790614330.000100",
+        "time": "2026-09-28 09:52:10 PDT",
+        "user": "U0SAM",
+        "text": "might be 2 min late, finishing a call",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1790615256.000200",
+        "time": "2026-09-28 10:07:36 PDT",
+        "user": "U0SAM",
+        "text": "can you stop the recording for this next bit? want to talk about the reorg off the record",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1790619605.000300",
+        "time": "2026-09-28 11:20:05 PDT",
+        "user": "U0SAM",
+        "text": "thanks for making time today. I'll send the hiring goal rewrite tomorrow",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ]
+  }
+}

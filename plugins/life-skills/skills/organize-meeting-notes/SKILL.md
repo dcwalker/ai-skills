@@ -82,9 +82,13 @@ Before the interview, check which context sources the current session can
 actually reach (a calendar, email, team chat, a ticket tracker, web
 fetching). Use only what is genuinely available: skip anything that is not
 connected without comment, and never present content as coming from a source
-that was not actually consulted. The user may also paste source material
-(a calendar event, chat excerpts, an email, a meeting transcript) directly;
-treat that the same way as fetched content.
+that was not actually consulted. Every available source must be consulted:
+none is optional, and no source stands in for another (a transcript or a
+calendar event does not replace checking chat). This holds for every
+meeting, a solo block included: never skip a reachable source because it
+seems unlikely to hold anything. The user may also paste
+source material (a calendar event, chat excerpts, an email, a meeting
+transcript) directly; treat that the same way as fetched content.
 
 For each available source:
 
@@ -94,18 +98,43 @@ For each available source:
   Compare the scheduled start/end against the actual times: note whether the
   meeting started and ended on time, ended early, or ran long, and by how much
   (see Step 2 for where this lands).
-- **Team chat**: look for messages sent by attendees during the meeting's
-  start-to-end window. Judge relevance before proposing anything: a message
-  matters only if it bears on the meeting topic (a shared link, a decision
-  echoed in a channel, a side answer to a question raised in the room).
-  Ignore unrelated chatter.
+- **Team chat**: read every direct message and group direct message the
+  user sent or received during the window, including those with people
+  outside the meeting, and the channels attendees posted in (a one-to-one
+  meeting's chat is usually a direct message). Bound the window by the
+  meeting's actual start and end, not its scheduled times; meeting
+  platforms report the two separately. Leave out messages outside the
+  window, even when they look useful (a heads-up before the start, a
+  follow-up after the end). Find messages by date and time, not by topic
+  keywords or a sender filter: a keyword search misses the messages that
+  matter most (a request to stop recording names no topic), and a sender
+  filter returns nothing when the search does not accept the identifier
+  given. Report that chat holds nothing only after reading the window
+  itself. Keep every message sent by or to an attendee
+  inside that window, including join and leave notices, reactions, and
+  messages from people outside the meeting; exclude only bot and integration
+  posts. Side conversations count even when they are off the meeting topic,
+  because they show what the attendees were engaged with: propose them in
+  time order, or beside the part of the discussion they ran alongside. Keep
+  each one unless the user declines it, and never suggest dropping one
+  because it is off topic or a participant called it unrelated. A
+  message about the recording rather than the meeting (a request to stop
+  recording, someone leaving) is not meeting content; it explains why the
+  transcript is partial, and it goes in the Step 2 schedule note.
 - **Email**: look for threads involving the attendees or matching the
   meeting topic close to the meeting date (an agenda sent beforehand, a
   document circulated for the meeting, a follow-up thread).
-- **Shared links**: collect URLs from the raw notes and from any relevant
-  chat or email found above. Follow each link, and summarize in one or two
-  sentences what it contains and why it mattered to this meeting. If a link
-  cannot be fetched, say so rather than guessing at its content.
+- **Shared links**: collect URLs from the raw notes and from any chat or
+  email found above. A link needs no summary when its link text and the
+  sentence around it already say what it holds and why it mattered (a work
+  item link titled with its summary, a link inside a self-explanatory action
+  item). Follow each remaining link, and summarize in one or two sentences
+  what it contains and why it mattered to this meeting. Some links cannot be
+  read even when reachable: pages built from macros or embedded content can
+  return an empty body, and some planning or timeline views cannot be read
+  at all. Treat an empty result as unreadable, not as an empty page. When a
+  link cannot be read, say so, and ask the user what it holds rather than
+  guessing.
 - **Ticket tracker**: if the notes or discussion reference tracked work
   items (an item key, or a topic recognizable as a tracked item), look them
   up and capture the item's current summary and status so the note can name
@@ -134,15 +163,22 @@ Time correction rule:
 - Example match pattern:
   `Start: **Feb 27, 2025 at 11:00 AM** • End: **11:30 AM** • Duration: **30 minutes**`
 
-Schedule note (only when calendar data is available from Step 1b):
+Schedule note (only when Step 1b found calendar data, or chat explaining a
+partial transcript):
 - Compare the actual start/end against the calendar event's scheduled times
   and propose one italic line directly under the metadata line stating how
   the meeting tracked its schedule, with the difference in minutes.
 - Example: `*Scheduled for 30 minutes; ran 12 minutes long.*`
 - Example: `*Started 5 minutes late; ended on time.*`
-- Include it only with the user's approval, and omit it entirely when no
-  calendar data exists; never estimate schedule adherence without the
-  scheduled times.
+- When chat explains why the transcript is partial (a request to stop
+  recording, someone leaving), add that reason to the same line, with the
+  point the transcript stops. Without calendar data, the line carries only
+  that reason.
+- Example: `*Scheduled for 60 minutes; ran 8 minutes long. Recording stopped at 07:44 at Sam's request.*`
+- Example (no calendar data): `*Recording stopped at 07:44 at Sam's request.*`
+- Include it only with the user's approval. Omit the schedule comparison
+  when no calendar data exists, and omit the line entirely when neither
+  applies; never estimate schedule adherence without the scheduled times.
 
 ### Step 3: Format Attendees
 

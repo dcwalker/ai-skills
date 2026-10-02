@@ -46,6 +46,18 @@ stub creates are stamped with it. Two users with similar display names and
 different accountIds is a fixture worth writing, because attributing writing
 by display name is exactly the mistake this lets an eval catch.
 
+getConfluencePage serves a "pages" section of the state, keyed by page id:
+  "pages": {"<id>": {"id": "...", "title": "...", "spaceId": "...",
+                      "tinyId": "<code from /wiki/x/ URLs>",
+                      "body": "<text, or empty for a macro-only page>"}}
+Unlike the Jira tools, its response layout is NOT connector-verified. The
+parameters match the live tool's schema, but the response is modelled on
+the published Confluence Cloud REST v2 "Get page by id" shape (id, status,
+title, spaceId, version, body.<format>.value, _links), because no live
+response was available to copy. The behaviour it exists to reproduce, a
+page built from macros returning an empty body, comes from observed use
+rather than documentation; a fixture expresses it with "body": "".
+
 JQL support in searchJiraIssuesUsingJql is a small, documented subset:
 clauses joined by AND, each one of `project = KEY`, `status != NAME`,
 `statusCategory != NAME` (and the `=` forms), `text ~ "words"` or
@@ -337,6 +349,36 @@ def transitionJiraIssue(cloudId: str, issueIdOrKey: str, transition: dict) -> di
                            {"cloudId": cloudId, "issueIdOrKey": issueIdOrKey, "transition": transition}, result)
             return result
     raise ValueError(f"jira-stub: no transition with id {tid!r} -- see getTransitionsForJiraIssue")
+
+
+@server.tool()
+def getConfluencePage(  # NOSONAR(S1542) camelCase = real MCP tool name
+    cloudId: str,
+    pageId: str,
+    contentFormat: str = "markdown",
+    contentType: str = "page",
+) -> dict:
+    """Get a Confluence page or blog post by ID, including body content.
+    pageId also accepts a tiny link ID (the encoded part of /wiki/x/ URLs)."""
+    _check_cloud(cloudId)
+    pages = state.data.get("pages", {})
+    page = pages.get(pageId) or next((p for p in pages.values() if p.get("tinyId") == pageId), None)
+    if page is None:
+        raise ValueError(f"jira-stub: no Confluence page with id or tiny link {pageId!r}")
+    base = state.data["cloud"]["url"]
+    result = {
+        "id": page["id"],
+        "status": "current",
+        "title": page["title"],
+        "spaceId": page.get("spaceId", ""),
+        "version": {"number": 1, "createdAt": _STUB_NOW},
+        "body": {contentFormat: {"representation": contentFormat, "value": page.get("body", "")}},
+        "_links": {"webui": f"{base}/wiki/pages/{page['id']}", "tinyui": f"{base}/wiki/x/{page.get('tinyId', '')}"},
+    }
+    state.log_call("getConfluencePage",
+                   {"cloudId": cloudId, "pageId": pageId, "contentFormat": contentFormat,
+                    "contentType": contentType}, result)
+    return result
 
 
 @server.tool()

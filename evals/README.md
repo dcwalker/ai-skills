@@ -358,7 +358,9 @@ server -- `trello_stub.py` implements the subset of Trello tools `triage`
 actually calls, `gmail_stub.py` the six Gmail operations its email workflow
 (Step 4b) names, and `jira_stub.py` the Atlassian MCP's Jira subset
 (including the cloudId-discovery flow via getAccessibleAtlassianResources
-and a documented JQL subset that fails loudly on unsupported constructs),
+and a documented JQL subset that fails loudly on unsupported constructs,
+plus a getConfluencePage whose response layout is modelled on Confluence's
+REST v2 docs rather than a live response; see its docstring),
 and `slack_stub.py` the search and read operations a corpus-building skill
 calls, each backed by an in-memory fake "database" seeded from a fixture
 file. Tool names and parameter schemas were confirmed against
@@ -462,6 +464,20 @@ events land in the same `events.jsonl`, and `transcript.txt` separates them
 with `===== turn N =====` markers so a grader can see what each revision
 actually changed.
 
+Simulated user: an interview-driven skill cannot be scripted that way,
+because `follow_ups` arrive in a fixed order whatever the skill asks. Run
+the driver with `SIMULATED_USER=1` and each eval without `follow_ups` gets a
+second `claude -p` playing the user, one reply per turn, from the eval's
+prompt and the conversation so far. It never sees `expected_output` or the
+expectations, runs with no tools, no MCP servers, and none of the running
+user's instructions, and replies `DONE` once the skill has delivered its
+result and asks nothing more. `SIMULATED_USER_MAX_TURNS` caps its replies
+(default 40). `conversation.txt` records both sides for the grader, and
+`simulated-user-turns` the number of replies sent. This replaces the
+simulated user that Agent-tool executors used to play, which is no longer
+safe for skills that consult connected sources: a subagent sees the
+session's real MCP servers, not the stubs.
+
 Four things the shared driver does that a hand-run trial must do for itself:
 
 - It copies the skill under test into the trial workspace as a project skill
@@ -476,6 +492,14 @@ Four things the shared driver does that a hand-run trial must do for itself:
   skill that splits reference material out of `SKILL.md` has every one of
   those links dangle in the trial copy if only `SKILL.md` is staged, and the
   material behind them goes missing from the measurement without any error.
+  Staging is only half of it on a machine where the plugin *is* installed:
+  the trial then sees the installed release too, as `<plugin>:<skill>`, and
+  one 2026-10-01 trial invoked that copy and measured stale instructions. So
+  the driver also passes `--settings` with `enabledPlugins` turning the
+  skill's own plugin off, and `metrics.json` records any plugin-qualified
+  invocation of the skill as `installed_skill_invoked`, with a warning. The
+  plugin's other skills go off with it, since `skillOverrides` does not apply
+  to plugin skills.
 - It passes an explicit `--allowedTools` allowlist instead of
   `--dangerously-skip-permissions`, which refuses to run as root and so rules
   out containers and CI. Each stub server is allowed wholesale, write tools
