@@ -105,6 +105,26 @@ if [[ -n "$REAL_HOME" && -e "$REAL_HOME/writing-style" ]]; then
   exit 1
 fi
 
+# Trials require the Bash sandbox (failIfUnavailable, below), and Claude Code
+# exits at startup when it cannot start one. Without this check, every trial
+# would fail the same way while the batch reported each as an ordinary
+# non-zero exit and carried on, finishing with nothing measured. It runs
+# before anything under TRIALS_DIR is cleared, so a machine that cannot run
+# trials does not lose the last run's results finding out.
+PREFLIGHT_LOG="$(mktemp)"
+if ! CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 claude -p --tools "" --strict-mcp-config \
+    --no-session-persistence \
+    --settings '{"sandbox":{"enabled":true,"failIfUnavailable":true}}' \
+    -- "Reply with OK." < /dev/null > /dev/null 2> "$PREFLIGHT_LOG"; then
+  echo "ERROR: Claude Code could not start with its Bash sandbox, which every" >&2
+  echo "  trial requires. Its output follows; nothing under TRIALS_DIR was touched." >&2
+  echo "  See https://code.claude.com/docs/en/sandboxing for its requirements." >&2
+  cat "$PREFLIGHT_LOG" >&2
+  rm -f "$PREFLIGHT_LOG"
+  exit 1
+fi
+rm -f "$PREFLIGHT_LOG"
+
 if [[ $# -gt 0 ]]; then
   IDS="$*"
   for ID in $IDS; do
@@ -124,20 +144,6 @@ mkdir -p "$TRIALS_DIR"
 # both fall under it, so a run dir reached through a symlink (/tmp on macOS)
 # would name a private HOME no rule covers.
 TRIALS_DIR="$(cd "$TRIALS_DIR" && pwd -P)"
-
-# Trials require the Bash sandbox (failIfUnavailable, below), and Claude Code
-# exits at startup when it cannot start one. Without this check, every trial
-# would fail the same way while the batch reported each as an ordinary
-# non-zero exit and carried on, finishing with nothing measured.
-if ! CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 claude -p --tools "" --strict-mcp-config \
-    --no-session-persistence \
-    --settings '{"sandbox":{"enabled":true,"failIfUnavailable":true}}' \
-    -- "Reply with OK." < /dev/null > /dev/null 2> "$TRIALS_DIR/sandbox-preflight.txt"; then
-  echo "ERROR: Claude Code could not start with its Bash sandbox, which every" >&2
-  echo "  trial requires. Its output is in $TRIALS_DIR/sandbox-preflight.txt." >&2
-  echo "  See https://code.claude.com/docs/en/sandboxing for its requirements." >&2
-  exit 1
-fi
 
 for ID in $IDS; do
   PROMPT=$(python3 -c "
@@ -323,6 +329,7 @@ with open(sys.argv[2], "w") as fh:
   }
 
   : > "$RUN_DIR/events.jsonl"
+  TRIAL_START="$(date +%s)"
   : > "$RUN_DIR/stderr.txt"
   run_turn "$PROMPT"
 
@@ -421,9 +428,11 @@ print()
     fi
   fi
 
-  python3 - "$RUN_DIR" "$SKILL_NAME" "$RUN_DIR_REAL" "$WORKSPACE_DIR" "$TRIAL_HOME" <<'PYEOF'
+  python3 - "$RUN_DIR" "$SKILL_NAME" "$RUN_DIR_REAL" "$WORKSPACE_DIR" "$TRIAL_HOME" \
+    "$TRIAL_START" <<'PYEOF'
 import json, os, re, shlex, sys
 run_dir, skill_name, run_dir_real, workspace, trial_home = sys.argv[1:6]
+trial_start = float(sys.argv[6]) - 1     # a second's slack for clock granularity
 
 # events.jsonl is one JSON object per line, across every turn of the trial:
 # each turn ends with a "result" event carrying that turn's usage and
@@ -475,18 +484,22 @@ with open(f"{run_dir}/tools.log", "w") as f:
 
 # Writes aimed outside $RUN_DIR. The permission rules and sandbox set up above
 # should refuse every one, so each is sorted by what became of it:
-#   refused      the tool reported an error, or the sandbox's or permission
-#                system's refusal appears in its output;
-#   confirmed    not refused, and the target exists now: it was written;
-#   unconfirmed  not refused, but nothing there to show for it (a deletion,
-#                or a write that failed some other way).
+#   confirmed    the target exists and changed after the trial started: it was
+#                written, whatever the tool reported (a compound command can
+#                fail in one part after writing in another);
+#   refused      otherwise, when the tool reported an error, or the sandbox's
+#                or permission system's refusal appears in its output;
+#   unconfirmed  otherwise: a deletion, which leaves nothing to look at, or a
+#                command that touched nothing (mkdir -p of a directory that
+#                already existed).
 # Only a confirmed write stops the run; the other two are counted and warned
 # about, since a refused save still explains why a skill's output went
 # missing. File tools are checked exactly. Bash is checked by its write
-# targets: redirections, and the operands of commands that create, move, or
-# delete files, read through a shell tokenizer so quoted text and heredoc
-# bodies are not taken for commands. That catches the common forms, not every
-# way a shell can write; the sandbox is what actually contains Bash. Relative
+# targets: redirections, and the operands of commands that create, edit,
+# move, or delete files, read through a shell tokenizer so quoted text and
+# heredoc bodies are not taken for commands. That catches the common forms,
+# not every way a shell can write (an interpreter's own file calls, a path
+# built in a variable); the sandbox is what actually contains Bash. Relative
 # and ~ paths resolve inside the workspace and private HOME.
 def resolve(path):
     if path == "~" or path.startswith("~/"):
@@ -507,43 +520,60 @@ def outside(path):
         and not real.startswith("/dev/")
 
 
+def changed_since_start(real):
+    try:
+        info = os.lstat(real)
+    except OSError:
+        return False
+    return max(info.st_mtime, info.st_ctime) >= trial_start
+
+
 # Every operand is written to (mv removes its sources too); for the copy
-# family only the last operand is, and dd writes only to of=. Deletions
-# cannot be confirmed by looking for the file afterwards.
+# family only the last operand is, unless -t names the directory; dd writes
+# only to of=, and sed -i or perl -i edit the files after their script.
 WRITES_EVERY_ARG = {"tee", "touch", "mkdir", "rm", "rmdir", "mv", "truncate"}
-WRITES_LAST_ARG = {"cp", "ln", "install", "rsync"}
+WRITES_LAST_ARG = {"cp", "ln", "install", "rsync", "mv"}
 DELETES = {"rm", "rmdir", "mv"}
-PREFIXES = {"sudo", "env", "command", "nohup", "time"}
+IN_PLACE = {"sed", "perl"}
+# Words that can stand before the command itself: wrappers, assignments, and
+# the shell keywords a loop or conditional puts at the start of a segment.
+PREFIXES = {"sudo", "env", "command", "nohup", "time", "xargs", "exec",
+            "do", "then", "else", "elif", "!", "{", "}"}
 SEPARATORS = {";", "&&", "||", "|", "&", "|&", "(", ")"}
 REDIRECTS = {">", ">>", ">|", "&>", "&>>"}
 REFUSAL = re.compile(r"operation not permitted|read-only file system|"
                      r"permission to use \w+ has been denied", re.I)
+HEREDOC = re.compile(r"(?<!<)<<(?!<)-?\s*(['\"]?)([^\s'\"<>;|&()]+)\1")
 
 
 def strip_heredocs(command):
-    """Drop heredoc bodies: their lines are input, not commands."""
-    out, delimiter = [], None
-    for line in command.split("\n"):
-        if delimiter is not None:
-            if line.strip() == delimiter:
-                delimiter = None
-            continue
-        out.append(line)
-        match = re.search(r"<<-?\s*['\"]?([A-Za-z_][A-Za-z0-9_]*)['\"]?", line)
+    """Drop heredoc bodies: their lines are input, not commands. A `<<` counts
+    only when its delimiter line really follows, so `<<` inside quoted text
+    or a herestring (`<<<`) leaves the rest of the command alone."""
+    lines, out, i = command.split("\n"), [], 0
+    while i < len(lines):
+        out.append(lines[i])
+        match = HEREDOC.search(lines[i])
         if match:
-            delimiter = match.group(1)
+            delimiter = match.group(2)
+            end = next((j for j in range(i + 1, len(lines))
+                        if lines[j].strip() == delimiter), None)
+            if end is not None:
+                i = end
+        i += 1
     return "\n".join(out)
 
 
 def bash_targets(command):
     """[(path, is_deletion)] for each absolute or ~ write target."""
-    lexer = shlex.shlex(strip_heredocs(command).replace("\\\n", " ").replace("\n", " ; "),
-                        posix=True, punctuation_chars=";&|()<>")
+    text = strip_heredocs(command).replace("\\\n", " ").replace("\n", " ; ")
+    lexer = shlex.shlex(text, posix=True, punctuation_chars=";&|()<>")
     lexer.whitespace_split = True
+    lexer.commenters = ""   # `#` mid-word (a URL fragment, $#) is not a comment
     try:
         tokens = list(lexer)
     except ValueError:      # an unbalanced quote: fall back to plain words
-        tokens = command.split()
+        tokens = text.split()
     targets, words = [], []
 
     def flush():
@@ -552,12 +582,20 @@ def bash_targets(command):
         if words:
             name = os.path.basename(words[0])
             operands = [w for w in words[1:] if not w.startswith("-")]
-            if name in WRITES_EVERY_ARG:
-                targets.extend((w, name in DELETES) for w in operands)
+            target_dir = next((words[k + 1] for k, w in enumerate(words[:-1]) if w == "-t"),
+                              None) or next((w.split("=", 1)[1] for w in words
+                                             if w.startswith("--target-directory=")), None)
+            if name in WRITES_LAST_ARG and target_dir:
+                targets.append((target_dir, False))
             elif name in WRITES_LAST_ARG and operands:
                 targets.append((operands[-1], False))
+            if name in WRITES_EVERY_ARG:
+                targets.extend((w, name in DELETES) for w in operands
+                               if not (name == "mv" and (w == operands[-1] or w == target_dir)))
             elif name == "dd":
                 targets.extend((w[3:], False) for w in words[1:] if w.startswith("of="))
+            elif name in IN_PLACE and any(w.startswith("-i") for w in words[1:]):
+                targets.extend((w, False) for w in operands[1:])
         words.clear()
 
     i = 0
@@ -567,8 +605,11 @@ def bash_targets(command):
             targets.append((tokens[i + 1], False))
             i += 2
             continue
-        if token in SEPARATORS or set(token) <= set(";&|()<>"):
+        if token in SEPARATORS or (token and set(token) <= set(";&|()<>")):
             flush()
+        elif token.startswith("#") and not words:
+            while i + 1 < len(tokens) and tokens[i + 1] not in SEPARATORS:
+                i += 1      # a comment runs to the end of its line
         elif not re.fullmatch(r"\d+", token) or i + 1 >= len(tokens) \
                 or tokens[i + 1] not in REDIRECTS:
             words.append(token)     # an fd number before > is not a word
@@ -592,10 +633,10 @@ try:
             if not path or not outside(path):
                 continue
             real = resolve(path)
-            if is_error or REFUSAL.search(text or ""):
-                status = "refused"
-            elif not deletion and os.path.lexists(real):
+            if not deletion and changed_since_start(real):
                 status = "confirmed"
+            elif is_error or REFUSAL.search(text or ""):
+                status = "refused"
             else:
                 status = "unconfirmed"
             escapes.append({"turn": call["turn"], "tool": call["name"], "path": path,
