@@ -105,12 +105,14 @@ For each available source:
   meeting's actual start and end, not its scheduled times; meeting
   platforms report the two separately. Leave out messages outside the
   window, even when they look useful (a heads-up before the start, a
-  follow-up after the end). Read the window before anything else, in two
-  steps:
+  follow-up after the end). Read the window before any keyword or sender
+  search, in two steps:
   1. Find the conversations active in the window with a search bounded only
-     by date, carrying no topic keyword and no sender filter. Sort it by
-     time, and page through its results until they reach past both the
-     actual start and the actual end.
+     by date, carrying no topic keyword and no sender filter. When the tool
+     takes timestamps, convert the window in the user's own timezone (from
+     the chat profile or the calendar). Sort the search by time, and page
+     through it until the results run out or reach past both the actual
+     start and the actual end.
   2. Read each of those conversations between the actual start and end.
 
   When the chat tool cannot search by date alone, list the user's direct
