@@ -435,7 +435,10 @@ CLI subprocess (launched via `claude -p --strict-mcp-config --mcp-config
 ```bash
 source "$(evals/lib/run-mcp-eval.sh plugins/life-skills/skills/triage/evals 1 /tmp/eval-run)"
 cd "$WORKSPACE_DIR"
-claude -p --allowedTools "Bash Read Write Edit Glob Grep WebFetch TodoWrite Skill mcp__trello" \
+RUN_DIR_REAL="$(cd /tmp/eval-run && pwd -P)"
+claude -p --permission-mode dontAsk \
+  --allowedTools "Bash Read Glob Grep WebFetch TodoWrite Skill mcp__trello" \
+  --settings "{\"permissions\":{\"allow\":[\"Edit(/$RUN_DIR_REAL/**)\"]}}" \
   --strict-mcp-config --mcp-config "$MCP_CONFIG_PATH" \
   -- "<the eval's prompt from evals.json>" < /dev/null
 ```
@@ -443,7 +446,9 @@ claude -p --allowedTools "Bash Read Write Edit Glob Grep WebFetch TodoWrite Skil
 Name whichever `mcp__<server>` the fixture wired up; `mcp-config.json` lists
 them. An allowlist rather than `--dangerously-skip-permissions` for the reason
 in the driver bullets below — that flag is refused outright when the shell is
-root. `< /dev/null` stops `-p` waiting three seconds for stdin that is not
+root. `Write` and `Edit` stay off the list and file writes are allowed under
+the run directory only, as the driver bullets below explain; the Bash sandbox
+the shared driver adds is left out of this sketch. `< /dev/null` stops `-p` waiting three seconds for stdin that is not
 coming.
 
 `run-mcp-eval.sh` wires every `<service>-mcp-state.json` a fixture provides
@@ -468,8 +473,11 @@ usage into a per-trial `metrics.json` alongside `transcript.txt`.
 `plugins/life-skills/skills/triage/evals/run-trials.sh` predates it and still
 carries its own copy of that loop. It matches the shared driver on three
 things — the `TRIALS_DIR` override, the skill-plus-`references/` copy, and the
-`--allowedTools` allowlist — and on nothing else below: it has no multi-turn
-`follow_ups` support and no per-trial `HOME`/`TMPDIR` isolation. Neither gap
+`--allowedTools` allowlist with `dontAsk` file writes scoped to the run
+directory — and on nothing else below: it has no multi-turn `follow_ups`
+support, no per-trial `HOME`/`TMPDIR` isolation, no Bash sandbox (which would
+also cut off the curl tier its Step 1 names), and no after-the-fact write
+check, since `--output-format json` keeps no per-call record. Neither gap
 fails a trial today — triage's `evals.json` declares no `follow_ups`, none of
 its fixtures carry a `home/`, and the skill writes nothing under `$HOME`. The
 `HOME` gap is not purely theoretical though: Step 5c reads `~/references/`, so
@@ -542,6 +550,22 @@ Four things the shared driver does that a hand-run trial must do for itself:
   out containers and CI. Each stub server is allowed wholesale, write tools
   included, so "the skill wrote nothing" stays a finding about the skill
   rather than an artifact of the harness blocking the call.
+- It keeps every write inside the run directory, which holds the workspace,
+  the private `HOME`, and `TMPDIR`. A private `HOME` alone did not: a trial
+  told to save to `~/journal.md` wrote to the real home's absolute path,
+  because a bare `Write` in `--allowedTools` allows every path. So `Write`
+  and `Edit` are off the list, the trial runs in `--permission-mode dontAsk`
+  (anything not allowed is denied rather than prompted), and one
+  `Edit(//<run dir>/**)` rule allows file writes there, which Claude Code
+  applies to the Write tool too. Bash, which permission rules cannot contain,
+  runs in the [sandbox](https://code.claude.com/docs/en/sandboxing),
+  writable only under the run directory, with no unsandboxed retry and no
+  fallback if the sandbox cannot start. The sandbox also leaves Bash no
+  network, which no stub-backed eval needs. After each trial, its successful
+  Write and Edit calls and the absolute-path targets of its Bash writes are
+  checked against the run directory; any outside it are listed in
+  `escapes.log`, counted in `metrics.json` as `writes_outside_run_dir`, and
+  stop the run, as the older `~/writing-style` check does.
 - It gives each trial a private `HOME` and `TMPDIR` under the run directory,
   so a skill that keeps state for the user cannot read what an earlier trial
   left behind. That is both a contamination guard and a privacy one: two
