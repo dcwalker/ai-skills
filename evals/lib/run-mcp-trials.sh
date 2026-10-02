@@ -201,9 +201,11 @@ else:
   #   start. Its network allowlist holds only what WebFetch(domain:...)
   #   allow rules add; the trial adds none, so Bash reaches only hosts such
   #   a rule in project settings names (see evals/README.md), and every
-  #   service a trial talks to here is a stub. disableAllHooks keeps hooks
-  #   from enabled plugins, which run outside the sandbox, out of the
-  #   trial. https://code.claude.com/docs/en/sandboxing
+  #   service a trial talks to here is a stub. Hooks from the developer's
+  #   enabled plugins still run, outside the sandbox: disableAllHooks would
+  #   stop them, but it also stopped the managed-only instruction-files
+  #   setting triage's driver relies on (issue #88), so it is not used.
+  #   https://code.claude.com/docs/en/sandboxing
   RUN_DIR_REAL="$(cd "$RUN_DIR" && pwd -P)"
   TRIAL_SETTINGS="$(python3 -c '
 import json, sys
@@ -211,7 +213,6 @@ plugin, run_dir = sys.argv[1], sys.argv[2]
 print(json.dumps({
     "enabledPlugins": {plugin: False},
     "permissions": {"allow": [f"Edit(/{run_dir}/**)"]},
-    "disableAllHooks": True,
     "sandbox": {
         "enabled": True,
         "allowUnsandboxedCommands": False,

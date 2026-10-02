@@ -110,8 +110,9 @@ for e in data['evals']:
   # already allows the tool itself). With --output-format json there is no
   # per-call record, so the shared driver's after-the-fact write check is not
   # repeated here; this driver has no private HOME either, so the sandbox is
-  # what keeps a Bash write off the real one. disableAllHooks keeps the
-  # developer's hooks, which run outside the sandbox, out of the trial.
+  # what keeps a Bash write off the real one. disableAllHooks is not set:
+  # with it, the managed-only instruction-files setting below stopped
+  # applying and the developer's ~/.claude/rules loaded into the trial.
   # https://code.claude.com/docs/en/sandboxing
   #
   # A read loop rather than `mapfile`, which needs bash 4: macOS ships bash
@@ -134,7 +135,6 @@ print(json.dumps({
     "pluginConfigs": {"agents-md@builtin": {"options": {"instructionFiles": "managed-only"}}},
     "enabledPlugins": {"life-skills@dcwalker-skills": False},
     "permissions": {"allow": [f"Edit(/{sys.argv[1]}/**)", "WebFetch(domain:*)"]},
-    "disableAllHooks": True,
     "sandbox": {
         "enabled": True,
         "allowUnsandboxedCommands": False,

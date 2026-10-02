@@ -483,7 +483,7 @@ network as before. It has no multi-turn `follow_ups` support, no per-trial
 also cannot strip the developer's settings, so an `Edit` or `Write` allow
 rule, an extra directory, or a `sandbox.excludedCommands` or
 `sandbox.filesystem.allowWrite` entry in `~/.claude/settings.json` widens a
-triage trial's boundary; hooks, as in the shared driver, are turned off. None of these gaps fails a trial today: triage's
+triage trial's boundary, and so does any hook the developer has configured. None of these gaps fails a trial today: triage's
 `evals.json` declares no `follow_ups`, none of its fixtures carry a `home/`,
 and the skill writes nothing under `$HOME`. The settings gap is about the
 developer's own files rather than the measurement, and the `HOME` gap is not
@@ -588,9 +588,11 @@ Five things the shared driver does that a hand-run trial must do for itself:
     into the run directory too. Claude Code documents a fallback to a short
     system temp directory when that path is long; a 159-character run path
     did not trigger it, and if it does, temp files land there silently
-    rather than in the run directory. `disableAllHooks` keeps hooks from the
-    developer's enabled plugins, which run outside the sandbox, out of the
-    trial.
+    rather than in the run directory. Hooks from the developer's enabled
+    plugins still run, outside the sandbox. `disableAllHooks` would stop
+    them, but in a trial it also stopped the `managed-only` instruction-files
+    setting from applying, which loaded the developer's `~/.claude/rules`
+    into triage trials, so neither driver sets it.
   - The developer's settings are copied without `permissions`, `sandbox`, or
     `hooks`, which merge across scopes and would widen the boundary or run
     outside it. Project settings are another matter: a trial workspace has no
