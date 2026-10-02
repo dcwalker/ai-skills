@@ -110,7 +110,10 @@ For each available source:
   1. Find the conversations active in the window with a search bounded only
      by date, carrying no topic keyword and no sender filter. When the tool
      takes timestamps, convert the window in the user's own timezone (from
-     the chat profile or the calendar). Sort the search by time, and page
+     the chat profile or the calendar). If the tool refuses a search bounded
+     only by timestamps, retry it with the meeting's date as a date filter
+     (`on:YYYY-MM-DD` in Slack's search syntax); a refused search is never
+     a reason to fall back to keywords. Sort the search by time, and page
      through it until the results run out or reach past both the actual
      start and the actual end.
   2. Read each of those conversations between the actual start and end.
