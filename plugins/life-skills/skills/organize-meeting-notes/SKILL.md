@@ -126,7 +126,8 @@ For each available source:
   keyword or sender search says nothing about the window. Report that chat
   holds nothing only after the window itself came back empty. When
   presenting chat, found or empty, say how it was checked: the window's
-  start and end, the date-bounded search, and the conversations read.
+  start and end, the date-bounded search (or the conversation listing used
+  instead), and the conversations read.
 
   Keep every message sent by or to an attendee inside that window, including
   join and leave notices, reactions, and messages from people outside the

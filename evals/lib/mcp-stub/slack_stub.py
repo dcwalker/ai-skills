@@ -49,7 +49,8 @@ State model (the fake Slack workspace):
                                    "purpose": "...", "creator": "U...",
                                    "created": "<display time>",
                                    "is_archived": false,
-                                   "type": "public_channel" | "im"}},
+                                   "type": "public_channel" | "private_channel"
+                                           | "mpim" | "im"}},
     "messages": {"<channel_id>": [{
         "ts": "1754382600.000100",     # Slack ts, also the sort key
         "time": "2026-08-05 09:30:00 PDT",   # rendered verbatim
@@ -73,10 +74,12 @@ evals measure and each worth knowing before trusting a diff:
 - Search never pages: it returns at most 20 hits, ignores `cursor`, and
   always reports no more pages, so a fixture with more than 20 matching
   messages is silently truncated.
-- The live search requires at least one of `keywords` or `filters`; the
-  stub does not enforce that, since what the live server does with
-  `query` alone is unverified. `natural_language_query` (semantic
-  reranking) is accepted, logged, and ignored.
+- The live search requires at least one of `keywords` or `filters`. The
+  stub refuses a search with neither, but also accepts `query` alone,
+  since what the live server does with it is unverified.
+  `natural_language_query` (semantic reranking) is accepted, logged, and
+  ignored, as is `only_my_channels`: every fixture channel is the user's.
+  `channel_types` restricts results by each channel's `type`.
 - There is no slack_list_user_channels, so a skill cannot enumerate its
   direct messages without a search.
 - Messages posted through the API carry a `*Sent using* <app>` line live,
@@ -85,8 +88,9 @@ evals measure and each worth knowing before trusting a diff:
 
 slack_search_public_and_private takes its terms the way the live tool
 does: `keywords` (an array of words or "quoted phrases"), `filters` (search
-modifiers), and a free-form `query`, all AND-ed together. Their supported
-syntax is a small, documented subset of Slack's: `in:#channel-name`,
+modifiers), and a free-form `query`, all AND-ed together. Each keyword is
+matched as literal text; `filters` and `query` accept a small, documented
+subset of Slack's search syntax: `in:#channel-name`,
 `in:<#C123>`, `from:<@U123>`, `from:username`, `is:thread`,
 `before:`/`after:`/`on:` against the YYYY-MM-DD prefix of a message's
 display time, quoted "exact phrases", bare words (AND-ed, matched against
@@ -305,12 +309,13 @@ def _searchable(channel_id: str, query: str) -> list:
             if wants_threads or not _is_thread_reply(m)]
 
 
-def _collect_hits(query: str, limit: int, sort_dir: str,
-                  after: str = "", before: str = "") -> list:
+def _collect_hits(query: str, limit: int, sort_dir: str, after: str = "",
+                  before: str = "", channel_types: str = "") -> list:
+    wanted_types = {t.strip() for t in channel_types.split(",") if t.strip()}
     hits = []
     for channel_id in state.data["messages"]:
         channel = _channel(channel_id)
-        if channel is None:
+        if channel is None or (wanted_types and channel.get("type") not in wanted_types):
             continue
         hits += [(channel, m) for m in _searchable(channel_id, query)
                  if _matches(m, channel, query) and _in_window(m, after, before)]
@@ -345,10 +350,17 @@ def slack_search_public_and_private(
     Slack search modifiers for people, channels, and dates; `query` takes
     either in Slack's search syntax. Supported modifiers: in:, from:,
     is:thread, before:/after:/on:, and '-' negation. before/after bound
-    results by Unix timestamp, inclusive at both ends.
+    results by Unix timestamp, inclusive at both ends. Requires at least one
+    of keywords, filters, or query.
     natural_language_query is accepted for semantic reranking and ignored."""
-    combined = " ".join(part for part in (query, *(keywords or []), filters) if part)
-    hits = _collect_hits(combined, limit, sort_dir, after, before)
+    if not (keywords or filters or query):
+        raise ValueError("slack-stub: search requires at least one of keywords or filters")
+    # Keywords are lexical terms live, so quote each one: a keyword such as
+    # `on:2026-10-01` or `-release` then matches text, never acts as a modifier.
+    literal = [k if len(k) > 1 and k.startswith('"') and k.endswith('"') else f'"{k}"'
+               for k in (keywords or [])]
+    combined = " ".join(part for part in (query, *literal, filters) if part)
+    hits = _collect_hits(combined, limit, sort_dir, after, before, channel_types)
     body = _render_hits(combined, hits, include_context)
 
     result = _search_response(body)
@@ -357,6 +369,7 @@ def slack_search_public_and_private(
                     "natural_language_query": natural_language_query,
                     "limit": limit, "sort": sort,
                     "sort_dir": sort_dir, "after": after, "before": before,
+                    "channel_types": channel_types, "only_my_channels": only_my_channels,
                     "include_context": include_context}, result)
     return result
 
