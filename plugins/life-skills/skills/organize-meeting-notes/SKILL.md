@@ -138,13 +138,14 @@ For each available source:
   When presenting chat, found or empty, open with one line in this shape,
   before any finding, filling in every part:
 
-  `Chat: searched <start> to <end> by date only (<date terms used>); read <conversations read, or "nothing to read">.`
+  `Chat: searched <start> to <end> by date only (<date terms used>); read <conversations read>.`
 
   For example: `Chat: searched 2:00 PM to 2:45 PM by date only
   (on:2026-10-01); read the direct message with Marcus Hall, the group
   direct message with Priya Raman and Marcus Hall, and #release-4-2.` When
-  chat is empty, the line is still required: `Chat: searched 9:00 AM to
-  9:20 AM by date only (on:2026-09-30); read nothing to read.` Name
+  the search found nothing, the line is still required, and ends with
+  `nothing to read` in place of the read part: `Chat: searched 9:00 AM to
+  9:20 AM by date only (on:2026-09-30); nothing to read.` Name
   every conversation read, including one that came back empty. When the
   listing fallback replaced the search, write `listed conversations for
   <start> to <end>` in place of the search part.
