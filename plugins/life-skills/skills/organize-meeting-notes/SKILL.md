@@ -116,7 +116,13 @@ For each available source:
      a reason to fall back to keywords. Sort the search by time, and page
      through it until the results run out or reach past both the actual
      start and the actual end.
-  2. Read each of those conversations between the actual start and end.
+  2. Read each of those conversations between the actual start and end,
+     with the chat tool's own read operation bounded to the window (in
+     Slack, reading the channel or direct message history). This step is
+     required even when the search results already show the messages:
+     search results and their surrounding context can leave messages out,
+     so they are not a read. Never say a conversation was read unless that
+     read was made.
 
   When the chat tool cannot search by date alone, list the user's direct
   messages, group direct messages, and channels instead, read each between
