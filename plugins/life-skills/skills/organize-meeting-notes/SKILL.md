@@ -108,19 +108,23 @@ For each available source:
   follow-up after the end). Read the window before anything else, in two
   steps:
   1. Find the conversations active in the window with a search bounded only
-     by date, carrying no topic keyword and no sender filter, and page
-     through its results until they cover the whole window.
-  2. Read each of those conversations, and each attendee channel, between
-     the actual start and end.
+     by date, carrying no topic keyword and no sender filter. Sort it by
+     time, and page through its results until they reach past both the
+     actual start and the actual end.
+  2. Read each of those conversations between the actual start and end.
+
+  When the chat tool cannot search by date alone, list the user's direct
+  messages, group direct messages, and channels instead, read each between
+  the actual start and end, and say so.
 
   Keyword and sender searches may follow as extras, but they are never the
   check itself: a keyword search misses the messages that matter most (a
   request to stop recording names no topic), and a sender filter returns
   nothing when the search does not accept the identifier given. An empty
   keyword or sender search says nothing about the window. Report that chat
-  holds nothing only after both steps came back empty. When presenting chat,
-  found or empty, say how it was checked: the window's start and end, the
-  date-bounded search, and the conversations read.
+  holds nothing only after the window itself came back empty. When
+  presenting chat, found or empty, say how it was checked: the window's
+  start and end, the date-bounded search, and the conversations read.
 
   Keep every message sent by or to an attendee inside that window, including
   join and leave notices, reactions, and messages from people outside the
