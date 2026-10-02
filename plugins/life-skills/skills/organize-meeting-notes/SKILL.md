@@ -133,10 +133,19 @@ For each available source:
   request to stop recording names no topic), and a sender filter returns
   nothing when the search does not accept the identifier given. An empty
   keyword or sender search says nothing about the window. Report that chat
-  holds nothing only after the window itself came back empty. When
-  presenting chat, found or empty, say how it was checked: the window's
-  start and end, the date-bounded search (or the conversation listing used
-  instead), and the conversations read.
+  holds nothing only after the window itself came back empty.
+
+  When presenting chat, found or empty, open with one line in this shape,
+  before any finding, filling in every part:
+
+  `Chat: searched <start> to <end> by date only (<date terms used>); read <conversations read, or "nothing to read">.`
+
+  For example: `Chat: searched 2:00 PM to 2:45 PM by date only
+  (on:2026-10-01); read the direct message with Marcus Hall, the group
+  direct message with Priya Raman and Marcus Hall, and #release-4-2.` Name
+  every conversation read, including one that came back empty. When the
+  listing fallback replaced the search, write `listed conversations for
+  <start> to <end>` in place of the search part.
 
   Keep every message sent by or to an attendee inside that window, including
   join and leave notices, reactions, and messages from people outside the
