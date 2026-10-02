@@ -105,17 +105,29 @@ For each available source:
   meeting's actual start and end, not its scheduled times; meeting
   platforms report the two separately. Leave out messages outside the
   window, even when they look useful (a heads-up before the start, a
-  follow-up after the end). Find messages by date and time, not by topic
-  keywords or a sender filter: a keyword search misses the messages that
-  matter most (a request to stop recording names no topic), and a sender
-  filter returns nothing when the search does not accept the identifier
-  given. Report that chat holds nothing only after reading the window
-  itself. Keep every message sent by or to an attendee
-  inside that window, including join and leave notices, reactions, and
-  messages from people outside the meeting; exclude only bot and integration
-  posts. Side conversations count even when they are off the meeting topic,
-  because they show what the attendees were engaged with: propose them in
-  time order, or beside the part of the discussion they ran alongside. Keep
+  follow-up after the end). Read the window before anything else, in two
+  steps:
+  1. Find the conversations active in the window with a search bounded only
+     by date, carrying no topic keyword and no sender filter, and page
+     through its results until they cover the whole window.
+  2. Read each of those conversations, and each attendee channel, between
+     the actual start and end.
+
+  Keyword and sender searches may follow as extras, but they are never the
+  check itself: a keyword search misses the messages that matter most (a
+  request to stop recording names no topic), and a sender filter returns
+  nothing when the search does not accept the identifier given. An empty
+  keyword or sender search says nothing about the window. Report that chat
+  holds nothing only after both steps came back empty. When presenting chat,
+  found or empty, say how it was checked: the window's start and end, the
+  date-bounded search, and the conversations read.
+
+  Keep every message sent by or to an attendee inside that window, including
+  join and leave notices, reactions, and messages from people outside the
+  meeting; exclude only bot and integration posts. Side conversations count
+  even when they are off the meeting topic, because they show what the
+  attendees were engaged with: propose them in time order, or beside the
+  part of the discussion they ran alongside. Keep
   each one unless the user declines it, and never suggest dropping one
   because it is off topic or a participant called it unrelated. A
   message about the recording rather than the meeting (a request to stop
