@@ -468,22 +468,26 @@ subprocess's stdout self-report.
 
 `evals/lib/run-mcp-trials.sh <skill-evals-dir> [id ...]` is the batch driver
 for any skill's MCP-backed trials: it runs each eval's `claude -p` subprocess
-with `--output-format json` and extracts real wall-clock duration and token
-usage into a per-trial `metrics.json` alongside `transcript.txt`.
+with `--output-format stream-json` and extracts real wall-clock duration and
+token usage into a per-trial `metrics.json` alongside `transcript.txt`.
 `plugins/life-skills/skills/triage/evals/run-trials.sh` predates it and still
-carries its own copy of that loop. It matches the shared driver on three
-things — the `TRIALS_DIR` override, the skill-plus-`references/` copy, and the
-`--allowedTools` allowlist with `dontAsk` file writes scoped to the run
-directory — and on nothing else below: it has no multi-turn `follow_ups`
-support, no per-trial `HOME`/`TMPDIR` isolation, no Bash sandbox (which would
-also cut off the curl tier its Step 1 names), and no after-the-fact write
-check, since `--output-format json` keeps no per-call record. So a triage
-trial's Write and Edit calls are confined to its run directory, but a Bash
-command it runs can still write anywhere, the real home included, unnoticed. Neither gap
-fails a trial today — triage's `evals.json` declares no `follow_ups`, none of
-its fixtures carry a `home/`, and the skill writes nothing under `$HOME`. The
-`HOME` gap is not purely theoretical though: Step 5c reads `~/references/`, so
-a triage trial run through its own driver reads whatever that directory holds
+carries its own copy of that loop. It matches the shared driver on four
+things — the `TRIALS_DIR` override, the skill-plus-`references/` copy, the
+`--allowedTools` allowlist, and keeping writes in the run directory (`dontAsk`
+with a scoped `Edit` rule, and the Bash sandbox with its preflight) — and on
+nothing else below. Its sandbox lets Bash reach every host, through a
+`WebFetch(domain:*)` allow rule, so the curl tier its Step 1 names meets the
+network as before. It has no multi-turn `follow_ups` support, no per-trial
+`HOME`/`TMPDIR` isolation, and no after-the-fact write check, since
+`--output-format json` keeps no per-call record. Without a private `HOME` it
+also cannot strip the developer's settings, so an `Edit` or `Write` allow
+rule or an extra directory in `~/.claude/settings.json` widens a triage
+trial's boundary. None of these gaps fails a trial today: triage's
+`evals.json` declares no `follow_ups`, none of its fixtures carry a `home/`,
+and the skill writes nothing under `$HOME`. The settings gap is about the
+developer's own files rather than the measurement, and the `HOME` gap is not
+purely theoretical either: Step 5c reads `~/references/`, so a triage trial
+run through its own driver reads whatever that directory holds
 on the machine running it, rather than a fixture-controlled one. Folding it
 into a caller of this script is the fix, and remains the worthwhile follow-up
 its own header calls it. In place of the `HOME` isolation, triage's driver keeps
@@ -583,7 +587,11 @@ Five things the shared driver does that a hand-run trial must do for itself:
     long; a 159-character run path did not trigger it.
   - The developer's settings are copied without `permissions`, `sandbox`, or
     `hooks`, which merge across scopes and would widen the boundary or run
-    outside it.
+    outside it. Project settings are another matter: a trial workspace has no
+    `.git` of its own, so under the default `TRIALS_DIR`, inside this
+    repository, Claude Code reads the repository's `.claude/settings.local.json`.
+    Keep `Edit` or `Write` allow rules and `additionalDirectories` out of it,
+    or point `TRIALS_DIR` outside the repository.
   - After each trial, its Write and Edit calls and its Bash write targets
     (redirections and the operands of commands that write or delete files)
     are checked against the run directory. Each one outside it is listed in
