@@ -79,6 +79,16 @@ for e in data['evals']:
   # from this fixture's own mcp-config.json, so a fixture that wires up a new
   # service is covered without editing this list.
   #
+  # Write and Edit are not on the list: a bare tool name allows every path,
+  # and a trial of another skill wrote into the real home that way (issue
+  # #88). Instead the trial runs in dontAsk mode, which denies any call that
+  # would otherwise prompt, and TRIAL_SETTINGS below allows file writes under
+  # $RUN_DIR only. Unlike evals/lib/run-mcp-trials.sh this driver does not
+  # sandbox Bash: the sandbox also cuts Bash off from the network, which would
+  # change what the curl tier above meets. Bash writes outside $RUN_DIR are
+  # therefore still possible here, and with --output-format json there is no
+  # per-call record to catch them afterwards.
+  #
   # A read loop rather than `mapfile`, which needs bash 4: macOS ships bash
   # 3.2 as /bin/bash, and the script failed there before running any trial.
   PERM_ARGS=()
@@ -88,9 +98,18 @@ for e in data['evals']:
 import json
 config = json.load(open('$MCP_CONFIG_PATH'))
 print('--allowedTools')
-print('Bash Read Write Edit Glob Grep WebFetch TodoWrite Skill '
+print('Bash Read Glob Grep WebFetch TodoWrite Skill '
       + ' '.join('mcp__' + s for s in config['mcpServers']))
 ")
+  RUN_DIR_REAL="$(cd "$RUN_DIR" && pwd -P)"
+  TRIAL_SETTINGS="$(python3 -c '
+import json, sys
+print(json.dumps({
+    "pluginConfigs": {"agents-md@builtin": {"options": {"instructionFiles": "managed-only"}}},
+    "enabledPlugins": {"life-skills@dcwalker-skills": False},
+    "permissions": {"allow": [f"Edit(/{sys.argv[1]}/**)"]},
+}))
+' "$RUN_DIR_REAL")"
 
   # The subprocess runs with cwd inside $WORKSPACE_DIR, where nothing loads
   # this repo's plugins, so without staging the skill the trial would measure
@@ -134,8 +153,8 @@ print('Bash Read Write Edit Glob Grep WebFetch TodoWrite Skill '
   (
     cd "$WORKSPACE_DIR"
     CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 \
-      claude -p "${PERM_ARGS[@]}" --strict-mcp-config \
-      --settings '{"pluginConfigs":{"agents-md@builtin":{"options":{"instructionFiles":"managed-only"}}},"enabledPlugins":{"life-skills@dcwalker-skills":false}}' \
+      claude -p --permission-mode dontAsk "${PERM_ARGS[@]}" --strict-mcp-config \
+      --settings "$TRIAL_SETTINGS" \
       --mcp-config "$MCP_CONFIG_PATH" --output-format json -- "$PROMPT" \
       < /dev/null
   ) > "$RUN_DIR/result.json" 2> "$RUN_DIR/stderr.txt" || \
