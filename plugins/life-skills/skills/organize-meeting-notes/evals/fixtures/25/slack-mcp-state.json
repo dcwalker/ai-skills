@@ -1,0 +1,118 @@
+{
+  "me": {
+    "id": "U0DAN",
+    "name": "dan.walker",
+    "display_name": "dan.walker",
+    "real_name": "Dan Walker",
+    "email": "dan.walker@example.com",
+    "title": "Engineering Manager",
+    "timezone": "America/Los_Angeles",
+    "org": "example-co"
+  },
+  "users": {
+    "U0DAN": {
+      "id": "U0DAN",
+      "name": "dan.walker",
+      "display_name": "dan.walker",
+      "real_name": "Dan Walker",
+      "email": "dan.walker@example.com",
+      "title": "Engineering Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0PRIYA": {
+      "id": "U0PRIYA",
+      "name": "priya.raman",
+      "display_name": "priya.raman",
+      "real_name": "Priya Raman",
+      "email": "priya.raman@example.com",
+      "title": "Director of Engineering",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0MARCUS": {
+      "id": "U0MARCUS",
+      "name": "marcus.hall",
+      "display_name": "marcus.hall",
+      "real_name": "Marcus Hall",
+      "email": "marcus.hall@example.com",
+      "title": "Staff Engineer",
+      "timezone": "America/Los_Angeles"
+    }
+  },
+  "channels": {
+    "C0REL42": {
+      "id": "C0REL42",
+      "name": "release-4-2",
+      "purpose": "Release 4.2 coordination",
+      "creator": "U0MARCUS",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "public_channel"
+    },
+    "D0MARCUS": {
+      "id": "D0MARCUS",
+      "name": "marcus.hall",
+      "purpose": "",
+      "creator": "U0DAN",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "im"
+    },
+    "G0RELLEADS": {
+      "id": "G0RELLEADS",
+      "name": "mpdm-dan.walker--priya.raman--marcus.hall-1",
+      "purpose": "Group messaging with: @dan.walker @priya.raman @marcus.hall",
+      "creator": "U0PRIYA",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    }
+  },
+  "messages": {
+    "C0REL42": [
+      {
+        "ts": "1790887200.000100",
+        "time": "2026-10-01 13:40:00 PDT",
+        "user": "U0MARCUS",
+        "text": "release candidate 4.2 build is up, regression run kicks off at 1:45",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1790892600.000200",
+        "time": "2026-10-01 15:10:00 PDT",
+        "user": "U0MARCUS",
+        "text": "rollback checklist draft for the release is in the runbook folder",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "D0MARCUS": [
+      {
+        "ts": "1790889150.000300",
+        "time": "2026-10-01 14:12:30 PDT",
+        "user": "U0MARCUS",
+        "text": "on my phone from the car, can't share my screen. could you drive that part?",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1790889185.000400",
+        "time": "2026-10-01 14:13:05 PDT",
+        "user": "U0DAN",
+        "text": "yep, got it",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0RELLEADS": [
+      {
+        "ts": "1790890308.000500",
+        "time": "2026-10-01 14:31:48 PDT",
+        "user": "U0PRIYA",
+        "text": "heads up: legal hasn't signed off on the new privacy text yet, so don't promise anyone a date out loud",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ]
+  }
+}
