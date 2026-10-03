@@ -187,14 +187,17 @@ _ORDER_FIELDS = {
 }
 
 
+_ORDER_BY = " order by "
+
+
 def _split_order_by(jql: str) -> tuple[str, str]:
     """The JQL's filter part and its ORDER BY terms, either possibly empty."""
     padded = f" {jql}"
     lower = padded.lower()
-    if " order by " not in lower:
+    if _ORDER_BY not in lower:
         return jql, ""
-    at = lower.index(" order by ")
-    return padded[:at].strip(), padded[at + len(" order by "):].strip()
+    at = lower.index(_ORDER_BY)
+    return padded[:at].strip(), padded[at + len(_ORDER_BY):].strip()
 
 
 def _order_issues(issues: list[dict], jql: str) -> list[dict]:
