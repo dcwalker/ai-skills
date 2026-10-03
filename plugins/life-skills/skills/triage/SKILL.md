@@ -72,7 +72,8 @@ Order:     <order> (<signal it came from>) | single item | asked
 ```
 
 The `Order:` line is filled in at Step 1, once the listing pass shows what
-order the items come in.
+order the items come in. Every reply that reports on the items, including the
+closing report of a run the user authorized up front, opens with that line.
 
 - When the user named the target (in the original request or in a reply to
   the scope question), Source is that message and Confirmed is `yes`.
@@ -89,6 +90,11 @@ order the items come in.
 - Only a user message flips Confirmed to `yes`. The assistant never sets it
   on its own authority, and "there was only one candidate" is a Source, not
   a confirmation.
+- When the scope spans two or more sources that each keep their own order
+  (a Trello list and a Jira project, two boards, two projects), the next reply
+  is the order question from Step 1b and nothing else: no item is audited or
+  written until the user picks an order, even when changes were authorized
+  up front. `Order: asked` is pending in the same way `Confirmed: pending` is.
 
 **Capability discovery:** once scope is named (or on the open-answer path
 above), survey what is available in the current session. Check which MCP
@@ -128,11 +134,19 @@ and present them in the first order that applies: one the user stated; the
 source's own order on the platform being triaged (a Trello list top to bottom;
 a shared Jira query's `ORDER BY`, otherwise rank); a ranking signal (priority,
 an urgent label, Gmail Starred or Important, a due date); oldest first. An
-inbox goes Starred or Important first, then oldest first, without asking. At
-15+ items, group first and order within each group. State the order and its
-source on the `Order:` line. When signals on one level disagree, such as a
-scope spanning two platforms, ask which order to use and process nothing
-until the user answers, even when changes were authorized up front.
+inbox goes Starred or Important first, then oldest first, without asking;
+`search_threads` lists newest first, so work its listing from the bottom up.
+At 15+ items, group first and order within each group.
+
+**Say the order.** Every reply that reports on the items opens with an
+`Order:` line naming the order and where it came from ("Order: list position,
+top to bottom"), and lists the items in that order.
+
+**Ask when two orders compete.** When the scope spans two platforms, boards,
+or projects, each with its own order, or two signals on one level disagree,
+the reply is the order question, with the viable orders as options, and
+nothing else: no item is audited or written until the user answers. Changes
+authorized up front do not answer it.
 [references/processing-order.md](references/processing-order.md) has the
 platform details and the ask wording; read it before stating an order.
 
@@ -351,7 +365,9 @@ Once the corpus is enumerated, per-item context and size are read (Steps 3
 and 4), and Step 6 has named the action, every thread walks a six-way
 decision tree: delete, reply now under the 2-minute rule, file as reference,
 capture as an action, mark as waiting on someone else, or park as a long read.
-The run then closes with a processed-count summary.
+A thread waiting on someone else still carries the user's action: name the
+check-in (who, about what, and when, or ask when) rather than reporting that
+nothing is needed. The run then closes with a processed-count summary.
 
 Read [references/email-triage.md](references/email-triage.md) for the tree in
 full — the order the branches are tested in, what each one writes, the count
@@ -434,10 +450,11 @@ confirm the scope before anything else in it. Nothing is applied while the
 block reads pending, no matter how routine the proposals look.
 
 Collect proposals into a summary and ask for confirmation before applying
-anything. List items in the Step 1 processing order. For sets of 15+ items
-(Step 1), present and confirm this summary every ~10 items; otherwise present
-it once for the whole run. Do not present
-the same change in multiple places. Items with no proposed changes still
+anything. Open with the `Order:` line and list items in the Step 1 processing
+order, not regrouped by outcome (changed, unchanged, archived); a batch entry
+sits where its earliest item falls. For sets of 15+ items (Step 1), present
+and confirm this summary every ~10 items; otherwise present it once for the
+whole run. Do not present the same change in multiple places. Items with no proposed changes still
 appear in the summary, flagged as "No changes — looks complete. Mark
 reviewed?" rather than being dropped.
 
@@ -547,8 +564,12 @@ never impose more structure than the work justifies.
   still in scope is presented to the user individually with its own proposed
   changes, even when several items' changes are identical, unless a later
   batch moves it out of scope.
-- Work and present items in the stated Step 1 order. Name each action from
-  its links too, as something the user does. Never open a link that acts.
+- Open every report on the items with the `Order:` line, and list the items
+  in that order. A scope spanning two sources with their own orders gets the
+  order question first, and nothing is written until it is answered.
+- Name each action from its links too, as something the user does; a
+  `Waiting For` item's action is the user's check-in. Never open a link that
+  acts.
 - Never apply a change without explicit user confirmation.
 - Never invent facts, dates, names, or descriptions. Ask if unknown.
 - Refer to every card, issue, or thread by a hyperlink to the item itself,
