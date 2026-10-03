@@ -84,11 +84,16 @@ MCP_SERVERS_JSON="{}"
 
 # add_stub_server <service> <stub script>: if the fixture has
 # <service>-mcp-state.json, add that stub to the generated config with
-# per-service state-out/log paths in $RUN_DIR.
+# per-service state-out/log paths in $RUN_DIR. The stub is seeded from
+# $RUN_DIR/<service>-state-seed.json, the fixture with its dates moved to the
+# run date by fixture-dates.py (unchanged when the fixture names no
+# anchor_date). Grade final state against that seed, not the fixture file.
 add_stub_server() {
   local service="$1" stub_script="$2"
-  local state_file="$FIXTURE_DIR/$service-mcp-state.json"
-  [[ -f "$state_file" ]] || return 0
+  local fixture_state="$FIXTURE_DIR/$service-mcp-state.json"
+  [[ -f "$fixture_state" ]] || return 0
+  local state_file="$RUN_DIR/$service-state-seed.json"
+  python3 "$SCRIPT_DIR/fixture-dates.py" state "$FIXTURE_DIR" "$fixture_state" "$state_file"
   MCP_SERVERS_JSON=$(python3 -c "
 import json, sys
 servers = json.loads(sys.argv[1])
@@ -114,6 +119,13 @@ add_stub_server slack slack_stub.py
 if [[ "$MCP_SERVERS_JSON" == "{}" ]]; then
   echo "run-mcp-eval: fixture $FIXTURE_DIR provides no recognized *-mcp-state.json file" >&2
   exit 1
+fi
+
+# The eval's expected output and expectations, with the same date tokens
+# resolved, for whoever grades the trial.
+if [[ -f "$SKILL_EVALS_DIR/evals.json" ]]; then
+  python3 "$SCRIPT_DIR/fixture-dates.py" eval "$SKILL_EVALS_DIR/evals.json" "$EVAL_ID" \
+    "$FIXTURE_DIR" "$RUN_DIR/eval.json"
 fi
 
 MCP_CONFIG_PATH="$RUN_DIR/mcp-config.json"
@@ -149,6 +161,7 @@ ENV_FILE="$RUN_DIR/env.sh"
   for SERVICE in trello gmail atlassian slack; do
     if [[ -f "$FIXTURE_DIR/$SERVICE-mcp-state.json" ]]; then
       VAR="$(echo "$SERVICE" | tr '[:lower:]' '[:upper:]')"
+      echo "export ${VAR}_STATE_SEED=\"$RUN_DIR/$SERVICE-state-seed.json\""
       echo "export ${VAR}_STATE_OUT=\"$RUN_DIR/$SERVICE-state-out.json\""
       echo "export ${VAR}_CALLS_LOG=\"$RUN_DIR/$SERVICE-calls.log\""
     fi

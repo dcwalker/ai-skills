@@ -466,6 +466,35 @@ After the trial, grade per service by diffing `$RUN_DIR/<service>-state-out.json
 philosophy as every other eval in this repo, not by trusting the
 subprocess's stdout self-report.
 
+### Fixture dates move to the run date
+
+A fixture written around "the fair on 19 September" reads differently once
+September has passed: the trial stops to ask whether the item still stands,
+and the eval ends up measuring the calendar. So a fixture can name the date
+it was written for, as a top-level `"anchor_date": "YYYY-MM-DD"` in each of
+its `*-mcp-state.json` files (every file in one fixture must agree).
+`run-mcp-eval.sh` passes each state file through `evals/lib/fixture-dates.py`
+before a stub starts, which moves every date forward by the gap from the
+anchor to the run date, rounded down to whole weeks so weekdays stay true:
+
+- ISO dates and datetimes, the Slack stub's display times, and Slack `ts` and
+  `thread_ts` values move wherever they appear in the state.
+- Dates in prose are tokens: `{{date:2026-09-19|%B %-d}}` (strftime, plus
+  `%Q` for the season and `%q` for the same with "fall"; a leading `^`
+  capitalizes), `{{slackts:...}}` and `{{slackp:...}}` for a Slack timestamp
+  or a permalink's `p` segment.
+- The Jira stub's fixed "now" comes from an optional top-level `stub_now`,
+  which moves with the rest.
+- The same tokens work in an eval's `expected_output` and `expectations`;
+  not in its prompt, which the drivers read before the fixture is resolved.
+
+The stubs are seeded from `$RUN_DIR/<service>-state-seed.json`
+(`$TRELLO_STATE_SEED` and so on in `env.sh`), and the eval's resolved entry is
+written to `$RUN_DIR/eval.json` with its `run_date` and `shift_days`. Grade
+against those two, never the raw fixture and `evals.json`, whose dates are
+the anchor's. A fixture with no `anchor_date` loads unchanged, and a token in
+one is an error. Set `EVAL_RUN_DATE` to reproduce a run as of a given day.
+
 `evals/lib/run-mcp-trials.sh <skill-evals-dir> [id ...]` is the batch driver
 for any skill's MCP-backed trials: it runs each eval's `claude -p` subprocess
 with `--output-format stream-json` and extracts real wall-clock duration and

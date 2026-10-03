@@ -34,6 +34,7 @@ State model (the fake Jira "site"):
         "comments": [{"id": "...", "body": "...", "created": "<ISO>",
                        "author": {"accountId": "...", "displayName": "..."}}]
     }},
+    "stub_now": "<ISO, optional: the stub's fixed 'now'>",
     "users": [{"accountId": "...", "displayName": "...",
                 "emailAddress": "..."}],
     "me": {"accountId": "...", "displayName": "..."},
@@ -96,8 +97,10 @@ from mcp.server.mcpserver import MCPServer  # noqa: E402
 
 server = MCPServer("atlassian-stub")
 
-# Fixed "now" for deterministic updated/created stamps in trial state.
-_STUB_NOW = "2026-07-31T16:00:00Z"
+# Fixed "now" for deterministic updated/created stamps in trial state. A
+# fixture can name its own as a top-level "stub_now", which fixture-dates.py
+# moves with the rest of its dates; without one, the old fixed value stands.
+_STUB_NOW = state.data.get("stub_now", "2026-07-31T16:00:00Z")
 
 
 def _check_cloud(cloud_id: str) -> None:
