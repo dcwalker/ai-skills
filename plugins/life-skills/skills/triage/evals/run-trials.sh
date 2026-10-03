@@ -29,6 +29,22 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/../../../../.." > /dev/null && pwd)"
 # within reach of an executor that goes looking, and that is the answer key.
 TRIALS_DIR="${TRIALS_DIR:-$SCRIPT_DIR/.trial-runs}"
 
+# Trials require the Bash sandbox (failIfUnavailable, below). Check once,
+# before anything is cleared, rather than fail every trial while the batch
+# carries on; see the matching check in evals/lib/run-mcp-trials.sh.
+PREFLIGHT_LOG="$(mktemp)"
+if ! CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 claude -p --tools Bash --strict-mcp-config \
+    --no-session-persistence \
+    --settings '{"sandbox":{"enabled":true,"failIfUnavailable":true}}' \
+    -- "Reply with OK." < /dev/null > /dev/null 2> "$PREFLIGHT_LOG"; then
+  echo "ERROR: Claude Code could not start with its Bash sandbox, which every" >&2
+  echo "  trial requires. Its output follows; nothing under TRIALS_DIR was touched." >&2
+  cat "$PREFLIGHT_LOG" >&2
+  rm -f "$PREFLIGHT_LOG"
+  exit 1
+fi
+rm -f "$PREFLIGHT_LOG"
+
 if [[ $# -gt 0 ]]; then
   IDS="$*"
   for ID in $IDS; do
@@ -43,6 +59,9 @@ print(' '.join(str(e['id']) for e in data['evals']))
   rm -rf "$TRIALS_DIR"
 fi
 mkdir -p "$TRIALS_DIR"
+# Resolved once, as evals/lib/run-mcp-trials.sh does: an Edit allow rule must
+# match both the path a tool asks for and the file it resolves to.
+TRIALS_DIR="$(cd "$TRIALS_DIR" && pwd -P)"
 
 for ID in $IDS; do
   PROMPT=$(python3 -c "
@@ -79,6 +98,23 @@ for e in data['evals']:
   # from this fixture's own mcp-config.json, so a fixture that wires up a new
   # service is covered without editing this list.
   #
+  # Write and Edit are not on the list: a bare tool name allows every path,
+  # and a trial of another skill wrote into the real home that way (issue
+  # #88). Instead the trial runs in dontAsk mode, which denies any call that
+  # would otherwise prompt, and TRIAL_SETTINGS below allows file writes under
+  # $RUN_DIR only. Bash runs in the sandbox, writable only under $RUN_DIR,
+  # with no unsandboxed retry and no fallback if the sandbox cannot start,
+  # as in evals/lib/run-mcp-trials.sh. Unlike there, a WebFetch(domain:*)
+  # allow rule opens the sandbox's network to every host, so the curl tier
+  # above meets the network it always has (the bare WebFetch on the list
+  # already allows the tool itself). With --output-format json there is no
+  # per-call record, so the shared driver's after-the-fact write check is not
+  # repeated here; this driver has no private HOME either, so the sandbox is
+  # what keeps a Bash write off the real one. disableAllHooks is not set:
+  # with it, the managed-only instruction-files setting below stopped
+  # applying and the developer's ~/.claude/rules loaded into the trial.
+  # https://code.claude.com/docs/en/sandboxing
+  #
   # A read loop rather than `mapfile`, which needs bash 4: macOS ships bash
   # 3.2 as /bin/bash, and the script failed there before running any trial.
   PERM_ARGS=()
@@ -88,9 +124,25 @@ for e in data['evals']:
 import json
 config = json.load(open('$MCP_CONFIG_PATH'))
 print('--allowedTools')
-print('Bash Read Write Edit Glob Grep WebFetch TodoWrite Skill '
+print('Bash Read Glob Grep WebFetch TodoWrite Skill '
       + ' '.join('mcp__' + s for s in config['mcpServers']))
 ")
+  RUN_DIR_REAL="$(cd "$RUN_DIR" && pwd -P)"
+  mkdir -p "$RUN_DIR_REAL/tmp"
+  TRIAL_SETTINGS="$(python3 -c '
+import json, sys
+print(json.dumps({
+    "pluginConfigs": {"agents-md@builtin": {"options": {"instructionFiles": "managed-only"}}},
+    "enabledPlugins": {"life-skills@dcwalker-skills": False},
+    "permissions": {"allow": [f"Edit(/{sys.argv[1]}/**)", "WebFetch(domain:*)"]},
+    "sandbox": {
+        "enabled": True,
+        "allowUnsandboxedCommands": False,
+        "failIfUnavailable": True,
+        "filesystem": {"allowWrite": [sys.argv[1]]},
+    },
+}))
+' "$RUN_DIR_REAL")"
 
   # The subprocess runs with cwd inside $WORKSPACE_DIR, where nothing loads
   # this repo's plugins, so without staging the skill the trial would measure
@@ -133,9 +185,9 @@ print('Bash Read Write Edit Glob Grep WebFetch TodoWrite Skill '
   # tree. See the matching comment in evals/lib/run-mcp-trials.sh.
   (
     cd "$WORKSPACE_DIR"
-    CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 \
-      claude -p "${PERM_ARGS[@]}" --strict-mcp-config \
-      --settings '{"pluginConfigs":{"agents-md@builtin":{"options":{"instructionFiles":"managed-only"}}},"enabledPlugins":{"life-skills@dcwalker-skills":false}}' \
+    CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 CLAUDE_CODE_TMPDIR="$RUN_DIR_REAL/tmp" \
+      claude -p --permission-mode dontAsk "${PERM_ARGS[@]}" --strict-mcp-config \
+      --settings "$TRIAL_SETTINGS" \
       --mcp-config "$MCP_CONFIG_PATH" --output-format json -- "$PROMPT" \
       < /dev/null
   ) > "$RUN_DIR/result.json" 2> "$RUN_DIR/stderr.txt" || \

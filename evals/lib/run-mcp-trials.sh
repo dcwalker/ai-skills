@@ -14,7 +14,9 @@
 # The nested `claude` subprocess inherits the parent session's credentials, so
 # this does run when delegated to an in-session Bash tool call. It also runs as
 # root, in a container, and in CI -- the allowlist below is what makes those
-# three work. If it fails to authenticate in whatever sandbox you are in, run
+# three work -- provided Claude Code's Bash sandbox can start there (on Linux
+# it needs bubblewrap and socat). A preflight checks that once, before any
+# trial runs. If it fails to authenticate in whatever sandbox you are in, run
 # it from a normal logged-in terminal instead. See evals/README.md's "MCP stub
 # servers" section for the underlying mechanism.
 #
@@ -59,12 +61,12 @@ shift
 # own plugin off for the trial leaves the staged copy as the only one. The
 # other skills in that plugin go with it; no MCP-backed eval relies on a
 # sibling skill today. Hiding just the one skill is not possible: the
-# skillOverrides setting does not apply to plugin skills.
+# skillOverrides setting does not apply to plugin skills. The per-trial
+# TRIAL_SETTINGS below carries this enabledPlugins entry.
 PLUGIN_NAME="$(basename "$(dirname "$(dirname "$SKILL_DIR")")")"
 MARKETPLACE_FILE="$SCRIPT_DIR/../../.claude-plugin/marketplace.json"
 MARKETPLACE_NAME="$(python3 -c "import json, sys; print(json.load(open(sys.argv[1]))['name'])" \
   "$MARKETPLACE_FILE")"
-TRIAL_SETTINGS="{\"enabledPlugins\":{\"$PLUGIN_NAME@$MARKETPLACE_NAME\":false}}"
 
 # Default output lives beside the evals, gitignored. Override it to put the
 # trial workspaces outside the repo: a workspace under evals/ leaves
@@ -74,7 +76,9 @@ TRIALS_DIR="${TRIALS_DIR:-$EVALS_DIR/.trial-runs}"
 
 # A trial can always reach the real home directory: HOME is reassigned, but the
 # account's actual home stays readable, and its own working directory is inside
-# it. So the harness cannot prevent an escape, only detect one -- and detection
+# it. Writes there are now refused (see the permission rules and sandbox set up
+# per trial below), and caught afterwards if one gets through; this check for
+# the writing skill's style cache predates both and stays as a backstop. It
 # needs to know the directory was absent beforehand.
 #
 # `getent` is glibc-only; macOS keeps the same record in Directory Services.
@@ -101,6 +105,27 @@ if [[ -n "$REAL_HOME" && -e "$REAL_HOME/writing-style" ]]; then
   exit 1
 fi
 
+# Trials require the Bash sandbox (failIfUnavailable, below), and Claude Code
+# exits at startup when it cannot start one. Bash is the one tool offered, so
+# the sandbox has something to start for; the prompt never needs it. Without this check, every trial
+# would fail the same way while the batch reported each as an ordinary
+# non-zero exit and carried on, finishing with nothing measured. It runs
+# before anything under TRIALS_DIR is cleared, so a machine that cannot run
+# trials does not lose the last run's results finding out.
+PREFLIGHT_LOG="$(mktemp)"
+if ! CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 claude -p --tools Bash --strict-mcp-config \
+    --no-session-persistence \
+    --settings '{"sandbox":{"enabled":true,"failIfUnavailable":true}}' \
+    -- "Reply with OK." < /dev/null > /dev/null 2> "$PREFLIGHT_LOG"; then
+  echo "ERROR: Claude Code could not start with its Bash sandbox, which every" >&2
+  echo "  trial requires. Its output follows; nothing under TRIALS_DIR was touched." >&2
+  echo "  See https://code.claude.com/docs/en/sandboxing for its requirements." >&2
+  cat "$PREFLIGHT_LOG" >&2
+  rm -f "$PREFLIGHT_LOG"
+  exit 1
+fi
+rm -f "$PREFLIGHT_LOG"
+
 if [[ $# -gt 0 ]]; then
   IDS="$*"
   for ID in $IDS; do
@@ -115,6 +140,11 @@ print(' '.join(str(e['id']) for e in data['evals']))
   rm -rf "$TRIALS_DIR"
 fi
 mkdir -p "$TRIALS_DIR"
+# Every path below derives from the resolved trials directory. A permission
+# rule only matches when the path a tool asks for and the file it resolves to
+# both fall under it, so a run dir reached through a symlink (/tmp on macOS)
+# would name a private HOME no rule covers.
+TRIALS_DIR="$(cd "$TRIALS_DIR" && pwd -P)"
 
 for ID in $IDS; do
   PROMPT=$(python3 -c "
@@ -150,6 +180,47 @@ else:
   else
     echo "  WARNING: no SKILL.md at $SKILL_DIR; the trial will run without the skill"
   fi
+
+  # Writes stay inside $RUN_DIR, which holds the workspace, the private HOME,
+  # and TMPDIR. A private HOME alone does not do it: eval 19 of the
+  # organize-meeting-notes benchmark for issue #82 wrote journal.md into the
+  # real home by absolute path. Two documented mechanisms close the two ways a
+  # trial writes files, and each needs the resolved path (/tmp is a symlink
+  # on macOS, and a rule must name the path the tool will see):
+  #
+  # - The Write and Edit tools: Claude Code checks file writes against
+  #   `Edit(path)` rules, and a bare `Write` or `Edit` in --allowedTools
+  #   allows every path, which is how journal.md got through. So the trial
+  #   runs in dontAsk mode, which denies any call that would otherwise
+  #   prompt, with one allow rule for $RUN_DIR (`//` marks an absolute path).
+  #   https://code.claude.com/docs/en/permissions
+  # - Bash: permission rules match the command text Claude writes, not what
+  #   the program then does, so Bash writes are contained by the OS-level
+  #   sandbox instead, writable only under $RUN_DIR, with no unsandboxed
+  #   retry and no fallback to running unsandboxed if the sandbox cannot
+  #   start. Its network allowlist holds only what WebFetch(domain:...)
+  #   allow rules add; the trial adds none, so Bash reaches only hosts such
+  #   a rule in project settings names (see evals/README.md), and every
+  #   service a trial talks to here is a stub. Hooks from the developer's
+  #   enabled plugins still run, outside the sandbox: disableAllHooks would
+  #   stop them, but it also stopped the managed-only instruction-files
+  #   setting triage's driver relies on (issue #88), so it is not used.
+  #   https://code.claude.com/docs/en/sandboxing
+  RUN_DIR_REAL="$(cd "$RUN_DIR" && pwd -P)"
+  TRIAL_SETTINGS="$(python3 -c '
+import json, sys
+plugin, run_dir = sys.argv[1], sys.argv[2]
+print(json.dumps({
+    "enabledPlugins": {plugin: False},
+    "permissions": {"allow": [f"Edit(/{run_dir}/**)"]},
+    "sandbox": {
+        "enabled": True,
+        "allowUnsandboxedCommands": False,
+        "failIfUnavailable": True,
+        "filesystem": {"allowWrite": [run_dir]},
+    },
+}))
+' "$PLUGIN_NAME@$MARKETPLACE_NAME" "$RUN_DIR_REAL")"
 
   # `|| true` on the claude call: a failing trial (session limit, transient
   # API error) must not abort the batch under set -e -- its events.jsonl
@@ -197,9 +268,22 @@ else:
 
   if [[ -d "$HOME/.claude" && ! -e "$TRIAL_HOME/.claude" ]]; then
     mkdir -p "$TRIAL_HOME/.claude"
+    # Copied without permissions, sandbox, or hooks: permission and sandbox
+    # arrays merge across settings scopes, so a developer's own allow rules
+    # or extra writable paths would widen the boundary set up per trial
+    # below, and their hooks run outside it altogether. A file that is not
+    # strict JSON is left out with a warning rather than ending the batch.
     for SETTING in settings.json settings.local.json; do
-      [[ -f "$HOME/.claude/$SETTING" ]] && \
-        cp "$HOME/.claude/$SETTING" "$TRIAL_HOME/.claude/$SETTING"
+      [[ -f "$HOME/.claude/$SETTING" ]] && { python3 -c '
+import json, sys
+with open(sys.argv[1]) as fh:
+    settings = json.load(fh)
+for key in ("permissions", "sandbox", "hooks"):
+    settings.pop(key, None)
+with open(sys.argv[2], "w") as fh:
+    json.dump(settings, fh)
+' "$HOME/.claude/$SETTING" "$TRIAL_HOME/.claude/$SETTING" 2> /dev/null || \
+        echo "  WARNING: could not read ~/.claude/$SETTING as JSON; the trial runs without it"; }
     done
     # Plugins are 22M and read-only to a trial, so they stay a symlink rather
     # than being copied 27 times. The rest of ~/.claude -- projects/, sessions/,
@@ -240,9 +324,9 @@ with open(sys.argv[2], "w") as fh:
     [[ -n "$resume_id" ]] && resume_flag=(--resume "$resume_id")
     (
       cd "$WORKSPACE_DIR"
-      HOME="$TRIAL_HOME" TMPDIR="$RUN_DIR/tmp" \
-        claude -p --permission-mode acceptEdits \
-        --allowedTools "Bash Read Write Edit Glob Grep WebFetch TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian mcp__slack" \
+      HOME="$TRIAL_HOME" TMPDIR="$RUN_DIR/tmp" CLAUDE_CODE_TMPDIR="$RUN_DIR/tmp" \
+        claude -p --permission-mode dontAsk \
+        --allowedTools "Bash Read Glob Grep WebFetch TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian mcp__slack" \
         --strict-mcp-config --verbose ${resume_flag[@]+"${resume_flag[@]}"} \
         --settings "$TRIAL_SETTINGS" \
         --mcp-config "$MCP_CONFIG_PATH" --output-format stream-json -- "$turn_prompt" \
@@ -252,6 +336,7 @@ with open(sys.argv[2], "w") as fh:
   }
 
   : > "$RUN_DIR/events.jsonl"
+  TRIAL_START="$(date +%s)"
   : > "$RUN_DIR/stderr.txt"
   run_turn "$PROMPT"
 
@@ -328,6 +413,7 @@ print(last)
 print()
 " "$RUN_DIR/events.jsonl" >> "$RUN_DIR/conversation.txt"
       REPLY=$(cd "$SIM_DIR" && HOME="$TRIAL_HOME" TMPDIR="$RUN_DIR/tmp" \
+        CLAUDE_CODE_TMPDIR="$RUN_DIR/tmp" \
         CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 \
         claude -p --tools "" --strict-mcp-config --no-session-persistence \
         --settings '{"pluginConfigs":{"agents-md@builtin":{"options":{"instructionFiles":"managed-only"}}}}' \
@@ -349,15 +435,24 @@ print()
     fi
   fi
 
-  python3 - "$RUN_DIR" "$SKILL_NAME" <<'PYEOF'
-import json, sys
-run_dir, skill_name = sys.argv[1], sys.argv[2]
+  python3 - "$RUN_DIR" "$SKILL_NAME" "$RUN_DIR_REAL" "$WORKSPACE_DIR" "$TRIAL_HOME" \
+    "$TRIAL_START" <<'PYEOF'
+import json, os, re, shlex, sys
+run_dir, skill_name, run_dir_real, workspace, trial_home = sys.argv[1:6]
+trial_start = float(sys.argv[6]) - 1     # a second's slack for clock granularity
 
 # events.jsonl is one JSON object per line, across every turn of the trial:
 # each turn ends with a "result" event carrying that turn's usage and
 # duration, and each assistant event names the tools it called.
-results, tool_calls = [], []
+results, tool_calls, tool_results = [], [], {}
 parse_error = "no terminal result event in events.jsonl"
+
+
+def blocks(event):
+    content = (event.get("message") or {}).get("content")
+    return [b for b in content if isinstance(b, dict)] if isinstance(content, list) else []
+
+
 try:
     with open(f"{run_dir}/events.jsonl") as f:
         for line in f:
@@ -368,24 +463,256 @@ try:
                 event = json.loads(line)
             except json.JSONDecodeError:
                 continue        # a partial final line on a killed trial
+            if not isinstance(event, dict):
+                continue
             if event.get("type") == "result":
                 results.append(event)
             elif event.get("type") == "assistant":
-                for block in event.get("message", {}).get("content", []):
+                for block in blocks(event):
                     if block.get("type") == "tool_use":
                         tool_calls.append({"turn": len(results) + 1,
+                                           "id": block.get("id"),
                                            "name": block.get("name"),
                                            "input": block.get("input")})
+            elif event.get("type") == "user":
+                for block in blocks(event):
+                    if block.get("type") == "tool_result":
+                        text = block.get("content")
+                        tool_results[block.get("tool_use_id")] = (
+                            bool(block.get("is_error")),
+                            text if isinstance(text, str) else json.dumps(text))
 except OSError as e:
     parse_error = str(e)
 
 with open(f"{run_dir}/tools.log", "w") as f:
     for call in tool_calls:
-        f.write(json.dumps(call) + "\n")
+        f.write(json.dumps({k: v for k, v in call.items() if k != "id"}) + "\n")
+
+
+# Writes aimed outside $RUN_DIR. The permission rules and sandbox set up above
+# should refuse every one, so each is sorted by what became of it:
+#   confirmed    the target was created after the trial started (where the
+#                filesystem records creation, as macOS does), or changed after
+#                it started without the sandbox or permission system refusing
+#                the call. A compound command can fail in one part after
+#                writing in another, so a tool error alone, without a refusal
+#                message, does not clear a write. A directory's own
+#                timestamps move whenever anything writes inside it, so they
+#                never confirm; a copy into one is judged by the file it would
+#                have put there;
+#   refused      otherwise, when the tool reported an error, or the sandbox's
+#                or permission system's refusal appears in its output;
+#   unconfirmed  otherwise: a deletion, which leaves nothing to look at, or a
+#                command that touched nothing (mkdir -p of a directory that
+#                already existed).
+# Only a confirmed write stops the run; the other two are counted and warned
+# about, since a refused save still explains why a skill's output went
+# missing. File tools are checked exactly. Bash is checked by its write
+# targets: redirections, and the operands of commands that create, edit,
+# move, or delete files, read through a shell tokenizer so quoted text and
+# heredoc bodies are not taken for commands. That catches the common forms,
+# not every way a shell can write (an interpreter's own file calls, a path
+# built in a variable); the sandbox is what actually contains Bash. Relative
+# and ~ paths resolve inside the workspace and private HOME.
+def resolve(path):
+    if path == "~" or path.startswith("~/"):
+        path = trial_home + path[1:]
+    path = os.path.join(workspace, os.path.expanduser(path))
+    # The deepest existing ancestor carries any symlinks, such as /tmp on
+    # macOS; the rest of the path did not exist to resolve, or was removed.
+    head, tail = path, []
+    while head and not os.path.exists(head):
+        head, part = os.path.split(head)
+        tail.insert(0, part)
+    return os.path.join(os.path.realpath(head or "/"), *tail)
+
+
+def outside(path):
+    real = resolve(path)
+    return not (real == run_dir_real or real.startswith(run_dir_real + os.sep)) \
+        and not real.startswith("/dev/")
+
+
+def written(real, blocked):
+    try:
+        info = os.lstat(real)
+    except OSError:
+        return False
+    born = getattr(info, "st_birthtime", None)
+    if born is not None and born >= trial_start:
+        return True
+    if os.path.isdir(real) and not os.path.islink(real):
+        return False
+    return not blocked and max(info.st_mtime, info.st_ctime) >= trial_start
+
+
+# Every operand is written to (mv removes its sources too); for the copy
+# family only the last operand is, unless -t names the directory; dd writes
+# only to of=, and sed -i or perl -i edit the files after their script.
+WRITES_EVERY_ARG = {"tee", "touch", "mkdir", "rm", "rmdir", "mv", "truncate"}
+WRITES_LAST_ARG = {"cp", "ln", "install", "rsync", "mv"}
+DELETES = {"rm", "rmdir", "mv"}
+IN_PLACE = {"sed", "perl"}
+# Words that can stand before the command itself: wrappers, assignments, and
+# the shell keywords a loop or conditional puts at the start of a segment.
+PREFIXES = {"sudo", "env", "command", "nohup", "time", "xargs", "exec", "timeout",
+            "nice", "stdbuf", "if", "while", "until", "do", "then", "else",
+            "elif", "!", "{", "}"}
+# Downloaders name their output file with a flag rather than an operand.
+OUTPUT_FLAGS = {"curl": ("-o", "--output"), "wget": ("-O", "--output-document")}
+# Redirections that duplicate a file descriptor (2>&1) take a number, not a
+# path, unless the shell form writes both streams to a file (>& file).
+DUPLICATES = {">&", "<&"}
+SEPARATORS = {";", "&&", "||", "|", "&", "|&", "(", ")"}
+REDIRECTS = {">", ">>", ">|", "&>", "&>>"}
+REFUSAL = re.compile(r"operation not permitted|read-only file system|"
+                     r"permission to use \w+ has been denied", re.I)
+HEREDOC = re.compile(r"(?<!<)<<(?!<)-?\s*(['\"]?)([^\s'\"<>;|&()]+)\1")
+
+
+def strip_heredocs(command):
+    """Drop heredoc bodies: their lines are input, not commands. A `<<` counts
+    only when its delimiter line really follows, so `<<` inside quoted text
+    or a herestring (`<<<`) leaves the rest of the command alone."""
+    lines, out, i = command.split("\n"), [], 0
+    while i < len(lines):
+        out.append(lines[i])
+        match = HEREDOC.search(lines[i])
+        if match:
+            delimiter = match.group(2)
+            end = next((j for j in range(i + 1, len(lines))
+                        if lines[j].strip() == delimiter), None)
+            if end is not None:
+                i = end
+        i += 1
+    return "\n".join(out)
+
+
+def bash_targets(command):
+    """[(path, is_deletion, sources)] for each absolute or ~ write target;
+    sources are what the copy family copies, for a target that is a
+    directory."""
+    text = strip_heredocs(command).replace("\\\n", " ").replace("\n", " ; ")
+    lexer = shlex.shlex(text, posix=True, punctuation_chars=";&|()<>")
+    lexer.whitespace_split = True
+    lexer.commenters = ""   # `#` mid-word (a URL fragment, $#) is not a comment
+    try:
+        tokens = list(lexer)
+    except ValueError:      # an unbalanced quote: fall back to plain words
+        tokens = text.split()
+    targets, words = [], []
+
+    def flush():
+        while words and (words[0] in PREFIXES or re.match(r"^\w+=", words[0])):
+            words.pop(0)
+            # a wrapper's own options and numbers (timeout 10, nice -n 5)
+            while words and (words[0].startswith("-") or words[0].isdigit()):
+                words.pop(0)
+        if words:
+            name = os.path.basename(words[0])
+            operands = [w for w in words[1:] if not w.startswith("-")]
+            target_dir = next((words[k + 1] for k, w in enumerate(words[:-1]) if w == "-t"),
+                              None) or next((w.split("=", 1)[1] for w in words
+                                             if w.startswith("--target-directory=")), None)
+            if name in WRITES_LAST_ARG and target_dir:
+                targets.append((target_dir, False, [w for w in operands if w != target_dir]))
+            elif name in WRITES_LAST_ARG and operands:
+                targets.append((operands[-1], False, operands[:-1]))
+            if name in WRITES_EVERY_ARG:
+                targets.extend((w, name in DELETES, []) for w in operands
+                               if not (name == "mv" and (w == operands[-1] or w == target_dir)))
+            elif name == "dd":
+                targets.extend((w[3:], False, []) for w in words[1:] if w.startswith("of="))
+            elif name in IN_PLACE and any(w.startswith("-i") or w == "--in-place"
+                                          for w in words[1:]):
+                targets.extend((w, False, []) for w in operands[1:])
+            elif name in OUTPUT_FLAGS:
+                short, long = OUTPUT_FLAGS[name]
+                for k, w in enumerate(words[1:-1], start=1):
+                    if w in (short, long):
+                        targets.append((words[k + 1], False, []))
+                targets.extend((w.split("=", 1)[1], False, []) for w in words
+                               if w.startswith(long + "="))
+        words.clear()
+
+    i = 0
+    while i < len(tokens):
+        token = tokens[i]
+        if token in REDIRECTS and i + 1 < len(tokens):
+            targets.append((tokens[i + 1], False, []))
+            i += 2
+            continue
+        if token in DUPLICATES and i + 1 < len(tokens):
+            if token == ">&" and tokens[i + 1] != "-" and not tokens[i + 1].isdigit():
+                targets.append((tokens[i + 1], False, []))
+            i += 2
+            continue
+        if token in SEPARATORS or (token and set(token) <= set(";&|()<>")):
+            flush()
+        elif token.startswith("#"):
+            while i + 1 < len(tokens) and tokens[i + 1] not in SEPARATORS:
+                i += 1      # a comment runs to the end of its line
+        elif not token.isdigit() or i + 1 >= len(tokens) \
+                or tokens[i + 1] not in REDIRECTS | DUPLICATES:
+            words.append(token)     # an fd number before > or >& is not a word
+        i += 1
+    flush()
+    return [(t, d, src) for t, d, src in targets if t.startswith(("/", "~"))]
+
+
+escapes, detection_error = [], None
+try:
+    for call in tool_calls:
+        params = call.get("input") if isinstance(call.get("input"), dict) else {}
+        if call["name"] in ("Write", "Edit", "MultiEdit", "NotebookEdit"):
+            paths = [(params.get("file_path") or params.get("notebook_path") or "", False, [])]
+        elif call["name"] == "Bash" and isinstance(params.get("command"), str):
+            paths = bash_targets(params["command"])
+        else:
+            continue
+        is_error, text = tool_results.get(call["id"], (False, ""))
+        # A refusal message is evidence the boundary held; a bare tool error
+        # is not, since a later part of the same command may be what failed.
+        blocked = bool(REFUSAL.search(text or ""))
+        for path, deletion, sources in paths:
+            if not path or not outside(path):
+                continue
+            real = resolve(path)
+            candidates = [real]
+            if sources and os.path.isdir(real) and not os.path.islink(real):
+                candidates = [os.path.join(real, os.path.basename(src.rstrip("/")))
+                              for src in sources]
+            if not deletion and any(written(c, blocked) for c in candidates):
+                status = "confirmed"
+            elif is_error or blocked:
+                status = "refused"
+            else:
+                status = "unconfirmed"
+            escapes.append({"turn": call["turn"], "tool": call["name"], "path": path,
+                            "resolved": real, "status": status})
+except Exception as e:      # a detection bug must not abort the batch
+    detection_error = f"{type(e).__name__}: {e}"
+    print(f"  WARNING: the outside-write check failed ({detection_error}); "
+          "inspect tools.log by hand")
+
+if escapes:
+    with open(f"{run_dir}/escapes.log", "w") as f:
+        for escape in escapes:
+            f.write(json.dumps(escape) + "\n")
+count = {status: sum(e["status"] == status for e in escapes)
+         for status in ("confirmed", "unconfirmed", "refused")}
+outside_writes = {"writes_outside_run_dir": count["confirmed"],
+                  "writes_outside_run_dir_unconfirmed": count["unconfirmed"],
+                  "writes_outside_run_dir_refused": count["refused"],
+                  "outside_write_check_error": detection_error}
+if count["refused"] or count["unconfirmed"]:
+    print(f"  WARNING: {count['refused']} refused and {count['unconfirmed']} unconfirmed "
+          "write(s) aimed outside the run directory; see escapes.log")
 
 if not results:
     with open(f"{run_dir}/metrics.json", "w") as f:
         json.dump({"parse_error": parse_error, "tool_calls": len(tool_calls),
+                   **outside_writes,
                    "note": "events.jsonl was missing or held no result event; "
                            "inspect it manually alongside stderr.txt"}, f, indent=2)
     print(f"  WARNING: {parse_error}; wrote placeholder metrics.json and "
@@ -428,6 +755,7 @@ metrics = {
         "cache_read_input": total("cache_read_input_tokens", usage),
     },
     "is_error": any(r.get("is_error") for r in results),
+    **outside_writes,
 }
 with open(f"{run_dir}/metrics.json", "w") as f:
     json.dump(metrics, f, indent=2)
@@ -456,6 +784,29 @@ PYEOF
     echo "  isolated HOME. Moved to $ESCAPE_QUARANTINE for inspection." >&2
     echo "  Stopping: every later trial would have read what it left there," >&2
     echo "  and the run's results would look normal while being contaminated." >&2
+    exit 1
+  fi
+
+  # Any other write that landed outside $RUN_DIR, found from the trial's own
+  # tool calls above. A confirmed one stops the run for the same reason: the
+  # trial wrote somewhere real, and what it wrote stays there until someone
+  # looks. Refused and unconfirmed attempts were already warned about.
+  CONFIRMED_ESCAPES=""
+  if [[ -s "$RUN_DIR/escapes.log" ]]; then
+    CONFIRMED_ESCAPES="$(python3 -c '
+import json, sys
+for line in open(sys.argv[1]):
+    escape = json.loads(line)
+    if escape["status"] == "confirmed":
+        print("    turn {turn}, {tool}: {resolved}".format(**escape))
+' "$RUN_DIR/escapes.log")"
+  fi
+  if [[ -n "$CONFIRMED_ESCAPES" ]]; then
+    echo >&2
+    echo "  ERROR: eval $ID wrote outside its run directory ($RUN_DIR_REAL):" >&2
+    echo "$CONFIRMED_ESCAPES" >&2
+    echo "  Nothing was moved or deleted. Inspect those paths, then see" >&2
+    echo "  $RUN_DIR/escapes.log and tools.log. Stopping the run." >&2
     exit 1
   fi
 

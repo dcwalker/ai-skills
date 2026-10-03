@@ -435,7 +435,10 @@ CLI subprocess (launched via `claude -p --strict-mcp-config --mcp-config
 ```bash
 source "$(evals/lib/run-mcp-eval.sh plugins/life-skills/skills/triage/evals 1 /tmp/eval-run)"
 cd "$WORKSPACE_DIR"
-claude -p --allowedTools "Bash Read Write Edit Glob Grep WebFetch TodoWrite Skill mcp__trello" \
+RUN_DIR_REAL="$(cd /tmp/eval-run && pwd -P)"
+claude -p --permission-mode dontAsk \
+  --allowedTools "Bash Read Glob Grep WebFetch TodoWrite Skill mcp__trello" \
+  --settings "{\"permissions\":{\"allow\":[\"Edit(/$RUN_DIR_REAL/**)\"]}}" \
   --strict-mcp-config --mcp-config "$MCP_CONFIG_PATH" \
   -- "<the eval's prompt from evals.json>" < /dev/null
 ```
@@ -443,8 +446,10 @@ claude -p --allowedTools "Bash Read Write Edit Glob Grep WebFetch TodoWrite Skil
 Name whichever `mcp__<server>` the fixture wired up; `mcp-config.json` lists
 them. An allowlist rather than `--dangerously-skip-permissions` for the reason
 in the driver bullets below — that flag is refused outright when the shell is
-root. `< /dev/null` stops `-p` waiting three seconds for stdin that is not
-coming.
+root. `Write` and `Edit` stay off the list and file writes are allowed under
+the run directory only, as the driver bullets below explain; the Bash sandbox
+the shared driver adds is left out of this sketch. `< /dev/null` stops `-p`
+waiting three seconds for stdin that is not coming.
 
 `run-mcp-eval.sh` wires every `<service>-mcp-state.json` a fixture provides
 (`trello-mcp-state.json`, `gmail-mcp-state.json`, `atlassian-mcp-state.json`)
@@ -463,17 +468,27 @@ subprocess's stdout self-report.
 
 `evals/lib/run-mcp-trials.sh <skill-evals-dir> [id ...]` is the batch driver
 for any skill's MCP-backed trials: it runs each eval's `claude -p` subprocess
-with `--output-format json` and extracts real wall-clock duration and token
-usage into a per-trial `metrics.json` alongside `transcript.txt`.
+with `--output-format stream-json` and extracts real wall-clock duration and
+token usage into a per-trial `metrics.json` alongside `transcript.txt`.
 `plugins/life-skills/skills/triage/evals/run-trials.sh` predates it and still
-carries its own copy of that loop. It matches the shared driver on three
-things — the `TRIALS_DIR` override, the skill-plus-`references/` copy, and the
-`--allowedTools` allowlist — and on nothing else below: it has no multi-turn
-`follow_ups` support and no per-trial `HOME`/`TMPDIR` isolation. Neither gap
-fails a trial today — triage's `evals.json` declares no `follow_ups`, none of
-its fixtures carry a `home/`, and the skill writes nothing under `$HOME`. The
-`HOME` gap is not purely theoretical though: Step 5c reads `~/references/`, so
-a triage trial run through its own driver reads whatever that directory holds
+carries its own copy of that loop. It matches the shared driver on four
+things — the `TRIALS_DIR` override, the skill-plus-`references/` copy, the
+`--allowedTools` allowlist, and keeping writes in the run directory (`dontAsk`
+with a scoped `Edit` rule, and the Bash sandbox with its preflight) — and on
+nothing else below. Its sandbox lets Bash reach every host, through a
+`WebFetch(domain:*)` allow rule, so the curl tier its Step 1 names meets the
+network as before. It has no multi-turn `follow_ups` support, no per-trial
+`HOME`/`TMPDIR` isolation, and no after-the-fact write check, since
+`--output-format json` keeps no per-call record. Without a private `HOME` it
+also cannot strip the developer's settings, so an `Edit` or `Write` allow
+rule, an extra directory, or a `sandbox.excludedCommands` or
+`sandbox.filesystem.allowWrite` entry in `~/.claude/settings.json` widens a
+triage trial's boundary, and so does any hook the developer has configured. None of these gaps fails a trial today: triage's
+`evals.json` declares no `follow_ups`, none of its fixtures carry a `home/`,
+and the skill writes nothing under `$HOME`. The settings gap is about the
+developer's own files rather than the measurement, and the `HOME` gap is not
+purely theoretical either: Step 5c reads `~/references/`, so a triage trial
+run through its own driver reads whatever that directory holds
 on the machine running it, rather than a fixture-controlled one. Folding it
 into a caller of this script is the fix, and remains the worthwhile follow-up
 its own header calls it. In place of the `HOME` isolation, triage's driver keeps
@@ -515,7 +530,7 @@ simulated user that Agent-tool executors used to play, which is no longer
 safe for skills that consult connected sources: a subagent sees the
 session's real MCP servers, not the stubs.
 
-Four things the shared driver does that a hand-run trial must do for itself:
+Five things the shared driver does that a hand-run trial must do for itself:
 
 - It copies the skill under test into the trial workspace as a project skill
   (`.claude/skills/<name>/`). A trial subprocess otherwise sees only the
@@ -545,10 +560,59 @@ Four things the shared driver does that a hand-run trial must do for itself:
 - It gives each trial a private `HOME` and `TMPDIR` under the run directory,
   so a skill that keeps state for the user cannot read what an earlier trial
   left behind. That is both a contamination guard and a privacy one: two
-  trials represent two different people. `.claude`, `.claude.json`, and
-  `.config` are symlinked back into the trial home so `claude` still
-  authenticates, and whatever the skill wrote stays under `$RUN_DIR/home`
-  for the grader to read.
+  trials represent two different people. `.config` and
+  `.claude/plugins` are symlinked back into the trial home; `.claude` is
+  otherwise a real directory holding copies of the developer's settings
+  files, and `.claude.json` a copy stripped of identity and path keys, so
+  `claude` still authenticates without the trial learning whose machine it
+  is on. Whatever the skill wrote stays under `$RUN_DIR/home` for the grader
+  to read.
+- It keeps every write inside the run directory, which holds the workspace
+  and that private `HOME` and `TMPDIR`. A private `HOME` alone did not: a
+  trial told to save to `~/journal.md` wrote to the real home's absolute
+  path, because a bare `Write` in `--allowedTools` allows every path. So:
+  - `Write` and `Edit` are off the list, the trial runs in
+    `--permission-mode dontAsk` (anything not allowed is denied rather than
+    prompted), and one `Edit(//<run dir>/**)` rule allows file writes there,
+    which Claude Code applies to the Write tool too. The trials directory is
+    resolved to its real path first, since a rule must match both the path
+    a tool asks for and the file it resolves to, and `/tmp` is a symlink on
+    macOS.
+  - Bash runs in the [sandbox](https://code.claude.com/docs/en/sandboxing),
+    writable only under the run directory, with no unsandboxed retry and no
+    fallback if the sandbox cannot start; a preflight checks once that it
+    can. Bash reaches only the hosts a `WebFetch(domain:...)` allow rule in
+    the loaded settings names, and the trial adds none, which suits every
+    eval run through this driver: each service it talks to is a stub. The
+    sandbox gives Bash its own `$TMPDIR`, so `CLAUDE_CODE_TMPDIR` points that
+    into the run directory too. Claude Code documents a fallback to a short
+    system temp directory when that path is long; a 159-character run path
+    did not trigger it, and if it does, temp files land there silently
+    rather than in the run directory. Hooks from the developer's enabled
+    plugins still run, outside the sandbox. `disableAllHooks` would stop
+    them, but in a trial it also stopped the `managed-only` instruction-files
+    setting from applying, which loaded the developer's `~/.claude/rules`
+    into triage trials, so neither driver sets it.
+  - The developer's settings are copied without `permissions`, `sandbox`, or
+    `hooks`, which merge across scopes and would widen the boundary or run
+    outside it. Project settings are another matter: a trial workspace has no
+    `.git` of its own, so under the default `TRIALS_DIR`, inside this
+    repository, Claude Code reads the repository's `.claude/settings.local.json`.
+    Keep `Edit` or `Write` allow rules, `additionalDirectories`, `sandbox`
+    keys such as `excludedCommands` or `filesystem.allowWrite`, and
+    `WebFetch(domain:...)` rules (which open the sandbox's network) out of
+    it, or point `TRIALS_DIR` outside the repository.
+  - After each trial, its Write and Edit calls and its Bash write targets
+    (redirections and the operands of commands that write or delete files)
+    are checked against the run directory. Each one outside it is listed in
+    `escapes.log` and counted in `metrics.json` as `confirmed` (the target
+    was created after the trial started, or changed after it started without
+    the tool being refused), `refused`, or `unconfirmed` (a deletion, or a
+    command that changed nothing). A directory's own timestamps move whenever
+    anything writes inside it, so a copy into a directory is judged by the
+    file it would have put there. A confirmed write stops the run, as the
+    older `~/writing-style` check does; the others are warnings, since a
+    refused save still explains a skill's missing output.
 - It seeds that home from the fixture's optional `home/` directory, which is
   how a trial starts with state already in place. A fixture can hand the
   trial its own prior cache, or somebody else's, and grade what the skill
