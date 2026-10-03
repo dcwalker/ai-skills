@@ -1,4 +1,5 @@
 {
+  "anchor_date": "2026-10-02",
   "boards": {
     "board-1": {
       "id": "board-1",
@@ -58,7 +59,7 @@
     "card-3": {
       "id": "card-3",
       "name": "gutters",
-      "desc": "Clear the leaves out of the front gutters before the November rains. Ladder is in the garage.",
+      "desc": "Clear the leaves out of the front gutters before the {{date:2026-11-01|%B}} rains. Ladder is in the garage.",
       "list_id": "list-1",
       "board_id": "board-1",
       "labels": [

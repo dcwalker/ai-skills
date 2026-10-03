@@ -1,4 +1,6 @@
 {
+  "anchor_date": "2026-07-31",
+  "stub_now": "2026-07-31T16:00:00Z",
   "cloud": {"id": "b7c9e1a2-0000-4000-8000-example00001", "url": "https://danwalker.atlassian.net", "name": "danwalker"},
   "projects": {
     "HOME": {"key": "HOME", "id": "10001", "name": "Home Projects", "issueTypes": ["Task"]}
@@ -7,7 +9,7 @@
     "HOME-1": {
       "key": "HOME-1", "id": "20001", "project": "HOME",
       "summary": "deck",
-      "description": "Back deck boards are rotting near the steps and need replacing before autumn. Budget about $400, and the lumber yard quote is only valid until the end of August.",
+      "description": "Back deck boards are rotting near the steps and need replacing before {{date:2026-09-01|%Q}}. Budget about $400, and the lumber yard quote is only valid until the end of {{date:2026-08-31|%B}}.",
       "status": {"name": "To Do", "statusCategory": "To Do"},
       "issuetype": "Task", "priority": null, "labels": [],
       "assignee": null,
@@ -17,7 +19,7 @@
     },
     "HOME-2": {
       "key": "HOME-2", "id": "20002", "project": "HOME",
-      "summary": "Service the boiler before winter",
+      "summary": "Service the boiler before {{date:2026-12-01|%Q}}",
       "description": "Annual boiler service. Book the same engineer as last year; takes about an hour and clears the warranty requirement.",
       "status": {"name": "To Do", "statusCategory": "To Do"},
       "issuetype": "Task", "priority": "Medium", "labels": ["home", "maintenance"],

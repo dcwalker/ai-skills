@@ -1,4 +1,5 @@
 {
+  "anchor_date": "2026-07-31",
   "threads": {
     "thread-1": {
       "id": "thread-1",
@@ -6,7 +7,7 @@
       "from": "pta@lakesideprimary.example",
       "to": ["eval-user@example.com"],
       "date": "2026-07-29T19:30:00Z",
-      "snippet": "You're down to organize the bake sale stall for the September fair.",
+      "snippet": "You're down to organize the bake sale stall for the {{date:2026-09-19|%B}} fair.",
       "labelIds": ["INBOX", "UNREAD"],
       "messages": [
         {
@@ -14,8 +15,8 @@
           "from": "pta@lakesideprimary.example",
           "to": ["eval-user@example.com"],
           "date": "2026-07-29T19:30:00Z",
-          "snippet": "You're down to organize the bake sale stall for the September fair.",
-          "body": "Hi Dan,\n\nThanks for volunteering! You're down to organize the bake sale stall for the school fair on 19 September. That means recruiting 3-4 parent helpers, arranging who bakes what, sorting a float for the cash box, and picking up the table from the caretaker the day before.\n\nNo rush to reply -- just make sure it's all sorted by early September.\n\nBest,\nLakeside PTA"
+          "snippet": "You're down to organize the bake sale stall for the {{date:2026-09-19|%B}} fair.",
+          "body": "Hi Dan,\n\nThanks for volunteering! You're down to organize the bake sale stall for the school fair on {{date:2026-09-19|%-d %B}}. That means recruiting 3-4 parent helpers, arranging who bakes what, sorting a float for the cash box, and picking up the table from the caretaker the day before.\n\nNo rush to reply -- just make sure it's all sorted by early {{date:2026-09-01|%B}}.\n\nBest,\nLakeside PTA"
         }
       ]
     }

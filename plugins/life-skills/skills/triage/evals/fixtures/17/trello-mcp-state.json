@@ -1,4 +1,5 @@
 {
+  "anchor_date": "2026-10-02",
   "boards": {
     "board-1": {
       "id": "board-1",
@@ -24,7 +25,7 @@
     "card-1": {
       "id": "card-1",
       "name": "slack thing",
-      "desc": "Maria asked me something in the garden club thread: https://riverside-gardeners.slack.com/archives/C07GARDEN/p1790525640000100",
+      "desc": "Maria asked me something in the garden club thread: https://riverside-gardeners.slack.com/archives/C07GARDEN/{{slackp:1790525640.000100}}",
       "list_id": "list-1",
       "board_id": "board-1",
       "labels": [],

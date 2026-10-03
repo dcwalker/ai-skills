@@ -1,4 +1,5 @@
 {
+  "anchor_date": "2026-10-02",
   "me": "eval-user@example.com",
   "labels": {
     "Label_1": {
@@ -21,13 +22,13 @@
   "threads": {
     "thread-1": {
       "id": "thread-1",
-      "subject": "A note for you in the September minutes",
+      "subject": "A note for you in the {{date:2026-09-01|%B}} minutes",
       "from": "secretary@oakridge-hoa.example",
       "to": [
         "eval-user@example.com"
       ],
       "date": "2026-09-29T18:20:00Z",
-      "snippet": "Hi Dan, the board left a note for you in the September minutes.",
+      "snippet": "Hi Dan, the board left a note for you in the {{date:2026-09-01|%B}} minutes.",
       "labelIds": [
         "INBOX",
         "UNREAD"
@@ -40,8 +41,8 @@
             "eval-user@example.com"
           ],
           "date": "2026-09-29T18:20:00Z",
-          "snippet": "Hi Dan, the board left a note for you in the September minutes.",
-          "body": "Hi Dan,\n\nThe board left a note for you in the September minutes: https://portal.oakridge-hoa.invalid/minutes/2026-09/notes\n\nThanks,\nCarol\nOakridge HOA secretary"
+          "snippet": "Hi Dan, the board left a note for you in the {{date:2026-09-01|%B}} minutes.",
+          "body": "Hi Dan,\n\nThe board left a note for you in the {{date:2026-09-01|%B}} minutes: https://portal.oakridge-hoa.invalid/minutes/{{date:2026-09-01|%Y-%m}}/notes\n\nThanks,\nCarol\nOakridge HOA secretary"
         }
       ]
     }

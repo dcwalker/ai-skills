@@ -1,4 +1,5 @@
 {
+  "anchor_date": "2026-10-02",
   "boards": {
     "board-1": {
       "id": "board-1",
@@ -35,7 +36,7 @@
     "card-1": {
       "id": "card-1",
       "name": "Check in with Acme Roofing about the gutter estimate",
-      "desc": "Emailed Acme Roofing on Sep 22 for an estimate on new gutters. They said they would reply by Oct 6.",
+      "desc": "Emailed Acme Roofing on {{date:2026-09-22|%b %-d}} for an estimate on new gutters. They said they would reply by {{date:2026-10-06|%b %-d}}.",
       "list_id": "list-2",
       "board_id": "board-1",
       "labels": [],
@@ -47,7 +48,7 @@
     "card-2": {
       "id": "card-2",
       "name": "Check in with Dr. Patel's office about the referral letter",
-      "desc": "Asked the surgery on Sep 25 to send the referral letter to the physio. They said it would go out by Oct 9.",
+      "desc": "Asked the surgery on {{date:2026-09-25|%b %-d}} to send the referral letter to the physio. They said it would go out by {{date:2026-10-09|%b %-d}}.",
       "list_id": "list-2",
       "board_id": "board-1",
       "labels": [],
@@ -59,7 +60,7 @@
     "card-3": {
       "id": "card-3",
       "name": "plumber",
-      "desc": "Emailed Northside Plumbing on Sep 30 asking for a quote to replace the water heater. They replied that they would send the quote by Thursday, Oct 8.",
+      "desc": "Emailed Northside Plumbing on {{date:2026-09-30|%b %-d}} asking for a quote to replace the water heater. They replied that they would send the quote by Thursday, {{date:2026-10-08|%b %-d}}.",
       "list_id": "list-1",
       "board_id": "board-1",
       "labels": [],

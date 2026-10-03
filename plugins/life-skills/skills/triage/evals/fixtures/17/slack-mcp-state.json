@@ -1,4 +1,5 @@
 {
+  "anchor_date": "2026-10-02",
   "me": {
     "id": "U0DAN",
     "name": "dan.walker",
@@ -46,7 +47,7 @@
         "ts": "1790525640.000100",
         "time": "2026-09-27 09:14:00 PDT",
         "user": "U0MARIA",
-        "text": "The plant swap is Saturday October 10 at the community hall. <@U0DAN|dan.walker> could you bring the four folding tables from your garage? We need them set up by 9am.",
+        "text": "The plant swap is Saturday {{date:2026-10-10|%B %-d}} at the community hall. <@U0DAN|dan.walker> could you bring the four folding tables from your garage? We need them set up by 9am.",
         "thread_ts": null,
         "reactions": []
       },

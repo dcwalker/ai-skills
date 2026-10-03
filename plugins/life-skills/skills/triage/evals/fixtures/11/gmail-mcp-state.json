@@ -1,14 +1,15 @@
 {
+  "anchor_date": "2026-09-28",
   "threads": {
     "thread-1": {
       "id": "thread-1",
-      "subject": "Earn 3% cash back on groceries this autumn",
+      "subject": "Earn 3% cash back on groceries this {{date:2026-09-28|%Q}}",
       "from": "alerts@harborbank.example",
       "to": [
         "eval-user@example.com"
       ],
       "date": "2026-09-14T08:02:00Z",
-      "snippet": "Activate the autumn cash back offer on your Harbor Rewards card before October 31.",
+      "snippet": "Activate the {{date:2026-09-28|%Q}} cash back offer on your Harbor Rewards card before {{date:2026-10-31|%B %-d}}.",
       "labelIds": [
         "INBOX",
         "UNREAD"
@@ -21,8 +22,8 @@
             "eval-user@example.com"
           ],
           "date": "2026-09-14T08:02:00Z",
-          "snippet": "Activate the autumn cash back offer on your Harbor Rewards card before October 31.",
-          "body": "Activate the autumn cash back offer on your Harbor Rewards card and earn 3% on groceries through October 31. Terms apply."
+          "snippet": "Activate the {{date:2026-09-28|%Q}} cash back offer on your Harbor Rewards card before {{date:2026-10-31|%B %-d}}.",
+          "body": "Activate the {{date:2026-09-28|%Q}} cash back offer on your Harbor Rewards card and earn 3% on groceries through {{date:2026-10-31|%B %-d}}. Terms apply."
         }
       ]
     },
@@ -126,7 +127,7 @@
           ],
           "date": "2026-09-17T14:47:00Z",
           "snippet": "We noticed a charge of $842.19 at NORTHLINE ELECTRONICS. Please confirm whether you made this purchase.",
-          "body": "We noticed a charge of $842.19 at NORTHLINE ELECTRONICS on September 17 on your card ending 4417. Please sign in or call the number on the back of your card to confirm whether you made this purchase. If we don't hear from you within 7 days, the card may be restricted."
+          "body": "We noticed a charge of $842.19 at NORTHLINE ELECTRONICS on {{date:2026-09-17|%B %-d}} on your card ending 4417. Please sign in or call the number on the back of your card to confirm whether you made this purchase. If we don't hear from you within 7 days, the card may be restricted."
         }
       ]
     },
@@ -190,7 +191,7 @@
         "eval-user@example.com"
       ],
       "date": "2026-09-19T08:04:00Z",
-      "snippet": "Earn 60,000 bonus points when you open a Harbor Voyager card by September 30.",
+      "snippet": "Earn 60,000 bonus points when you open a Harbor Voyager card by {{date:2026-09-30|%B %-d}}.",
       "labelIds": [
         "INBOX",
         "UNREAD"
@@ -203,8 +204,8 @@
             "eval-user@example.com"
           ],
           "date": "2026-09-19T08:04:00Z",
-          "snippet": "Earn 60,000 bonus points when you open a Harbor Voyager card by September 30.",
-          "body": "Earn 60,000 bonus points when you open a Harbor Voyager card by September 30."
+          "snippet": "Earn 60,000 bonus points when you open a Harbor Voyager card by {{date:2026-09-30|%B %-d}}.",
+          "body": "Earn 60,000 bonus points when you open a Harbor Voyager card by {{date:2026-09-30|%B %-d}}."
         }
       ]
     },
@@ -236,13 +237,13 @@
     },
     "thread-10": {
       "id": "thread-10",
-      "subject": "Your September statement is ready",
+      "subject": "Your {{date:2026-09-20|%B}} statement is ready",
       "from": "alerts@harborbank.example",
       "to": [
         "eval-user@example.com"
       ],
       "date": "2026-09-21T06:30:00Z",
-      "snippet": "Your statement for the period ending September 20 is now available to view online.",
+      "snippet": "Your statement for the period ending {{date:2026-09-20|%B %-d}} is now available to view online.",
       "labelIds": [
         "INBOX",
         "UNREAD"
@@ -255,8 +256,8 @@
             "eval-user@example.com"
           ],
           "date": "2026-09-21T06:30:00Z",
-          "snippet": "Your statement for the period ending September 20 is now available to view online.",
-          "body": "Your statement for the period ending September 20 is now available to view online. Statement balance: $1,236.40."
+          "snippet": "Your statement for the period ending {{date:2026-09-20|%B %-d}} is now available to view online.",
+          "body": "Your statement for the period ending {{date:2026-09-20|%B %-d}} is now available to view online. Statement balance: $1,236.40."
         }
       ]
     },
@@ -313,13 +314,13 @@
     },
     "thread-13": {
       "id": "thread-13",
-      "subject": "Reminder: credit card payment due Oct 5",
+      "subject": "Reminder: credit card payment due {{date:2026-10-05|%b %-d}}",
       "from": "alerts@harborbank.example",
       "to": [
         "eval-user@example.com"
       ],
       "date": "2026-09-23T09:15:00Z",
-      "snippet": "Your minimum payment of $45.00 on the card ending 4417 is due October 5.",
+      "snippet": "Your minimum payment of $45.00 on the card ending 4417 is due {{date:2026-10-05|%B %-d}}.",
       "labelIds": [
         "INBOX",
         "UNREAD"
@@ -332,20 +333,20 @@
             "eval-user@example.com"
           ],
           "date": "2026-09-23T09:15:00Z",
-          "snippet": "Your minimum payment of $45.00 on the card ending 4417 is due October 5.",
-          "body": "Your minimum payment of $45.00 on the card ending 4417 is due October 5. Statement balance: $1,236.40. Autopay is not set up on this account."
+          "snippet": "Your minimum payment of $45.00 on the card ending 4417 is due {{date:2026-10-05|%B %-d}}.",
+          "body": "Your minimum payment of $45.00 on the card ending 4417 is due {{date:2026-10-05|%B %-d}}. Statement balance: $1,236.40. Autopay is not set up on this account."
         }
       ]
     },
     "thread-14": {
       "id": "thread-14",
-      "subject": "Picture day moved to October 9",
+      "subject": "Picture day moved to {{date:2026-10-09|%B %-d}}",
       "from": "office@maplewood-elementary.example",
       "to": [
         "eval-user@example.com"
       ],
       "date": "2026-09-24T12:00:00Z",
-      "snippet": "Picture day has moved from October 2 to October 9. Order forms are due the day before.",
+      "snippet": "Picture day has moved from {{date:2026-10-02|%B %-d}} to {{date:2026-10-09|%B %-d}}. Order forms are due the day before.",
       "labelIds": [
         "INBOX",
         "UNREAD",
@@ -359,8 +360,8 @@
             "eval-user@example.com"
           ],
           "date": "2026-09-24T12:00:00Z",
-          "snippet": "Picture day has moved from October 2 to October 9. Order forms are due the day before.",
-          "body": "Picture day has moved from October 2 to October 9. Order forms are due the day before."
+          "snippet": "Picture day has moved from {{date:2026-10-02|%B %-d}} to {{date:2026-10-09|%B %-d}}. Order forms are due the day before.",
+          "body": "Picture day has moved from {{date:2026-10-02|%B %-d}} to {{date:2026-10-09|%B %-d}}. Order forms are due the day before."
         }
       ]
     },
@@ -372,7 +373,7 @@
         "eval-user@example.com"
       ],
       "date": "2026-09-25T08:03:00Z",
-      "snippet": "Join our free webinar on retirement planning basics on October 8.",
+      "snippet": "Join our free webinar on retirement planning basics on {{date:2026-10-08|%B %-d}}.",
       "labelIds": [
         "INBOX",
         "UNREAD"
@@ -385,8 +386,8 @@
             "eval-user@example.com"
           ],
           "date": "2026-09-25T08:03:00Z",
-          "snippet": "Join our free webinar on retirement planning basics on October 8.",
-          "body": "Join our free webinar on retirement planning basics on October 8. Register on our website."
+          "snippet": "Join our free webinar on retirement planning basics on {{date:2026-10-08|%B %-d}}.",
+          "body": "Join our free webinar on retirement planning basics on {{date:2026-10-08|%B %-d}}. Register on our website."
         }
       ]
     },

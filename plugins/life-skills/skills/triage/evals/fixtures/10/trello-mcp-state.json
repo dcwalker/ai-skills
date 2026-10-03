@@ -1,4 +1,5 @@
 {
+  "anchor_date": "2026-08-03",
   "boards": {
     "board-1": {"id": "board-1", "name": "Personal Tasks"}
   },
@@ -9,7 +10,7 @@
     "card-1": {
       "id": "card-1",
       "name": "taxes",
-      "desc": "Gather the 2025 receipts and hand them to the accountant before the April filing deadline.",
+      "desc": "Gather the {{date:2025-08-03|%Y}} receipts and hand them to the accountant before the {{date:2027-04-15|%B}} filing deadline.",
       "list_id": "list-1",
       "board_id": "board-1",
       "labels": [],
@@ -19,8 +20,8 @@
     },
     "card-2": {
       "id": "card-2",
-      "name": "Renew passport before the September trip",
-      "desc": "Current passport expires in October.",
+      "name": "Renew passport before the {{date:2026-09-15|%B}} trip",
+      "desc": "Current passport expires in {{date:2026-10-15|%B}}.",
       "list_id": "list-1",
       "board_id": "board-1",
       "labels": [],
