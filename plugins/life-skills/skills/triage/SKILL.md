@@ -140,7 +140,8 @@ At 15+ items, group first and order within each group.
 
 **Say the order.** Every reply that reports on the items opens with an
 `Order:` line naming the order and where it came from ("Order: list position,
-top to bottom"), and lists the items in that order.
+top to bottom"), then groups the items by outcome, in that order within each
+group.
 
 **Ask when two orders compete.** When the scope spans two platforms, boards,
 or projects, each with its own order, or two signals on one level disagree,
@@ -367,9 +368,16 @@ Once the corpus is enumerated, per-item context and size are read (Steps 3
 and 4), and Step 6 has named the action, every thread walks a six-way
 decision tree: delete, reply now under the 2-minute rule, file as reference,
 capture as an action, mark as waiting on someone else, or park as a long read.
-A thread waiting on someone else still carries the user's action: name the
-check-in (who, about what, and when, or ask when) rather than reporting that
-nothing is needed. The run then closes with a processed-count summary.
+A thread waiting on someone else still carries the user's action. Its entry
+names the check-in and, when the thread gives no date, asks when:
+
+```
+Waiting For:  check in with <who> about <what>; when should I remind you?
+```
+
+Never describe it as the other person's move or as nothing for the user to
+do: "nothing to do until they reply" and "it's on the vendor now" are the
+wrong framing. The run then closes with a processed-count summary.
 
 Read [references/email-triage.md](references/email-triage.md) for the tree in
 full — the order the branches are tested in, what each one writes, the count
@@ -452,13 +460,14 @@ confirm the scope before anything else in it. Nothing is applied while the
 block reads pending, no matter how routine the proposals look.
 
 Collect proposals into a summary and ask for confirmation before applying
-anything. Open with the `Order:` line and list items in the Step 1 processing
-order, not regrouped by outcome (changed, unchanged, archived); a batch entry
-sits where its earliest item falls. For sets of 15+ items (Step 1), present
+anything. Open with the `Order:` line, then group the items by outcome (for
+example: needs your attention, changed, no changes needed, archived), keeping
+the Step 1 processing order within each group; a batch entry sits in its
+group where its earliest item falls. For sets of 15+ items (Step 1), present
 and confirm this summary every ~10 items; otherwise present it once for the
-whole run. Do not present the same change in multiple places. Items with no proposed changes still
-appear in the summary, flagged as "No changes — looks complete. Mark
-reviewed?" rather than being dropped.
+whole run. Do not present the same change in multiple places. Items with no
+proposed changes still appear in the summary, flagged as "No changes — looks
+complete. Mark reviewed?" rather than being dropped.
 
 A batch action (Step 1) gets one entry naming every item in it by link or
 exact title. Every item it leaves in scope also gets its own per-item entry,
@@ -566,8 +575,8 @@ never impose more structure than the work justifies.
   still in scope is presented to the user individually with its own proposed
   changes, even when several items' changes are identical, unless a later
   batch moves it out of scope.
-- Open every report on the items with the `Order:` line, and list the items
-  in that order. A scope spanning two sources with their own orders gets the
+- Open every report on the items with the `Order:` line, and group the
+  items by outcome, in that order within each group. A scope spanning two sources with their own orders gets the
   order question first, and nothing is written until it is answered.
 - Name each action from its links too, as something the user does; a
   `Waiting For` item's action is the user's check-in. Never open a link that

@@ -97,5 +97,6 @@ Order:     single item
 Order:     asked (scope spans Trello and Jira)
 ```
 
-Step 9's summary lists the items in this order, including items with no
-changes and the per-item entries that follow a batch.
+Step 9's summary groups the items by outcome (needs your attention, changed,
+no changes needed, archived) and lists them in this order within each group,
+including items with no changes and the per-item entries that follow a batch.

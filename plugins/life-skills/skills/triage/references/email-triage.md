@@ -74,7 +74,13 @@ For each thread, decide in this order:
    rather than pick one. Where the check-in is recorded follows the pattern
    the scope already uses
    ([determining-actions.md](determining-actions.md)); with no pattern, name
-   the check-in in the summary and ask when and where to record it.
+   the check-in in the summary and ask when and where to record it. The
+   entry reads as the user's action, never as the other person's:
+
+   ```
+   Waiting For:  check in with the landlord about the dishwasher repair;
+                 when should I remind you?
+   ```
 6. **Read-review later?** If the content is long-form and worth reading but
    not actionable now, apply `Read-Review` and archive.
 

@@ -46,7 +46,7 @@
         "No create-label operation occurs and no thread is trashed/deleted -- the call log contains only reads plus create_draft, modify_thread_labels, and archive_thread calls.",
         "The response includes a processed-count summary of what happened to the three threads (drafted, waiting-for, read-review), consistent with the actual final state.",
         "The response describes the fence-quote thread's next step as the user's own check-in with the vendor (for example 'check in with North Fence about the quote'), not as the vendor's task, and does not state a check-in date the thread does not give: it asks when to check in, or leaves the date to the user.",
-        "The per-thread entries in the response appear oldest first: the fence quote (thread-2, July 27), then Sue's Q3 forecast (thread-1, July 29), then the newsletter (thread-3, July 30)."
+        "The response states the processing order (oldest first). It may group threads by outcome; within any group holding more than one thread, the threads appear oldest first: the fence quote (thread-2, July 27), then Sue's Q3 forecast (thread-1, July 29), then the newsletter (thread-3, July 30)."
       ]
     },
     {
@@ -132,7 +132,7 @@
         "Every Harbor Bank thread that still has INBOX in its final labelIds appears in the response with its own entry and disposition. Listing several threads under one shared disposition ('Applies to: ...', 'same treatment') fails, even when their dispositions are identical.",
         "No draft is created for any Harbor Bank thread.",
         "No thread is linked to anything but a URL the Gmail stub returned. The stub returns no thread URLs, so the response contains no markdown link to a thread at all: a link such as '[Picture day moved to October 9](thread-14)', whose target is a thread id or any other constructed value, fails. Threads are named by subject in plain text.",
-        "The response states the processing order as Starred or Important threads first, then oldest first, and the first thread given its own entry is thread-14 ('Picture day moved to October 9', the only STARRED thread), ahead of older threads."
+        "The response states the processing order as Starred or Important threads first, then oldest first. It may group threads by outcome, and within each group the threads given their own entries appear in that order, so thread-14 ('Picture day moved to October 9', the only STARRED thread) comes first in whichever group holds it. A batch entry is not an own entry."
       ]
     },
     {
@@ -146,7 +146,7 @@
         "thread-10 (September statement) is handled as reference, not as an action and not as noise, in both the final state and the response.",
         "The nine promotional mailers (thread-1, thread-3, thread-4, thread-6, thread-8, thread-9, thread-12, thread-15, thread-16) are not given the Action label, and the response does not describe them as needing action.",
         "No thread is linked to anything but a URL the Gmail stub returned. The stub returns no thread URLs, so the response contains no markdown link to a thread at all: a link such as '[Picture day moved to October 9](thread-14)', whose target is a thread id or any other constructed value, fails. Threads are named by subject in plain text.",
-        "The response states the processing order as Starred or Important threads first, then oldest first, and the first thread given its own entry is thread-14 ('Picture day moved to October 9', the only STARRED thread), ahead of older threads."
+        "The response states the processing order as Starred or Important threads first, then oldest first. It may group threads by outcome, and within each group the threads given their own entries appear in that order, so thread-14 ('Picture day moved to October 9', the only STARRED thread) comes first in whichever group holds it. A batch entry is not an own entry."
       ]
     },
     {
@@ -155,7 +155,7 @@
       "expected_output": "Three cards whose list position (top to bottom: gutters, library books, flu shot) differs from both their due-date order (flu shot, library books, gutters) and their order in the fixture file. The list position is the source's own order, so the skill works and presents the cards in it, says so, and does not reorder them by due date. 'gutters' has a vague title but a description that supports an action-oriented rewrite; the other two cards are already well formed.",
       "expectations": [
         "The response states that the cards are processed in the list's own order (position, top to bottom), not by due date.",
-        "The response presents the cards in list order: card-3 (gutters) first, then card-1 (library books), then card-2 (flu shot), including in any 'no changes needed' entries.",
+        "The response groups the cards by outcome or lists them together, and within each group they appear in list order: card-3 (gutters), card-1 (library books), card-2 (flu shot). Ordering any group by due date fails.",
         "Where the Trello call log contains a view_card call for more than one card, the first view_card call for each card occurs in the order card-3, card-1, card-2.",
         "card-3's title is changed from 'gutters' to something specific and action-oriented about clearing the gutters.",
         "card-1 and card-2 are not modified, and no card's due date or position changes."
@@ -168,7 +168,7 @@
       "expectations": [
         "A searchJiraIssuesUsingJql call in the Atlassian call log carries an ORDER BY Rank clause (ascending, explicit or by default).",
         "The response states that the issues are processed in rank (backlog) order.",
-        "The response presents the issues in rank order: HOME-3, then HOME-1, then HOME-2. Presenting HOME-2 first because it is High priority fails.",
+        "The response groups the issues by outcome or lists them together, and within each group they appear in rank order: HOME-3, HOME-1, HOME-2. Putting HOME-2 ahead of HOME-1 in the same group because it is High priority fails.",
         "HOME-3's summary is changed from 'shed' to something specific and action-oriented about patching the shed roof.",
         "No issue's priority is changed, and HOME-1 and HOME-2 are not modified."
       ]
@@ -179,7 +179,7 @@
       "expected_output": "The user shared a query with its own ORDER BY, so that order wins over rank. The three issues' due-date order (HOME-2 Oct 15, HOME-3 Oct 30, HOME-1 Nov 20) differs from their rank order (HOME-1, HOME-3, HOME-2) and their creation order. All three are already well formed, so the run makes no writes and reports each as needing no changes, in due-date order.",
       "expectations": [
         "A searchJiraIssuesUsingJql call in the Atlassian call log carries the user's ORDER BY duedate clause, and no search replaces it with ORDER BY Rank.",
-        "The response presents the issues in due-date order: HOME-2, then HOME-3, then HOME-1.",
+        "The response groups the issues by outcome or lists them together, and within each group they appear in due-date order: HOME-2, then HOME-3, then HOME-1.",
         "No write call appears in the Atlassian call log, and the final Jira state is semantically identical to the seed state.",
         "The response states that each issue needs no changes, rather than omitting any of them."
       ]
