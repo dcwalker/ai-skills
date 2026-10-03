@@ -214,7 +214,7 @@
         "card-3's title is changed from 'plumber' to a check-in phrased as the user's action, naming Northside Plumbing and the water heater quote (for example 'Check in with Northside Plumbing about the water heater quote').",
         "card-3's due date is 2026-10-08, the date the plumber promised, matching the board's pattern of dating check-ins by the promised reply.",
         "card-3 either ends on list-2 (Waiting For), or remains on list-1 and the response proposes moving it to Waiting For. It ends on no other list.",
-        "card-1 and card-2 are not modified.",
+        "card-1 and card-2 keep their titles, due dates, and lists. Adding a fitting existing label to either is allowed.",
         "The response does not describe the quote as a task for the user to do themselves, and does not assign the plumber's work to the user."
       ]
     },

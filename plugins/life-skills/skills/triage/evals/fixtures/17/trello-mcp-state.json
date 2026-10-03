@@ -18,12 +18,6 @@
       "name": "home",
       "color": "green",
       "board_id": "board-1"
-    },
-    "label-2": {
-      "id": "label-2",
-      "name": "health",
-      "color": "red",
-      "board_id": "board-1"
     }
   },
   "cards": {
