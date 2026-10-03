@@ -1,0 +1,144 @@
+{
+  "anchor_date": "2026-10-02",
+  "stub_now": "2026-10-02T16:00:00Z",
+  "cloud": {
+    "id": "b7c9e1a2-0000-4000-8000-example00001",
+    "url": "https://danwalker.atlassian.net",
+    "name": "danwalker"
+  },
+  "projects": {
+    "HOME": {
+      "key": "HOME",
+      "id": "10001",
+      "name": "Home Projects",
+      "issueTypes": [
+        "Task"
+      ]
+    }
+  },
+  "users": [
+    {
+      "accountId": "user-1",
+      "displayName": "Dan Walker",
+      "emailAddress": "eval-user@example.com"
+    }
+  ],
+  "transitions": [
+    {
+      "id": "11",
+      "name": "To Do",
+      "to": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      }
+    },
+    {
+      "id": "21",
+      "name": "In Progress",
+      "to": {
+        "name": "In Progress",
+        "statusCategory": "In Progress"
+      }
+    },
+    {
+      "id": "31",
+      "name": "Done",
+      "to": {
+        "name": "Done",
+        "statusCategory": "Done"
+      }
+    }
+  ],
+  "issues": {
+    "HOME-1": {
+      "key": "HOME-1",
+      "id": "20001",
+      "project": "HOME",
+      "summary": "Replace the bathroom extractor fan",
+      "description": "The extractor fan rattles and barely pulls air. Replace it with the same size unit; the old one is a 100 mm fit.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": "Medium",
+      "labels": [
+        "home",
+        "maintenance"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-10T09:00:00Z",
+      "updated": "2026-09-10T09:00:00Z",
+      "resolution": null,
+      "duedate": "2026-11-15",
+      "rank": "0|i00020:",
+      "comments": []
+    },
+    "HOME-2": {
+      "key": "HOME-2",
+      "id": "20002",
+      "project": "HOME",
+      "summary": "Fix the leaking kitchen tap",
+      "description": "The kitchen mixer tap drips from the base. Replace the cartridge; a spare is under the sink.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": "High",
+      "labels": [
+        "home",
+        "plumbing"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-12T09:00:00Z",
+      "updated": "2026-09-12T09:00:00Z",
+      "resolution": null,
+      "duedate": "2026-10-20",
+      "rank": "0|i00030:",
+      "comments": []
+    },
+    "HOME-3": {
+      "key": "HOME-3",
+      "id": "20003",
+      "project": "HOME",
+      "summary": "shed",
+      "description": "The shed roof felt is torn along the ridge and needs patching before the first frost. Felt and adhesive are already in the garage.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": "Low",
+      "labels": [],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-14T09:00:00Z",
+      "updated": "2026-09-14T09:00:00Z",
+      "resolution": null,
+      "duedate": "2026-11-01",
+      "rank": "0|i00010:",
+      "comments": []
+    }
+  }
+}

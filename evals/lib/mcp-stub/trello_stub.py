@@ -29,6 +29,7 @@ State model (the fake Trello "database"):
                               "labels": ["<label_id>", ...],
                               "due": null or "<ISO date>",
                               "due_complete": false,
+                              "pos": <number, optional>,
                               "url": "https://trello.com/c/<id>/<slug>"}},
     "labels": {"<label_id>": {"id": "...", "name": "...", "color": "...",
                                "board_id": "..."}}
@@ -37,8 +38,18 @@ State model (the fake Trello "database"):
 Tool surface is intentionally a subset scoped to what `triage` actually
 needs: resolve boards/lists, fetch cards (list-level and single-card
 detail), search for duplicates, audit and apply metadata changes, manage
-labels, and create cards (Step 4c's capture-to-Trello flow, used when
+labels, and create cards (Step 7c's capture-to-Trello flow, used when
 triaging another platform surfaces an action worth recording as a card).
+Card order: a card's optional "pos" is its position in its list, ascending
+from the top, as in Trello's own card object ("Position of the card in the
+list", a float). The live view_list returns a list's cards in that order
+without printing the positions, so the stub does the same: view_list sorts
+by "pos" and no tool response carries it. A card with no "pos" sorts by its
+place in the fixture, so a fixture that sets none keeps its written order,
+and one that means to test ordering sets "pos" on every card in the list.
+create_card and update_card turn "top", "bottom", or a number into a stored
+numeric "pos".
+
 It does not cover move-to-archive/checklists/comments -- not exercised by
 the eval batches, and view_card's checklists/comments are always returned
 empty here.
@@ -119,6 +130,37 @@ def _as_list(value) -> list:
     return list(value)
 
 
+def _effective_pos(card: dict, index: int) -> float:
+    pos = card.get("pos")
+    return float(pos) if isinstance(pos, (int, float)) else float(index)
+
+
+def _without_pos(card: dict) -> dict:
+    """A copy of the card for a tool response, which never carries "pos"."""
+    return {k: v for k, v in card.items() if k != "pos"}
+
+
+def _cards_in_list(list_id: str) -> list[dict]:
+    """A list's cards top to bottom, by "pos" (see Card order above)."""
+    in_list = [c for c in state.data["cards"].values() if c["list_id"] == list_id]
+    ordered = sorted(enumerate(in_list), key=lambda pair: _effective_pos(pair[1], pair[0]))
+    return [card for _, card in ordered]
+
+
+def _resolve_pos(list_id: str, pos, exclude_id: str | None = None) -> float:
+    """Trello's "top", "bottom", or a number, as a stored numeric position."""
+    in_list = [c for c in state.data["cards"].values() if c["list_id"] == list_id]
+    others = [_effective_pos(c, i) for i, c in enumerate(in_list) if c["id"] != exclude_id]
+    if pos == "top":
+        return min(others, default=1.0) - 1
+    if pos in (None, "bottom"):
+        return max(others, default=-1.0) + 1
+    try:
+        return float(pos)
+    except (TypeError, ValueError):
+        raise ValueError(f"trello-stub: pos must be 'top', 'bottom', or a number, not {pos!r}") from None
+
+
 def _card_view(card: dict) -> dict:
     return {
         "id": card["id"],
@@ -166,7 +208,7 @@ def view_list(
     """View all cards in a Trello list. Provide either list_id (takes
     precedence) or a list_name plus board_name/board_id."""
     resolved = _resolve_list(list_id, list_name, board_id, board_name)
-    cards = [_card_view(c) for c in state.data["cards"].values() if c["list_id"] == resolved]
+    cards = [_card_view(c) for c in _cards_in_list(resolved)]
     result = {"list_id": resolved, "cards": cards}
     state.log_call(
         "view_list",
@@ -183,7 +225,7 @@ def view_card(card_id: str) -> dict:
     if card_id not in state.data["cards"]:
         raise ValueError(f"trello-stub: no card with id {card_id!r}")
     card = state.data["cards"][card_id]
-    result = dict(card, checklists=[], comments=[])
+    result = dict(_without_pos(card), checklists=[], comments=[])
     state.log_call("view_card", {"card_id": card_id}, result)
     return result
 
@@ -289,7 +331,7 @@ def create_label(
     return result
 
 
-def _create_one_card(title: str, desc, due, list_ref: str, label_ids: list[str]) -> dict:
+def _create_one_card(title: str, desc, due, list_ref: str, label_ids: list[str], pos) -> dict:
     new_id = f"card-{len(state.data['cards']) + 1}"
     slug = "-".join(title.lower().split())[:40] or "card"
     card = {
@@ -301,10 +343,11 @@ def _create_one_card(title: str, desc, due, list_ref: str, label_ids: list[str])
         "labels": list(label_ids),
         "due": due,
         "due_complete": False,
+        "pos": _resolve_pos(list_ref, pos),
         "url": f"https://trello.com/c/{new_id}/{slug}",
     }
     state.data["cards"][new_id] = card
-    return dict(card)
+    return _without_pos(card)
 
 
 @server.tool()
@@ -329,7 +372,7 @@ def create_card(
     board_ref = state.data["lists"][list_ref]["board_id"]
     label_ids = [_resolve_label(lbl, board_ref) for lbl in _as_list(labels)]
     titles = name if isinstance(name, list) else [name]
-    created = [_create_one_card(t, desc, due, list_ref, label_ids) for t in titles]
+    created = [_create_one_card(t, desc, due, list_ref, label_ids, pos) for t in titles]
     state.flush()
     result = {"cards": created, "succeeded": len(created), "failed": 0}
     state.log_call(
@@ -361,7 +404,7 @@ def _apply_simple_field_updates(card: dict, name, desc, due, due_complete, pos) 
     if due_complete is not None:
         card["due_complete"] = due_complete
     if pos is not None:
-        card["pos"] = pos
+        card["pos"] = _resolve_pos(card["list_id"], pos, exclude_id=card["id"])
 
 
 def _apply_list_move(card: dict, list_id, list_name, board_id, board_name) -> None:
@@ -408,7 +451,7 @@ def _update_one_card(
     _apply_list_move(card, list_id, list_name, board_id, board_name)
     _apply_label_changes(card, add_labels, remove_labels)
     state.data["cards"][card_id] = card
-    return dict(card)
+    return _without_pos(card)
 
 
 @server.tool()

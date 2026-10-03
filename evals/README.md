@@ -389,7 +389,7 @@ protocol-compliant MCP stdio servers (built on the official `mcp` Python SDK,
 not a hand-rolled JSON-RPC shim) that stand in for the real third-party
 server -- `trello_stub.py` implements the subset of Trello tools `triage`
 actually calls, `gmail_stub.py` the six Gmail operations its email workflow
-(Step 4b) names, and `jira_stub.py` the Atlassian MCP's Jira subset
+(Step 7b) names, and `jira_stub.py` the Atlassian MCP's Jira subset
 (including the cloudId-discovery flow via getAccessibleAtlassianResources
 and a documented JQL subset that fails loudly on unsupported constructs,
 plus a getConfluencePage whose response layout is modelled on Confluence's
@@ -456,7 +456,7 @@ waiting three seconds for stdin that is not coming.
 into a scratch
 `mcp-config.json` naming those stubs as the *only* MCP servers, so no real
 third-party server is reachable during a trial. A fixture that provides
-both files gets both stubs in one trial -- how triage's Step 4c
+both files gets both stubs in one trial -- how triage's Step 7c
 capture-from-email-to-Trello eval runs a genuine cross-service scenario.
 After the trial, grade per service by diffing `$RUN_DIR/<service>-state-out.json`
 (final state, exported as e.g. `$TRELLO_STATE_OUT`/`$GMAIL_STATE_OUT` in
@@ -465,6 +465,35 @@ After the trial, grade per service by diffing `$RUN_DIR/<service>-state-out.json
 `$GMAIL_CALLS_LOG`) -- the same "grade final state, not exact steps"
 philosophy as every other eval in this repo, not by trusting the
 subprocess's stdout self-report.
+
+### Fixture dates move to the run date
+
+A fixture written around "the fair on 19 September" reads differently once
+September has passed: the trial stops to ask whether the item still stands,
+and the eval ends up measuring the calendar. So a fixture can name the date
+it was written for, as a top-level `"anchor_date": "YYYY-MM-DD"` in each of
+its `*-mcp-state.json` files (every file in one fixture must agree).
+`run-mcp-eval.sh` passes each state file through `evals/lib/fixture-dates.py`
+before a stub starts, which moves every date forward by the gap from the
+anchor to the run date, rounded down to whole weeks so weekdays stay true:
+
+- ISO dates and datetimes, the Slack stub's display times, and Slack `ts` and
+  `thread_ts` values move wherever they appear in the state.
+- Dates in prose are tokens: `{{date:2026-09-19|%B %-d}}` (strftime, plus
+  `%Q` for the season and `%q` for the same with "fall"; a leading `^`
+  capitalizes), `{{slackts:...}}` and `{{slackp:...}}` for a Slack timestamp
+  or a permalink's `p` segment.
+- The Jira stub's fixed "now" comes from an optional top-level `stub_now`,
+  which moves with the rest.
+- The same tokens work in an eval's `expected_output` and `expectations`;
+  not in its prompt, which the drivers read before the fixture is resolved.
+
+The stubs are seeded from `$RUN_DIR/<service>-state-seed.json`
+(`$TRELLO_STATE_SEED` and so on in `env.sh`), and the eval's resolved entry is
+written to `$RUN_DIR/eval.json` with its `run_date` and `shift_days`. Grade
+against those two, never the raw fixture and `evals.json`, whose dates are
+the anchor's. A fixture with no `anchor_date` loads unchanged, and a token in
+one is an error. Set `EVAL_RUN_DATE` to reproduce a run as of a given day.
 
 `evals/lib/run-mcp-trials.sh <skill-evals-dir> [id ...]` is the batch driver
 for any skill's MCP-backed trials: it runs each eval's `claude -p` subprocess
@@ -487,7 +516,7 @@ triage trial's boundary, and so does any hook the developer has configured. None
 `evals.json` declares no `follow_ups`, none of its fixtures carry a `home/`,
 and the skill writes nothing under `$HOME`. The settings gap is about the
 developer's own files rather than the measurement, and the `HOME` gap is not
-purely theoretical either: Step 5c reads `~/references/`, so a triage trial
+purely theoretical either: Step 5a reads `~/references/`, so a triage trial
 run through its own driver reads whatever that directory holds
 on the machine running it, rather than a fixture-controlled one. Folding it
 into a caller of this script is the fix, and remains the worthwhile follow-up

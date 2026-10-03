@@ -3,7 +3,7 @@
 
 A real, protocol-compliant stdio MCP server (built on the official `mcp`
 SDK) implementing the subset of Gmail operations `triage`'s email workflow
-(Step 4b) actually names: search_threads, get_thread, list_labels,
+(Step 7b) actually names: search_threads, get_thread, list_labels,
 create_draft, modify_thread_labels, archive_thread. See common.py's module
 docstring for the general stub-server design.
 
@@ -160,6 +160,10 @@ def _term_matches(t: dict, term: str) -> bool:
         return "UNREAD" in t["labelIds"]
     if term == "is:read":
         return "UNREAD" not in t["labelIds"]
+    if term == "is:starred":
+        return "STARRED" in t["labelIds"]
+    if term == "is:important":
+        return "IMPORTANT" in t["labelIds"]
     for prefix, test in _OPERATORS.items():
         if term.startswith(prefix):
             return test(t, term[len(prefix):])
@@ -191,8 +195,9 @@ def search_threads(
     listing-level fields only (no message bodies) -- use get_thread for a
     full body. The stub supports a documented subset of query operators:
     in:inbox, in:sent, in:anywhere, from:, to:, subject:, label:<id>,
-    is:unread, bare words, and '-' negation. from:me and to:me resolve to
-    the fixture's "me" address."""
+    is:unread, is:read, is:starred, is:important, bare words, and '-'
+    negation. from:me and to:me resolve to the fixture's "me" address.
+    Results come newest first."""
     matches = []
     for t in state.data["threads"].values():
         if not includeTrash and "TRASH" in t["labelIds"] and "in:trash" not in query and "in:anywhere" not in query:

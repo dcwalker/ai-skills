@@ -1,0 +1,147 @@
+{
+  "anchor_date": "2026-10-02",
+  "stub_now": "2026-10-02T16:00:00Z",
+  "cloud": {
+    "id": "b7c9e1a2-0000-4000-8000-example00001",
+    "url": "https://danwalker.atlassian.net",
+    "name": "danwalker"
+  },
+  "projects": {
+    "HOME": {
+      "key": "HOME",
+      "id": "10001",
+      "name": "Home Projects",
+      "issueTypes": [
+        "Task"
+      ]
+    }
+  },
+  "users": [
+    {
+      "accountId": "user-1",
+      "displayName": "Dan Walker",
+      "emailAddress": "eval-user@example.com"
+    }
+  ],
+  "transitions": [
+    {
+      "id": "11",
+      "name": "To Do",
+      "to": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      }
+    },
+    {
+      "id": "21",
+      "name": "In Progress",
+      "to": {
+        "name": "In Progress",
+        "statusCategory": "In Progress"
+      }
+    },
+    {
+      "id": "31",
+      "name": "Done",
+      "to": {
+        "name": "Done",
+        "statusCategory": "Done"
+      }
+    }
+  ],
+  "issues": {
+    "HOME-1": {
+      "key": "HOME-1",
+      "id": "20001",
+      "project": "HOME",
+      "summary": "Bleed the radiators before the heating goes on",
+      "description": "Bleed every radiator upstairs and down; the key is in the kitchen drawer.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": "Medium",
+      "labels": [
+        "home",
+        "maintenance"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-08T09:00:00Z",
+      "updated": "2026-09-08T09:00:00Z",
+      "resolution": null,
+      "duedate": "2026-11-20",
+      "rank": "0|i00010:",
+      "comments": []
+    },
+    "HOME-2": {
+      "key": "HOME-2",
+      "id": "20002",
+      "project": "HOME",
+      "summary": "Renew the home insurance policy",
+      "description": "The policy renews on {{date:2026-10-15|%B %-d}}. Compare two quotes before accepting the renewal price.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": "High",
+      "labels": [
+        "home",
+        "finance"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-09T09:00:00Z",
+      "updated": "2026-09-09T09:00:00Z",
+      "resolution": null,
+      "duedate": "2026-10-15",
+      "rank": "0|i00030:",
+      "comments": []
+    },
+    "HOME-3": {
+      "key": "HOME-3",
+      "id": "20003",
+      "project": "HOME",
+      "summary": "Test the smoke alarms and replace their batteries",
+      "description": "Test all four smoke alarms and fit fresh 9V batteries; a pack is in the hall cupboard.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": "Medium",
+      "labels": [
+        "home",
+        "safety"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-11T09:00:00Z",
+      "updated": "2026-09-11T09:00:00Z",
+      "resolution": null,
+      "duedate": "2026-10-30",
+      "rank": "0|i00020:",
+      "comments": []
+    }
+  }
+}
