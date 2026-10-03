@@ -389,7 +389,7 @@ protocol-compliant MCP stdio servers (built on the official `mcp` Python SDK,
 not a hand-rolled JSON-RPC shim) that stand in for the real third-party
 server -- `trello_stub.py` implements the subset of Trello tools `triage`
 actually calls, `gmail_stub.py` the six Gmail operations its email workflow
-(Step 4b) names, and `jira_stub.py` the Atlassian MCP's Jira subset
+(Step 7b) names, and `jira_stub.py` the Atlassian MCP's Jira subset
 (including the cloudId-discovery flow via getAccessibleAtlassianResources
 and a documented JQL subset that fails loudly on unsupported constructs,
 plus a getConfluencePage whose response layout is modelled on Confluence's
@@ -456,7 +456,7 @@ waiting three seconds for stdin that is not coming.
 into a scratch
 `mcp-config.json` naming those stubs as the *only* MCP servers, so no real
 third-party server is reachable during a trial. A fixture that provides
-both files gets both stubs in one trial -- how triage's Step 4c
+both files gets both stubs in one trial -- how triage's Step 7c
 capture-from-email-to-Trello eval runs a genuine cross-service scenario.
 After the trial, grade per service by diffing `$RUN_DIR/<service>-state-out.json`
 (final state, exported as e.g. `$TRELLO_STATE_OUT`/`$GMAIL_STATE_OUT` in
@@ -487,7 +487,7 @@ triage trial's boundary, and so does any hook the developer has configured. None
 `evals.json` declares no `follow_ups`, none of its fixtures carry a `home/`,
 and the skill writes nothing under `$HOME`. The settings gap is about the
 developer's own files rather than the measurement, and the `HOME` gap is not
-purely theoretical either: Step 5c reads `~/references/`, so a triage trial
+purely theoretical either: Step 5a reads `~/references/`, so a triage trial
 run through its own driver reads whatever that directory holds
 on the machine running it, rather than a fixture-controlled one. Folding it
 into a caller of this script is the fix, and remains the worthwhile follow-up

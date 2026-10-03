@@ -35,7 +35,7 @@
 #
 # Wires whichever stubs the fixture provides state for -- a fixture with
 # both trello-mcp-state.json and gmail-mcp-state.json gets both servers in
-# one trial (e.g. triage's Step 4c capture-from-email-to-Trello flow). A
+# one trial (e.g. triage's Step 7c capture-from-email-to-Trello flow). A
 # future Jira stub follows the same pattern: its own fixture file check
 # below and another entry in the generated mcpServers object.
 

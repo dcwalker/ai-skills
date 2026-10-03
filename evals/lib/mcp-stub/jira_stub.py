@@ -30,6 +30,7 @@ State model (the fake Jira "site"):
         "reporter": {"accountId", "displayName"},
         "created": "<ISO>", "updated": "<ISO>",
         "resolution": null or "...", "duedate": null or "YYYY-MM-DD",
+        "rank": "<sortable string, optional>",
         "comments": [{"id": "...", "body": "...", "created": "<ISO>",
                        "author": {"accountId": "...", "displayName": "..."}}]
     }},
@@ -62,10 +63,26 @@ JQL support in searchJiraIssuesUsingJql is a small, documented subset:
 clauses joined by AND, each one of `project = KEY`, `status != NAME`,
 `statusCategory != NAME` (and the `=` forms), `text ~ "words"` or
 `summary ~ "words"` (substring match against summary+description), with an
-optional trailing `ORDER BY ...` (accepted, ignored). Anything else raises
-a loud error naming the unsupported construct rather than silently
-matching nothing or everything -- the same fail-loud property as the other
-stubs.
+optional trailing `ORDER BY` over `Rank`, `created`, `updated`,
+`duedate`, or `key`, each `ASC` (the default) or `DESC`, comma-separated.
+Anything else raises a loud error naming the unsupported construct rather
+than silently matching nothing or everything -- the same fail-loud property
+as the other stubs.
+
+Issue order: a Jira issue's rank is its position in the backlog, which
+Atlassian documents as arranging work items by relative importance, and
+`ORDER BY Rank ASC` (accepted by the live connector) lists the top of the
+backlog first. A fixture issue's optional "rank" is that position as a
+string compared lexically, the way Jira's LexoRank values sort. Rank is a
+custom field the live search does not return by default, so the stub never
+returns it: the order of the results is the only sign of it. An issue with
+no "rank" ranks by its "created" time, so a fixture that sets none reads in
+creation order, and one that tests ordering sets a rank on every issue.
+Empty values sort last in either direction, an assumption the stub has not
+checked against Jira. `ORDER BY priority` is refused rather than guessed:
+Jira orders priorities by each site's own priority list, which a fixture does
+not model. Without an ORDER BY, results keep the fixture's order; the live
+default order is unverified.
 """
 
 import re
@@ -99,7 +116,7 @@ def _get_issue(issue_id_or_key: str) -> dict:
 
 
 def _issue_view(issue: dict, include_comments: bool = False) -> dict:
-    view = {k: v for k, v in issue.items() if k != "comments"}
+    view = {k: v for k, v in issue.items() if k not in ("comments", "rank")}
     if include_comments:
         view["comment"] = {"comments": issue.get("comments", [])}
     return view
@@ -158,11 +175,52 @@ def _clause_matches(issue: dict, clause: str) -> bool:
     )
 
 
+_ORDER_FIELDS = {
+    "rank": lambda i: i.get("rank") or i.get("created") or "",
+    "created": lambda i: i.get("created") or "",
+    "updated": lambda i: i.get("updated") or "",
+    "duedate": lambda i: i.get("duedate") or "",
+    "key": lambda i: (i["project"], int(i["key"].rsplit("-", 1)[1])),
+}
+
+
+def _split_order_by(jql: str) -> tuple[str, str]:
+    """The JQL's filter part and its ORDER BY terms, either possibly empty."""
+    padded = f" {jql}"
+    lower = padded.lower()
+    if " order by " not in lower:
+        return jql, ""
+    at = lower.index(" order by ")
+    return padded[:at].strip(), padded[at + len(" order by "):].strip()
+
+
+def _order_issues(issues: list[dict], jql: str) -> list[dict]:
+    """Apply the JQL's ORDER BY, last key first so the first key wins.
+
+    Issues with no value for a field sort last whichever the direction
+    (see the module docstring)."""
+    clause = _split_order_by(jql)[1]
+    if not clause:
+        return issues
+    ordered = list(issues)
+    for part in reversed([p.strip() for p in clause.split(",") if p.strip()]):
+        words = part.split()
+        field = words[0].lower()
+        direction = words[1].lower() if len(words) > 1 else "asc"
+        if field not in _ORDER_FIELDS or direction not in ("asc", "desc") or len(words) > 2:
+            raise ValueError(
+                f"jira-stub: unsupported ORDER BY term {part!r} -- supported: "
+                "Rank, created, updated, duedate, key, each ASC or DESC"
+            )
+        key = _ORDER_FIELDS[field]
+        present = [i for i in ordered if key(i) != ""]
+        empty = [i for i in ordered if key(i) == ""]
+        ordered = sorted(present, key=key, reverse=direction == "desc") + empty
+    return ordered
+
+
 def _jql_matches(issue: dict, jql: str) -> bool:
-    query = jql
-    lower = query.lower()
-    if " order by " in lower:
-        query = query[: lower.index(" order by ")]
+    query = _split_order_by(jql)[0]
     # JQL's AND keyword is case-insensitive, so split accordingly. The
     # whitespace is normalized first so the split can use a literal
     # single-space pattern (no quantifiers, no backtracking). A quoted value
@@ -222,14 +280,14 @@ def searchJiraIssuesUsingJql(  # NOSONAR(S1542) camelCase = real MCP tool name
 ) -> dict:
     """Search issues with JQL. The stub supports a documented subset:
     project =, status =/!=, statusCategory =/!=, text ~, summary ~, joined
-    by AND, with an optional trailing ORDER BY (ignored). Unsupported
-    constructs raise an error naming the clause."""
+    by AND, with an optional trailing ORDER BY over Rank, created,
+    updated, duedate, or key. Unsupported constructs raise an error naming
+    the clause."""
     _check_cloud(cloudId)
     include_comments = bool(fields) and ("comment" in fields or "*all" in fields)
     matches = [
         _issue_view(i, include_comments)
-        for i in state.data["issues"].values()
-        if _jql_matches(i, jql)
+        for i in _order_issues([i for i in state.data["issues"].values() if _jql_matches(i, jql)], jql)
     ]
     result: dict = {}
     if searchResultMode in ("issues", "all"):
