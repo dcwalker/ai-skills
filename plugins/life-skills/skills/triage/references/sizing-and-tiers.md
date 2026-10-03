@@ -1,11 +1,11 @@
 # Sizing and Tiers
 
-The signal tables behind Step 2's two assessments — is this personal or
+The signal tables behind Step 3's two assessments — is this personal or
 professional work, and how big is it — and the tier they select between. The
 tier decides how much enrichment an item gets for the rest of the run, so read
 this when an item's context or size is not obvious from the first glance.
 
-## Agreeing a pace on a large set (Step 0.5)
+## Agreeing a pace on a large set (Step 1a)
 
 At 15+ items, propose a pace before starting, and say why it is not a
 shortcut:
@@ -16,7 +16,13 @@ shortcut:
 > proposals every 10 items instead of one giant summary at the end. Sound
 > right?"
 
-## Batch actions (Step 0.5)
+Grouping does not replace the processing order (Step 1b); it comes first, and
+the order is applied within it. Items keep the chosen order inside each group,
+and each group sits where its earliest item falls in that order. With an inbox
+going oldest first, a sender whose first thread is the oldest in the inbox is
+worked first, even if its other threads are the newest.
+
+## Batch actions (Step 1a)
 
 A batch action is one change (a label, a move, an archive) applied to several
 items in a group at once. It is proposed and confirmed like any other change.
@@ -31,10 +37,10 @@ an unrecognized charge does not belong in an archive batch with the promotions.
 - An item the action moved out of scope (archived out of the inbox, moved off
   the list being triaged, closed) is finished.
 - An item still in scope is presented to the user individually for triage,
-  with its own entry and its own proposed changes in the Step 8 summary, as if
+  with its own entry and its own proposed changes in the Step 9 summary, as if
   the batch had not happened. A batch action never counts as its triage.
 
-**Presenting it in Step 8.** The batch gets one entry that names every item in
+**Presenting it in Step 9.** The batch gets one entry that names every item in
 it by link, or by its exact title or subject when no link is available, so the
 user can pull one out before confirming. A summary description ("9 promotional
 emails", "survey, webinar invite, ...") does not name the items. The entry also
@@ -50,7 +56,7 @@ in scope with no entry of its own: a list of items under one shared decision
 ("Applies to: ...", "same treatment") that leaves them in scope is group
 triage, not individual review.
 
-## 2a. Work context
+## 3a. Work context
 
 | Context | Signals |
 |---|---|
@@ -58,7 +64,7 @@ triage, not individual review.
 | **Professional** | Team board/project, issue types like Bug/Story/Epic, sprint context, business terminology; work email account |
 | **Mixed** | Personal productivity board used for work tasks, or a team board with personal to-dos mixed in; a single inbox that receives both |
 
-## 2b. Task size
+## 3b. Task size
 
 | Size | Signals |
 |---|---|
@@ -66,7 +72,7 @@ triage, not individual review.
 | **Medium** | Multiple steps or sub-tasks, 1–5 days of effort, may have a dependency or two |
 | **Large / Project** | Multi-week or multi-phase effort, has sub-tasks or should have them, involves multiple people or systems |
 
-## 2c. Select enrichment tier
+## 3c. Select enrichment tier
 
 Use the context and size to select the right enrichment level. The goal is
 *just enough structure to move the item forward*, no more.

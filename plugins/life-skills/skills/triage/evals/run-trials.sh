@@ -87,7 +87,7 @@ for e in data['evals']:
   # root-only branch, so the surface cannot silently differ between the
   # environment a baseline was recorded in and the one it is reproduced in.
   #
-  # The non-MCP tools are load-bearing, not filler: Step 1 and Step 4c each
+  # The non-MCP tools are load-bearing, not filler: Step 2 and Step 7c each
   # define an MCP -> skill -> CLI -> REST hierarchy, and run-mcp-eval.sh
   # deliberately isolates the two shell paths triage/SKILL.md names (curl to
   # Jira's REST API, and gh) by scrubbing credentials and shadowing gh, so
