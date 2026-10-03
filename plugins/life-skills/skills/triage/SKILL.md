@@ -90,11 +90,11 @@ closing report of a run the user authorized up front, opens with that line.
 - Only a user message flips Confirmed to `yes`. The assistant never sets it
   on its own authority, and "there was only one candidate" is a Source, not
   a confirmation.
-- When the scope spans two or more sources that each keep their own order
-  (a Trello list and a Jira project, two boards, two projects), the next reply
-  is the order question from Step 1b and nothing else: no item is audited or
-  written until the user picks an order, even when changes were authorized
-  up front. `Order: asked` is pending in the same way `Confirmed: pending` is.
+- Only when the scope itself names two or more sources that each keep their
+  own order (a Trello list and a Jira project, two boards, two projects) is
+  the next reply the order question from Step 1b, with nothing audited or
+  written until the user picks an order. Any other scope has an order already,
+  and changes the user authorized up front go ahead in it.
 
 **Capability discovery:** once scope is named (or on the open-answer path
 above), survey what is available in the current session. Check which MCP
@@ -281,7 +281,9 @@ appointment, or location), or a **check-in** on someone else's next move.
 Linked content wins over the item's own text, and the proposal says so. An
 item with no action is reference, someday, or noise. Record a time or place
 the way the scope already does (due dates, a waiting-for list, context
-labels); with no pattern, ask. Never invent a date. The action drives the
+labels); with no pattern, ask. Never invent a date. A date that has already
+passed does not cancel the action: keep it, flag the date, and let the user
+decide whether it still stands. The action drives the
 title, the email branch, the Trello capture, and the due date.
 [references/determining-actions.md](references/determining-actions.md) has
 examples, the pattern check, and check-in wording.
@@ -570,7 +572,10 @@ never impose more structure than the work justifies.
 - Name each action from its links too, as something the user does; a
   `Waiting For` item's action is the user's check-in. Never open a link that
   acts.
-- Never apply a change without explicit user confirmation.
+- Never apply a change without explicit user confirmation. Confirmation
+  given up front ("apply anything you're confident about") counts: apply the
+  confident changes, and ask only about the points that are genuinely
+  unclear. A question about one field or item never holds back the others.
 - Never invent facts, dates, names, or descriptions. Ask if unknown.
 - Refer to every card, issue, or thread by a hyperlink to the item itself,
   never a bare title or key, and never a URL the platform did not return.
