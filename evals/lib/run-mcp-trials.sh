@@ -271,9 +271,10 @@ print(json.dumps({
     # Copied without permissions, sandbox, or hooks: permission and sandbox
     # arrays merge across settings scopes, so a developer's own allow rules
     # or extra writable paths would widen the boundary set up per trial
-    # below, and their hooks run outside it altogether.
+    # below, and their hooks run outside it altogether. A file that is not
+    # strict JSON is left out with a warning rather than ending the batch.
     for SETTING in settings.json settings.local.json; do
-      [[ -f "$HOME/.claude/$SETTING" ]] && python3 -c '
+      [[ -f "$HOME/.claude/$SETTING" ]] && { python3 -c '
 import json, sys
 with open(sys.argv[1]) as fh:
     settings = json.load(fh)
@@ -281,7 +282,8 @@ for key in ("permissions", "sandbox", "hooks"):
     settings.pop(key, None)
 with open(sys.argv[2], "w") as fh:
     json.dump(settings, fh)
-' "$HOME/.claude/$SETTING" "$TRIAL_HOME/.claude/$SETTING"
+' "$HOME/.claude/$SETTING" "$TRIAL_HOME/.claude/$SETTING" 2> /dev/null || \
+        echo "  WARNING: could not read ~/.claude/$SETTING as JSON; the trial runs without it"; }
     done
     # Plugins are 22M and read-only to a trial, so they stay a symlink rather
     # than being copied 27 times. The rest of ~/.claude -- projects/, sessions/,
