@@ -1,0 +1,73 @@
+{
+  "boards": {
+    "board-1": {
+      "id": "board-1",
+      "name": "Personal Tasks"
+    }
+  },
+  "lists": {
+    "list-1": {
+      "id": "list-1",
+      "name": "Inbox",
+      "board_id": "board-1"
+    }
+  },
+  "labels": {
+    "label-1": {
+      "id": "label-1",
+      "name": "home",
+      "color": "green",
+      "board_id": "board-1"
+    },
+    "label-2": {
+      "id": "label-2",
+      "name": "health",
+      "color": "red",
+      "board_id": "board-1"
+    }
+  },
+  "cards": {
+    "card-1": {
+      "id": "card-1",
+      "name": "Return library books",
+      "desc": "Three books are due back at the Elm Street branch.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [
+        "label-1"
+      ],
+      "due": "2026-10-25",
+      "due_complete": false,
+      "pos": 2048,
+      "url": "https://trello.com/c/card-1/return-library-books"
+    },
+    "card-2": {
+      "id": "card-2",
+      "name": "Book flu shot appointment",
+      "desc": "Book a flu shot at the clinic before the season gets going.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [
+        "label-2"
+      ],
+      "due": "2026-10-12",
+      "due_complete": false,
+      "pos": 3072,
+      "url": "https://trello.com/c/card-2/book-flu-shot"
+    },
+    "card-3": {
+      "id": "card-3",
+      "name": "gutters",
+      "desc": "Clear the leaves out of the front gutters before the November rains. Ladder is in the garage.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [
+        "label-1"
+      ],
+      "due": "2026-11-10",
+      "due_complete": false,
+      "pos": 1024,
+      "url": "https://trello.com/c/card-3/gutters"
+    }
+  }
+}

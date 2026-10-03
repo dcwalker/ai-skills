@@ -1,0 +1,75 @@
+{
+  "me": "eval-user@example.com",
+  "labels": {
+    "Label_1": {
+      "id": "Label_1",
+      "name": "Action",
+      "type": "user"
+    },
+    "Label_2": {
+      "id": "Label_2",
+      "name": "Waiting For",
+      "type": "user"
+    },
+    "Label_3": {
+      "id": "Label_3",
+      "name": "Read-Review",
+      "type": "user"
+    }
+  },
+  "drafts": {},
+  "threads": {
+    "thread-1": {
+      "id": "thread-1",
+      "subject": "Please confirm your appointment on October 14",
+      "from": "reminders@brightsmile-dental.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-29T15:00:00Z",
+      "snippet": "Your cleaning with Dr. Reyes is on Wednesday, October 14 at 3:30pm. Please confirm or reschedule.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-1",
+          "from": "reminders@brightsmile-dental.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-29T15:00:00Z",
+          "snippet": "Your cleaning with Dr. Reyes is on Wednesday, October 14 at 3:30pm. Please confirm or reschedule.",
+          "body": "Hi Dan,\n\nYour cleaning with Dr. Reyes is on Wednesday, October 14 at 3:30pm.\n\nConfirm your appointment: https://brightsmile-dental.invalid/appt/confirm?token=8f2c91d7e4a6\nNeed a different time? Reschedule: https://brightsmile-dental.invalid/appt/reschedule?token=8f2c91d7e4a6\n\nBright Smile Dental\n\nStop appointment reminders: https://mail.brightsmile-dental.invalid/u/8f2c91d7e4a6"
+        }
+      ]
+    },
+    "thread-2": {
+      "id": "thread-2",
+      "subject": "Fall programs at your city parks",
+      "from": "news@cityparks.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-30T13:00:00Z",
+      "snippet": "Pottery, toddler swim, and the new trail-running club start in October.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-2",
+          "from": "news@cityparks.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-30T13:00:00Z",
+          "snippet": "Pottery, toddler swim, and the new trail-running club start in October.",
+          "body": "Fall programs are here: pottery, toddler swim, and a new trail-running club, all starting in October.\n\nRead online: https://cityparks.invalid/newsletter/fall-2026\nSign in to register with one click: https://cityparks.invalid/login/magic/7Qx2LmP9vR\n\nUnsubscribe: https://cityparks.invalid/unsubscribe?u=4471&sig=a9d3c0"
+        }
+      ]
+    }
+  }
+}

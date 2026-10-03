@@ -348,7 +348,8 @@
       "snippet": "Picture day has moved from October 2 to October 9. Order forms are due the day before.",
       "labelIds": [
         "INBOX",
-        "UNREAD"
+        "UNREAD",
+        "STARRED"
       ],
       "messages": [
         {

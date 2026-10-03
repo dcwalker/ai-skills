@@ -1,0 +1,72 @@
+{
+  "boards": {
+    "board-1": {
+      "id": "board-1",
+      "name": "Personal Tasks"
+    }
+  },
+  "lists": {
+    "list-1": {
+      "id": "list-1",
+      "name": "Inbox",
+      "board_id": "board-1"
+    },
+    "list-2": {
+      "id": "list-2",
+      "name": "Waiting For",
+      "board_id": "board-1"
+    }
+  },
+  "labels": {
+    "label-1": {
+      "id": "label-1",
+      "name": "home",
+      "color": "green",
+      "board_id": "board-1"
+    },
+    "label-2": {
+      "id": "label-2",
+      "name": "health",
+      "color": "red",
+      "board_id": "board-1"
+    }
+  },
+  "cards": {
+    "card-1": {
+      "id": "card-1",
+      "name": "Check in with Acme Roofing about the gutter estimate",
+      "desc": "Emailed Acme Roofing on Sep 22 for an estimate on new gutters. They said they would reply by Oct 6.",
+      "list_id": "list-2",
+      "board_id": "board-1",
+      "labels": [],
+      "due": "2026-10-06",
+      "due_complete": false,
+      "pos": 1024,
+      "url": "https://trello.com/c/card-1/check-in-acme-roofing"
+    },
+    "card-2": {
+      "id": "card-2",
+      "name": "Check in with Dr. Patel's office about the referral letter",
+      "desc": "Asked the surgery on Sep 25 to send the referral letter to the physio. They said it would go out by Oct 9.",
+      "list_id": "list-2",
+      "board_id": "board-1",
+      "labels": [],
+      "due": "2026-10-09",
+      "due_complete": false,
+      "pos": 2048,
+      "url": "https://trello.com/c/card-2/check-in-dr-patel"
+    },
+    "card-3": {
+      "id": "card-3",
+      "name": "plumber",
+      "desc": "Emailed Northside Plumbing on Sep 30 asking for a quote to replace the water heater. They replied that they would send the quote by Thursday, Oct 8.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [],
+      "due": null,
+      "due_complete": false,
+      "pos": 1024,
+      "url": "https://trello.com/c/card-3/plumber"
+    }
+  }
+}
