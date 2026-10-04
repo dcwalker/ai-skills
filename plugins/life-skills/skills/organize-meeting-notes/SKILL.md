@@ -290,6 +290,10 @@ Acronym rule:
 
 URL rule:
 - If URLs are listed at the end of notes, move them into relevant note locations as Markdown hyperlinks.
+- Keep every URL exactly as the user gave it. Never replace it with a URL a
+  tool returned for the same page (a short or tiny link, an API URL, a
+  canonical form). A tool's URL may stand only for a link the user never
+  gave, such as one found in chat or email.
 - For each link summarized in Step 1b, append its one-to-two-sentence
   summary (what it contains and why it mattered to the meeting) to the note
   that carries the link, subject to the user's approval.
@@ -325,6 +329,13 @@ Topic rule:
   the user where it belongs rather than inventing a catch-all section.
 - Propose the section names and the note-to-section assignment for approval
   in Step 7. The user decides whether the meeting is sectioned at all.
+
+Paraphrase rule (always, with or without a transcript):
+- A paraphrase or approximation of what someone said never goes in quotation
+  marks, whether or not it is labelled "(paraphrased)", "roughly", or
+  "something like". Write it as reported speech instead: Omar Haddad said the
+  rollout had slipped by about a week. This includes wording the user
+  remembers only approximately.
 
 Quote rule (only when a transcript was provided):
 - Quote only words that appear verbatim in the transcript. Never quote from
@@ -408,7 +419,15 @@ After the interview and normalization, format the notes section as a bulleted li
 5. It is valid for a meeting to have no action items. If none exist, explicitly confirm this with the user.
 6. Once action items are confirmed, ask whether to create Trello tasks (one per action item).
 7. If user says yes, create one Trello card per action item:
-   - Run: `create-trello-task.sh "<action item text>"`
+   - Run: `create-trello-task.sh "<action item text>"`. The script ships with
+     this skill. If it is not on your PATH, run the bundled copy at
+     `scripts/create-trello-task.sh`, resolved relative to this `SKILL.md`.
+     Do not search the filesystem for it, and do not hard-code an absolute
+     install path: the install location contains a version identifier that
+     changes on every plugin update.
+   - If neither copy can be run, tell the user the cards could not be created
+     and why, and ask how to proceed. Never skip card creation silently or
+     finalize as if the question had not been asked.
    - Include `--desc` for every Trello card with source context.
    - Minimum required description context: meeting title plus meeting date/time.
    - Preferred additional context: meeting topic and a short reason the action item exists.
@@ -477,7 +496,9 @@ At the very end, append:
 
 - Keep output concise and readable.
 - Quote only from a transcript the user actually provided, verbatim and
-  attributed. Never invent, reconstruct, or paraphrase into a quotation.
+  attributed. Never invent, reconstruct, or paraphrase into a quotation, and
+  never put a paraphrase in quotation marks, labelled or not; write it as
+  reported speech.
 - Add a summary only when the length rule calls for one, and section the
   notes only when the meeting genuinely had distinct topics. Neither is
   padding to apply by default.

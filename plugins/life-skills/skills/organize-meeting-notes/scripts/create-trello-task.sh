@@ -30,7 +30,7 @@ DESC=""
 TEXT=""
 
 show_help() {
-  echo "Usage: $0 \"<action item text>\" [--desc \"<description>\"]"
+  echo "Usage: $(basename "$0") \"<action item text>\" [--desc \"<description>\"]"
   echo ""
   echo "Description:"
   echo "  Creates a single Trello card for a meeting-notes action item and"
