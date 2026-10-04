@@ -55,15 +55,13 @@ up. A Gmail label or search query is treated the same way.
 ## When to ask
 
 Chronological always applies, so the question is never whether some order
-exists but whether the signals agree. Ask instead of picking when:
+exists but whether the signals agree.
 
-- The scope spans sources with no shared order: two platforms, two boards, or
-  two projects, each with its own order.
-- Two signals on the same level disagree, such as a high-priority item due
-  after a low-priority one, with nothing above them to settle it.
-
-Ask once, before any item is worked, name the orders that would make sense,
-and process nothing until the user answers:
+**Two sources, two orders: ask first.** When the scope spans sources with no
+shared order (two platforms, two boards, or two projects, each with its own
+order), ask once before any item is worked, name the orders that would make
+sense, and process nothing until the user answers. Changes authorized up
+front do not answer this question:
 
 > "This covers your Errands list in Trello and the OPS Jira project, and they
 > each keep their own order. Which should I go by?
@@ -71,8 +69,12 @@ and process nothing until the user answers:
 > 2. Everything by due date, soonest first, undated items last
 > 3. Everything oldest first"
 
-When the user has already authorized changes up front, that authorization does
-not answer the order question; ask it anyway.
+**One source, conflicting signals: pick, say so, and offer to switch.** When
+two signals on the same level disagree inside one source, such as a
+high-priority item due after a low-priority one with nothing above them to
+settle it, take the earlier-listed signal (priority before due date), name
+the conflict on the `Order:` line, and ask whether to switch. Changes
+authorized up front go ahead in the chosen order meanwhile.
 
 ## Groups and order together
 

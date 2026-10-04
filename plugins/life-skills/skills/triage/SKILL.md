@@ -144,10 +144,12 @@ top to bottom"), then groups the items by outcome, in that order within each
 group.
 
 **Ask when two orders compete.** When the scope spans two platforms, boards,
-or projects, each with its own order, or two signals on one level disagree,
-the reply is the order question, with the viable orders as options, and
-nothing else: no item is audited or written until the user answers. Changes
-authorized up front do not answer it.
+or projects, each with its own order, the reply is the order question, with
+the viable orders as options, and nothing else: no item is audited or written
+until the user answers. Changes authorized up front do not answer it. When
+two signals disagree inside one source, pick the earlier-listed one, name the
+conflict on the `Order:` line, and offer to switch; authorized changes go
+ahead meanwhile.
 [references/processing-order.md](references/processing-order.md) has the
 platform details and the ask wording; read it before stating an order.
 
