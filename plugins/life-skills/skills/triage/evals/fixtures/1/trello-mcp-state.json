@@ -1,4 +1,5 @@
 {
+  "anchor_date": "2026-07-30",
   "boards": {
     "board-1": {"id": "board-1", "name": "Personal Tasks"}
   },

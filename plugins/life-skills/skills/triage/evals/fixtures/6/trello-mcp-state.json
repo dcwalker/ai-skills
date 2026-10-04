@@ -1,4 +1,5 @@
 {
+  "anchor_date": "2026-07-31",
   "boards": {
     "board-1": {"id": "board-1", "name": "Personal Tasks"}
   },
@@ -10,7 +11,7 @@
     "card-1": {
       "id": "card-1",
       "name": "Service the lawnmower",
-      "desc": "Blade needs sharpening before autumn.",
+      "desc": "Blade needs sharpening before {{date:2026-09-01|%Q}}.",
       "list_id": "list-1",
       "board_id": "board-1",
       "labels": [],

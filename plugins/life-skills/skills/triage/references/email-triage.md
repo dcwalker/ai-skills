@@ -1,13 +1,13 @@
 # Email Triage
 
-Everything specific to an email scope: how to fetch the corpus, and the Step 4b
+Everything specific to an email scope: how to fetch the corpus, and the Step 7b
 decision tree that each thread walks. Read this when the scope is an inbox, a
 Gmail label, a search query, or a set of threads. For any other scope it does
 not apply.
 
-## Fetching an email corpus (Step 1)
+## Fetching an email corpus (Step 2)
 
-Follow the same MCP → skill → CLI → REST hierarchy Step 1 defines. The Gmail
+Follow the same MCP → skill → CLI → REST hierarchy Step 2 defines. The Gmail
 MCP exposes the operations needed: `search_threads`, `get_thread`,
 `list_labels`, `modify_thread_labels`, `archive_thread`, `create_draft`. Use
 `search_threads` with the scope query (e.g. `in:inbox`) to enumerate the
@@ -17,23 +17,37 @@ per Step 0's bounded-read rule.
 **Capture for each item during this corpus pass:** title/subject, a short
 description/body snippet, type, status/list/folder, assignee(s)/recipients,
 labels/tags, due date, start date, priority, creation date, and last-updated
-date. This listing-level detail is enough for Step 0.5 sizing and Step 2's
-context/size assessment. Defer heavier detail (effort estimate, linked items,
-attachments, embedded URLs, comments with dates, and external links) to the
-Step 2.0 refresh immediately before each item's individual review, so each
-item gets fetched in full once per run, not twice.
+date, plus whether the thread carries `STARRED` or `IMPORTANT` in its
+`labelIds`. This listing-level detail is enough for Step 1's sizing and order
+and Step 3's context/size assessment. Defer heavier detail (effort estimate,
+linked items, attachments, embedded URLs, comments with dates, and external
+links) to the Step 3.0 refresh immediately before each item's individual
+review, so each item gets fetched in full once per run, not twice.
 
-## The Step 4b decision tree
+`search_threads` returns the newest thread first. That is the listing's order,
+not the inbox's processing order: work the threads Starred or Important first,
+then oldest first (Step 1b), which usually means reading the listing from the
+bottom up.
 
-After the corpus is enumerated and per-item context and size are read (Steps 2
-and 3), walk each thread through this tree before moving on to Step 5. The tree
-applies GTD email principles directly.
+**A thread that points elsewhere needs its body.** When the snippet says the
+substance is behind a link (a statement is ready, a document was shared, a
+message is waiting in a portal), the bounded-read rule counts the thread as
+one that needs a body read to classify. Read it with `get_thread`, and follow
+its link under Step 5a before the tree below decides the thread. Step 5a's
+list of links never to open applies in full: an unsubscribe, confirm, or
+one-time link in the body is named for the user, not opened.
+
+## The Step 7b decision tree
+
+After the corpus is enumerated, per-item context and size are read (Steps 3
+and 4), and Step 6 has named the thread's action, walk each thread through this
+tree. The tree applies GTD email principles directly.
 
 For each thread, decide in this order:
 
 1. **Delete?** If the thread has no future value as either action or reference,
    propose deleting it. When the corpus is large, offer to group by sender and
-   bulk-delete obvious noise as a batch action (SKILL.md Step 0.5). A thread
+   bulk-delete obvious noise as a batch action (SKILL.md Step 1a). A thread
    joins the batch only when its own subject and snippet show it is noise,
    not because it shares a sender with noise. Threads a batch action leaves
    in the inbox, such as after a batch label, still walk this tree
@@ -50,10 +64,23 @@ For each thread, decide in this order:
 4. **Action, > 2 minutes?** Capture the action somewhere durable:
    - Apply the `Action` label and edit the subject of a stored copy (or note
      the action verb in a comment), **or**
-   - Capture to Trello via the Step 4c flow as a card whose title is the next
-     action verb. Either way, then archive the thread out of the inbox.
+   - Capture to Trello via the Step 7c flow as a card whose title is the
+     action Step 6 named. Either way, then archive the thread out of the inbox.
 5. **Waiting for someone else?** Apply the `Waiting For` label and archive.
-   The label, not the inbox, is the reminder surface.
+   The label, not the inbox, is the reminder surface. The next move is the
+   other person's, but the thread's action is still the user's: the check-in
+   Step 6 named, saying who it is with, what it is about, and when. A date the
+   thread gives (a promised reply, a deadline) sets when; with none, ask
+   rather than pick one. Where the check-in is recorded follows the pattern
+   the scope already uses
+   ([determining-actions.md](determining-actions.md)); with no pattern, name
+   the check-in in the summary and ask when and where to record it. The
+   entry reads as the user's action, never as the other person's:
+
+   ```
+   Waiting For:  check in with the landlord about the dishwasher repair;
+                 when should I remind you?
+   ```
 6. **Read-review later?** If the content is long-form and worth reading but
    not actionable now, apply `Read-Review` and archive.
 

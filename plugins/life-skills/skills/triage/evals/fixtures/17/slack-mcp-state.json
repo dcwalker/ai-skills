@@ -1,0 +1,77 @@
+{
+  "anchor_date": "2026-10-02",
+  "me": {
+    "id": "U0DAN",
+    "name": "dan.walker",
+    "display_name": "dan.walker",
+    "real_name": "Dan Walker",
+    "email": "dan.walker@example.com",
+    "title": "",
+    "timezone": "America/Los_Angeles",
+    "org": "riverside-gardeners"
+  },
+  "users": {
+    "U0DAN": {
+      "id": "U0DAN",
+      "name": "dan.walker",
+      "display_name": "dan.walker",
+      "real_name": "Dan Walker",
+      "email": "dan.walker@example.com",
+      "title": "",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0MARIA": {
+      "id": "U0MARIA",
+      "name": "maria.lopez",
+      "display_name": "maria.lopez",
+      "real_name": "Maria Lopez",
+      "email": "maria.lopez@example.com",
+      "title": "",
+      "timezone": "America/Los_Angeles"
+    }
+  },
+  "channels": {
+    "C07GARDEN": {
+      "id": "C07GARDEN",
+      "name": "garden-club",
+      "purpose": "Riverside Gardeners club chat",
+      "creator": "U0MARIA",
+      "created": "2025-03-01 10:00:00 PST",
+      "is_archived": false,
+      "type": "public_channel"
+    }
+  },
+  "messages": {
+    "C07GARDEN": [
+      {
+        "ts": "1790525640.000100",
+        "time": "2026-09-27 09:14:00 PDT",
+        "user": "U0MARIA",
+        "text": "The plant swap is Saturday {{date:2026-10-10|%B %-d}} at the community hall. <@U0DAN|dan.walker> could you bring the four folding tables from your garage? We need them set up by 9am.",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1790527200.000200",
+        "time": "2026-09-27 09:40:00 PDT",
+        "user": "U0DAN",
+        "text": "Sure, I can do that.",
+        "thread_ts": "1790525640.000100",
+        "reactions": []
+      },
+      {
+        "ts": "1790527920.000300",
+        "time": "2026-09-27 09:52:00 PDT",
+        "user": "U0MARIA",
+        "text": "Thank you! Drop them at the side door on Elm Street, it'll be unlocked from 8.",
+        "thread_ts": "1790525640.000100",
+        "reactions": [
+          {
+            "name": "pray",
+            "count": 1
+          }
+        ]
+      }
+    ]
+  }
+}

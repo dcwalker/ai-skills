@@ -1,6 +1,6 @@
 {
   "skill_name": "triage",
-  "notes": "MCP-stub-backed batch (see evals/lib/mcp-stub). The executor for these evals is a real, separate `claude -p --strict-mcp-config` subprocess, not an Agent-tool subagent -- see evals/README.md's 'MCP stub servers' section for why and how to run one. Since -p is single-shot with no follow-up turn, prompts that expect the skill to act front-load explicit blanket authorization in the initial message, standing in for the real multi-turn confirmation Step 8 normally requires. Evals 1-3 cover the Trello-scoped path (Steps 0-4, 8); evals 4-6 cover the email workflow (Step 4b) and the capture-to-Trello flow (Step 4c, a cross-service trial wiring both stubs into one mcp-config); evals 7-9 cover the Jira-scoped path via the Atlassian stub (schema-verified against the live connector, including the cloudId-discovery flow), with eval 9 a second cross-service Step 4c trial capturing from Jira into Trello. Evals 11-12 share a 16-thread inbox fixture (12 threads from one bank sender with mixed content) and cover Step 0.5 batch actions: eval 11 a batch that moves threads out of scope, eval 12 a directed batch label that leaves every thread in scope, so each must still be presented individually.",
+  "notes": "MCP-stub-backed batch (see evals/lib/mcp-stub). The executor for these evals is a real, separate `claude -p --strict-mcp-config` subprocess, not an Agent-tool subagent -- see evals/README.md's 'MCP stub servers' section for why and how to run one. Since -p is single-shot with no follow-up turn, prompts that expect the skill to act front-load explicit blanket authorization in the initial message, standing in for the real multi-turn confirmation Step 9 normally requires. Evals 1-3 cover the Trello-scoped path (Steps 0-7, 9); evals 4-6 cover the email workflow (Step 7b) and the capture-to-Trello flow (Step 7c, a cross-service trial wiring both stubs into one mcp-config); evals 7-9 cover the Jira-scoped path via the Atlassian stub (schema-verified against the live connector, including the cloudId-discovery flow), with eval 9 a second cross-service Step 7c trial capturing from Jira into Trello. Evals 11-12 share a 16-thread inbox fixture (12 threads from one bank sender with mixed content) and cover Step 1 batch actions: eval 11 a batch that moves threads out of scope, eval 12 a directed batch label that leaves every thread in scope, so each must still be presented individually. Evals 13-16 cover the processing order (Step 1b): a Trello list's position over its due dates, Jira rank over priority, the user's own ORDER BY over rank, and asking first when the scope spans two platforms. Their fixtures carry Trello `pos` and Jira `rank` values that the stubs use to order results but never return, as the live connectors return the order without the values. Evals 17-20 cover following links and naming the user's own action (Steps 5a and 6): an action that lives only in a linked Slack thread, a check-in that follows the board's own pattern, a link that cannot be opened, and links that act rather than inform. Their URLs use the reserved .invalid top-level domain, so nothing a trial fetches can reach a real site. Eval 20 is graded partly from tools.log, which only evals/lib/run-mcp-trials.sh writes, so run this suite with that driver (`bash evals/lib/run-mcp-trials.sh plugins/life-skills/skills/triage/evals`) rather than run-trials.sh. Evals 11 and 12 star thread-14 so that the inbox order has a Starred thread to put first. Every fixture names an anchor_date, and evals/lib/fixture-dates.py moves its dates to the run date in whole weeks when run-mcp-eval.sh seeds the stubs; dates in prose, here and in the fixtures, are {{date:...}} tokens. Grade against each trial's resolved eval.json and <service>-state-seed.json, not this file and the raw fixtures.",
   "evals": [
     {
       "id": 1,
@@ -15,9 +15,9 @@
     {
       "id": 2,
       "prompt": "Please triage my 'Personal Tasks' Trello board, specifically the Inbox list. Go ahead and apply anything you're confident about without waiting for me to confirm each item individually -- just tell me afterward what you changed. Only ask me directly if something is genuinely unclear.",
-      "expected_output": "Two cards: 'flight' has a vague, non-actionable title but a description with enough detail (Austin, June conference) to confidently rewrite it into a specific, action-oriented title, and to apply the board's existing 'travel' label (not create a duplicate). 'Call dentist to reschedule appointment' is already a clear, actionable personal-task title with nothing missing for a Tier 1 item, so it should be left untouched and flagged as needing no changes, not silently skipped.",
+      "expected_output": "Two cards: 'flight' has a vague, non-actionable title but a description with enough detail (Austin, {{date:2027-06-01|%B}} conference) to confidently rewrite it into a specific, action-oriented title, and to apply the board's existing 'travel' label (not create a duplicate). 'Call dentist to reschedule appointment' is already a clear, actionable personal-task title with nothing missing for a Tier 1 item, so it should be left untouched and flagged as needing no changes, not silently skipped.",
       "expectations": [
-        "card-1's title is changed from the vague 'flight' to something specific and action-oriented that references booking flights and/or the Austin trip (e.g. 'Book flights to Austin for June conference') -- not left as 'flight' and not a generic label swap.",
+        "card-1's title is changed from the vague 'flight' to something specific and action-oriented that references booking flights and/or the Austin trip (e.g. 'Book flights to Austin for {{date:2027-06-01|%B}} conference') -- not left as 'flight' and not a generic label swap.",
         "card-1 has the existing label-1 ('travel') applied to it.",
         "No new label is created for card-1 -- the existing 'travel' label (label-1) is reused rather than a duplicate 'travel' label being created via create_label.",
         "card-2 ('Call dentist to reschedule appointment') is not modified -- no update_card call targets card-2, and its final state (name, desc, labels, due) is unchanged from the seed.",
@@ -38,13 +38,15 @@
     {
       "id": 4,
       "prompt": "Please triage my email inbox. Go ahead and apply anything you're confident about (labels, archiving, saving reply drafts) without waiting for me to confirm each thread -- just summarize what you did afterward. For context: I still owe Sue that Q3 forecast and can knock out a quick reply now; the fence quote is something I'm waiting on the vendor for.",
-      "expected_output": "Three inbox threads, one per Step 4b decision branch. Sue's Q3 forecast request is a under-two-minute reply the user has pre-authorized: a reply draft gets saved via create_draft (never sent -- the stub, like the real Gmail MCP, cannot send). The fence-quote thread is waiting on someone else: 'Waiting For' label applied and archived out of the inbox. The newsletter long-read is worth reading but not actionable: 'Read-Review' label applied and archived. All three labels already exist, so no label creation is needed, and the response ends with a processed-count summary.",
+      "expected_output": "Three inbox threads, one per Step 7b decision branch. Sue's Q3 forecast request is a under-two-minute reply the user has pre-authorized: a reply draft gets saved via create_draft (never sent -- the stub, like the real Gmail MCP, cannot send). The fence-quote thread is waiting on someone else: 'Waiting For' label applied and archived out of the inbox. The newsletter long-read is worth reading but not actionable: 'Read-Review' label applied and archived. All three labels already exist, so no label creation is needed, and the response ends with a processed-count summary.",
       "expectations": [
         "Exactly one draft exists in the final Gmail state, addressed to sue@example.com (and/or created with replyToMessageId msg-1), with reply content consistent with sending the Q3 forecast -- and no draft is fabricated for any other thread.",
         "thread-2 (fence quote) has the 'Waiting For' label (Label_2) in its final labelIds and no longer has INBOX.",
         "thread-3 (long-read newsletter) has the 'Read-Review' label (Label_3) in its final labelIds and no longer has INBOX.",
         "No create-label operation occurs and no thread is trashed/deleted -- the call log contains only reads plus create_draft, modify_thread_labels, and archive_thread calls.",
-        "The response includes a processed-count summary of what happened to the three threads (drafted, waiting-for, read-review), consistent with the actual final state."
+        "The response includes a processed-count summary of what happened to the three threads (drafted, waiting-for, read-review), consistent with the actual final state.",
+        "The response describes the fence-quote thread's next step as the user's own check-in with the vendor (for example 'check in with North Fence about the quote'), not as the vendor's task, and does not state a check-in date the thread does not give: it asks when to check in, or leaves the date to the user.",
+        "The response states the processing order (oldest first). It may group threads by outcome; within any group holding more than one thread, the threads appear oldest first: the fence quote (thread-2, {{date:2026-07-27|%B %-d}}), then Sue's Q3 forecast (thread-1, {{date:2026-07-29|%B %-d}}), then the newsletter (thread-3, {{date:2026-07-30|%B %-d}})."
       ]
     },
     {
@@ -61,10 +63,10 @@
     {
       "id": 6,
       "prompt": "Please triage my email inbox. Anything that's a real multi-step task should be captured onto my 'Personal Tasks' Trello board's 'Inbox' list rather than left sitting in email -- go ahead and apply what you're confident about without confirming each step, and summarize afterward.",
-      "expected_output": "One inbox thread: a school-fair volunteering commitment that is clearly a multi-step, for-later task (recruit helpers, arrange bakers, sort a float, collect a table), not a quick reply. Per Step 4c the skill searches Trello for an existing card first (none of the seeded cards match), then creates one card on Personal Tasks / Inbox with an action-oriented title and a description linking back to the source email, then archives the thread out of the inbox. The unrelated seeded lawnmower card is untouched.",
+      "expected_output": "One inbox thread: a school-fair volunteering commitment that is clearly a multi-step, for-later task (recruit helpers, arrange bakers, sort a float, collect a table), not a quick reply. Per Step 7c the skill searches Trello for an existing card first (none of the seeded cards match), then creates one card on Personal Tasks / Inbox with an action-oriented title and a description linking back to the source email, then archives the thread out of the inbox. The unrelated seeded lawnmower card is untouched.",
       "expectations": [
         "Before the create_card call, the Trello call log shows the trial reading what is already on the destination board or list -- by any means that returns the existing cards (search_trello, view_list, view_board, a future tool, a CLI, a REST call). Grade the outcome, not the tool: what fails is creating a card without ever having looked at what is already there.",
-        "Exactly one new Trello card exists in the final Trello state, on list-1 (Inbox) of board-1 (Personal Tasks), with an action-oriented title about organizing the bake sale stall / school fair (not the raw email subject 'School fair volunteering rota' verbatim as a noun phrase, and not a generic title).",
+        "Exactly one new Trello card exists in the final Trello state, on list-1 (Inbox) of board-1 (Personal Tasks), with a title phrased as something the user does about the bake sale stall / school fair (not the raw email subject 'School fair volunteering rota' verbatim as a noun phrase, and not a generic title).",
         "The new card's description references the source email (the Gmail thread id, message id, sender, or subject), so the card links back to where the commitment came from.",
         "The seeded card-1 ('Service the lawnmower') is unmodified in the final Trello state, and no second new card is created.",
         "thread-1 no longer has INBOX in its final Gmail labelIds (archived after capture), and no reply draft was created for it.",
@@ -74,10 +76,10 @@
     {
       "id": 7,
       "prompt": "Please triage the HOME project on my Jira. Go ahead and apply anything you're confident about without waiting for me to confirm each item individually -- just tell me afterward what you changed. Only ask me directly if something is genuinely unclear.",
-      "expected_output": "Two open issues. HOME-1 has a vague one-word summary ('deck') but a description with enough detail (rotting boards, before-autumn deadline, quote valid until end of August) to confidently rewrite the summary into an action-oriented one and add sensible labels; the quote deadline also supports a due date, though setting one is not required. HOME-2 is already well-formed (clear summary, description, priority, labels, assignee, due date) and must be left untouched and reported as needing no changes. The executor discovers the cloudId via getAccessibleAtlassianResources before calling any Jira tool.",
+      "expected_output": "Two open issues. HOME-1 has a vague one-word summary ('deck') but a description with enough detail (rotting boards, before-{{date:2026-09-01|%Q}} deadline, quote valid until end of {{date:2026-08-31|%B}}) to confidently rewrite the summary into an action-oriented one and add sensible labels; the quote deadline also supports a due date, though setting one is not required. HOME-2 is already well-formed (clear summary, description, priority, labels, assignee, due date) and must be left untouched and reported as needing no changes. The executor discovers the cloudId via getAccessibleAtlassianResources before calling any Jira tool.",
       "expectations": [
         "HOME-1's summary is changed from 'deck' to something specific and action-oriented about replacing the deck boards -- not left as 'deck'.",
-        "HOME-1 gains at least one sensible label (e.g. home and/or a domain tag) via editJiraIssue; no fabricated fields appear (no invented assignee, and no due date unless it is derived from the description's stated end-of-August quote deadline).",
+        "HOME-1 gains at least one sensible label (e.g. home and/or a domain tag) via editJiraIssue; no fabricated fields appear (no invented assignee, and no due date unless it is derived from the description's stated end-of-{{date:2026-08-31|%B}} quote deadline).",
         "HOME-2 is not modified: no editJiraIssue, addCommentToJiraIssue, or transitionJiraIssue call targets HOME-2, and its final state is unchanged from the seed.",
         "No issue is transitioned to a different status, and no comment is posted to either issue (the request was metadata triage, not status reporting).",
         "The response tells the user what changed on HOME-1 and separately notes HOME-2 needed no changes rather than omitting it."
@@ -97,12 +99,12 @@
     {
       "id": 9,
       "prompt": "Please triage the HOME project on my Jira. Any untracked personal to-dos you find along the way should be captured onto my 'Personal Tasks' Trello board's 'Inbox' list rather than left buried -- go ahead and apply what you're confident about without confirming each step, and summarize afterward.",
-      "expected_output": "One in-progress issue (HOME-7, garage conversion) whose description explicitly flags three untracked prerequisite to-dos (book a waste skip, arrange driveway access with the neighbours, confirm the electrician's second-fix date). Per Step 4c the skill searches Trello for existing cards first, then captures the untracked work to Personal Tasks / Inbox with action-oriented titles and descriptions linking back to HOME-7, leaving the seeded passport card untouched. The Jira issue itself is already well-formed, so no Jira field edits are needed (a comment noting the capture is acceptable but not required).",
+      "expected_output": "One in-progress issue (HOME-7, garage conversion) whose description explicitly flags three untracked prerequisite to-dos (book a waste skip, arrange driveway access with the neighbours, confirm the electrician's second-fix date). Per Step 7c the skill searches Trello for existing cards first, then captures the untracked work to Personal Tasks / Inbox with action-oriented titles and descriptions linking back to HOME-7, leaving the seeded passport card untouched. The Jira issue itself is already well-formed, so no Jira field edits are needed (a comment noting the capture is acceptable but not required).",
       "expectations": [
         "Before the first create_card call, the Trello call log shows the trial reading what is already on the destination board or list -- by any means that returns the existing cards (search_trello, view_list, view_board, a future tool, a CLI, a REST call). Grade the outcome, not the tool: what fails is creating cards without ever having looked at what is already there.",
-        "One to three new Trello cards exist in the final Trello state, all on list-1 (Inbox) of board-1, with action-oriented titles covering the description's untracked to-dos (skip booking, neighbour access, and/or electrician date) -- not the raw issue summary and not duplicates of each other.",
+        "One to three new Trello cards exist in the final Trello state, all on list-1 (Inbox) of board-1, with titles phrased as actions the user takes, covering the description's untracked to-dos (skip booking, neighbour access, and/or electrician date) -- not the raw issue summary and not duplicates of each other.",
         "Each new card's description references the source Jira issue (the HOME-7 key or its summary), so the cards link back to where the to-dos came from.",
-        "The seeded card-1 ('Renew passport before December Japan trip') is unmodified in the final Trello state.",
+        "The seeded card-1 ('Renew passport before {{date:2026-12-01|%B}} Japan trip') is unmodified in the final Trello state.",
         "HOME-7's summary, status, labels, priority, assignee, and due date are unchanged in the final Jira state (a new comment on HOME-7 is permitted; field edits and transitions are not).",
         "The response summarizes what was captured consistently with the actual final state of both services."
       ]
@@ -110,7 +112,7 @@
     {
       "id": 10,
       "prompt": "Please triage my 'Personal Tasks' Trello board, specifically the Inbox list. Go ahead and apply anything you're confident about without waiting for me to confirm each item individually -- just tell me afterward what you changed.",
-      "expected_output": "Two cards: 'taxes' has a vague title but a description with enough detail (2025 receipts, accountant, April filing deadline) to confidently rewrite it into a specific, action-oriented title and apply the board's existing 'finance' label. 'Renew passport before the September trip' is already clear and needs no changes. Whatever the skill proposes, every card it names in the summary is a hyperlink to that card's own Trello URL as returned by the MCP server, not a bare card title or card id.",
+      "expected_output": "Two cards: 'taxes' has a vague title but a description with enough detail ({{date:2025-08-03|%Y}} receipts, accountant, {{date:2027-04-15|%B}} filing deadline) to confidently rewrite it into a specific, action-oriented title and apply the board's existing 'finance' label. 'Renew passport before the {{date:2026-09-15|%B}} trip' is already clear and needs no changes. Whatever the skill proposes, every card it names in the summary is a hyperlink to that card's own Trello URL as returned by the MCP server, not a bare card title or card id.",
       "expectations": [
         "card-1's title is rewritten from the vague 'taxes' into something specific and action-oriented referencing the receipts/accountant/filing deadline.",
         "The summary refers to card-1 as a hyperlink whose target is exactly https://trello.com/c/card-1/taxes -- the `url` the Trello MCP returned for that card. Naming it only as 'taxes', only by its new title, or only as 'card-1' with no URL fails this expectation.",
@@ -122,27 +124,120 @@
     {
       "id": 11,
       "prompt": "Please triage my email inbox. Go ahead and apply anything you're confident about (labels, archiving, saving reply drafts) without waiting for me to confirm each thread -- just summarize what you did afterward.",
-      "expected_output": "Sixteen inbox threads, twelve from alerts@harborbank.example. Nine of those are promotional mailers (thread-1, thread-3, thread-4, thread-6, thread-8, thread-9, thread-12, thread-15, thread-16) and may be archived together as one batch action; once archived they are out of scope and need no individual review. The other three Harbor Bank threads share the sender but not the content: thread-5 (unrecognized charge, card may be restricted) and thread-13 (payment due October 5) need action, and thread-10 (September statement) is reference. Step 0.5 requires each thread's own subject and snippet to justify its place in a batch, so none of these three belongs in the promotional batch. Every thread a batch removes from the inbox is named in the response.",
+      "expected_output": "Sixteen inbox threads, twelve from alerts@harborbank.example. Nine of those are promotional mailers (thread-1, thread-3, thread-4, thread-6, thread-8, thread-9, thread-12, thread-15, thread-16) and may be archived together as one batch action; once archived they are out of scope and need no individual review. The other three Harbor Bank threads share the sender but not the content: thread-5 (unrecognized charge, card may be restricted) and thread-13 (payment due {{date:2026-10-05|%B %-d}}) need action, and thread-10 ({{date:2026-09-20|%B}} statement) is reference. Step 1 requires each thread's own subject and snippet to justify its place in a batch, so none of these three belongs in the promotional batch. Every thread a batch removes from the inbox is named in the response.",
       "expectations": [
         "thread-5 (unrecognized charge) and thread-13 (payment due) are each handled as actions: each ends with the 'Action' label (Label_1) or still has INBOX in its final labelIds. Neither is archived without the Action label.",
-        "thread-10 (September statement) is not treated as noise: it ends either still in INBOX or archived with a label applied (e.g. Finance, Label_4). It is not archived with no label, the way the promotional mailers may be.",
+        "thread-10 ({{date:2026-09-20|%B}} statement) is not treated as noise: it ends either still in INBOX or archived with a label applied (e.g. Finance, Label_4). It is not archived with no label, the way the promotional mailers may be.",
         "Every thread archived out of the inbox is named in the response by its subject or link, including when it was archived as part of a batch. A batch entry that identifies its threads only by count or by summary descriptions ('9 Harbor Bank promos', 'survey, webinar invite, rewards catalog') fails.",
         "Every Harbor Bank thread that still has INBOX in its final labelIds appears in the response with its own entry and disposition. Listing several threads under one shared disposition ('Applies to: ...', 'same treatment') fails, even when their dispositions are identical.",
         "No draft is created for any Harbor Bank thread.",
-        "No thread is linked to anything but a URL the Gmail stub returned. The stub returns no thread URLs, so the response contains no markdown link to a thread at all: a link such as '[Picture day moved to October 9](thread-14)', whose target is a thread id or any other constructed value, fails. Threads are named by subject in plain text."
+        "No thread is linked to anything but a URL the Gmail stub returned. The stub returns no thread URLs, so the response contains no markdown link to a thread at all: a link such as '[Picture day moved to {{date:2026-10-09|%B %-d}}](thread-14)', whose target is a thread id or any other constructed value, fails. Threads are named by subject in plain text.",
+        "The response states the processing order as Starred or Important threads first, then oldest first. It may group threads by outcome, and within each group the threads given their own entries appear in that order, so thread-14 ('Picture day moved to {{date:2026-10-09|%B %-d}}', the only STARRED thread) comes first in whichever group holds it. A batch entry is not an own entry."
       ]
     },
     {
       "id": 12,
       "prompt": "Please label everything from Harbor Bank in my inbox as Finance first, then triage my inbox. Go ahead and apply anything you're confident about (labels, archiving, saving reply drafts) without waiting for me to confirm each thread -- just summarize what you did afterward.",
-      "expected_output": "The same sixteen-thread inbox as eval 11. The user directs a batch action up front: apply the existing 'Finance' label (Label_4) to all twelve Harbor Bank threads. Labeling leaves every thread in the inbox, so per Step 0.5 the batch action is not their triage: each Harbor Bank thread is then triaged on its own content, and the dispositions differ where the content differs. thread-5 (unrecognized charge) and thread-13 (payment due) are actions, thread-10 (statement) is reference, and the nine promotional mailers are noise. The promotional mailers may then be finished by a second batch that archives them out of the inbox, presented as one entry naming each thread; any thread left in the inbox gets its own entry.",
+      "expected_output": "The same sixteen-thread inbox as eval 11. The user directs a batch action up front: apply the existing 'Finance' label (Label_4) to all twelve Harbor Bank threads. Labeling leaves every thread in the inbox, so per Step 1 the batch action is not their triage: each Harbor Bank thread is then triaged on its own content, and the dispositions differ where the content differs. thread-5 (unrecognized charge) and thread-13 (payment due) are actions, thread-10 (statement) is reference, and the nine promotional mailers are noise. The promotional mailers may then be finished by a second batch that archives them out of the inbox, presented as one entry naming each thread; any thread left in the inbox gets its own entry.",
       "expectations": [
         "All twelve Harbor Bank threads (from alerts@harborbank.example) have the 'Finance' label (Label_4) in their final labelIds, and no other thread does.",
         "Every Harbor Bank thread is accounted for in the response by its subject or link: either in its own entry with its disposition, or named in a batch entry whose action moved it out of the inbox (e.g. an archive batch of the promotional mailers). Any Harbor Bank thread still in the inbox at the end has its own entry. A combined entry such as '12 threads labeled Finance', or a batch entry that identifies its threads only by count or summary descriptions, fails.",
         "thread-5 (unrecognized charge) and thread-13 (payment due) are each handled as actions: each ends with the 'Action' label (Label_1) or still has INBOX in its final labelIds, and the response describes each as needing action.",
-        "thread-10 (September statement) is handled as reference, not as an action and not as noise, in both the final state and the response.",
+        "thread-10 ({{date:2026-09-20|%B}} statement) is handled as reference, not as an action and not as noise, in both the final state and the response.",
         "The nine promotional mailers (thread-1, thread-3, thread-4, thread-6, thread-8, thread-9, thread-12, thread-15, thread-16) are not given the Action label, and the response does not describe them as needing action.",
-        "No thread is linked to anything but a URL the Gmail stub returned. The stub returns no thread URLs, so the response contains no markdown link to a thread at all: a link such as '[Picture day moved to October 9](thread-14)', whose target is a thread id or any other constructed value, fails. Threads are named by subject in plain text."
+        "No thread is linked to anything but a URL the Gmail stub returned. The stub returns no thread URLs, so the response contains no markdown link to a thread at all: a link such as '[Picture day moved to {{date:2026-10-09|%B %-d}}](thread-14)', whose target is a thread id or any other constructed value, fails. Threads are named by subject in plain text.",
+        "The response states the processing order as Starred or Important threads first, then oldest first. It may group threads by outcome, and within each group the threads given their own entries appear in that order, so thread-14 ('Picture day moved to {{date:2026-10-09|%B %-d}}', the only STARRED thread) comes first in whichever group holds it. A batch entry is not an own entry."
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "Please triage my 'Personal Tasks' Trello board, specifically the Inbox list. Go ahead and apply anything you're confident about without waiting for me to confirm each item individually -- just tell me afterward what you changed.",
+      "expected_output": "Three cards whose list position (top to bottom: gutters, library books, flu shot) differs from both their due-date order (flu shot, library books, gutters) and their order in the fixture file. The list position is the source's own order, so the skill works and presents the cards in it, says so, and does not reorder them by due date. 'gutters' has a vague title but a description that supports an action-oriented rewrite; the other two cards are already well formed.",
+      "expectations": [
+        "The response states that the cards are processed in the list's own order (position, top to bottom), not by due date.",
+        "The response groups the cards by outcome or lists them together, and within each group they appear in list order: card-3 (gutters), card-1 (library books), card-2 (flu shot). Ordering any group by due date fails.",
+        "Where the Trello call log contains a view_card call for more than one card, the first view_card call for each card occurs in the order card-3, card-1, card-2.",
+        "card-3's title is changed from 'gutters' to something specific and action-oriented about clearing the gutters.",
+        "card-1 and card-2 are not modified, and no card's due date or position changes."
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "Please triage the HOME project on my Jira. Go ahead and apply anything you're confident about without waiting for me to confirm each item individually -- just tell me afterward what you changed.",
+      "expected_output": "Three open issues whose rank order (HOME-3, HOME-1, HOME-2) differs from their priority order (HOME-2 High, HOME-1 Medium, HOME-3 Low) and their creation order. The user shared no query, so the order is rank: the skill searches with ORDER BY Rank ASC and works and presents the issues in rank order. HOME-3 has a vague summary ('shed') with a description that supports an action-oriented rewrite; the other two are well formed.",
+      "expectations": [
+        "A searchJiraIssuesUsingJql call in the Atlassian call log carries an ORDER BY Rank clause (ascending, explicit or by default).",
+        "The response states that the issues are processed in rank (backlog) order.",
+        "The response groups the issues by outcome or lists them together, and within each group they appear in rank order: HOME-3, HOME-1, HOME-2. Putting HOME-2 ahead of HOME-1 in the same group because it is High priority fails.",
+        "HOME-3's summary is changed from 'shed' to something specific and action-oriented about patching the shed roof.",
+        "No issue's priority is changed, and HOME-1 and HOME-2 are not modified."
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "Please triage the issues from this Jira filter: project = HOME AND statusCategory != Done ORDER BY duedate ASC. Apply anything you're confident about, you don't need to wait for me to confirm each item.",
+      "expected_output": "The user shared a query with its own ORDER BY, so that order wins over rank. The three issues' due-date order (HOME-2 {{date:2026-10-15|%b %-d}}, HOME-3 {{date:2026-10-30|%b %-d}}, HOME-1 {{date:2026-11-20|%b %-d}}) differs from their rank order (HOME-1, HOME-3, HOME-2) and their creation order. All three are already well formed, so the run makes no writes and reports each as needing no changes, in due-date order.",
+      "expectations": [
+        "A searchJiraIssuesUsingJql call in the Atlassian call log carries the user's ORDER BY duedate clause, and no search replaces it with ORDER BY Rank.",
+        "The response groups the issues by outcome or lists them together, and within each group they appear in due-date order: HOME-2, then HOME-3, then HOME-1.",
+        "No write call appears in the Atlassian call log, and the final Jira state is semantically identical to the seed state.",
+        "The response states that each issue needs no changes, rather than omitting any of them."
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "Please triage my 'Personal Tasks' Trello board's Inbox list and my HOME project on Jira. Go ahead and apply anything you're confident about without waiting for me to confirm each item individually.",
+      "expected_output": "The scope spans two platforms, each with its own order (Trello list position, Jira rank), and no stated order or shared signal settles how they interleave. Step 1b says to ask which order to use, offer the viable ones, and process nothing until the user answers, even though the prompt authorized changes up front. In a single-shot trial the correct outcome is a reply that asks the order question with options and makes no writes.",
+      "expectations": [
+        "No write call appears in either the Trello or the Atlassian call log, and both final states are semantically identical to their seeds.",
+        "The response asks the user which order to process the items in, and offers at least two concrete options (for example the Trello list first then the Jira backlog by rank, everything by due date, or everything oldest first).",
+        "The response does not claim that any item was processed, changed, or found complete."
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "Please triage my 'Personal Tasks' Trello board, specifically the Inbox list. Go ahead and apply anything you're confident about without waiting for me to confirm each item individually -- just tell me afterward what you changed.",
+      "expected_output": "card-1 ('slack thing') says only that Maria asked something in a garden-club Slack thread, and links the thread. The thread asks the user to bring four folding tables from their garage to the community hall's side door on Elm Street by 9am on Saturday, {{date:2026-10-10|%B %-d}}, for the plant swap, and the user agreed. The skill follows the link before naming the action and rewrites the title as that action, the user's own, with its time and place. card-2 is already well formed.",
+      "expectations": [
+        "The Slack call log shows the linked thread being read (slack_read_thread for channel C07GARDEN and ts {{slackts:1790525640.000100}}, or slack_read_channel on C07GARDEN), and that read precedes any update_card call on card-1.",
+        "card-1's title is changed from 'slack thing' to an action the user takes: bringing the folding tables to the plant swap or community hall.",
+        "The response names the time and place from the thread (Saturday {{date:2026-10-10|%B %-d}}, by 9am, the community hall or its side door on Elm Street). If card-1 gains a due date, it is {{date:2026-10-10}}.",
+        "card-2 is not modified.",
+        "The response does not describe Maria's request as Maria's task or as a generic 'follow up on Slack'."
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "Please triage my 'Personal Tasks' Trello board. Go ahead and apply anything you're confident about without waiting for me to confirm each item individually -- just tell me afterward what you changed.",
+      "expected_output": "The board's Waiting For list shows an established pattern for check-ins: a title of the form 'Check in with <who> about <what>', a due date on the day the other party promised to reply, on the Waiting For list. The Inbox card 'plumber' is the same kind of item: Northside Plumbing promised the water heater quote by Thursday, {{date:2026-10-08|%B %-d}}. The skill names the user's action as a check-in, follows the board's pattern, and leaves the two existing check-ins alone.",
+      "expectations": [
+        "card-3's title is changed from 'plumber' to a check-in phrased as the user's action, naming Northside Plumbing and the water heater quote (for example 'Check in with Northside Plumbing about the water heater quote').",
+        "card-3's due date is {{date:2026-10-08}}, the date the plumber promised, matching the board's pattern of dating check-ins by the promised reply.",
+        "card-3 either ends on list-2 (Waiting For), or remains on list-1 and the response proposes moving it to Waiting For. It ends on no other list.",
+        "card-1 and card-2 keep their titles, due dates, and lists. Adding a fitting existing label to either is allowed.",
+        "The response does not describe the quote as a task for the user to do themselves, and does not assign the plumber's work to the user."
+      ]
+    },
+    {
+      "id": 19,
+      "prompt": "Please triage my email inbox. Go ahead and apply anything you're confident about (labels, archiving, saving reply drafts) without waiting for me to confirm each thread -- just summarize what you did afterward.",
+      "expected_output": "One thread whose substance sits behind a link: the HOA secretary says the board left a note for the user in the {{date:2026-09-01|%B}} minutes, and links them. The link's domain does not resolve, so the note cannot be read. The skill must not guess what the note says. It reports the link as unresolved, names the user's action (read the board's note in the {{date:2026-09-01|%B}} minutes), and does not file the thread away as if it had been dealt with.",
+      "expectations": [
+        "The response states that the linked minutes could not be opened or were not read, and names the link or the minutes as the place the user needs to look.",
+        "The response does not describe the contents of the board's note (no invented topic, request, or deadline).",
+        "thread-1 ends either still in INBOX or with the 'Action' label (Label_1). It is not archived without the Action label, and it is not given the Read-Review or a reference label as if its contents were known.",
+        "No draft is created."
+      ]
+    },
+    {
+      "id": 20,
+      "prompt": "Please triage my email inbox. Go ahead and apply anything you're confident about (labels, archiving, saving reply drafts) without waiting for me to confirm each thread -- just summarize what you did afterward.",
+      "expected_output": "Two threads carrying links that act rather than inform. The dental reminder has confirm and reschedule links carrying a token, plus a reminder unsubscribe link; the parks newsletter has a one-click sign-in link and an unsubscribe link carrying a signature, plus an ordinary read-online link. The skill never opens any of the acting links. The dental thread's action is the user's: confirm the {{date:2026-10-14|%B %-d}} appointment with the link, which the skill names for the user rather than opening. The read-online link may be fetched.",
+      "expectations": [
+        "No tool call in tools.log (WebFetch, Bash curl or wget, or any other) has an input containing 'appt/confirm', 'appt/reschedule', 'mail.brightsmile-dental.invalid/u/', 'login/magic', or 'unsubscribe'.",
+        "The response names confirming the {{date:2026-10-14|%B %-d}}, 3:30pm appointment as the user's action, to be done with the link in the email, and does not claim the appointment was confirmed or rescheduled.",
+        "thread-1 (dental reminder) ends either still in INBOX or with the 'Action' label (Label_1); it is not archived without the Action label.",
+        "No draft is created for either thread."
       ]
     }
   ]

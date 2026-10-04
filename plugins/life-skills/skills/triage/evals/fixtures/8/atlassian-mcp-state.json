@@ -1,4 +1,6 @@
 {
+  "anchor_date": "2026-07-31",
+  "stub_now": "2026-07-31T16:00:00Z",
   "cloud": {"id": "b7c9e1a2-0000-4000-8000-example00001", "url": "https://danwalker.atlassian.net", "name": "danwalker"},
   "projects": {
     "HOME": {"key": "HOME", "id": "10001", "name": "Home Projects", "issueTypes": ["Task"]}
@@ -6,8 +8,8 @@
   "issues": {
     "HOME-1": {
       "key": "HOME-1", "id": "20001", "project": "HOME",
-      "summary": "Renew home insurance before the 15 September deadline",
-      "description": "Current policy expires 15 September. Compare at least two quotes against the renewal offer; last year's premium was $1,240. Documents are in the shared drive under Insurance/2026.",
+      "summary": "Renew home insurance before the {{date:2026-09-15|%-d %B}} deadline",
+      "description": "Current policy expires {{date:2026-09-15|%-d %B}}. Compare at least two quotes against the renewal offer; last year's premium was $1,240. Documents are in the shared drive under Insurance/{{date:2026-07-31|%Y}}.",
       "status": {"name": "To Do", "statusCategory": "To Do"},
       "issuetype": "Task", "priority": "High", "labels": ["home", "finance"],
       "assignee": {"accountId": "user-1", "displayName": "Dan Walker"},

@@ -1,0 +1,50 @@
+{
+  "anchor_date": "2026-10-02",
+  "boards": {
+    "board-1": {
+      "id": "board-1",
+      "name": "Personal Tasks"
+    }
+  },
+  "lists": {
+    "list-1": {
+      "id": "list-1",
+      "name": "Inbox",
+      "board_id": "board-1"
+    }
+  },
+  "labels": {
+    "label-1": {
+      "id": "label-1",
+      "name": "home",
+      "color": "green",
+      "board_id": "board-1"
+    }
+  },
+  "cards": {
+    "card-1": {
+      "id": "card-1",
+      "name": "slack thing",
+      "desc": "Maria asked me something in the garden club thread: https://riverside-gardeners.slack.com/archives/C07GARDEN/{{slackp:1790525640.000100}}",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [],
+      "due": null,
+      "due_complete": false,
+      "pos": 1024,
+      "url": "https://trello.com/c/card-1/slack-thing"
+    },
+    "card-2": {
+      "id": "card-2",
+      "name": "Call dentist to reschedule appointment",
+      "desc": "",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [],
+      "due": null,
+      "due_complete": false,
+      "pos": 2048,
+      "url": "https://trello.com/c/card-2/call-dentist"
+    }
+  }
+}
