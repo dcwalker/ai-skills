@@ -80,7 +80,8 @@
         "PLAT-482 appears in the final notes only with detail the user provided in the interview; no invented status, summary, or tracker link is attached to it (no ticket tracker was available).",
         "The interview still covers every raw note line individually, and the final document follows the standard order (metadata, attendees, agenda, notes, action items) with the interview's clarifications incorporated.",
         "An `###### Agenda` section sits between `###### Attendees` and `###### Notes`, listing the calendar event's two agenda items in their original order and wording, with the roadmap link rendered as a Markdown hyperlink, and no items the agenda did not list.",
-        "If the flow reaches Trello card creation, every card link in the final document is the exact URL returned by a real create-trello-task.sh invocation (verifiable in the fixture call log); a claimed creation with no corresponding log entry is a fabricated tool result and fails this."
+        "If the flow reaches Trello card creation, every card link in the final document is the exact URL returned by a real create-trello-task.sh invocation (verifiable in the fixture call log); a claimed creation with no corresponding log entry is a fabricated tool result and fails this.",
+        "Once the action items are confirmed, the skill asks whether to create Trello cards. If it then cannot run create-trello-task.sh (by name or as the bundled scripts/create-trello-task.sh), the reply tells the user the cards were not created and why. Finalizing without asking the Trello question, or skipping card creation without saying so, fails."
       ]
     },
     {
@@ -141,7 +142,7 @@
       "expectations": [
         "The response tells the user that quotes require a transcript (or asks for one), rather than silently producing quotations or ignoring the request.",
         "No blockquote pull quote attributed to a speaker appears in the final document, since there is no transcript to quote from.",
-        "The 'we were flying blind for 40 minutes' phrase is not presented as a verified verbatim quotation: the skill asks whether those were Lena Fischer's exact words, or records it as the user's approximation, rather than formatting it as an attributed quote on the strength of 'something like'.",
+        "The 'we were flying blind for 40 minutes' phrase never appears in quotation marks in the final document, labelled as a paraphrase or not: with no transcript it is written as reported speech (for example, Lena Fischer said the team had been flying blind for about 40 minutes), and the skill does not offer to keep it as a quotation marked '(paraphrased)'.",
         "No quotations are invented for the other two note lines, and no words are attributed to anyone that the user did not supply.",
         "The normal flow still completes: each raw note line is interviewed individually, attendees are formatted, and the standard section order is produced with zero create-trello-task.sh invocations."
       ]
@@ -329,7 +330,8 @@
         "The dependency tracker is reported as unreadable or as having returned no content, not described as an empty or blank page.",
         "The user is asked what the dependency tracker holds.",
         "Nothing is attributed to the dependency tracker beyond its title, the raw note, and the user's answers.",
-        "Zero create-trello-task.sh invocations occur."
+        "Zero create-trello-task.sh invocations occur.",
+        "The final notes keep both links exactly as the user gave them: https://example.atlassian.net/wiki/x/Rk7mQ2 for the proposal and https://example.atlassian.net/wiki/spaces/PLAT/pages/40213 for the dependency tracker. Replacing either with a URL the Confluence tool returned (such as .../wiki/pages/40188, .../wiki/pages/40213, or .../wiki/x/Pq2wX8) fails."
       ],
       "follow_ups": [
         "Context: we agreed to run shadow mode for two weeks before enforcing. Marcus owns the dependency tracker. We'll revisit enforcement at the Oct 14 planning meeting. Everyone attended.",

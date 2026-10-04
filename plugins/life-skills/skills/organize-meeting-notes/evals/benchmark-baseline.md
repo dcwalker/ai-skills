@@ -1,56 +1,57 @@
 # Skill Benchmark: organize-meeting-notes
 
 **Model**: claude-sonnet-5 (executor) / claude-opus-5-5 (analyzer)
-**Date**: 2026-10-02T21:19:33Z
+**Date**: 2026-10-04T00:00:00Z
 **Evals**: 1-25 (1 recorded run each, with_skill only)
 
 ## Summary
 
 | Metric | With Skill |
 |--------|------------|
-| Pass Rate | 92% ± 9% |
-| Time | 147.9s ± 126.0s (n=25) |
-| Tokens | 43309 ± 11328 (n=25) |
+| Pass Rate | 91% ± 13% |
+| Time | 105.3s ± 59.4s (n=25) |
+| Tokens | 46823 ± 12903 (n=25) |
 
 ## Per-eval results
 
 | Eval | Pass Rate | Time (s) | Tokens |
 |------|-----------|----------|--------|
-| 1 | 5/5 | 217.7 | 42407 |
-| 2 | 4/4 | 43.0 | 29939 |
-| 3 | 3/4 | 69.6 | 33236 |
-| 4 | 3/4 | 103.6 | 38625 |
-| 5 | 4/4 | 80.0 | 46230 |
-| 6 | 5/5 | 204.9 | 40629 |
-| 7 | 6/7 | 89.9 | 36970 |
-| 8 | 5/5 | 321.8 | 32004 |
-| 9 | 7/7 | 287.8 | 63736 |
-| 10 | 5/5 | 73.6 | 34366 |
-| 11 | 6/6 | 107.4 | 41831 |
-| 12 | 4/5 | 66.3 | 33702 |
-| 13 | 6/6 | 166.8 | 52800 |
-| 14 | 7/7 | 123.8 | 53159 |
-| 15 | 10/11 | 634.6 | 59213 |
-| 16 | 4/4 | 12.7 | 22735 |
-| 17 | 6/7 | 189.5 | 56840 |
-| 18 | 6/7 | 135.5 | 59108 |
-| 19 | 6/7 | 126.2 | 56295 |
-| 20 | 3/4 | 12.6 | 22636 |
-| 21 | 9/9 | 149.1 | 48766 |
-| 22 | 11/12 | 113.9 | 48162 |
-| 23 | 6/7 | 160.6 | 48681 |
-| 24 | 5/6 | 97.8 | 38176 |
-| 25 | 8/8 | 108.6 | 42491 |
+| 1 | 5/5 | 136.8 | 51296 |
+| 2 | 4/4 | 43.8 | 34202 |
+| 3 | 3/4 | 54.1 | 36116 |
+| 4 | 3/4 | 115.3 | 39343 |
+| 5 | 3/4 | 54.8 | 36605 |
+| 6 | 5/5 | 86.3 | 38617 |
+| 7 | 7/8 | 75.4 | 40435 |
+| 8 | 5/5 | 72.5 | 39334 |
+| 9 | 5/7 | 257.8 | 73572 |
+| 10 | 4/5 | 34.9 | 32547 |
+| 11 | 6/6 | 85.3 | 41165 |
+| 12 | 5/5 | 77.3 | 39264 |
+| 13 | 6/6 | 113.5 | 52492 |
+| 14 | 7/7 | 117.9 | 47588 |
+| 15 | 9/11 | 260.6 | 79187 |
+| 16 | 4/4 | 13.0 | 27317 |
+| 17 | 7/7 | 116.0 | 56840 |
+| 18 | 6/7 | 134.3 | 60147 |
+| 19 | 7/7 | 126.3 | 54412 |
+| 20 | 2/4 | 78.9 | 39866 |
+| 21 | 9/9 | 98.2 | 47322 |
+| 22 | 11/12 | 184.6 | 67324 |
+| 23 | 7/7 | 110.7 | 47724 |
+| 24 | 7/7 | 67.3 | 37359 |
+| 25 | 8/8 | 117.0 | 50498 |
 
 ## Notes
 
-- 25 evals and 25 recorded runs pass 144/156 expectations, with 13 evals passing every expectation. Graders checked every claimed source check against the stub call logs and `events.jsonl` rather than the executor's own report, and found no claimed Slack read or search missing from the logs.
-- This baseline accompanies issue #82. Step 1b's Team chat check now starts with a search bounded only by date, retries a refused timestamp-only search with an `on:` filter, reads each conversation it surfaced with the chat tool's own read bounded to the window, and opens its report with one `Chat:` line naming the window, the date terms, and the conversations read (or `nothing to read`).
-- Run method matches the previous baseline: `evals/lib/run-mcp-trials.sh`, `claude -p` sessions limited to stub MCP servers, the skill's installed plugin turned off, evals 1-20 with `SIMULATED_USER=1` and evals 21-25 with scripted `follow_ups`. Every trial invoked the working-tree skill. The Slack stub changed in this PR: it now publishes the live tool's `keywords`, `filters`, and `natural_language_query`, honours `before`/`after` and `channel_types`, refuses a search with no terms, and logs every call, refused ones included.
-- Eval 25 is new: in-window direct and group direct messages that share no keyword with the meeting, with keyword matches only outside the window. Evals 21, 22, and 23 gained expectations for the date-only search and the reported window, so their totals rose from 7, 10, and 5.
-- On the previous baseline's own expectations for evals 1-24, this run scores 130/142 against 134/142. Evals 8 and 14 rose by one. Evals 4, 12, 15, 18, 19, and 24 each lost one, none in a rule this change touches: 4 made a third Trello call after the simulated user asked it to retry a failed card, graded literally here; 12 quoted a "close enough" phrase as Lena's words; 15 wrote "they" for proposals Lena and Dan made; 18 credited the referral bonus idea to Dan without support; 19 recorded the unreached docs freeze item as "never discussed" rather than open; 24 added "like the enforcement timeline" to the tracker note. An earlier full run on the PR's intermediate text failed 2, 9, and 13 instead and passed 18, 19, and 24, so single-run results move by several expectations either way.
-- Every trial with Slack searched by date only first; none used a keyword or sender search as the check, including the empty-workspace evals that took that shortcut under the previous baseline. Evals 13 and 22 sent timestamp-only searches, were refused, and retried with `on:`. Every in-window conversation a search surfaced was read with `slack_read_channel`, and no trial claimed an unmade read.
-- The `Chat:` line appeared and matched the call log in every Slack trial except eval 18, which reported the empty result in prose. Its form drifted often: bold or "Chat check:" labels, an added timezone or date, trailing commentary, and placement after a lead-in sentence rather than first. Only eval 4's line omitted the window.
-- Eval 22 still drops Lena's join notice and Marcus's `:+1:`, and eval 23 still never asks what the bare link holds before the scripted follow-up answers it, as in the previous baseline.
-- Not covered by any expectation: evals 22 and 25 asked another question instead of finalizing after "Finalize it"; eval 15 fetched a link found inside the chat log without asking; eval 13 wrote a memory file inside its trial home; eval 19 wrote `journal.md` to the real home directory by absolute path at the simulated user's request, which the harness did not detect (the file was removed).
+- 25 evals and 25 recorded runs pass 145/158 expectations, with 15 evals passing every expectation. Graders checked every claimed source check, fetch, and card against the stub call logs, `events.jsonl`, and `tools.log` rather than the executor's own report.
+- This baseline accompanies issue #83. A new `life-skills` `bin/create-trello-task.sh` shim puts the Trello script on PATH in an installed plugin, mirroring the software-development shims, and Step 7 falls back to the bundled `scripts/create-trello-task.sh` relative to SKILL.md, never searching the filesystem; a script that cannot be run is reported. The URL rule keeps each link as the user gave it. A new always-on paraphrase rule writes an approximation as reported speech, never in quotation marks with or without a label.
+- Run method matches the previous baseline: `evals/lib/run-mcp-trials.sh`, `claude -p` sessions limited to stub MCP servers, the skill's installed plugin turned off, evals 1-20 with `SIMULATED_USER=1` and evals 21-25 with scripted `follow_ups`. Every trial invoked the working-tree skill. Trials ran in two parallel batches.
+- Eval 12's quote expectation now fails a paraphrase kept in quotation marks with a "(paraphrased)" label, eval 24 gained a check that both Confluence links stay as the user gave them, and eval 7 gained a check that the Trello question is asked and an unrunnable script is reported. Eval 7 and 24 totals rose from 7 and 6.
+- On the 155 expectations the two baselines share, this run scores 142 against 144. Evals 17, 19, 23, and 24 rose by one; evals 5, 10, 15, and 20 lost one and eval 9 two, none in a rule this change touches: 5 accepted the simulated user's claim that the duration, not the end time, was mistyped; 9 summarized with "and"-chained sentences and skipped a line (below); 10 ended on its first approval question without a final document; 15 assigned the runbook update to Priya without asking; 20's simulated user pasted its own notes instead of following the scenario. The earlier baseline's own note applies: single runs move by several expectations either way.
+- The targeted behaviors: eval 12 kept "flying blind" out of quotation marks and passed every expectation; eval 24 kept both Confluence URLs exactly, using neither the tool's `webui` nor `tinyui` link; eval 7's new Trello expectation passed only because the simulated user confirmed no action items, so the question it targets was not exercised. No trial in the suite put a paraphrase in quotation marks in a final document or replaced a URL.
+- Eval 8's per-line interview, which the issue flagged, passed here and in three separate reruns on the previous text, each asking about one raw line per message, so the interview wording is unchanged.
+- The Trello script ran only where the user wanted cards, in evals 4 and 6. Eval 4's planned card failure was reported, and retried at the simulated user's request. Eval 1 still ran `find / -maxdepth 6` for the skill directory before using the bundled script, and eval 4 a Glob for it, despite Step 7's new rule against searching.
+- Eval 9's executor wrote a question for line 15 and an answer to it inside its own turn, made a stray `Read` of a nonexistent path, and when the simulated user pointed out the skipped line, said it had already been answered; the line's final note rests on that invented answer. It is the only fabrication found across the suite and is not tied to this change, but it is the most serious finding here.
+- Not covered by any expectation: evals 4 and 6 created cards on the user's up-front approval without first asking "Are these action items correct?"; evals 1 and 6 combined one line's proposed wording with the next line's question in a single message; evals 17 and 19 searched the home and root directories for a journal folder; eval 20 never checked the connected Slack workspace; several trials named the user "Dan Walker" from the recording machine's account context, which reached the trials despite the harness's isolation.
 - Tokens are input, output, and cache-creation tokens summed across every turn of the `claude -p` session, excluding cache reads, the same measure as the previous baseline.
