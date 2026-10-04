@@ -2,7 +2,7 @@
 
 **Executor**: claude-sonnet-5 (the CLI's default model on the recording machine)
 **Grader**: claude-opus-5-5
-**Date**: 2026-10-03
+**Date**: 2026-10-04
 **Evals**: 1-20 (2 runs each, with_skill only)
 **Driver**: `bash evals/lib/run-mcp-trials.sh plugins/life-skills/skills/triage/evals`
 
@@ -10,12 +10,12 @@
 
 | Metric | With Skill |
 |--------|------------|
-| Expectations passed | 189/196 (96%): 95/98 run 1, 94/98 run 2 |
-| Evals passing in both runs | 16/20 |
-| New evals 13-20 | 70/70 |
-| Time | 57.3s ± 33.0s |
-| Tokens | 470,487 ± 163,211 (total processed, dominated by cache reads) |
-| Tool calls | 11.8 ± 10.0 |
+| Expectations passed | 187/196 (95%): 91/98 run 1, 96/98 run 2 |
+| Evals passing in both runs | 14/20 |
+| New evals 13-20 | 68/70 |
+| Time | 60.2s ± 39.7s |
+| Tokens | 460,825 ± 201,651 (total processed, dominated by cache reads) |
+| Tool calls | 12.2 ± 12.2 |
 
 Spreads are population standard deviations. Tokens are total processed per
 trial (input + output + cache creation + cache read), rounded to whole tokens.
@@ -44,7 +44,8 @@ shifting). On the 59 expectations evals 1-12 have in common:
 |---|---|---|---|
 | main | 56/59 | 56/59 | 112/118 |
 | this branch, unshifted fixtures | 54/59 | 57/59 | 111/118 |
-| this branch, final (shifted fixtures) | 58/59 | 57/59 | 115/118 |
+| #90 as merged (shifted fixtures) | 58/59 | 57/59 | 115/118 |
+| current, order question aligned (shifted fixtures) | 57/59 | 59/59 | 116/118 |
 
 The first two rows show the change does not cost the existing evals anything:
 no shared expectation fails on the branch in both runs while passing on main
@@ -56,26 +57,26 @@ comparison with main.
 
 | Eval | Scenario | Run 1 | Run 2 | Time r1 (s) | Time r2 (s) | Calls r1 | Calls r2 | Tokens r1 | Tokens r2 |
 |------|----------|-------|-------|-------------|-------------|----------|----------|-----------|-----------|
-| 1 | No scope given, ask first | 3/3 | 3/3 | 6.1 | 5.4 | 1 | 1 | 108,107 | 108,119 |
-| 2 | Trello: rewrite one card, leave one | **4/5** | **4/5** | 48.4 | 42.1 | 9 | 9 | 494,220 | 542,267 |
-| 3 | Trello: nothing to do, say so | 4/4 | 4/4 | 48.0 | 41.1 | 8 | 7 | 541,043 | 427,617 |
-| 4 | Email: all three Step 7b branches | 7/7 | **6/7** | 75.5 | 61.5 | 15 | 13 | 596,001 | 438,389 |
-| 5 | Email: inbox already empty | 4/4 | 4/4 | 15.8 | 14.8 | 5 | 5 | 297,940 | 236,343 |
-| 6 | Email to Trello capture (Step 7c) | 6/6 | 6/6 | 62.1 | 75.1 | 14 | 15 | 612,280 | 613,342 |
-| 7 | Jira: rewrite one issue, leave one | 5/5 | 5/5 | 65.6 | 77.1 | 6 | 8 | 433,259 | 500,273 |
-| 8 | Jira: nothing to do, Done item exempt | 4/4 | 4/4 | 51.2 | 38.1 | 8 | 6 | 488,663 | 421,568 |
-| 9 | Jira to Trello capture (Step 7c) | 6/6 | 6/6 | 81.4 | 94.7 | 15 | 21 | 837,125 | 859,005 |
-| 10 | Trello: every card named as a real link | 5/5 | 5/5 | 43.2 | 46.4 | 8 | 8 | 429,372 | 429,216 |
-| 11 | Batch that moves threads out of scope | **6/7** | **6/7** | 135.2 | 120.9 | 31 | 34 | 558,940 | 485,101 |
-| 12 | Directed batch label, then triage | **6/7** | **6/7** | 143.6 | 132.3 | 43 | 47 | 726,549 | 586,569 |
-| 13 | Trello list position over due dates | 5/5 | 5/5 | 31.2 | 37.5 | 10 | 10 | 429,226 | 493,235 |
-| 14 | Jira rank over priority | 5/5 | 5/5 | 81.8 | 45.5 | 9 | 6 | 511,465 | 426,144 |
-| 15 | The user's ORDER BY over rank | 4/4 | 4/4 | 63.4 | 78.2 | 5 | 8 | 363,363 | 432,072 |
-| 16 | Trello plus Jira: ask which order | 3/3 | 3/3 | 16.8 | 14.4 | 2 | 2 | 169,777 | 171,329 |
-| 17 | Action only in a linked Slack thread | 5/5 | 5/5 | 49.9 | 54.8 | 11 | 10 | 674,343 | 562,918 |
-| 18 | Check-in following the board's pattern | 5/5 | 5/5 | 41.3 | 53.5 | 11 | 13 | 546,428 | 497,189 |
-| 19 | A link that cannot be opened | 4/4 | 4/4 | 34.5 | 37.1 | 8 | 9 | 436,061 | 511,185 |
-| 20 | Links that act rather than inform | 4/4 | 4/4 | 58.2 | 67.0 | 10 | 11 | 375,984 | 447,490 |
+| 1 | No scope given, ask first | 3/3 | 3/3 | 6.5 | 5.6 | 1 | 1 | 106,374 | 106,287 |
+| 2 | Trello: rewrite one card, leave one | 5/5 | 5/5 | 53.1 | 49.6 | 9 | 9 | 425,736 | 487,340 |
+| 3 | Trello: nothing to do, say so | 4/4 | 4/4 | 40.2 | 39.0 | 7 | 8 | 357,897 | 468,911 |
+| 4 | Email: all three Step 7b branches | **6/7** | 7/7 | 69.9 | 118.3 | 14 | 16 | 516,967 | 597,082 |
+| 5 | Email: inbox already empty | 4/4 | 4/4 | 16.8 | 15.1 | 6 | 5 | 300,514 | 233,025 |
+| 6 | Email to Trello capture (Step 7c) | 6/6 | 6/6 | 58.3 | 45.2 | 14 | 13 | 589,484 | 444,408 |
+| 7 | Jira: rewrite one issue, leave one | 5/5 | 5/5 | 59.3 | 72.8 | 6 | 9 | 424,738 | 551,081 |
+| 8 | Jira: nothing to do, Done item exempt | **3/4** | 4/4 | 32.2 | 34.8 | 4 | 4 | 290,713 | 290,944 |
+| 9 | Jira to Trello capture (Step 7c) | 6/6 | 6/6 | 95.2 | 76.0 | 18 | 19 | 896,576 | 828,532 |
+| 10 | Trello: every card named as a real link | 5/5 | 5/5 | 42.9 | 63.7 | 9 | 9 | 423,994 | 487,093 |
+| 11 | Batch that moves threads out of scope | **6/7** | **6/7** | 146.0 | 133.3 | 35 | 35 | 482,997 | 461,900 |
+| 12 | Directed batch label, then triage | **5/7** | **6/7** | 164.7 | 178.8 | 60 | 51 | 1,088,078 | 842,285 |
+| 13 | Trello list position over due dates | 5/5 | 5/5 | 30.8 | 40.6 | 10 | 10 | 423,001 | 487,228 |
+| 14 | Jira rank over priority | **4/5** | 5/5 | 63.4 | 67.2 | 8 | 8 | 548,722 | 497,461 |
+| 15 | The user's ORDER BY over rank | **3/4** | 4/4 | 67.1 | 70.4 | 5 | 6 | 359,084 | 359,603 |
+| 16 | Trello plus Jira: ask which order | 3/3 | 3/3 | 13.8 | 9.8 | 1 | 1 | 107,909 | 107,540 |
+| 17 | Action only in a linked Slack thread | 5/5 | 5/5 | 65.0 | 50.2 | 10 | 11 | 559,093 | 557,860 |
+| 18 | Check-in following the board's pattern | 5/5 | 5/5 | 40.7 | 45.6 | 10 | 10 | 486,864 | 487,569 |
+| 19 | A link that cannot be opened | 4/4 | 4/4 | 53.6 | 42.0 | 9 | 8 | 504,668 | 430,531 |
+| 20 | Links that act rather than inform | 4/4 | 4/4 | 62.5 | 68.6 | 11 | 8 | 440,153 | 372,778 |
 
 Graded from final state: each service's call log, a field-by-field diff of
 `<service>-state-out.json` against the trial's resolved
@@ -155,7 +156,28 @@ the October ones not at all. Evals 6, 7, and 8 are clean in both runs.
 - **Evals 4 and 11-15** grade the order inside each outcome group, not one
   flat list, matching Step 9.
 
+## The order question, aligned with Step 0
+
+This measurement is of the text after one more change: Step 1b and
+`processing-order.md` had kept a rule that stopped for the order question
+whenever two signals disagreed inside one source, even after up-front
+authorization, while Step 0 stops only for a scope naming two ordered
+sources. Both now match Step 0; inside one source the skill picks the
+earlier-listed signal, names the conflict on the `Order:` line, and offers to
+switch. No eval exercises that case. The previous measurement of the
+unaligned text scored 95/98 and 94/98; this one 91/98 and 96/98, with no
+expectation failing in both runs here that passed in both there. Two passes
+cannot separate a change that size from run-to-run variation, which across
+this record has spanned roughly four expectations per pass on unchanged text.
+
 ## Known gaps
+
+**A reply claimed changes it never made** in eval 20 run 2: it reported
+labelling and archiving both threads and an empty inbox, while the Gmail call
+log holds only reads and the final state matches the seed. No expectation
+grades this directly (the thread still ended in the inbox, which passes), and
+it is the only such claim across the forty trials, but it is the most serious
+miss recorded here.
 
 **An inbox's groups are not always in order inside.** Every eval 11 and 12
 run states the order (Starred first, then oldest first) and groups the threads
