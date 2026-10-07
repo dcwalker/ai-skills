@@ -28,6 +28,7 @@ State model (the fake Jira "site"):
         "issuetype": "...", "priority": null or "...",
         "labels": [...], "assignee": null or {"accountId", "displayName"},
         "reporter": {"accountId", "displayName"},
+        "creator": null or {"accountId", "displayName"} (optional),
         "created": "<ISO>", "updated": "<ISO>",
         "resolution": null or "...", "duedate": null or "YYYY-MM-DD",
         "rank": "<sortable string, optional>",
@@ -35,6 +36,7 @@ State model (the fake Jira "site"):
                        "author": {"accountId": "...", "displayName": "..."}}]
     }},
     "stub_now": "<ISO, optional: the stub's fixed 'now'>",
+    "timeZone": "<IANA zone, optional: the account's Jira profile time zone>",
     "users": [{"accountId": "...", "displayName": "...",
                 "emailAddress": "..."}],
     "me": {"accountId": "...", "displayName": "..."},
@@ -63,12 +65,23 @@ rather than documentation; a fixture expresses it with "body": "".
 JQL support in searchJiraIssuesUsingJql is a small, documented subset:
 clauses joined by AND, each one of `project = KEY`, `status != NAME`,
 `statusCategory != NAME` (and the `=` forms), `text ~ "words"` or
-`summary ~ "words"` (substring match against summary+description), with an
-optional trailing `ORDER BY` over `Rank`, `created`, `updated`,
+`summary ~ "words"` (substring match against summary+description),
+`created` compared with `>=`, `>`, `<=`, `<`, or `=` against "YYYY-MM-DD" or
+"YYYY-MM-DD HH:mm" (slashes also accepted), and `creator`, `reporter`, or
+`assignee` with `=`, `!=`, `in (...)`, or `not in (...)` against account
+IDs, `currentUser()`, or `EMPTY`, or with `is EMPTY` / `is not EMPTY`, with an optional trailing `ORDER BY` over `Rank`, `created`, `updated`,
 `duedate`, or `key`, each `ASC` (the default) or `DESC`, comma-separated.
 Anything else raises a loud error naming the unsupported construct rather
 than silently matching nothing or everything -- the same fail-loud property
 as the other stubs.
+
+Created times: JQL date-times carry no time zone, and Jira reads them in the
+searching account's profile time zone (JRACLOUD-81174), so the stub reads
+them in the fixture's optional top-level "timeZone", or UTC without one, and
+compares against each issue's "created", which carries its own offset. A
+date with no time means midnight that day, so `created >= "2026-10-01" AND
+created < "2026-10-02"` spans the whole day. User clauses match account IDs
+only; an issue with no "creator" uses its "reporter".
 
 Issue order: a Jira issue's rank is its position in the backlog, which
 Atlassian documents as arranging work items by relative importance, and
@@ -86,7 +99,9 @@ not model. Without an ORDER BY, results keep the fixture's order; the live
 default order is unverified.
 """
 
+import datetime
 import re
+import zoneinfo
 
 from common import StubState
 
@@ -161,11 +176,85 @@ def _match_text_field(issue: dict, clause: str, field: str) -> bool:
     return value.lower() in haystack
 
 
+_CREATED_OPERATORS = (">=", "<=", ">", "<", "=")
+
+
+def _parse_iso(value: str) -> datetime.datetime:
+    """An ISO timestamp with offset, accepting a trailing Z."""
+    return datetime.datetime.fromisoformat(value.replace("Z", "+00:00"))
+
+
+def _parse_jql_datetime(value: str) -> datetime.datetime:
+    """A JQL date or date-time, read in the account's time zone."""
+    text = value.replace("/", "-")
+    for layout in ("%Y-%m-%d %H:%M", "%Y-%m-%d"):
+        try:
+            naive = datetime.datetime.strptime(text, layout)
+            break
+        except ValueError:
+            continue
+    else:
+        raise ValueError(f"jira-stub: unsupported JQL date {value!r} -- use YYYY-MM-DD or YYYY-MM-DD HH:mm")
+    return naive.replace(tzinfo=zoneinfo.ZoneInfo(state.data.get("timeZone", "UTC")))
+
+
+def _match_created(issue: dict, clause: str) -> bool:
+    for operator in _CREATED_OPERATORS:
+        value = _clause_value(clause, "created", operator)
+        if value is None:
+            continue
+        actual = _parse_iso(issue["created"])
+        bound = _parse_jql_datetime(value)
+        return {
+            ">=": actual >= bound, "<=": actual <= bound, ">": actual > bound,
+            "<": actual < bound, "=": actual == bound,
+        }[operator]
+    raise ValueError(f"jira-stub: unsupported JQL clause {clause!r} (created supports >=, >, <=, <, =)")
+
+
+def _user_values(raw: str) -> list[str]:
+    """Account IDs from one value or an `in (...)` list, resolving currentUser()."""
+    raw = raw.strip()
+    if raw.startswith("(") and raw.endswith(")"):
+        raw = raw[1:-1]
+    items = [v.strip().strip('"\'') for v in raw.split(",") if v.strip()]
+    me = (state.data.get("me") or {}).get("accountId")
+    return [me if v.lower() == "currentuser()" else v for v in items]
+
+
+def _match_user_field(issue: dict, clause: str, field: str) -> bool:
+    person = issue.get(field) if field != "creator" else (issue.get("creator") or issue.get("reporter"))
+    actual = (person or {}).get("accountId")
+    rest = clause[len(field):].strip()
+    lower = rest.lower()
+    operators = (("not in", True), ("in", False), ("is not", True), ("is", False), ("!=", True), ("=", False))
+    for operator, negate in operators:
+        if not lower.startswith(operator):
+            continue
+        tail = rest[len(operator):].lstrip()
+        if operator.endswith("in") and not tail.startswith("("):
+            continue
+        if operator.startswith("is") and tail.upper() != "EMPTY":
+            continue
+        values = _user_values(tail)
+        hit = actual in values or (actual is None and any(v.upper() == "EMPTY" for v in values))
+        return hit != negate
+    raise ValueError(
+        f"jira-stub: unsupported JQL clause {clause!r} "
+        f"({field} supports =, !=, in, not in, is EMPTY, is not EMPTY)"
+    )
+
+
 def _clause_matches(issue: dict, clause: str) -> bool:
     c = clause.strip()
     lower = c.lower()
     if lower.startswith("project"):
         return _match_project(issue, c)
+    for field in ("creator", "reporter", "assignee"):
+        if lower.startswith(field):
+            return _match_user_field(issue, c, field)
+    if lower.startswith("created"):
+        return _match_created(issue, c)
     for field in ("statuscategory", "status"):
         if lower.startswith(field):
             return _match_status_field(issue, c, field)
@@ -174,7 +263,8 @@ def _clause_matches(issue: dict, clause: str) -> bool:
             return _match_text_field(issue, c, field)
     raise ValueError(
         f"jira-stub: unsupported JQL clause {clause!r} -- supported: project =, status =/!=, "
-        "statusCategory =/!=, text ~, summary ~, joined by AND, optional trailing ORDER BY"
+        "statusCategory =/!=, text ~, summary ~, created >=/>/<=/</=, creator/reporter/assignee "
+        "=/!=/in/not in/is EMPTY, joined by AND, optional trailing ORDER BY"
     )
 
 
@@ -285,7 +375,9 @@ def searchJiraIssuesUsingJql(  # NOSONAR(S1542) camelCase = real MCP tool name
     searchResultMode: str = "issues",
 ) -> dict:
     """Search issues with JQL. The stub supports a documented subset:
-    project =, status =/!=, statusCategory =/!=, text ~, summary ~, joined
+    project =, status =/!=, statusCategory =/!=, text ~, summary ~,
+    created >=/>/<=/</=, creator/reporter/assignee =/!=/in/not in/is EMPTY,
+    joined
     by AND, with an optional trailing ORDER BY over Rank, created,
     updated, duedate, or key. Unsupported constructs raise an error naming
     the clause."""
