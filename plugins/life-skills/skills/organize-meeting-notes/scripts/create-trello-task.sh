@@ -91,8 +91,11 @@ if [[ -n "${AI_SKILLS_EVAL:-}" && -z "${TRELLO_FIXTURE_FILE:-}" ]]; then
   exit 1
 fi
 
-if [[ -n "${TRELLO_FIXTURE_FILE:-}" ]]; then
-  RESULT=$(python3 - "$TRELLO_FIXTURE_FILE" "${TRELLO_FIXTURE_COUNTS_DIR:-}" <<'PYEOF'
+# The Python below runs with `python3 -c` rather than from heredocs: macOS's
+# bash 3.2 writes every heredoc to a temp file, which a sandbox that only
+# allows writes to the run directory refuses ("cannot create temp file for
+# here document").
+FIXTURE_PY='
 import json
 import os
 import sys
@@ -101,8 +104,8 @@ fixture_file, counts_dir = sys.argv[1], sys.argv[2]
 
 fixtures = json.loads(open(fixture_file).read())
 if "create_card" not in fixtures:
-    print(f"Error: TRELLO_FIXTURE_FILE {fixture_file} has no 'create_card' entry. "
-          "Add one to the fixture's top-level object.", file=sys.stderr)
+    print(f"Error: TRELLO_FIXTURE_FILE {fixture_file} has no create_card entry. "
+          "Add one to the fixture top-level object.", file=sys.stderr)
     sys.exit(1)
 
 entry = fixtures["create_card"]
@@ -132,20 +135,25 @@ else:
     print("FAIL")
     print(response.get("error", "fixture-simulated failure"))
     print(response.get("exit_code", 1))
-PYEOF
-)
+'
+
+# Appends one JSON line to the log: {"text", "desc", <key>: <value>}.
+LOG_PY='
+import json
+import sys
+
+log_file, text, desc, key, value = sys.argv[1:6]
+with open(log_file, "a") as f:
+    f.write(json.dumps({"text": text, "desc": desc, key: value}) + "\n")
+'
+
+if [[ -n "${TRELLO_FIXTURE_FILE:-}" ]]; then
+  RESULT=$(python3 -c "$FIXTURE_PY" "$TRELLO_FIXTURE_FILE" "${TRELLO_FIXTURE_COUNTS_DIR:-}")
   STATUS=$(echo "$RESULT" | sed -n '1p')
   if [[ "$STATUS" = "OK" ]]; then
     URL=$(echo "$RESULT" | sed -n '2p')
     if [[ -n "${TRELLO_FIXTURE_LOG:-}" ]]; then
-      python3 - "$TRELLO_FIXTURE_LOG" "$TEXT" "$DESC" "$URL" <<'PYEOF'
-import json
-import sys
-
-log_file, text, desc, url = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
-with open(log_file, "a") as f:
-    f.write(json.dumps({"text": text, "desc": desc, "url": url}) + "\n")
-PYEOF
+      python3 -c "$LOG_PY" "$TRELLO_FIXTURE_LOG" "$TEXT" "$DESC" url "$URL"
     fi
     echo "$URL"
     exit 0
@@ -153,14 +161,7 @@ PYEOF
     ERROR_MSG=$(echo "$RESULT" | sed -n '2p')
     EXIT_CODE=$(echo "$RESULT" | sed -n '3p')
     if [[ -n "${TRELLO_FIXTURE_LOG:-}" ]]; then
-      python3 - "$TRELLO_FIXTURE_LOG" "$TEXT" "$DESC" "$ERROR_MSG" <<'PYEOF'
-import json
-import sys
-
-log_file, text, desc, error = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
-with open(log_file, "a") as f:
-    f.write(json.dumps({"text": text, "desc": desc, "error": error}) + "\n")
-PYEOF
+      python3 -c "$LOG_PY" "$TRELLO_FIXTURE_LOG" "$TEXT" "$DESC" error "$ERROR_MSG"
     fi
     echo "Error: $ERROR_MSG" >&2
     exit "$EXIT_CODE"

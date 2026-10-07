@@ -434,6 +434,8 @@ After the interview and normalization, format the notes section as a bulleted li
    - If neither copy can be run, tell the user the cards could not be created
      and why, and ask how to proceed. Never skip card creation silently or
      finalize as if the question had not been asked.
+   - Never run the script with test or placeholder text to see whether it
+     works: every run creates a card.
    - Include `--desc` for every Trello card with source context.
    - Minimum required description context: meeting title plus meeting date/time.
    - Preferred additional context: meeting topic and a short reason the action item exists.
