@@ -179,6 +179,10 @@ For each available source:
   items (an item key, or a topic recognizable as a tracked item), look them
   up and capture the item's current summary and status so the note can name
   what was actually discussed.
+- **Items created during the meeting**: for every reachable tracker (Jira,
+  Trello, or another task tool), whether or not the notes mention one, find
+  the items attendees created or were assigned during the meeting, following
+  [references/capture-tracker-items.md](references/capture-tracker-items.md).
 
 Present what was found as proposals, source by source, before or during the
 Step 4 interview; the user decides what gets in. Enrichment supplements the
@@ -418,7 +422,9 @@ After the interview and normalization, format the notes section as a bulleted li
 4. Present action items draft for review. Ask: "Are these action items correct?"
 5. It is valid for a meeting to have no action items. If none exist, explicitly confirm this with the user.
 6. Once action items are confirmed, ask whether to create Trello tasks (one per action item).
-7. If user says yes, create one Trello card per action item:
+   An action item already linked to an item captured in Step 1b keeps that
+   link and gets no new card.
+7. If user says yes, create one Trello card per remaining action item:
    - Run: `create-trello-task.sh "<action item text>"`. The script ships with
      this skill. If it is not on your PATH, run the bundled copy at
      `scripts/create-trello-task.sh`, resolved relative to this `SKILL.md`.
