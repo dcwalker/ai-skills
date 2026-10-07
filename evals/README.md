@@ -642,6 +642,13 @@ Five things the shared driver does that a hand-run trial must do for itself:
     file it would have put there. A confirmed write stops the run, as the
     older `~/writing-style` check does; the others are warnings, since a
     refused save still explains a skill's missing output.
+  - The same targets are checked against the harness's own files in the run
+    directory: the `*-calls.log` call logs, stub state, `*.counts.json`,
+    `tools.log`, `events.jsonl`, `metrics.json`, and the rest the driver
+    writes. A trial that writes one (an eval once emptied
+    `trello-calls.log` to hide a test card) is listed in `tampering.log`,
+    counted in `metrics.json` as `harness_file_writes`, and warned about.
+    Grade such a trial from `events.jsonl`, not its call logs.
 - It seeds that home from the fixture's optional `home/` directory, which is
   how a trial starts with state already in place. A fixture can hand the
   trial its own prior cache, or somebody else's, and grade what the skill
