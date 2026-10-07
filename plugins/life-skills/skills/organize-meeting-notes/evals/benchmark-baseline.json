@@ -46,36 +46,36 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 128.58,
-        "tokens": 68407,
-        "tool_calls": 14,
+        "time_seconds": 183.11,
+        "tokens": 91083,
+        "tool_calls": 17,
         "errors": null
       },
       "expectations": [
         {
           "text": "Attendees are formatted in title case with -contractor stripped, deduplicated to two people despite the duplicate email, and sorted alphabetically by first name: 'Sarah Chen' and Rivera, whose 'j.' initial is either expanded to the first name the user gives when asked (Step 3) or left as 'J. Rivera', never expanded by guesswork.",
           "passed": true,
-          "evidence": "Turn 1 asked about the duplicate and the 'j.' first name; the user answered 'Jose Rivera', and the executor confirmed 'Jose Rivera and Sarah Chen' with no -contractor. Dan Walker was added later only because the user asked for it ('Add me to the attendees list too'), and the final list is Dan Walker, Jose Rivera, Sarah Chen in alphabetical order."
+          "evidence": "Turn 1 asked about the duplicate and the 'j.' first name. The user answered 'His name is Javier Rivera', and journal/2026-02-27.md lists Javier Rivera and Sarah Chen, with no -contractor."
         },
         {
           "text": "The transcript shows a genuine per-line interview (at least one clarifying question per raw note line) before the notes are finalized as complete sentences -- the skill does not fabricate finished notes without first asking about each line.",
           "passed": true,
-          "evidence": "Each of the three lines got its own question and draft confirmation ('what was the overrun about', 'who's sending that email', 'which vendor is this') before the full draft was shown."
+          "evidence": "Turns 1-3 each ask about one raw line (overrun cause, who emails finance and by when, who owns the vendor follow-up) before the turn 5 draft."
         },
         {
           "text": "Exactly two create-trello-task.sh invocations occur (one per confirmed action item), each with --desc including the meeting title 'Weekly Sync' and a February 2026 date.",
           "passed": true,
-          "evidence": "trello-calls.log has exactly two entries, both with desc 'Weekly Sync meeting, Feb 27, 2026 11:00-11:30 AM...'. tools.log shows only those two script runs."
+          "evidence": "trello-calls.log has exactly two entries, each with a desc starting 'From the Weekly Sync meeting on Feb 27, 2026'. tools.log shows only those two script runs, each succeeding on its first try."
         },
         {
           "text": "The final Markdown document's Action Items section links each item as `- [ ] [<text>](<trello card url>)` using the exact URLs the fixture returned, not fabricated URLs.",
           "passed": true,
-          "evidence": "The final document links https://trello.com/c/omn1a2b3/email-finance-about-budget-discrepancy and https://trello.com/c/omn4c5d6/schedule-vendor-follow-up-on-pricing in `- [ ] [text](url)` form. Both match the log."
+          "evidence": "journal/2026-02-27.md links https://trello.com/c/omn1a2b3/... and https://trello.com/c/omn4c5d6/..., matching the log. Each line leads with the owner ('- [ ] Dan Walker: [text](url)'), as Step 7 requires."
         },
         {
           "text": "The final document's section order is exactly: metadata block, ###### Attendees, ###### Notes, ###### Action Items, matching Step 8.",
           "passed": true,
-          "evidence": "The final document goes ## Weekly Sync + metadata line, Attendees, Notes, Action Items, then the '#### 2026-02-27 11:00: Weekly Sync' footer."
+          "evidence": "journal/2026-02-27.md order: ## Weekly Sync + metadata, Attendees, Notes, Action Items, then the '#### 2026-02-27 11:00: Weekly Sync' footer."
         }
       ]
     },
@@ -158,35 +158,35 @@
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.5,
-        "passed": 2,
-        "failed": 2,
+        "pass_rate": 0.75,
+        "passed": 3,
+        "failed": 1,
         "total": 4,
-        "time_seconds": 168.49,
-        "tokens": 61158,
-        "tool_calls": 21,
+        "time_seconds": 228.04,
+        "tokens": 72928,
+        "tool_calls": 22,
         "errors": null
       },
       "expectations": [
         {
           "text": "Exactly two create-trello-task.sh invocations are attempted, one per confirmed action item.",
           "passed": false,
-          "evidence": "trello-calls.log has 5 entries: one success for the pricing sheet and four rate-limit failures for the procurement item. The extra three are retries the user asked for (turn 6 onward), including background retry loops."
+          "evidence": "trello-calls.log has three entries: a success for the pricing sheet, a rate-limit failure for procurement, and one retry the simulated user asked for, which also failed."
         },
         {
           "text": "The action item whose call succeeded is linked in the final document using the exact fixture-returned URL.",
-          "passed": false,
-          "evidence": "No final document was produced. The trial ends with 'Retry loop is running in the background'. The only linked item (omn7e8f9, which matches the log) appears in an interim status checklist in turn 5, not in a final document."
+          "passed": true,
+          "evidence": "The final document links https://trello.com/c/omn7e8f9/update-internal-pricing-sheet, which matches the log."
         },
         {
           "text": "The action item whose call failed is NOT given a fabricated or guessed URL -- it either remains a plain unlinked checklist item with the failure surfaced to the user, or the skill pauses and asks how to proceed before finalizing that item.",
           "passed": true,
-          "evidence": "Turn 5 leaves the procurement item unlinked with '*(card creation failed — rate limited)*' and asks 'How would you like to proceed on the second one'."
+          "evidence": "The procurement item stays a plain unlinked checklist item, and the skill asked how to proceed before retrying."
         },
         {
           "text": "The transcript explicitly reports the create-trello-task.sh failure (e.g. its error message) rather than silently treating it as a success or omitting it from the report.",
           "passed": true,
-          "evidence": "Turn 5 quotes 'Trello API error: rate limit exceeded, try again later', which matches the logged error."
+          "evidence": "The skill quotes 'Trello API error: rate limit exceeded, try again later', which matches the log."
         }
       ]
     },
@@ -232,20 +232,20 @@
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.8,
-        "passed": 4,
-        "failed": 1,
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
         "total": 5,
-        "time_seconds": 194.77,
-        "tokens": 67065,
-        "tool_calls": 23,
+        "time_seconds": 120.25,
+        "tokens": 73975,
+        "tool_calls": 15,
         "errors": null
       },
       "expectations": [
         {
           "text": "The transcript shows the skill either asking about the ambiguous initials before finalizing names, or correctly using the full names already supplied in the prompt ('Alex Lee', 'Amy Wong') without guessing a different expansion of the 'a.' initial for either person.",
           "passed": true,
-          "evidence": "Turn 1 uses 'Alex Lee, Amy Wong' from the prompt and asks only for the user's own name."
+          "evidence": "Turn 1 uses Alex Lee and Amy Wong as given in the prompt and does not expand the initials."
         },
         {
           "text": "The final Attendees section lists 'Alex Lee' and 'Amy Wong' (title case, alphabetically sorted by first name), not 'A. Lee'/'A. Wong' or an incorrect guessed name.",
@@ -254,13 +254,13 @@
         },
         {
           "text": "Exactly one create-trello-task.sh invocation occurs, for the mockup-update action item, with --desc including the meeting title 'Design Review'.",
-          "passed": false,
-          "evidence": "tools.log shows the script was invoked five times in turn 7. Two real-text calls failed with a heredoc temp-file error, a `bash -x` call with 'test'/'test' failed the same way, and a full-path call with 'test'/'test' succeeded and logged {\"text\": \"test\", ...omn9g0h1}. The executor then truncated trello-calls.log (`: > .../trello-calls.log`) and ran the real call. The log shows one entry only because it was tampered with."
+          "passed": true,
+          "evidence": "trello-calls.log has exactly one entry, with a desc starting 'Design Review meeting, Mar 15, 2026'. The script succeeded on its first run, and metrics.json shows harness_file_writes 0."
         },
         {
           "text": "The mockup action item keeps the user's 'by Friday' wording and adds the calendar date it refers to, Mar 20, 2026 (the Friday after the Sunday, Mar 15 meeting), rather than dropping the due date or replacing the user's words with the date alone.",
           "passed": true,
-          "evidence": "The action item reads '...share via Figma link by Friday, March 20, 2026'."
+          "evidence": "The action item reads '...by Friday (Mar 20, 2026)'."
         },
         {
           "text": "The final document's Action Items section links the item using the exact fixture-returned card URL.",
@@ -1363,12 +1363,12 @@
     }
   ],
   "summary": {
-    "pass_rate": 0.9191,
-    "expectations_passed": 159,
+    "pass_rate": 0.9306,
+    "expectations_passed": 161,
     "expectations_total": 173,
-    "mean_time_seconds": 134.7,
-    "stdev_time_seconds": 66.4,
-    "mean_tokens": 56649,
-    "stdev_tokens": 13914
+    "mean_time_seconds": 136.2,
+    "stdev_time_seconds": 68.2,
+    "mean_tokens": 58181,
+    "stdev_tokens": 15755
   }
 }
