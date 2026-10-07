@@ -30,10 +30,22 @@ State model (the fake Trello "database"):
                               "due": null or "<ISO date>",
                               "due_complete": false,
                               "pos": <number, optional>,
-                              "url": "https://trello.com/c/<id>/<slug>"}},
+                              "url": "https://trello.com/c/<id>/<slug>",
+                              "created": "<ISO datetime, optional>"}},
     "labels": {"<label_id>": {"id": "...", "name": "...", "color": "...",
-                               "board_id": "..."}}
+                               "board_id": "..."}},
+    "stub_now": "<ISO datetime, optional: the stub's fixed 'now'>"
   }
+
+Creation time: a Trello ID's first 8 hexadecimal characters are the Unix
+timestamp it was created at (Trello's "Getting the time a card or board was
+created"), and the live search_trello reports each card's creation date
+from it. The stub does the same for a card whose "id" is 24 hex characters;
+any other card uses its optional "created" instead. search_trello results
+carry that "created" date, and the query accepts Trello's `created:N`
+(N days), `created:day`, `created:week`, and `created:month` operators,
+counted back from the fixture's "stub_now" (or the real time without one).
+Any other query text keeps the plain substring match.
 
 Tool surface is intentionally a subset scoped to what `triage` actually
 needs: resolve boards/lists, fetch cards (list-level and single-card
@@ -56,6 +68,8 @@ empty here.
 """
 
 import copy
+import datetime
+import re
 
 from common import StubState
 
@@ -230,23 +244,70 @@ def view_card(card_id: str) -> dict:
     return result
 
 
+_TRELLO_ID = re.compile(r"[0-9a-f]{24}")
+_CREATED_OPERATOR = re.compile(r"(?:^|\s)created:(\w+)", re.IGNORECASE)
+_CREATED_WORDS = {"day": 1, "week": 7, "month": 28}
+
+
+def _card_created(card: dict) -> datetime.datetime | None:
+    """When the card was created: from its ID when it is a Trello ID, else its "created"."""
+    if _TRELLO_ID.fullmatch(card["id"]):
+        return datetime.datetime.fromtimestamp(int(card["id"][:8], 16), tz=datetime.timezone.utc)
+    if card.get("created"):
+        return datetime.datetime.fromisoformat(card["created"].replace("Z", "+00:00"))
+    return None
+
+
+def _stub_now() -> datetime.datetime:
+    now = state.data.get("stub_now")
+    if now:
+        return datetime.datetime.fromisoformat(now.replace("Z", "+00:00"))
+    return datetime.datetime.now(datetime.timezone.utc)
+
+
+def _split_created(q: str) -> tuple[str, datetime.datetime | None]:
+    """The query's plain text, and the earliest creation time a `created:` operator allows."""
+    match = _CREATED_OPERATOR.search(q)
+    if not match:
+        return q, None
+    term = match.group(1).lower()
+    days = _CREATED_WORDS.get(term) or (int(term) if term.isdigit() else None)
+    if days is None:
+        raise ValueError(f"trello-stub: unsupported created:{term} -- use created:N, day, week, or month")
+    text = (q[:match.start()] + " " + q[match.end():]).strip()
+    return text, _stub_now() - datetime.timedelta(days=days)
+
+
 def _card_matches_search(c: dict, q: str, board_id: str | None, exclude_completed: bool) -> bool:
     if board_id and c["board_id"] != board_id:
         return False
     if exclude_completed and c.get("due_complete"):
         return False
-    return q in c["name"].lower() or q in c["desc"].lower()
+    text, created_since = _split_created(q)
+    if created_since is not None:
+        created = _card_created(c)
+        if created is None or created < created_since:
+            return False
+    return text in c["name"].lower() or text in c["desc"].lower()
+
+
+def _search_result(c: dict) -> dict:
+    result = {
+        "id": c["id"],
+        "name": c["name"],
+        "url": c["url"],
+        "list_id": c["list_id"],
+        "board_id": c["board_id"],
+    }
+    created = _card_created(c)
+    if created is not None:
+        result["created"] = created.date().isoformat()
+    return result
 
 
 def _search_cards(q: str, board_id: str | None, exclude_completed: bool, limit: int) -> list[dict]:
     matches = [
-        {
-            "id": c["id"],
-            "name": c["name"],
-            "url": c["url"],
-            "list_id": c["list_id"],
-            "board_id": c["board_id"],
-        }
+        _search_result(c)
         for c in state.data["cards"].values()
         if _card_matches_search(c, q, board_id, exclude_completed)
     ]

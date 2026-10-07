@@ -358,6 +358,47 @@
         "Yes, include the Slack items you proposed where they fit, and approve the rest.",
         "Looks good. Finalize it and give me the final document."
       ]
+    },
+    {
+      "id": 26,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: 4.2 Launch Sync\nStart: Oct 1, 2026 at 2:00 PM\nEnd: 2:45 PM\nDuration: 45 minutes\nAttendees: dan.walker@example.com, priya.raman@example.com, marcus.hall@example.com\n\nRaw notes:\n- marcus took the rollback plan\n- go/no-go criteria still fuzzy, priya to pin down\n- dan to send release comms to support by friday\n\nInterview me line by line and I'll answer as we go.",
+      "expected_output": "Tests capturing Jira work items created during the meeting. Jira is connected (account time zone America/Los_Angeles) and holds eight REL items created on Oct 1, 2026. The window is the actual 2:00 PM to 2:45 PM, plus 15 minutes for items that relate directly to the meeting. Captured: REL-101 'Write the rollback checklist for 4.2' (created 2:20 PM by Priya Raman, assigned to Marcus Hall), REL-107 'Review the 4.2 release notes draft' (created 2:25 PM by Omar Haddad, who did not attend, but assigned to Dan Walker), REL-102 'Bump Node to 22 in the CI image' (created 2:31 PM by Marcus, unrelated to the meeting but inside it), and REL-103 'Define go/no-go criteria for 4.2' (created 2:55 PM by Priya, after the end but about the go/no-go note). Left out: REL-106 (1:50 PM, before the start), REL-108 (2:40 PM, created by and assigned to Omar), REL-104 'Renew the staging TLS certificate' (2:52 PM, after the end and unrelated), and REL-105 'Fix the quarantined checkout tests' (3:05 PM, 20 minutes after the end). The skill must find them with a search bounded by creation date rather than keywords, report how Jira was checked, propose the captured items for approval, place them in the notes and link the matching action items to REL-101 and REL-103, and create a Trello card only for the release comms action item, which has no ticket.",
+      "expectations": [
+        "The Jira call log shows a searchJiraIssuesUsingJql call whose JQL bounds `created` to a range covering 2:00 PM to 3:00 PM on Oct 1, 2026 (for example `created >= \"2026-10-01\" AND created < \"2026-10-02\"`), with no `text ~` or `summary ~` keyword clause, before any Jira item created during the meeting is reported.",
+        "The response says how Jira was checked: the creation window (2:00 PM to 3:00 PM, or the meeting window plus 15 minutes) and the search used.",
+        "REL-101, REL-102, REL-103, and REL-107 are each proposed to the user. REL-102 is proposed even though it is unrelated to the meeting, and REL-107 is proposed because it is assigned to Dan Walker, even though Omar Haddad created it.",
+        "REL-103 is identified as created after the meeting ended and is tied to the go/no-go criteria discussion.",
+        "None of REL-104, REL-105, REL-106, or REL-108 is proposed for the notes or the action items. Listing one as left out, with the reason, is fine.",
+        "In the final document, the rollback checklist action item links to REL-101 and the go/no-go criteria action item links to REL-103, and the captured items appear in the notes with their key, summary, and status.",
+        "Exactly one create-trello-task.sh invocation occurs, for the release comms action item; none is made for the rollback checklist or the go/no-go criteria.",
+        "The final document's release comms action item links to https://trello.com/c/rl4cm5s6/send-release-comms-to-support."
+      ],
+      "follow_ups": [
+        "Context: Marcus owns the rollback checklist for 4.2, due Tuesday, Oct 6. The go/no-go criteria are fuzzy because nobody agreed what error rate blocks a release; Priya is defining them by Monday, Oct 5. I'm sending the release comms to support by Friday, Oct 2. Everyone attended.",
+        "Yes to the Jira items you proposed; put each where it fits. Approve everything else as proposed.",
+        "No due dates yet for the Jira items that don't carry one. Yes, create Trello cards for any action items that don't already have a ticket.",
+        "Looks good. Finalize it and give me the final document."
+      ]
+    },
+    {
+      "id": 27,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: Offsite Planning\nStart: Oct 2, 2026 at 10:00 AM PT\nEnd: 10:30 AM PT\nDuration: 30 minutes\nAttendees: dan.walker@example.com, lena.fischer@example.com\n\nRaw notes:\n- venue shortlist down to two, lena prefers the one by the river\n- need an agenda before invites go out\n\nInterview me line by line and I'll answer as we go. Don't create any new Trello cards.",
+      "expected_output": "Tests capturing Trello cards created during the meeting when the tool cannot say who created them. Trello is connected with one board, Team Tasks, whose cards carry Trello IDs that encode their creation times (America/Los_Angeles): 'Collect offsite dietary needs' (Sep 30, 3:00 PM), 'Book the venue for the offsite' (Oct 2, 10:12 AM), 'Draft the offsite agenda' (10:40 AM), 'Order printer toner' (10:41 AM), and 'Send the offsite budget to finance' (11:10 AM). The window is 10:00 AM to 10:30 AM, plus 15 minutes for cards related to the meeting. The venue card was created during the meeting; the agenda card was created 10 minutes after the end and relates to the agenda note; the toner card was created in the grace period but is unrelated; the finance card was created 40 minutes after the end; the dietary card was created two days earlier. Trello does not show a card's creator, so the skill must say so and ask whether an attendee created the venue and agenda cards rather than assume. Once the user confirms, both are captured and the matching action items link to the existing cards. The user declined new cards, so create-trello-task.sh never runs.",
+      "expectations": [
+        "The Trello call log shows cards being found by creation date (a search_trello query with a `created:` operator, or a listing of the board's cards) rather than only keyword searches for the meeting's topics.",
+        "The response gives the venue card's creation time as 10:12 AM and the agenda card's as 10:40 AM (or the equivalent UTC times, clearly labelled), showing the times came from the card IDs rather than the date alone.",
+        "The response states that Trello does not show who created the cards and asks the user whether an attendee created them, without proposing or assuming a creator.",
+        "'Book the venue for the offsite' and 'Draft the offsite agenda' are proposed, and the agenda card is identified as created after the meeting ended and tied to the agenda note.",
+        "None of 'Order printer toner', 'Send the offsite budget to finance', or 'Collect offsite dietary needs' is proposed for the notes or the action items, even though two of them mention the offsite. Listing one as left out, with the reason, is fine.",
+        "In the final document, the venue booking action item links to https://trello.com/c/Ofs0002b/book-the-venue-for-the-offsite and the agenda action item links to https://trello.com/c/Ofs0003c/draft-the-offsite-agenda.",
+        "Zero create-trello-task.sh invocations occur."
+      ],
+      "follow_ups": [
+        "Context: we picked the riverside venue because it has a breakout room; I'm booking it by Monday, Oct 5. Lena is drafting the agenda by Wednesday, Oct 7. Both of us attended.",
+        "I created the venue card during the meeting, and Lena created the agenda card right after. Include both. Approve everything else as proposed.",
+        "Looks good. Approve the notes as proposed.",
+        "Yes, the action items are correct. Finalize it and give me the final document."
+      ]
     }
   ]
 }

@@ -1,0 +1,293 @@
+{
+  "cloud": {
+    "id": "a1b2c3d4-0000-4000-8000-000000000026",
+    "url": "https://example.atlassian.net",
+    "name": "example"
+  },
+  "timeZone": "America/Los_Angeles",
+  "projects": {
+    "REL": {
+      "key": "REL",
+      "id": "20001",
+      "name": "Release",
+      "issueTypes": [
+        "Task",
+        "Bug"
+      ]
+    }
+  },
+  "issues": {
+    "REL-106": {
+      "key": "REL-106",
+      "id": "10106",
+      "project": "REL",
+      "summary": "Prep the release readiness agenda",
+      "description": "",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [],
+      "assignee": {
+        "accountId": "acct-priya",
+        "displayName": "Priya Raman"
+      },
+      "reporter": {
+        "accountId": "acct-priya",
+        "displayName": "Priya Raman"
+      },
+      "creator": {
+        "accountId": "acct-priya",
+        "displayName": "Priya Raman"
+      },
+      "created": "2026-10-01T13:50:00-07:00",
+      "updated": "2026-10-01T13:50:00-07:00",
+      "resolution": null,
+      "duedate": null,
+      "comments": []
+    },
+    "REL-101": {
+      "key": "REL-101",
+      "id": "10101",
+      "project": "REL",
+      "summary": "Write the rollback checklist for 4.2",
+      "description": "",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [],
+      "assignee": {
+        "accountId": "acct-marcus",
+        "displayName": "Marcus Hall"
+      },
+      "reporter": {
+        "accountId": "acct-priya",
+        "displayName": "Priya Raman"
+      },
+      "creator": {
+        "accountId": "acct-priya",
+        "displayName": "Priya Raman"
+      },
+      "created": "2026-10-01T14:20:00-07:00",
+      "updated": "2026-10-01T14:20:00-07:00",
+      "resolution": null,
+      "duedate": null,
+      "comments": []
+    },
+    "REL-107": {
+      "key": "REL-107",
+      "id": "10107",
+      "project": "REL",
+      "summary": "Review the 4.2 release notes draft",
+      "description": "",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [],
+      "assignee": {
+        "accountId": "acct-dan",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "acct-omar",
+        "displayName": "Omar Haddad"
+      },
+      "creator": {
+        "accountId": "acct-omar",
+        "displayName": "Omar Haddad"
+      },
+      "created": "2026-10-01T14:25:00-07:00",
+      "updated": "2026-10-01T14:25:00-07:00",
+      "resolution": null,
+      "duedate": null,
+      "comments": []
+    },
+    "REL-102": {
+      "key": "REL-102",
+      "id": "10102",
+      "project": "REL",
+      "summary": "Bump Node to 22 in the CI image",
+      "description": "",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [],
+      "assignee": {
+        "accountId": "acct-marcus",
+        "displayName": "Marcus Hall"
+      },
+      "reporter": {
+        "accountId": "acct-marcus",
+        "displayName": "Marcus Hall"
+      },
+      "creator": {
+        "accountId": "acct-marcus",
+        "displayName": "Marcus Hall"
+      },
+      "created": "2026-10-01T14:31:00-07:00",
+      "updated": "2026-10-01T14:31:00-07:00",
+      "resolution": null,
+      "duedate": null,
+      "comments": []
+    },
+    "REL-108": {
+      "key": "REL-108",
+      "id": "10108",
+      "project": "REL",
+      "summary": "Update the billing dashboard filters",
+      "description": "",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [],
+      "assignee": {
+        "accountId": "acct-omar",
+        "displayName": "Omar Haddad"
+      },
+      "reporter": {
+        "accountId": "acct-omar",
+        "displayName": "Omar Haddad"
+      },
+      "creator": {
+        "accountId": "acct-omar",
+        "displayName": "Omar Haddad"
+      },
+      "created": "2026-10-01T14:40:00-07:00",
+      "updated": "2026-10-01T14:40:00-07:00",
+      "resolution": null,
+      "duedate": null,
+      "comments": []
+    },
+    "REL-104": {
+      "key": "REL-104",
+      "id": "10104",
+      "project": "REL",
+      "summary": "Renew the staging TLS certificate",
+      "description": "",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [],
+      "assignee": {
+        "accountId": "acct-marcus",
+        "displayName": "Marcus Hall"
+      },
+      "reporter": {
+        "accountId": "acct-marcus",
+        "displayName": "Marcus Hall"
+      },
+      "creator": {
+        "accountId": "acct-marcus",
+        "displayName": "Marcus Hall"
+      },
+      "created": "2026-10-01T14:52:00-07:00",
+      "updated": "2026-10-01T14:52:00-07:00",
+      "resolution": null,
+      "duedate": null,
+      "comments": []
+    },
+    "REL-103": {
+      "key": "REL-103",
+      "id": "10103",
+      "project": "REL",
+      "summary": "Define go/no-go criteria for 4.2",
+      "description": "",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [],
+      "assignee": null,
+      "reporter": {
+        "accountId": "acct-priya",
+        "displayName": "Priya Raman"
+      },
+      "creator": {
+        "accountId": "acct-priya",
+        "displayName": "Priya Raman"
+      },
+      "created": "2026-10-01T14:55:00-07:00",
+      "updated": "2026-10-01T14:55:00-07:00",
+      "resolution": null,
+      "duedate": null,
+      "comments": []
+    },
+    "REL-105": {
+      "key": "REL-105",
+      "id": "10105",
+      "project": "REL",
+      "summary": "Fix the quarantined checkout tests",
+      "description": "",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [],
+      "assignee": {
+        "accountId": "acct-priya",
+        "displayName": "Priya Raman"
+      },
+      "reporter": {
+        "accountId": "acct-priya",
+        "displayName": "Priya Raman"
+      },
+      "creator": {
+        "accountId": "acct-priya",
+        "displayName": "Priya Raman"
+      },
+      "created": "2026-10-01T15:05:00-07:00",
+      "updated": "2026-10-01T15:05:00-07:00",
+      "resolution": null,
+      "duedate": null,
+      "comments": []
+    }
+  },
+  "users": [
+    {
+      "accountId": "acct-dan",
+      "displayName": "Dan Walker",
+      "emailAddress": "dan.walker@example.com"
+    },
+    {
+      "accountId": "acct-priya",
+      "displayName": "Priya Raman",
+      "emailAddress": "priya.raman@example.com"
+    },
+    {
+      "accountId": "acct-marcus",
+      "displayName": "Marcus Hall",
+      "emailAddress": "marcus.hall@example.com"
+    },
+    {
+      "accountId": "acct-omar",
+      "displayName": "Omar Haddad",
+      "emailAddress": "omar.haddad@example.com"
+    }
+  ],
+  "me": {
+    "accountId": "acct-dan",
+    "displayName": "Dan Walker"
+  },
+  "transitions": []
+}
