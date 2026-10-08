@@ -151,9 +151,24 @@ For each available source:
   timestamp (`thread_ts`); when a search hit is a reply, read its thread
   from that parent. A thread whose parent falls outside the window still
   counts when its replies fall inside it. Keep each reply with its own
-  thread: when proposing or quoting, group replies under the parent they
-  answer, and never merge two threads into one exchange, even when they
-  share a channel and their replies interleave in time.
+  thread, even when two threads share a channel and their replies
+  interleave in time:
+  - Present each thread as its own block: the parent message first, then
+    only the replies whose `thread_ts` is that parent's, in time order.
+    Never list replies from different threads in one sequence.
+  - A reply answers its own parent, not the message shown just before it.
+    Read a short reply ("yes", "same here") against its parent; when its
+    words would fit another thread better, it still belongs to its own.
+  - In the notes, a reply's content goes with its own thread's subject.
+    Never present it as a result of, or a comment on, another thread.
+  - A reply in the window that continues a thread started before it is a
+    follow-up, and its parent is the context that makes it readable.
+    Propose the parent with the reply, marked as posted before the
+    meeting (its time and author), never as chat from during it. Say
+    whether the follow-up relates to the meeting's content: one that does
+    belongs beside the discussion it continues; one that does not shows
+    what the attendee was attending to instead of the meeting, and is
+    kept like any other side conversation.
 
   For example, in Slack, for a meeting that actually ran 2:00 PM to 2:45 PM
   Pacific on Oct 1, 2026: search with `after` and `before` set to that
