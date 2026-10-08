@@ -1,0 +1,111 @@
+{
+  "me": {
+    "id": "U0DAN",
+    "name": "dan.walker",
+    "display_name": "dan.walker",
+    "real_name": "Dan Walker",
+    "email": "dan.walker@example.com",
+    "title": "Engineering Manager",
+    "timezone": "America/Los_Angeles",
+    "org": "example-co"
+  },
+  "search_unavailable": "search is not available for this workspace",
+  "users": {
+    "U0DAN": {
+      "id": "U0DAN",
+      "name": "dan.walker",
+      "display_name": "dan.walker",
+      "real_name": "Dan Walker",
+      "email": "dan.walker@example.com",
+      "title": "Engineering Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0LENA": {
+      "id": "U0LENA",
+      "name": "lena.fischer",
+      "display_name": "lena.fischer",
+      "real_name": "Lena Fischer",
+      "email": "lena.fischer@example.com",
+      "title": "",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0MARCUS": {
+      "id": "U0MARCUS",
+      "name": "marcus.hall",
+      "display_name": "marcus.hall",
+      "real_name": "Marcus Hall",
+      "email": "marcus.hall@example.com",
+      "title": "",
+      "timezone": "America/Los_Angeles"
+    }
+  },
+  "channels": {
+    "D0LENA": {
+      "id": "D0LENA",
+      "name": "lena.fischer",
+      "purpose": "",
+      "creator": "U0DAN",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "im"
+    },
+    "G0OPS": {
+      "id": "G0OPS",
+      "name": "mpdm-dan.walker--lena.fischer--marcus.hall-1",
+      "purpose": "Group messaging with: @dan.walker @lena.fischer @marcus.hall",
+      "creator": "U0DAN",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "C0ONCALL": {
+      "id": "C0ONCALL",
+      "name": "oncall",
+      "purpose": "On-call coordination",
+      "creator": "U0DAN",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "public_channel"
+    }
+  },
+  "messages": {
+    "D0LENA": [
+      {
+        "ts": "1791402000.000100",
+        "time": "2026-10-07 12:40:00 PDT",
+        "user": "U0LENA",
+        "text": "running 5 min late to the on-call review",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0OPS": [
+      {
+        "ts": "1791403920.000200",
+        "time": "2026-10-07 13:12:00 PDT",
+        "user": "U0MARCUS",
+        "text": "pager rotation sheet is out of date, I'll fix it after this",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791403980.000300",
+        "time": "2026-10-07 13:13:00 PDT",
+        "user": "U0LENA",
+        "text": "thanks, the swap for next week isn't in it either",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "C0ONCALL": [
+      {
+        "ts": "1791407100.000400",
+        "time": "2026-10-07 14:05:00 PDT",
+        "user": "U0MARCUS",
+        "text": "rotation sheet updated",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ]
+  }
+}

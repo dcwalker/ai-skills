@@ -1,0 +1,138 @@
+{
+  "calendar": {
+    "id": "dan.walker@example.com",
+    "summary": "Dan Walker",
+    "timeZone": "America/Los_Angeles"
+  },
+  "updated": "2026-10-08T22:00:00Z",
+  "events": [
+    {
+      "conferenceData": {},
+      "created": "2026-09-20T17:00:00Z",
+      "creator": {
+        "email": "priya.raman@example.com"
+      },
+      "description": "Agenda:\n1. Q4 milestone dates\n2. Staffing for the reporting project",
+      "end": {
+        "dateTime": "2026-10-08T14:30:00-07:00",
+        "timeZone": "America/Los_Angeles"
+      },
+      "eventType": "DEFAULT",
+      "htmlLink": "https://www.google.com/calendar/event?eid=evt-roadmap-1008",
+      "id": "evt-roadmap-1008",
+      "location": "Zoom",
+      "organizer": {
+        "email": "priya.raman@example.com"
+      },
+      "start": {
+        "dateTime": "2026-10-08T14:00:00-07:00",
+        "timeZone": "America/Los_Angeles"
+      },
+      "status": "confirmed",
+      "summary": "Roadmap Sync",
+      "updated": "2026-09-20T17:00:00Z",
+      "useDefaultReminders": true,
+      "attendees": [
+        {
+          "email": "priya.raman@example.com",
+          "displayName": "Priya Raman",
+          "responseStatus": "accepted",
+          "organizer": true
+        },
+        {
+          "email": "dan.walker@example.com",
+          "displayName": "Dan Walker",
+          "responseStatus": "accepted",
+          "self": true
+        },
+        {
+          "email": "marcus.hall@example.com",
+          "displayName": "Marcus Hall",
+          "responseStatus": "tentative"
+        }
+      ]
+    },
+    {
+      "conferenceData": {},
+      "created": "2026-09-20T17:00:00Z",
+      "creator": {
+        "email": "priya.raman@example.com"
+      },
+      "description": "Agenda:\n1. Hiring plan review",
+      "end": {
+        "dateTime": "2026-10-01T14:30:00-07:00",
+        "timeZone": "America/Los_Angeles"
+      },
+      "eventType": "DEFAULT",
+      "htmlLink": "https://www.google.com/calendar/event?eid=evt-roadmap-1001",
+      "id": "evt-roadmap-1001",
+      "location": "Zoom",
+      "organizer": {
+        "email": "priya.raman@example.com"
+      },
+      "start": {
+        "dateTime": "2026-10-01T14:00:00-07:00",
+        "timeZone": "America/Los_Angeles"
+      },
+      "status": "confirmed",
+      "summary": "Roadmap Sync",
+      "updated": "2026-09-20T17:00:00Z",
+      "useDefaultReminders": true,
+      "attendees": [
+        {
+          "email": "priya.raman@example.com",
+          "displayName": "Priya Raman",
+          "responseStatus": "accepted",
+          "organizer": true
+        },
+        {
+          "email": "dan.walker@example.com",
+          "displayName": "Dan Walker",
+          "responseStatus": "accepted",
+          "self": true
+        }
+      ]
+    },
+    {
+      "conferenceData": {},
+      "created": "2026-09-20T17:00:00Z",
+      "creator": {
+        "email": "priya.raman@example.com"
+      },
+      "description": "",
+      "end": {
+        "dateTime": "2026-10-08T11:30:00-07:00",
+        "timeZone": "America/Los_Angeles"
+      },
+      "eventType": "DEFAULT",
+      "htmlLink": "https://www.google.com/calendar/event?eid=evt-sam-1008",
+      "id": "evt-sam-1008",
+      "location": "Zoom",
+      "organizer": {
+        "email": "priya.raman@example.com"
+      },
+      "start": {
+        "dateTime": "2026-10-08T11:00:00-07:00",
+        "timeZone": "America/Los_Angeles"
+      },
+      "status": "confirmed",
+      "summary": "1:1 with Sam",
+      "updated": "2026-09-20T17:00:00Z",
+      "useDefaultReminders": true,
+      "attendees": [
+        {
+          "email": "sam.ortiz@example.com",
+          "displayName": "Sam Ortiz",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "dan.walker@example.com",
+          "displayName": "Dan Walker",
+          "responseStatus": "accepted",
+          "organizer": true,
+          "self": true
+        }
+      ]
+    }
+  ]
+}

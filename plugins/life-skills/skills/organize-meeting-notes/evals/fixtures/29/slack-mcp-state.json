@@ -1,0 +1,5062 @@
+{
+  "me": {
+    "id": "U0DAN",
+    "name": "dan.walker",
+    "display_name": "dan.walker",
+    "real_name": "Dan Walker",
+    "email": "dan.walker@example.com",
+    "title": "Engineering Manager",
+    "timezone": "America/Los_Angeles",
+    "org": "example-co"
+  },
+  "users": {
+    "U0DAN": {
+      "id": "U0DAN",
+      "name": "dan.walker",
+      "display_name": "dan.walker",
+      "real_name": "Dan Walker",
+      "email": "dan.walker@example.com",
+      "title": "Engineering Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0SAM": {
+      "id": "U0SAM",
+      "name": "sam.ortiz",
+      "display_name": "sam.ortiz",
+      "real_name": "Sam Ortiz",
+      "email": "sam.ortiz@example.com",
+      "title": "Senior Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X000": {
+      "id": "U0X000",
+      "name": "alex.adams",
+      "display_name": "alex.adams",
+      "real_name": "Alex Adams",
+      "email": "alex.adams@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X001": {
+      "id": "U0X001",
+      "name": "alex.brooks",
+      "display_name": "alex.brooks",
+      "real_name": "Alex Brooks",
+      "email": "alex.brooks@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X002": {
+      "id": "U0X002",
+      "name": "alex.chen",
+      "display_name": "alex.chen",
+      "real_name": "Alex Chen",
+      "email": "alex.chen@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X003": {
+      "id": "U0X003",
+      "name": "alex.diaz",
+      "display_name": "alex.diaz",
+      "real_name": "Alex Diaz",
+      "email": "alex.diaz@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X004": {
+      "id": "U0X004",
+      "name": "alex.evans",
+      "display_name": "alex.evans",
+      "real_name": "Alex Evans",
+      "email": "alex.evans@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X005": {
+      "id": "U0X005",
+      "name": "alex.foster",
+      "display_name": "alex.foster",
+      "real_name": "Alex Foster",
+      "email": "alex.foster@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X006": {
+      "id": "U0X006",
+      "name": "alex.garcia",
+      "display_name": "alex.garcia",
+      "real_name": "Alex Garcia",
+      "email": "alex.garcia@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X007": {
+      "id": "U0X007",
+      "name": "alex.hughes",
+      "display_name": "alex.hughes",
+      "real_name": "Alex Hughes",
+      "email": "alex.hughes@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X008": {
+      "id": "U0X008",
+      "name": "alex.ito",
+      "display_name": "alex.ito",
+      "real_name": "Alex Ito",
+      "email": "alex.ito@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X009": {
+      "id": "U0X009",
+      "name": "alex.jones",
+      "display_name": "alex.jones",
+      "real_name": "Alex Jones",
+      "email": "alex.jones@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X010": {
+      "id": "U0X010",
+      "name": "blair.adams",
+      "display_name": "blair.adams",
+      "real_name": "Blair Adams",
+      "email": "blair.adams@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X011": {
+      "id": "U0X011",
+      "name": "blair.brooks",
+      "display_name": "blair.brooks",
+      "real_name": "Blair Brooks",
+      "email": "blair.brooks@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X012": {
+      "id": "U0X012",
+      "name": "blair.chen",
+      "display_name": "blair.chen",
+      "real_name": "Blair Chen",
+      "email": "blair.chen@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X013": {
+      "id": "U0X013",
+      "name": "blair.diaz",
+      "display_name": "blair.diaz",
+      "real_name": "Blair Diaz",
+      "email": "blair.diaz@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X014": {
+      "id": "U0X014",
+      "name": "blair.evans",
+      "display_name": "blair.evans",
+      "real_name": "Blair Evans",
+      "email": "blair.evans@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X015": {
+      "id": "U0X015",
+      "name": "blair.foster",
+      "display_name": "blair.foster",
+      "real_name": "Blair Foster",
+      "email": "blair.foster@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X016": {
+      "id": "U0X016",
+      "name": "blair.garcia",
+      "display_name": "blair.garcia",
+      "real_name": "Blair Garcia",
+      "email": "blair.garcia@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X017": {
+      "id": "U0X017",
+      "name": "blair.hughes",
+      "display_name": "blair.hughes",
+      "real_name": "Blair Hughes",
+      "email": "blair.hughes@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X018": {
+      "id": "U0X018",
+      "name": "blair.ito",
+      "display_name": "blair.ito",
+      "real_name": "Blair Ito",
+      "email": "blair.ito@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X019": {
+      "id": "U0X019",
+      "name": "blair.jones",
+      "display_name": "blair.jones",
+      "real_name": "Blair Jones",
+      "email": "blair.jones@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X020": {
+      "id": "U0X020",
+      "name": "casey.adams",
+      "display_name": "casey.adams",
+      "real_name": "Casey Adams",
+      "email": "casey.adams@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X021": {
+      "id": "U0X021",
+      "name": "casey.brooks",
+      "display_name": "casey.brooks",
+      "real_name": "Casey Brooks",
+      "email": "casey.brooks@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X022": {
+      "id": "U0X022",
+      "name": "casey.chen",
+      "display_name": "casey.chen",
+      "real_name": "Casey Chen",
+      "email": "casey.chen@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X023": {
+      "id": "U0X023",
+      "name": "casey.diaz",
+      "display_name": "casey.diaz",
+      "real_name": "Casey Diaz",
+      "email": "casey.diaz@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X024": {
+      "id": "U0X024",
+      "name": "casey.evans",
+      "display_name": "casey.evans",
+      "real_name": "Casey Evans",
+      "email": "casey.evans@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X025": {
+      "id": "U0X025",
+      "name": "casey.foster",
+      "display_name": "casey.foster",
+      "real_name": "Casey Foster",
+      "email": "casey.foster@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X026": {
+      "id": "U0X026",
+      "name": "casey.garcia",
+      "display_name": "casey.garcia",
+      "real_name": "Casey Garcia",
+      "email": "casey.garcia@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X027": {
+      "id": "U0X027",
+      "name": "casey.hughes",
+      "display_name": "casey.hughes",
+      "real_name": "Casey Hughes",
+      "email": "casey.hughes@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X028": {
+      "id": "U0X028",
+      "name": "casey.ito",
+      "display_name": "casey.ito",
+      "real_name": "Casey Ito",
+      "email": "casey.ito@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X029": {
+      "id": "U0X029",
+      "name": "casey.jones",
+      "display_name": "casey.jones",
+      "real_name": "Casey Jones",
+      "email": "casey.jones@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X030": {
+      "id": "U0X030",
+      "name": "devon.adams",
+      "display_name": "devon.adams",
+      "real_name": "Devon Adams",
+      "email": "devon.adams@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X031": {
+      "id": "U0X031",
+      "name": "devon.brooks",
+      "display_name": "devon.brooks",
+      "real_name": "Devon Brooks",
+      "email": "devon.brooks@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X032": {
+      "id": "U0X032",
+      "name": "devon.chen",
+      "display_name": "devon.chen",
+      "real_name": "Devon Chen",
+      "email": "devon.chen@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X033": {
+      "id": "U0X033",
+      "name": "devon.diaz",
+      "display_name": "devon.diaz",
+      "real_name": "Devon Diaz",
+      "email": "devon.diaz@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X034": {
+      "id": "U0X034",
+      "name": "devon.evans",
+      "display_name": "devon.evans",
+      "real_name": "Devon Evans",
+      "email": "devon.evans@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X035": {
+      "id": "U0X035",
+      "name": "devon.foster",
+      "display_name": "devon.foster",
+      "real_name": "Devon Foster",
+      "email": "devon.foster@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X036": {
+      "id": "U0X036",
+      "name": "devon.garcia",
+      "display_name": "devon.garcia",
+      "real_name": "Devon Garcia",
+      "email": "devon.garcia@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X037": {
+      "id": "U0X037",
+      "name": "devon.hughes",
+      "display_name": "devon.hughes",
+      "real_name": "Devon Hughes",
+      "email": "devon.hughes@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X038": {
+      "id": "U0X038",
+      "name": "devon.ito",
+      "display_name": "devon.ito",
+      "real_name": "Devon Ito",
+      "email": "devon.ito@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0X039": {
+      "id": "U0X039",
+      "name": "devon.jones",
+      "display_name": "devon.jones",
+      "real_name": "Devon Jones",
+      "email": "devon.jones@example.com",
+      "title": "Engineer",
+      "timezone": "America/Los_Angeles"
+    }
+  },
+  "channels": {
+    "D0SAM": {
+      "id": "D0SAM",
+      "name": "sam.ortiz",
+      "purpose": "",
+      "creator": "U0SAM",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "im"
+    },
+    "C0GENERAL": {
+      "id": "C0GENERAL",
+      "name": "general",
+      "purpose": "Company-wide",
+      "creator": "U0DAN",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "public_channel"
+    },
+    "G0M000": {
+      "id": "G0M000",
+      "name": "mpdm-dan.walker--casey.diaz--casey.adams-1",
+      "purpose": "Group messaging with: @dan.walker @casey.diaz @casey.adams",
+      "creator": "U0X023",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M001": {
+      "id": "G0M001",
+      "name": "mpdm-dan.walker--casey.foster--blair.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @casey.foster @blair.diaz",
+      "creator": "U0X025",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M002": {
+      "id": "G0M002",
+      "name": "mpdm-dan.walker--alex.garcia--casey.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @alex.garcia @casey.brooks",
+      "creator": "U0X006",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M003": {
+      "id": "G0M003",
+      "name": "mpdm-dan.walker--alex.chen--alex.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @alex.chen @alex.brooks",
+      "creator": "U0X002",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M004": {
+      "id": "G0M004",
+      "name": "mpdm-dan.walker--blair.adams--casey.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @blair.adams @casey.garcia",
+      "creator": "U0X010",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M005": {
+      "id": "G0M005",
+      "name": "mpdm-dan.walker--casey.adams--alex.foster-1",
+      "purpose": "Group messaging with: @dan.walker @casey.adams @alex.foster",
+      "creator": "U0X020",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M006": {
+      "id": "G0M006",
+      "name": "mpdm-dan.walker--blair.garcia--casey.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @blair.garcia @casey.brooks",
+      "creator": "U0X016",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M007": {
+      "id": "G0M007",
+      "name": "mpdm-dan.walker--casey.chen--blair.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @casey.chen @blair.hughes",
+      "creator": "U0X022",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M008": {
+      "id": "G0M008",
+      "name": "mpdm-dan.walker--alex.ito--devon.chen-1",
+      "purpose": "Group messaging with: @dan.walker @alex.ito @devon.chen",
+      "creator": "U0X008",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M009": {
+      "id": "G0M009",
+      "name": "mpdm-dan.walker--alex.adams--devon.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @alex.adams @devon.garcia",
+      "creator": "U0X000",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M010": {
+      "id": "G0M010",
+      "name": "mpdm-dan.walker--devon.adams--devon.evans-1",
+      "purpose": "Group messaging with: @dan.walker @devon.adams @devon.evans",
+      "creator": "U0X030",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M011": {
+      "id": "G0M011",
+      "name": "mpdm-dan.walker--devon.adams--casey.ito-1",
+      "purpose": "Group messaging with: @dan.walker @devon.adams @casey.ito",
+      "creator": "U0X030",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M012": {
+      "id": "G0M012",
+      "name": "mpdm-dan.walker--casey.adams--blair.foster-1",
+      "purpose": "Group messaging with: @dan.walker @casey.adams @blair.foster",
+      "creator": "U0X020",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M013": {
+      "id": "G0M013",
+      "name": "mpdm-dan.walker--casey.chen--devon.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @casey.chen @devon.diaz",
+      "creator": "U0X022",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M014": {
+      "id": "G0M014",
+      "name": "mpdm-dan.walker--devon.chen--casey.adams-1",
+      "purpose": "Group messaging with: @dan.walker @devon.chen @casey.adams",
+      "creator": "U0X032",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M015": {
+      "id": "G0M015",
+      "name": "mpdm-dan.walker--alex.brooks--blair.adams-1",
+      "purpose": "Group messaging with: @dan.walker @alex.brooks @blair.adams",
+      "creator": "U0X001",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M016": {
+      "id": "G0M016",
+      "name": "mpdm-dan.walker--alex.diaz--alex.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @alex.diaz @alex.hughes",
+      "creator": "U0X003",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M017": {
+      "id": "G0M017",
+      "name": "mpdm-dan.walker--casey.ito--devon.chen-1",
+      "purpose": "Group messaging with: @dan.walker @casey.ito @devon.chen",
+      "creator": "U0X028",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M018": {
+      "id": "G0M018",
+      "name": "mpdm-dan.walker--blair.diaz--casey.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @blair.diaz @casey.diaz",
+      "creator": "U0X013",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M019": {
+      "id": "G0M019",
+      "name": "mpdm-dan.walker--alex.evans--alex.ito-1",
+      "purpose": "Group messaging with: @dan.walker @alex.evans @alex.ito",
+      "creator": "U0X004",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M020": {
+      "id": "G0M020",
+      "name": "mpdm-dan.walker--devon.hughes--alex.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @devon.hughes @alex.hughes",
+      "creator": "U0X037",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M021": {
+      "id": "G0M021",
+      "name": "mpdm-dan.walker--devon.foster--blair.jones-1",
+      "purpose": "Group messaging with: @dan.walker @devon.foster @blair.jones",
+      "creator": "U0X035",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M022": {
+      "id": "G0M022",
+      "name": "mpdm-dan.walker--devon.garcia--blair.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @devon.garcia @blair.garcia",
+      "creator": "U0X036",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M023": {
+      "id": "G0M023",
+      "name": "mpdm-dan.walker--blair.garcia--blair.chen-1",
+      "purpose": "Group messaging with: @dan.walker @blair.garcia @blair.chen",
+      "creator": "U0X016",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M024": {
+      "id": "G0M024",
+      "name": "mpdm-dan.walker--casey.hughes--casey.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @casey.hughes @casey.garcia",
+      "creator": "U0X027",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M025": {
+      "id": "G0M025",
+      "name": "mpdm-dan.walker--devon.ito--alex.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @devon.ito @alex.diaz",
+      "creator": "U0X038",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M026": {
+      "id": "G0M026",
+      "name": "mpdm-dan.walker--blair.hughes--devon.chen-1",
+      "purpose": "Group messaging with: @dan.walker @blair.hughes @devon.chen",
+      "creator": "U0X017",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M027": {
+      "id": "G0M027",
+      "name": "mpdm-dan.walker--casey.chen--devon.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @casey.chen @devon.hughes",
+      "creator": "U0X022",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M028": {
+      "id": "G0M028",
+      "name": "mpdm-dan.walker--casey.hughes--casey.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @casey.hughes @casey.garcia",
+      "creator": "U0X027",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M029": {
+      "id": "G0M029",
+      "name": "mpdm-dan.walker--alex.foster--devon.ito-1",
+      "purpose": "Group messaging with: @dan.walker @alex.foster @devon.ito",
+      "creator": "U0X005",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M030": {
+      "id": "G0M030",
+      "name": "mpdm-dan.walker--devon.hughes--blair.chen-1",
+      "purpose": "Group messaging with: @dan.walker @devon.hughes @blair.chen",
+      "creator": "U0X037",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M031": {
+      "id": "G0M031",
+      "name": "mpdm-dan.walker--casey.jones--casey.adams-1",
+      "purpose": "Group messaging with: @dan.walker @casey.jones @casey.adams",
+      "creator": "U0X029",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M032": {
+      "id": "G0M032",
+      "name": "mpdm-dan.walker--blair.evans--alex.chen-1",
+      "purpose": "Group messaging with: @dan.walker @blair.evans @alex.chen",
+      "creator": "U0X014",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M033": {
+      "id": "G0M033",
+      "name": "mpdm-dan.walker--devon.garcia--blair.jones-1",
+      "purpose": "Group messaging with: @dan.walker @devon.garcia @blair.jones",
+      "creator": "U0X036",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M034": {
+      "id": "G0M034",
+      "name": "mpdm-dan.walker--alex.ito--blair.evans-1",
+      "purpose": "Group messaging with: @dan.walker @alex.ito @blair.evans",
+      "creator": "U0X008",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M035": {
+      "id": "G0M035",
+      "name": "mpdm-dan.walker--devon.hughes--blair.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @devon.hughes @blair.brooks",
+      "creator": "U0X037",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M036": {
+      "id": "G0M036",
+      "name": "mpdm-dan.walker--blair.ito--casey.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @blair.ito @casey.hughes",
+      "creator": "U0X018",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M037": {
+      "id": "G0M037",
+      "name": "mpdm-dan.walker--alex.brooks--devon.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @alex.brooks @devon.brooks",
+      "creator": "U0X001",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M038": {
+      "id": "G0M038",
+      "name": "mpdm-dan.walker--alex.ito--blair.adams-1",
+      "purpose": "Group messaging with: @dan.walker @alex.ito @blair.adams",
+      "creator": "U0X008",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M039": {
+      "id": "G0M039",
+      "name": "mpdm-dan.walker--alex.evans--alex.adams-1",
+      "purpose": "Group messaging with: @dan.walker @alex.evans @alex.adams",
+      "creator": "U0X004",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M040": {
+      "id": "G0M040",
+      "name": "mpdm-dan.walker--casey.jones--blair.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @casey.jones @blair.hughes",
+      "creator": "U0X029",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M041": {
+      "id": "G0M041",
+      "name": "mpdm-dan.walker--alex.adams--blair.adams-1",
+      "purpose": "Group messaging with: @dan.walker @alex.adams @blair.adams",
+      "creator": "U0X000",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M042": {
+      "id": "G0M042",
+      "name": "mpdm-dan.walker--alex.diaz--casey.chen-1",
+      "purpose": "Group messaging with: @dan.walker @alex.diaz @casey.chen",
+      "creator": "U0X003",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M043": {
+      "id": "G0M043",
+      "name": "mpdm-dan.walker--blair.brooks--alex.evans-1",
+      "purpose": "Group messaging with: @dan.walker @blair.brooks @alex.evans",
+      "creator": "U0X011",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M044": {
+      "id": "G0M044",
+      "name": "mpdm-dan.walker--devon.chen--blair.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @devon.chen @blair.hughes",
+      "creator": "U0X032",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M045": {
+      "id": "G0M045",
+      "name": "mpdm-dan.walker--blair.diaz--alex.ito-1",
+      "purpose": "Group messaging with: @dan.walker @blair.diaz @alex.ito",
+      "creator": "U0X013",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M046": {
+      "id": "G0M046",
+      "name": "mpdm-dan.walker--blair.brooks--alex.adams-1",
+      "purpose": "Group messaging with: @dan.walker @blair.brooks @alex.adams",
+      "creator": "U0X011",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M047": {
+      "id": "G0M047",
+      "name": "mpdm-dan.walker--alex.hughes--blair.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @alex.hughes @blair.diaz",
+      "creator": "U0X007",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M048": {
+      "id": "G0M048",
+      "name": "mpdm-dan.walker--casey.brooks--blair.ito-1",
+      "purpose": "Group messaging with: @dan.walker @casey.brooks @blair.ito",
+      "creator": "U0X021",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M049": {
+      "id": "G0M049",
+      "name": "mpdm-dan.walker--alex.foster--devon.foster-1",
+      "purpose": "Group messaging with: @dan.walker @alex.foster @devon.foster",
+      "creator": "U0X005",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M050": {
+      "id": "G0M050",
+      "name": "mpdm-dan.walker--casey.adams--blair.ito-1",
+      "purpose": "Group messaging with: @dan.walker @casey.adams @blair.ito",
+      "creator": "U0X020",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M051": {
+      "id": "G0M051",
+      "name": "mpdm-dan.walker--alex.foster--blair.evans-1",
+      "purpose": "Group messaging with: @dan.walker @alex.foster @blair.evans",
+      "creator": "U0X005",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M052": {
+      "id": "G0M052",
+      "name": "mpdm-dan.walker--devon.jones--devon.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @devon.jones @devon.hughes",
+      "creator": "U0X039",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M053": {
+      "id": "G0M053",
+      "name": "mpdm-dan.walker--blair.adams--casey.ito-1",
+      "purpose": "Group messaging with: @dan.walker @blair.adams @casey.ito",
+      "creator": "U0X010",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M054": {
+      "id": "G0M054",
+      "name": "mpdm-dan.walker--blair.jones--blair.adams-1",
+      "purpose": "Group messaging with: @dan.walker @blair.jones @blair.adams",
+      "creator": "U0X019",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M055": {
+      "id": "G0M055",
+      "name": "mpdm-dan.walker--casey.brooks--alex.ito-1",
+      "purpose": "Group messaging with: @dan.walker @casey.brooks @alex.ito",
+      "creator": "U0X021",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M056": {
+      "id": "G0M056",
+      "name": "mpdm-dan.walker--alex.chen--alex.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @alex.chen @alex.garcia",
+      "creator": "U0X002",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M057": {
+      "id": "G0M057",
+      "name": "mpdm-dan.walker--devon.chen--devon.adams-1",
+      "purpose": "Group messaging with: @dan.walker @devon.chen @devon.adams",
+      "creator": "U0X032",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M058": {
+      "id": "G0M058",
+      "name": "mpdm-dan.walker--casey.brooks--casey.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @casey.brooks @casey.garcia",
+      "creator": "U0X021",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M059": {
+      "id": "G0M059",
+      "name": "mpdm-dan.walker--alex.ito--alex.chen-1",
+      "purpose": "Group messaging with: @dan.walker @alex.ito @alex.chen",
+      "creator": "U0X008",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M060": {
+      "id": "G0M060",
+      "name": "mpdm-dan.walker--blair.chen--alex.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @blair.chen @alex.brooks",
+      "creator": "U0X012",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M061": {
+      "id": "G0M061",
+      "name": "mpdm-dan.walker--casey.hughes--alex.foster-1",
+      "purpose": "Group messaging with: @dan.walker @casey.hughes @alex.foster",
+      "creator": "U0X027",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M062": {
+      "id": "G0M062",
+      "name": "mpdm-dan.walker--blair.ito--devon.foster-1",
+      "purpose": "Group messaging with: @dan.walker @blair.ito @devon.foster",
+      "creator": "U0X018",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M063": {
+      "id": "G0M063",
+      "name": "mpdm-dan.walker--devon.brooks--devon.evans-1",
+      "purpose": "Group messaging with: @dan.walker @devon.brooks @devon.evans",
+      "creator": "U0X031",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M064": {
+      "id": "G0M064",
+      "name": "mpdm-dan.walker--alex.adams--alex.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @alex.adams @alex.brooks",
+      "creator": "U0X000",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M065": {
+      "id": "G0M065",
+      "name": "mpdm-dan.walker--alex.foster--alex.jones-1",
+      "purpose": "Group messaging with: @dan.walker @alex.foster @alex.jones",
+      "creator": "U0X005",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M066": {
+      "id": "G0M066",
+      "name": "mpdm-dan.walker--devon.ito--blair.foster-1",
+      "purpose": "Group messaging with: @dan.walker @devon.ito @blair.foster",
+      "creator": "U0X038",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M067": {
+      "id": "G0M067",
+      "name": "mpdm-dan.walker--casey.hughes--devon.evans-1",
+      "purpose": "Group messaging with: @dan.walker @casey.hughes @devon.evans",
+      "creator": "U0X027",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M068": {
+      "id": "G0M068",
+      "name": "mpdm-dan.walker--blair.hughes--alex.jones-1",
+      "purpose": "Group messaging with: @dan.walker @blair.hughes @alex.jones",
+      "creator": "U0X017",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M069": {
+      "id": "G0M069",
+      "name": "mpdm-dan.walker--blair.ito--alex.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @blair.ito @alex.diaz",
+      "creator": "U0X018",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M070": {
+      "id": "G0M070",
+      "name": "mpdm-dan.walker--casey.diaz--blair.chen-1",
+      "purpose": "Group messaging with: @dan.walker @casey.diaz @blair.chen",
+      "creator": "U0X023",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M071": {
+      "id": "G0M071",
+      "name": "mpdm-dan.walker--blair.chen--devon.foster-1",
+      "purpose": "Group messaging with: @dan.walker @blair.chen @devon.foster",
+      "creator": "U0X012",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M072": {
+      "id": "G0M072",
+      "name": "mpdm-dan.walker--blair.garcia--casey.chen-1",
+      "purpose": "Group messaging with: @dan.walker @blair.garcia @casey.chen",
+      "creator": "U0X016",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M073": {
+      "id": "G0M073",
+      "name": "mpdm-dan.walker--casey.foster--casey.evans-1",
+      "purpose": "Group messaging with: @dan.walker @casey.foster @casey.evans",
+      "creator": "U0X025",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M074": {
+      "id": "G0M074",
+      "name": "mpdm-dan.walker--casey.ito--alex.ito-1",
+      "purpose": "Group messaging with: @dan.walker @casey.ito @alex.ito",
+      "creator": "U0X028",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M075": {
+      "id": "G0M075",
+      "name": "mpdm-dan.walker--alex.hughes--devon.chen-1",
+      "purpose": "Group messaging with: @dan.walker @alex.hughes @devon.chen",
+      "creator": "U0X007",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M076": {
+      "id": "G0M076",
+      "name": "mpdm-dan.walker--blair.ito--casey.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @blair.ito @casey.brooks",
+      "creator": "U0X018",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M077": {
+      "id": "G0M077",
+      "name": "mpdm-dan.walker--devon.foster--casey.jones-1",
+      "purpose": "Group messaging with: @dan.walker @devon.foster @casey.jones",
+      "creator": "U0X035",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M078": {
+      "id": "G0M078",
+      "name": "mpdm-dan.walker--alex.evans--alex.ito-1",
+      "purpose": "Group messaging with: @dan.walker @alex.evans @alex.ito",
+      "creator": "U0X004",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M079": {
+      "id": "G0M079",
+      "name": "mpdm-dan.walker--devon.brooks--casey.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @devon.brooks @casey.garcia",
+      "creator": "U0X031",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M080": {
+      "id": "G0M080",
+      "name": "mpdm-dan.walker--alex.garcia--blair.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @alex.garcia @blair.brooks",
+      "creator": "U0X006",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M081": {
+      "id": "G0M081",
+      "name": "mpdm-dan.walker--devon.brooks--blair.foster-1",
+      "purpose": "Group messaging with: @dan.walker @devon.brooks @blair.foster",
+      "creator": "U0X031",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M082": {
+      "id": "G0M082",
+      "name": "mpdm-dan.walker--blair.adams--alex.foster-1",
+      "purpose": "Group messaging with: @dan.walker @blair.adams @alex.foster",
+      "creator": "U0X010",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M083": {
+      "id": "G0M083",
+      "name": "mpdm-dan.walker--casey.brooks--devon.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @casey.brooks @devon.brooks",
+      "creator": "U0X021",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M084": {
+      "id": "G0M084",
+      "name": "mpdm-dan.walker--blair.ito--casey.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @blair.ito @casey.garcia",
+      "creator": "U0X018",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M085": {
+      "id": "G0M085",
+      "name": "mpdm-dan.walker--alex.ito--blair.chen-1",
+      "purpose": "Group messaging with: @dan.walker @alex.ito @blair.chen",
+      "creator": "U0X008",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M086": {
+      "id": "G0M086",
+      "name": "mpdm-dan.walker--devon.diaz--devon.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @devon.diaz @devon.hughes",
+      "creator": "U0X033",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M087": {
+      "id": "G0M087",
+      "name": "mpdm-dan.walker--devon.garcia--casey.ito-1",
+      "purpose": "Group messaging with: @dan.walker @devon.garcia @casey.ito",
+      "creator": "U0X036",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M088": {
+      "id": "G0M088",
+      "name": "mpdm-dan.walker--devon.chen--devon.jones-1",
+      "purpose": "Group messaging with: @dan.walker @devon.chen @devon.jones",
+      "creator": "U0X032",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M089": {
+      "id": "G0M089",
+      "name": "mpdm-dan.walker--blair.adams--devon.evans-1",
+      "purpose": "Group messaging with: @dan.walker @blair.adams @devon.evans",
+      "creator": "U0X010",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M090": {
+      "id": "G0M090",
+      "name": "mpdm-dan.walker--devon.foster--alex.foster-1",
+      "purpose": "Group messaging with: @dan.walker @devon.foster @alex.foster",
+      "creator": "U0X035",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M091": {
+      "id": "G0M091",
+      "name": "mpdm-dan.walker--alex.jones--blair.ito-1",
+      "purpose": "Group messaging with: @dan.walker @alex.jones @blair.ito",
+      "creator": "U0X009",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M092": {
+      "id": "G0M092",
+      "name": "mpdm-dan.walker--blair.garcia--devon.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @blair.garcia @devon.garcia",
+      "creator": "U0X016",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M093": {
+      "id": "G0M093",
+      "name": "mpdm-dan.walker--blair.evans--blair.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @blair.evans @blair.diaz",
+      "creator": "U0X014",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M094": {
+      "id": "G0M094",
+      "name": "mpdm-dan.walker--alex.ito--alex.jones-1",
+      "purpose": "Group messaging with: @dan.walker @alex.ito @alex.jones",
+      "creator": "U0X008",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M095": {
+      "id": "G0M095",
+      "name": "mpdm-dan.walker--blair.evans--blair.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @blair.evans @blair.garcia",
+      "creator": "U0X014",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M096": {
+      "id": "G0M096",
+      "name": "mpdm-dan.walker--casey.hughes--blair.jones-1",
+      "purpose": "Group messaging with: @dan.walker @casey.hughes @blair.jones",
+      "creator": "U0X027",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M097": {
+      "id": "G0M097",
+      "name": "mpdm-dan.walker--alex.jones--casey.foster-1",
+      "purpose": "Group messaging with: @dan.walker @alex.jones @casey.foster",
+      "creator": "U0X009",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M098": {
+      "id": "G0M098",
+      "name": "mpdm-dan.walker--casey.ito--devon.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @casey.ito @devon.diaz",
+      "creator": "U0X028",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M099": {
+      "id": "G0M099",
+      "name": "mpdm-dan.walker--blair.ito--alex.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @blair.ito @alex.garcia",
+      "creator": "U0X018",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M100": {
+      "id": "G0M100",
+      "name": "mpdm-dan.walker--casey.evans--blair.foster-1",
+      "purpose": "Group messaging with: @dan.walker @casey.evans @blair.foster",
+      "creator": "U0X024",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M101": {
+      "id": "G0M101",
+      "name": "mpdm-dan.walker--alex.adams--casey.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @alex.adams @casey.garcia",
+      "creator": "U0X000",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M102": {
+      "id": "G0M102",
+      "name": "mpdm-dan.walker--blair.evans--casey.chen-1",
+      "purpose": "Group messaging with: @dan.walker @blair.evans @casey.chen",
+      "creator": "U0X014",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M103": {
+      "id": "G0M103",
+      "name": "mpdm-dan.walker--casey.evans--alex.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @casey.evans @alex.diaz",
+      "creator": "U0X024",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M104": {
+      "id": "G0M104",
+      "name": "mpdm-dan.walker--alex.adams--blair.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @alex.adams @blair.garcia",
+      "creator": "U0X000",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M105": {
+      "id": "G0M105",
+      "name": "mpdm-dan.walker--blair.adams--casey.evans-1",
+      "purpose": "Group messaging with: @dan.walker @blair.adams @casey.evans",
+      "creator": "U0X010",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M106": {
+      "id": "G0M106",
+      "name": "mpdm-dan.walker--blair.hughes--blair.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @blair.hughes @blair.brooks",
+      "creator": "U0X017",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M107": {
+      "id": "G0M107",
+      "name": "mpdm-dan.walker--devon.brooks--devon.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @devon.brooks @devon.garcia",
+      "creator": "U0X031",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M108": {
+      "id": "G0M108",
+      "name": "mpdm-dan.walker--blair.chen--alex.foster-1",
+      "purpose": "Group messaging with: @dan.walker @blair.chen @alex.foster",
+      "creator": "U0X012",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M109": {
+      "id": "G0M109",
+      "name": "mpdm-dan.walker--casey.chen--alex.jones-1",
+      "purpose": "Group messaging with: @dan.walker @casey.chen @alex.jones",
+      "creator": "U0X022",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M110": {
+      "id": "G0M110",
+      "name": "mpdm-dan.walker--blair.diaz--casey.jones-1",
+      "purpose": "Group messaging with: @dan.walker @blair.diaz @casey.jones",
+      "creator": "U0X013",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M111": {
+      "id": "G0M111",
+      "name": "mpdm-dan.walker--devon.brooks--devon.chen-1",
+      "purpose": "Group messaging with: @dan.walker @devon.brooks @devon.chen",
+      "creator": "U0X031",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M112": {
+      "id": "G0M112",
+      "name": "mpdm-dan.walker--casey.adams--casey.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @casey.adams @casey.brooks",
+      "creator": "U0X020",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M113": {
+      "id": "G0M113",
+      "name": "mpdm-dan.walker--casey.evans--devon.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @casey.evans @devon.hughes",
+      "creator": "U0X024",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M114": {
+      "id": "G0M114",
+      "name": "mpdm-dan.walker--devon.diaz--alex.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @devon.diaz @alex.brooks",
+      "creator": "U0X033",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M115": {
+      "id": "G0M115",
+      "name": "mpdm-dan.walker--blair.diaz--blair.foster-1",
+      "purpose": "Group messaging with: @dan.walker @blair.diaz @blair.foster",
+      "creator": "U0X013",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M116": {
+      "id": "G0M116",
+      "name": "mpdm-dan.walker--devon.foster--blair.jones-1",
+      "purpose": "Group messaging with: @dan.walker @devon.foster @blair.jones",
+      "creator": "U0X035",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M117": {
+      "id": "G0M117",
+      "name": "mpdm-dan.walker--casey.hughes--devon.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @casey.hughes @devon.brooks",
+      "creator": "U0X027",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M118": {
+      "id": "G0M118",
+      "name": "mpdm-dan.walker--devon.adams--devon.foster-1",
+      "purpose": "Group messaging with: @dan.walker @devon.adams @devon.foster",
+      "creator": "U0X030",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M119": {
+      "id": "G0M119",
+      "name": "mpdm-dan.walker--casey.brooks--devon.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @casey.brooks @devon.garcia",
+      "creator": "U0X021",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M120": {
+      "id": "G0M120",
+      "name": "mpdm-dan.walker--devon.chen--blair.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @devon.chen @blair.hughes",
+      "creator": "U0X032",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M121": {
+      "id": "G0M121",
+      "name": "mpdm-dan.walker--casey.ito--blair.evans-1",
+      "purpose": "Group messaging with: @dan.walker @casey.ito @blair.evans",
+      "creator": "U0X028",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M122": {
+      "id": "G0M122",
+      "name": "mpdm-dan.walker--casey.brooks--devon.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @casey.brooks @devon.brooks",
+      "creator": "U0X021",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M123": {
+      "id": "G0M123",
+      "name": "mpdm-dan.walker--blair.ito--alex.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @blair.ito @alex.garcia",
+      "creator": "U0X018",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M124": {
+      "id": "G0M124",
+      "name": "mpdm-dan.walker--blair.diaz--blair.foster-1",
+      "purpose": "Group messaging with: @dan.walker @blair.diaz @blair.foster",
+      "creator": "U0X013",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M125": {
+      "id": "G0M125",
+      "name": "mpdm-dan.walker--casey.evans--alex.evans-1",
+      "purpose": "Group messaging with: @dan.walker @casey.evans @alex.evans",
+      "creator": "U0X024",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M126": {
+      "id": "G0M126",
+      "name": "mpdm-dan.walker--blair.evans--devon.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @blair.evans @devon.hughes",
+      "creator": "U0X014",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M127": {
+      "id": "G0M127",
+      "name": "mpdm-dan.walker--alex.ito--devon.chen-1",
+      "purpose": "Group messaging with: @dan.walker @alex.ito @devon.chen",
+      "creator": "U0X008",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M128": {
+      "id": "G0M128",
+      "name": "mpdm-dan.walker--casey.adams--alex.foster-1",
+      "purpose": "Group messaging with: @dan.walker @casey.adams @alex.foster",
+      "creator": "U0X020",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M129": {
+      "id": "G0M129",
+      "name": "mpdm-dan.walker--devon.hughes--devon.ito-1",
+      "purpose": "Group messaging with: @dan.walker @devon.hughes @devon.ito",
+      "creator": "U0X037",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M130": {
+      "id": "G0M130",
+      "name": "mpdm-dan.walker--blair.adams--casey.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @blair.adams @casey.garcia",
+      "creator": "U0X010",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M131": {
+      "id": "G0M131",
+      "name": "mpdm-dan.walker--casey.hughes--blair.adams-1",
+      "purpose": "Group messaging with: @dan.walker @casey.hughes @blair.adams",
+      "creator": "U0X027",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M132": {
+      "id": "G0M132",
+      "name": "mpdm-dan.walker--alex.evans--casey.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @alex.evans @casey.diaz",
+      "creator": "U0X004",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M133": {
+      "id": "G0M133",
+      "name": "mpdm-dan.walker--blair.garcia--blair.adams-1",
+      "purpose": "Group messaging with: @dan.walker @blair.garcia @blair.adams",
+      "creator": "U0X016",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M134": {
+      "id": "G0M134",
+      "name": "mpdm-dan.walker--blair.adams--blair.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @blair.adams @blair.diaz",
+      "creator": "U0X010",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M135": {
+      "id": "G0M135",
+      "name": "mpdm-dan.walker--devon.brooks--blair.jones-1",
+      "purpose": "Group messaging with: @dan.walker @devon.brooks @blair.jones",
+      "creator": "U0X031",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M136": {
+      "id": "G0M136",
+      "name": "mpdm-dan.walker--blair.garcia--blair.ito-1",
+      "purpose": "Group messaging with: @dan.walker @blair.garcia @blair.ito",
+      "creator": "U0X016",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M137": {
+      "id": "G0M137",
+      "name": "mpdm-dan.walker--casey.diaz--casey.foster-1",
+      "purpose": "Group messaging with: @dan.walker @casey.diaz @casey.foster",
+      "creator": "U0X023",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M138": {
+      "id": "G0M138",
+      "name": "mpdm-dan.walker--devon.garcia--casey.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @devon.garcia @casey.diaz",
+      "creator": "U0X036",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M139": {
+      "id": "G0M139",
+      "name": "mpdm-dan.walker--blair.foster--devon.chen-1",
+      "purpose": "Group messaging with: @dan.walker @blair.foster @devon.chen",
+      "creator": "U0X015",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M140": {
+      "id": "G0M140",
+      "name": "mpdm-dan.walker--devon.evans--alex.ito-1",
+      "purpose": "Group messaging with: @dan.walker @devon.evans @alex.ito",
+      "creator": "U0X034",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M141": {
+      "id": "G0M141",
+      "name": "mpdm-dan.walker--casey.diaz--blair.foster-1",
+      "purpose": "Group messaging with: @dan.walker @casey.diaz @blair.foster",
+      "creator": "U0X023",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M142": {
+      "id": "G0M142",
+      "name": "mpdm-dan.walker--alex.diaz--devon.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @alex.diaz @devon.hughes",
+      "creator": "U0X003",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M143": {
+      "id": "G0M143",
+      "name": "mpdm-dan.walker--blair.diaz--blair.foster-1",
+      "purpose": "Group messaging with: @dan.walker @blair.diaz @blair.foster",
+      "creator": "U0X013",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M144": {
+      "id": "G0M144",
+      "name": "mpdm-dan.walker--alex.garcia--devon.foster-1",
+      "purpose": "Group messaging with: @dan.walker @alex.garcia @devon.foster",
+      "creator": "U0X006",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M145": {
+      "id": "G0M145",
+      "name": "mpdm-dan.walker--devon.ito--alex.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @devon.ito @alex.garcia",
+      "creator": "U0X038",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M146": {
+      "id": "G0M146",
+      "name": "mpdm-dan.walker--alex.ito--blair.jones-1",
+      "purpose": "Group messaging with: @dan.walker @alex.ito @blair.jones",
+      "creator": "U0X008",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M147": {
+      "id": "G0M147",
+      "name": "mpdm-dan.walker--devon.adams--alex.chen-1",
+      "purpose": "Group messaging with: @dan.walker @devon.adams @alex.chen",
+      "creator": "U0X030",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M148": {
+      "id": "G0M148",
+      "name": "mpdm-dan.walker--alex.jones--alex.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @alex.jones @alex.brooks",
+      "creator": "U0X009",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M149": {
+      "id": "G0M149",
+      "name": "mpdm-dan.walker--casey.chen--blair.ito-1",
+      "purpose": "Group messaging with: @dan.walker @casey.chen @blair.ito",
+      "creator": "U0X022",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M150": {
+      "id": "G0M150",
+      "name": "mpdm-dan.walker--alex.chen--blair.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @alex.chen @blair.brooks",
+      "creator": "U0X002",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M151": {
+      "id": "G0M151",
+      "name": "mpdm-dan.walker--casey.chen--devon.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @casey.chen @devon.garcia",
+      "creator": "U0X022",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M152": {
+      "id": "G0M152",
+      "name": "mpdm-dan.walker--blair.hughes--alex.ito-1",
+      "purpose": "Group messaging with: @dan.walker @blair.hughes @alex.ito",
+      "creator": "U0X017",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M153": {
+      "id": "G0M153",
+      "name": "mpdm-dan.walker--blair.hughes--casey.ito-1",
+      "purpose": "Group messaging with: @dan.walker @blair.hughes @casey.ito",
+      "creator": "U0X017",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M154": {
+      "id": "G0M154",
+      "name": "mpdm-dan.walker--devon.ito--alex.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @devon.ito @alex.garcia",
+      "creator": "U0X038",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M155": {
+      "id": "G0M155",
+      "name": "mpdm-dan.walker--alex.chen--devon.foster-1",
+      "purpose": "Group messaging with: @dan.walker @alex.chen @devon.foster",
+      "creator": "U0X002",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M156": {
+      "id": "G0M156",
+      "name": "mpdm-dan.walker--casey.evans--devon.jones-1",
+      "purpose": "Group messaging with: @dan.walker @casey.evans @devon.jones",
+      "creator": "U0X024",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M157": {
+      "id": "G0M157",
+      "name": "mpdm-dan.walker--casey.hughes--blair.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @casey.hughes @blair.hughes",
+      "creator": "U0X027",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M158": {
+      "id": "G0M158",
+      "name": "mpdm-dan.walker--alex.diaz--casey.ito-1",
+      "purpose": "Group messaging with: @dan.walker @alex.diaz @casey.ito",
+      "creator": "U0X003",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M159": {
+      "id": "G0M159",
+      "name": "mpdm-dan.walker--devon.chen--alex.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @devon.chen @alex.garcia",
+      "creator": "U0X032",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M160": {
+      "id": "G0M160",
+      "name": "mpdm-dan.walker--devon.evans--casey.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @devon.evans @casey.diaz",
+      "creator": "U0X034",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M161": {
+      "id": "G0M161",
+      "name": "mpdm-dan.walker--devon.chen--devon.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @devon.chen @devon.brooks",
+      "creator": "U0X032",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M162": {
+      "id": "G0M162",
+      "name": "mpdm-dan.walker--blair.foster--blair.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @blair.foster @blair.brooks",
+      "creator": "U0X015",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M163": {
+      "id": "G0M163",
+      "name": "mpdm-dan.walker--blair.adams--devon.adams-1",
+      "purpose": "Group messaging with: @dan.walker @blair.adams @devon.adams",
+      "creator": "U0X010",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M164": {
+      "id": "G0M164",
+      "name": "mpdm-dan.walker--blair.garcia--blair.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @blair.garcia @blair.brooks",
+      "creator": "U0X016",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M165": {
+      "id": "G0M165",
+      "name": "mpdm-dan.walker--alex.chen--devon.chen-1",
+      "purpose": "Group messaging with: @dan.walker @alex.chen @devon.chen",
+      "creator": "U0X002",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M166": {
+      "id": "G0M166",
+      "name": "mpdm-dan.walker--blair.hughes--casey.ito-1",
+      "purpose": "Group messaging with: @dan.walker @blair.hughes @casey.ito",
+      "creator": "U0X017",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M167": {
+      "id": "G0M167",
+      "name": "mpdm-dan.walker--devon.jones--blair.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @devon.jones @blair.brooks",
+      "creator": "U0X039",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M168": {
+      "id": "G0M168",
+      "name": "mpdm-dan.walker--casey.jones--alex.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @casey.jones @alex.hughes",
+      "creator": "U0X029",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M169": {
+      "id": "G0M169",
+      "name": "mpdm-dan.walker--devon.diaz--devon.ito-1",
+      "purpose": "Group messaging with: @dan.walker @devon.diaz @devon.ito",
+      "creator": "U0X033",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M170": {
+      "id": "G0M170",
+      "name": "mpdm-dan.walker--blair.garcia--casey.chen-1",
+      "purpose": "Group messaging with: @dan.walker @blair.garcia @casey.chen",
+      "creator": "U0X016",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M171": {
+      "id": "G0M171",
+      "name": "mpdm-dan.walker--casey.foster--alex.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @casey.foster @alex.brooks",
+      "creator": "U0X025",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M172": {
+      "id": "G0M172",
+      "name": "mpdm-dan.walker--alex.hughes--devon.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @alex.hughes @devon.garcia",
+      "creator": "U0X007",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M173": {
+      "id": "G0M173",
+      "name": "mpdm-dan.walker--blair.diaz--devon.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @blair.diaz @devon.brooks",
+      "creator": "U0X013",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M174": {
+      "id": "G0M174",
+      "name": "mpdm-dan.walker--casey.hughes--casey.jones-1",
+      "purpose": "Group messaging with: @dan.walker @casey.hughes @casey.jones",
+      "creator": "U0X027",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M175": {
+      "id": "G0M175",
+      "name": "mpdm-dan.walker--casey.chen--alex.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @casey.chen @alex.hughes",
+      "creator": "U0X022",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M176": {
+      "id": "G0M176",
+      "name": "mpdm-dan.walker--devon.chen--blair.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @devon.chen @blair.brooks",
+      "creator": "U0X032",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M177": {
+      "id": "G0M177",
+      "name": "mpdm-dan.walker--devon.adams--alex.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @devon.adams @alex.hughes",
+      "creator": "U0X030",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M178": {
+      "id": "G0M178",
+      "name": "mpdm-dan.walker--devon.foster--casey.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @devon.foster @casey.diaz",
+      "creator": "U0X035",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M179": {
+      "id": "G0M179",
+      "name": "mpdm-dan.walker--devon.diaz--blair.ito-1",
+      "purpose": "Group messaging with: @dan.walker @devon.diaz @blair.ito",
+      "creator": "U0X033",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M180": {
+      "id": "G0M180",
+      "name": "mpdm-dan.walker--blair.foster--casey.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @blair.foster @casey.brooks",
+      "creator": "U0X015",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M181": {
+      "id": "G0M181",
+      "name": "mpdm-dan.walker--alex.brooks--alex.foster-1",
+      "purpose": "Group messaging with: @dan.walker @alex.brooks @alex.foster",
+      "creator": "U0X001",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M182": {
+      "id": "G0M182",
+      "name": "mpdm-dan.walker--devon.garcia--blair.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @devon.garcia @blair.garcia",
+      "creator": "U0X036",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M183": {
+      "id": "G0M183",
+      "name": "mpdm-dan.walker--alex.garcia--casey.evans-1",
+      "purpose": "Group messaging with: @dan.walker @alex.garcia @casey.evans",
+      "creator": "U0X006",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M184": {
+      "id": "G0M184",
+      "name": "mpdm-dan.walker--blair.evans--devon.evans-1",
+      "purpose": "Group messaging with: @dan.walker @blair.evans @devon.evans",
+      "creator": "U0X014",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M185": {
+      "id": "G0M185",
+      "name": "mpdm-dan.walker--casey.evans--blair.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @casey.evans @blair.garcia",
+      "creator": "U0X024",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M186": {
+      "id": "G0M186",
+      "name": "mpdm-dan.walker--alex.chen--casey.jones-1",
+      "purpose": "Group messaging with: @dan.walker @alex.chen @casey.jones",
+      "creator": "U0X002",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M187": {
+      "id": "G0M187",
+      "name": "mpdm-dan.walker--blair.diaz--devon.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @blair.diaz @devon.diaz",
+      "creator": "U0X013",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M188": {
+      "id": "G0M188",
+      "name": "mpdm-dan.walker--alex.ito--casey.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @alex.ito @casey.garcia",
+      "creator": "U0X008",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M189": {
+      "id": "G0M189",
+      "name": "mpdm-dan.walker--casey.adams--alex.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @casey.adams @alex.garcia",
+      "creator": "U0X020",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M190": {
+      "id": "G0M190",
+      "name": "mpdm-dan.walker--alex.ito--casey.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @alex.ito @casey.hughes",
+      "creator": "U0X008",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M191": {
+      "id": "G0M191",
+      "name": "mpdm-dan.walker--alex.hughes--blair.chen-1",
+      "purpose": "Group messaging with: @dan.walker @alex.hughes @blair.chen",
+      "creator": "U0X007",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M192": {
+      "id": "G0M192",
+      "name": "mpdm-dan.walker--alex.garcia--devon.jones-1",
+      "purpose": "Group messaging with: @dan.walker @alex.garcia @devon.jones",
+      "creator": "U0X006",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M193": {
+      "id": "G0M193",
+      "name": "mpdm-dan.walker--casey.foster--devon.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @casey.foster @devon.brooks",
+      "creator": "U0X025",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M194": {
+      "id": "G0M194",
+      "name": "mpdm-dan.walker--alex.evans--devon.jones-1",
+      "purpose": "Group messaging with: @dan.walker @alex.evans @devon.jones",
+      "creator": "U0X004",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M195": {
+      "id": "G0M195",
+      "name": "mpdm-dan.walker--casey.chen--alex.foster-1",
+      "purpose": "Group messaging with: @dan.walker @casey.chen @alex.foster",
+      "creator": "U0X022",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M196": {
+      "id": "G0M196",
+      "name": "mpdm-dan.walker--blair.jones--casey.chen-1",
+      "purpose": "Group messaging with: @dan.walker @blair.jones @casey.chen",
+      "creator": "U0X019",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M197": {
+      "id": "G0M197",
+      "name": "mpdm-dan.walker--alex.foster--blair.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @alex.foster @blair.hughes",
+      "creator": "U0X005",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M198": {
+      "id": "G0M198",
+      "name": "mpdm-dan.walker--devon.foster--blair.adams-1",
+      "purpose": "Group messaging with: @dan.walker @devon.foster @blair.adams",
+      "creator": "U0X035",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M199": {
+      "id": "G0M199",
+      "name": "mpdm-dan.walker--casey.chen--casey.adams-1",
+      "purpose": "Group messaging with: @dan.walker @casey.chen @casey.adams",
+      "creator": "U0X022",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M200": {
+      "id": "G0M200",
+      "name": "mpdm-dan.walker--alex.ito--casey.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @alex.ito @casey.brooks",
+      "creator": "U0X008",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M201": {
+      "id": "G0M201",
+      "name": "mpdm-dan.walker--blair.hughes--casey.adams-1",
+      "purpose": "Group messaging with: @dan.walker @blair.hughes @casey.adams",
+      "creator": "U0X017",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M202": {
+      "id": "G0M202",
+      "name": "mpdm-dan.walker--blair.chen--casey.jones-1",
+      "purpose": "Group messaging with: @dan.walker @blair.chen @casey.jones",
+      "creator": "U0X012",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M203": {
+      "id": "G0M203",
+      "name": "mpdm-dan.walker--casey.foster--blair.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @casey.foster @blair.diaz",
+      "creator": "U0X025",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M204": {
+      "id": "G0M204",
+      "name": "mpdm-dan.walker--devon.chen--alex.chen-1",
+      "purpose": "Group messaging with: @dan.walker @devon.chen @alex.chen",
+      "creator": "U0X032",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M205": {
+      "id": "G0M205",
+      "name": "mpdm-dan.walker--casey.chen--blair.jones-1",
+      "purpose": "Group messaging with: @dan.walker @casey.chen @blair.jones",
+      "creator": "U0X022",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M206": {
+      "id": "G0M206",
+      "name": "mpdm-dan.walker--alex.hughes--blair.adams-1",
+      "purpose": "Group messaging with: @dan.walker @alex.hughes @blair.adams",
+      "creator": "U0X007",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M207": {
+      "id": "G0M207",
+      "name": "mpdm-dan.walker--devon.garcia--devon.chen-1",
+      "purpose": "Group messaging with: @dan.walker @devon.garcia @devon.chen",
+      "creator": "U0X036",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M208": {
+      "id": "G0M208",
+      "name": "mpdm-dan.walker--devon.garcia--devon.adams-1",
+      "purpose": "Group messaging with: @dan.walker @devon.garcia @devon.adams",
+      "creator": "U0X036",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M209": {
+      "id": "G0M209",
+      "name": "mpdm-dan.walker--casey.jones--devon.evans-1",
+      "purpose": "Group messaging with: @dan.walker @casey.jones @devon.evans",
+      "creator": "U0X029",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M210": {
+      "id": "G0M210",
+      "name": "mpdm-dan.walker--alex.garcia--devon.chen-1",
+      "purpose": "Group messaging with: @dan.walker @alex.garcia @devon.chen",
+      "creator": "U0X006",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M211": {
+      "id": "G0M211",
+      "name": "mpdm-dan.walker--alex.hughes--blair.adams-1",
+      "purpose": "Group messaging with: @dan.walker @alex.hughes @blair.adams",
+      "creator": "U0X007",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M212": {
+      "id": "G0M212",
+      "name": "mpdm-dan.walker--alex.diaz--alex.foster-1",
+      "purpose": "Group messaging with: @dan.walker @alex.diaz @alex.foster",
+      "creator": "U0X003",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M213": {
+      "id": "G0M213",
+      "name": "mpdm-dan.walker--blair.ito--blair.evans-1",
+      "purpose": "Group messaging with: @dan.walker @blair.ito @blair.evans",
+      "creator": "U0X018",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M214": {
+      "id": "G0M214",
+      "name": "mpdm-dan.walker--devon.hughes--devon.foster-1",
+      "purpose": "Group messaging with: @dan.walker @devon.hughes @devon.foster",
+      "creator": "U0X037",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M215": {
+      "id": "G0M215",
+      "name": "mpdm-dan.walker--devon.ito--alex.chen-1",
+      "purpose": "Group messaging with: @dan.walker @devon.ito @alex.chen",
+      "creator": "U0X038",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M216": {
+      "id": "G0M216",
+      "name": "mpdm-dan.walker--alex.foster--blair.chen-1",
+      "purpose": "Group messaging with: @dan.walker @alex.foster @blair.chen",
+      "creator": "U0X005",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M217": {
+      "id": "G0M217",
+      "name": "mpdm-dan.walker--blair.ito--alex.jones-1",
+      "purpose": "Group messaging with: @dan.walker @blair.ito @alex.jones",
+      "creator": "U0X018",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M218": {
+      "id": "G0M218",
+      "name": "mpdm-dan.walker--blair.brooks--alex.ito-1",
+      "purpose": "Group messaging with: @dan.walker @blair.brooks @alex.ito",
+      "creator": "U0X011",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M219": {
+      "id": "G0M219",
+      "name": "mpdm-dan.walker--devon.foster--blair.foster-1",
+      "purpose": "Group messaging with: @dan.walker @devon.foster @blair.foster",
+      "creator": "U0X035",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M220": {
+      "id": "G0M220",
+      "name": "mpdm-dan.walker--casey.garcia--casey.adams-1",
+      "purpose": "Group messaging with: @dan.walker @casey.garcia @casey.adams",
+      "creator": "U0X026",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M221": {
+      "id": "G0M221",
+      "name": "mpdm-dan.walker--casey.hughes--casey.evans-1",
+      "purpose": "Group messaging with: @dan.walker @casey.hughes @casey.evans",
+      "creator": "U0X027",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M222": {
+      "id": "G0M222",
+      "name": "mpdm-dan.walker--alex.garcia--devon.chen-1",
+      "purpose": "Group messaging with: @dan.walker @alex.garcia @devon.chen",
+      "creator": "U0X006",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M223": {
+      "id": "G0M223",
+      "name": "mpdm-dan.walker--blair.diaz--alex.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @blair.diaz @alex.hughes",
+      "creator": "U0X013",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M224": {
+      "id": "G0M224",
+      "name": "mpdm-dan.walker--devon.evans--devon.adams-1",
+      "purpose": "Group messaging with: @dan.walker @devon.evans @devon.adams",
+      "creator": "U0X034",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M225": {
+      "id": "G0M225",
+      "name": "mpdm-dan.walker--casey.diaz--blair.evans-1",
+      "purpose": "Group messaging with: @dan.walker @casey.diaz @blair.evans",
+      "creator": "U0X023",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M226": {
+      "id": "G0M226",
+      "name": "mpdm-dan.walker--casey.hughes--devon.ito-1",
+      "purpose": "Group messaging with: @dan.walker @casey.hughes @devon.ito",
+      "creator": "U0X027",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M227": {
+      "id": "G0M227",
+      "name": "mpdm-dan.walker--alex.chen--blair.jones-1",
+      "purpose": "Group messaging with: @dan.walker @alex.chen @blair.jones",
+      "creator": "U0X002",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M228": {
+      "id": "G0M228",
+      "name": "mpdm-dan.walker--devon.garcia--casey.foster-1",
+      "purpose": "Group messaging with: @dan.walker @devon.garcia @casey.foster",
+      "creator": "U0X036",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M229": {
+      "id": "G0M229",
+      "name": "mpdm-dan.walker--casey.evans--blair.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @casey.evans @blair.garcia",
+      "creator": "U0X024",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M230": {
+      "id": "G0M230",
+      "name": "mpdm-dan.walker--casey.foster--devon.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @casey.foster @devon.diaz",
+      "creator": "U0X025",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M231": {
+      "id": "G0M231",
+      "name": "mpdm-dan.walker--devon.diaz--casey.foster-1",
+      "purpose": "Group messaging with: @dan.walker @devon.diaz @casey.foster",
+      "creator": "U0X033",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M232": {
+      "id": "G0M232",
+      "name": "mpdm-dan.walker--alex.evans--alex.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @alex.evans @alex.diaz",
+      "creator": "U0X004",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M233": {
+      "id": "G0M233",
+      "name": "mpdm-dan.walker--casey.jones--casey.adams-1",
+      "purpose": "Group messaging with: @dan.walker @casey.jones @casey.adams",
+      "creator": "U0X029",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M234": {
+      "id": "G0M234",
+      "name": "mpdm-dan.walker--blair.jones--alex.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @blair.jones @alex.diaz",
+      "creator": "U0X019",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M235": {
+      "id": "G0M235",
+      "name": "mpdm-dan.walker--blair.jones--blair.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @blair.jones @blair.brooks",
+      "creator": "U0X019",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M236": {
+      "id": "G0M236",
+      "name": "mpdm-dan.walker--blair.diaz--blair.foster-1",
+      "purpose": "Group messaging with: @dan.walker @blair.diaz @blair.foster",
+      "creator": "U0X013",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M237": {
+      "id": "G0M237",
+      "name": "mpdm-dan.walker--blair.diaz--blair.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @blair.diaz @blair.brooks",
+      "creator": "U0X013",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M238": {
+      "id": "G0M238",
+      "name": "mpdm-dan.walker--alex.garcia--blair.foster-1",
+      "purpose": "Group messaging with: @dan.walker @alex.garcia @blair.foster",
+      "creator": "U0X006",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M239": {
+      "id": "G0M239",
+      "name": "mpdm-dan.walker--devon.hughes--casey.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @devon.hughes @casey.garcia",
+      "creator": "U0X037",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M240": {
+      "id": "G0M240",
+      "name": "mpdm-dan.walker--blair.evans--blair.chen-1",
+      "purpose": "Group messaging with: @dan.walker @blair.evans @blair.chen",
+      "creator": "U0X014",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M241": {
+      "id": "G0M241",
+      "name": "mpdm-dan.walker--casey.hughes--casey.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @casey.hughes @casey.brooks",
+      "creator": "U0X027",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M242": {
+      "id": "G0M242",
+      "name": "mpdm-dan.walker--devon.jones--blair.foster-1",
+      "purpose": "Group messaging with: @dan.walker @devon.jones @blair.foster",
+      "creator": "U0X039",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M243": {
+      "id": "G0M243",
+      "name": "mpdm-dan.walker--devon.garcia--devon.foster-1",
+      "purpose": "Group messaging with: @dan.walker @devon.garcia @devon.foster",
+      "creator": "U0X036",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M244": {
+      "id": "G0M244",
+      "name": "mpdm-dan.walker--casey.jones--devon.ito-1",
+      "purpose": "Group messaging with: @dan.walker @casey.jones @devon.ito",
+      "creator": "U0X029",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M245": {
+      "id": "G0M245",
+      "name": "mpdm-dan.walker--devon.foster--alex.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @devon.foster @alex.brooks",
+      "creator": "U0X035",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M246": {
+      "id": "G0M246",
+      "name": "mpdm-dan.walker--blair.evans--devon.chen-1",
+      "purpose": "Group messaging with: @dan.walker @blair.evans @devon.chen",
+      "creator": "U0X014",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M247": {
+      "id": "G0M247",
+      "name": "mpdm-dan.walker--devon.evans--alex.adams-1",
+      "purpose": "Group messaging with: @dan.walker @devon.evans @alex.adams",
+      "creator": "U0X034",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M248": {
+      "id": "G0M248",
+      "name": "mpdm-dan.walker--alex.evans--alex.adams-1",
+      "purpose": "Group messaging with: @dan.walker @alex.evans @alex.adams",
+      "creator": "U0X004",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M249": {
+      "id": "G0M249",
+      "name": "mpdm-dan.walker--blair.hughes--blair.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @blair.hughes @blair.garcia",
+      "creator": "U0X017",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M250": {
+      "id": "G0M250",
+      "name": "mpdm-dan.walker--alex.diaz--alex.ito-1",
+      "purpose": "Group messaging with: @dan.walker @alex.diaz @alex.ito",
+      "creator": "U0X003",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M251": {
+      "id": "G0M251",
+      "name": "mpdm-dan.walker--devon.diaz--blair.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @devon.diaz @blair.hughes",
+      "creator": "U0X033",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M252": {
+      "id": "G0M252",
+      "name": "mpdm-dan.walker--alex.foster--blair.jones-1",
+      "purpose": "Group messaging with: @dan.walker @alex.foster @blair.jones",
+      "creator": "U0X005",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M253": {
+      "id": "G0M253",
+      "name": "mpdm-dan.walker--blair.chen--blair.ito-1",
+      "purpose": "Group messaging with: @dan.walker @blair.chen @blair.ito",
+      "creator": "U0X012",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M254": {
+      "id": "G0M254",
+      "name": "mpdm-dan.walker--alex.garcia--devon.chen-1",
+      "purpose": "Group messaging with: @dan.walker @alex.garcia @devon.chen",
+      "creator": "U0X006",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M255": {
+      "id": "G0M255",
+      "name": "mpdm-dan.walker--alex.ito--casey.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @alex.ito @casey.garcia",
+      "creator": "U0X008",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M256": {
+      "id": "G0M256",
+      "name": "mpdm-dan.walker--devon.evans--blair.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @devon.evans @blair.brooks",
+      "creator": "U0X034",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M257": {
+      "id": "G0M257",
+      "name": "mpdm-dan.walker--devon.garcia--devon.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @devon.garcia @devon.hughes",
+      "creator": "U0X036",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M258": {
+      "id": "G0M258",
+      "name": "mpdm-dan.walker--alex.brooks--alex.adams-1",
+      "purpose": "Group messaging with: @dan.walker @alex.brooks @alex.adams",
+      "creator": "U0X001",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M259": {
+      "id": "G0M259",
+      "name": "mpdm-dan.walker--casey.ito--casey.evans-1",
+      "purpose": "Group messaging with: @dan.walker @casey.ito @casey.evans",
+      "creator": "U0X028",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M260": {
+      "id": "G0M260",
+      "name": "mpdm-dan.walker--blair.jones--casey.jones-1",
+      "purpose": "Group messaging with: @dan.walker @blair.jones @casey.jones",
+      "creator": "U0X019",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M261": {
+      "id": "G0M261",
+      "name": "mpdm-dan.walker--devon.foster--casey.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @devon.foster @casey.garcia",
+      "creator": "U0X035",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M262": {
+      "id": "G0M262",
+      "name": "mpdm-dan.walker--alex.diaz--casey.evans-1",
+      "purpose": "Group messaging with: @dan.walker @alex.diaz @casey.evans",
+      "creator": "U0X003",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M263": {
+      "id": "G0M263",
+      "name": "mpdm-dan.walker--alex.evans--alex.chen-1",
+      "purpose": "Group messaging with: @dan.walker @alex.evans @alex.chen",
+      "creator": "U0X004",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M264": {
+      "id": "G0M264",
+      "name": "mpdm-dan.walker--alex.brooks--devon.adams-1",
+      "purpose": "Group messaging with: @dan.walker @alex.brooks @devon.adams",
+      "creator": "U0X001",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M265": {
+      "id": "G0M265",
+      "name": "mpdm-dan.walker--casey.evans--alex.chen-1",
+      "purpose": "Group messaging with: @dan.walker @casey.evans @alex.chen",
+      "creator": "U0X024",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M266": {
+      "id": "G0M266",
+      "name": "mpdm-dan.walker--blair.hughes--devon.jones-1",
+      "purpose": "Group messaging with: @dan.walker @blair.hughes @devon.jones",
+      "creator": "U0X017",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M267": {
+      "id": "G0M267",
+      "name": "mpdm-dan.walker--alex.jones--devon.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @alex.jones @devon.garcia",
+      "creator": "U0X009",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M268": {
+      "id": "G0M268",
+      "name": "mpdm-dan.walker--devon.ito--alex.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @devon.ito @alex.brooks",
+      "creator": "U0X038",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M269": {
+      "id": "G0M269",
+      "name": "mpdm-dan.walker--devon.hughes--devon.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @devon.hughes @devon.garcia",
+      "creator": "U0X037",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M270": {
+      "id": "G0M270",
+      "name": "mpdm-dan.walker--alex.evans--devon.jones-1",
+      "purpose": "Group messaging with: @dan.walker @alex.evans @devon.jones",
+      "creator": "U0X004",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M271": {
+      "id": "G0M271",
+      "name": "mpdm-dan.walker--devon.evans--alex.jones-1",
+      "purpose": "Group messaging with: @dan.walker @devon.evans @alex.jones",
+      "creator": "U0X034",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M272": {
+      "id": "G0M272",
+      "name": "mpdm-dan.walker--casey.evans--blair.evans-1",
+      "purpose": "Group messaging with: @dan.walker @casey.evans @blair.evans",
+      "creator": "U0X024",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M273": {
+      "id": "G0M273",
+      "name": "mpdm-dan.walker--alex.ito--casey.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @alex.ito @casey.diaz",
+      "creator": "U0X008",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M274": {
+      "id": "G0M274",
+      "name": "mpdm-dan.walker--alex.ito--casey.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @alex.ito @casey.brooks",
+      "creator": "U0X008",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M275": {
+      "id": "G0M275",
+      "name": "mpdm-dan.walker--casey.brooks--casey.ito-1",
+      "purpose": "Group messaging with: @dan.walker @casey.brooks @casey.ito",
+      "creator": "U0X021",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M276": {
+      "id": "G0M276",
+      "name": "mpdm-dan.walker--blair.chen--casey.jones-1",
+      "purpose": "Group messaging with: @dan.walker @blair.chen @casey.jones",
+      "creator": "U0X012",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M277": {
+      "id": "G0M277",
+      "name": "mpdm-dan.walker--casey.garcia--blair.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @casey.garcia @blair.garcia",
+      "creator": "U0X026",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M278": {
+      "id": "G0M278",
+      "name": "mpdm-dan.walker--devon.diaz--blair.adams-1",
+      "purpose": "Group messaging with: @dan.walker @devon.diaz @blair.adams",
+      "creator": "U0X033",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M279": {
+      "id": "G0M279",
+      "name": "mpdm-dan.walker--alex.garcia--devon.foster-1",
+      "purpose": "Group messaging with: @dan.walker @alex.garcia @devon.foster",
+      "creator": "U0X006",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M280": {
+      "id": "G0M280",
+      "name": "mpdm-dan.walker--casey.hughes--devon.jones-1",
+      "purpose": "Group messaging with: @dan.walker @casey.hughes @devon.jones",
+      "creator": "U0X027",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M281": {
+      "id": "G0M281",
+      "name": "mpdm-dan.walker--blair.brooks--alex.foster-1",
+      "purpose": "Group messaging with: @dan.walker @blair.brooks @alex.foster",
+      "creator": "U0X011",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M282": {
+      "id": "G0M282",
+      "name": "mpdm-dan.walker--casey.adams--casey.chen-1",
+      "purpose": "Group messaging with: @dan.walker @casey.adams @casey.chen",
+      "creator": "U0X020",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M283": {
+      "id": "G0M283",
+      "name": "mpdm-dan.walker--blair.hughes--casey.ito-1",
+      "purpose": "Group messaging with: @dan.walker @blair.hughes @casey.ito",
+      "creator": "U0X017",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M284": {
+      "id": "G0M284",
+      "name": "mpdm-dan.walker--devon.brooks--devon.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @devon.brooks @devon.garcia",
+      "creator": "U0X031",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M285": {
+      "id": "G0M285",
+      "name": "mpdm-dan.walker--devon.jones--casey.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @devon.jones @casey.hughes",
+      "creator": "U0X039",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M286": {
+      "id": "G0M286",
+      "name": "mpdm-dan.walker--devon.adams--casey.evans-1",
+      "purpose": "Group messaging with: @dan.walker @devon.adams @casey.evans",
+      "creator": "U0X030",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M287": {
+      "id": "G0M287",
+      "name": "mpdm-dan.walker--casey.adams--casey.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @casey.adams @casey.garcia",
+      "creator": "U0X020",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M288": {
+      "id": "G0M288",
+      "name": "mpdm-dan.walker--blair.foster--devon.chen-1",
+      "purpose": "Group messaging with: @dan.walker @blair.foster @devon.chen",
+      "creator": "U0X015",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M289": {
+      "id": "G0M289",
+      "name": "mpdm-dan.walker--devon.diaz--devon.adams-1",
+      "purpose": "Group messaging with: @dan.walker @devon.diaz @devon.adams",
+      "creator": "U0X033",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M290": {
+      "id": "G0M290",
+      "name": "mpdm-dan.walker--alex.brooks--alex.chen-1",
+      "purpose": "Group messaging with: @dan.walker @alex.brooks @alex.chen",
+      "creator": "U0X001",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M291": {
+      "id": "G0M291",
+      "name": "mpdm-dan.walker--casey.diaz--casey.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @casey.diaz @casey.garcia",
+      "creator": "U0X023",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M292": {
+      "id": "G0M292",
+      "name": "mpdm-dan.walker--alex.brooks--devon.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @alex.brooks @devon.garcia",
+      "creator": "U0X001",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M293": {
+      "id": "G0M293",
+      "name": "mpdm-dan.walker--blair.chen--devon.chen-1",
+      "purpose": "Group messaging with: @dan.walker @blair.chen @devon.chen",
+      "creator": "U0X012",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M294": {
+      "id": "G0M294",
+      "name": "mpdm-dan.walker--alex.evans--casey.ito-1",
+      "purpose": "Group messaging with: @dan.walker @alex.evans @casey.ito",
+      "creator": "U0X004",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M295": {
+      "id": "G0M295",
+      "name": "mpdm-dan.walker--devon.chen--blair.adams-1",
+      "purpose": "Group messaging with: @dan.walker @devon.chen @blair.adams",
+      "creator": "U0X032",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M296": {
+      "id": "G0M296",
+      "name": "mpdm-dan.walker--devon.hughes--alex.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @devon.hughes @alex.diaz",
+      "creator": "U0X037",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M297": {
+      "id": "G0M297",
+      "name": "mpdm-dan.walker--blair.ito--blair.foster-1",
+      "purpose": "Group messaging with: @dan.walker @blair.ito @blair.foster",
+      "creator": "U0X018",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M298": {
+      "id": "G0M298",
+      "name": "mpdm-dan.walker--blair.garcia--alex.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @blair.garcia @alex.brooks",
+      "creator": "U0X016",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M299": {
+      "id": "G0M299",
+      "name": "mpdm-dan.walker--devon.hughes--casey.evans-1",
+      "purpose": "Group messaging with: @dan.walker @devon.hughes @casey.evans",
+      "creator": "U0X037",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M300": {
+      "id": "G0M300",
+      "name": "mpdm-dan.walker--devon.diaz--casey.jones-1",
+      "purpose": "Group messaging with: @dan.walker @devon.diaz @casey.jones",
+      "creator": "U0X033",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M301": {
+      "id": "G0M301",
+      "name": "mpdm-dan.walker--alex.chen--devon.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @alex.chen @devon.garcia",
+      "creator": "U0X002",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M302": {
+      "id": "G0M302",
+      "name": "mpdm-dan.walker--blair.ito--casey.evans-1",
+      "purpose": "Group messaging with: @dan.walker @blair.ito @casey.evans",
+      "creator": "U0X018",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M303": {
+      "id": "G0M303",
+      "name": "mpdm-dan.walker--devon.brooks--casey.adams-1",
+      "purpose": "Group messaging with: @dan.walker @devon.brooks @casey.adams",
+      "creator": "U0X031",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M304": {
+      "id": "G0M304",
+      "name": "mpdm-dan.walker--alex.evans--casey.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @alex.evans @casey.diaz",
+      "creator": "U0X004",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M305": {
+      "id": "G0M305",
+      "name": "mpdm-dan.walker--blair.ito--devon.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @blair.ito @devon.hughes",
+      "creator": "U0X018",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M306": {
+      "id": "G0M306",
+      "name": "mpdm-dan.walker--alex.ito--devon.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @alex.ito @devon.brooks",
+      "creator": "U0X008",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M307": {
+      "id": "G0M307",
+      "name": "mpdm-dan.walker--blair.evans--blair.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @blair.evans @blair.diaz",
+      "creator": "U0X014",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M308": {
+      "id": "G0M308",
+      "name": "mpdm-dan.walker--casey.foster--devon.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @casey.foster @devon.hughes",
+      "creator": "U0X025",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M309": {
+      "id": "G0M309",
+      "name": "mpdm-dan.walker--casey.jones--casey.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @casey.jones @casey.diaz",
+      "creator": "U0X029",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M310": {
+      "id": "G0M310",
+      "name": "mpdm-dan.walker--blair.adams--alex.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @blair.adams @alex.diaz",
+      "creator": "U0X010",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M311": {
+      "id": "G0M311",
+      "name": "mpdm-dan.walker--devon.adams--casey.ito-1",
+      "purpose": "Group messaging with: @dan.walker @devon.adams @casey.ito",
+      "creator": "U0X030",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M312": {
+      "id": "G0M312",
+      "name": "mpdm-dan.walker--blair.diaz--blair.chen-1",
+      "purpose": "Group messaging with: @dan.walker @blair.diaz @blair.chen",
+      "creator": "U0X013",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M313": {
+      "id": "G0M313",
+      "name": "mpdm-dan.walker--devon.garcia--blair.adams-1",
+      "purpose": "Group messaging with: @dan.walker @devon.garcia @blair.adams",
+      "creator": "U0X036",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M314": {
+      "id": "G0M314",
+      "name": "mpdm-dan.walker--casey.adams--devon.ito-1",
+      "purpose": "Group messaging with: @dan.walker @casey.adams @devon.ito",
+      "creator": "U0X020",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M315": {
+      "id": "G0M315",
+      "name": "mpdm-dan.walker--casey.foster--casey.chen-1",
+      "purpose": "Group messaging with: @dan.walker @casey.foster @casey.chen",
+      "creator": "U0X025",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M316": {
+      "id": "G0M316",
+      "name": "mpdm-dan.walker--devon.ito--casey.adams-1",
+      "purpose": "Group messaging with: @dan.walker @devon.ito @casey.adams",
+      "creator": "U0X038",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M317": {
+      "id": "G0M317",
+      "name": "mpdm-dan.walker--casey.jones--devon.jones-1",
+      "purpose": "Group messaging with: @dan.walker @casey.jones @devon.jones",
+      "creator": "U0X029",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M318": {
+      "id": "G0M318",
+      "name": "mpdm-dan.walker--devon.evans--blair.foster-1",
+      "purpose": "Group messaging with: @dan.walker @devon.evans @blair.foster",
+      "creator": "U0X034",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M319": {
+      "id": "G0M319",
+      "name": "mpdm-dan.walker--blair.foster--alex.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @blair.foster @alex.hughes",
+      "creator": "U0X015",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M320": {
+      "id": "G0M320",
+      "name": "mpdm-dan.walker--alex.garcia--casey.ito-1",
+      "purpose": "Group messaging with: @dan.walker @alex.garcia @casey.ito",
+      "creator": "U0X006",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M321": {
+      "id": "G0M321",
+      "name": "mpdm-dan.walker--blair.diaz--alex.ito-1",
+      "purpose": "Group messaging with: @dan.walker @blair.diaz @alex.ito",
+      "creator": "U0X013",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M322": {
+      "id": "G0M322",
+      "name": "mpdm-dan.walker--casey.brooks--casey.evans-1",
+      "purpose": "Group messaging with: @dan.walker @casey.brooks @casey.evans",
+      "creator": "U0X021",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M323": {
+      "id": "G0M323",
+      "name": "mpdm-dan.walker--devon.brooks--alex.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @devon.brooks @alex.diaz",
+      "creator": "U0X031",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M324": {
+      "id": "G0M324",
+      "name": "mpdm-dan.walker--alex.hughes--devon.chen-1",
+      "purpose": "Group messaging with: @dan.walker @alex.hughes @devon.chen",
+      "creator": "U0X007",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M325": {
+      "id": "G0M325",
+      "name": "mpdm-dan.walker--devon.diaz--alex.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @devon.diaz @alex.diaz",
+      "creator": "U0X033",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M326": {
+      "id": "G0M326",
+      "name": "mpdm-dan.walker--devon.brooks--casey.foster-1",
+      "purpose": "Group messaging with: @dan.walker @devon.brooks @casey.foster",
+      "creator": "U0X031",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M327": {
+      "id": "G0M327",
+      "name": "mpdm-dan.walker--casey.foster--casey.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @casey.foster @casey.garcia",
+      "creator": "U0X025",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M328": {
+      "id": "G0M328",
+      "name": "mpdm-dan.walker--alex.evans--devon.jones-1",
+      "purpose": "Group messaging with: @dan.walker @alex.evans @devon.jones",
+      "creator": "U0X004",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M329": {
+      "id": "G0M329",
+      "name": "mpdm-dan.walker--devon.adams--alex.ito-1",
+      "purpose": "Group messaging with: @dan.walker @devon.adams @alex.ito",
+      "creator": "U0X030",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M330": {
+      "id": "G0M330",
+      "name": "mpdm-dan.walker--alex.jones--casey.adams-1",
+      "purpose": "Group messaging with: @dan.walker @alex.jones @casey.adams",
+      "creator": "U0X009",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M331": {
+      "id": "G0M331",
+      "name": "mpdm-dan.walker--casey.brooks--devon.ito-1",
+      "purpose": "Group messaging with: @dan.walker @casey.brooks @devon.ito",
+      "creator": "U0X021",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M332": {
+      "id": "G0M332",
+      "name": "mpdm-dan.walker--devon.ito--blair.chen-1",
+      "purpose": "Group messaging with: @dan.walker @devon.ito @blair.chen",
+      "creator": "U0X038",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M333": {
+      "id": "G0M333",
+      "name": "mpdm-dan.walker--blair.brooks--devon.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @blair.brooks @devon.hughes",
+      "creator": "U0X011",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M334": {
+      "id": "G0M334",
+      "name": "mpdm-dan.walker--alex.hughes--alex.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @alex.hughes @alex.garcia",
+      "creator": "U0X007",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M335": {
+      "id": "G0M335",
+      "name": "mpdm-dan.walker--blair.jones--casey.chen-1",
+      "purpose": "Group messaging with: @dan.walker @blair.jones @casey.chen",
+      "creator": "U0X019",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M336": {
+      "id": "G0M336",
+      "name": "mpdm-dan.walker--devon.garcia--blair.jones-1",
+      "purpose": "Group messaging with: @dan.walker @devon.garcia @blair.jones",
+      "creator": "U0X036",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M337": {
+      "id": "G0M337",
+      "name": "mpdm-dan.walker--casey.adams--casey.chen-1",
+      "purpose": "Group messaging with: @dan.walker @casey.adams @casey.chen",
+      "creator": "U0X020",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M338": {
+      "id": "G0M338",
+      "name": "mpdm-dan.walker--blair.adams--alex.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @blair.adams @alex.brooks",
+      "creator": "U0X010",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M339": {
+      "id": "G0M339",
+      "name": "mpdm-dan.walker--devon.garcia--alex.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @devon.garcia @alex.garcia",
+      "creator": "U0X036",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M340": {
+      "id": "G0M340",
+      "name": "mpdm-dan.walker--devon.evans--alex.evans-1",
+      "purpose": "Group messaging with: @dan.walker @devon.evans @alex.evans",
+      "creator": "U0X034",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M341": {
+      "id": "G0M341",
+      "name": "mpdm-dan.walker--casey.adams--devon.chen-1",
+      "purpose": "Group messaging with: @dan.walker @casey.adams @devon.chen",
+      "creator": "U0X020",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M342": {
+      "id": "G0M342",
+      "name": "mpdm-dan.walker--blair.jones--casey.adams-1",
+      "purpose": "Group messaging with: @dan.walker @blair.jones @casey.adams",
+      "creator": "U0X019",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M343": {
+      "id": "G0M343",
+      "name": "mpdm-dan.walker--casey.jones--alex.foster-1",
+      "purpose": "Group messaging with: @dan.walker @casey.jones @alex.foster",
+      "creator": "U0X029",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M344": {
+      "id": "G0M344",
+      "name": "mpdm-dan.walker--devon.ito--casey.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @devon.ito @casey.hughes",
+      "creator": "U0X038",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M345": {
+      "id": "G0M345",
+      "name": "mpdm-dan.walker--casey.diaz--alex.ito-1",
+      "purpose": "Group messaging with: @dan.walker @casey.diaz @alex.ito",
+      "creator": "U0X023",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M346": {
+      "id": "G0M346",
+      "name": "mpdm-dan.walker--casey.chen--alex.chen-1",
+      "purpose": "Group messaging with: @dan.walker @casey.chen @alex.chen",
+      "creator": "U0X022",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M347": {
+      "id": "G0M347",
+      "name": "mpdm-dan.walker--blair.brooks--casey.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @blair.brooks @casey.diaz",
+      "creator": "U0X011",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M348": {
+      "id": "G0M348",
+      "name": "mpdm-dan.walker--blair.adams--casey.chen-1",
+      "purpose": "Group messaging with: @dan.walker @blair.adams @casey.chen",
+      "creator": "U0X010",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M349": {
+      "id": "G0M349",
+      "name": "mpdm-dan.walker--alex.garcia--alex.foster-1",
+      "purpose": "Group messaging with: @dan.walker @alex.garcia @alex.foster",
+      "creator": "U0X006",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M350": {
+      "id": "G0M350",
+      "name": "mpdm-dan.walker--devon.ito--devon.foster-1",
+      "purpose": "Group messaging with: @dan.walker @devon.ito @devon.foster",
+      "creator": "U0X038",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M351": {
+      "id": "G0M351",
+      "name": "mpdm-dan.walker--alex.jones--devon.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @alex.jones @devon.diaz",
+      "creator": "U0X009",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M352": {
+      "id": "G0M352",
+      "name": "mpdm-dan.walker--devon.adams--devon.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @devon.adams @devon.hughes",
+      "creator": "U0X030",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M353": {
+      "id": "G0M353",
+      "name": "mpdm-dan.walker--casey.foster--casey.chen-1",
+      "purpose": "Group messaging with: @dan.walker @casey.foster @casey.chen",
+      "creator": "U0X025",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M354": {
+      "id": "G0M354",
+      "name": "mpdm-dan.walker--casey.chen--devon.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @casey.chen @devon.brooks",
+      "creator": "U0X022",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M355": {
+      "id": "G0M355",
+      "name": "mpdm-dan.walker--blair.ito--devon.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @blair.ito @devon.brooks",
+      "creator": "U0X018",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M356": {
+      "id": "G0M356",
+      "name": "mpdm-dan.walker--casey.diaz--casey.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @casey.diaz @casey.garcia",
+      "creator": "U0X023",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M357": {
+      "id": "G0M357",
+      "name": "mpdm-dan.walker--alex.diaz--casey.foster-1",
+      "purpose": "Group messaging with: @dan.walker @alex.diaz @casey.foster",
+      "creator": "U0X003",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M358": {
+      "id": "G0M358",
+      "name": "mpdm-dan.walker--alex.evans--devon.chen-1",
+      "purpose": "Group messaging with: @dan.walker @alex.evans @devon.chen",
+      "creator": "U0X004",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M359": {
+      "id": "G0M359",
+      "name": "mpdm-dan.walker--alex.ito--alex.jones-1",
+      "purpose": "Group messaging with: @dan.walker @alex.ito @alex.jones",
+      "creator": "U0X008",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M360": {
+      "id": "G0M360",
+      "name": "mpdm-dan.walker--casey.chen--casey.jones-1",
+      "purpose": "Group messaging with: @dan.walker @casey.chen @casey.jones",
+      "creator": "U0X022",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M361": {
+      "id": "G0M361",
+      "name": "mpdm-dan.walker--alex.adams--alex.chen-1",
+      "purpose": "Group messaging with: @dan.walker @alex.adams @alex.chen",
+      "creator": "U0X000",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M362": {
+      "id": "G0M362",
+      "name": "mpdm-dan.walker--blair.jones--casey.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @blair.jones @casey.garcia",
+      "creator": "U0X019",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M363": {
+      "id": "G0M363",
+      "name": "mpdm-dan.walker--casey.diaz--devon.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @casey.diaz @devon.garcia",
+      "creator": "U0X023",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M364": {
+      "id": "G0M364",
+      "name": "mpdm-dan.walker--blair.adams--alex.jones-1",
+      "purpose": "Group messaging with: @dan.walker @blair.adams @alex.jones",
+      "creator": "U0X010",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M365": {
+      "id": "G0M365",
+      "name": "mpdm-dan.walker--casey.chen--blair.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @casey.chen @blair.brooks",
+      "creator": "U0X022",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M366": {
+      "id": "G0M366",
+      "name": "mpdm-dan.walker--alex.hughes--alex.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @alex.hughes @alex.garcia",
+      "creator": "U0X007",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M367": {
+      "id": "G0M367",
+      "name": "mpdm-dan.walker--casey.garcia--blair.ito-1",
+      "purpose": "Group messaging with: @dan.walker @casey.garcia @blair.ito",
+      "creator": "U0X026",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M368": {
+      "id": "G0M368",
+      "name": "mpdm-dan.walker--alex.garcia--devon.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @alex.garcia @devon.brooks",
+      "creator": "U0X006",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M369": {
+      "id": "G0M369",
+      "name": "mpdm-dan.walker--casey.foster--alex.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @casey.foster @alex.hughes",
+      "creator": "U0X025",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M370": {
+      "id": "G0M370",
+      "name": "mpdm-dan.walker--casey.garcia--devon.evans-1",
+      "purpose": "Group messaging with: @dan.walker @casey.garcia @devon.evans",
+      "creator": "U0X026",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M371": {
+      "id": "G0M371",
+      "name": "mpdm-dan.walker--devon.adams--blair.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @devon.adams @blair.hughes",
+      "creator": "U0X030",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M372": {
+      "id": "G0M372",
+      "name": "mpdm-dan.walker--casey.hughes--alex.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @casey.hughes @alex.garcia",
+      "creator": "U0X027",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M373": {
+      "id": "G0M373",
+      "name": "mpdm-dan.walker--alex.hughes--casey.chen-1",
+      "purpose": "Group messaging with: @dan.walker @alex.hughes @casey.chen",
+      "creator": "U0X007",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M374": {
+      "id": "G0M374",
+      "name": "mpdm-dan.walker--devon.hughes--devon.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @devon.hughes @devon.diaz",
+      "creator": "U0X037",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M375": {
+      "id": "G0M375",
+      "name": "mpdm-dan.walker--casey.ito--devon.ito-1",
+      "purpose": "Group messaging with: @dan.walker @casey.ito @devon.ito",
+      "creator": "U0X028",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M376": {
+      "id": "G0M376",
+      "name": "mpdm-dan.walker--devon.jones--devon.foster-1",
+      "purpose": "Group messaging with: @dan.walker @devon.jones @devon.foster",
+      "creator": "U0X039",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M377": {
+      "id": "G0M377",
+      "name": "mpdm-dan.walker--alex.garcia--devon.foster-1",
+      "purpose": "Group messaging with: @dan.walker @alex.garcia @devon.foster",
+      "creator": "U0X006",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M378": {
+      "id": "G0M378",
+      "name": "mpdm-dan.walker--blair.jones--devon.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @blair.jones @devon.brooks",
+      "creator": "U0X019",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M379": {
+      "id": "G0M379",
+      "name": "mpdm-dan.walker--casey.hughes--alex.chen-1",
+      "purpose": "Group messaging with: @dan.walker @casey.hughes @alex.chen",
+      "creator": "U0X027",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M380": {
+      "id": "G0M380",
+      "name": "mpdm-dan.walker--casey.foster--devon.jones-1",
+      "purpose": "Group messaging with: @dan.walker @casey.foster @devon.jones",
+      "creator": "U0X025",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M381": {
+      "id": "G0M381",
+      "name": "mpdm-dan.walker--blair.adams--blair.diaz-1",
+      "purpose": "Group messaging with: @dan.walker @blair.adams @blair.diaz",
+      "creator": "U0X010",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M382": {
+      "id": "G0M382",
+      "name": "mpdm-dan.walker--blair.garcia--alex.foster-1",
+      "purpose": "Group messaging with: @dan.walker @blair.garcia @alex.foster",
+      "creator": "U0X016",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M383": {
+      "id": "G0M383",
+      "name": "mpdm-dan.walker--blair.adams--alex.chen-1",
+      "purpose": "Group messaging with: @dan.walker @blair.adams @alex.chen",
+      "creator": "U0X010",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M384": {
+      "id": "G0M384",
+      "name": "mpdm-dan.walker--casey.garcia--blair.jones-1",
+      "purpose": "Group messaging with: @dan.walker @casey.garcia @blair.jones",
+      "creator": "U0X026",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M385": {
+      "id": "G0M385",
+      "name": "mpdm-dan.walker--casey.brooks--devon.foster-1",
+      "purpose": "Group messaging with: @dan.walker @casey.brooks @devon.foster",
+      "creator": "U0X021",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M386": {
+      "id": "G0M386",
+      "name": "mpdm-dan.walker--blair.brooks--blair.hughes-1",
+      "purpose": "Group messaging with: @dan.walker @blair.brooks @blair.hughes",
+      "creator": "U0X011",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M387": {
+      "id": "G0M387",
+      "name": "mpdm-dan.walker--blair.evans--devon.jones-1",
+      "purpose": "Group messaging with: @dan.walker @blair.evans @devon.jones",
+      "creator": "U0X014",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M388": {
+      "id": "G0M388",
+      "name": "mpdm-dan.walker--casey.garcia--casey.evans-1",
+      "purpose": "Group messaging with: @dan.walker @casey.garcia @casey.evans",
+      "creator": "U0X026",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M389": {
+      "id": "G0M389",
+      "name": "mpdm-dan.walker--casey.evans--casey.garcia-1",
+      "purpose": "Group messaging with: @dan.walker @casey.evans @casey.garcia",
+      "creator": "U0X024",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M390": {
+      "id": "G0M390",
+      "name": "mpdm-dan.walker--blair.ito--alex.foster-1",
+      "purpose": "Group messaging with: @dan.walker @blair.ito @alex.foster",
+      "creator": "U0X018",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M391": {
+      "id": "G0M391",
+      "name": "mpdm-dan.walker--devon.foster--alex.evans-1",
+      "purpose": "Group messaging with: @dan.walker @devon.foster @alex.evans",
+      "creator": "U0X035",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M392": {
+      "id": "G0M392",
+      "name": "mpdm-dan.walker--alex.diaz--blair.brooks-1",
+      "purpose": "Group messaging with: @dan.walker @alex.diaz @blair.brooks",
+      "creator": "U0X003",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M393": {
+      "id": "G0M393",
+      "name": "mpdm-dan.walker--alex.jones--casey.adams-1",
+      "purpose": "Group messaging with: @dan.walker @alex.jones @casey.adams",
+      "creator": "U0X009",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M394": {
+      "id": "G0M394",
+      "name": "mpdm-dan.walker--devon.brooks--casey.ito-1",
+      "purpose": "Group messaging with: @dan.walker @devon.brooks @casey.ito",
+      "creator": "U0X031",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M395": {
+      "id": "G0M395",
+      "name": "mpdm-dan.walker--alex.brooks--casey.evans-1",
+      "purpose": "Group messaging with: @dan.walker @alex.brooks @casey.evans",
+      "creator": "U0X001",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M396": {
+      "id": "G0M396",
+      "name": "mpdm-dan.walker--casey.ito--devon.evans-1",
+      "purpose": "Group messaging with: @dan.walker @casey.ito @devon.evans",
+      "creator": "U0X028",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M397": {
+      "id": "G0M397",
+      "name": "mpdm-dan.walker--alex.brooks--devon.evans-1",
+      "purpose": "Group messaging with: @dan.walker @alex.brooks @devon.evans",
+      "creator": "U0X001",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M398": {
+      "id": "G0M398",
+      "name": "mpdm-dan.walker--alex.adams--alex.jones-1",
+      "purpose": "Group messaging with: @dan.walker @alex.adams @alex.jones",
+      "creator": "U0X000",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    },
+    "G0M399": {
+      "id": "G0M399",
+      "name": "mpdm-dan.walker--blair.evans--alex.foster-1",
+      "purpose": "Group messaging with: @dan.walker @blair.evans @alex.foster",
+      "creator": "U0X014",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "mpim"
+    }
+  },
+  "messages": {
+    "D0SAM": [
+      {
+        "ts": "1791216120.000100",
+        "time": "2026-10-05 09:02:00 PDT",
+        "user": "U0SAM",
+        "text": "morning! pulling the numbers today",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791224070.000200",
+        "time": "2026-10-05 11:14:30 PDT",
+        "user": "U0SAM",
+        "text": "heads up, the utilization numbers will be skewed: two contractors were onboarded mid-quarter",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M288": [
+      {
+        "ts": "1791183900.000300",
+        "time": "2026-10-05 00:05:00 PDT",
+        "user": "U0X032",
+        "text": "sounds good",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791269700.000406",
+        "time": "2026-10-05 23:55:00 PDT",
+        "user": "U0X032",
+        "text": "standup notes are in",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M088": [
+      {
+        "ts": "1791184680.000301",
+        "time": "2026-10-05 00:18:00 PDT",
+        "user": "U0X039",
+        "text": "thanks!",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791221340.000348",
+        "time": "2026-10-05 10:29:00 PDT",
+        "user": "U0X032",
+        "text": "doc updated",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791238500.000366",
+        "time": "2026-10-05 15:15:00 PDT",
+        "user": "U0X039",
+        "text": "running late",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M330": [
+      {
+        "ts": "1791185460.000302",
+        "time": "2026-10-05 00:31:00 PDT",
+        "user": "U0X020",
+        "text": "thanks!",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M047": [
+      {
+        "ts": "1791186240.000303",
+        "time": "2026-10-05 00:44:00 PDT",
+        "user": "U0X013",
+        "text": "doc updated",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M139": [
+      {
+        "ts": "1791187020.000304",
+        "time": "2026-10-05 00:57:00 PDT",
+        "user": "U0X032",
+        "text": "standup notes are in",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791215880.000341",
+        "time": "2026-10-05 08:58:00 PDT",
+        "user": "U0X015",
+        "text": "lunch?",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M359": [
+      {
+        "ts": "1791187800.000305",
+        "time": "2026-10-05 01:10:00 PDT",
+        "user": "U0X009",
+        "text": "doc updated",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M052": [
+      {
+        "ts": "1791188580.000306",
+        "time": "2026-10-05 01:23:00 PDT",
+        "user": "U0X039",
+        "text": "running late",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791231480.000357",
+        "time": "2026-10-05 13:18:00 PDT",
+        "user": "U0X039",
+        "text": "running late",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M201": [
+      {
+        "ts": "1791189360.000307",
+        "time": "2026-10-05 01:36:00 PDT",
+        "user": "U0X020",
+        "text": "lunch?",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M026": [
+      {
+        "ts": "1791190140.000308",
+        "time": "2026-10-05 01:49:00 PDT",
+        "user": "U0X032",
+        "text": "sounds good",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791227580.000352",
+        "time": "2026-10-05 12:13:00 PDT",
+        "user": "U0X032",
+        "text": "standup notes are in",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M010": [
+      {
+        "ts": "1791190920.000309",
+        "time": "2026-10-05 02:02:00 PDT",
+        "user": "U0X030",
+        "text": "running late",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M083": [
+      {
+        "ts": "1791191700.000310",
+        "time": "2026-10-05 02:15:00 PDT",
+        "user": "U0X031",
+        "text": "pushed the fix",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M106": [
+      {
+        "ts": "1791192480.000311",
+        "time": "2026-10-05 02:28:00 PDT",
+        "user": "U0X011",
+        "text": "thanks!",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M171": [
+      {
+        "ts": "1791193260.000312",
+        "time": "2026-10-05 02:41:00 PDT",
+        "user": "U0X025",
+        "text": "running late",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791220560.000347",
+        "time": "2026-10-05 10:16:00 PDT",
+        "user": "U0X025",
+        "text": "pushed the fix",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M166": [
+      {
+        "ts": "1791194040.000313",
+        "time": "2026-10-05 02:54:00 PDT",
+        "user": "U0X028",
+        "text": "thanks!",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M170": [
+      {
+        "ts": "1791194820.000314",
+        "time": "2026-10-05 03:07:00 PDT",
+        "user": "U0X022",
+        "text": "lunch?",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M114": [
+      {
+        "ts": "1791195600.000315",
+        "time": "2026-10-05 03:20:00 PDT",
+        "user": "U0X001",
+        "text": "running late",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791250200.000381",
+        "time": "2026-10-05 18:30:00 PDT",
+        "user": "U0X001",
+        "text": "pushed the fix",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M265": [
+      {
+        "ts": "1791196380.000316",
+        "time": "2026-10-05 03:33:00 PDT",
+        "user": "U0X002",
+        "text": "can you look at my PR",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M107": [
+      {
+        "ts": "1791197160.000317",
+        "time": "2026-10-05 03:46:00 PDT",
+        "user": "U0X036",
+        "text": "lunch?",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M252": [
+      {
+        "ts": "1791197940.000318",
+        "time": "2026-10-05 03:59:00 PDT",
+        "user": "U0X005",
+        "text": "thanks!",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M319": [
+      {
+        "ts": "1791198720.000319",
+        "time": "2026-10-05 04:12:00 PDT",
+        "user": "U0X007",
+        "text": "doc updated",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791211980.000336",
+        "time": "2026-10-05 07:53:00 PDT",
+        "user": "U0X015",
+        "text": "thanks!",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M198": [
+      {
+        "ts": "1791199500.000320",
+        "time": "2026-10-05 04:25:00 PDT",
+        "user": "U0X035",
+        "text": "sounds good",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M011": [
+      {
+        "ts": "1791200280.000321",
+        "time": "2026-10-05 04:38:00 PDT",
+        "user": "U0X030",
+        "text": "sounds good",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M326": [
+      {
+        "ts": "1791201060.000322",
+        "time": "2026-10-05 04:51:00 PDT",
+        "user": "U0X031",
+        "text": "sounds good",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M339": [
+      {
+        "ts": "1791201840.000323",
+        "time": "2026-10-05 05:04:00 PDT",
+        "user": "U0X006",
+        "text": "sounds good",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M272": [
+      {
+        "ts": "1791202620.000324",
+        "time": "2026-10-05 05:17:00 PDT",
+        "user": "U0X014",
+        "text": "pushed the fix",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791230700.000356",
+        "time": "2026-10-05 13:05:00 PDT",
+        "user": "U0X014",
+        "text": "thanks!",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M333": [
+      {
+        "ts": "1791203400.000325",
+        "time": "2026-10-05 05:30:00 PDT",
+        "user": "U0X011",
+        "text": "lunch?",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791246300.000376",
+        "time": "2026-10-05 17:25:00 PDT",
+        "user": "U0X037",
+        "text": "can you look at my PR",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M147": [
+      {
+        "ts": "1791204180.000326",
+        "time": "2026-10-05 05:43:00 PDT",
+        "user": "U0X030",
+        "text": "lunch?",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M035": [
+      {
+        "ts": "1791204960.000327",
+        "time": "2026-10-05 05:56:00 PDT",
+        "user": "U0X037",
+        "text": "doc updated",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M131": [
+      {
+        "ts": "1791205740.000328",
+        "time": "2026-10-05 06:09:00 PDT",
+        "user": "U0X027",
+        "text": "can you look at my PR",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M258": [
+      {
+        "ts": "1791206520.000329",
+        "time": "2026-10-05 06:22:00 PDT",
+        "user": "U0X001",
+        "text": "running late",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M331": [
+      {
+        "ts": "1791207300.000330",
+        "time": "2026-10-05 06:35:00 PDT",
+        "user": "U0X038",
+        "text": "running late",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M130": [
+      {
+        "ts": "1791208080.000331",
+        "time": "2026-10-05 06:48:00 PDT",
+        "user": "U0X026",
+        "text": "running late",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M194": [
+      {
+        "ts": "1791208860.000332",
+        "time": "2026-10-05 07:01:00 PDT",
+        "user": "U0X004",
+        "text": "pushed the fix",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M382": [
+      {
+        "ts": "1791209640.000333",
+        "time": "2026-10-05 07:14:00 PDT",
+        "user": "U0X016",
+        "text": "can you look at my PR",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M262": [
+      {
+        "ts": "1791210420.000334",
+        "time": "2026-10-05 07:27:00 PDT",
+        "user": "U0X024",
+        "text": "pushed the fix",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M267": [
+      {
+        "ts": "1791211200.000335",
+        "time": "2026-10-05 07:40:00 PDT",
+        "user": "U0X009",
+        "text": "standup notes are in",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M239": [
+      {
+        "ts": "1791212760.000337",
+        "time": "2026-10-05 08:06:00 PDT",
+        "user": "U0X037",
+        "text": "running late",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M294": [
+      {
+        "ts": "1791213540.000338",
+        "time": "2026-10-05 08:19:00 PDT",
+        "user": "U0X004",
+        "text": "doc updated",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791218220.000344",
+        "time": "2026-10-05 09:37:00 PDT",
+        "user": "U0X004",
+        "text": "can you look at my PR",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791261120.000395",
+        "time": "2026-10-05 21:32:00 PDT",
+        "user": "U0X028",
+        "text": "standup notes are in",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M174": [
+      {
+        "ts": "1791214320.000339",
+        "time": "2026-10-05 08:32:00 PDT",
+        "user": "U0X029",
+        "text": "doc updated",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M144": [
+      {
+        "ts": "1791215100.000340",
+        "time": "2026-10-05 08:45:00 PDT",
+        "user": "U0X006",
+        "text": "can you look at my PR",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M368": [
+      {
+        "ts": "1791216660.000342",
+        "time": "2026-10-05 09:11:00 PDT",
+        "user": "U0X006",
+        "text": "doc updated",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M133": [
+      {
+        "ts": "1791217440.000343",
+        "time": "2026-10-05 09:24:00 PDT",
+        "user": "U0X016",
+        "text": "running late",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M013": [
+      {
+        "ts": "1791219000.000345",
+        "time": "2026-10-05 09:50:00 PDT",
+        "user": "U0X033",
+        "text": "lunch?",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M082": [
+      {
+        "ts": "1791219780.000346",
+        "time": "2026-10-05 10:03:00 PDT",
+        "user": "U0X010",
+        "text": "thanks!",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M231": [
+      {
+        "ts": "1791222120.000349",
+        "time": "2026-10-05 10:42:00 PDT",
+        "user": "U0X025",
+        "text": "lunch?",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M000": [
+      {
+        "ts": "1791226020.000350",
+        "time": "2026-10-05 11:47:00 PDT",
+        "user": "U0X020",
+        "text": "lunch?",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M264": [
+      {
+        "ts": "1791226800.000351",
+        "time": "2026-10-05 12:00:00 PDT",
+        "user": "U0X030",
+        "text": "thanks!",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791256440.000389",
+        "time": "2026-10-05 20:14:00 PDT",
+        "user": "U0X001",
+        "text": "lunch?",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M048": [
+      {
+        "ts": "1791228360.000353",
+        "time": "2026-10-05 12:26:00 PDT",
+        "user": "U0X021",
+        "text": "sounds good",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M229": [
+      {
+        "ts": "1791229140.000354",
+        "time": "2026-10-05 12:39:00 PDT",
+        "user": "U0X024",
+        "text": "lunch?",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M208": [
+      {
+        "ts": "1791229920.000355",
+        "time": "2026-10-05 12:52:00 PDT",
+        "user": "U0X030",
+        "text": "doc updated",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M296": [
+      {
+        "ts": "1791232260.000358",
+        "time": "2026-10-05 13:31:00 PDT",
+        "user": "U0X003",
+        "text": "sounds good",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791237720.000365",
+        "time": "2026-10-05 15:02:00 PDT",
+        "user": "U0X003",
+        "text": "running late",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M064": [
+      {
+        "ts": "1791233040.000359",
+        "time": "2026-10-05 13:44:00 PDT",
+        "user": "U0X001",
+        "text": "thanks!",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M254": [
+      {
+        "ts": "1791233820.000360",
+        "time": "2026-10-05 13:57:00 PDT",
+        "user": "U0X032",
+        "text": "can you look at my PR",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M345": [
+      {
+        "ts": "1791234600.000361",
+        "time": "2026-10-05 14:10:00 PDT",
+        "user": "U0X008",
+        "text": "sounds good",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791258780.000392",
+        "time": "2026-10-05 20:53:00 PDT",
+        "user": "U0X008",
+        "text": "doc updated",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791264240.000399",
+        "time": "2026-10-05 22:24:00 PDT",
+        "user": "U0X023",
+        "text": "can you look at my PR",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M246": [
+      {
+        "ts": "1791235380.000362",
+        "time": "2026-10-05 14:23:00 PDT",
+        "user": "U0X014",
+        "text": "lunch?",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791240060.000368",
+        "time": "2026-10-05 15:41:00 PDT",
+        "user": "U0X032",
+        "text": "pushed the fix",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M384": [
+      {
+        "ts": "1791236160.000363",
+        "time": "2026-10-05 14:36:00 PDT",
+        "user": "U0X026",
+        "text": "running late",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M183": [
+      {
+        "ts": "1791236940.000364",
+        "time": "2026-10-05 14:49:00 PDT",
+        "user": "U0X006",
+        "text": "pushed the fix",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M355": [
+      {
+        "ts": "1791239280.000367",
+        "time": "2026-10-05 15:28:00 PDT",
+        "user": "U0X031",
+        "text": "thanks!",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791244740.000374",
+        "time": "2026-10-05 16:59:00 PDT",
+        "user": "U0X018",
+        "text": "doc updated",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M032": [
+      {
+        "ts": "1791240840.000369",
+        "time": "2026-10-05 15:54:00 PDT",
+        "user": "U0X002",
+        "text": "doc updated",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M135": [
+      {
+        "ts": "1791241620.000370",
+        "time": "2026-10-05 16:07:00 PDT",
+        "user": "U0X031",
+        "text": "lunch?",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791259560.000393",
+        "time": "2026-10-05 21:06:00 PDT",
+        "user": "U0X019",
+        "text": "sounds good",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M279": [
+      {
+        "ts": "1791242400.000371",
+        "time": "2026-10-05 16:20:00 PDT",
+        "user": "U0X035",
+        "text": "sounds good",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M030": [
+      {
+        "ts": "1791243180.000372",
+        "time": "2026-10-05 16:33:00 PDT",
+        "user": "U0X012",
+        "text": "lunch?",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M022": [
+      {
+        "ts": "1791243960.000373",
+        "time": "2026-10-05 16:46:00 PDT",
+        "user": "U0X036",
+        "text": "can you look at my PR",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M129": [
+      {
+        "ts": "1791245520.000375",
+        "time": "2026-10-05 17:12:00 PDT",
+        "user": "U0X037",
+        "text": "doc updated",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M169": [
+      {
+        "ts": "1791247080.000377",
+        "time": "2026-10-05 17:38:00 PDT",
+        "user": "U0X038",
+        "text": "thanks!",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M287": [
+      {
+        "ts": "1791247860.000378",
+        "time": "2026-10-05 17:51:00 PDT",
+        "user": "U0X020",
+        "text": "doc updated",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M347": [
+      {
+        "ts": "1791248640.000379",
+        "time": "2026-10-05 18:04:00 PDT",
+        "user": "U0X011",
+        "text": "can you look at my PR",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M320": [
+      {
+        "ts": "1791249420.000380",
+        "time": "2026-10-05 18:17:00 PDT",
+        "user": "U0X006",
+        "text": "can you look at my PR",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M165": [
+      {
+        "ts": "1791250980.000382",
+        "time": "2026-10-05 18:43:00 PDT",
+        "user": "U0X032",
+        "text": "lunch?",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M180": [
+      {
+        "ts": "1791251760.000383",
+        "time": "2026-10-05 18:56:00 PDT",
+        "user": "U0X015",
+        "text": "standup notes are in",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M021": [
+      {
+        "ts": "1791252540.000384",
+        "time": "2026-10-05 19:09:00 PDT",
+        "user": "U0X035",
+        "text": "lunch?",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M353": [
+      {
+        "ts": "1791253320.000385",
+        "time": "2026-10-05 19:22:00 PDT",
+        "user": "U0X022",
+        "text": "can you look at my PR",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M138": [
+      {
+        "ts": "1791254100.000386",
+        "time": "2026-10-05 19:35:00 PDT",
+        "user": "U0X023",
+        "text": "standup notes are in",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M260": [
+      {
+        "ts": "1791254880.000387",
+        "time": "2026-10-05 19:48:00 PDT",
+        "user": "U0X029",
+        "text": "pushed the fix",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M042": [
+      {
+        "ts": "1791255660.000388",
+        "time": "2026-10-05 20:01:00 PDT",
+        "user": "U0X003",
+        "text": "standup notes are in",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M128": [
+      {
+        "ts": "1791257220.000390",
+        "time": "2026-10-05 20:27:00 PDT",
+        "user": "U0X020",
+        "text": "can you look at my PR",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M100": [
+      {
+        "ts": "1791258000.000391",
+        "time": "2026-10-05 20:40:00 PDT",
+        "user": "U0X024",
+        "text": "doc updated",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M043": [
+      {
+        "ts": "1791260340.000394",
+        "time": "2026-10-05 21:19:00 PDT",
+        "user": "U0X011",
+        "text": "can you look at my PR",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M321": [
+      {
+        "ts": "1791261900.000396",
+        "time": "2026-10-05 21:45:00 PDT",
+        "user": "U0X008",
+        "text": "lunch?",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M156": [
+      {
+        "ts": "1791262680.000397",
+        "time": "2026-10-05 21:58:00 PDT",
+        "user": "U0X039",
+        "text": "can you look at my PR",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M346": [
+      {
+        "ts": "1791263460.000398",
+        "time": "2026-10-05 22:11:00 PDT",
+        "user": "U0X002",
+        "text": "pushed the fix",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M182": [
+      {
+        "ts": "1791265020.000400",
+        "time": "2026-10-05 22:37:00 PDT",
+        "user": "U0X016",
+        "text": "thanks!",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M092": [
+      {
+        "ts": "1791265800.000401",
+        "time": "2026-10-05 22:50:00 PDT",
+        "user": "U0X036",
+        "text": "doc updated",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M274": [
+      {
+        "ts": "1791266580.000402",
+        "time": "2026-10-05 23:03:00 PDT",
+        "user": "U0X008",
+        "text": "running late",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M190": [
+      {
+        "ts": "1791267360.000403",
+        "time": "2026-10-05 23:16:00 PDT",
+        "user": "U0X027",
+        "text": "can you look at my PR",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M148": [
+      {
+        "ts": "1791268140.000404",
+        "time": "2026-10-05 23:29:00 PDT",
+        "user": "U0X009",
+        "text": "thanks!",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "G0M396": [
+      {
+        "ts": "1791268920.000405",
+        "time": "2026-10-05 23:42:00 PDT",
+        "user": "U0X028",
+        "text": "running late",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ]
+  }
+}

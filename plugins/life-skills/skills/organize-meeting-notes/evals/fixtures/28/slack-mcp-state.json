@@ -1,0 +1,104 @@
+{
+  "me": {
+    "id": "U0DAN",
+    "name": "dan.walker",
+    "display_name": "dan.walker",
+    "real_name": "Dan Walker",
+    "email": "dan.walker@example.com",
+    "title": "Engineering Manager",
+    "timezone": "America/Los_Angeles",
+    "org": "example-co"
+  },
+  "users": {
+    "U0DAN": {
+      "id": "U0DAN",
+      "name": "dan.walker",
+      "display_name": "dan.walker",
+      "real_name": "Dan Walker",
+      "email": "dan.walker@example.com",
+      "title": "Engineering Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0LENA": {
+      "id": "U0LENA",
+      "name": "lena.fischer",
+      "display_name": "lena.fischer",
+      "real_name": "Lena Fischer",
+      "email": "lena.fischer@example.com",
+      "title": "Site Reliability Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0JORDAN": {
+      "id": "U0JORDAN",
+      "name": "jordan.lee",
+      "display_name": "jordan.lee",
+      "real_name": "Jordan Lee",
+      "email": "jordan.lee@example.com",
+      "title": "Senior Engineer",
+      "timezone": "America/Los_Angeles"
+    }
+  },
+  "channels": {
+    "C0PLATOPS": {
+      "id": "C0PLATOPS",
+      "name": "platform-ops",
+      "purpose": "Platform operations",
+      "creator": "U0LENA",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "public_channel"
+    }
+  },
+  "messages": {
+    "C0PLATOPS": [
+      {
+        "ts": "1790974080.000100",
+        "time": "2026-10-02 13:48:00 PDT",
+        "user": "U0JORDAN",
+        "text": "anyone else seeing the cache hit rate dip on the edge nodes?",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1790975112.000300",
+        "time": "2026-10-02 14:05:12 PDT",
+        "user": "U0LENA",
+        "text": "did anyone change the cache alert threshold in the last month?",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1790975920.000400",
+        "time": "2026-10-02 14:18:40 PDT",
+        "user": "U0JORDAN",
+        "text": "yes, me. I raised it for the load test on the 14th and never put it back",
+        "thread_ts": "1790975112.000300",
+        "reactions": []
+      },
+      {
+        "ts": "1790976365.000500",
+        "time": "2026-10-02 14:26:05 PDT",
+        "user": "U0LENA",
+        "text": "yes, the dip lines up with the outage start. graph is in the review doc",
+        "thread_ts": "1790974080.000100",
+        "reactions": []
+      },
+      {
+        "ts": "1790976800.000600",
+        "time": "2026-10-02 14:33:20 PDT",
+        "user": "U0JORDAN",
+        "text": "I'll open a ticket to restore it and add a guard so it can't drift again",
+        "thread_ts": "1790975112.000300",
+        "reactions": []
+      },
+      {
+        "ts": "1790978700.000700",
+        "time": "2026-10-02 15:05:00 PDT",
+        "user": "U0LENA",
+        "text": "post-incident doc draft is up for comments",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ]
+  }
+}
