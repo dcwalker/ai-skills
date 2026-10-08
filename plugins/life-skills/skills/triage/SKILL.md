@@ -107,25 +107,24 @@ fetch, never *what* the scope is.
 
 ## Step 1: Assess Scale, Group, and Set the Order
 
-Before fetching full detail, get a lightweight count and title-only pass across
-the scoped set, keeping the items in the order the source returned them.
+Before fetching full detail, get a lightweight count and a listing pass (the
+listing-level fields Step 2 captures) across the scoped set, keeping the items
+in the order the source returned them.
 
-### 1a. Scale, groups, and pace
+### 1a. Scale and batch actions
 
-Under ~15 items, go straight into per-item processing. At 15+, use the
-title-only pass to spot groups of similar items (by sender, label, list,
-component, or keyword) and to agree a pace with the user: work each group's
-items one after another, and present Step 9's proposal-and-confirm summary
-every ~10 items rather than once at the very end. That changes only how often
-Step 9 runs, never whether a change is confirmed before it is applied.
+Under 15 items, go straight into per-item processing. At 15 or more, look for
+natural groups of similar items (by title or subject, sender, label, list,
+component, or keyword) that a batch action could cover: one label, move,
+archive, or merge applied to several items at once. Propose only batch actions
+the available tools can perform.
 
-A group can also take a batch action: one label, move, or archive applied to
-several items at once. Items the action moves out of scope are finished. Every
-item still in scope runs the full per-item loop (Steps 3 through 9) and is
-presented to the user individually, as if the batch had not happened.
-[references/sizing-and-tiers.md](references/sizing-and-tiers.md) has the pace
-wording, the batch membership check, and how a batch is presented; read it
-before proposing a batch action.
+Items a batch action moves out of scope are finished. Every item still in
+scope runs the full per-item loop (Steps 3 through 9) and is presented to the
+user individually, as if the batch had not happened.
+[references/sizing-and-tiers.md](references/sizing-and-tiers.md) has the batch
+membership check and how a batch is presented; read it before proposing a
+batch action.
 
 ### 1b. Processing order
 
@@ -136,7 +135,7 @@ a shared Jira query's `ORDER BY`, otherwise rank); a ranking signal (priority,
 an urgent label, Gmail Starred or Important, a due date); oldest first. An
 inbox goes Starred or Important first, then oldest first, without asking;
 `search_threads` lists newest first, so work its listing from the bottom up.
-At 15+ items, group first and order within each group.
+At 15 or more items, group first and order within each group.
 
 **Say the order.** Every reply that reports on the items opens with an
 `Order:` line naming the order and where it came from ("Order: list position,
@@ -465,9 +464,8 @@ Collect proposals into a summary and ask for confirmation before applying
 anything. Open with the `Order:` line, then group the items by outcome (for
 example: needs your attention, changed, no changes needed, archived), keeping
 the Step 1 processing order within each group; a batch entry sits in its
-group where its earliest item falls. For sets of 15+ items (Step 1), present
-and confirm this summary every ~10 items; otherwise present it once for the
-whole run. Do not present the same change in multiple places. Items with no
+group where its earliest item falls. Present it once for the whole run. Do not
+present the same change in multiple places. Items with no
 proposed changes still appear in the summary, flagged as "No changes — looks
 complete. Mark reviewed?" rather than being dropped.
 
@@ -572,7 +570,7 @@ never impose more structure than the work justifies.
   well-formed. A high-quality item still gets a checkpoint ("no changes
   needed, mark as reviewed or complete?") rather than being silently passed
   over. The user decides whether an item needs a change, not you by omission.
-- Groups and batch actions set order and pace, never an item's triage. After
+- Groups and batch actions set order, never an item's triage. After
   a batch action, only items it moved out of scope are finished; every item
   still in scope is presented to the user individually with its own proposed
   changes, even when several items' changes are identical, unless a later

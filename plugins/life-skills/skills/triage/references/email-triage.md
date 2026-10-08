@@ -47,7 +47,7 @@ For each thread, decide in this order:
 
 1. **Delete?** If the thread has no future value as either action or reference,
    propose deleting it. When the corpus is large, offer to group by sender and
-   bulk-delete obvious noise as a batch action (SKILL.md Step 1a). A thread
+   delete obvious noise as one batch action (SKILL.md Step 1a). A thread
    joins the batch only when its own subject and snippet show it is noise,
    not because it shares a sender with noise. Threads a batch action leaves
    in the inbox, such as after a batch label, still walk this tree

@@ -78,7 +78,7 @@ authorized up front go ahead in the chosen order meanwhile.
 
 ## Groups and order together
 
-At 15+ items (Step 1a), group first, then order. Items keep the chosen order
+At 15 or more items (Step 1a), group first, then order. Items keep the chosen order
 inside each group, and each group sits where its earliest item falls in that
 order. In an inbox going oldest first, a sender whose first thread is the
 oldest in the inbox is worked first, all of its threads together, even if its
