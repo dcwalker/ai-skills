@@ -285,7 +285,7 @@ Ask the user who did not attend. After response:
 When more than 20 people attended, or the names of everyone who attended
 cannot be established (as when the invite hides its guest list), skip that
 question and follow
-[references/broadcast-attendees.md](references/broadcast-attendees.md)
+[references/summarize-attendees.md](references/summarize-attendees.md)
 instead: the section names who was invited and how many attended, with no
 names.
 
