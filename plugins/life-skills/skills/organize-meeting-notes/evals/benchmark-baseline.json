@@ -1375,12 +1375,12 @@
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.8182,
-        "passed": 9,
-        "failed": 2,
+        "pass_rate": 1.0,
+        "passed": 11,
+        "failed": 0,
         "total": 11,
-        "time_seconds": 128.42,
-        "tokens": 51595,
+        "time_seconds": 116.95,
+        "tokens": 52760,
         "tool_calls": 8,
         "errors": null
       },
@@ -1388,57 +1388,57 @@
         {
           "text": "The transcript shows a Slack search bounded only by date before any chat finding is reported, and the Slack call log confirms its arguments: no topic keyword and no `from:` sender filter, with either a date term in the query or filters that includes Oct 2, 2026 (`on:2026-10-02`, or a `before:`/`after:` pair spanning it) or `before`/`after` Unix timestamps spanning 2:00 PM to 2:40 PM (1790974800 to 1790977200).",
           "passed": true,
-          "evidence": "slack-calls.log call 2 is slack_search_public_and_private with query \"\", keywords [], filters \"on:2026-10-02\", after 1790974800, before 1790977200, made in turn 1 before any chat finding was reported."
+          "evidence": "Turn-1 slack_search_public_and_private ran before any reply text with query 'on:2026-10-02', empty keywords/filters, no from:, after=1790974800 and before=1790977200."
         },
         {
           "text": "After the date-bounded search, the Slack call log shows `slack_read_channel` for #platform-ops (`C0PLATOPS` or `platform-ops`) whose `oldest` is empty or at most 1790974800 and whose `latest` is empty or at least 1790977200.",
           "passed": true,
-          "evidence": "slack-calls.log call 3 (after the search) is slack_read_channel on C0PLATOPS with oldest 1790974800 and latest 1790977200."
+          "evidence": "After the search, slack_read_channel C0PLATOPS ran with oldest=1790974800 and latest=1790977200."
         },
         {
           "text": "The Slack call log shows `slack_read_thread` for the 2:05 PM parent (`message_ts` 1790975112.000300). A channel read alone does not satisfy this, because a channel read does not return thread replies.",
           "passed": true,
-          "evidence": "slack-calls.log call 5 is slack_read_thread on C0PLATOPS with message_ts 1790975112.000300."
+          "evidence": "slack-calls.log shows slack_read_thread C0PLATOPS message_ts 1790975112.000300."
         },
         {
           "text": "The notes, or the chat proposals the user approved into them, carry the substance of Jordan Lee's two replies: the threshold was raised for a load test and never restored, and he is opening a ticket to restore it. Notes that present Lena's question as unanswered fail.",
           "passed": true,
-          "evidence": "Final notes say Jordan \"had raised it for a load test on October 14th and never put it back\" and the action item is \"Open a ticket to restore the cache alert threshold\", with the question marked resolved."
+          "evidence": "Final notes say Jordan 'raised it for a load test on the 14th and never put it back' and the follow-up is 'opening a ticket to restore the alert threshold'."
         },
         {
           "text": "The Slack call log shows `slack_read_thread` for the 1:48 PM parent (`message_ts` 1790974080.000100), or the response proposes Lena's 2:26 PM reply about the dip lining up with the outage start. A thread whose parent is outside the window still counts when a reply falls inside it.",
           "passed": true,
-          "evidence": "slack-calls.log call 4 is slack_read_thread with message_ts 1790974080.000100, and turn 1 lists Lena's 2:26 PM reply."
+          "evidence": "slack-calls.log shows slack_read_thread C0PLATOPS message_ts 1790974080.000100, and turn 1 proposes Lena's 2:26 PM reply."
         },
         {
           "text": "Neither the 1:48 PM parent nor the 3:05 PM message is presented as chat from during the meeting: wherever the 1:48 PM parent is shown, in the chat proposals or the notes, it is marked as posted before the meeting.",
           "passed": true,
-          "evidence": "Turn 1 labels the parent \"1:48 PM (just before the meeting)\" and the final notes say Jordan flagged the dip \"shortly before the meeting\"; the 3:05 PM message appears nowhere."
+          "evidence": "Turn 1 heads the 1:48 PM thread '(posted before the meeting)', turn 2 and the final notes say Jordan flagged the dip 'shortly before the meeting', and the 3:05 PM message never appears."
         },
         {
           "text": "Each thread's replies stay with their own parent: Lena's 2:26 PM reply (the dip lines up with the outage start) is presented as part of the 1:48 PM cache hit rate thread, never inside the alert-threshold exchange or as a comment on the threshold change, in the chat proposals and in the final notes.",
-          "passed": false,
-          "evidence": "Turn 1 lists the 2:26 PM reply only as \"Lena Fischer (reply)\" in one time-ordered list between Jordan's 2:18 PM threshold reply and his 2:33 PM reply, so the proposal never ties it to the 1:48 PM thread (the final notes do place it with the dip)."
+          "passed": true,
+          "evidence": "The 2:26 PM reply sits under the 1:48 PM thread block in turn 1 and in its own dip bullet in the final notes, separate from the threshold bullet."
         },
         {
           "text": "Lena's 2:19 PM reply ('same here, started around 1:30') is presented as part of the 1:48 PM cache hit rate thread, never as a response to Jordan's 2:18 PM threshold confession or as agreement with him.",
           "passed": true,
-          "evidence": "Turn 1 labels the 2:19 PM reply \"(reply to Jordan's earlier question)\" and the line 1 question ties it to \"the cache hit-rate dip Jordan flagged at 1:48 PM, which Lena said started around 1:30\"; it is never framed as agreeing with the threshold confession."
+          "evidence": "The 2:19 PM reply is listed under the 1:48 PM thread in turn 1 and used in the final notes only as 'Lena confirmed it started around 1:30 PM' in the dip bullet."
         },
         {
           "text": "Lena's 2:19 PM and 2:26 PM replies are proposed as a follow-up on Jordan's 1:48 PM question, with that question shown as context posted before the meeting, and the proposal says the follow-up relates to the meeting's content (the outage under review).",
-          "passed": false,
-          "evidence": "Turn 1 presents the 1:48 PM parent and both replies as separate entries in a flat interleaved list headed \"during the meeting window\", with the 2:26 PM reply unattached, rather than proposing the replies as a follow-up on Jordan's question; relevance is only stated for the chat as a whole."
+          "passed": true,
+          "evidence": "Turn 1 shows Jordan's 1:48 PM question marked 'posted before the meeting' with both Lena replies and says 'This follow-up during the meeting relates directly to the incident being reviewed.'"
         },
         {
           "text": "The chat disclosure line names #platform-ops among the conversations read.",
           "passed": true,
-          "evidence": "Turn 1 disclosure: \"read #platform-ops (the only active conversation) and both threads in it.\""
+          "evidence": "Turn 1 says 'searched 2:00 PM to 2:40 PM by date only (`on:2026-10-02`); read #platform-ops.'"
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "tools.log has no create-trello-task.sh invocation; the only mention in events.jsonl is the skill text."
+          "evidence": "tools.log has no Bash call running create-trello-task.sh; the only Bash call is a date conversion."
         }
       ]
     },
@@ -1825,12 +1825,12 @@
     }
   ],
   "summary": {
-    "pass_rate": 0.9313,
-    "expectations_passed": 217,
+    "pass_rate": 0.9399,
+    "expectations_passed": 219,
     "expectations_total": 233,
-    "mean_time_seconds": 125.1,
+    "mean_time_seconds": 124.7,
     "stdev_time_seconds": 71.0,
-    "mean_tokens": 47966,
-    "stdev_tokens": 12507
+    "mean_tokens": 47998,
+    "stdev_tokens": 12518
   }
 }

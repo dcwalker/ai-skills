@@ -8,9 +8,9 @@
 
 | Metric | With Skill |
 |--------|------------|
-| Pass Rate | 93% ± 11% |
-| Time | 125.1s ± 71.0s (n=36) |
-| Tokens | 47966 ± 12507 (n=36) |
+| Pass Rate | 94% ± 11% |
+| Time | 124.7s ± 71.0s (n=36) |
+| Tokens | 47998 ± 12518 (n=36) |
 
 ## Per-eval results
 
@@ -43,7 +43,7 @@
 | 25 | 8/8 | 139.9 | 46883 |
 | 26 | 8/8 | 240.0 | 61790 |
 | 27 | 7/7 | 133.2 | 49079 |
-| 28 | 9/11 | 128.4 | 51595 |
+| 28 | 11/11 | 117.0 | 52760 |
 | 29 | 8/8 | 72.4 | 43250 |
 | 30 | 5/5 | 153.2 | 56939 |
 | 31 | 5/5 | 137.2 | 41026 |
@@ -55,11 +55,11 @@
 
 ## Notes
 
-- 36 evals and 36 recorded runs pass 217/233 expectations, with 25 evals passing every expectation. Graders checked every claimed search, read, and card against the stub call logs, `events.jsonl`, `tools.log`, and saved workspace files rather than the executor's own report.
+- 36 evals and 36 recorded runs pass 219/233 expectations, with 26 evals passing every expectation. Graders checked every claimed search, read, and card against the stub call logs, `events.jsonl`, `tools.log`, and saved workspace files rather than the executor's own report.
 - This baseline accompanies issue #96. Step 1b gains a source list, thread replies (each kept in its own block, a short reply read against its own parent, and a reply that continues a pre-meeting thread proposed as a follow-up with that parent as context), the timestamp-plus-date retry, a rule against reporting search-result context, and a timestamp search in place of a partial conversation listing. Step 3 replaces the roster with one line (who was invited, how many attended) when more than 20 attended or the names cannot all be established. Step 7 treats a request for the final document as approval of every pending stage. A Quality Rule covers re-checking work already produced.
-- This run is the first without the identity leak: trials started from a Claude Code session had inherited the developer's account email through `CLAUDE_CODE_*` variables, which `evals/lib/isolation-env.sh` now unsets. An earlier full run on this branch with the leak scored 223/231; this one scores 217/233. On the 173 expectations shared with the 2026-10-07 baseline, it scores 159 against 161.
+- This run is the first without the identity leak: trials started from a Claude Code session had inherited the developer's account email through `CLAUDE_CODE_*` variables, which `evals/lib/isolation-env.sh` now unsets. An earlier full run on this branch with the leak scored 223/231; this one scores 219/233. On the 173 expectations shared with the 2026-10-07 baseline, it scores 159 against 161.
 - New evals: 28 (thread replies, with a short reply that lands beside another thread's reply in time, and a follow-up on a pre-meeting thread), 29 (large account), 30 (attendee summary line), 31 (finalize on request), 32 (email), 33 (the 20-attendee boundary), 34 (listing fallback), 35 (re-checking a saved file), and 36 (connected calendar).
-- Eval 28 was strengthened after the rest of this run, and the thread rules in Step 1b changed with it, so its row is the first of three runs on the final text (9/11, 11/11, 10/11). No other eval's fixture has thread replies, so the rest of the run is unaffected by that change. Across nine runs since the thread rule was first strengthened, the final notes kept every reply with its own thread; the remaining failures are in how the first proposal lays out the threads, which one run in three still flattened into a single time-ordered list.
+- Eval 28 was strengthened after the rest of this run, and the thread rules in Step 1b changed with it, so its row is the first of three runs on the final text (11/11, 11/11, 9/11). The final text adds a worked two-thread example and says time order applies between threads, never across them; on the previous wording, one run in three flattened the threads into a single time-ordered list (9/11, 11/11, 10/11), and on this text none did. The 9/11 run laid the threads out correctly but left the pre-meeting thread out of the notes, against the rule to keep every in-window message unless the user declines it. No other eval's fixture has thread replies, so the rest of the run is unaffected by these changes.
 - Failures elsewhere include runs that ended before a final document (7), a missing agenda-item link (7), the summary rule (14), drafting without asking for every due date (15), and an unconfirmed action item (22). Eval 27's Trello fixture now pins `stub_now`; without it, the case passed or failed by run date, and it failed on main as well.
 - Harness changes this run used: the Slack stub returns thread replies from search, pages, lists conversations, and can refuse search; the Gmail stub supports `OR`, phrases, and parentheses; a calendar stub is new; trials get an explicit `--tools` set, the driver stops on a login failure, and the host account's identity variables are unset.
 - Run method: `evals/lib/run-mcp-trials.sh` with `SIMULATED_USER=1` (evals without `follow_ups` get a simulated user; the rest use their scripted follow-ups).
