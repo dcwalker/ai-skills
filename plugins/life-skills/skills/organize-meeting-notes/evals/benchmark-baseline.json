@@ -55,36 +55,36 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 104.08,
-        "tokens": 42235,
-        "tool_calls": 10,
+        "time_seconds": 92.18,
+        "tokens": 45037,
+        "tool_calls": 15,
         "errors": null
       },
       "expectations": [
         {
           "text": "Attendees are formatted in title case with -contractor stripped, deduplicated to two people despite the duplicate email, and sorted alphabetically by first name: 'Sarah Chen' and Rivera, whose 'j.' initial is either expanded to the first name the user gives when asked (Step 3) or left as 'J. Rivera', never expanded by guesswork.",
           "passed": true,
-          "evidence": "Final Attendees list 'Jorge Rivera' then 'Sarah Chen': duplicate sarah.chen collapsed, -contractor stripped, and 'Jorge' came from the user's answer to the turn-1 question about J.'s first name."
+          "evidence": "Final Attendees lists 'Jose Rivera' then 'Sarah Chen' (deduplicated, -contractor dropped, alphabetical), and 'Jose' came from the user's answer after the skill asked for the first name behind 'j.'."
         },
         {
           "text": "The transcript shows a genuine per-line interview (at least one clarifying question per raw note line) before the notes are finalized as complete sentences -- the skill does not fabricate finished notes without first asking about each line.",
           "passed": true,
-          "evidence": "Turns 2, 3, and 5 each ask a separate question about raw lines 1, 2, and 3 respectively before the notes draft appears in turn 6."
+          "evidence": "Each of the three raw lines got its own question in turns 3, 5, and 8, with a confirmed paraphrase before moving on, before the draft in turn 10."
         },
         {
           "text": "Exactly two create-trello-task.sh invocations occur (one per confirmed action item), each with --desc including the meeting title 'Weekly Sync' and a February 2026 date.",
           "passed": true,
-          "evidence": "trello-calls.log has exactly two entries, each desc beginning 'From Weekly Sync on Feb 27, 2026 (11:00-11:30 AM)'."
+          "evidence": "trello-calls.log has exactly two entries, both with --desc starting 'From Weekly Sync meeting on Feb 27, 2026'."
         },
         {
           "text": "The final Markdown document's Action Items section links each item as `- [ ] [<text>](<trello card url>)` using the exact URLs the fixture returned, not fabricated URLs.",
           "passed": true,
-          "evidence": "Both Action Items are '- [ ] [text](url)' using https://trello.com/c/omn1a2b3/... and https://trello.com/c/omn4c5d6/..., matching the URLs in trello-calls.log."
+          "evidence": "Final Action Items link to https://trello.com/c/omn1a2b3/email-finance-about-budget-discrepancy and https://trello.com/c/omn4c5d6/schedule-vendor-follow-up-on-pricing, exactly the URLs in trello-calls.log."
         },
         {
           "text": "The final document's section order is exactly: metadata block, ###### Attendees, ###### Notes, ###### Action Items, matching Step 8.",
           "passed": true,
-          "evidence": "Final document runs metadata block, ###### Attendees, ###### Notes, ###### Action Items, followed only by the Step 8 '#### 2026-02-27 11:00: Weekly Sync' footer."
+          "evidence": "Final document runs metadata, ###### Attendees, ###### Notes, ###### Action Items, then the Step 8 '#### 2026-02-27 11:00: Weekly Sync' footer."
         }
       ]
     },
@@ -97,31 +97,31 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 58.04,
-        "tokens": 33964,
-        "tool_calls": 7,
+        "time_seconds": 60.26,
+        "tokens": 35790,
+        "tool_calls": 9,
         "errors": null
       },
       "expectations": [
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "No trello-calls.log exists and tools.log has no create-trello-task.sh invocation."
+          "evidence": "No trello-calls.log exists and tools.log has no create-trello-task.sh call."
         },
         {
           "text": "The transcript explicitly confirms with the user that there are no action items, rather than silently omitting the section or inventing one.",
           "passed": true,
-          "evidence": "Final reply states 'No action items to confirm -- you flagged upfront that none were expected, and that held,' explicitly addressing the absence using the user's own upfront confirmation after the user said to finalize."
+          "evidence": "The assistant said it would confirm action items explicitly after approval, and the user replied 'yes, no action items on this one', so the absence was confirmed in the transcript rather than silently assumed."
         },
         {
           "text": "The final document's Action Items section reflects that none exist (e.g. states none, or is empty/omitted per the skill's own formatting for this case) rather than containing a fabricated item.",
           "passed": true,
-          "evidence": "Final document has '###### Action Items' followed by 'None.' with no fabricated item."
+          "evidence": "Final document's ###### Action Items section reads 'None.' with no fabricated item."
         },
         {
           "text": "The skill never asks 'create Trello tasks?' at all, since Step 7.8 only reaches that question when action items were confirmed.",
           "passed": true,
-          "evidence": "Neither assistant message mentions Trello or asks about creating cards."
+          "evidence": "No turn in conversation.txt asks about creating Trello tasks."
         }
       ]
     },
@@ -134,31 +134,31 @@
         "passed": 3,
         "failed": 1,
         "total": 4,
-        "time_seconds": 130.34,
-        "tokens": 40191,
-        "tool_calls": 8,
+        "time_seconds": 85.82,
+        "tokens": 40741,
+        "tool_calls": 9,
         "errors": null
       },
       "expectations": [
         {
           "text": "The skill explicitly asks whether to create a Trello task for the confirmed action item before proceeding.",
           "passed": false,
-          "evidence": "The assistant never asked the Trello question: the user volunteered 'don't bother creating cards this time' while approving the notes draft, and the assistant replied 'Noted -- no Trello cards' before even presenting the action item."
+          "evidence": "The skill never asked about Trello: the user volunteered 'don't bother creating cards' at draft approval, and the assistant also self-confirmed the action item ('Confirmed correct, and skipping Trello per your note') without asking 'Are these action items correct?'."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur, since the user declines.",
           "passed": true,
-          "evidence": "No trello-calls.log exists and tools.log has no create-trello-task.sh invocation."
+          "evidence": "No trello-calls.log exists and tools.log has no create-trello-task.sh call."
         },
         {
           "text": "The final document's Action Items section contains the item as a plain `- [ ] <text>` line with no Trello link, since no card was created.",
           "passed": true,
-          "evidence": "Final Action Items line is '- [ ] Dan Walker: Draft a proposal for the new tooling budget (no firm deadline set -- \"soon\")' with no link."
+          "evidence": "Final Action Items line is '- [ ] Dan Walker: Draft a proposal for the new tooling budget by Friday (Mar 13, 2026)' with no link."
         },
         {
           "text": "The final document is still produced (declining Trello creation does not abort the whole task, per Step 7.8's 'skip Trello creation' framing, not 'stop entirely').",
           "passed": true,
-          "evidence": "The final reply contains the full document (metadata, Attendees, Notes, Action Items, footer)."
+          "evidence": "A complete final document with the '#### 2026-03-05 14:00: 1:1 with Manager' footer was produced after Trello was declined."
         }
       ]
     },
@@ -171,8 +171,8 @@
         "passed": 3,
         "failed": 1,
         "total": 4,
-        "time_seconds": 156.71,
-        "tokens": 47538,
+        "time_seconds": 178.47,
+        "tokens": 49299,
         "tool_calls": 16,
         "errors": null
       },
@@ -180,22 +180,22 @@
         {
           "text": "Exactly two create-trello-task.sh invocations are attempted, one per confirmed action item.",
           "passed": false,
-          "evidence": "tools.log and trello-calls.log show four create-trello-task.sh invocations (two initial, then retries in turn 11 including one after 'sleep 30', and one more in turn 12; counts.json create_card: 4), not exactly two."
+          "evidence": "Far more than two invocations were attempted: tools.log shows a failed relative-path run, the successful pricing-sheet run, the procurement run, three procurement retries (one foreground sleep, one background, one at turn 11), and a recreate of the pricing card, with trello-calls.log recording four calls."
         },
         {
           "text": "The action item whose call succeeded is linked in the final document using the exact fixture-returned URL.",
           "passed": true,
-          "evidence": "The pricing-sheet item is linked to https://trello.com/c/omn7e8f9/update-internal-pricing-sheet, the URL returned in the first trello-calls.log entry."
+          "evidence": "The last final document keeps the exact fixture URL https://trello.com/c/omn7e8f9/update-internal-pricing-sheet on the pricing-sheet item (as an 'old card to replace' note after the user asked for a recreate), and the earlier final document linked it as [text](url); no other URL was used."
         },
         {
           "text": "The action item whose call failed is NOT given a fabricated or guessed URL -- it either remains a plain unlinked checklist item with the failure surfaced to the user, or the skill pauses and asks how to proceed before finalizing that item.",
           "passed": true,
-          "evidence": "The procurement item stays an unlinked '- [ ]' line annotated 'Trello card not yet created -- hit a rate limit', and the assistant paused to ask how to proceed after the first failure."
+          "evidence": "The procurement item stays a plain '- [ ] I need to loop in the procurement team...' line in both final documents, with no URL."
         },
         {
           "text": "The transcript explicitly reports the create-trello-task.sh failure (e.g. its error message) rather than silently treating it as a success or omitting it from the report.",
           "passed": true,
-          "evidence": "The assistant reported 'The second card failed -- Trello returned a rate-limit error', matching the 'rate limit exceeded' error in trello-calls.log."
+          "evidence": "The assistant reported 'the second hit a Trello rate limit error', matching the 'Trello API error: rate limit exceeded' entry in trello-calls.log, and asked how to proceed."
         }
       ]
     },
@@ -204,35 +204,35 @@
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 1.0,
-        "passed": 4,
-        "failed": 0,
+        "pass_rate": 0.75,
+        "passed": 3,
+        "failed": 1,
         "total": 4,
-        "time_seconds": 108.36,
-        "tokens": 41229,
+        "time_seconds": 84.84,
+        "tokens": 38302,
         "tool_calls": 6,
         "errors": null
       },
       "expectations": [
         {
           "text": "The final metadata line's End field shows the original 3:30 PM struck through with the corrected 3:45 PM appended, matching the skill's documented mismatch-correction pattern -- not silently left as just 3:30 PM and not silently corrected without showing the original.",
-          "passed": true,
-          "evidence": "Final metadata line reads 'End: ~~3:30 PM~~ **3:45 PM**' with Duration 45 minutes."
+          "passed": false,
+          "evidence": "Final metadata reads 'End: **3:30 PM** \u2022 Duration: **30 minutes**' with no strikethrough; the skill offered the 3:45 PM correction, but the user said the 45 minutes was a typo, so the documented ~~3:30 PM~~ **3:45 PM** pattern never appears."
         },
         {
           "text": "Kim Park's name appears with strikethrough formatting in the final Attendees section, since the user stated she did not attend despite being invited.",
           "passed": true,
-          "evidence": "Final Attendees section includes '~~Kim Park~~'."
+          "evidence": "Final Attendees contains '~~Kim Park~~'."
         },
         {
           "text": "The other two attendees (Singh and Nguyen) are correctly title-cased with '-contractor' stripped from Singh, and each 'r.' or 't.' initial is either expanded to the first name the user gives when asked (Step 3) or left as an initial, never expanded by guesswork.",
           "passed": true,
-          "evidence": "Final Attendees show 'Rahul Singh' and 'Tam Nguyen', first names taken from the user's answer to the turn-1 question, with -contractor stripped from Singh."
+          "evidence": "Final Attendees lists 'Raj Singh' and 'Tam Nguyen', with '-contractor' stripped and both first names taken from the user's answers to the skill's explicit questions."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur, since no action items exist in this content.",
           "passed": true,
-          "evidence": "No trello-calls.log exists and tools.log has no create-trello-task.sh invocation."
+          "evidence": "No trello-calls.log exists and tools.log has no create-trello-task.sh call."
         }
       ]
     },
@@ -245,36 +245,36 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 206.82,
-        "tokens": 45474,
-        "tool_calls": 13,
+        "time_seconds": 78.8,
+        "tokens": 39818,
+        "tool_calls": 7,
         "errors": null
       },
       "expectations": [
         {
           "text": "The transcript shows the skill either asking about the ambiguous initials before finalizing names, or correctly using the full names already supplied in the prompt ('Alex Lee', 'Amy Wong') without guessing a different expansion of the 'a.' initial for either person.",
           "passed": true,
-          "evidence": "The assistant used the prompt-supplied names directly ('You said Alex Lee and Amy Wong both attended') without guessing other expansions."
+          "evidence": "The assistant used the names the user supplied ('Confirming: **Alex Lee** and **Amy Wong**') and never guessed another expansion of 'a.'."
         },
         {
           "text": "The final Attendees section lists 'Alex Lee' and 'Amy Wong' (title case, alphabetically sorted by first name), not 'A. Lee'/'A. Wong' or an incorrect guessed name.",
           "passed": true,
-          "evidence": "Final Attendees list 'Alex Lee', 'Amy Wong', 'Dan Walker' in alphabetical order by first name."
+          "evidence": "Final Attendees lists 'Alex Lee', 'Amy Wong', 'Me' in alphabetical order."
         },
         {
           "text": "Exactly one create-trello-task.sh invocation occurs, for the mockup-update action item, with --desc including the meeting title 'Design Review'.",
           "passed": true,
-          "evidence": "trello-calls.log has one entry for 'Update the checkout flow mockups...' with desc 'From the Design Review meeting on Mar 15, 2026...'."
+          "evidence": "trello-calls.log has exactly one entry, for 'Update the checkout flow mockups...', with desc 'From Design Review meeting on Mar 15, 2026...'."
         },
         {
           "text": "The mockup action item keeps the user's 'by Friday' wording and adds the calendar date it refers to, Mar 20, 2026 (the Friday after the Sunday, Mar 15 meeting), rather than dropping the due date or replacing the user's words with the date alone.",
           "passed": true,
-          "evidence": "Final action item reads '...share with Alex and Amy by Friday (Mar 20, 2026)', keeping 'by Friday' and adding the date."
+          "evidence": "The action item reads 'Update the checkout flow mockups and share with Alex and Amy by Friday (Mar 20, 2026)'."
         },
         {
           "text": "The final document's Action Items section links the item using the exact fixture-returned card URL.",
           "passed": true,
-          "evidence": "The action item links https://trello.com/c/omn9g0h1/update-checkout-mockups, the URL in trello-calls.log."
+          "evidence": "Final Action Items link to https://trello.com/c/omn9g0h1/update-checkout-mockups, matching trello-calls.log."
         }
       ]
     },
@@ -283,55 +283,55 @@
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.875,
-        "passed": 7,
-        "failed": 1,
+        "pass_rate": 0.625,
+        "passed": 5,
+        "failed": 3,
         "total": 8,
-        "time_seconds": 181.13,
-        "tokens": 44354,
-        "tool_calls": 9,
+        "time_seconds": 84.22,
+        "tokens": 40993,
+        "tool_calls": 8,
         "errors": null
       },
       "expectations": [
         {
           "text": "The final document contains an italic schedule-adherence line derived from the pasted calendar event, stating the meeting ran (or ended) 12 minutes long -- correct arithmetic from the 10:30 scheduled end vs 10:42 actual end -- and this line was proposed and approved before inclusion, not silently inserted.",
-          "passed": true,
-          "evidence": "Turn 1 proposed '*Scheduled for 30 minutes; ran 12 minutes long.*', the user said 'Yes, add that schedule note', and the final document carries that italic line."
+          "passed": false,
+          "evidence": "No final document was produced: the run ends at the turn-5 draft question 'Does this all look correct?' with no reply (simulated-user-turns is 4); the schedule line was approved, but it exists only in the draft."
         },
         {
           "text": "The End time in the metadata line is NOT struck through: 10:42 matches Start + Duration, so the time-correction rule does not fire; the schedule note is the only place the overrun appears.",
           "passed": true,
-          "evidence": "Final metadata End is '**10:42 AM**' with no strikethrough."
+          "evidence": "The draft metadata line shows 'End: **10:42 AM**' with no strikethrough; the overrun appears only in the schedule note."
         },
         {
           "text": "The roadmap-doc note carries the https://docs.example.com/q3-roadmap link as a Markdown hyperlink with a one-to-two-sentence summary sourced from what the simulated user actually said about the document -- not from a fabricated fetch of an unreachable URL.",
           "passed": false,
-          "evidence": "The roadmap note reads 'Priya Raman walked through the revised roadmap doc, which pushed the reporting milestone back slightly...' with no Markdown hyperlink; the link appears only in the Agenda section."
+          "evidence": "The roadmap note reads only 'Priya Raman presented the revised roadmap doc.', with no hyperlink and no summary; the link appears only in the Agenda, and the user declined to describe the doc."
         },
         {
           "text": "PLAT-482 appears in the final notes only with detail the user provided in the interview; no invented status, summary, or tracker link is attached to it (no ticket tracker was available).",
           "passed": true,
-          "evidence": "The PLAT-482 note only states Priya raised the concern and engineering has not scoped it, both from the user's interview answer, with no tracker link or invented status."
+          "evidence": "PLAT-482 appears only as an unestimated key that blocks scheduling, which the user stated, with no status, summary, or tracker link (the WebFetch was for the roadmap URL, not a tracker)."
         },
         {
           "text": "The interview still covers every raw note line individually, and the final document follows the standard order (metadata, attendees, agenda, notes, action items) with the interview's clarifications incorporated.",
-          "passed": true,
-          "evidence": "Lines 1, 2, and 3 were each asked separately in turns 1 to 3, and the final order is metadata, Attendees, Agenda, Notes, Action Items."
+          "passed": false,
+          "evidence": "Every line was interviewed individually, but no final document was produced and the draft has no Action Items section, so the standard final order was never output."
         },
         {
           "text": "An `###### Agenda` section sits between `###### Attendees` and `###### Notes`, listing the calendar event's two agenda items in their original order and wording, with the roadmap link rendered as a Markdown hyperlink, and no items the agenda did not list.",
           "passed": true,
-          "evidence": "The Agenda section between Attendees and Notes lists '1. Walk through revised roadmap doc (link: [https://docs.example.com/q3-roadmap](...))' and '2. Confirm milestone dates', and nothing else."
+          "evidence": "The draft's ###### Agenda sits between Attendees and Notes, listing '1. Walk through revised roadmap doc (link: [https://docs.example.com/q3-roadmap](...))' and '2. Confirm milestone dates' in the calendar's order and wording."
         },
         {
           "text": "If the flow reaches Trello card creation, every card link in the final document is the exact URL returned by a real create-trello-task.sh invocation (verifiable in the fixture call log); a claimed creation with no corresponding log entry is a fabricated tool result and fails this.",
           "passed": true,
-          "evidence": "Trello creation was declined, no trello-calls.log exists, and the final document contains no card links."
+          "evidence": "The flow never reached Trello creation, and no card link or claimed creation appears (no trello-calls.log)."
         },
         {
           "text": "Once the action items are confirmed, the skill asks whether to create Trello cards. If it then cannot run create-trello-task.sh (by name or as the bundled scripts/create-trello-task.sh), the reply tells the user the cards were not created and why. Finalizing without asking the Trello question, or skipping card creation without saying so, fails.",
           "passed": true,
-          "evidence": "After the action items were confirmed the assistant asked 'Would you like me to create a Trello card for this action item?'"
+          "evidence": "Action items were never reached or confirmed, so the conditional never triggered, and nothing was finalized or claimed about cards. This is a vacuous pass on a truncated run."
         }
       ]
     },
@@ -344,36 +344,36 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 83.04,
-        "tokens": 39775,
-        "tool_calls": 9,
+        "time_seconds": 95.3,
+        "tokens": 38328,
+        "tool_calls": 8,
         "errors": null
       },
       "expectations": [
         {
           "text": "The response addresses the user's enrichment request honestly: it reports Slack as checked with nothing found for this meeting, and calendar and email as not available in this session (or asks the user to paste them), rather than ignoring the request or pretending to have found context.",
           "passed": true,
-          "evidence": "Turn 1 says no calendar or email tool is available and 'Chat: searched 2:00 PM to 2:20 PM by date only (on:2026-07-30); nothing to read', matching the empty slack_search_public_and_private result in slack-calls.log."
+          "evidence": "The turn-1 reply says Calendar/Email are 'not connected in this session' and that chat was 'searched 2:00 PM to 2:20 PM by date only (on:2026-07-30); nothing to read', matching the empty slack_search_public_and_private result."
         },
         {
           "text": "No schedule-adherence line appears anywhere in the final document -- there is no scheduled time to compare against, and one must not be estimated.",
           "passed": true,
-          "evidence": "The final metadata line is followed directly by ###### Attendees with no schedule-adherence line."
+          "evidence": "The final metadata line is followed directly by ###### Attendees, with no italic schedule line."
         },
         {
           "text": "The final notes contain only facts the user provided in the raw notes and interview answers; no agenda items, chat messages, email threads, link summaries, or work item details are invented.",
           "passed": true,
-          "evidence": "The notes contain only the user's raw notes plus interview answers (no blockers, weekend coverage question left open pending the support team), with no agenda, chat, email, or link content."
+          "evidence": "Final notes contain only the raw lines plus the user's answers (status check-in, Sam's response-time question, still open with Dan to follow up), with no agenda, chat, email, link, or ticket content."
         },
         {
           "text": "The normal flow still completes: every raw note line is interviewed individually, attendees are formatted from the emails, and the standard section order is produced.",
           "passed": true,
-          "evidence": "Notes 1 and 2 were asked separately ('Note 1 of 2', 'Note 2 of 2'), attendees came out as 'Dan Walker' and 'Sam Ortiz', and the order is metadata, Attendees, Notes, Action Items."
+          "evidence": "Both lines were interviewed separately, attendees were formatted 'Dan Walker'/'Sam Ortiz', and the final order is metadata, Attendees, Notes, Action Items, footer."
         },
         {
           "text": "If the flow reaches Trello card creation, the card link in the final document is the exact URL returned by a real create-trello-task.sh invocation (verifiable in the fixture call log); a claimed creation with no corresponding log entry is a fabricated tool result and fails this.",
           "passed": true,
-          "evidence": "The card link https://trello.com/c/omn8t5u6/check-sla-terms matches the single trello-calls.log entry."
+          "evidence": "The user declined the Trello card, no trello-calls.log exists, and the final document has no card link."
         }
       ]
     },
@@ -386,46 +386,46 @@
         "passed": 7,
         "failed": 0,
         "total": 7,
-        "time_seconds": 218.21,
-        "tokens": 67756,
-        "tool_calls": 10,
+        "time_seconds": 353.16,
+        "tokens": 78369,
+        "tool_calls": 18,
         "errors": null
       },
       "expectations": [
         {
           "text": "The Notes section is divided into topic sections marked as bold label lines (e.g. `**Hiring**`), not as Markdown headings, with every note assigned to exactly one section and the sections ordered as the meeting covered them.",
           "passed": true,
-          "evidence": "Notes are grouped under bold lines (**Hiring**, **Postgres Migration**, **Vendor Support Contract**, **Customer Escalations**, **Budget**, **Roadmap**) with each of the 30 notes in exactly one section, following raw-note order."
+          "evidence": "Notes use bold label lines (**Hiring & Backfills**, **Postgres Migration**, **Customer Escalations**, **Q4 Budget**, **Roadmap**), not headings, with each of the 30 notes in exactly one section, in raw-note order."
         },
         {
           "text": "The section count and names reflect the meeting's own topics (roughly: hiring, the Postgres migration, customer escalations, the Q4 budget, and roadmap commitments), rather than a single flat list or an invented catch-all section such as 'Other'.",
           "passed": true,
-          "evidence": "The sections match the expected hiring, migration, escalations, budget, and roadmap topics, plus a 'Vendor Support Contract' section for raw lines 11-12, with no flat list and no 'Other' catch-all."
+          "evidence": "The five sections match the expected topics (hiring, Postgres migration, escalations, Q4 budget, roadmap), with no catch-all section."
         },
         {
           "text": "An italicized summary appears directly under the metadata line and before `###### Attendees`, runs two to three sentences for a Notes section in the ~500 to ~1000 word band, and contains only facts already present in the notes -- no new conclusions and no action items restated as a to-do list.",
           "passed": true,
-          "evidence": "A three-sentence italic summary sits directly under the metadata line and before ###### Attendees for a reported ~634-word Notes section, and each sentence restates a note (roadmap trimmed nine to five, untested rollback plan, real fix in 4.2)."
+          "evidence": "A three-sentence italic summary sits under the metadata line before ###### Attendees for 745 words of notes, and each sentence restates a note (migration slip, Northwind SLA breach, roadmap trim) with no action items."
         },
         {
           "text": "The transcript shows the length measurement that justified the summary (a word and/or line count of the Notes section reported to the user), rather than an unexplained decision to add one.",
           "passed": true,
-          "evidence": "The draft reply reports '~634 words / 30 lines across 6 topic sections', backed by a wc -w/wc -l Bash call in tools.log."
+          "evidence": "The assistant reported 'Notes measure at 745 words / 30 lines, and they split into 5 clear topics', backed by a wc run in tools.log returning 745 and 30."
         },
         {
           "text": "The summary reads as prose rather than a list: it contains no semicolons, and no sentence is built by chaining clauses together with 'and'.",
           "passed": true,
-          "evidence": "The summary has no semicolons, and its only 'and' joins nouns ('the flat budget and no new headcount'), not clauses."
+          "evidence": "The summary has no semicolons, and its only 'and' joins two descriptive phrases ('carrying a financial penalty and open longer'), not two clauses."
         },
         {
           "text": "The transcript shows a genuine per-line interview covering all thirty raw note lines individually, not batched questions or notes fabricated without asking.",
           "passed": true,
-          "evidence": "The conversation contains 30 separate '**Line N:**' questions, one per raw note line, each followed by a user answer."
+          "evidence": "events.jsonl shows a separate question for every line 1 to 30 (lines 5, 11, 20, 23, 26, and 28 included, some re-sent after stray tool calls), each answered before the next."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur, since the user declined cards.",
           "passed": true,
-          "evidence": "No trello-calls.log exists and tools.log has no create-trello-task.sh invocation."
+          "evidence": "No trello-calls.log exists and tools.log has no create-trello-task.sh call."
         }
       ]
     },
@@ -438,36 +438,36 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 76.02,
-        "tokens": 34750,
-        "tool_calls": 6,
+        "time_seconds": 102.05,
+        "tokens": 43989,
+        "tool_calls": 7,
         "errors": null
       },
       "expectations": [
         {
           "text": "The Notes section is a single flat bulleted list with no bold topic labels and no sub-sections.",
           "passed": true,
-          "evidence": "The final Notes section is two plain bullets with no bold labels or sub-sections."
+          "evidence": "Notes are two plain bullets with no bold labels or sub-sections."
         },
         {
           "text": "No summary line appears between the metadata block and `###### Attendees` (nor anywhere else), since the notes are far below the length thresholds.",
           "passed": true,
-          "evidence": "The final document goes straight from the metadata line to ###### Attendees with no italic summary anywhere; the draft only says no summary is needed."
+          "evidence": "The metadata line is followed directly by ###### Attendees, with no summary anywhere."
         },
         {
           "text": "The transcript shows the skill asking a clarifying question about each of the two raw note lines before finalizing them.",
           "passed": true,
-          "evidence": "The assistant asked one question about the export-fix line and a separate question about the staging-credentials line before drafting."
+          "evidence": "The turn-1 reply asks a question about each raw line, 'Note 1' and 'Note 2' (batched into one message, but one per line), before the draft."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "tools.log has no create-trello-task.sh invocation (only Skill, ToolSearch, two Slack calls, and two Bash date/no-op commands)."
+          "evidence": "No trello-calls.log exists and tools.log has no create-trello-task.sh call."
         },
         {
           "text": "The final document still follows the standard order: metadata block, ###### Attendees, ###### Notes, ###### Action Items.",
           "passed": true,
-          "evidence": "The final entry runs ## metadata, ###### Attendees, ###### Notes, ###### Action Items in that order."
+          "evidence": "Final order is metadata, ###### Attendees, ###### Notes, ###### Action Items ('None.'), then the footer."
         }
       ]
     },
@@ -480,8 +480,8 @@
         "passed": 6,
         "failed": 0,
         "total": 6,
-        "time_seconds": 103.47,
-        "tokens": 43291,
+        "time_seconds": 87.08,
+        "tokens": 40069,
         "tool_calls": 5,
         "errors": null
       },
@@ -489,32 +489,32 @@
         {
           "text": "Exactly one blockquote pull quote appears in the notes, carrying an impactful statement (most defensibly Priya Raman's 'I'm not going to sign off...' line), attributed to the named speaker and placed directly under the note it supports.",
           "passed": true,
-          "evidence": "The final notes contain exactly one blockquote, Priya Raman's verbatim 'I'm not going to sign off...' line attributed '\u2014 Priya Raman', nested directly under the churn note it supports."
+          "evidence": "The only pull quote is '> \"I'm not going to sign off on a price increase that costs us more customers than it earns us revenue.\" \u2014 Priya Raman', directly under the reversal note."
         },
         {
           "text": "Every quoted string in the final document appears verbatim in the supplied transcript -- no reworded, merged, or invented quotations, and elisions marked with an ellipsis rather than silently altered wording.",
           "passed": true,
-          "evidence": "Every quoted string ('the plan of record', '9 percent of the mid-market book in the first quarter alone', the blockquote, 'I'll redo the model at nine percent and we revisit next week.', 'Do we have the retention side of that modeled anywhere?') appears word for word in the transcript."
+          "evidence": "The only quotation in the final document matches the [15:09] Priya Raman transcript line exactly."
         },
         {
           "text": "The `Speaker 3` line is not attributed to Dan Walker or any other attendee by guesswork: the skill either asks the user who spoke or leaves that line out of the notes entirely.",
           "passed": true,
-          "evidence": "In its first reply the assistant asked 'is Speaker 3 Dan? Or someone else?' and only attributed the line to Dan after the user said 'Speaker 3 is me'."
+          "evidence": "The skill asked 'Who was Speaker 3?', and the final note says 'an unidentified participant raised the question', with no name."
         },
         {
           "text": "The trivial closing remark about the dog is not quoted, showing the significance bar was applied rather than quoting whatever was available.",
           "passed": true,
-          "evidence": "The 'Sorry, my dog is losing it out there' line appears nowhere in the draft or final document."
+          "evidence": "The dog remark appears nowhere in the final document."
         },
         {
           "text": "Quotes are proposed for the user's approval before the final document is produced, consistent with the staged approval workflow.",
           "passed": true,
-          "evidence": "The draft containing all quotes was shown with 'Does this look right' and the user approved it before action items and the final document."
+          "evidence": "The pull quote was in the turn-6 draft that the user approved before the final document."
         },
         {
           "text": "The notes are not divided into topic sections (this meeting has a single subject), and zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "The notes are a flat four-bullet list with no topic labels, and tools.log shows no create-trello-task.sh call."
+          "evidence": "Notes are a flat list of three bullets, and no trello-calls.log exists."
         }
       ]
     },
@@ -527,8 +527,8 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 196.31,
-        "tokens": 42324,
+        "time_seconds": 82.27,
+        "tokens": 38592,
         "tool_calls": 6,
         "errors": null
       },
@@ -536,27 +536,27 @@
         {
           "text": "The response tells the user that quotes require a transcript (or asks for one), rather than silently producing quotations or ignoring the request.",
           "passed": true,
-          "evidence": "The first reply says 'Since there's no transcript, I can't produce verbatim quotes... only a transcript's exact words can go in quotation marks'."
+          "evidence": "The turn-1 reply says 'since there's no transcript, I can't put \"we were flying blind for 40 minutes\" in quotation marks' and offers reported speech."
         },
         {
           "text": "No blockquote pull quote attributed to a speaker appears in the final document, since there is no transcript to quote from.",
           "passed": true,
-          "evidence": "The final document contains no blockquote at all."
+          "evidence": "The final document has no blockquote."
         },
         {
           "text": "The 'we were flying blind for 40 minutes' phrase never appears in quotation marks in the final document, labelled as a paraphrase or not: with no transcript it is written as reported speech (for example, Lena Fischer said the team had been flying blind for about 40 minutes), and the skill does not offer to keep it as a quotation marked '(paraphrased)'.",
           "passed": true,
-          "evidence": "The final note renders it as reported speech ('Lena said they were flying blind that whole stretch') with no quotation marks, and no '(paraphrased)' quote option was offered."
+          "evidence": "The final note reads 'Lena said the team had no visibility into the problem for about 40 minutes', with no quotation marks and no '(paraphrased)' option offered."
         },
         {
           "text": "No quotations are invented for the other two note lines, and no words are attributed to anyone that the user did not supply.",
           "passed": true,
-          "evidence": "The other two notes contain no quotations and no words attributed to anyone beyond the user's notes and answers."
+          "evidence": "The final document has no quotation marks around any attributed words, and no words were invented for the other lines."
         },
         {
           "text": "The normal flow still completes: each raw note line is interviewed individually, attendees are formatted, and the standard section order is produced with zero create-trello-task.sh invocations.",
           "passed": true,
-          "evidence": "Each of the three raw lines got its own question, attendees became Dan Walker and Lena Fischer, the order is metadata, Attendees, Notes, Action Items, and tools.log has no create-trello-task.sh call."
+          "evidence": "Each of the three lines got its own question, attendees were formatted 'Dan Walker'/'Lena Fischer', the order is metadata, Attendees, Notes, Action Items, footer, and no trello-calls.log exists."
         }
       ]
     },
@@ -569,41 +569,41 @@
         "passed": 6,
         "failed": 0,
         "total": 6,
-        "time_seconds": 107.32,
-        "tokens": 47280,
-        "tool_calls": 13,
+        "time_seconds": 127.14,
+        "tokens": 53857,
+        "tool_calls": 15,
         "errors": null
       },
       "expectations": [
         {
           "text": "Every image is embedded with descriptive alt text in the Markdown itself (`![<alt text>](<file>)`) and carries an italic caption line, rather than a bare link or an empty alt attribute.",
           "passed": true,
-          "evidence": "All four images use ![descriptive alt](file) with an italic caption line under each (e.g. '![Lena's diagram of the QA environment gap](screenshot-2026-08-12-101830.png)' then '*Lena's diagram of the QA environment gap*')."
+          "evidence": "All four images use ![descriptive alt](file) (for example '![Lena's diagram of the QA environment gap](screenshot-2026-08-12-101830.png)'), each followed by an italic caption line."
         },
         {
           "text": "The delivery-timeline screenshot is placed with the delivery-timeline note and the QA-gap diagram with the QA note, interleaved among the bullets rather than collected in a block at the end of the notes.",
           "passed": true,
-          "evidence": "The 100412 timeline image sits under the Priya timeline bullet and the 101830 QA diagram under the Lena QA bullet, interleaved among the bullets."
+          "evidence": "The timeline screenshot sits under note 1 and the QA diagram under note 2, interleaved among the bullets."
         },
         {
           "text": "The launch-date screenshot is placed with the launch-date note (content over its earlier timestamp) and the skill asks the user to confirm that placement, rather than silently filing it in strict timestamp order between the first two notes.",
           "passed": true,
-          "evidence": "The 100905 launch-date image sits under the Nov 12 bullet, and the assistant asked 'I'd place it next to the \"closed on Nov 12\" note rather than chronologically by its timestamp. Does that placement sound right?'"
+          "evidence": "The skill proposed placing 100905.png with the Nov 12 note ('content wins over timestamp here') and asked 'Confirm that's right?'. The user confirmed."
         },
         {
           "text": "The undated whiteboard photo is not placed by guesswork: the skill asks the user where it belongs before finalizing.",
           "passed": true,
-          "evidence": "The assistant said IMG_pasted.png 'has no recoverable timestamp' and asked 'Where in the meeting does it belong', then placed it at the end per the user's answer."
+          "evidence": "The skill asked 'Where in the meeting does the whiteboard photo belong' and placed it at the end only after the user said so."
         },
         {
           "text": "No summary appears: the notes are neither over the length thresholds nor divided into three or more sections, and the four images must not be counted toward the measurement to manufacture one.",
           "passed": true,
-          "evidence": "No summary appears in the draft or final, and the draft states 'well under the length thresholds (3 bullets, ~50 words) and not sectioned, so no summary is added'."
+          "evidence": "No summary appears, and the skill noted the notes are 'short and unsectioned, well under the length threshold'."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur, and the standard section order is produced.",
           "passed": true,
-          "evidence": "tools.log has no create-trello-task.sh call, and the final runs metadata, Attendees, Notes, Action Items ('None.')."
+          "evidence": "No trello-calls.log exists, and journal.md runs metadata, Attendees, Notes, Action Items, footer."
         }
       ]
     },
@@ -612,50 +612,50 @@
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.8571,
-        "passed": 6,
-        "failed": 1,
+        "pass_rate": 0.7143,
+        "passed": 5,
+        "failed": 2,
         "total": 7,
-        "time_seconds": 151.88,
-        "tokens": 50350,
-        "tool_calls": 6,
+        "time_seconds": 151.03,
+        "tokens": 49727,
+        "tool_calls": 8,
         "errors": null
       },
       "expectations": [
         {
           "text": "The Notes section is divided into three topic sections marked as bold label lines (roughly: hiring, the Postgres migration, and customer escalations), not as Markdown headings.",
           "passed": true,
-          "evidence": "Notes are split under the bold lines **Backfill and Interviews**, **Postgres Migration**, and **Customer Escalations**, none of them Markdown headings."
+          "evidence": "Notes are split into **Platform Role Backfill**, **Postgres Migration**, and **Customer Escalations** bold label lines, not headings."
         },
         {
           "text": "An italicized summary appears directly under the metadata line and before `###### Attendees`, held to one or two sentences since the notes are under ~500 words.",
           "passed": true,
-          "evidence": "A two-sentence italic summary sits directly under the metadata line and before ###### Attendees in the final document."
+          "evidence": "A two-sentence italic summary sits directly under the metadata line before ###### Attendees."
         },
         {
           "text": "The transcript shows the summary was triggered by the section count rather than by length: the reported measurement puts the notes under the ~500-word and ~40-line thresholds while noting three or more sections.",
-          "passed": true,
-          "evidence": "The assistant reported 'Measurement: ~147 words / 9 lines \u2014 under the length threshold, but the 3-topic split triggers a short summary'."
+          "passed": false,
+          "evidence": "The transcript names the 3-section trigger but reports only '~160 words'; no line count was reported against the ~40-line threshold, which Step 8 asks for ('the word and line count')."
         },
         {
           "text": "The summary restates only what the notes already say, adding no new facts, no conclusions the meeting did not reach, and no action items.",
-          "passed": true,
-          "evidence": "Each summary claim (backfill, JD rewrite, Lena's loop, November slip over schema issues, untested rollback, SLA breach behind three Acme escalations as the top risk, fix in 4.2) restates a note, with 'top risk' paraphrasing the note's 'biggest revenue risk' that leadership should watch."
+          "passed": false,
+          "evidence": "The summary calls the SLA breach 'the biggest of the three open Meridian Corp escalations', but the approved notes describe it only as the common root cause blocking the other two and never call it the biggest."
         },
         {
           "text": "The summary reads as prose rather than a list: it contains no semicolons, and no sentence is built by chaining clauses together with 'and'.",
-          "passed": false,
-          "evidence": "The second summary sentence chains two independent clauses with ', and' ('The Postgres migration slipped to November ... untested, and the reporting export ... breach ... remains the top risk'), and the first chains '... needing a rewrite before posting and Lena taking over ...'."
+          "passed": true,
+          "evidence": "The summary has no semicolons, and neither sentence joins clauses with 'and'."
         },
         {
           "text": "The transcript shows a genuine per-line interview covering all nine raw note lines individually.",
           "passed": true,
-          "evidence": "The assistant asked a separate question for each of the nine raw lines in turn, ending with 'That's all 9 lines covered.'"
+          "evidence": "Each of the nine lines got its own question, asked one at a time across turns 1 to 9 (line 1 in the same message as the attendance question)."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "tools.log has no create-trello-task.sh call."
+          "evidence": "No trello-calls.log exists and tools.log has no create-trello-task.sh call."
         }
       ]
     },
@@ -668,66 +668,66 @@
         "passed": 10,
         "failed": 1,
         "total": 11,
-        "time_seconds": 204.49,
-        "tokens": 62893,
-        "tool_calls": 15,
+        "time_seconds": 320.68,
+        "tokens": 76648,
+        "tool_calls": 22,
         "errors": null
       },
       "expectations": [
         {
           "text": "Before drafting, the skill tells the user that no raw notes were found, names zoom-chat.txt as the artifact it found, and confirms before drafting from it, rather than silently treating the chat log as the user's notes.",
           "passed": true,
-          "evidence": "The first reply says 'Raw notes: none found \u2014 only zoom-chat.txt exists' and asks 'Should I proceed drafting from zoom-chat.txt?', drafting only after the user said yes."
+          "evidence": "The turn-1 reply says 'No raw notes file was in the working directory \u2014 only zoom-chat.txt' and asks 'Want me to go ahead and draft notes from the Zoom chat transcript?' before drafting."
         },
         {
           "text": "Each decision is recorded with its reason: two-week on-call shifts starting Dec 1 because of the Thanksgiving freeze, the Oct 17 cutover conditional on a staging rollback dry run, and shutting down the second staging environment after the migration because the dry run needs it.",
           "passed": true,
-          "evidence": "The notes record two-week shifts starting Dec 1 because of the Thanksgiving freeze, Oct 17 conditional on a staging rollback dry run, and shutting the second staging env after the migration because the dry run needs it."
+          "evidence": "The notes give each reason: Dec 1 start because nobody should learn a new rotation during the Thanksgiving freeze, Oct 17 conditional on a staging rollback dry run, and the staging shutdown deferred because the dry run needs it."
         },
         {
           "text": "The disagreements behind the decisions are recorded, not just their outcomes: Dan Walker's burnout concern and the week-two night cover that resolved it, Priya Raman's objection to Oct 10 (the untested rollback plan and the 9-hour past rollback) that moved the date, and Dan's shut-down-this-week proposal being reversed.",
           "passed": true,
-          "evidence": "The notes record Dan Walker's burnout worry and the week-two night cover in the settled outcome, Priya's Oct 10 objection (rollback never tested, last rollback took 9 hours), and Dan's shut-down-this-week proposal being reversed."
+          "evidence": "The notes record Dan's burnout worry resolved by week-two night cover, Priya's objection to Oct 10 (untested rollback, nine-hour past rollback), and Dan's shut-down-this-week proposal reversed by Priya."
         },
         {
           "text": "The on-call comp time question is recorded in place in the notes as undecided and deferred to next week's sync, rather than dropped or collected into a separate catch-all section.",
           "passed": true,
-          "evidence": "The on-call section includes 'Lena raised whether on-call should get comp time for freeze weekends, but Priya tabled it for next week's sync.'"
+          "evidence": "The comp-time question sits as a bullet in the on-call section, saying Priya said it 'should wait for next week's sync rather than being decided in this meeting'."
         },
         {
           "text": "Chatter such as the audio problems and Lena Fischer dropping off stays out, and the notes do not restate the chat message by message.",
           "passed": true,
-          "evidence": "Neither the audio problems nor Lena dropping off appear, and each topic is condensed into one or two notes rather than message by message."
+          "evidence": "The audio problem and Lena dropping off are absent from the notes, and the notes condense each topic into narrative bullets rather than one line per chat message."
         },
         {
           "text": "Notes name the person who raised, decided, or took on each point in the sentence itself, and every attribution matches the chat message's sender or the user's answer.",
           "passed": true,
-          "evidence": "Every attribution (Lena's proposal and schedule, Dan's burnout concern, Oct 10 and staging proposals, Priya's freeze, rollback, runbook, and dry-run pushback) matches the zoom-chat.txt sender, and both quotes are verbatim Priya Raman messages."
+          "evidence": "Every attribution (Lena proposed, Dan objected, Priya on the freeze, Dan's Oct 10 and Oct 17, Priya on the runbook, Dan on staging and the ticket) matches the sender in zoom-chat.txt."
         },
         {
           "text": "An `###### Agenda` section sits between `###### Attendees` and `###### Notes`, listing the three calendar agenda items in their original order and wording.",
           "passed": true,
-          "evidence": "The saved journal has ###### Agenda between Attendees and Notes listing 'Postgres migration cutover date', 'Q4 on-call rotation', and 'Staging environment costs' in the calendar order."
+          "evidence": "###### Agenda lists '1. Postgres migration cutover date 2. Q4 on-call rotation 3. Staging environment costs' between Attendees and Notes."
         },
         {
           "text": "The notes follow the order topics came up in the chat (on-call rotation, then the migration, then staging costs), not the agenda's order, and the three topics are marked as bold label lines rather than headings.",
           "passed": true,
-          "evidence": "Notes run **On-call rotation**, **Postgres migration cutover**, then **Staging environment costs** as bold label lines, matching chat order."
+          "evidence": "Sections run **Q4 On-Call Rotation**, **Postgres Migration**, **Staging Environment Costs** in chat order, as bold lines."
         },
         {
           "text": "The draft is reviewed with the user section by section before the final document is produced, rather than finalized without review or run through a per-line interview of drafted lines.",
           "passed": true,
-          "evidence": "The draft was reviewed with per-section questions ('On-call rotation: Does that capture it right...', 'Postgres migration cutover: Same check...', 'Staging environment costs: Accurate as captured?') before the final document."
+          "evidence": "The draft was reviewed section by section ('A few things to confirm, section by section'), with no per-line interview, before the final document."
         },
         {
           "text": "Action items lead with their owner's name; Lena Fischer's schedule item keeps 'by Friday' and adds the calendar date Aug 28, 2026; and the skill asks during review for the decommission ticket's missing due date and the runbook update's missing owner rather than guessing either.",
           "passed": false,
-          "evidence": "The assistant asked for the runbook owner and date, but never asked for the decommission ticket's due date and instead wrote 'Dan Walker: File the staging environment decommission ticket after the migration', reusing the shutdown timing for the ticket."
+          "evidence": "The skill asked for the runbook owner but never asked for the decommission ticket's due date; it wrote 'File the decommission ticket ... after the Postgres migration' without asking, although Lena's item correctly reads 'by Friday (Aug 28, 2026)'."
         },
         {
           "text": "No facts, owners, or dates appear that are absent from the chat log, the pasted calendar event, and the user's answers, and zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "All facts, owners, and dates trace to zoom-chat.txt, the pasted calendar event, or the user's answers (runbook owner Priya, 'before cutover'), and tools.log has no create-trello-task.sh call."
+          "evidence": "Every fact, owner, and date traces to zoom-chat.txt, the pasted calendar, or the user's answers, and no trello-calls.log exists."
         }
       ]
     },
@@ -740,31 +740,31 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 9.92,
-        "tokens": 26909,
-        "tool_calls": 2,
+        "time_seconds": 14.97,
+        "tokens": 27621,
+        "tool_calls": 3,
         "errors": null
       },
       "expectations": [
         {
           "text": "The response tells the user that no raw notes and no artifacts (screenshots, audio transcripts, or chat transcripts) were found, and asks for the notes or artifacts.",
           "passed": true,
-          "evidence": "The reply says 'there are no raw notes, screenshots, transcripts, or other files' and asks the user to add the notes or any screenshots, audio, or chat transcript."
+          "evidence": "The reply says the working directory has 'no raw notes, screenshots, photos, or transcripts' and asks for notes or artifacts."
         },
         {
           "text": "No notes are drafted: no Notes bullets describing what was discussed appear anywhere in the response, and no decisions, owners, or action items are invented for the meeting.",
           "passed": true,
-          "evidence": "No notes, decisions, owners, or action items were drafted; the assistant only asked for material and then acknowledged the stop."
+          "evidence": "No notes, decisions, owners, or action items appear in any reply."
         },
         {
           "text": "No `###### Agenda` section appears, since no agenda was available.",
           "passed": true,
-          "evidence": "No ###### Agenda section or document of any kind was produced."
+          "evidence": "No ###### Agenda appears."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "tools.log shows only the Skill call and one 'ls -la', with no create-trello-task.sh call."
+          "evidence": "No trello-calls.log exists and tools.log has no create-trello-task.sh call."
         }
       ]
     },
@@ -773,50 +773,50 @@
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.8571,
-        "passed": 6,
-        "failed": 1,
+        "pass_rate": 0.7143,
+        "passed": 5,
+        "failed": 2,
         "total": 7,
-        "time_seconds": 136.56,
-        "tokens": 58721,
-        "tool_calls": 15,
+        "time_seconds": 118.49,
+        "tokens": 52692,
+        "tool_calls": 12,
         "errors": null
       },
       "expectations": [
         {
           "text": "Before drafting, the skill tells the user no raw notes were found, names transcript.txt and both screenshots, and confirms before drafting from them.",
-          "passed": false,
-          "evidence": "The first reply named transcript.txt but called the images only 'the two screenshots' without naming either screenshot-2026-09-02-110432.png or screenshot-2026-09-02-111840.png (it did confirm before drafting)."
+          "passed": true,
+          "evidence": "The turn-1 reply says 'No raw notes were found', names both screenshots and transcript.txt, and asks 'Confirm that's okay?' before drafting."
         },
         {
           "text": "`Speaker 3` is not attributed by guesswork: the skill asks the user who Speaker 3 is before attributing the 50,000-row proposal or the macro cleanup, and the final notes use the name the user gives.",
           "passed": true,
-          "evidence": "The assistant asked 'Is Speaker 3 Lena Fischer, you, or someone else?' before drafting, and the notes attribute the 50,000-row proposal and macro cleanup to Lena Fischer as the user answered."
+          "evidence": "The skill asked 'Who is Speaker 3' before attributing anything, and the notes use 'Dan Walker', the user's answer (it did list candidate names in the question)."
         },
         {
           "text": "The export-limit disagreement is recorded with its resolution: the 50,000-row proposal, Priya Raman's objection citing the database failure during month-end close, and the accepted compromise of 25,000 rows outside month-end, proposed by Marcus Hall.",
           "passed": true,
-          "evidence": "The notes record Lena's 10,000-to-50,000 proposal, Priya's objection that the database fell over during month-end close, and Marcus's 25,000-outside-month-end compromise that Priya and Lena accepted."
+          "evidence": "The notes record Dan's 50,000-row proposal, Priya's objection about the database falling over during month-end close, and Marcus Hall's 25,000-rows-outside-month-end compromise, agreed by both."
         },
         {
           "text": "Both screenshots are embedded with descriptive alt text and an italic caption, and interwoven among the notes rather than collected at the end: the manual-exports dashboard beside the export-volume note ahead of the limit debate, and the macro audit sheet beside the stale-macros note.",
           "passed": true,
-          "evidence": "The 110432 dashboard image (descriptive alt text, '*Weekly export request volume*') sits under the 212-exports note before the limit debate, and the 111840 audit image ('*Macro audit results*') sits under the stale-macros note."
+          "evidence": "Both screenshots have descriptive alt text and italic captions ('*Export volume dashboard*', '*Macro audit sheet*'), placed under the export-volume note before the limit debate and under the stale-macros note."
         },
         {
           "text": "Any quotation appears verbatim in transcript.txt and is attributed to a named speaker, never to a guessed identity for `Speaker 3`.",
-          "passed": true,
-          "evidence": "The only quote, 'I'm against that. The last time we raised a limit, the database fell over during month-end close.', is verbatim from Priya Raman's 11:07 line and attributed to Priya."
+          "passed": false,
+          "evidence": "Besides the verbatim Priya pull quote, the final document puts \"soon\" in quotation marks in the macro action item, a word from the user's interview answer that does not appear in transcript.txt and has no speaker."
         },
         {
           "text": "Action items lead with their owner: Marcus Hall's limit change keeps 'by Friday' and adds Sep 4, 2026, and the skill asks for the macro cleanup's missing due date.",
           "passed": true,
-          "evidence": "Action items lead with owners, Marcus's reads 'by Friday (Sep 4, 2026)', and the assistant asked 'Is there a due date for Lena's macro cleanup, or is that open-ended?'"
+          "evidence": "Marcus's item reads 'by Friday (Sep 4, 2026)' and Dan's leads with his name, and the skill asked 'when is Dan's (your) macro cleanup due'."
         },
         {
           "text": "No `###### Agenda` section appears, chatter such as the knock at Priya Raman's door stays out, and zero create-trello-task.sh invocations occur.",
-          "passed": true,
-          "evidence": "journal.md has no Agenda section, omits the 'someone's at my door' remark, and tools.log has no create-trello-task.sh call."
+          "passed": false,
+          "evidence": "There is no Agenda and no trello-calls.log, but the door-knock chatter appears in the final document as '*Recording stopped at 11:22 when Priya was interrupted at her door.*'."
         }
       ]
     },
@@ -829,46 +829,46 @@
         "passed": 7,
         "failed": 0,
         "total": 7,
-        "time_seconds": 166.58,
-        "tokens": 63352,
-        "tool_calls": 15,
+        "time_seconds": 248.13,
+        "tokens": 84601,
+        "tool_calls": 24,
         "errors": null
       },
       "expectations": [
         {
           "text": "Before drafting, the skill tells the user no raw notes were found, names the four images, and confirms before drafting from them.",
           "passed": true,
-          "evidence": "The first reply says 'found no raw notes file \u2014 only four images', lists all four filenames, and asks 'Can you confirm you'd like me to draft notes from these four artifacts?'"
+          "evidence": "The turn-1 reply says 'No notes files exist', names all four images, and asks 'Want me to draft notes from these as meeting artifacts?'."
         },
         {
           "text": "The notes contain what the images show (the two approved platform backfills, the senior SRE requisition on hold until the Sep 15 budget sign-off, dropping the take-home exercise for a 90-minute pairing session because candidates spend 6+ hours on it, and the SRE interview loop owner still TBD) and no facts beyond the images and the user's answers.",
           "passed": true,
-          "evidence": "The saved notes cover the two approved platform backfills, the Senior SRE req on hold until Sep 15 budget sign-off, dropping the 6+ hour take-home for a 90-minute pairing session, and the SRE loop owner TBD, with the presenter and referral-bonus raiser taken from the user's answers."
+          "evidence": "The notes cover the two approved backfills, the SRE requisition on hold until Sep 15 sign-off, dropping the take-home (6+ hours) for a 90-minute pairing session, and the SRE loop owner TBD, with every other detail (Dan reporting, Lena checking with finance) from the user's answers."
         },
         {
           "text": "Each timestamped screenshot is embedded beside the note drafted from it, in timestamp order (hiring plan slide, then the comment thread, then the loop owners table), not collected in a block before or after the notes.",
           "passed": true,
-          "evidence": "Each timestamped screenshot (140512, 141230, 142045) is embedded at the head of its own section in timestamp order, with its notes directly beneath, rather than in one block."
+          "evidence": "140512, 141230, and 142045 each sit under the note drafted from them, in timestamp order and interleaved with the bullets."
         },
         {
           "text": "The undated whiteboard photo is not placed by guesswork: the skill asks the user where it belongs, and the referral bonus increase is recorded as an open question rather than a decision unless the user says otherwise.",
           "passed": true,
-          "evidence": "The assistant asked 'Where in the meeting did the referral bonus discussion happen', and the note reads 'Lena Fischer raised increasing the referral bonus from $2,000 to $3,000, pending a check with finance', not a decision."
+          "evidence": "The skill asked where the undated whiteboard belonged (twice, to pin it down), and the referral bonus is recorded as a proposal 'pending Lena's check with finance', not a decision."
         },
         {
           "text": "Every image carries descriptive alt text in the Markdown itself and an italic caption line.",
           "passed": true,
-          "evidence": "All four images use ![descriptive alt](file) followed by an italic caption line in the saved file."
+          "evidence": "All four images use ![descriptive alt](file) followed by an italic caption line."
         },
         {
           "text": "The take-home decision is attributed from the comment thread (Lena Fischer proposed it, Dan Walker agreed), and Lena Fischer's action item keeps 'by Sep 10', with the year optionally added, rather than being reworded or dropped.",
           "passed": true,
-          "evidence": "The note says Lena Fischer proposed dropping the take-home and Dan Walker agreed, matching the comment thread, and the action item reads 'Lena Fischer: Update the interview guide by Sep 10, 2026'."
+          "evidence": "The note says Lena proposed dropping the take-home and Dan agreed, matching the comment thread, and Lena's item reads 'Update the interview guide by Sep 10, 2026'."
         },
         {
           "text": "Any summary is justified by the reported section count or text length alone, with the images excluded from the measurement, and zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "The assistant justified the summary as 'well under the 500-word/40-line threshold, but the summary is included because there are 4 topic sections', and tools.log has no create-trello-task.sh call."
+          "evidence": "The summary is justified by '3 topic sections' with a notes-text measurement that excludes images, and no trello-calls.log exists."
         }
       ]
     },
@@ -881,8 +881,8 @@
         "passed": 6,
         "failed": 1,
         "total": 7,
-        "time_seconds": 153.09,
-        "tokens": 50995,
+        "time_seconds": 128.06,
+        "tokens": 49422,
         "tool_calls": 11,
         "errors": null
       },
@@ -890,37 +890,37 @@
         {
           "text": "An `###### Agenda` section lists the three agenda items in their original order and wording, including the docs freeze date the meeting never reached.",
           "passed": true,
-          "evidence": "The final document's Agenda section lists '4.2 release scope', 'Beta customer list', and 'Docs freeze date' in the calendar order and wording."
+          "evidence": "The saved file's Agenda lists 1. 4.2 release scope, 2. Beta customer list, 3. Docs freeze date, matching the calendar event's order and wording."
         },
         {
           "text": "The scope decision is recorded with its reason: the export rewrite and SSO fixes are in 4.2, and the export rewrite had to ship because it is the SLA fix.",
           "passed": true,
-          "evidence": "Note 1 says the export rewrite and SSO fixes were settled as final scope, 'with Lena noting the export rewrite fixes an SLA issue', matching the 09:05 chat line."
+          "evidence": "Saved note: Lena said the export rewrite has to ship because it's the fix for the SLA issue, and Priya agreed the export rewrite and SSO fixes are in."
         },
         {
           "text": "Dark mode is recorded where it came up as parked and unresolved, with the disagreement behind it (Marcus Hall wanting to keep the half-done work, Lena Fischer citing design's unsigned contrast issues) and what it waits on (design weighing in); it is not recorded as cut or as in scope.",
           "passed": true,
-          "evidence": "Note 2 records Marcus wanting to keep half-done dark mode, Lena flagging design's unsigned contrast issues, and Priya parking it 'until design weighs in, with no set owner or timeline', neither cut nor in scope."
+          "evidence": "Second note records Marcus reluctant to cut half-done dark mode, Lena citing design's unsigned contrast issues, and Priya parking it until design weighs in; it is not marked cut or in scope."
         },
         {
           "text": "Initech's beta participation is recorded in place as unresolved until its contract renewal closes, alongside Acme and Globex as confirmed, rather than dropped or treated as decided.",
           "passed": true,
-          "evidence": "Notes 3 and 4 record Acme and Globex as agreed and Initech as waiting with 'circling back once the renewal closes, with no owner yet assigned'."
+          "evidence": "Notes record Acme and Globex as confirmed and, in the next bullet, Initech's entry left to circle back once the renewal closes."
         },
         {
           "text": "The docs freeze date is recorded after the last note as an agenda item the meeting did not reach and a decision still to be made, not omitted, given an invented date, or placed under a catch-all section.",
           "passed": false,
-          "evidence": "The last bullet says only 'The meeting ran out of time before reaching the docs freeze date agenda item.' and never records the freeze date as a decision still to be made or open."
+          "evidence": "The last bullet says the meeting ran out of time before the docs freeze date, 'which remains undiscussed'; it never says the freeze date is still open or a decision still to be made."
         },
         {
           "text": "The notes are a flat list with no bold topic labels, since only two topics were discussed.",
           "passed": true,
-          "evidence": "The Notes section is five plain bullets with no bold topic labels, and the draft explicitly kept a flat list because only two topics came up."
+          "evidence": "The Notes section is five plain bullets with no bold topic labels."
         },
         {
           "text": "No action item is invented for a deferred topic: any action item's owner comes from the chat or from the user's answer to an open question, never from a name the skill proposed; a due date appears only when the chat or the user gave one; and zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "The final Action Items section is 'None.', the owner questions asked 'is ... owned by anyone' without proposing a name, and tools.log has no create-trello-task.sh call."
+          "evidence": "Action Items reads 'No action items from this meeting.', no owner was proposed, and tools.log shows no create-trello-task.sh invocation."
         }
       ]
     },
@@ -929,35 +929,35 @@
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 1.0,
-        "passed": 4,
-        "failed": 0,
+        "pass_rate": 0.75,
+        "passed": 3,
+        "failed": 1,
         "total": 4,
-        "time_seconds": 27.39,
-        "tokens": 29045,
-        "tool_calls": 3,
+        "time_seconds": 19.7,
+        "tokens": 28064,
+        "tool_calls": 1,
         "errors": null
       },
       "expectations": [
         {
           "text": "The skill reports that no raw notes were found, names transcript.txt, and either asks whether to draft notes from it or acknowledges that the user has already declined that offer, before drafting anything from its content.",
-          "passed": true,
-          "evidence": "The first reply says there is a transcript.txt but no raw notes file and that, per the user's instruction, it will not draft notes from the transcript."
+          "passed": false,
+          "evidence": "tools.log shows only the Skill call (no ls or Read), transcript.txt never appears in events.jsonl, and the first reply never says no raw notes were found or names transcript.txt."
         },
         {
           "text": "After the user declines, no drafted notes, Notes section, or final document is produced.",
           "passed": true,
-          "evidence": "Both replies stop and wait for the user's notes; no Notes section or final document appears in conversation.txt."
+          "evidence": "After the user's reply the assistant only says it will be there when ready; no notes, Notes section, or final document is produced and no file is written."
         },
         {
           "text": "No action items are drawn from the transcript, and the transcript's lines are not run through a per-line interview as though they were the user's notes.",
           "passed": true,
-          "evidence": "No action items or per-line questions about transcript lines appear; the only tool calls were Skill, ls, and one Read of transcript.txt."
+          "evidence": "No action items appear and no transcript line is interviewed; the transcript was never read."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "tools.log has three calls (Skill, Bash ls, Read) and no create-trello-task.sh invocation."
+          "evidence": "tools.log shows no create-trello-task.sh invocation."
         }
       ]
     },
@@ -970,8 +970,8 @@
         "passed": 9,
         "failed": 0,
         "total": 9,
-        "time_seconds": 120.84,
-        "tokens": 47822,
+        "time_seconds": 107.16,
+        "tokens": 45710,
         "tool_calls": 7,
         "errors": null
       },
@@ -979,47 +979,47 @@
         {
           "text": "The Slack call log shows the skill searched Slack or read the direct message with Sam on its own initiative; the prompt never mentions chat.",
           "passed": true,
-          "evidence": "slack-calls.log shows slack_search_public_and_private and slack_read_channel on D0SAM though the prompt never mentioned chat."
+          "evidence": "slack-calls.log shows slack_search_public_and_private and slack_read_channel D0SAM made unprompted in turn 1."
         },
         {
           "text": "The transcript shows a Slack search bounded only by date before the recording request is reported, and the Slack call log confirms its arguments: no topic keyword and no `from:` sender filter, with either a date term in the query or filters that includes Sep 28, 2026 (`on:2026-09-28`, `after:2026-09-27`, or a `before:`/`after:` pair spanning it) or `before`/`after` Unix timestamps spanning 10:00 AM to 11:08 AM (1790614800 to 1790618880). A keyword, sender, or channel-name search does not satisfy this, even if the conversations it found are read afterwards.",
           "passed": true,
-          "evidence": "The log's search has query 'on:2026-09-28' with after 1790614800 and before 1790618880, no keyword or from: filter, and turn 1 reports it before the recording request."
+          "evidence": "The search has an empty query, filters 'on:2026-09-28', and after/before 1790614800/1790618880, and it runs before the 10:07:36 message is reported."
         },
         {
           "text": "The response says how chat was checked: the 10:00 AM to 11:08 AM window, the date-bounded search, and the conversations read.",
           "passed": true,
-          "evidence": "Turn 1 says 'searched 10:00 AM to 11:08 AM PDT by date only (on:2026-09-28); read the direct message with Sam Ortiz.'"
+          "evidence": "Turn 1 states 'Chat: searched 10:00 AM to 11:08 AM by date only (on:2026-09-28); read the direct message with Sam Ortiz.'"
         },
         {
           "text": "An italic line directly under the metadata line gives Sam's request as the reason the recording stopped, at or near 07:44 (for example `*Recording stopped at 07:44 at Sam's request.*`), or such a line is proposed to the user for approval.",
           "passed": true,
-          "evidence": "The final document has '*Recording stopped at 07:44 at Sam's request.*' directly under the metadata line, after it was proposed in turn 1."
+          "evidence": "Final document has '*Recording stopped at 07:44 at Sam's request.*' directly under the metadata line."
         },
         {
           "text": "No scheduled-versus-actual comparison appears anywhere (no calendar data exists), and the italic line carries only the recording reason.",
           "passed": true,
-          "evidence": "The italic line carries only the recording reason; the only time check is the start-plus-duration arithmetic ('no mismatch'), with no scheduled-versus-actual comparison."
+          "evidence": "No scheduled-versus-actual comparison is made (no calendar), and the italic line gives only the recording reason."
         },
         {
           "text": "Nothing in the response or the final document describes the cutoff as a transcription fault, a technical failure, or a possible recurring pattern.",
           "passed": true,
-          "evidence": "Neither the responses nor the final document call the cutoff a fault, failure, or pattern; it is attributed to Sam's request."
+          "evidence": "The cutoff is described only as lining up with Sam's request; no fault, failure, or recurring pattern is mentioned."
         },
         {
           "text": "Neither the 9:52 AM message about running late nor the 11:20 AM message about sending the hiring goal rewrite is presented as chat from during the meeting, and neither becomes a note or action item on the strength of chat alone.",
           "passed": true,
-          "evidence": "The read_channel call was bounded to 1790614800-1790618880, and neither 'might be 2 min late' nor 'I'll send the hiring goal rewrite tomorrow' appears in any response or note."
+          "evidence": "Neither the 9:52 AM 'might be 2 min late' message nor the 11:20 AM rewrite message is presented or used; the action items come from the user's follow-up answers."
         },
         {
           "text": "Notes about the reorg and the promotion case come only from the raw notes and the user's interview answers; nothing is attributed to the unrecorded part of the meeting beyond that.",
           "passed": true,
-          "evidence": "The reorg note ('worried about losing the on-call rotation they built ... off the record') and promo note come from the raw notes and the user's first follow-up answer."
+          "evidence": "The reorg note (on-call rotation worry, off the record) and promo note (staff case over Q4, Dan helps scope) match the user's follow-up answers only."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "tools.log has no create-trello-task.sh call; the final reply says no Trello cards were created."
+          "evidence": "tools.log shows no create-trello-task.sh invocation."
         }
       ]
     },
@@ -1032,71 +1032,71 @@
         "passed": 11,
         "failed": 1,
         "total": 12,
-        "time_seconds": 197.89,
-        "tokens": 66951,
-        "tool_calls": 11,
+        "time_seconds": 175.82,
+        "tokens": 63498,
+        "tool_calls": 14,
         "errors": null
       },
       "expectations": [
         {
           "text": "The Slack call log shows the skill searched Slack or read the relevant channel and direct messages on its own initiative; the prompt never mentions chat.",
           "passed": true,
-          "evidence": "slack-calls.log shows a search plus slack_read_channel on C0PORTF, G0PLATLEADS, D0JORDAN, and D0LENA though the prompt never mentioned chat."
+          "evidence": "slack-calls.log shows an unprompted date search and reads of C0PORTF, G0PLATLEADS, D0JORDAN, and D0LENA."
         },
         {
           "text": "The transcript shows a Slack search bounded only by date before any chat finding is reported, and the Slack call log confirms its arguments: no topic keyword and no `from:` sender filter, with either a date term in the query or filters that includes Sep 29, 2026 (`on:2026-09-29`, `after:2026-09-28`, or a `before:`/`after:` pair spanning it) or `before`/`after` Unix timestamps spanning 1:00 PM to 2:00 PM (1790712000 to 1790715600). A keyword, sender, or channel-name search does not satisfy this, even if the conversations it found are read afterwards.",
           "passed": true,
-          "evidence": "The search has filters 'on:2026-09-29' with after 1790712000 and before 1790715600, no keyword or from: filter, and turn 1 reports it before any finding."
+          "evidence": "The search uses query 'on:2026-09-29' with after/before 1790711999/1790715601, no keyword or from: filter, before any finding is reported."
         },
         {
           "text": "The response says how chat was checked: the 1:00 PM to 2:00 PM window, the date-bounded search, and the conversations read.",
           "passed": true,
-          "evidence": "Turn 1 says 'searched 1:00 PM to 2:00 PM by date only (on:2026-09-29); read #portfolio-review, the group direct message ..., the direct message with Jordan Lee, and the direct message with Lena Fischer.'"
+          "evidence": "Turn 1 states 'searched 1:00 PM to 2:00 PM PDT on 2026-09-29 by date only (on:2026-09-29); read #portfolio-review, the group DM ..., the DM with Jordan Lee, and the DM with Lena Fischer.'"
         },
         {
           "text": "The #portfolio-review exchange is proposed for the notes: Priya and Marcus agreeing to report services cut over instead of points, with the services-migrated dashboard already in staging, attributed to them and placed beside the burn-up note or in time order.",
           "passed": true,
-          "evidence": "Turn 1 proposes Priya's pushback and Marcus agreeing that the services-migrated dashboard is in staging, and the final note sits after the burn-up note and before the 1:25 PM headcount note, consistent with its 1:14 PM time."
+          "evidence": "Turn 2 proposes the exchange quoting Priya and Marcus, and the final note places it after the data migration note and before the 1:25 PM headcount item, in time order."
         },
         {
           "text": "The off-topic on-call swap between Lena and Dan is proposed rather than dropped as unrelated to the meeting topic.",
           "passed": true,
-          "evidence": "Turn 1 item 4 proposes Lena's on-call swap DM, and it appears in the final notes."
+          "evidence": "Turn 2 offers Lena's on-call swap request 'as a side note', and it appears in the final notes."
         },
         {
           "text": "Jordan Lee's direct message asking for the burn-up chart is proposed even though Jordan did not attend.",
           "passed": true,
-          "evidence": "Turn 1 item 3 proposes Jordan Lee's request for the burn-up chart, noting Jordan is not a meeting attendee."
+          "evidence": "Turn 2 proposes Jordan Lee's burn-up chart request though he 'wasn't in the room'."
         },
         {
           "text": "Marcus's group direct message to Dan and Priya at 1:25 PM (keep the headcount discussion short because budget numbers aren't final until Oct 9) is proposed, placed in time order or beside the headcount note.",
           "passed": true,
-          "evidence": "Turn 1 item 2 proposes Marcus's 'budget numbers aren't final until Oct 9' group DM, and the final note places it in the headcount bullet."
+          "evidence": "Turn 2 proposes folding Marcus's 'budget numbers aren't final until Oct 9' message into the headcount note, where it lands."
         },
         {
           "text": "The Deploy Bot post is not proposed as meeting content.",
           "passed": true,
-          "evidence": "No response mentions the Deploy Bot's reporting-api deploy post."
+          "evidence": "The Deploy Bot post is never mentioned in any reply."
         },
         {
           "text": "Lena's join notice and Marcus's `:+1:` message are not discarded as noise: the response either proposes them or treats them as kept chat items (for example, noting Marcus's agreement to the switch).",
-          "passed": false,
-          "evidence": "Neither Lena's 1:01 PM join notice nor Marcus's 1:17 PM ':+1:' is mentioned anywhere in the responses or events; both were silently dropped."
+          "passed": true,
+          "evidence": "Turn 1 keeps Marcus's thumbs-up ('Marcus \ud83d\udc4d') and lists Lena as part of the side thread ('(implicitly) Lena'); neither is discarded as noise."
         },
         {
           "text": "Neither Priya's 12:50 PM pre-read message nor Marcus's 2:20 PM follow-up is presented as chat from during the meeting.",
           "passed": true,
-          "evidence": "Neither 'pre-read is in the deck, slides 4-9' nor any 2:20 PM message appears in the responses."
+          "evidence": "Neither Priya's 12:50 PM pre-read message nor Marcus's 2:20 PM follow-up is mentioned."
         },
         {
           "text": "Chat content is proposed for the user's approval before it reaches the final document; nothing from Slack is written in as a fact the user did not confirm.",
-          "passed": true,
-          "evidence": "All four Slack items were proposed in turn 1, included only after the user's 'Yes, include the Slack items', and the full draft was shown and approved ('Looks good') before finalizing."
+          "passed": false,
+          "evidence": "The final action item 'Dan Walker: Send Jordan Lee a copy of the burn-up chart by Thursday (Oct 1, 2026)' was never proposed or confirmed: Dan made no such commitment in chat, and the item appeared only in the final document."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "tools.log has no create-trello-task.sh call."
+          "evidence": "tools.log shows no create-trello-task.sh invocation."
         }
       ]
     },
@@ -1109,46 +1109,46 @@
         "passed": 7,
         "failed": 0,
         "total": 7,
-        "time_seconds": 88.92,
-        "tokens": 45058,
-        "tool_calls": 12,
+        "time_seconds": 112.11,
+        "tokens": 50045,
+        "tool_calls": 11,
         "errors": null
       },
       "expectations": [
         {
           "text": "No one-to-two-sentence link summary is added for PLAT-412, PLAT-418, PLAT-421, or the on-call runbook link.",
           "passed": true,
-          "evidence": "The final notes show each PLAT link with only its title in parentheses and the runbook link inside the action sentence, with no separate summary."
+          "evidence": "The final notes keep the PLAT-412/418/421 and runbook links as they were given, with no added link summary."
         },
         {
           "text": "The response states that the bare wiki.example.invalid link could not be read (whether or not a fetch was attempted) rather than summarizing it.",
           "passed": true,
-          "evidence": "Turn 1 says the URLs including 'wiki.example.invalid' 'failed DNS lookup', so 'I can't read the linked pages'."
+          "evidence": "Turn 1 says wiki.example.invalid/x/aB3kQ9 'failed to resolve (DNS error) \u2014 I can't fetch' it, with no summary."
         },
         {
           "text": "The user is asked what the bare link holds.",
           "passed": true,
-          "evidence": "Turn 1 asks 'What's on the page Priya shared (wiki.example.invalid/x/aB3kQ9)', and turn 2 asks again."
+          "evidence": "Turn 1 asks what 'the wiki.example.invalid link Priya shared' holds."
         },
         {
           "text": "Nothing is attributed to the bare link beyond what the raw note and the user's answers say.",
           "passed": true,
-          "evidence": "The final note says only that Priya shared her 'Q4 capacity model', showing no rate-limit work until November, which is the user's answer verbatim in substance."
+          "evidence": "The final note calls it Priya's Q4 capacity model, which shows the rate-limit work can't start until November; that is exactly the user's answer."
         },
         {
           "text": "The transcript shows a Slack search bounded only by date before chat is reported empty, and the Slack call log confirms its arguments: no topic keyword and no `from:` sender filter, with either a date term in the query or filters that includes Sep 30, 2026 (`on:2026-09-30`, `after:2026-09-29`, or a `before:`/`after:` pair spanning it) or `before`/`after` Unix timestamps spanning 9:00 AM to 9:20 AM (1790784000 to 1790785200). A keyword, sender, or channel-name search does not satisfy this, even if the conversations it found are read afterwards.",
           "passed": true,
-          "evidence": "slack-calls.log shows query 'on:2026-09-30' with after 1790783999 and before 1790785201, no keyword or from: filter, before turn 1 reports 'nothing to read'."
+          "evidence": "slack-calls.log shows an empty query, filters 'on:2026-09-30', and after/before 1790783999/1790785201, made before turn 1 reports chat empty."
         },
         {
           "text": "The response says how chat was checked: the 9:00 AM to 9:20 AM window and the date-bounded search used.",
           "passed": true,
-          "evidence": "Turn 1 says 'Chat: searched 9:00 AM to 9:20 AM by date only (on:2026-09-30); nothing to read.'"
+          "evidence": "Turn 1 states 'searched 9:00\u20139:20 AM Pacific on 2026-09-30, date-bounded only (on:2026-09-30)'."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "tools.log has no create-trello-task.sh call."
+          "evidence": "tools.log shows no create-trello-task.sh invocation."
         }
       ]
     },
@@ -1161,46 +1161,46 @@
         "passed": 7,
         "failed": 0,
         "total": 7,
-        "time_seconds": 104.88,
-        "tokens": 42611,
-        "tool_calls": 5,
+        "time_seconds": 113.73,
+        "tokens": 46660,
+        "tool_calls": 10,
         "errors": null
       },
       "expectations": [
         {
           "text": "The Atlassian call log shows getConfluencePage was called for both pages (by tiny link Rk7mQ2 or id 40188, and by id 40213).",
           "passed": true,
-          "evidence": "atlassian-calls.log shows getConfluencePage with pageId 'Rk7mQ2' and with pageId '40213'."
+          "evidence": "atlassian-calls.log shows getConfluencePage with pageId 'Rk7mQ2' (returned id 40188) and with pageId '40213'."
         },
         {
           "text": "A summary for the proposal link is proposed, grounded in the page's content (a per-tenant rate limit on the export API, rolled out in shadow mode before enforcement), and attributed to no detail the page does not contain.",
           "passed": true,
-          "evidence": "Turn 1 summarizes the proposal as a 60 requests/min per-tenant cap, burst 120, HTTP 429 with Retry-After, and two weeks of shadow mode before enforcing, all present in the returned page body."
+          "evidence": "The proposed summary (60 req/min per tenant, burst 120, 429 with Retry-After, two weeks of shadow mode before enforcing) matches the page body."
         },
         {
           "text": "The dependency tracker is reported as unreadable or as having returned no content, not described as an empty or blank page.",
           "passed": true,
-          "evidence": "Turn 1 says the tracker 'came back empty -- it's likely a macro-built or embedded view I can't read directly', treating it as unreadable rather than as a blank page."
+          "evidence": "Turn 1 says the tracker 'returned an empty body \u2014 it's likely a macro/embedded-content page that can't be read this way'."
         },
         {
           "text": "The user is asked what the dependency tracker holds.",
           "passed": true,
-          "evidence": "Turn 1 asks 'Can you tell me briefly what it shows', and turn 2 asks 'what does it actually track'."
+          "evidence": "Turn 1 asks 'Can you tell me what it contains?' and turn 2 asks again."
         },
         {
           "text": "Nothing is attributed to the dependency tracker beyond its title, the raw note, and the user's answers.",
           "passed": true,
-          "evidence": "The final tracker note uses the page title plus the user's answers ('a table of every platform team's Q4 milestones with dates and owners, which Marcus owns')."
+          "evidence": "The tracker note adds only the page title and the user's answers (a table of Q4 milestones with dates and owners, owned by Marcus)."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "tools.log has no create-trello-task.sh call."
+          "evidence": "tools.log shows no create-trello-task.sh invocation."
         },
         {
           "text": "The final notes keep both links exactly as the user gave them: https://example.atlassian.net/wiki/x/Rk7mQ2 for the proposal and https://example.atlassian.net/wiki/spaces/PLAT/pages/40213 for the dependency tracker. Replacing either with a URL the Confluence tool returned (such as .../wiki/pages/40188, .../wiki/pages/40213, or .../wiki/x/Pq2wX8) fails.",
           "passed": true,
-          "evidence": "The final notes link https://example.atlassian.net/wiki/x/Rk7mQ2 and https://example.atlassian.net/wiki/spaces/PLAT/pages/40213 exactly as given."
+          "evidence": "The final notes link https://example.atlassian.net/wiki/x/Rk7mQ2 and https://example.atlassian.net/wiki/spaces/PLAT/pages/40213 unchanged."
         }
       ]
     },
@@ -1213,51 +1213,51 @@
         "passed": 8,
         "failed": 0,
         "total": 8,
-        "time_seconds": 132.03,
-        "tokens": 50585,
-        "tool_calls": 12,
+        "time_seconds": 139.94,
+        "tokens": 46883,
+        "tool_calls": 9,
         "errors": null
       },
       "expectations": [
         {
           "text": "The transcript shows a Slack search bounded only by date before any chat finding is reported, and the Slack call log confirms its arguments: no topic keyword and no `from:` sender filter, with either a date term in the query or filters that includes Oct 1, 2026 (`on:2026-10-01`, `after:2026-09-30`, or a `before:`/`after:` pair spanning it) or `before`/`after` Unix timestamps spanning 2:00 PM to 2:45 PM (1790888400 to 1790891100). A keyword, sender, or channel-name search does not satisfy this, even if the conversations it found are read afterwards.",
           "passed": true,
-          "evidence": "slack-calls.log shows query 'on:2026-10-01' with after 1790888400 and before 1790891100, no keyword or from: filter, before turn 1 reports findings."
+          "evidence": "The search uses query 'on:2026-10-01' with after/before 1790888399/1790891101, no keyword or from: filter, before findings are reported."
         },
         {
           "text": "After the date-bounded search, the Slack call log shows `slack_read_channel` calls for Marcus's direct message (by `D0MARCUS`, `U0MARCUS`, or `marcus.hall`) and for the group direct message (`G0RELLEADS` or its name); the log records calls in order, so each read must appear below that search. Each read's `oldest` is empty or at most 1790888400 and its `latest` is empty or at least 1790891100, so it covers 2:00 PM to 2:45 PM. A search scoped to the conversation does not count as a read, and a read made before the date-bounded search does not satisfy this.",
           "passed": true,
-          "evidence": "Below that search, the log shows slack_read_channel on D0MARCUS and on G0RELLEADS, each with oldest 1790888400 and latest 1790891100."
+          "evidence": "Below the search, slack_read_channel D0MARCUS and G0RELLEADS each use oldest 1790888400 and latest 1790891100."
         },
         {
           "text": "Priya's 2:31 PM group direct message (do not promise a date out loud, because legal has not signed off on the new privacy text) is proposed for the notes, attributed to her, and placed in time order or beside the go/no-go note.",
           "passed": true,
-          "evidence": "Turn 1 proposes Priya's 2:31 PM legal warning, and the final note attributes it to Priya and places it right before the go/no-go note."
+          "evidence": "Turn 1 proposes Priya's 14:31 group DM, and the final note 'Priya Raman flagged that legal hasn't signed off...' sits right after the go/no-go note."
         },
         {
           "text": "Marcus's 2:12 PM direct message (on his phone in the car, unable to share his screen, asking Dan to drive that part) and Dan's 2:13 PM reply are proposed rather than dropped as unrelated to the meeting topic.",
           "passed": true,
-          "evidence": "Turn 1 proposes Marcus's 2:12 PM 'can't share my screen. could you drive that part?' and Dan's 2:13 PM 'yep, got it', which become the first final note."
+          "evidence": "Turn 1 proposes Marcus's 14:12 message and Dan's agreement, and both appear in the final notes."
         },
         {
           "text": "Neither the 1:40 PM nor the 3:10 PM #release-4-2 message is presented as chat from during the meeting, and neither becomes a note or action item on the strength of chat alone.",
           "passed": true,
-          "evidence": "Neither #release-4-2 message appears in the search results, the responses, or the final document."
+          "evidence": "Neither the 1:40 PM nor the 3:10 PM #release-4-2 message appears in any reply or in the final document."
         },
         {
           "text": "The response says how chat was checked: the 2:00 PM to 2:45 PM window, the date-bounded search, and the conversations read.",
           "passed": true,
-          "evidence": "Turn 1 says 'searched 2:00 PM to 2:45 PM by date only (on:2026-10-01); read the direct message with Marcus Hall and the group direct message with Priya Raman and Marcus Hall.'"
+          "evidence": "Turn 1 states 'Chat: searched 2:00 PM to 2:45 PM by date only (on:2026-10-01); read the direct message with Marcus Hall and the group direct message with Priya Raman and Marcus Hall.'"
         },
         {
           "text": "Chat content is proposed for the user's approval before it reaches the final document; nothing from Slack is written in as a fact the user did not confirm.",
           "passed": true,
-          "evidence": "Turn 1 asks 'want me to include them?', and the chat notes reach the final document only after the user's 'Yes, include the Slack items you proposed'."
+          "evidence": "Turn 1 asks whether to add either chat item, turn 2 shows the proposed wording, and the user approved before the final document."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "tools.log has no create-trello-task.sh call."
+          "evidence": "tools.log shows no create-trello-task.sh invocation."
         }
       ]
     },
@@ -1270,46 +1270,46 @@
         "passed": 8,
         "failed": 0,
         "total": 8,
-        "time_seconds": 176.88,
-        "tokens": 63107,
-        "tool_calls": 10,
+        "time_seconds": 240.0,
+        "tokens": 61790,
+        "tool_calls": 17,
         "errors": null
       },
       "expectations": [
         {
           "text": "The Jira call log shows a searchJiraIssuesUsingJql call whose JQL bounds `created` to a range covering 2:00 PM to 3:00 PM on Oct 1, 2026 (for example `created >= \"2026-10-01\" AND created < \"2026-10-02\"`), with no `text ~` or `summary ~` keyword clause, before any Jira item created during the meeting is reported.",
           "passed": true,
-          "evidence": "atlassian-calls.log shows searchJiraIssuesUsingJql with JQL 'created >= \"2026-10-01\" AND created < \"2026-10-02\" ORDER BY created ASC', with no text~/summary~ clause, before any item is reported."
+          "evidence": "atlassian-calls.log shows JQL 'created >= \"2026-10-01\" AND created < \"2026-10-02\"' with only assignee/creator filters and no text~ or summary~ clause, before turn 1 reports items."
         },
         {
           "text": "The response says how Jira was checked: the creation window (2:00 PM to 3:00 PM, or the meeting window plus 15 minutes) and the search used.",
           "passed": true,
-          "evidence": "Turn 2 says 'Jira: searched items created 2:00 PM to 3:00 PM Pacific (created 2026-10-01); found 4 by or assigned to attendees.'"
+          "evidence": "Turn 1 states 'searched items created 2:00 PM to 3:00 PM (created >= \"2026-10-01\" AND created < \"2026-10-02\", filtered to the window)'."
         },
         {
           "text": "REL-101, REL-102, REL-103, and REL-107 are each proposed to the user. REL-102 is proposed even though it is unrelated to the meeting, and REL-107 is proposed because it is assigned to Dan Walker, even though Omar Haddad created it.",
           "passed": true,
-          "evidence": "Turn 2 proposes REL-101, REL-103, REL-102 ('want it added as a new bullet'), and REL-107 (created by Omar Haddad, assigned to Dan Walker)."
+          "evidence": "Turn 1 proposes REL-101, REL-107 (created by Omar, assigned to Dan), REL-102 ('doesn't look launch-related'), and REL-103."
         },
         {
           "text": "REL-103 is identified as created after the meeting ended and is tied to the go/no-go criteria discussion.",
           "passed": true,
-          "evidence": "Turn 2 lists REL-103 as created 2:55 PM, 'just after the meeting ended, but matches the go/no-go discussion'."
+          "evidence": "Turn 1 lists REL-103 as created at 2:55 PM, '10 min after the meeting ended', and matches it to the go/no-go note."
         },
         {
           "text": "None of REL-104, REL-105, REL-106, or REL-108 is proposed for the notes or the action items. Listing one as left out, with the reason, is fine.",
           "passed": true,
-          "evidence": "Only REL-104 is mentioned, and only as left out with a reason; REL-105, REL-106, and REL-108 appear nowhere in the responses or the final document."
+          "evidence": "REL-104, REL-105, and REL-106 are listed as left out with reasons, and REL-108 is never proposed."
         },
         {
           "text": "In the final document, the rollback checklist action item links to REL-101 and the go/no-go criteria action item links to REL-103, and the captured items appear in the notes with their key, summary, and status.",
           "passed": true,
-          "evidence": "The final rollback action item links REL-101, the go/no-go item links REL-103, and each note shows key, summary, and '(To Do)'."
+          "evidence": "The final action items link REL-101 (rollback) and REL-103 (go/no-go), and the notes show each captured key with its summary and (To Do) status."
         },
         {
           "text": "Exactly one create-trello-task.sh invocation occurs, for the release comms action item; none is made for the rollback checklist or the go/no-go criteria.",
           "passed": true,
-          "evidence": "tools.log and trello-calls.log show exactly one create-trello-task.sh invocation, for 'Dan Walker: Send the release comms to support by Friday (Oct 2, 2026)'."
+          "evidence": "trello-calls.log has exactly one entry, for 'Dan Walker: Send the release comms to support by Friday (Oct 2, 2026)'."
         },
         {
           "text": "The final document's release comms action item links to https://trello.com/c/rl4cm5s6/send-release-comms-to-support.",
@@ -1327,46 +1327,46 @@
         "passed": 7,
         "failed": 0,
         "total": 7,
-        "time_seconds": 113.39,
-        "tokens": 48837,
-        "tool_calls": 10,
+        "time_seconds": 133.18,
+        "tokens": 49079,
+        "tool_calls": 9,
         "errors": null
       },
       "expectations": [
         {
           "text": "The Trello call log shows cards being found by creation date (a search_trello query with a `created:` operator, or a listing of the board's cards) rather than only keyword searches for the meeting's topics.",
           "passed": true,
-          "evidence": "trello-calls.log shows search_trello with query 'created:7' returning the board's cards, with no topic keyword search."
+          "evidence": "trello-calls.log shows search_trello with query 'created:6'."
         },
         {
           "text": "The response gives the venue card's creation time as 10:12 AM and the agenda card's as 10:40 AM (or the equivalent UTC times, clearly labelled), showing the times came from the card IDs rather than the date alone.",
           "passed": true,
-          "evidence": "Turn 1 gives 'created 10:12 AM PT' for the venue card and 'created 10:40 AM PT' for the agenda card, decoded from the card IDs in a Bash call."
+          "evidence": "Turn 1 gives 'Book the venue' as created 10:12 AM PT and 'Draft the offsite agenda' as created 10:40 AM PT, decoded from the card IDs via Bash."
         },
         {
           "text": "The response states that Trello does not show who created the cards and asks the user whether an attendee created them, without proposing or assuming a creator.",
           "passed": true,
-          "evidence": "Turn 1 says 'The tool doesn't show who created these. Did you or Lena create either of these cards?' without proposing a creator."
+          "evidence": "Turn 1 says 'creator/assignee fields aren't available from this tool, so I can't confirm attendee authorship' and asks 'Did either of you create...' without naming a creator."
         },
         {
           "text": "'Book the venue for the offsite' and 'Draft the offsite agenda' are proposed, and the agenda card is identified as created after the meeting ended and tied to the agenda note.",
           "passed": true,
-          "evidence": "Turn 1 proposes both cards, saying the agenda card was created '10 min after the meeting ended', and the final notes tie it to the agenda bullet."
+          "evidence": "Both cards are proposed, and the agenda card is marked '10 min after end' and related to the 'need an agenda' note."
         },
         {
           "text": "None of 'Order printer toner', 'Send the offsite budget to finance', or 'Collect offsite dietary needs' is proposed for the notes or the action items, even though two of them mention the offsite. Listing one as left out, with the reason, is fine.",
           "passed": true,
-          "evidence": "Toner, finance, and dietary cards appear only in turn 1's 'Left out' list with reasons, and none appears in the notes or action items."
+          "evidence": "Toner, finance, and dietary cards are listed only as left out with reasons, and none appears in the notes or action items."
         },
         {
           "text": "In the final document, the venue booking action item links to https://trello.com/c/Ofs0002b/book-the-venue-for-the-offsite and the agenda action item links to https://trello.com/c/Ofs0003c/draft-the-offsite-agenda.",
           "passed": true,
-          "evidence": "The final action items link to https://trello.com/c/Ofs0002b/book-the-venue-for-the-offsite and https://trello.com/c/Ofs0003c/draft-the-offsite-agenda."
+          "evidence": "The final action items link to Ofs0002b/book-the-venue-for-the-offsite and Ofs0003c/draft-the-offsite-agenda."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "tools.log has no create-trello-task.sh invocation."
+          "evidence": "No create-trello-task.sh invocation appears, and trello-calls.log shows only search_trello and view_card."
         }
       ]
     },
@@ -1375,60 +1375,70 @@
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 1.0,
+        "pass_rate": 0.8182,
         "passed": 9,
-        "failed": 0,
-        "total": 9,
-        "time_seconds": 126.64,
-        "tokens": 53012,
-        "tool_calls": 9,
+        "failed": 2,
+        "total": 11,
+        "time_seconds": 128.42,
+        "tokens": 51595,
+        "tool_calls": 8,
         "errors": null
       },
       "expectations": [
         {
           "text": "The transcript shows a Slack search bounded only by date before any chat finding is reported, and the Slack call log confirms its arguments: no topic keyword and no `from:` sender filter, with either a date term in the query or filters that includes Oct 2, 2026 (`on:2026-10-02`, or a `before:`/`after:` pair spanning it) or `before`/`after` Unix timestamps spanning 2:00 PM to 2:40 PM (1790974800 to 1790977200).",
           "passed": true,
-          "evidence": "First Slack call is slack_search_public_and_private with query \"\", keywords [], filters \"on:2026-10-02\" and no from:, made before the turn-1 chat findings."
+          "evidence": "slack-calls.log call 2 is slack_search_public_and_private with query \"\", keywords [], filters \"on:2026-10-02\", after 1790974800, before 1790977200, made in turn 1 before any chat finding was reported."
         },
         {
           "text": "After the date-bounded search, the Slack call log shows `slack_read_channel` for #platform-ops (`C0PLATOPS` or `platform-ops`) whose `oldest` is empty or at most 1790974800 and whose `latest` is empty or at least 1790977200.",
           "passed": true,
-          "evidence": "slack_read_channel C0PLATOPS with oldest 1790974800 and latest 1790977200 follows the search in slack-calls.log."
+          "evidence": "slack-calls.log call 3 (after the search) is slack_read_channel on C0PLATOPS with oldest 1790974800 and latest 1790977200."
         },
         {
           "text": "The Slack call log shows `slack_read_thread` for the 2:05 PM parent (`message_ts` 1790975112.000300). A channel read alone does not satisfy this, because a channel read does not return thread replies.",
           "passed": true,
-          "evidence": "slack-calls.log shows slack_read_thread for C0PLATOPS message_ts 1790975112.000300, returning Jordan's 2:18 PM and 2:33 PM replies."
+          "evidence": "slack-calls.log call 5 is slack_read_thread on C0PLATOPS with message_ts 1790975112.000300."
         },
         {
           "text": "The notes, or the chat proposals the user approved into them, carry the substance of Jordan Lee's two replies: the threshold was raised for a load test and never restored, and he is opening a ticket to restore it. Notes that present Lena's question as unanswered fail.",
           "passed": true,
-          "evidence": "Final notes say Jordan raised the threshold for a load test on the 14th and never reverted it, and committed to opening a ticket to restore it with a guard."
+          "evidence": "Final notes say Jordan \"had raised it for a load test on October 14th and never put it back\" and the action item is \"Open a ticket to restore the cache alert threshold\", with the question marked resolved."
         },
         {
           "text": "The Slack call log shows `slack_read_thread` for the 1:48 PM parent (`message_ts` 1790974080.000100), or the response proposes Lena's 2:26 PM reply about the dip lining up with the outage start. A thread whose parent is outside the window still counts when a reply falls inside it.",
           "passed": true,
-          "evidence": "slack-calls.log shows slack_read_thread for message_ts 1790974080.000100, and turn 1 proposes Lena's 2:26 PM dip reply."
+          "evidence": "slack-calls.log call 4 is slack_read_thread with message_ts 1790974080.000100, and turn 1 lists Lena's 2:26 PM reply."
         },
         {
-          "text": "Neither the 1:48 PM parent nor the 3:05 PM message is presented as chat from during the meeting.",
+          "text": "Neither the 1:48 PM parent nor the 3:05 PM message is presented as chat from during the meeting: wherever the 1:48 PM parent is shown, in the chat proposals or the notes, it is marked as posted before the meeting.",
           "passed": true,
-          "evidence": "Turn 1 calls the 1:48 PM message an earlier (pre-meeting) message, and the 3:05 PM post is never mentioned."
+          "evidence": "Turn 1 labels the parent \"1:48 PM (just before the meeting)\" and the final notes say Jordan flagged the dip \"shortly before the meeting\"; the 3:05 PM message appears nowhere."
         },
         {
           "text": "Each thread's replies stay with their own parent: Lena's 2:26 PM reply (the dip lines up with the outage start) is presented as part of the 1:48 PM cache hit rate thread, never inside the alert-threshold exchange or as a comment on the threshold change, in the chat proposals and in the final notes.",
+          "passed": false,
+          "evidence": "Turn 1 lists the 2:26 PM reply only as \"Lena Fischer (reply)\" in one time-ordered list between Jordan's 2:18 PM threshold reply and his 2:33 PM reply, so the proposal never ties it to the 1:48 PM thread (the final notes do place it with the dip)."
+        },
+        {
+          "text": "Lena's 2:19 PM reply ('same here, started around 1:30') is presented as part of the 1:48 PM cache hit rate thread, never as a response to Jordan's 2:18 PM threshold confession or as agreement with him.",
           "passed": true,
-          "evidence": "Turn 1 presents the 2:26 PM reply as 'in a separate thread' on the pre-meeting hit-rate dip message, and the final notes place it on the timeline line, apart from the threshold lines."
+          "evidence": "Turn 1 labels the 2:19 PM reply \"(reply to Jordan's earlier question)\" and the line 1 question ties it to \"the cache hit-rate dip Jordan flagged at 1:48 PM, which Lena said started around 1:30\"; it is never framed as agreeing with the threshold confession."
+        },
+        {
+          "text": "Lena's 2:19 PM and 2:26 PM replies are proposed as a follow-up on Jordan's 1:48 PM question, with that question shown as context posted before the meeting, and the proposal says the follow-up relates to the meeting's content (the outage under review).",
+          "passed": false,
+          "evidence": "Turn 1 presents the 1:48 PM parent and both replies as separate entries in a flat interleaved list headed \"during the meeting window\", with the 2:26 PM reply unattached, rather than proposing the replies as a follow-up on Jordan's question; relevance is only stated for the chat as a whole."
         },
         {
           "text": "The chat disclosure line names #platform-ops among the conversations read.",
           "passed": true,
-          "evidence": "Turn 1 disclosure reads 'searched 2:00 PM to 2:40 PM by date only (on:2026-10-02); read #platform-ops'."
+          "evidence": "Turn 1 disclosure: \"read #platform-ops (the only active conversation) and both threads in it.\""
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "tools.log has no create-trello-task.sh invocation."
+          "evidence": "tools.log has no create-trello-task.sh invocation; the only mention in events.jsonl is the skill text."
         }
       ]
     },
@@ -1441,51 +1451,51 @@
         "passed": 8,
         "failed": 0,
         "total": 8,
-        "time_seconds": 62.03,
-        "tokens": 38555,
-        "tool_calls": 8,
+        "time_seconds": 72.39,
+        "tokens": 43250,
+        "tool_calls": 9,
         "errors": null
       },
       "expectations": [
         {
           "text": "The Slack call log shows a search with `before`/`after` Unix timestamps spanning 11:00 AM to 11:30 AM (1791223200 to 1791225000), no topic keyword, and no `from:` sender filter.",
           "passed": true,
-          "evidence": "slack_search_public_and_private has after 1791223200, before 1791225000, query \"on:2026-10-05\", keywords [], and no from: filter."
+          "evidence": "slack-calls.log shows a search with after/before 1791223199/1791225001 and query 'on:2026-10-05', with no keyword or from: filter."
         },
         {
           "text": "The Slack call log shows no more than two `slack_list_user_channels` calls. Paging the conversation list to enumerate the 400 group direct messages fails this case.",
           "passed": true,
-          "evidence": "slack-calls.log has zero slack_list_user_channels calls."
+          "evidence": "slack-calls.log contains zero slack_list_user_channels calls."
         },
         {
           "text": "After that search, the Slack call log shows `slack_read_channel` for Sam's direct message (`D0SAM`, `U0SAM`, or `sam.ortiz`) whose `oldest` is empty or at most 1791223200 and whose `latest` is empty or at least 1791225000.",
           "passed": true,
-          "evidence": "After the search, slack_read_channel D0SAM with oldest 1791223200 and latest 1791225000."
+          "evidence": "After the search, slack_read_channel D0SAM uses oldest 1791223200 and latest 1791225000."
         },
         {
           "text": "The response proposes the substance of Sam Ortiz's 11:14 AM message, that the utilization numbers are skewed by two mid-quarter contractor onboards, attributed to Sam.",
           "passed": true,
-          "evidence": "Turn 1 quotes Sam Ortiz at 11:14 AM: the utilization numbers will be skewed because two contractors were onboarded mid-quarter."
+          "evidence": "Turn 1 quotes Sam Ortiz's 11:14 AM message about the skew from two contractors onboarded mid-quarter, and it becomes a final note attributed to Sam."
         },
         {
           "text": "The chat disclosure line uses the `searched <start> to <end> by date only` form and names the direct message with Sam Ortiz. A line using the `listed conversations for <start> to <end>` form fails, because no complete listing was made.",
           "passed": true,
-          "evidence": "Turn 1 reads 'searched 11:00 AM to 11:30 AM by date only (on:2026-10-05); read the direct message with Sam Ortiz.'"
+          "evidence": "Turn 1 states 'Chat: searched 11:00 AM to 11:30 AM by date only (on:2026-10-05); read the direct message with Sam Ortiz.'"
         },
         {
           "text": "Chat is not reported as empty or as holding nothing, and no group direct message from outside 11:00 AM to 11:30 AM is presented as chat from during the meeting.",
           "passed": true,
-          "evidence": "Turn 1 reports one in-window message and presents no other group DM as meeting chat."
+          "evidence": "Chat is reported as holding Sam's message, and no group DM is mentioned."
         },
         {
           "text": "Sam's 9:02 AM direct message (\"morning! pulling the numbers today\"), which a search shows only as context with no time, is not quoted, proposed, or presented as chat from during the meeting, and is not given a time inside the window.",
           "passed": true,
-          "evidence": "The 9:02 AM 'morning! pulling the numbers today' message appears nowhere in the transcript."
+          "evidence": "The 9:02 AM 'morning! pulling the numbers today' message is never quoted or mentioned."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "tools.log has no create-trello-task.sh invocation."
+          "evidence": "tools.log shows no create-trello-task.sh invocation."
         }
       ]
     },
@@ -1498,36 +1508,36 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 170.24,
-        "tokens": 51884,
-        "tool_calls": 7,
+        "time_seconds": 153.2,
+        "tokens": 56939,
+        "tool_calls": 6,
         "errors": null
       },
       "expectations": [
         {
           "text": "The skill does not ask the user who did not attend, and nothing in the final Attendees section is struck through.",
           "passed": true,
-          "evidence": "The transcript never asks who did not attend (turn 1 asks only about the screenshot file), and the final Attendees line has no strikethrough."
+          "evidence": "Turn 1 says it will use the no-roster format 'rather than asking who didn't attend', and nothing is struck through."
         },
         {
           "text": "The final Attendees section is a single line that names engineering-all@example.com as invited and gives 312 as the number who attended, marked as a peak or peak concurrent count.",
           "passed": true,
-          "evidence": "Final Attendees section is the single line 'engineering-all@example.com invited, 312 attendees at peak'."
+          "evidence": "The final Attendees section is the single line 'engineering-all@example.com invited, 312 attendees at peak'."
         },
         {
           "text": "No person's name appears in the final Attendees section: none of Priya Raman, Marcus Hall, Lena Fischer, Sam Ortiz, Jordan Lee, Alex Kim, Ravi Singh, or Dan Walker is listed there, and there is no participant list or sub-grouping under it.",
           "passed": true,
-          "evidence": "Final Attendees section contains only that one line, with no personal names or sub-list."
+          "evidence": "The Attendees line contains no person's name and no sub-list."
         },
         {
           "text": "The final document's section order is metadata, `###### Attendees`, `###### Notes`, `###### Action Items`, with no Agenda section since none was given.",
           "passed": true,
-          "evidence": "Final document goes metadata, ###### Attendees, ###### Notes, ###### Action Items, with no Agenda section."
+          "evidence": "The final order is metadata (with its italic summary line), Attendees, Notes, Action Items, with no Agenda section."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "tools.log has no create-trello-task.sh invocation."
+          "evidence": "tools.log shows no create-trello-task.sh invocation."
         }
       ]
     },
@@ -1540,36 +1550,36 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 46.97,
-        "tokens": 35503,
-        "tool_calls": 6,
+        "time_seconds": 137.2,
+        "tokens": 41026,
+        "tool_calls": 9,
         "errors": null
       },
       "expectations": [
         {
           "text": "By the end of the reply to the user's request to finalize, the transcript contains a complete final document: the metadata block, `###### Attendees`, `###### Notes`, and `###### Action Items`, in that order.",
           "passed": true,
-          "evidence": "Turn 3, the reply to the finalize request, contains the metadata block, then Attendees, Notes, and Action Items in that order."
+          "evidence": "Turn 3, the reply to the finalize request, contains the metadata block, Attendees, Notes, and Action Items in that order, then the footer."
         },
         {
           "text": "The reply to the finalize request asks no question the user already answered or passed over (the meaning of any note line, who attended, or a due date for Lena's plan).",
           "passed": true,
-          "evidence": "Turn 3 is the document followed only by 'No Trello cards created, per your note.', with no question."
+          "evidence": "Turn 3 asks no questions."
         },
         {
           "text": "The action item for Lena's migration plan names Lena Fischer and carries no invented due date.",
           "passed": true,
-          "evidence": "Action item reads '- [ ] Lena Fischer: Draft the migration plan for moving the API reference into the main docs site' with no due date."
+          "evidence": "The action item reads 'Lena Fischer: Draft the migration plan...' with no due date."
         },
         {
           "text": "The open question on keeping the old URLs is recorded as unresolved, in the user's terms, not as a decision.",
           "passed": true,
-          "evidence": "Notes record 'Whether to keep the old URLs is still an open question, nobody has decided yet.'"
+          "evidence": "The note reads 'Whether to keep the old URLs is still an open question \u2014 nobody has decided yet.'"
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "tools.log has no create-trello-task.sh invocation."
+          "evidence": "tools.log shows no create-trello-task.sh invocation."
         }
       ]
     },
@@ -1582,46 +1592,46 @@
         "passed": 7,
         "failed": 0,
         "total": 7,
-        "time_seconds": 59.82,
-        "tokens": 37988,
-        "tool_calls": 7,
+        "time_seconds": 68.9,
+        "tokens": 37240,
+        "tool_calls": 6,
         "errors": null
       },
       "expectations": [
         {
           "text": "The Gmail call log shows `search_threads` with a query bounded to dates near Oct 6, 2026 (an `after:`/`before:` pair) or naming the attendees, whose results include `t-agenda` or `t-followup`, before any email finding is reported.",
           "passed": true,
-          "evidence": "gmail-calls.log's first call is search_threads naming attendee sam.ortiz@acmesupplies.com (from:/to:), which returned t-followup and t-agenda before turn 1 reported them."
+          "evidence": "gmail-calls.log shows search_threads 'from:sam.ortiz@acmesupplies.com OR to:sam.ortiz@acmesupplies.com', which names an attendee and returns t-followup and t-agenda, before turn 1 reports findings."
         },
         {
           "text": "The Gmail call log shows `get_thread` for `t-agenda` and for `t-followup`.",
           "passed": true,
-          "evidence": "gmail-calls.log shows get_thread for t-agenda and then for t-followup."
+          "evidence": "gmail-calls.log shows get_thread for t-agenda and for t-followup."
         },
         {
           "text": "An `###### Agenda` section sits between `###### Attendees` and `###### Notes`, listing Priya's three agenda items in their original order and wording, numbered.",
           "passed": true,
-          "evidence": "Final document has ###### Agenda between Attendees and Notes with '1. Usage over the last contract year 2. Renewal pricing and term length 3. Support SLA changes'."
+          "evidence": "The final document has Agenda between Attendees and Notes: 1. Usage over the last contract year, 2. Renewal pricing and term length, 3. Support SLA changes, matching the email."
         },
         {
           "text": "The substance of Sam Ortiz's follow-up (two-year term 8% below the current rate, 4-hour SLA included, offer holds until Oct 20) is proposed for the pricing note, attributed to Sam's email, and placed in the notes only after the user approves.",
           "passed": true,
-          "evidence": "Turn 1 proposed Sam's follow-up (8% below current rate on a two-year term, 4-hour SLA, holds until Oct 20), and it entered the pricing note, attributed to his follow-up email, only after the user said to add it."
+          "evidence": "Turn 1 proposes Sam's follow-up email terms (8% below current, two-year term, 4-hour SLA, holds until Oct 20) subject to confirmation, and the user approved before the draft note."
         },
         {
           "text": "Neither the June thread (`t-old`, about the same renewal but four months earlier) nor the shipping notice is proposed or appears in the final document, even where a search returned them.",
           "passed": true,
-          "evidence": "Search results contained only t-followup and t-agenda, and neither the June thread nor a shipping notice appears in any reply."
+          "evidence": "t-old and the shipping notice are never mentioned in any reply or in the final document."
         },
         {
           "text": "`create_draft` does not appear in the Gmail call log.",
           "passed": true,
-          "evidence": "gmail-calls.log contains only search_threads and get_thread calls, with no create_draft."
+          "evidence": "gmail-calls.log contains no create_draft call."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "tools.log has no create-trello-task.sh invocation."
+          "evidence": "tools.log shows no create-trello-task.sh invocation."
         }
       ]
     },
@@ -1634,21 +1644,21 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 68.29,
-        "tokens": 41256,
-        "tool_calls": 6,
+        "time_seconds": 71.06,
+        "tokens": 40393,
+        "tool_calls": 7,
         "errors": null
       },
       "expectations": [
         {
           "text": "The skill asks the user who did not attend (or which invitee was the one missing from the five).",
           "passed": true,
-          "evidence": "Turn 1 asks: '6 people were invited but Zoom reported only 5 participants. Who missed this one?'"
+          "evidence": "Turn 1 asks 'Who didn't attend?' and lists the six invitees."
         },
         {
           "text": "The final Attendees section lists all six invitees by name, as plain lines in title case, sorted by first name: Dan Walker, Lena Fischer, Marcus Hall, Priya Raman, Ravi Singh, Sam Ortiz.",
           "passed": true,
-          "evidence": "Final Attendees lists Dan Walker, Lena Fischer, Marcus Hall, Priya Raman, Ravi Singh, and Sam Ortiz as title-case plain lines in first-name order."
+          "evidence": "The final Attendees section lists Dan Walker, Lena Fischer, Marcus Hall, Priya Raman, Ravi Singh, and Sam Ortiz in that order."
         },
         {
           "text": "Ravi Singh's name is struck through and no other name is.",
@@ -1658,12 +1668,12 @@
         {
           "text": "The Attendees section is not replaced by a count-only line such as an invited group with an attendee count.",
           "passed": true,
-          "evidence": "Attendees section is the six-name roster, not a count line."
+          "evidence": "The Attendees section is a name list, not a count line."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "tools.log has no create-trello-task.sh invocation."
+          "evidence": "tools.log shows no create-trello-task.sh invocation."
         }
       ]
     },
@@ -1676,8 +1686,8 @@
         "passed": 7,
         "failed": 0,
         "total": 7,
-        "time_seconds": 102.2,
-        "tokens": 43518,
+        "time_seconds": 113.23,
+        "tokens": 45790,
         "tool_calls": 10,
         "errors": null
       },
@@ -1685,37 +1695,37 @@
         {
           "text": "The Slack call log shows a failed `slack_search_public_and_private` call and then `slack_list_user_channels` with `types` including `im` and `mpim`.",
           "passed": true,
-          "evidence": "slack_search_public_and_private returned an error ('search is not available'), followed by slack_list_user_channels with types 'public_channel,private_channel,im,mpim'."
+          "evidence": "slack-calls.log shows search returning 'search is not available for this workspace', then slack_list_user_channels with types 'public_channel,private_channel,im,mpim'."
         },
         {
           "text": "The Slack call log shows `slack_read_channel` for each of `D0LENA`, `G0OPS`, and `C0ONCALL`, each with `oldest` empty or at most 1791403200 and `latest` empty or at least 1791405000.",
           "passed": true,
-          "evidence": "slack_read_channel was called for D0LENA, G0OPS, and C0ONCALL, each with oldest 1791403200 and latest 1791405000."
+          "evidence": "slack_read_channel D0LENA, G0OPS, and C0ONCALL each use oldest 1791403200 and latest 1791405000."
         },
         {
           "text": "The response proposes Marcus Hall's 1:12 PM message (the rotation sheet is out of date and he will fix it) and Lena Fischer's 1:13 PM reply (next week's swap is missing), attributed to each.",
           "passed": true,
-          "evidence": "Turn 1 reports Marcus Hall at 1:12 PM saying the rotation sheet is out of date and he will fix it, and Lena Fischer at 1:13 PM saying next week's swap is missing."
+          "evidence": "Turn 1 proposes Marcus Hall (1:12 PM) on the out-of-date rotation sheet and Lena Fischer (1:13 PM) on the missing swap."
         },
         {
           "text": "In the final notes, each chat point keeps its own speaker: the out-of-date rotation sheet is Marcus Hall's, and next week's missing swap is Lena Fischer's, never credited to Marcus.",
           "passed": true,
-          "evidence": "Final note credits the out-of-date sheet to Marcus Hall and 'the swap Lena Fischer noted' to Lena (the action item mislabels it 'the November swap', but still credits Lena)."
+          "evidence": "The final note credits the out-of-date sheet to Marcus Hall and the missing swap to Lena Fischer ('Lena Fischer added...')."
         },
         {
           "text": "The chat disclosure line uses the `listed conversations for <start> to <end>` form in place of the search part, and names the conversations read.",
           "passed": true,
-          "evidence": "Turn 1 reads 'listed conversations for 1:00 PM to 1:30 PM ... read the direct message with Lena Fischer, the group direct message with Lena Fischer and Marcus Hall, and #oncall.'"
+          "evidence": "Turn 1 states 'Chat: listed conversations for 1:00 PM to 1:30 PM Oct 7, 2026; read the direct message with Lena Fischer, the group direct message ..., and #oncall.'"
         },
         {
           "text": "Neither the 12:40 PM direct message nor the 2:05 PM #oncall post is presented as chat from during the meeting.",
           "passed": true,
-          "evidence": "Reads were bounded to the window and returned neither message, and neither the 12:40 PM DM nor the 2:05 PM post appears in the transcript."
+          "evidence": "Neither the 12:40 PM DM nor the 2:05 PM #oncall post is mentioned."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "tools.log has no create-trello-task.sh invocation."
+          "evidence": "tools.log shows no create-trello-task.sh invocation."
         }
       ]
     },
@@ -1728,8 +1738,8 @@
         "passed": 6,
         "failed": 0,
         "total": 6,
-        "time_seconds": 155.85,
-        "tokens": 54072,
+        "time_seconds": 117.67,
+        "tokens": 52344,
         "tool_calls": 17,
         "errors": null
       },
@@ -1737,32 +1747,32 @@
         {
           "text": "After the user's correction, the Slack call log shows a date-bounded search covering 6:00 to 6:30 AM Pacific on Oct 6 (1791291600 to 1791293400). Reads of conversations already known, without that search, do not satisfy this.",
           "passed": true,
-          "evidence": "After the turn-3 correction, slack_search_public_and_private ran with after 1791291599 and before 1791293401, covering 6:00 to 6:30 AM Pacific."
+          "evidence": "After the correction, slack-calls.log shows a search with after/before 1791291600/1791293400 and query 'on:2026-10-06'."
         },
         {
           "text": "After the correction, the response proposes Priya's 6:20 AM #design post (user testing slots open Thursday) and the 6:12 to 6:13 AM mockups-link exchange for the Design Sync, and does not present the 9:14 AM lunch message as meeting chat.",
           "passed": true,
-          "evidence": "The turn-4 assistant message in events.jsonl reports Priya's mockups-link request (9:12 ET), Dan sending the Figma file (9:13 ET), and Priya's #design post on Thursday testing slots (9:20 ET), and says the lunch message falls outside the window."
+          "evidence": "Turn 4 adds the 6:12\u20136:13 mockups-link exchange and Priya's #design post on Thursday user-testing slots, and drops the lunch message as out of window."
         },
         {
           "text": "The Design Sync's saved file, as it stands at the end of the run, no longer carries the 9:14 AM lunch message as meeting chat.",
           "passed": true,
-          "evidence": "Final workspace/2026-10-06-design-sync.md has no lunch line; its notes are the Figma link exchange, the review outcome, and the #design testing-slots post."
+          "evidence": "The final 2026-10-06-design-sync.md has no lunch note; its notes are the mockups review, the link exchange, and the Thursday testing slots."
         },
         {
           "text": "The Hiring Sync is not re-windowed: its saved file still reflects 10:00 to 10:30 AM Pacific (Jordan's 10:18 AM message that the backend candidate withdrew), and the 7:20 AM expense reminder is not presented as its chat.",
           "passed": true,
-          "evidence": "workspace/2026-10-06-hiring-sync.md still says the other candidate withdrew that morning (Jordan's 10:18 AM message) and does not mention the expense reminder."
+          "evidence": "2026-10-06-hiring-sync.md was written once in turn 3 with Jordan's withdrawal note, was not edited afterwards, and does not mention the expense reminder."
         },
         {
           "text": "After the correction, the response says the Design Sync file changed and the Hiring Sync file did not, naming each.",
           "passed": true,
-          "evidence": "Turns 4 and 5 say 2026-10-06-design-sync.md changed and 2026-10-06-hiring-sync.md is unchanged."
+          "evidence": "Turn 5 says the Design Sync (2026-10-06-design-sync.md) changed and the Hiring Sync (2026-10-06-hiring-sync.md) is unchanged."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "tools.log has no create-trello-task.sh invocation."
+          "evidence": "tools.log shows no create-trello-task.sh invocation."
         }
       ]
     },
@@ -1775,52 +1785,52 @@
         "passed": 6,
         "failed": 0,
         "total": 6,
-        "time_seconds": 80.01,
-        "tokens": 38399,
-        "tool_calls": 6,
+        "time_seconds": 105.31,
+        "tokens": 42565,
+        "tool_calls": 4,
         "errors": null
       },
       "expectations": [
         {
           "text": "The calendar call log shows `list_events`, `search_events`, or `get_event` returning the Oct 8 Roadmap Sync (`evt-roadmap-1008`) before any calendar finding is reported.",
           "passed": true,
-          "evidence": "calendar-calls.log's only call, list_events for Oct 8 with fullText 'Roadmap Sync', returned evt-roadmap-1008 before turn 1 reported calendar findings."
+          "evidence": "calendar-calls.log shows search_events 'Roadmap Sync' returning evt-roadmap-1008 before turn 1 reports the agenda."
         },
         {
           "text": "An `###### Agenda` section sits between `###### Attendees` and `###### Notes`, listing the two Oct 8 agenda items (Q4 milestone dates; staffing for the reporting project) in their original order and wording, numbered, and nothing from the Oct 1 agenda (hiring plan review).",
           "passed": true,
-          "evidence": "Final document has ###### Agenda between Attendees and Notes with '1. Q4 milestone dates 2. Staffing for the reporting project' and nothing about the hiring plan review."
+          "evidence": "The final Agenda lists 1. Q4 milestone dates and 2. Staffing for the reporting project between Attendees and Notes, with nothing from the Oct 1 'Hiring plan review'."
         },
         {
           "text": "The response proposes a schedule note that the meeting ran 15 minutes long, or ended at 2:45 PM against a scheduled 2:30 PM end, and it appears under the metadata only after approval.",
           "passed": true,
-          "evidence": "Turn 1 proposes the ran-15-minutes-long note and asks whether to include it, and '*Scheduled for 30 minutes; ran 15 minutes long.*' appears under the metadata only in turn 3, after the user approved."
+          "evidence": "Turn 1 proposes the 'ran 15 minutes long' note, and '*Scheduled for 30 minutes; ran 15 minutes long.*' appears under the metadata only after the user approved."
         },
         {
           "text": "The skill asks whether Marcus Hall, invited on the calendar event but missing from the user's attendee list, attended, rather than silently adding or dropping him.",
           "passed": true,
-          "evidence": "Turn 1 asks 'Did Marcus Hall actually attend this meeting, or should he be marked as invited-but-absent?'"
+          "evidence": "Turn 1 asks 'Did Marcus Hall attend or not?'"
         },
         {
           "text": "The final Attendees section lists Dan Walker, Marcus Hall, and Priya Raman sorted by first name, with Marcus Hall struck through and no other name struck through.",
           "passed": true,
-          "evidence": "Final Attendees section reads Dan Walker, ~~Marcus Hall~~, Priya Raman, with only Marcus struck through."
+          "evidence": "The final Attendees section lists Dan Walker, ~~Marcus Hall~~, and Priya Raman, with only Marcus struck through."
         },
         {
           "text": "Zero create-trello-task.sh invocations occur.",
           "passed": true,
-          "evidence": "tools.log has no create-trello-task.sh invocation."
+          "evidence": "tools.log shows no create-trello-task.sh invocation."
         }
       ]
     }
   ],
   "summary": {
-    "pass_rate": 0.9654,
-    "expectations_passed": 223,
-    "expectations_total": 231,
-    "mean_time_seconds": 121.9,
-    "stdev_time_seconds": 53.4,
-    "mean_tokens": 46433,
-    "stdev_tokens": 10087
+    "pass_rate": 0.9313,
+    "expectations_passed": 217,
+    "expectations_total": 233,
+    "mean_time_seconds": 125.1,
+    "stdev_time_seconds": 71.0,
+    "mean_tokens": 47966,
+    "stdev_tokens": 12507
   }
 }
