@@ -170,6 +170,23 @@ For each available source:
     what the attendee was attending to instead of the meeting, and is
     kept like any other side conversation.
 
+  For example, two threads in one channel whose replies interleave, for a
+  meeting that ran 10:00 to 10:30 AM:
+
+  ```markdown
+  **#billing-cutover, thread started 9:40 AM by Noor Haddad (posted before the meeting)**
+  - Noor Haddad, 9:40 AM: are the invoice totals matching after the dry run?
+  - Tom Becker, 10:12 AM: not quite, two accounts are off by a cent
+  Follow-up during the meeting on the dry run; it relates to the cutover checklist the meeting reviewed.
+
+  **#billing-cutover, thread started 10:05 AM by Tom Becker**
+  - Tom Becker, 10:05 AM: who signs off on the rollback plan?
+  - Noor Haddad, 10:14 AM: I do, by Friday
+  ```
+
+  Tom's 10:12 reply lands between the two messages of the second thread
+  in time, and still goes under the first: it answers Noor's question.
+
   For example, in Slack, for a meeting that actually ran 2:00 PM to 2:45 PM
   Pacific on Oct 1, 2026: search with `after` and `before` set to that
   window's Unix timestamps and `on:2026-10-01` as the only filter, sorted
@@ -214,7 +231,10 @@ For each available source:
   meeting; exclude only bot and integration posts. Side conversations count
   even when they are off the meeting topic, because they show what the
   attendees were engaged with: propose them in time order, or beside the
-  part of the discussion they ran alongside. Keep
+  part of the discussion they ran alongside. Time order applies between
+  conversations and threads, never across them: each thread stays one
+  block, as in the example above, even when its replies interleave with
+  another thread's. Keep
   each one unless the user declines it, and never suggest dropping one
   because it is off topic or a participant called it unrelated. A
   message about the recording rather than the meeting (a request to stop
