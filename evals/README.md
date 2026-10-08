@@ -394,8 +394,11 @@ actually calls, `gmail_stub.py` the six Gmail operations its email workflow
 and a documented JQL subset that fails loudly on unsupported constructs,
 plus a getConfluencePage whose response layout is modelled on Confluence's
 REST v2 docs rather than a live response; see its docstring),
-and `slack_stub.py` the search and read operations a corpus-building skill
-calls, each backed by an in-memory fake "database" seeded from a fixture
+`slack_stub.py` the search and read operations a corpus-building skill
+calls, and `calendar_stub.py` the Google Calendar connector's read tools
+(event layouts copied from a live test event; attendee and calendar-list
+layouts follow the schema and are flagged unverified in its docstring),
+each backed by an in-memory fake "database" seeded from a fixture
 file. Tool names and parameter schemas were confirmed against
 live connected MCP servers, not guessed from prose, so a skill's real tool
 calls (including name-based list/board resolution and `update_card`'s batch
@@ -416,6 +419,16 @@ resolution (against an optional top-level `"me"` address in the fixture),
 which is what a corpus search for "mail I wrote to this person" needs; a
 fixture that declares no `"me"` makes `from:me`/`to:me` match nothing rather
 than everything.
+
+Changing a stub that several skills share changes what their trials see, so
+check before deciding which evals to re-run:
+
+1. Find the suites whose fixtures use the stub
+   (`ls plugins/*/skills/*/evals/fixtures/*/<service>-mcp-state.json`).
+2. Search those suites' saved call logs (`.trial-runs/*/<service>-calls.log`)
+   for calls that use what changed, such as a new query operator.
+3. Re-run the evals whose calls would now return something different, and
+   say in the PR which evals were not re-run and why.
 
 Requires a one-time local dependency install (isolated venv, not system
 Python -- see `evals/lib/mcp-stub/requirements.txt`):
@@ -452,7 +465,8 @@ the shared driver adds is left out of this sketch. `< /dev/null` stops `-p`
 waiting three seconds for stdin that is not coming.
 
 `run-mcp-eval.sh` wires every `<service>-mcp-state.json` a fixture provides
-(`trello-mcp-state.json`, `gmail-mcp-state.json`, `atlassian-mcp-state.json`)
+(`trello-mcp-state.json`, `gmail-mcp-state.json`, `atlassian-mcp-state.json`,
+`slack-mcp-state.json`, `calendar-mcp-state.json`)
 into a scratch
 `mcp-config.json` naming those stubs as the *only* MCP servers, so no real
 third-party server is reachable during a trial. A fixture that provides
@@ -483,8 +497,11 @@ anchor to the run date, rounded down to whole weeks so weekdays stay true:
   `%Q` for the season and `%q` for the same with "fall"; a leading `^`
   capitalizes), `{{slackts:...}}` and `{{slackp:...}}` for a Slack timestamp
   or a permalink's `p` segment.
-- The Jira stub's fixed "now" comes from an optional top-level `stub_now`,
-  which moves with the rest.
+- The Jira and Trello stubs' fixed "now" comes from an optional top-level
+  `stub_now`, which moves with the rest. The Trello stub counts `created:N`
+  back from it, and without one from the real clock, so a Trello fixture
+  an eval searches by creation time needs it: otherwise the same trial
+  finds different cards depending on the day it runs.
 - The same tokens work in an eval's `expected_output` and `expectations`;
   not in its prompt, which the drivers read before the fixture is resolved.
 
@@ -610,7 +627,10 @@ Five things the shared driver does that a hand-run trial must do for itself:
   - Bash runs in the [sandbox](https://code.claude.com/docs/en/sandboxing),
     writable only under the run directory, with no unsandboxed retry and no
     fallback if the sandbox cannot start; a preflight checks once that it
-    can. Bash reaches only the hosts a `WebFetch(domain:...)` allow rule in
+    can, and that `claude` is logged in. A trial runs under its own `HOME`,
+    so it can still fail to log in after the preflight passes; the driver
+    stops the batch at the first trial that does, rather than recording the
+    rest as zero-token results. Bash reaches only the hosts a `WebFetch(domain:...)` allow rule in
     the loaded settings names, and the trial adds none, which suits every
     eval run through this driver: each service it talks to is a stub. The
     sandbox gives Bash its own `$TMPDIR`, so `CLAUDE_CODE_TMPDIR` points that
