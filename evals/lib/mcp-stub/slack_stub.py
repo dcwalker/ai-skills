@@ -4,8 +4,8 @@
 A real, protocol-compliant stdio MCP server (built on the official `mcp`
 SDK) implementing the subset of Slack operations a corpus-building skill
 actually calls: slack_search_public_and_private, slack_read_channel,
-slack_read_thread, slack_search_users, slack_search_channels,
-slack_read_user_profile, and slack_send_message. See common.py's module
+slack_read_thread, slack_list_user_channels, slack_search_users,
+slack_search_channels, slack_read_user_profile, and slack_send_message. See common.py's module
 docstring for the general stub-server design.
 
 Schema fidelity note: every tool's parameters AND its response rendering
@@ -22,6 +22,7 @@ The envelopes, verbatim from the live server:
   search_*          {"results": "<markdown>", "pagination_info": "..."}
   read_channel      {"messages": "<text>", "pagination_info": "..."}
   read_thread       {"messages": "<text>", "pagination_info": "..."}
+  list_user_channels {"result": "<markdown>"}
   read_user_profile {"result": "<key: value lines>"}
   send_message      {"message_link": "...", "message_context": {...}}
 
@@ -61,6 +62,12 @@ State model (the fake Slack workspace):
     }]}
   }
 
+An optional top-level "search_unavailable" string makes every
+slack_search_public_and_private call fail with that message, logged first.
+It stands for a chat tool that cannot search at all, the case where a skill
+has to list conversations and read each one instead; it is an eval
+construct, not a reproduction of any particular live error.
+
 Times are stored as display strings rather than computed from `ts`, so a
 fixture reads the way the live server's output reads and no timezone maths
 can drift between runs.
@@ -71,9 +78,10 @@ evals measure and each worth knowing before trusting a diff:
 - Results are ordered by time (newest-first unless `sort_dir="asc"`),
   whatever `sort` says, because the live default `sort="score"` is an
   opaque relevance ranking.
-- Search never pages: it returns at most 20 hits, ignores `cursor`, and
-  always reports no more pages, so a fixture with more than 20 matching
-  messages is silently truncated.
+- Search pages the way the live server does, at most 20 hits a page with a
+  `For the next page of results use cursor` line, but only while hits
+  remain; live, a full page offers a cursor even when it is the last.
+  Its cursor encodes the page number, as the live one does.
 - The live search requires at least one of `keywords` or `filters`. The
   stub refuses a search with neither, logging the refused call with an
   `error` result in place of `results`, but also accepts `query` alone,
@@ -81,8 +89,15 @@ evals measure and each worth knowing before trusting a diff:
   `natural_language_query` (semantic reranking) is accepted, logged, and
   ignored, as is `only_my_channels`: every fixture channel is the user's.
   `channel_types` restricts results by each channel's `type`.
-- There is no slack_list_user_channels, so a skill cannot enumerate its
-  direct messages without a search.
+- slack_list_user_channels renders every `format` as `full`, and lists a
+  group direct message as `### Group DM: <name>` with type `Group Direct
+  Message`. The public channel and direct message layouts were copied from
+  the live server; the group direct message one is unverified, because no
+  live workspace it was checked against had a group direct message. The
+  cursor is an opaque offset, not the live server's channel-id cursor.
+- Thread replies are returned by ordinary search, each with its parent's
+  `thread_ts` in its permalink and no reply count, as a live test showed
+  (issue #96). `is:thread` matches replies and parents that have replies.
 - Messages posted through the API carry a `*Sent using* <app>` line live,
   which a fixture of organically typed messages has no reason to
   reproduce.
@@ -103,6 +118,7 @@ timestamp, inclusive at both ends as the live tool documents them, and are
 logged alongside the query.
 """
 
+import base64
 import copy
 
 from common import StubState
@@ -120,6 +136,10 @@ _SEARCH_HEADER = "# Search Results for: "
 _PUBLIC = "public_channel"
 _PAGINATION = "pagination_info"
 _RESULT = "### Result "
+_SEARCH_CURSOR = "CURRENT_PAGE:"
+_LIST_CURSOR = "offset:"
+_TYPE_LABELS = {"public_channel": "Public Channel", "private_channel": "Private Channel",
+                "im": "Direct Message", "mpim": "Group Direct Message"}
 
 
 def _search_body(query: str, section: str, rows: list) -> str:
@@ -186,7 +206,7 @@ def _messages_in(channel_id: str) -> list:
 
 def _is_thread_reply(message: dict) -> bool:
     """A reply lives in its thread, not in the channel timeline: the live
-    server omits these from both channel history and ordinary search."""
+    server omits these from channel history, though search returns them."""
     return bool(message.get("thread_ts")) and message["thread_ts"] != message["ts"]
 
 
@@ -210,7 +230,7 @@ def _term_matches(message: dict, channel: dict, term: str) -> bool:
             str(user.get("real_name", "")).lower(),
         )
     if lowered == "is:thread":
-        return bool(message.get("thread_ts"))
+        return _is_thread_reply(message) or _reply_count(channel["id"], message["ts"]) > 0
     for prefix in ("before:", "after:", "on:"):
         if lowered.startswith(prefix):
             date, day = lowered[len(prefix):], message.get("time", "")[:10]
@@ -277,8 +297,9 @@ def _render_hit(index: int, total: int, channel: dict, message: dict,
     replies = _reply_count(channel["id"], message["ts"])
     permalink = (f"https://example.slack.com/archives/{channel['id']}"
                  f"/p{message['ts'].replace('.', '')}")
-    if replies:
-        permalink += f"?thread_ts={message['ts']}&cid={channel['id']}"
+    if replies or _is_thread_reply(message):
+        # A reply links to its parent's thread; it carries no reply count.
+        permalink += f"?thread_ts={message.get('thread_ts') or message['ts']}&cid={channel['id']}"
     out = (
         f"{_RESULT}{index} of {total}\n"
         f"Channel: #{channel['name']} (ID: {channel['id']})\n"
@@ -302,26 +323,37 @@ def _render_hits(query: str, hits: list, include_context: bool) -> str:
     return _search_body(query, "Messages", rows)
 
 
-def _searchable(channel_id: str, query: str) -> list:
-    """Messages in one channel that ordinary search can see. Thread replies
-    live in their thread, so they surface only for an explicit is:thread."""
-    wants_threads = "is:thread" in query.lower()
-    return [m for m in _messages_in(channel_id)
-            if wants_threads or not _is_thread_reply(m)]
-
-
-def _collect_hits(query: str, limit: int, sort_dir: str, after: str = "",
+def _collect_hits(query: str, sort_dir: str, after: str = "",
                   before: str = "", channel_types: str = "") -> list:
+    """Every hit, sorted; the caller cuts the page."""
     wanted_types = {t.strip() for t in channel_types.split(",") if t.strip()}
     hits = []
     for channel_id in state.data["messages"]:
         channel = _channel(channel_id)
         if channel is None or (wanted_types and channel.get("type") not in wanted_types):
             continue
-        hits += [(channel, m) for m in _searchable(channel_id, query)
+        hits += [(channel, m) for m in _messages_in(channel_id)
                  if _matches(m, channel, query) and _in_window(m, after, before)]
     hits.sort(key=lambda pair: pair[1]["ts"], reverse=(sort_dir != "asc"))
-    return hits[:min(limit, 20)]
+    return hits
+
+
+def _encode_cursor(text: str) -> str:
+    return base64.b64encode(text.encode()).decode()
+
+
+def _decode_cursor(cursor: str, prefix: str) -> int:
+    """The number a cursor carries after `prefix`, or 0 for none. An
+    unreadable cursor raises, as an invalid cursor errors live."""
+    if not cursor:
+        return 0
+    try:
+        text = base64.b64decode(cursor).decode()
+        if not text.startswith(prefix):
+            raise ValueError
+        return int(text[len(prefix):])
+    except ValueError as error:
+        raise ValueError(f"slack-stub: invalid_cursor: {cursor!r}") from error
 
 
 @server.tool()
@@ -356,10 +388,14 @@ def slack_search_public_and_private(
     natural_language_query is accepted for semantic reranking and ignored."""
     args = {"query": query, "keywords": keywords or [], "filters": filters,
             "natural_language_query": natural_language_query,
-            "limit": limit, "sort": sort,
+            "limit": limit, "cursor": cursor, "sort": sort,
             "sort_dir": sort_dir, "after": after, "before": before,
             "channel_types": channel_types, "only_my_channels": only_my_channels,
             "include_context": include_context}
+    if state.data.get("search_unavailable"):
+        error = f"slack-stub: {state.data['search_unavailable']}"
+        state.log_call("slack_search_public_and_private", args, {"error": error})
+        raise ValueError(error)
     if not (keywords or filters or query):
         # Logged before refusing, so a grader sees the attempt in the call
         # log rather than having to find it in the transcript.
@@ -371,10 +407,16 @@ def slack_search_public_and_private(
     literal = [k if len(k) > 1 and k.startswith('"') and k.endswith('"') else f'"{k}"'
                for k in (keywords or [])]
     combined = " ".join(part for part in (query, *literal, filters) if part)
-    hits = _collect_hits(combined, limit, sort_dir, after, before, channel_types)
-    body = _render_hits(combined, hits, include_context)
+    hits = _collect_hits(combined, sort_dir, after, before, channel_types)
+    page_size = max(1, min(limit, 20))
+    page = max(_decode_cursor(cursor, _SEARCH_CURSOR), 1)
+    start = (page - 1) * page_size
+    body = _render_hits(combined, hits[start:start + page_size], include_context)
 
     result = _search_response(body)
+    if start + page_size < len(hits):
+        next_cursor = _encode_cursor(f"{_SEARCH_CURSOR}{page + 1}")
+        result[_PAGINATION] = f"For the next page of results use cursor `{next_cursor}`\n"
     state.log_call("slack_search_public_and_private", args, result)
     return result
 
@@ -473,6 +515,67 @@ def slack_read_thread(
     result = _read_response(body, "There are no more messages in this thread.\n")
     state.log_call("slack_read_thread",
                    {"channel_id": channel_id, "message_ts": message_ts}, result)
+    return result
+
+
+def _render_listed_channel(channel: dict) -> str:
+    """One `### ...` block of slack_list_user_channels, laid out as the live
+    server lays it out."""
+    kind = channel.get("type", _PUBLIC)
+    if kind == "im":
+        user = next((u for u in state.data["users"].values()
+                     if u.get("name", "").lower() == channel["name"].lower()), {})
+        out = (f"### DM with {user.get('real_name', channel['name'])}\n"
+               f"- **ID:** {channel['id']}\n- **Type:** {_TYPE_LABELS[kind]}\n"
+               f"- **User ID:** {user.get('id', '')}\n")
+    else:
+        heading = f"Group DM: {channel['name']}" if kind == "mpim" else f"#{channel['name']}"
+        out = (f"### {heading}\n- **ID:** {channel['id']}\n"
+               f"- **Type:** {_TYPE_LABELS.get(kind, kind)}\n")
+        if channel.get("purpose"):
+            out += f"- **Purpose:** {channel['purpose']}\n"
+    archived = "Yes" if channel.get("is_archived") else "No"
+    return out + f"- **Archived:** {archived}\n\n"
+
+
+@server.tool()
+def slack_list_user_channels(
+    types: str = "public_channel,private_channel",
+    limit: int = 50,
+    cursor: str = "",
+    exclude_archived: bool = False,
+    name_prefix: str = "",
+    format: str = "full",  # the live tool's parameter name; every format renders as full
+    team_id: str = "",
+) -> dict:
+    """Lists channels the user is a member of. types takes a comma-separated
+    list of public_channel, private_channel, im, and mpim; the default
+    leaves out direct and group direct messages. cursor is ignored when
+    name_prefix is set."""
+    wanted = {t.strip() for t in types.split(",") if t.strip()}
+    channels = [c for c in state.data["channels"].values()
+                if c.get("type", _PUBLIC) in wanted
+                and not (exclude_archived and c.get("is_archived"))
+                and c["name"].lower().startswith(name_prefix.lower())]
+    page_size = max(1, min(limit, 200))
+    start = 0 if name_prefix else _decode_cursor(cursor, _LIST_CURSOR)
+    page = channels[start:start + page_size]
+    more = start + page_size < len(channels)
+
+    if more:
+        body = f"## My Channels (showing {len(page)}, more results available)\n\n"
+    else:
+        body = f"## My Channels (showing {len(page)} of {len(page)} total)\n\n"
+    body += "".join(_render_listed_channel(c) for c in page)
+    if more:
+        next_cursor = _encode_cursor(f"{_LIST_CURSOR}{start + page_size}")
+        body += f'---\nPagination: More results available. Use cursor: "{next_cursor}"\n'
+
+    result = {"result": body}
+    state.log_call("slack_list_user_channels",
+                   {"types": types, "limit": limit, "cursor": cursor,
+                    "exclude_archived": exclude_archived, "name_prefix": name_prefix},
+                   result)
     return result
 
 

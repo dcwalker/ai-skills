@@ -105,6 +105,12 @@ if [[ -n "$REAL_HOME" && -e "$REAL_HOME/writing-style" ]]; then
   exit 1
 fi
 
+# What `claude -p` prints when it has no usable login. The preflight and every
+# trial turn check for it, because a trial that cannot log in exits at once
+# with zero tokens, and a batch that carried on would report thirty of them as
+# ordinary results.
+AUTH_FAILURE_PATTERN='Not logged in|Failed to authenticate|Please run /login'
+
 # Trials require the Bash sandbox (failIfUnavailable, below), and Claude Code
 # exits at startup when it cannot start one. Bash is the one tool offered, so
 # the sandbox has something to start for; the prompt never needs it. Without this check, every trial
@@ -112,14 +118,23 @@ fi
 # non-zero exit and carried on, finishing with nothing measured. It runs
 # before anything under TRIALS_DIR is cleared, so a machine that cannot run
 # trials does not lose the last run's results finding out.
+#
+# Its stdout is kept as well as its stderr: `claude -p` prints a login failure
+# ("Not logged in", "Failed to authenticate") on stdout, so discarding stdout
+# reported an expired login as a sandbox failure, with no output to show why.
 PREFLIGHT_LOG="$(mktemp)"
 if ! CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 claude -p --tools Bash --strict-mcp-config \
     --no-session-persistence \
     --settings '{"sandbox":{"enabled":true,"failIfUnavailable":true}}' \
-    -- "Reply with OK." < /dev/null > /dev/null 2> "$PREFLIGHT_LOG"; then
-  echo "ERROR: Claude Code could not start with its Bash sandbox, which every" >&2
-  echo "  trial requires. Its output follows; nothing under TRIALS_DIR was touched." >&2
-  echo "  See https://code.claude.com/docs/en/sandboxing for its requirements." >&2
+    -- "Reply with OK." < /dev/null > "$PREFLIGHT_LOG" 2>&1; then
+  if grep -qE "$AUTH_FAILURE_PATTERN" "$PREFLIGHT_LOG"; then
+    echo "ERROR: claude is not logged in, so no trial can run. Its output follows;" >&2
+    echo "  nothing under TRIALS_DIR was touched. Log in (claude auth login) and re-run." >&2
+  else
+    echo "ERROR: Claude Code could not start with its Bash sandbox, which every" >&2
+    echo "  trial requires. Its output follows; nothing under TRIALS_DIR was touched." >&2
+    echo "  See https://code.claude.com/docs/en/sandboxing for its requirements." >&2
+  fi
   cat "$PREFLIGHT_LOG" >&2
   rm -f "$PREFLIGHT_LOG"
   exit 1
@@ -226,6 +241,13 @@ print(json.dumps({
   # API error) must not abort the batch under set -e -- its events.jsonl
   # still lands in its own $RUN_DIR and the failure shows up in
   # metrics.json's is_error/parse_error fields.
+  # The built-in tools a trial has at all. --allowedTools only pre-approves
+  # calls; a tool that needs no approval runs whether or not it is listed, and
+  # trials did call the host's Artifact and Agent tools until this set was
+  # named. Write and Edit are here because the Edit rule in TRIAL_SETTINGS
+  # confines them to the run directory; ToolSearch loads the stub servers'
+  # deferred tools. MCP tools come from --mcp-config, not from this list.
+  #
   # An explicit allowlist rather than --dangerously-skip-permissions: that
   # flag refuses to run as root, which rules out containers and CI, and an
   # allowlist keeps the trial's tool surface auditable. Every stub server is
@@ -318,6 +340,7 @@ with open(sys.argv[2], "w") as fh:
   # events.jsonl. With a session id it resumes that session, which is what
   # makes a multi-turn eval (draft, then revise, then revise again) a real
   # conversation rather than one prompt describing several.
+  TRIAL_TOOLS="Bash,Read,Glob,Grep,Write,Edit,WebFetch,Skill,ToolSearch"
   run_turn() {
     local turn_prompt="$1" resume_id="${2:-}"
     local -a resume_flag=()
@@ -326,13 +349,25 @@ with open(sys.argv[2], "w") as fh:
       cd "$WORKSPACE_DIR"
       HOME="$TRIAL_HOME" TMPDIR="$RUN_DIR/tmp" CLAUDE_CODE_TMPDIR="$RUN_DIR/tmp" \
         claude -p --permission-mode dontAsk \
-        --allowedTools "Bash Read Glob Grep WebFetch TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian mcp__slack" \
+        --tools "$TRIAL_TOOLS" \
+        --allowedTools "Bash Read Glob Grep WebFetch TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian mcp__slack mcp__calendar" \
         --strict-mcp-config --verbose ${resume_flag[@]+"${resume_flag[@]}"} \
         --settings "$TRIAL_SETTINGS" \
         --mcp-config "$MCP_CONFIG_PATH" --output-format stream-json -- "$turn_prompt" \
         < /dev/null
-    ) >> "$RUN_DIR/events.jsonl" 2>> "$RUN_DIR/stderr.txt" || \
+    ) >> "$RUN_DIR/events.jsonl" 2>> "$RUN_DIR/stderr.txt" || {
+      # The preflight runs with the real HOME; a trial runs with its own, so a
+      # login the preflight could use can still be out of a trial's reach.
+      # Only the turn's last event and stderr are checked: a skill's own reply
+      # may mention a login, and that must not stop a batch.
+      if { tail -n 1 "$RUN_DIR/events.jsonl"; cat "$RUN_DIR/stderr.txt"; } \
+          | grep -qE "$AUTH_FAILURE_PATTERN"; then
+        echo "ERROR: eval $ID could not log in under its private HOME; stopping the batch." >&2
+        echo "  Nothing after it was run. See $RUN_DIR/events.jsonl." >&2
+        exit 1
+      fi
       echo "  WARNING: claude exited non-zero for eval $ID; continuing"
+    }
   }
 
   : > "$RUN_DIR/events.jsonl"

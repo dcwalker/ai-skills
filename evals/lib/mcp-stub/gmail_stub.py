@@ -51,7 +51,8 @@ Query support in search_threads is a small, documented subset of Gmail
 syntax -- enough for triage's scoped-inbox flow and writing's corpus
 searches: `in:inbox`, `in:sent`, `in:anywhere`, `from:<addr|me>`,
 `to:<addr|me>`, `subject:<word>`, `label:<label_id>`, `is:unread`, bare
-words (matched against subject+snippet), and `-` negation of any of these.
+words (matched against subject+snippet), "quoted phrases", an uppercase
+`OR` between two terms, and `-` negation of any of these.
 Anything fancier matches nothing rather than silently matching everything,
 and the raw query is always logged so a grader can see exactly what was
 asked for. `from:` and `to:` match the thread-level participants, not each
@@ -173,14 +174,50 @@ def _term_matches(t: dict, term: str) -> bool:
     return lowered in t["subject"].lower() or lowered in t["snippet"].lower()
 
 
+def _split_query(query: str) -> list:
+    """Split on spaces, keeping a "quoted phrase" as one term."""
+    terms, buffer, in_quotes = [], "", False
+    for char in query:
+        if char == '"':
+            in_quotes = not in_quotes
+            buffer += char
+        elif char == " " and not in_quotes:
+            if buffer:
+                terms.append(buffer)
+            buffer = ""
+        else:
+            buffer += char
+    if buffer:
+        terms.append(buffer)
+    return terms
+
+
+def _one_term_matches(t: dict, raw: str) -> bool:
+    negated = raw.startswith("-")
+    term = raw[1:] if negated else raw
+    if len(term) > 1 and term.startswith('"') and term.endswith('"'):
+        phrase = term.strip('"').lower()
+        found = phrase in t["subject"].lower() or phrase in t["snippet"].lower()
+    else:
+        found = _term_matches(t, term)
+    return found != negated
+
+
 def _thread_matches(t: dict, query: str) -> bool:
-    for raw in query.split():
-        if raw.startswith("-"):
-            if _term_matches(t, raw[1:]):
-                return False
-        elif not _term_matches(t, raw):
-            return False
-    return True
+    """Terms are AND-ed; an uppercase OR between two terms makes them one
+    either-or term, as in Gmail (`from:a OR from:b`)."""
+    # Parentheses only group an OR chain in practice, so they are dropped and
+    # the chain is read as written.
+    groups, terms = [], [term.strip("()") for term in _split_query(query) if term.strip("()")]
+    index = 0
+    while index < len(terms):
+        group = [terms[index]]
+        while index + 2 < len(terms) and terms[index + 1] == "OR":
+            group.append(terms[index + 2])
+            index += 2
+        groups.append(group)
+        index += 1
+    return all(any(_one_term_matches(t, raw) for raw in group) for group in groups)
 
 
 @server.tool()
@@ -195,8 +232,8 @@ def search_threads(
     listing-level fields only (no message bodies) -- use get_thread for a
     full body. The stub supports a documented subset of query operators:
     in:inbox, in:sent, in:anywhere, from:, to:, subject:, label:<id>,
-    is:unread, is:read, is:starred, is:important, bare words, and '-'
-    negation. from:me and to:me resolve to the fixture's "me" address.
+    is:unread, is:read, is:starred, is:important, bare words, "quoted
+    phrases", OR between terms, and '-' negation. from:me and to:me resolve to the fixture's "me" address.
     Results come newest first."""
     matches = []
     for t in state.data["threads"].values():

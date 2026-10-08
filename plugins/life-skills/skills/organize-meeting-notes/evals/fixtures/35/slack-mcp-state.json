@@ -1,0 +1,126 @@
+{
+  "me": {
+    "id": "U0DAN",
+    "name": "dan.walker",
+    "display_name": "dan.walker",
+    "real_name": "Dan Walker",
+    "email": "dan.walker@example.com",
+    "title": "Engineering Manager",
+    "timezone": "America/Los_Angeles",
+    "org": "example-co"
+  },
+  "users": {
+    "U0DAN": {
+      "id": "U0DAN",
+      "name": "dan.walker",
+      "display_name": "dan.walker",
+      "real_name": "Dan Walker",
+      "email": "dan.walker@example.com",
+      "title": "Engineering Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0PRIYA": {
+      "id": "U0PRIYA",
+      "name": "priya.raman",
+      "display_name": "priya.raman",
+      "real_name": "Priya Raman",
+      "email": "priya.raman@example.com",
+      "title": "",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0JORDAN": {
+      "id": "U0JORDAN",
+      "name": "jordan.lee",
+      "display_name": "jordan.lee",
+      "real_name": "Jordan Lee",
+      "email": "jordan.lee@example.com",
+      "title": "",
+      "timezone": "America/Los_Angeles"
+    }
+  },
+  "channels": {
+    "D0PRIYA": {
+      "id": "D0PRIYA",
+      "name": "priya.raman",
+      "purpose": "",
+      "creator": "U0DAN",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "im"
+    },
+    "D0JORDAN": {
+      "id": "D0JORDAN",
+      "name": "jordan.lee",
+      "purpose": "",
+      "creator": "U0DAN",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "im"
+    },
+    "C0DESIGN": {
+      "id": "C0DESIGN",
+      "name": "design",
+      "purpose": "Design team",
+      "creator": "U0PRIYA",
+      "created": "2026-01-05 08:00:00 PST",
+      "is_archived": false,
+      "type": "public_channel"
+    }
+  },
+  "messages": {
+    "D0PRIYA": [
+      {
+        "ts": "1791292320.000100",
+        "time": "2026-10-06 06:12:00 PDT",
+        "user": "U0PRIYA",
+        "text": "can you share the mockups link in the chat? mine won't load",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791292380.000200",
+        "time": "2026-10-06 06:13:00 PDT",
+        "user": "U0DAN",
+        "text": "sent, it's the figma file from Monday",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791303240.000300",
+        "time": "2026-10-06 09:14:00 PDT",
+        "user": "U0PRIYA",
+        "text": "lunch at noon?",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "C0DESIGN": [
+      {
+        "ts": "1791292800.000350",
+        "time": "2026-10-06 06:20:00 PDT",
+        "user": "U0PRIYA",
+        "text": "user testing slots for the checkout flow are open Thursday",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ],
+    "D0JORDAN": [
+      {
+        "ts": "1791296400.000400",
+        "time": "2026-10-06 07:20:00 PDT",
+        "user": "U0JORDAN",
+        "text": "reminder: expense reports due friday",
+        "thread_ts": null,
+        "reactions": []
+      },
+      {
+        "ts": "1791307080.000500",
+        "time": "2026-10-06 10:18:00 PDT",
+        "user": "U0JORDAN",
+        "text": "heads up, the backend candidate withdrew this morning",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ]
+  }
+}

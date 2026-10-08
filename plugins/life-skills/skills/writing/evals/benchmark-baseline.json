@@ -4,7 +4,7 @@
     "skill_path": "plugins/life-skills/skills/writing",
     "executor_model": "claude-sonnet-5",
     "analyzer_model": "claude-opus-5-5",
-    "timestamp": "2026-09-28T00:00:00Z",
+    "timestamp": "2026-10-08T00:00:00Z",
     "evals_run": [
       1,
       2,
@@ -39,26 +39,25 @@
     ],
     "runs_per_configuration": 1,
     "known_caveats": [
-      "Graded strictly and literally, unlike the 2026-08-25 baseline (139/142), which was graded more leniently. Under this standard main (f331700) scored 75.1% (223/297) across 3 runs of evals 2,3,5-8,11,12,14-21,24-26, with per-run results from 72.7% to 78.8%; compare new results against that, not against the old 97.9%.",
+      "Re-measured on PR dcwalker/ai-skills#97 with no change to the writing skill. Trials launched from a Claude Code session inherited CLAUDE_CODE_USER_EMAIL and related variables, which put the email in the model's context and made trials reject fixture personas' cached profiles. The harness now unsets them; the previous baseline may have been recorded with that leak, and this run is the first known to be without it.",
+      "Graded strictly and literally, the same standard as the 2026-09-28 baseline.",
       "One run per eval, so single-eval results are noisy: the same revision's per-run pass rate varied by about 10 points across repeated runs.",
-      "Measured on caf80c7. Later commits on the PR (57f092a pasted-draft vs dictation, 087de6f and 7949743 Sonar fixes including path containment to $HOME and $TMPDIR, aa83ed0 dedupe key, 8a9f373 Windows venv path, 0dd7edd docs) were not re-run as a full suite. Eval 30 was re-run 3 times on 57f092a and dropped the pasted draft's AI vocabulary in 3 of 3; here on caf80c7 it scored 1/5.",
-      "Trials ran with WRITING_STYLE_VENV pointing at a venv with wordfreq 3.1.1, so keyness and the rarity check were active; without it (the default under AI_SKILLS_EVAL) those checks are skipped.",
-      "Trial workspaces were outside the repo (TRIALS_DIR), so the repo's AGENTS.md did not apply to trials.",
-      "Eval 22's trigger is intermittent (a request naming a file path rather than a recipient); it fired here."
+      "wordfreq was NOT available (no WRITING_STYLE_VENV), so keyness and the rarity check were skipped. The 2026-09-28 baseline ran with them.",
+      "Trial workspaces were outside the repo (TRIALS_DIR), so the repo's AGENTS.md did not apply to trials."
     ],
     "skill_revision": "caf80c7",
     "grading_standard": "strict"
   },
   "summary": {
-    "expectations_passed": 120,
+    "expectations_passed": 133,
     "expectations_total": 160,
-    "expectation_pass_rate": 0.75,
-    "evals_fully_passed": 9,
+    "expectation_pass_rate": 0.8313,
+    "evals_fully_passed": 12,
     "evals_total": 30,
-    "mean_time_seconds": 139.0,
-    "sd_time_seconds": 74.1,
-    "mean_output_tokens": 11867,
-    "sd_output_tokens": 6427,
+    "mean_time_seconds": 146.3,
+    "sd_time_seconds": 77.9,
+    "mean_output_tokens": 9563,
+    "sd_output_tokens": 4964,
     "errors": 0,
     "skill_invoked_in_all_trials": true
   },
@@ -68,34 +67,93 @@
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.667,
-        "passed": 4,
-        "failed": 2,
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
         "total": 6,
-        "time_seconds": 137.57,
-        "tokens": 13645,
-        "tool_calls": 25,
+        "time_seconds": 167.29,
+        "tokens": 9573,
+        "tool_calls": 24,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "At least one search_threads call in the Gmail call log is scoped to mail the user sent to Jordan (a query pairing in:sent or from:me with to:jordan.blake@example.com), rather than only an inbox or unscoped search.",
+          "passed": true,
+          "evidence": "gmail-calls.log has search_threads query 'in:sent to:jordan.blake@example.com'."
+        },
+        {
+          "text": "A style card reporting the sample count, the audience it is scoped to, and a polish tier appears in the transcript before any drafted email text.",
+          "passed": true,
+          "evidence": "Transcript opens with the style card (6 samples, email to Jordan Blake peer, Tier 2) before the Draft section."
+        },
+        {
+          "text": "The card's observations match the sent samples: a lowercase 'hey Jordan,' opening, a lowercase sign-off in the 'thanks / alex' form, short length, and no em dashes.",
+          "passed": true,
+          "evidence": "Card reports 'hey Jordan,' lowercase 6 of 6, 'thanks / alex' 6 of 6, ~20-30 word bodies, and 'no em dashes', matching the six sent bodies in the seed."
+        },
+        {
+          "text": "The draft carries those markers and contains none of these: 'I hope this finds you well', 'I wanted to reach out', a closing offer of further help, an em dash, or a formal sign-off such as 'Best regards'.",
+          "passed": true,
+          "evidence": "Draft is 'hey Jordan, / heads up, staging deploy is blocked... / can you review the cache PR today?... / thanks / alex' with none of the listed phrases, no em dash, no formal sign-off."
+        },
+        {
+          "text": "The formal quoted reply chain inside the June 19 thread (Jordan's 'Kind regards' text) is not attributed to the user or reflected in the card as the user's own style.",
+          "passed": true,
+          "evidence": "corpus/email-jordan-blake.jsonl labels the June 19 quoted 'Kind regards' text author 'other', kind 'quoted', and the card does not reflect it."
+        },
+        {
+          "text": "No draft is created in Gmail: the drafts object in the final Gmail state is still empty.",
+          "passed": true,
+          "evidence": "gmail-state-out.json drafts is {} and no create_draft call is logged."
+        }
+      ]
     },
     {
       "eval_id": 2,
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.6,
-        "passed": 3,
-        "failed": 2,
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
         "total": 5,
-        "time_seconds": 187.93,
-        "tokens": 18341,
-        "tool_calls": 26,
+        "time_seconds": 195.13,
+        "tokens": 13312,
+        "tool_calls": 23,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The absence of any mail to dana.okafor@riverbend.example is established from the user's own sent mail before a fallback corpus is used, whether by a recipient-scoped query or by an enumeration of sent mail wide enough to cover it.",
+          "passed": true,
+          "evidence": "search_threads 'in:sent from:me' returned all 16 sent threads (none to dana.okafor) before the external-client threads s1-s6 were read."
+        },
+        {
+          "text": "The transcript states explicitly that there are no samples for this recipient and names the substitution it made (mail to other external clients), rather than presenting a profile as if it were built on messages to Dana.",
+          "passed": true,
+          "evidence": "Card Evidence line says rung 2, substitutes Marcus Webb at Northwind and Lena at Brightpath, and states 'No prior mail to Dana Okafor or Riverbend Logistics exists.'"
+        },
+        {
+          "text": "The style card is scoped to the external-professional class and reports the markers those samples actually show ('Hi <first name>,' opening, complete sentences, numbered items, 'Best, Alex Reyes' sign-off), not the peer markers from the Jordan mail in the same mailbox.",
+          "passed": true,
+          "evidence": "Card reports 'Hi <FirstName>,' 6 of 6, full sentences, numbered list when >1 item, and 'Best, Alex Reyes' 6 of 6, with no Jordan peer markers."
+        },
+        {
+          "text": "The draft follows the external-client conventions rather than the peer ones: it does not open with a lowercase 'hey Dana,' or close with the lowercase 'thanks / alex' sign-off.",
+          "passed": true,
+          "evidence": "Draft opens 'Hi Dana,' and closes 'Best, Alex Reyes', not 'hey Dana,' or 'thanks / alex'."
+        },
+        {
+          "text": "The draft invents no facts about Dana, Riverbend, or the account beyond what the prompt supplies (no invented dates, contract terms, prior conversations, or predecessor's name).",
+          "passed": false,
+          "evidence": "Draft invents the role's scope ('handling scheduling, questions, and anything else on the account') and a proposed call 'this week', neither of which the prompt gave."
+        }
+      ]
     },
     {
       "eval_id": 3,
@@ -106,13 +164,40 @@
         "passed": 4,
         "failed": 1,
         "total": 5,
-        "time_seconds": 26.97,
-        "tokens": 2315,
-        "tool_calls": 7,
+        "time_seconds": 47.94,
+        "tokens": 2929,
+        "tool_calls": 8,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The Gmail call log shows at least one search of the user's own sent mail, and the transcript reports that it came back empty rather than omitting the failure.",
+          "passed": true,
+          "evidence": "gmail-calls.log shows search_threads 'in:sent' returning [], and the transcript says it found 'no sent mail at all to draw from'."
+        },
+        {
+          "text": "No style card asserting observed habits (opening, sign-off, sentence length, vocabulary) is presented, since no samples were found; any card shown is explicitly labeled as having no evidence behind it.",
+          "passed": true,
+          "evidence": "Transcript explicitly says 'I don't have a style card' and presents none."
+        },
+        {
+          "text": "The transcript asks the user to describe how the message should sound in their own words, rather than presenting a menu of formality options as the primary ask; offering to take a pasted sample as an alternative is fine, but a demand for one before anything can proceed is not.",
+          "passed": false,
+          "evidence": "The primary ask is a menu of tones ('plain and polite, or more firm'), not a request for the user to describe the register in their own words."
+        },
+        {
+          "text": "If a draft is offered anyway, it is explicitly labeled as unresearched or uncalibrated, and it is not claimed to match the user's voice.",
+          "passed": true,
+          "evidence": "No draft is offered, so nothing is presented as matching the user's voice."
+        },
+        {
+          "text": "No draft is created in Gmail: the drafts object in the final Gmail state is still empty.",
+          "passed": true,
+          "evidence": "gmail-state-out.json drafts is {}."
+        }
+      ]
     },
     {
       "eval_id": 4,
@@ -123,13 +208,35 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 16.48,
-        "tokens": 1264,
+        "time_seconds": 6.75,
+        "tokens": 318,
         "tool_calls": 1,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The reply asks who the email goes to, or which audience it is for, before any style card or drafted email text appears.",
+          "passed": true,
+          "evidence": "The whole reply asks 'Who's this email going to (team, customers, leadership, etc.)?' and shows no card or draft."
+        },
+        {
+          "text": "No drafted email text appears anywhere in the transcript: with no audience and no general profile cached, there is nothing to write a register-neutral draft from.",
+          "passed": true,
+          "evidence": "Transcript contains no drafted email text."
+        },
+        {
+          "text": "The skill does not pick a recipient on its own from the topic (for example assuming the manager, the team, or affected customers) and does not present a style card scoped to an audience the user never confirmed.",
+          "passed": true,
+          "evidence": "No recipient is chosen and no style card is shown; the examples are offered as options in a question."
+        },
+        {
+          "text": "Any corpus research it does perform is not used to justify a profile for an unconfirmed audience.",
+          "passed": true,
+          "evidence": "tools.log shows only the Skill call and no gmail-calls.log exists, so no research was done or used."
+        }
+      ]
     },
     {
       "eval_id": 5,
@@ -140,30 +247,79 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 276.47,
-        "tokens": 26600,
-        "tool_calls": 40,
+        "time_seconds": 235.39,
+        "tokens": 20331,
+        "tool_calls": 41,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "Two distinct profiles appear, one scoped to the Slack message to Jordan and one to the email to Priya, rather than a single profile applied to both artifacts.",
+          "passed": true,
+          "evidence": "Two separate cards appear, 'Slack to Jordan Blake' and 'email to Priya Raman', each with its own evidence and polish tier."
+        },
+        {
+          "text": "The transcript states that no Slack source is reachable in this session and names the substitution used for that artifact (short sent email to the same person as an adjacent medium), rather than implying Slack messages were read.",
+          "passed": true,
+          "evidence": "Transcript says 'no Slack export or MCP tool was reachable this session' and the Slack card cites rung 3 adjacent medium (email to Jordan)."
+        },
+        {
+          "text": "The two drafts differ in the ways the samples support: the Jordan message is short and informal with the observed lowercase opening and no bullet list, while the Priya email leads with the outcome and uses the observed short bullet list and 'Alex' sign-off.",
+          "passed": true,
+          "evidence": "Jordan draft is short, lowercase 'hey Jordan,' with no bullets; Priya draft leads with 'The migration has slipped to Thursday.', has two dash bullets, and signs 'Alex', as in the four Priya samples."
+        },
+        {
+          "text": "No identical search_threads query is issued twice in the Gmail call log; research done for the first artifact is reused for the second rather than repeated.",
+          "passed": true,
+          "evidence": "gmail-calls.log has three distinct search_threads queries (to:jordan, to:priya, in:sent), none repeated."
+        },
+        {
+          "text": "No draft is created in Gmail: the drafts object in the final Gmail state is still empty.",
+          "passed": true,
+          "evidence": "gmail-state-out.json drafts is {}."
+        }
+      ]
     },
     {
       "eval_id": 6,
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.25,
-        "passed": 1,
-        "failed": 3,
+        "pass_rate": 0.5,
+        "passed": 2,
+        "failed": 2,
         "total": 4,
-        "time_seconds": 244.96,
-        "tokens": 19592,
-        "tool_calls": 26,
+        "time_seconds": 241.3,
+        "tokens": 13955,
+        "tool_calls": 22,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The Gmail call log shows a search for mail the user sent to mwebb@northwind.example before any rewrite is produced.",
+          "passed": true,
+          "evidence": "search_threads 'from:me to:mwebb@northwind.example' is the first Gmail search, before the rewrite."
+        },
+        {
+          "text": "The rewrite removes the assistant tells present in the original: no 'I hope this email finds you well', no 'I wanted to reach out', no 'circle back', no 'leverage', no 'don't hesitate to reach out', and no rule-of-three list ('testing, validation, and training') unless the sent samples actually show that pattern.",
+          "passed": false,
+          "evidence": "Rewrite keeps the rule-of-three 'testing, validation, and training', which the Marcus samples do not show as a phrasing pattern."
+        },
+        {
+          "text": "Every fact in the original survives the rewrite (security team approved the request, credentials are ready, sandbox is available ahead of the 5 August walkthrough) and no new fact is introduced.",
+          "passed": false,
+          "evidence": "Rewrite adds 'Security signed off this week', a time the original did not state."
+        },
+        {
+          "text": "The rewrite keeps the external-client conventions the samples show ('Hi Marcus,' opening, complete sentences, an explicit next step, the 'Best, Alex Reyes' sign-off) rather than dropping to the informality of the peer mail in the same mailbox.",
+          "passed": true,
+          "evidence": "Rewrite opens 'Hi Marcus,', uses complete uncontracted sentences, ends with a next step, and signs 'Best, Alex Reyes'."
+        }
+      ]
     },
     {
       "eval_id": 7,
@@ -174,47 +330,118 @@
         "passed": 3,
         "failed": 1,
         "total": 4,
-        "time_seconds": 16.7,
-        "tokens": 1179,
-        "tool_calls": 2,
+        "time_seconds": 15.04,
+        "tokens": 887,
+        "tool_calls": 1,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The Gmail call log contains no search_threads or get_thread calls: the instruction to skip the research was honored rather than overridden.",
+          "passed": true,
+          "evidence": "No gmail-calls.log exists and tools.log shows only the Skill call."
+        },
+        {
+          "text": "The transcript notes once, plainly, that the draft was written without researching the user's prior messages, and does not present an evidence-backed style card or claim the draft matches their voice.",
+          "passed": false,
+          "evidence": "The only acknowledgement is 'Quick draft, no digging required', which does not plainly say the draft was written without researching the user's prior messages."
+        },
+        {
+          "text": "A draft is still produced: the skill complies with the override rather than refusing or insisting on research first.",
+          "passed": true,
+          "evidence": "A draft email to Jordan is produced."
+        },
+        {
+          "text": "The draft adds no facts beyond the prompt (no invented appointment time, no invented stand-in, no invented agenda).",
+          "passed": true,
+          "evidence": "Draft states only covering standup tomorrow and the dentist appointment, with no time, stand-in, or agenda added."
+        }
+      ]
     },
     {
       "eval_id": 8,
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.5,
-        "passed": 2,
-        "failed": 2,
+        "pass_rate": 0.75,
+        "passed": 3,
+        "failed": 1,
         "total": 4,
-        "time_seconds": 133.27,
-        "tokens": 11017,
-        "tool_calls": 14,
+        "time_seconds": 228.73,
+        "tokens": 16395,
+        "tool_calls": 23,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The skill does not ask who the entry is addressed to: it treats the audience as the user themselves and proceeds.",
+          "passed": true,
+          "evidence": "The skill proceeds with audience 'self' without asking who the entry is for."
+        },
+        {
+          "text": "The existing entries under journal/ in the workspace are read and used as the corpus; the profile is built from them rather than from the mailbox.",
+          "passed": true,
+          "evidence": "tools.log shows the three journal/*.md files read and saved as the journal-self corpus; no Gmail calls were made."
+        },
+        {
+          "text": "The profile and the entry match the observed conventions: a '# <date> <lowercase weekday>' title line, the lowercase '## ' section-header style used in the existing entries, first person, short paragraphs, and no greeting or sign-off. Sections the user supplied nothing for may be omitted rather than padded, per the skill's rule against filling a section just because the samples always have one.",
+          "passed": true,
+          "evidence": "Entry uses '# 2026-10-08 thursday', the lowercase '## what happened / ## what's rattling around / ## tomorrow' headers, first person, short paragraphs, and no greeting or sign-off."
+        },
+        {
+          "text": "The entry contains only the facts the user gave (the slip to Thursday, running the incident call, the annoyance about staging) with no invented meetings, names, or outcomes, and it does not soften the stated annoyance into upbeat framing the existing entries never use.",
+          "passed": false,
+          "evidence": "Entry invents an outcome and conclusions ('It broke', 'Not surprising', 'nobody saw it until production did') and two tomorrow items the user never gave."
+        }
+      ]
     },
     {
       "eval_id": 9,
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 1.0,
-        "passed": 5,
-        "failed": 0,
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
         "total": 5,
-        "time_seconds": 125.72,
-        "tokens": 10825,
-        "tool_calls": 24,
+        "time_seconds": 99.25,
+        "tokens": 6315,
+        "tool_calls": 19,
         "turns_run": 3,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "Each revised draft still carries the markers the style card claimed: the lowercase 'hey Jordan,' opening and the lowercase 'thanks / alex' sign-off survive both revisions rather than drifting toward a formal register.",
+          "passed": true,
+          "evidence": "All three turns open 'hey Jordan,' and close 'thanks / alex'."
+        },
+        {
+          "text": "No assistant tell appears in a later revision that was absent from the first draft (no 'I hope this finds you well', no closing offer of help, no em dash, no 'Best regards'), so the revisions do not regress the voice.",
+          "passed": true,
+          "evidence": "Turns 2 and 3 add no new tell; turn 2 removes the turn-1 help offer and neither revision has an em dash or formal sign-off."
+        },
+        {
+          "text": "Each revision makes the change requested and only that change: turn 2 cuts the explanatory sentence while keeping the ask, turn 3 adds the offline-after-3 detail, and the parts the user did not ask about are carried over rather than rewritten.",
+          "passed": false,
+          "evidence": "Turn 2 keeps the explanation 'staging deploy is blocked on it' and instead cuts the help-offer line, so it did not cut the explanatory sentence as asked."
+        },
+        {
+          "text": "The added line about being offline after 3 states only that, without inventing a reason, a return time, or a stand-in reviewer.",
+          "passed": true,
+          "evidence": "Turn 3 adds only 'i'm offline after 3.' with no reason, return time, or stand-in."
+        },
+        {
+          "text": "The corpus is not re-searched on the revision turns: no search_threads query issued on turn 1 is repeated on turns 2 or 3.",
+          "passed": true,
+          "evidence": "tools.log shows both search_threads calls on turn 1 and none on turns 2 or 3."
+        }
+      ]
     },
     {
       "eval_id": 10,
@@ -225,30 +452,74 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 239.64,
-        "tokens": 20173,
-        "tool_calls": 37,
+        "time_seconds": 173.09,
+        "tokens": 12406,
+        "tool_calls": 22,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The cached profile is not used as evidence about this user: the style card's observations trace to the mailbox samples read in this trial, not to the cached card's claims (which describe a formal, 'Dear Jordan' / 'Kind regards' voice found nowhere in the sent mail).",
+          "passed": true,
+          "evidence": "The rewritten card cites 6 sent samples with 'hey Jordan,' and 'thanks\\nalex', none of the cached 'Dear Jordan' / 'Kind regards' claims."
+        },
+        {
+          "text": "The transcript says that a cache was found but belongs to different accounts, rather than silently ignoring it or silently trusting it.",
+          "passed": true,
+          "evidence": "Transcript says the cached profile 'was for a different person (identity r.okonkwo@othercorp.example...)' and was discarded."
+        },
+        {
+          "text": "The mailbox is actually searched in this trial rather than skipped on the strength of the cache.",
+          "passed": true,
+          "evidence": "gmail-calls.log shows search_threads 'from:me' and 'in:sent to:jordan.blake@example.com' plus six get_thread calls."
+        },
+        {
+          "text": "The draft carries the markers of the sent samples (lowercase 'hey Jordan,' opening, 'thanks / alex' sign-off), not the cached card's formal register.",
+          "passed": true,
+          "evidence": "Draft opens 'hey Jordan,' and closes 'thanks / alex'."
+        }
+      ]
     },
     {
       "eval_id": 11,
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.5,
-        "passed": 2,
-        "failed": 2,
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
         "total": 4,
-        "time_seconds": 55.1,
-        "tokens": 5063,
-        "tool_calls": 11,
+        "time_seconds": 59.44,
+        "tokens": 4522,
+        "tool_calls": 13,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The cached email/peer card for Jordan is reused rather than rebuilt, and the transcript says so explicitly, naming when it was built.",
+          "passed": true,
+          "evidence": "Final reply says it is reusing the cached profile 'built 2026-08-02 from 6 sent emails'; tools.log shows the card read, not rebuilt."
+        },
+        {
+          "text": "The cached card is confirmed rather than rebuilt: at most one bounded search for samples newer than the card's newest sample appears in the Gmail call log, not a re-read of the six threads the card was built from.",
+          "passed": true,
+          "evidence": "gmail-calls.log holds exactly one call, search_threads 'in:sent to:jordan.blake@example.com after:2026/07/30', and no get_thread re-reads."
+        },
+        {
+          "text": "The draft carries the markers the cached card describes (lowercase 'hey Jordan,' opening, 'thanks / alex' sign-off, two or three short lines).",
+          "passed": true,
+          "evidence": "Draft opens 'hey jordan,', is two short lines, and closes 'thanks' / 'alex', matching the card."
+        },
+        {
+          "text": "Reuse is reported as reuse: the card is not presented as fresh research, and its age is available to the user rather than hidden.",
+          "passed": true,
+          "evidence": "Reply labels the card 'reused from cache', gives the build date 2026-08-02, and adds a 'Confirmed: 2026-10-08' line."
+        }
+      ]
     },
     {
       "eval_id": 12,
@@ -259,13 +530,40 @@
         "passed": 3,
         "failed": 2,
         "total": 5,
-        "time_seconds": 298.42,
-        "tokens": 25007,
-        "tool_calls": 27,
+        "time_seconds": 230.41,
+        "tokens": 18458,
+        "tool_calls": 29,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The existing posts under blog/ are read and used as the corpus for this artifact; mail is not substituted for them without saying so, and any use of mail samples is labeled as a cross-medium observation rather than as blog evidence.",
+          "passed": true,
+          "evidence": "tools.log shows the three blog/*.md posts read and saved as corpus blog-public.jsonl; no Gmail calls were made."
+        },
+        {
+          "text": "The style card is scoped to the blog medium and a public audience, at whatever polish tier the sample posts actually support, rather than reusing an email profile from the same workspace or assuming a tier from the medium.",
+          "passed": true,
+          "evidence": "card-blog-public.md is scoped to 'blog post to public readership', rung 1 from the posts, Tier 3, with no email card reused."
+        },
+        {
+          "text": "The card's observations trace to the posts: first person throughout, an opening that starts from a concrete incident, plain declarative sentences, no headings or bullet lists inside the body, and an ending that declines to resolve neatly ('I do not have a tidy conclusion', 'If you want the tooling answer, I do not have one for you').",
+          "passed": false,
+          "evidence": "Card records the no-headers rule, the unresolved ending with both quotes, and short declaratives, but never records first person, and it hedges the opening as 'a claim or a concrete incident'."
+        },
+        {
+          "text": "The draft carries those markers: no headings or bullet lists, no call to action, no summary paragraph restating the piece, and an ending consistent with the observed refusal to tie things off.",
+          "passed": true,
+          "evidence": "Draft body has only the H1 title the card records as convention, no bullets, no call to action, and ends 'which is its own kind of better' after declining to claim better designs."
+        },
+        {
+          "text": "The draft contains only the reasons the user gave (speaking order, quiet dissent, objections surfacing in writing) with no invented anecdotes, metrics, or team details, even though the sample posts are rich in specifics of their own.",
+          "passed": false,
+          "evidence": "Draft invents a three-day comment period, a 'senior voice' calling designs solid, 'for years', and finding out 'by accident, reading a written proposal months later'."
+        }
+      ]
     },
     {
       "eval_id": 13,
@@ -276,13 +574,40 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 141.77,
-        "tokens": 12808,
-        "tool_calls": 13,
+        "time_seconds": 141.82,
+        "tokens": 11926,
+        "tool_calls": 18,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The corpus is the user's own comments identified by account, and the comments authored by the other 'Alex Reyes' (accountId user-alex-2, the 'Hi team' / 'Kind regards' voice) are excluded from the profile rather than blended into it on the strength of the matching display name.",
+          "passed": true,
+          "evidence": "Card says 'matched on tracker accountId user-alex-1' with user-alex-2 excluded, and the four ledger ids are all user-alex-1 comments."
+        },
+        {
+          "text": "The transcript makes the basis of attribution explicit: comments were matched by account identifier (the declared user-alex-1, or the same id resolved from the site), and the display-name collision with the other 'Alex Reyes' is named rather than passed over silently.",
+          "passed": true,
+          "evidence": "Final reply names the second 'Alex Reyes' (accountId user-alex-2) and says only comments under your actual accountId were used."
+        },
+        {
+          "text": "The card records the platform conventions the samples show: @mention form for people ('@Jordan') rather than written-out full names, 'PR #NNN' references rather than pasted URLs, no greeting, and no sign-off.",
+          "passed": true,
+          "evidence": "card-jira-eng-team.md records the @mention by first name, 'references the PR by number' ('PR #412'), and 'no greeting' / 'no sign-off' (4 of 4)."
+        },
+        {
+          "text": "The drafted comment carries those conventions: lowercase status-first opening, two or three sentences, no greeting, no 'Kind regards' sign-off.",
+          "passed": true,
+          "evidence": "Draft 'chunked migration is written and tested against a copy of the jobs table. @Jordan next cutover attempt is Thursday.' is lowercase, status-first, two sentences, with no greeting or sign-off."
+        },
+        {
+          "text": "No comment is posted to Jira: addCommentToJiraIssue does not appear in the Atlassian call log, and ENG-455's comment list in the final state is unchanged.",
+          "passed": true,
+          "evidence": "atlassian-calls.log has no addCommentToJiraIssue, and the atlassian state out equals the seed after JSON normalization."
+        }
+      ]
     },
     {
       "eval_id": 14,
@@ -293,64 +618,187 @@
         "passed": 2,
         "failed": 4,
         "total": 6,
-        "time_seconds": 200.75,
-        "tokens": 19579,
-        "tool_calls": 24,
+        "time_seconds": 178.31,
+        "tokens": 12731,
+        "tool_calls": 22,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The Slack export in the workspace is used as the corpus for this artifact rather than the mailbox, and any use of mail samples is labeled as a cross-medium substitution instead of presented as chat evidence.",
+          "passed": false,
+          "evidence": "slack-export/ was never read (no tool call touches it); the card is built from 7 Gmail sent samples labeled 'rung 4 (adjacent medium)'."
+        },
+        {
+          "text": "Messages are attributed by user id (U0ALEX): the messages from U0ALEX2, who shares the display name 'Alex Reyes' and writes formally ('Thank you for the detailed analysis', 'Please let me know if I can assist'), are excluded from the profile rather than blended into it.",
+          "passed": false,
+          "evidence": "No Slack messages were read, so there was no U0ALEX attribution or U0ALEX2 exclusion."
+        },
+        {
+          "text": "The profile is scoped to the channel rather than the DM, and says so: the #platform-eng samples are the basis, with the DM messages either excluded or explicitly noted as a different, terser register.",
+          "passed": false,
+          "evidence": "No channel or DM samples were used, so there is no channel/DM scoping."
+        },
+        {
+          "text": "The card records the platform conventions the channel samples show: <@U...> mention form rather than written-out names, links given descriptive labels rather than pasted bare, and emoji present but sparse (:white_check_mark: in 2 of 3 dated files) with none in the DM samples.",
+          "passed": false,
+          "evidence": "Card says greeting, sign-off, emoji, and @mention conventions are 'inferred, not attested', and records no <@U...> form, labeled links, or :white_check_mark: use."
+        },
+        {
+          "text": "The draft carries those conventions: lowercase, two or three lines, no greeting and no sign-off, and no email register imported from the mailbox.",
+          "passed": true,
+          "evidence": "Draft 'heads up \u2014 the migration is rescheduled to Thursday. / hold any merges that touch the jobs table until it's landed.' is lowercase, two lines, with no greeting or sign-off."
+        },
+        {
+          "text": "The draft states only the two facts given (rescheduled to Thursday, hold merges touching the jobs table) without inventing a cause, a window, or a rollback plan, even though the samples contain such details of their own.",
+          "passed": true,
+          "evidence": "Draft states only the reschedule to Thursday and the merge hold, with no cause, window, or rollback plan."
+        }
+      ]
     },
     {
       "eval_id": 15,
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.5,
-        "passed": 3,
-        "failed": 3,
+        "pass_rate": 0.667,
+        "passed": 4,
+        "failed": 2,
         "total": 6,
-        "time_seconds": 64.88,
-        "tokens": 5166,
-        "tool_calls": 7,
+        "time_seconds": 65.43,
+        "tokens": 3594,
+        "tool_calls": 6,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The transcript states that there are no samples in this medium and none for a personal audience, naming what was searched, rather than presenting a profile as if it were evidenced.",
+          "passed": true,
+          "evidence": "Reply states the cache holds only work-email cards with no text-message or personal-audience samples, the sister is not in identity.md, and no tool can reach texts."
+        },
+        {
+          "text": "general.md is used as the fallback and labeled for what it is (how the user writes in general, cross-medium, rung 5), not presented as evidence about how they write to their sister.",
+          "passed": true,
+          "evidence": "Card labels general.md 'cross-medium, low confidence for this register' with 'Evidence: 0 samples for this medium/audience'."
+        },
+        {
+          "text": "The work cards in the cache are not applied to this audience: the draft does not carry the peer or client register (no 'hey Jordan,'-style formula transplanted, no external-client conventions, no work-email structure).",
+          "passed": true,
+          "evidence": "Draft has no 'hey Name,' formula, no work-email structure, and no client conventions."
+        },
+        {
+          "text": "The user is asked to describe how it should sound, in their own words, rather than being given only a menu of formality tiers or being required to paste a sample before anything can proceed.",
+          "passed": false,
+          "evidence": "The user is never asked to describe how the text should sound; the reply only lists judgment calls and invites tweaks."
+        },
+        {
+          "text": "The traits general.md actually supports are the ones carried into the draft (no em dashes, no exclamation marks, the point first, short), while greeting, sign-off, and formality are treated as unknown rather than assumed.",
+          "passed": false,
+          "evidence": "general.md records no exclamation marks in 3 of 3 cards, but the draft contains 'sorry!'."
+        },
+        {
+          "text": "The draft states only the facts given (about an hour late, dinner, Saturday) and invents no reason, no arrival time, and no plans.",
+          "passed": true,
+          "evidence": "Draft states being about an hour late to dinner Saturday with no reason, arrival time, or new plans; 'Still coming' restates the given lateness."
+        }
+      ]
     },
     {
       "eval_id": 16,
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 1.0,
-        "passed": 6,
-        "failed": 0,
+        "pass_rate": 0.833,
+        "passed": 5,
+        "failed": 1,
         "total": 6,
-        "time_seconds": 137.11,
-        "tokens": 13450,
-        "tool_calls": 11,
+        "time_seconds": 115.67,
+        "tokens": 8376,
+        "tool_calls": 17,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The Slack tools are used to build the corpus: the channel's messages are read or searched, and the profile is scoped to #platform-eng rather than to the DM with Jordan.",
+          "passed": true,
+          "evidence": "slack-calls.log shows slack_search_channels, slack_read_channel C0PLATENG, and slack_read_thread, and the card is 'Slack to #platform-eng' with no DM read."
+        },
+        {
+          "text": "Messages are attributed to the user by id (U0ALEX): the U0ALEX2 messages, which share the display name 'Alex Reyes' and write formally ('Thank you for the detailed analysis', 'Please let me know if I can assist'), are excluded from the profile rather than blended into it.",
+          "passed": true,
+          "evidence": "Card says 'matched on U0ALEX (identifier)', the corpus has every user line from U0ALEX, and the U0ALEX2 message is absent."
+        },
+        {
+          "text": "The card records the conventions the channel samples show, read out of Slack's raw markup rather than mangled by it: <@U...|name> mentions rather than written-out names, <url|label> links given descriptive labels, and sparse :emoji: use in channel with none in the DM.",
+          "passed": false,
+          "evidence": "Card says 'no @-mentions needed' instead of recording the <@U0JORDAN|jordan> form, describes links as 'plain bracketed text' rather than <url|label> labels, and says nothing about emoji in the DM."
+        },
+        {
+          "text": "The draft carries those conventions: lowercase, two or three lines, no greeting and no sign-off, and no email register.",
+          "passed": true,
+          "evidence": "Draft 'heads up, migration's moved to thursday. hold merges that touch the jobs table until it lands.' is lowercase, two sentences on one line, with no greeting, sign-off, or email register."
+        },
+        {
+          "text": "Nothing is posted: slack_send_message does not appear in the Slack call log, and the channel's message list in the final Slack state is unchanged.",
+          "passed": true,
+          "evidence": "slack-calls.log has no slack_send_message, and the slack state out equals the seed after JSON normalization."
+        },
+        {
+          "text": "The draft states only the two facts given (rescheduled to Thursday, hold merges touching the jobs table) and does not import details from the samples, such as the previous Tuesday window or the rollback-notes link.",
+          "passed": true,
+          "evidence": "Draft carries only Thursday and the merge hold, with no 'next tuesday' window or rollback-notes link."
+        }
+      ]
     },
     {
       "eval_id": 17,
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.8,
-        "passed": 4,
-        "failed": 1,
+        "pass_rate": 0.6,
+        "passed": 3,
+        "failed": 2,
         "total": 5,
-        "time_seconds": 162.07,
-        "tokens": 11145,
-        "tool_calls": 22,
+        "time_seconds": 244.95,
+        "tokens": 15770,
+        "tool_calls": 33,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The card reports the evidence as two samples and labels the confidence low, rather than claiming high or medium confidence or omitting a confidence line entirely.",
+          "passed": true,
+          "evidence": "card-email-rachel-osei.md reads 'Evidence: 2 samples' and 'Confidence: low (only 2 samples...)', and the reply says confidence is low."
+        },
+        {
+          "text": "Claims on the card are proportionate to two samples: patterns that appear twice are reported with their counts, and no claim is stated as an invariable habit ('always', 'every time', 'never') on the strength of two messages.",
+          "passed": true,
+          "evidence": "Card patterns carry '2 of 2' or '1 of 2' counts, with '(low N)' and an 'insufficient evidence' hedge; no habit is stated as always or never."
+        },
+        {
+          "text": "The thinness is surfaced to the user as a limitation of the profile, not buried: the transcript says what would make it stronger (more samples, or the user describing the register) rather than presenting the profile as settled.",
+          "passed": false,
+          "evidence": "Reply mentions low confidence but never says what would strengthen the profile (more samples or the user describing the register), and the card itself is shown only through a Bash cat."
+        },
+        {
+          "text": "The draft carries only what the two samples actually show (name-plus-comma opening, short, plain, 'Alex' sign-off) and does not import the lowercase peer-email formula from the Jordan corpus in the same mailbox.",
+          "passed": true,
+          "evidence": "Draft opens 'Rachel,', is short and plain, uses no contractions, and signs 'Alex', with no lowercase 'hey'/'thanks alex' formula."
+        },
+        {
+          "text": "The draft states only the request given (move the tooling spend to next quarter because it will not be spent this quarter) without inventing an amount, a budget code, a deadline, or an approver.",
+          "passed": false,
+          "evidence": "Draft adds 'Let me know if you need anything from me to make that happen.', an offer the user did not make."
+        }
+      ]
     },
     {
       "eval_id": 18,
@@ -361,13 +809,40 @@
         "passed": 3,
         "failed": 2,
         "total": 5,
-        "time_seconds": 101.92,
-        "tokens": 8673,
-        "tool_calls": 17,
+        "time_seconds": 86.78,
+        "tokens": 6884,
+        "tool_calls": 20,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The transcript names the mismatch explicitly: the samples for this recipient are all jokes or teasing, and this message is serious news, so the observed register does not transfer.",
+          "passed": true,
+          "evidence": "Card Gaps line says 'every sample is lighthearted banter. This message is different in kind (a family medical situation)'."
+        },
+        {
+          "text": "The register is confirmed with the user, or the draft is offered with the tier assumption stated and flagged as the one thing most worth correcting, rather than the joking voice being applied to the news as though the corpus settled it.",
+          "passed": false,
+          "evidence": "Register was not confirmed before drafting: 'Does this match how you'd write to him?' runs straight into the draft, and the notes do not flag the tone assumption as the thing most worth correcting."
+        },
+        {
+          "text": "Whatever draft appears does not deliver the news in the teasing register the samples show (no jokes at the recipient's expense, no mock threats, no punchline ending) while still avoiding a formal or corporate voice that appears nowhere in the corpus.",
+          "passed": true,
+          "evidence": "Draft has no jokes, threats, or punchline, and stays lowercase and casual rather than formal."
+        },
+        {
+          "text": "The draft contains only what the user said (pulling out of the camping trip, father's heart surgery that week, wanting to be around) with no invented dates, hospital details, prognosis, or promises about rescheduling.",
+          "passed": false,
+          "evidence": "Draft adds 'i know we've been planning this one for a while' and 'let's find another weekend once things settle down', a rescheduling promise the user did not give."
+        },
+        {
+          "text": "The profile itself is still reported honestly, including that the corpus is banter, rather than the skill quietly substituting a generic serious-news voice and calling it the user's.",
+          "passed": true,
+          "evidence": "Card shown in the transcript reports the tone as 'joking, teasing, hyperbolic humor' and every sample as banter. Note: it claims the card was saved to card-email-theo-hendricks.md, but no such file exists."
+        }
+      ]
     },
     {
       "eval_id": 19,
@@ -378,13 +853,40 @@
         "passed": 4,
         "failed": 1,
         "total": 5,
-        "time_seconds": 213.49,
-        "tokens": 14563,
-        "tool_calls": 33,
+        "time_seconds": 240.93,
+        "tokens": 11602,
+        "tool_calls": 25,
         "turns_run": 3,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The warmer revision is actually warmer than the first draft, and the transcript notes that this departs from the observed samples rather than presenting it as a better match to the user's voice.",
+          "passed": true,
+          "evidence": "Turn 2 adds 'would you be able to' and 'really appreciate it, i owe you one.', and notes it is 'warmer than your usual blunt/direct pattern with Jordan'."
+        },
+        {
+          "text": "The warmth added stays within a plausible extension of the user's register: no boilerplate the corpus never uses ('I hope this finds you well', a closing offer of further help), no exclamation-mark pile-up where the samples have none, and no formal sign-off replacing the observed lowercase one.",
+          "passed": true,
+          "evidence": "Warmer draft keeps 'hey Jordan,' and 'thanks / alex', with no boilerplate, no help offer, and no exclamation marks."
+        },
+        {
+          "text": "The user's instruction outranks the corpus: the skill does not refuse the change, revert it on the next turn, or argue the samples back into place.",
+          "passed": true,
+          "evidence": "Both follow-ups are applied without refusal or argument."
+        },
+        {
+          "text": "The third turn shortens the message while keeping the warmth introduced in turn two, rather than reverting to the turn-one draft.",
+          "passed": true,
+          "evidence": "Turn 3 drops the appreciation line but keeps the softened 'would you be able to', so it differs from the turn-one 'can you take'."
+        },
+        {
+          "text": "No facts are added across the three turns beyond the on-call shift on Friday and the user being out: no reason for the absence, no offer to swap back, no invented deadline.",
+          "passed": false,
+          "evidence": "Turn 2 adds 'i owe you one', an implied promise to return the favor that the user did not give."
+        }
+      ]
     },
     {
       "eval_id": 20,
@@ -395,81 +897,241 @@
         "passed": 5,
         "failed": 1,
         "total": 6,
-        "time_seconds": 173.7,
-        "tokens": 16335,
-        "tool_calls": 24,
+        "time_seconds": 117.99,
+        "tokens": 10014,
+        "tool_calls": 21,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The cached card is not used as the profile. The transcript says why, naming at least one of the two triggers: the newest sample behind it is about eight months old, or the peer relationship it records contradicts the manager relationship in identity.md.",
+          "passed": true,
+          "evidence": "Reply says the cached card read Priya as peer/teammate from samples through November 2025, while identity.md now records her as manager, so it was rebuilt."
+        },
+        {
+          "text": "Fresh research actually runs: the Gmail call log shows a search of the user's sent mail scoped to priya.raman@example.com, and the resulting card cites the 2026 messages rather than the 2025 sample dates carried on the cached card.",
+          "passed": true,
+          "evidence": "gmail-calls.log shows search_threads 'in:sent to:priya.raman@example.com' plus four get_threads, and the card cites 2026-06-24 to 2026-07-28."
+        },
+        {
+          "text": "The rebuilt card describes the current register the mailbox shows -- 'Priya,' opening, the outcome or ask in the first sentence, a short bullet list, 'Alex' sign-off -- and not the cached peer markers ('hey Priya,' lowercase opening, 'thanks / alex' close, no bullets).",
+          "passed": true,
+          "evidence": "Card records the 'Priya,' opening, the outcome first, a dash bullet list, and the 'Alex' close (4 of 4), with 'Avoid: hey'."
+        },
+        {
+          "text": "The draft carries the current register rather than the stale one: it does not open with a lowercase 'hey Priya,' or close with the lowercase 'thanks / alex' sign-off.",
+          "passed": true,
+          "evidence": "Draft opens 'Priya,' and closes 'Alex'."
+        },
+        {
+          "text": "The staleness is surfaced to the user rather than handled silently: the transcript makes clear a cached profile existed and was replaced, instead of presenting the rebuild as if no cache had been there.",
+          "passed": true,
+          "evidence": "Reply's 'A call I made on my own' section says a cached peer card existed and was replaced, and index.md lists the superseded 2025 search."
+        },
+        {
+          "text": "The draft states only the three facts given (slipped to Thursday, a table lock during cutover, chunking before the next attempt) with no invented downtime figures, customer impact, or new date beyond Thursday.",
+          "passed": false,
+          "evidence": "Draft adds 'Nothing needed from you.', a conclusion the user did not state."
+        }
+      ]
     },
     {
       "eval_id": 21,
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.667,
-        "passed": 4,
-        "failed": 2,
+        "pass_rate": 0.833,
+        "passed": 5,
+        "failed": 1,
         "total": 6,
-        "time_seconds": 137.54,
-        "tokens": 12258,
-        "tool_calls": 15,
+        "time_seconds": 156.47,
+        "tokens": 11067,
+        "tool_calls": 18,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The retired chat account is searched as well as the current one: the Slack call log shows the corpus being gathered under U0ALEXOLD (or @areyes) in addition to U0ALEX, rather than only the current id.",
+          "passed": true,
+          "evidence": "slack-calls.log shows slack_read_channel on C0PLATENG returning all five U0ALEXOLD messages, which were kept (card says 'matched on account U0ALEX (current) and former account U0ALEXOLD'); there was no separate from:U0ALEXOLD search, only from:U0ALEX."
+        },
+        {
+          "text": "The card's evidence reflects the full corpus rather than the three post-migration messages alone, and its sample count and confidence are correspondingly higher than a three-sample profile would support.",
+          "passed": true,
+          "evidence": "Card shows 'Evidence: 8 samples ... 2026-01-14 -> 2026-06-03' and 'Confidence: high'."
+        },
+        {
+          "text": "The transcript explains why the older messages count: they were written by this user under an account recorded as Former in identity.md, not by somebody else who happens to share a name.",
+          "passed": false,
+          "evidence": "The final reply only says '8 samples' and never mentions the former account or why the pre-migration messages count; the U0ALEXOLD explanation appears only in the cached card file."
+        },
+        {
+          "text": "The card's observations hold across both eras rather than describing only the recent messages, since the voice is unchanged: lowercase throughout, no greeting or sign-off, <@U...|name> mentions, labeled links, sparse :emoji:.",
+          "passed": true,
+          "evidence": "Card cites 8 of 8 for lowercase, no greeting, and no sign-off, notes <@U0JORDAN|jordan> mentions, inline PR links, and one :white_check_mark: as rare, drawn from both eras."
+        },
+        {
+          "text": "The draft carries those conventions and states only the facts given (nightly export disabled until Monday, index rebuild, ask the user directly for an export in the meantime), inventing no cause, ticket, or restart time.",
+          "passed": true,
+          "evidence": "Draft 'nightly export job's off until monday, we're rebuilding the index. need one before then, ask me directly.' is lowercase, has no greeting or sign-off, and adds no cause, ticket, or restart time."
+        },
+        {
+          "text": "Nothing is posted: slack_send_message does not appear in the Slack call log.",
+          "passed": true,
+          "evidence": "slack-calls.log has no slack_send_message, and slack-state-out.json shows no new message."
+        }
+      ]
     },
     {
       "eval_id": 22,
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.833,
-        "passed": 5,
-        "failed": 1,
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
         "total": 6,
-        "time_seconds": 72.06,
-        "tokens": 6590,
-        "tool_calls": 4,
+        "time_seconds": 253.84,
+        "tokens": 7822,
+        "tool_calls": 6,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "Authorship inside the document is established from its revision history: a git blame, git log, or equivalent per-revision inspection appears in the trial, rather than the file being read as though one person wrote all of it.",
+          "passed": true,
+          "evidence": "tools.log shows 'git log --format=... -- docs/on-call-redesign.md' and 'git blame -e -L 1,35 docs/on-call-redesign.md'."
+        },
+        {
+          "text": "The profile is built only from the user's own passages ('What is actually wrong' and 'What I want to do about it'), and explicitly excludes the sections written by the other contributors.",
+          "passed": true,
+          "evidence": "Card says 'matched on git author eval-user@example.com, sections \"What is actually wrong\" and \"What I want to do about it\"', 2 samples, and its Avoid line excludes Priya's Background section."
+        },
+        {
+          "text": "The card's observations match the user's passages rather than the document's average: short declarative sentences, concrete numbers, a blunt opening claim, no hedging, and none of the process vocabulary ('it was agreed', 'facilitate a discussion', 'align on a preferred direction') that belongs to the other contributor.",
+          "passed": true,
+          "evidence": "Card records short declarative sentences, a flat blunt stance ('That is the whole problem.'), no hedging, and lists Priya's formal 'it would be beneficial if' register under Avoid, not as the user's voice."
+        },
+        {
+          "text": "The drafted section carries the user's register and does not imitate the surrounding sections' voices: no formal passive constructions, no cautious bullet list in place of prose unless the user's own passages use one.",
+          "passed": true,
+          "evidence": "Drafted section is three plain prose sentences in active voice, with no bullets or formal passive."
+        },
+        {
+          "text": "The drafted section states only the plan given (six-person rotation starting the first of next month, two weeks of parallel running, then the old rotation stops) and invents no names, dates, metrics, or approval steps.",
+          "passed": true,
+          "evidence": "Draft states only six-person rotation from the first of next month, two weeks in parallel, then six people only; no names, dates, metrics, or approvals, and the reply says it did not resolve the date."
+        },
+        {
+          "text": "The other contributors' writing is not reproduced in the deliverable, and their sentences are not presented as the user's own style.",
+          "passed": true,
+          "evidence": "The draft holds none of the other contributors' sentences; the one Priya phrase in the card is quoted under Avoid, labeled as not the user's voice."
+        }
+      ]
     },
     {
       "eval_id": 23,
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.833,
-        "passed": 5,
-        "failed": 1,
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
         "total": 6,
-        "time_seconds": 151.26,
-        "tokens": 14175,
-        "tool_calls": 22,
+        "time_seconds": 123.47,
+        "tokens": 10958,
+        "tool_calls": 14,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "At most one bounded search for mail newer than the card's newest ledger row (2023-09-14) appears in the Gmail call log; the six 2023 threads the card was built from are not re-read.",
+          "passed": true,
+          "evidence": "gmail-calls.log has one search_threads 'in:sent to:jordan.blake@example.com after:2023/09/14' and get_thread only on thread-n1..n5; no 2023 thread was re-read."
+        },
+        {
+          "text": "The card shown carries both horizons for at least the opening, reporting the recent figure and the all-time figure separately rather than a single blended count.",
+          "passed": true,
+          "evidence": "Shown card's Opening line reads '5 of 5 (2026-03\u219208) | 5 of 11 all-time'."
+        },
+        {
+          "text": "The disagreement between the recent and all-time readings is surfaced to the user as a finding to confirm, not silently averaged and not silently dropped.",
+          "passed": true,
+          "evidence": "Reply's 'One thing I had to call on my own' states that the 2023 card used lowercase and 'ticket' while the 5 recent messages use sentence case and 'issue', and that the newer pattern was chosen."
+        },
+        {
+          "text": "The draft follows the recent reading: it opens with a capitalised 'Jordan,' and uses 'issue' rather than 'ticket'.",
+          "passed": true,
+          "evidence": "Draft opens 'Jordan,' and says 'Issue 441 needs to be picked up before the freeze.'"
+        },
+        {
+          "text": "The card is extended rather than rebuilt from scratch: the 2023 evidence is still present in the reading rather than discarded, and its original ledger rows are retained.",
+          "passed": true,
+          "evidence": "card-email-jordan-blake.md keeps msg-o1..o6 ledger rows, adds msg-n1..n5, and says 'extended, not rebuilt'."
+        },
+        {
+          "text": "No draft is created in Gmail: the drafts object in the final Gmail state is still empty.",
+          "passed": true,
+          "evidence": "gmail-state-out.json drafts is {}."
+        }
+      ]
     },
     {
       "eval_id": 24,
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.667,
-        "passed": 4,
-        "failed": 2,
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
         "total": 6,
-        "time_seconds": 114.45,
-        "tokens": 10536,
-        "tool_calls": 15,
+        "time_seconds": 123.19,
+        "tokens": 6930,
+        "tool_calls": 19,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The cached card is used rather than discarded, rebuilt from scratch, or treated as expired because of its age.",
+          "passed": true,
+          "evidence": "Reply says 'Reusing the cached style card' and presents it with ledger 2023-02-14 -> 2023-06-30; no rebuild or expiry."
+        },
+        {
+          "text": "The transcript states that no samples fall in the recent window (nothing since 2023-06-30) and that confidence is lower as a result.",
+          "passed": true,
+          "evidence": "Card shown reads 'Confidence: medium (capped: no samples in the last 12 months...)' and 'delta search: 0 new since 2023-06-30'."
+        },
+        {
+          "text": "The absence of recent samples is not reported as a change in how the user writes: no claim that a habit was dropped or that the register has shifted.",
+          "passed": true,
+          "evidence": "Reply makes no claim that the user's habits or register changed."
+        },
+        {
+          "text": "The counts are not split into recent and all-time figures, since there is no recent evidence to split on.",
+          "passed": true,
+          "evidence": "Shown counts are single figures (e.g. '5 of 5'), with no recent/all-time split."
+        },
+        {
+          "text": "At most one bounded search for mail newer than the card's newest ledger row appears in the Gmail call log, and it returns nothing.",
+          "passed": true,
+          "evidence": "gmail-calls.log has one bounded search 'after:2023/06/30' returning threads: []; the other search is an unbounded re-read of the old threads, not a newer-mail search."
+        },
+        {
+          "text": "The draft carries the card's markers ('Dana,' opening, outcome first, 'Alex' on its own line) and states only the fact given, that the review moves to September.",
+          "passed": true,
+          "evidence": "Draft is 'Dana, / The Riverbend integration review is moving to September. / Alex', with no reason or date added."
+        }
+      ]
     },
     {
       "eval_id": 25,
@@ -480,13 +1142,45 @@
         "passed": 6,
         "failed": 0,
         "total": 6,
-        "time_seconds": 116.95,
-        "tokens": 11355,
-        "tool_calls": 12,
+        "time_seconds": 109.3,
+        "tokens": 9120,
+        "tool_calls": 15,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The cached #platform-eng card is not used as the profile for #incident-response; if it is consulted at all, the transcript says why it does not transfer.",
+          "passed": true,
+          "evidence": "Reply says 'No cached card for this channel' and builds a new card; the platform-eng card is not used."
+        },
+        {
+          "text": "Research is scoped to #incident-response specifically: the Slack call log shows that channel's history being read, not only #platform-eng's.",
+          "passed": true,
+          "evidence": "slack-calls.log shows slack_search_channels 'incident-response' and a search filtered 'in:#incident-response from:U0ALEX'."
+        },
+        {
+          "text": "Any card written or presented for this request is scoped to the channel by its name or id (#incident-response / C0INCIDENT), not to a category such as 'team channel' or 'public channel'.",
+          "passed": true,
+          "evidence": "Card is titled 'slack to #incident-response (C0INCIDENT)' and saved as card-slack-incident-response-C0INCIDENT.md."
+        },
+        {
+          "text": "The draft carries the observed #incident-response register: a status prefix such as INVESTIGATING, a stated impact or owner, terse full sentences, and no emoji.",
+          "passed": true,
+          "evidence": "Draft 'INVESTIGATING - nightly export job failing again. Impact: [confirm impact]. Owner: alex.' uses the status prefix, states an owner, is terse, and has no emoji."
+        },
+        {
+          "text": "The draft does not carry the #platform-eng register: no trailing emoji, no lowercase thinking-out-loud phrasing.",
+          "passed": true,
+          "evidence": "Draft has no trailing emoji and no lowercase thinking-out-loud phrasing."
+        },
+        {
+          "text": "No message is posted to Slack: the final Slack state has no new message in either channel.",
+          "passed": true,
+          "evidence": "slack-calls.log has no send call, and slack-state-out.json is identical to the seed."
+        }
+      ]
     },
     {
       "eval_id": 26,
@@ -497,16 +1191,151 @@
         "passed": 6,
         "failed": 0,
         "total": 6,
-        "time_seconds": 106.35,
-        "tokens": 10524,
-        "tool_calls": 21,
+        "time_seconds": 147.31,
+        "tokens": 10087,
+        "tool_calls": 27,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "Vocabulary is reported as slotted entries with counts (for example a marker entry with an 'n of 8' figure), not as an unquantified prose list of words.",
+          "passed": true,
+          "evidence": "Card shows slotted entries 'marker attested ... 5 of 8' and 'hedge absent ... 0 of 8'."
+        },
+        {
+          "text": "At least one positive vocabulary entry carries an attested snippet quoted from the samples rather than a bare word or phrase.",
+          "passed": true,
+          "evidence": "Marker entry quotes '> \"heads up, the deploy window moved to thursday.\"'."
+        },
+        {
+          "text": "'heads up' is recorded as an attested marker with a count reflecting that it opens five of the eight samples.",
+          "passed": true,
+          "evidence": "Card: 'marker attested opens with \"heads up,\" before the news 5 of 8'."
+        },
+        {
+          "text": "'circling back' is not presented as an attested or characteristic phrase: appearing in two of eight samples, it falls below the threshold for a positive claim.",
+          "passed": true,
+          "evidence": "The shown card has no 'circling back' entry; the cached card quotes it only as an example of technical shorthand, not as a characteristic phrase."
+        },
+        {
+          "text": "The absence of hedges is recorded as an absence, and the draft contains no hedging phrase such as 'I think', 'maybe', or 'sort of'.",
+          "passed": true,
+          "evidence": "Card: 'hedge absent ... 0 of 8'; draft contains no hedging."
+        },
+        {
+          "text": "The draft does not use 'circling back', and states only the fact given, that the index rebuild moves to next week.",
+          "passed": true,
+          "evidence": "Draft body is 'heads up, the index rebuild is pushed to next week.' with no 'circling back' and no added detail."
+        }
+      ]
     },
     {
       "eval_id": 27,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 148.39,
+        "tokens": 7773,
+        "tool_calls": 16,
+        "turns_run": 1,
+        "skill_invoked": true,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The card file in the style cache after the run still contains all six original ledger rows (msg-p1 through msg-p6); they are not rewritten or replaced.",
+          "passed": true,
+          "evidence": "card-email-priya-raman.md still holds msg-p1..msg-p6 with the same dates and 'used for' values as before the Edit in tools.log."
+        },
+        {
+          "text": "The ledger gains rows for the two newer messages (2026-07-30 and 2026-08-14), and the card's sample count moves from six to eight.",
+          "passed": true,
+          "evidence": "Ledger adds msg-p7 2026-07-30 and msg-p8 2026-08-14; Evidence moves from 6 to 8 samples."
+        },
+        {
+          "text": "At most one bounded search for mail newer than 2026-05-28 appears in the Gmail call log; the six threads already in the ledger are not re-read.",
+          "passed": true,
+          "evidence": "gmail-calls.log has one search 'after:2026/05/28' and get_thread only for thread-p7 and thread-p8."
+        },
+        {
+          "text": "The card is reported as reused and confirmed rather than rebuilt, and the transcript makes its provenance available to the user.",
+          "passed": true,
+          "evidence": "Reply says 'Reusing the cached profile from 2026-06-01; one bounded search turned up two newer sent emails ... which I folded into the ledger'; card says 'extended'."
+        },
+        {
+          "text": "index.md is updated to reflect the new sample count and the date the card was last confirmed.",
+          "passed": true,
+          "evidence": "index.md row shows 8 samples, newest 2026-08-14, confirmed 2026-10-08."
+        },
+        {
+          "text": "The draft carries the card's markers ('Priya,' opening, outcome first, 'Alex' on its own line) and states only the two facts given.",
+          "passed": true,
+          "evidence": "Draft 'Priya, / Retry backoff is deployed. On-call load is back to normal. / Alex' states only the two facts."
+        },
+        {
+          "text": "No draft is created in Gmail: the drafts object in the final Gmail state is still empty.",
+          "passed": true,
+          "evidence": "gmail-state-out.json drafts is {}."
+        }
+      ]
+    },
+    {
+      "eval_id": 28,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.667,
+        "passed": 4,
+        "failed": 2,
+        "total": 6,
+        "time_seconds": 307.84,
+        "tokens": 13866,
+        "tool_calls": 24,
+        "turns_run": 1,
+        "skill_invoked": true,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "A JSON Lines corpus file for Sam exists under the trial's ~/writing-style/corpus/, and the user's six reply bodies are saved as segments with author 'user', kind 'body', and match 'identifier'.",
+          "passed": true,
+          "evidence": "corpus/email-sam-ortiz.jsonl holds six user/body segments, each with match 'identifier'."
+        },
+        {
+          "text": "Sam's own messages are saved with author 'other', and the quoted text under each of the user's replies is a separate segment with author 'other' (kind 'quoted'); no segment labeled author 'user' and kind 'body' contains any of Sam's words such as 'synergy', 'bandwidth', 'deliverables', or 'circle back'.",
+          "passed": true,
+          "evidence": "Sam's messages are author 'other' kind 'body', quoted text is a separate author 'other' kind 'quoted' segment, and no user/body segment contains synergy, bandwidth, deliverables, or circle back."
+        },
+        {
+          "text": "vocabulary.md exists in the trial's ~/writing-style/, was written by scripts/vocabulary.py, and none of 'synergy', 'bandwidth', 'deliverables', or 'actionable' appears in its Lexicon section.",
+          "passed": false,
+          "evidence": "No vocabulary.md exists in home/writing-style/; the only check run was killed before writing it."
+        },
+        {
+          "text": "The transcript shows scripts/vocabulary.py check being run on the draft before it is presented.",
+          "passed": false,
+          "evidence": "vocabulary.py check ran once, in the background, on an earlier draft (with 'I'm out and won't be around...'), produced no output, and was killed; the presented draft was never checked, and the reply says the check was done manually."
+        },
+        {
+          "text": "The draft uses none of Sam's corporate vocabulary ('circle back', 'leverage', 'bandwidth', 'synergy', 'deliverables', 'actionable', 'going forward') and carries the user's markers: a lowercase 'hey Sam,' opening and a lowercase 'thanks / alex' close.",
+          "passed": true,
+          "evidence": "Draft opens 'hey Sam,', closes 'thanks / alex', and uses none of Sam's corporate vocabulary."
+        },
+        {
+          "text": "No draft is created in Gmail: the drafts object in the final Gmail state is still empty.",
+          "passed": true,
+          "evidence": "gmail-state-out.json drafts is {}."
+        }
+      ]
+    },
+    {
+      "eval_id": 29,
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
@@ -514,64 +1343,94 @@
         "passed": 6,
         "failed": 1,
         "total": 7,
-        "time_seconds": 193.63,
-        "tokens": 7517,
-        "tool_calls": 20,
+        "time_seconds": 61.86,
+        "tokens": 4576,
+        "tool_calls": 7,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
-    },
-    {
-      "eval_id": 28,
-      "configuration": "with_skill",
-      "run_number": 1,
-      "result": {
-        "pass_rate": 1.0,
-        "passed": 6,
-        "failed": 0,
-        "total": 6,
-        "time_seconds": 190.16,
-        "tokens": 13424,
-        "tool_calls": 25,
-        "turns_run": 1,
-        "skill_invoked": true,
-        "errors": 0
-      }
-    },
-    {
-      "eval_id": 29,
-      "configuration": "with_skill",
-      "run_number": 1,
-      "result": {
-        "pass_rate": 0.714,
-        "passed": 5,
-        "failed": 2,
-        "total": 7,
-        "time_seconds": 82.78,
-        "tokens": 8092,
-        "tool_calls": 14,
-        "turns_run": 1,
-        "skill_invoked": true,
-        "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The transcript shows scripts/vocabulary.py check run on the draft with the user's dictated content (including 'leverage', not the instruction about follow-ups) passed through --exempt.",
+          "passed": true,
+          "evidence": "tools.log shows vocabulary.py check run on the final draft with --exempt exempt.txt holding 'we can leverage the new cache layer to take load off the export job' and 'move the export rewrite to next quarter', with no follow-up instruction."
+        },
+        {
+          "text": "The draft keeps the user's own word 'leverage' rather than replacing it with a synonym, and does not flag it to the user as out of voice.",
+          "passed": false,
+          "evidence": "Draft keeps 'leverage', but the reply flags it: 'Kept \"leverage\" even though it's not in your usual vocabulary ... normally a word I'd flag and swap'."
+        },
+        {
+          "text": "The draft contains no other word from the never-used list in the fixture's vocabulary.md (for example 'robust', 'crucial', 'seamless', 'additionally', 'streamline', 'align').",
+          "passed": true,
+          "evidence": "Apart from 'leverage', the draft has no word from vocabulary.md's Never used list."
+        },
+        {
+          "text": "The card is reused rather than rebuilt: at most one bounded search for mail newer than 2026-08-14 appears in the Gmail call log, and the eight original ledger rows are kept.",
+          "passed": true,
+          "evidence": "gmail-calls.log has one search 'after:2026/08/14', and the card still lists msg-p1..msg-p8."
+        },
+        {
+          "text": "The corpus file still holds each of its eight messages' segments exactly once; the run adds no duplicate segment.",
+          "passed": true,
+          "evidence": "corpus/email-priya-raman.jsonl has 24 lines, one per (message, kind) across msg-p1..p8, with no duplicates."
+        },
+        {
+          "text": "The draft carries the card's markers ('Priya,' opening, outcome first, 'Alex' on its own line) and states only the facts given.",
+          "passed": true,
+          "evidence": "Draft 'Priya, / Moving the export rewrite to next quarter. We can leverage the new cache layer to take load off the export job instead. / Alex' leads with the outcome and adds no new fact."
+        },
+        {
+          "text": "No draft is created in Gmail: the drafts object in the final Gmail state is still empty.",
+          "passed": true,
+          "evidence": "gmail-state-out.json drafts is {}."
+        }
+      ]
     },
     {
       "eval_id": 30,
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.2,
-        "passed": 1,
-        "failed": 4,
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
         "total": 5,
-        "time_seconds": 49.35,
-        "tokens": 4792,
+        "time_seconds": 64.91,
+        "tokens": 4401,
         "tool_calls": 10,
         "turns_run": 1,
         "skill_invoked": true,
         "errors": 0
-      }
+      },
+      "expectations": [
+        {
+          "text": "The draft contains none of 'leverage', 'robust', 'additionally', or 'streamline', and none of the pasted draft's boilerplate ('I hope this finds you well', 'I wanted to reach out', 'Best regards').",
+          "passed": true,
+          "evidence": "Draft has none of leverage, robust, additionally, or streamline, and none of the pasted greeting or sign-off boilerplate."
+        },
+        {
+          "text": "The draft keeps the two facts: the new cache layer takes load off the export job, and the export rewrite moves to next quarter; it adds no reason, date, or conclusion beyond them.",
+          "passed": true,
+          "evidence": "Draft keeps the cache-layer load reduction and the move to next quarter; its other clause, 'since this simplifies the roadmap', restates the pasted text's 'streamline our roadmap' and is not new."
+        },
+        {
+          "text": "The draft carries the card's markers: 'Priya,' opening, outcome first, 'Alex' on its own line.",
+          "passed": false,
+          "evidence": "Draft opens 'Priya,' and ends 'Alex', but its first sentence is the cache-layer claim, and the outcome (moving the rewrite) comes second, so it is not outcome first."
+        },
+        {
+          "text": "The transcript shows scripts/vocabulary.py check run on the draft, and the file passed to --exempt does not contain the pasted draft's text (it holds no 'leverage' or 'robust').",
+          "passed": true,
+          "evidence": "tools.log shows vocabulary.py check run on the final draft with an empty --exempt file (': > \"$EXEMPT\"')."
+        },
+        {
+          "text": "No draft is created in Gmail: the drafts object in the final Gmail state is still empty.",
+          "passed": true,
+          "evidence": "gmail-state-out.json drafts is {}."
+        }
+      ]
     }
   ]
 }

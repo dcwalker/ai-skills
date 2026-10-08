@@ -90,6 +90,20 @@ seems unlikely to hold anything. The user may also paste
 source material (a calendar event, chat excerpts, an email, a meeting
 transcript) directly; treat that the same way as fetched content.
 
+Confirm which of these the session can reach, then consult every one that
+is reachable:
+
+- **Calendar**: the matching event, its agenda, invitees, and scheduled times.
+- **Team chat**: the meeting window, searched by date alone, then each
+  active conversation and thread read.
+- **Email**: threads with attendees or on the topic near the meeting date.
+- **Shared links**: every URL in the notes, chat, or email.
+- **Ticket tracker**: every referenced work item.
+- **Items created during the meeting**: work items and cards attendees
+  created or were assigned.
+
+The detail for each follows.
+
 For each available source:
 
 - **Calendar**: find the event matching the meeting title and time. Pull the
@@ -111,8 +125,10 @@ For each available source:
      by date, carrying no topic keyword and no sender filter. When the tool
      takes timestamps, convert the window in the user's own timezone (from
      the chat profile or the calendar). If the tool refuses a search bounded
-     only by timestamps, retry it with the meeting's date as a date filter
-     (`on:YYYY-MM-DD` in Slack's search syntax); a refused search is never
+     only by timestamps, retry it with the meeting's date added as a date
+     filter (`on:YYYY-MM-DD` in Slack's search syntax), keeping the
+     timestamp bounds alongside it; dropping them returns the whole day.
+     Date filters take dates, never timestamps. A refused search is never
      a reason to fall back to keywords. Sort the search by time, and page
      through it until the results run out or reach past both the actual
      start and the actual end.
@@ -122,11 +138,71 @@ For each available source:
      required even when the search results already show the messages:
      search results and their surrounding context can leave messages out,
      so they are not a read. Never say a conversation was read unless that
-     read was made.
+     read was made. Search results also list neighbouring messages as
+     context, without their times. Context is not a finding: never quote,
+     report, or propose a context message, and never give it a time. Only
+     what the bounded read returns is in the window, at the time that read
+     shows.
 
-  When the chat tool cannot search by date alone, list the user's direct
-  messages, group direct messages, and channels instead, read each between
-  the actual start and end, and say so.
+  A channel or direct message read returns top-level messages only; replies
+  inside a thread are not included. When a message in the window has
+  replies, read that thread too and treat it as part of the same read. The
+  date-bounded search does return replies, each carrying its parent's
+  timestamp (`thread_ts`); when a search hit is a reply, read its thread
+  from that parent. A thread whose parent falls outside the window still
+  counts when its replies fall inside it. Keep each reply with its own
+  thread, even when two threads share a channel and their replies
+  interleave in time:
+  - Present each thread as its own block: the parent message first, then
+    only the replies whose `thread_ts` is that parent's, in time order.
+    Never list replies from different threads in one sequence.
+  - A reply answers its own parent, not the message shown just before it.
+    Read a short reply ("yes", "same here") against its parent; when its
+    words would fit another thread better, it still belongs to its own.
+  - In the notes, a reply's content goes with its own thread's subject.
+    Never present it as a result of, or a comment on, another thread.
+  - A reply in the window that continues a thread started before it is a
+    follow-up, and its parent is the context that makes it readable.
+    Propose the parent with the reply, marked as posted before the
+    meeting (its time and author), never as chat from during it. Say
+    whether the follow-up relates to the meeting's content: one that does
+    belongs beside the discussion it continues; one that does not shows
+    what the attendee was attending to instead of the meeting, and is
+    kept like any other side conversation.
+
+  For example, two threads in one channel whose replies interleave, for a
+  meeting that ran 10:00 to 10:30 AM:
+
+  ```markdown
+  **#billing-cutover, thread started 9:40 AM by Noor Haddad (posted before the meeting)**
+  - Noor Haddad, 9:40 AM: are the invoice totals matching after the dry run?
+  - Tom Becker, 10:12 AM: not quite, two accounts are off by a cent
+  Follow-up during the meeting on the dry run; it relates to the cutover checklist the meeting reviewed.
+
+  **#billing-cutover, thread started 10:05 AM by Tom Becker**
+  - Tom Becker, 10:05 AM: who signs off on the rollback plan?
+  - Noor Haddad, 10:14 AM: I do, by Friday
+  ```
+
+  Tom's 10:12 reply lands between the two messages of the second thread
+  in time, and still goes under the first: it answers Noor's question.
+
+  For example, in Slack, for a meeting that actually ran 2:00 PM to 2:45 PM
+  Pacific on Oct 1, 2026: search with `after` and `before` set to that
+  window's Unix timestamps and `on:2026-10-01` as the only filter, sorted
+  by time, with no keywords and no `from:` filter. Read each conversation
+  found with `oldest` and `latest` set to the same timestamps. Read the
+  thread of each message with replies, and of each reply hit. Then open the
+  chat findings with the disclosure line below.
+
+  When the chat tool cannot search by date alone, prefer a search bounded by
+  start and end timestamps, which most tools accept even when they reject a
+  bare date. Only when neither is available, list the user's direct
+  messages, group direct messages, and channels, read each between the
+  actual start and end, and say so. When the account holds more
+  conversations than can reasonably be enumerated, say that plainly and use
+  the timestamp-bounded search rather than a partial listing, because a
+  partial listing reported as a listing overstates what was checked.
 
   Keyword and sender searches may follow as extras, but they are never the
   check itself: a keyword search misses the messages that matter most (a
@@ -155,7 +231,10 @@ For each available source:
   meeting; exclude only bot and integration posts. Side conversations count
   even when they are off the meeting topic, because they show what the
   attendees were engaged with: propose them in time order, or beside the
-  part of the discussion they ran alongside. Keep
+  part of the discussion they ran alongside. Time order applies between
+  conversations and threads, never across them: each thread stays one
+  block, as in the example above, even when its replies interleave with
+  another thread's. Keep
   each one unless the user declines it, and never suggest dropping one
   because it is off topic or a participant called it unrelated. A
   message about the recording rather than the meeting (a request to stop
@@ -237,6 +316,13 @@ If only an initial is available and the full first name is unknown, ask the user
 
 Ask the user who did not attend. After response:
 - Apply strikethrough to invited names that did not attend.
+
+When more than 20 people attended, or the names of everyone who attended
+cannot be established (as when the invite hides its guest list), skip that
+question and follow
+[references/summarize-attendees.md](references/summarize-attendees.md)
+instead: the section names who was invited and how many attended, with no
+names.
 
 ### Step 3b: Format Agenda
 
@@ -445,6 +531,12 @@ After the interview and normalization, format the notes section as a bulleted li
 8. If no action items are confirmed, skip Trello creation.
 9. After Trello creation (or skip), produce final Markdown document.
 
+When the user asks for the final document, or approves everything as
+proposed, treat that as approval of every pending stage. Do not re-ask a
+question the user already answered or passed over: leave out whatever is
+still unknown (an owner, a due date, a link) and produce the final document
+in that reply. Only Trello creation still needs its own yes.
+
 ### Step 8: Final Output Format
 
 When approved, return final Markdown with:
@@ -515,6 +607,10 @@ At the very end, append:
   trace to what the artifacts show and are reviewed with the user before
   finalizing.
 - Ask clarifying questions when uncertain.
+- When a method error is found partway through a run, re-check everything
+  already produced in that run against the corrected method, and report
+  which files changed and which did not. A correction applied only to work
+  produced after it leaves earlier work wrong without saying so.
 - Follow requested section order and formatting exactly.
 - Enrichment content must trace to a real source that was actually
   consulted (or material the user pasted). When no context sources are

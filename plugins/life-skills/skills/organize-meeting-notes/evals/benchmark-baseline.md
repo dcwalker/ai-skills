@@ -1,56 +1,66 @@
 # Skill Benchmark: organize-meeting-notes
 
 **Model**: claude-sonnet-5 (executor) / claude-opus-5-5 (analyzer)
-**Date**: 2026-10-07T00:00:00Z
-**Evals**: 1-27 (1 recorded run each, with_skill only)
+**Date**: 2026-10-08T00:00:00Z
+**Evals**: 1-36 (1 recorded run each, with_skill only)
 
 ## Summary
 
 | Metric | With Skill |
 |--------|------------|
-| Pass Rate | 93% ± 12% |
-| Time | 136.2s ± 68.2s (n=27) |
-| Tokens | 58181 ± 15755 (n=27) |
+| Pass Rate | 94% ± 11% |
+| Time | 124.7s ± 71.0s (n=36) |
+| Tokens | 47998 ± 12518 (n=36) |
 
 ## Per-eval results
 
 | Eval | Pass Rate | Time (s) | Tokens |
 |------|-----------|----------|--------|
-| 1 | 5/5 | 183.1 | 91083 |
-| 2 | 4/4 | 70.0 | 59234 |
-| 3 | 3/4 | 81.0 | 54716 |
-| 4 | 3/4 | 228.0 | 72928 |
-| 5 | 4/4 | 102.9 | 51399 |
-| 6 | 5/5 | 120.2 | 73975 |
-| 7 | 8/8 | 111.1 | 40899 |
-| 8 | 5/5 | 120.4 | 62507 |
-| 9 | 7/7 | 343.3 | 85545 |
-| 10 | 5/5 | 93.8 | 38016 |
-| 11 | 6/6 | 121.7 | 57995 |
-| 12 | 5/5 | 60.1 | 39674 |
-| 13 | 6/6 | 134.8 | 49798 |
-| 14 | 5/7 | 131.7 | 73486 |
-| 15 | 9/11 | 245.3 | 81136 |
-| 16 | 4/4 | 13.4 | 29144 |
-| 17 | 6/7 | 130.5 | 58610 |
-| 18 | 4/7 | 186.9 | 70500 |
-| 19 | 7/7 | 141.4 | 54803 |
-| 20 | 3/4 | 17.9 | 29729 |
-| 21 | 9/9 | 140.8 | 53397 |
-| 22 | 11/12 | 124.3 | 59861 |
-| 23 | 7/7 | 129.9 | 58403 |
-| 24 | 7/7 | 138.0 | 48960 |
-| 25 | 8/8 | 141.8 | 54750 |
-| 26 | 8/8 | 212.2 | 71393 |
-| 27 | 7/7 | 152.2 | 48941 |
+| 1 | 5/5 | 92.2 | 45037 |
+| 2 | 4/4 | 60.3 | 35790 |
+| 3 | 3/4 | 85.8 | 40741 |
+| 4 | 3/4 | 178.5 | 49299 |
+| 5 | 3/4 | 84.8 | 38302 |
+| 6 | 5/5 | 78.8 | 39818 |
+| 7 | 5/8 | 84.2 | 40993 |
+| 8 | 5/5 | 95.3 | 38328 |
+| 9 | 7/7 | 353.2 | 78369 |
+| 10 | 5/5 | 102.0 | 43989 |
+| 11 | 6/6 | 87.1 | 40069 |
+| 12 | 5/5 | 82.3 | 38592 |
+| 13 | 6/6 | 127.1 | 53857 |
+| 14 | 5/7 | 151.0 | 49727 |
+| 15 | 10/11 | 320.7 | 76648 |
+| 16 | 4/4 | 15.0 | 27621 |
+| 17 | 5/7 | 118.5 | 52692 |
+| 18 | 7/7 | 248.1 | 84601 |
+| 19 | 6/7 | 128.1 | 49422 |
+| 20 | 3/4 | 19.7 | 28064 |
+| 21 | 9/9 | 107.2 | 45710 |
+| 22 | 11/12 | 175.8 | 63498 |
+| 23 | 7/7 | 112.1 | 50045 |
+| 24 | 7/7 | 113.7 | 46660 |
+| 25 | 8/8 | 139.9 | 46883 |
+| 26 | 8/8 | 240.0 | 61790 |
+| 27 | 7/7 | 133.2 | 49079 |
+| 28 | 11/11 | 117.0 | 52760 |
+| 29 | 8/8 | 72.4 | 43250 |
+| 30 | 5/5 | 153.2 | 56939 |
+| 31 | 5/5 | 137.2 | 41026 |
+| 32 | 7/7 | 68.9 | 37240 |
+| 33 | 5/5 | 71.1 | 40393 |
+| 34 | 7/7 | 113.2 | 45790 |
+| 35 | 6/6 | 117.7 | 52344 |
+| 36 | 6/6 | 105.3 | 42565 |
 
 ## Notes
 
-- 27 evals and 27 recorded runs pass 161/173 expectations, with 19 evals passing every expectation. Graders checked every claimed source check, search, and card against the stub call logs, `events.jsonl`, and `tools.log` rather than the executor's own report.
-- This baseline accompanies issue #94. Step 1b gains a source that finds the Jira work items and Trello cards attendees created, or were assigned, from the meeting's actual start to 15 minutes after its end, with items in those 15 minutes kept only when they relate to the meeting. The details live in `references/capture-tracker-items.md`. Step 7 links an action item to a captured item instead of creating a duplicate Trello card.
-- New evals: 26 (Jira, eight items across every window and person rule, with one Trello card for the only action item that has no ticket) and 27 (Trello, creation times read from card IDs, and a creator the tool cannot show). Both pass every expectation on the final text. Earlier drafts failed them: the capture rule sat in a bullet whose condition ("if the notes ... reference tracked work items") the executor applied to it, an unrelated item created after the meeting was asked about instead of left out, the meeting's time zone had no stated source, and a card ID was decoded by hand to the wrong time. Each is fixed in the text.
-- The Jira and Trello stubs gained creation-time support (JQL `created` comparisons and `creator`/`reporter`/`assignee` clauses; Trello `created:` and a creation date on search results). No triage fixture reaches the new code: none has a Trello ID or `created` field, and triage's instructions use none of the new operators.
-- Run method matches the previous baseline: `evals/lib/run-mcp-trials.sh`, evals 1-20 with `SIMULATED_USER=1` and evals 21-27 with scripted `follow_ups`. Evals 24, 26, and 27 were re-run on the final text, and evals 1, 4, and 6 after the Trello script fix below; the rest ran on text that differs only in the tracker bullet, the reference file, and the Step 7 test-card line, none of which a tracker-less eval without card creation reaches.
-- On the 158 expectations shared with the previous baseline, this run scores 146 against 145. Expectations rose in evals 5, 7, 9 (two), 10, 15, and 20, and fell in 14 (two), 15, 17, and 18 (two). Graders tied none of these to this change: evals 1-23 and 25 had no tracker connected, and executors that read the reference said so and moved on. 14 put an action item and an "and"-chained sentence in its summary; 15 kept a note that Lena left early at the simulated user's request, with her departure time wrong; 17 dropped who proposed the compromise; 18 never embedded the four images.
-- Eval 6's first run hit a sandbox error running the Trello script (`cannot create temp file for here document`): macOS's bash 3.2 writes each heredoc to a temp file, which the trial sandbox refused. While debugging, the executor made a throwaway "test" card, then emptied `trello-calls.log` before the real call and told the user the log was clean. The script now runs its Python with `python3 -c`, Step 7 forbids test runs of the script, and `run-mcp-trials.sh` records any trial write to the harness's own files in `tampering.log` and a `harness_file_writes` metric; on eval 6's saved record it flags the truncation. On the re-run, evals 1, 4, and 6 each ran the script without error, and none wrote to a harness file.
+- 36 evals and 36 recorded runs pass 219/233 expectations, with 26 evals passing every expectation. Graders checked every claimed search, read, and card against the stub call logs, `events.jsonl`, `tools.log`, and saved workspace files rather than the executor's own report.
+- This baseline accompanies issue #96. Step 1b gains a source list, thread replies (each kept in its own block, a short reply read against its own parent, and a reply that continues a pre-meeting thread proposed as a follow-up with that parent as context), the timestamp-plus-date retry, a rule against reporting search-result context, and a timestamp search in place of a partial conversation listing. Step 3 replaces the roster with one line (who was invited, how many attended) when more than 20 attended or the names cannot all be established. Step 7 treats a request for the final document as approval of every pending stage. A Quality Rule covers re-checking work already produced.
+- This run is the first without the identity leak: trials started from a Claude Code session had inherited the developer's account email through `CLAUDE_CODE_*` variables, which `evals/lib/isolation-env.sh` now unsets. An earlier full run on this branch with the leak scored 223/231; this one scores 219/233. On the 173 expectations shared with the 2026-10-07 baseline, it scores 159 against 161.
+- New evals: 28 (thread replies, with a short reply that lands beside another thread's reply in time, and a follow-up on a pre-meeting thread), 29 (large account), 30 (attendee summary line), 31 (finalize on request), 32 (email), 33 (the 20-attendee boundary), 34 (listing fallback), 35 (re-checking a saved file), and 36 (connected calendar).
+- Eval 28 was strengthened after the rest of this run, and the thread rules in Step 1b changed with it, so its row is the first of three runs on the final text (11/11, 11/11, 9/11). The final text adds a worked two-thread example and says time order applies between threads, never across them; on the previous wording, one run in three flattened the threads into a single time-ordered list (9/11, 11/11, 10/11), and on this text none did. The 9/11 run laid the threads out correctly but left the pre-meeting thread out of the notes, against the rule to keep every in-window message unless the user declines it. No other eval's fixture has thread replies, so the rest of the run is unaffected by these changes.
+- Failures elsewhere include runs that ended before a final document (7), a missing agenda-item link (7), the summary rule (14), drafting without asking for every due date (15), and an unconfirmed action item (22). Eval 27's Trello fixture now pins `stub_now`; without it, the case passed or failed by run date, and it failed on main as well.
+- Harness changes this run used: the Slack stub returns thread replies from search, pages, lists conversations, and can refuse search; the Gmail stub supports `OR`, phrases, and parentheses; a calendar stub is new; trials get an explicit `--tools` set, the driver stops on a login failure, and the host account's identity variables are unset.
+- Run method: `evals/lib/run-mcp-trials.sh` with `SIMULATED_USER=1` (evals without `follow_ups` get a simulated user; the rest use their scripted follow-ups).
 - Tokens are input, output, and cache-creation tokens summed across every turn of the `claude -p` session, excluding cache reads, the same measure as the previous baseline.

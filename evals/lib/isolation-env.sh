@@ -42,6 +42,20 @@ EVAL_SCRUBBED_CREDENTIALS=(
   JIRA_EMAIL
 )
 
+# The account a trial would otherwise know it runs as. A trial launched from a
+# Claude Code session inherits these, and with them set the trial's model is
+# told the developer's email and Claude Code re-adds oauthAccount to the
+# trial's sanitized .claude.json. None is documented; issue #96 found them by
+# experiment: with them set, a trial-like `claude -p` named the account email,
+# and with them unset it named none and oauthAccount stayed out. Writing
+# trials that saw the email rejected the fixture persona's cached profile as
+# another account's.
+EVAL_SCRUBBED_IDENTITY=(
+  CLAUDE_CODE_USER_EMAIL
+  CLAUDE_CODE_ACCOUNT_UUID
+  CLAUDE_CODE_ORGANIZATION_UUID
+)
+
 # Neutralize the host's git configuration for the trial.
 #
 # A fixture sets its origin remote to a literal URL (e.g.
@@ -103,7 +117,7 @@ emit_isolation_env() {
   # much broader, token -- exactly the "one throwaway repo, nothing else"
   # boundary this mode exists to draw.
   local cred
-  for cred in "${EVAL_SCRUBBED_CREDENTIALS[@]}"; do
+  for cred in "${EVAL_SCRUBBED_CREDENTIALS[@]}" "${EVAL_SCRUBBED_IDENTITY[@]}"; do
     echo "unset $cred"
   done
 

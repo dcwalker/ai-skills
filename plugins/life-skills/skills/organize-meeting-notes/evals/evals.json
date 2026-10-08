@@ -274,7 +274,8 @@
       "follow_ups": [
         "Answers for the notes: the hiring goal needs two named roles with a date for each; Sam is rewriting it and I'll review. On the reorg, Sam is worried about losing the on-call rotation they built; keep it at that, it was off the record. On the promo, Sam wants to build the staff case over Q4 and I said I'd help scope it. We both attended.",
         "Yes to what you proposed from chat and to the line under the metadata. Approve everything else as proposed.",
-        "Looks good. Finalize it and give me the final document."
+        "Looks good. Finalize it and give me the final document.",
+        "Finalize it now and give me the final document."
       ]
     },
     {
@@ -336,7 +337,8 @@
       "follow_ups": [
         "Context: we agreed to run shadow mode for two weeks before enforcing. Marcus owns the dependency tracker. We'll revisit enforcement at the Oct 14 planning meeting. Everyone attended.",
         "The dependency tracker is a table of every platform team's Q4 milestones with dates and owners. Approve everything else as proposed.",
-        "Looks good. Finalize it and give me the final document."
+        "Looks good. Finalize it and give me the final document.",
+        "Finalize it now and give me the final document."
       ]
     },
     {
@@ -356,7 +358,8 @@
       "follow_ups": [
         "Context: release candidate 4.2 passed the full regression run, and we quarantined two flaky checkout tests to fix next sprint. Go/no-go is Thursday, Oct 8, at 10 AM. Marcus owns the rollback checklist and will have it ready by Wednesday, Oct 7. Everyone attended; Marcus joined by phone.",
         "Yes, include the Slack items you proposed where they fit, and approve the rest.",
-        "Looks good. Finalize it and give me the final document."
+        "Looks good. Finalize it and give me the final document.",
+        "Finalize it now and give me the final document."
       ]
     },
     {
@@ -377,7 +380,8 @@
         "Context: Marcus owns the rollback checklist for 4.2, due Tuesday, Oct 6. The go/no-go criteria are fuzzy because nobody agreed what error rate blocks a release; Priya is defining them by Monday, Oct 5. I'm sending the release comms to support by Friday, Oct 2. Everyone attended.",
         "Yes to the Jira items you proposed; put each where it fits. Approve everything else as proposed.",
         "No due dates yet for the Jira items that don't carry one. Yes, create Trello cards for any action items that don't already have a ticket.",
-        "Looks good. Finalize it and give me the final document."
+        "Looks good. Finalize it and give me the final document.",
+        "Finalize it now and give me the final document."
       ]
     },
     {
@@ -398,6 +402,181 @@
         "I created the venue card during the meeting, and Lena created the agenda card right after. Include both. Approve everything else as proposed.",
         "Looks good. Approve the notes as proposed.",
         "Yes, the action items are correct. Finalize it and give me the final document."
+      ]
+    },
+    {
+      "id": 28,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: Incident Review\nStart: Oct 2, 2026 at 2:00 PM\nEnd: 2:40 PM\nDuration: 40 minutes\nAttendees: dan.walker@example.com, lena.fischer@example.com, jordan.lee@example.com\n\nRaw notes:\n- walked the timeline for the cache outage\n- open question on whether the alert threshold was ever changed\n- jordan taking the follow-up\n\nInterview me line by line and I'll answer as we go. No Trello.",
+      "expected_output": "Tests that the Team chat check reads thread replies, not just top-level messages. Slack holds one in-window top-level message in #platform-ops: Lena Fischer at 2:05 PM asking whether anyone changed the cache alert threshold in the last month. A channel read bounded to the window returns only that message, with a note that it has replies. The answer is in its thread: Jordan Lee at 2:18 PM confirming he raised the threshold for a load test and never put it back, and at 2:33 PM saying he will open a ticket to restore it. Reading only the parent makes the question look unanswered and loses the cause of the outage. A second thread, parented at 1:48 PM outside the window (Jordan asking about a cache hit rate dip), carries two replies inside it: Lena at 2:19 PM ('same here, started around 1:30') and Lena at 2:26 PM (the dip lines up with the outage start). The date-bounded search returns both with their parent's thread_ts, and they belong. The 2:19 PM reply lands one minute after Jordan's 2:18 PM confession in the other thread, so a run that lists replies in one time-ordered sequence reads it as agreeing with him; it answers the dip question, not the threshold one. The 3:05 PM top-level message is outside the window and stays out. Lena's replies are a follow-up during the meeting on a thread started before it, and they bear on the outage being reviewed, so the skill proposes them with Jordan's 1:48 PM question as context, marked as posted before the meeting, beside the timeline discussion they continue.",
+      "expectations": [
+        "The transcript shows a Slack search bounded only by date before any chat finding is reported, and the Slack call log confirms its arguments: no topic keyword and no `from:` sender filter, with either a date term in the query or filters that includes Oct 2, 2026 (`on:2026-10-02`, or a `before:`/`after:` pair spanning it) or `before`/`after` Unix timestamps spanning 2:00 PM to 2:40 PM (1790974800 to 1790977200).",
+        "After the date-bounded search, the Slack call log shows `slack_read_channel` for #platform-ops (`C0PLATOPS` or `platform-ops`) whose `oldest` is empty or at most 1790974800 and whose `latest` is empty or at least 1790977200.",
+        "The Slack call log shows `slack_read_thread` for the 2:05 PM parent (`message_ts` 1790975112.000300). A channel read alone does not satisfy this, because a channel read does not return thread replies.",
+        "The notes, or the chat proposals the user approved into them, carry the substance of Jordan Lee's two replies: the threshold was raised for a load test and never restored, and he is opening a ticket to restore it. Notes that present Lena's question as unanswered fail.",
+        "The Slack call log shows `slack_read_thread` for the 1:48 PM parent (`message_ts` 1790974080.000100), or the response proposes Lena's 2:26 PM reply about the dip lining up with the outage start. A thread whose parent is outside the window still counts when a reply falls inside it.",
+        "Neither the 1:48 PM parent nor the 3:05 PM message is presented as chat from during the meeting: wherever the 1:48 PM parent is shown, in the chat proposals or the notes, it is marked as posted before the meeting.",
+        "Each thread's replies stay with their own parent: Lena's 2:26 PM reply (the dip lines up with the outage start) is presented as part of the 1:48 PM cache hit rate thread, never inside the alert-threshold exchange or as a comment on the threshold change, in the chat proposals and in the final notes.",
+        "Lena's 2:19 PM reply ('same here, started around 1:30') is presented as part of the 1:48 PM cache hit rate thread, never as a response to Jordan's 2:18 PM threshold confession or as agreement with him.",
+        "Lena's 2:19 PM and 2:26 PM replies are proposed as a follow-up on Jordan's 1:48 PM question, with that question shown as context posted before the meeting, and the proposal says the follow-up relates to the meeting's content (the outage under review).",
+        "The chat disclosure line names #platform-ops among the conversations read.",
+        "Zero create-trello-task.sh invocations occur."
+      ],
+      "follow_ups": [
+        "Context: the cache outage ran about twenty minutes and we walked the timeline end to end. The open question was the alert threshold. Jordan is taking the follow-up. Everyone attended.",
+        "Yes, include the Slack items you proposed where they fit, and approve the rest.",
+        "Looks good. Finalize it and give me the final document.",
+        "Finalize it now and give me the final document."
+      ]
+    },
+    {
+      "id": 29,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: Capacity Planning\nStart: Oct 5, 2026 at 11:00 AM\nEnd: 11:30 AM\nDuration: 30 minutes\nAttendees: dan.walker@example.com, sam.ortiz@example.com\n\nRaw notes:\n- agreed to hold headcount flat through Q4\n- sam pulling the utilization numbers\n\nInterview me line by line and I'll answer as we go. No Trello.",
+      "expected_output": "Tests that the Team chat check does not try to enumerate conversations on an account too large to list. `slack_list_user_channels` with group direct messages included returns 400 of them across paginated pages, and a search on the date alone, with no timestamp bounds, returns the whole day's group direct message traffic, 20 results per page, none of it inside the window on the first page. The route that works is a search bounded by start and end timestamps. One conversation is in the window: Sam Ortiz's direct message at 11:14 AM saying the utilization numbers will be skewed because two contractors were onboarded mid-quarter. The correct run finds it with a timestamp-bounded search, reads that direct message bounded to the window, and proposes it. A run that starts paging the group direct message list fails, as does one that reports chat empty after reading only the first page of a date-only search.",
+      "expectations": [
+        "The Slack call log shows a search with `before`/`after` Unix timestamps spanning 11:00 AM to 11:30 AM (1791223200 to 1791225000), no topic keyword, and no `from:` sender filter.",
+        "The Slack call log shows no more than two `slack_list_user_channels` calls. Paging the conversation list to enumerate the 400 group direct messages fails this case.",
+        "After that search, the Slack call log shows `slack_read_channel` for Sam's direct message (`D0SAM`, `U0SAM`, or `sam.ortiz`) whose `oldest` is empty or at most 1791223200 and whose `latest` is empty or at least 1791225000.",
+        "The response proposes the substance of Sam Ortiz's 11:14 AM message, that the utilization numbers are skewed by two mid-quarter contractor onboards, attributed to Sam.",
+        "The chat disclosure line uses the `searched <start> to <end> by date only` form and names the direct message with Sam Ortiz. A line using the `listed conversations for <start> to <end>` form fails, because no complete listing was made.",
+        "Chat is not reported as empty or as holding nothing, and no group direct message from outside 11:00 AM to 11:30 AM is presented as chat from during the meeting.",
+        "Sam's 9:02 AM direct message (\"morning! pulling the numbers today\"), which a search shows only as context with no time, is not quoted, proposed, or presented as chat from during the meeting, and is not given a time inside the window.",
+        "Zero create-trello-task.sh invocations occur."
+      ],
+      "follow_ups": [
+        "Context: we agreed to hold headcount flat through Q4 and Sam is pulling the utilization numbers to confirm. Both of us attended.",
+        "Yes, include the Slack item you proposed.",
+        "Looks good. Finalize it and give me the final document.",
+        "Finalize it now and give me the final document."
+      ]
+    },
+    {
+      "id": 30,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: Engineering All-Hands, Q4 Kickoff\nStart: Oct 6, 2026 at 9:00 AM\nEnd: 10:00 AM\nDuration: 60 minutes\nLocation: Zoom webinar\nInvite: sent to engineering-all@example.com; the invite hides the guest list.\nZoom usage report: peak of 312 concurrent participants.\n\nRaw notes:\n- priya opened with q4 priorities, reliability first\n- marcus demoed the new deploy pipeline\n- q&a ran long on the on-call changes\n\nTranscript excerpt:\n[00:02:10] Priya Raman: Welcome, everyone. Q4 has one theme, and it's reliability.\n[00:18:40] Marcus Hall: Let me share my screen and walk through the new deploy pipeline.\n[00:41:12] Lena Fischer: Do the on-call changes start this rotation or next?\n[00:42:05] Priya Raman: Next rotation. We'll send the schedule Friday.\n\nZoom chat:\n09:21 Sam Ortiz: where do the pipeline docs live?\n09:22 Marcus Hall: eng wiki, under Deploy\n09:47 Jordan Lee: do the on-call changes apply to contractors too?\n\nI took a screenshot of the participants panel at 9:30. Besides the speakers, it shows Alex Kim and Ravi Singh, both muted the whole time.\n\nInterview me line by line and I'll answer as we go. No Trello.",
+      "expected_output": "Tests the attendee case for a meeting too large, or too unknown, to list. The invite hides its guest list and was sent to a distribution list, and 312 people attended at peak, so no complete roster exists and a partial one would read as complete. The skill skips the question about who did not attend, applies no strikethrough, and writes the Attendees section as one line naming engineering-all@example.com as invited and 312 as the attendance at peak, with no names. The speakers, chat posters, and people in the participants panel (Priya Raman, Marcus Hall, Lena Fischer, Sam Ortiz, Jordan Lee, Alex Kim, Ravi Singh) may appear in the notes where they did something, but not in the Attendees section.",
+      "expectations": [
+        "The skill does not ask the user who did not attend, and nothing in the final Attendees section is struck through.",
+        "The final Attendees section is a single line that names engineering-all@example.com as invited and gives 312 as the number who attended, marked as a peak or peak concurrent count.",
+        "No person's name appears in the final Attendees section: none of Priya Raman, Marcus Hall, Lena Fischer, Sam Ortiz, Jordan Lee, Alex Kim, Ravi Singh, or Dan Walker is listed there, and there is no participant list or sub-grouping under it.",
+        "The final document's section order is metadata, `###### Attendees`, `###### Notes`, `###### Action Items`, with no Agenda section since none was given.",
+        "Zero create-trello-task.sh invocations occur."
+      ],
+      "follow_ups": [
+        "Context: Priya set reliability as the single Q4 theme. Marcus demoed the new deploy pipeline, which cuts deploy time roughly in half. The Q&A ran long on the on-call changes, which start next rotation, with the schedule coming Friday. Jordan's contractor question was not answered in the meeting; record it as open. There's nothing more to add on any line. I attended.",
+        "Yes, approve everything you've proposed so far, as drafted.",
+        "Yes, approve everything you've proposed so far, as drafted.",
+        "Looks good. Finalize it and give me the final document.",
+        "Finalize it now and give me the final document."
+      ]
+    },
+    {
+      "id": 31,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: Docs Planning\nStart: Oct 7, 2026 at 3:00 PM\nEnd: 3:30 PM\nDuration: 30 minutes\nAttendees: dan.walker@example.com, lena.fischer@example.com\n\nRaw notes:\n- agreed to move the API reference into the main docs site\n- lena drafting the migration plan\n- open question on keeping the old URLs\n\nNo Trello.",
+      "expected_output": "Tests that the skill produces the final document when the user asks for it. The first follow-up answers every note line and approves everything; the second asks for the final document. Nothing remains that the user has not answered or passed over: Lena's migration plan has no due date, and the user has said none was set. The skill must produce the final document in its reply to the finalize request, leaving out the unknown due date rather than asking for it again, and must not re-ask any question already answered.",
+      "expectations": [
+        "By the end of the reply to the user's request to finalize, the transcript contains a complete final document: the metadata block, `###### Attendees`, `###### Notes`, and `###### Action Items`, in that order.",
+        "The reply to the finalize request asks no question the user already answered or passed over (the meaning of any note line, who attended, or a due date for Lena's plan).",
+        "The action item for Lena's migration plan names Lena Fischer and carries no invented due date.",
+        "The open question on keeping the old URLs is recorded as unresolved, in the user's terms, not as a decision.",
+        "Zero create-trello-task.sh invocations occur."
+      ],
+      "follow_ups": [
+        "Context for every line: we agreed to move the API reference into the main docs site this quarter. Lena is drafting the migration plan; no due date was set. Whether to keep the old URLs is still open, nobody decided. Both of us attended.",
+        "Finalize it now and give me the final document."
+      ]
+    },
+    {
+      "id": 32,
+      "prompt": "Organize these meeting notes for my journal. Use my email for context if you can reach it.\n\nMeeting: Vendor Renewal Review\nStart: Oct 6, 2026 at 10:00 AM\nEnd: 10:30 AM\nDuration: 30 minutes\nAttendees: dan.walker@example.com, priya.raman@example.com, sam.ortiz@acmesupplies.com\n\nRaw notes:\n- went through last year's usage\n- sam to send revised pricing\n- sla changes look fine\n\nNo Trello.",
+      "expected_output": "Tests the Email source. Gmail is connected (no calendar or chat). Near the meeting date it holds Priya Raman's Oct 5 agenda email to the attendees (three numbered items: usage over the last contract year, renewal pricing and term length, support SLA changes) and Sam Ortiz's Oct 6 2:05 PM follow-up after the meeting with the revised pricing (two-year term 8% below the current rate, 4-hour support SLA included, offer holds until Oct 20). It also holds a June thread about the same renewal, too far from the meeting date, and an unrelated shipping notice. The skill searches email near the meeting date or by the attendees, reads the two relevant threads, proposes the agenda for an Agenda section and the follow-up as context for the pricing note, and leaves the June thread and the shipping notice out. Nothing is drafted or sent.",
+      "expectations": [
+        "The Gmail call log shows `search_threads` with a query bounded to dates near Oct 6, 2026 (an `after:`/`before:` pair) or naming the attendees, whose results include `t-agenda` or `t-followup`, before any email finding is reported.",
+        "The Gmail call log shows `get_thread` for `t-agenda` and for `t-followup`.",
+        "An `###### Agenda` section sits between `###### Attendees` and `###### Notes`, listing Priya's three agenda items in their original order and wording, numbered.",
+        "The substance of Sam Ortiz's follow-up (two-year term 8% below the current rate, 4-hour SLA included, offer holds until Oct 20) is proposed for the pricing note, attributed to Sam's email, and placed in the notes only after the user approves.",
+        "Neither the June thread (`t-old`, about the same renewal but four months earlier) nor the shipping notice is proposed or appears in the final document, even where a search returned them.",
+        "`create_draft` does not appear in the Gmail call log.",
+        "Zero create-trello-task.sh invocations occur."
+      ],
+      "follow_ups": [
+        "Context: we reviewed last year's usage, which was steady. Sam is sending revised pricing. The SLA changes looked fine to everyone. All three of us attended. Yes, add what Sam's email says to the pricing note.",
+        "Yes, include the email items you proposed, and approve everything else as drafted.",
+        "Finalize it now and give me the final document."
+      ]
+    },
+    {
+      "id": 33,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: Sprint Review\nStart: Oct 7, 2026 at 11:00 AM\nEnd: 11:30 AM\nDuration: 30 minutes\nAttendees: dan.walker@example.com, priya.raman@example.com, marcus.hall@example.com, lena.fischer@example.com, sam.ortiz@example.com, ravi.singh@example.com\nZoom report: 5 participants.\n\nRaw notes:\n- demoed the new export flow\n- two bugs carried to next sprint\n\nNo Trello.",
+      "expected_output": "The boundary case for the attendee rule. Six people were invited by name and five attended, well under 20, and every invitee's name is known, so the normal Step 3 roster applies: list every invitee by name and ask the user who did not attend. The Zoom count must not turn the section into a count-only line. The user says Ravi Singh could not make it, so his name is struck through.",
+      "expectations": [
+        "The skill asks the user who did not attend (or which invitee was the one missing from the five).",
+        "The final Attendees section lists all six invitees by name, as plain lines in title case, sorted by first name: Dan Walker, Lena Fischer, Marcus Hall, Priya Raman, Ravi Singh, Sam Ortiz.",
+        "Ravi Singh's name is struck through and no other name is.",
+        "The Attendees section is not replaced by a count-only line such as an invited group with an attendee count.",
+        "Zero create-trello-task.sh invocations occur."
+      ],
+      "follow_ups": [
+        "Context: we demoed the new export flow and it went well. Two bugs, the CSV encoding one and the timeout one, carry to next sprint. Ravi couldn't make it; everyone else attended.",
+        "Yes, approve everything you've proposed so far, as drafted.",
+        "Looks good. Finalize it and give me the final document.",
+        "Finalize it now and give me the final document."
+      ]
+    },
+    {
+      "id": 34,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: On-call Review\nStart: Oct 7, 2026 at 1:00 PM\nEnd: 1:30 PM\nDuration: 30 minutes\nAttendees: dan.walker@example.com, lena.fischer@example.com, marcus.hall@example.com\n\nRaw notes:\n- walked through last week's pages\n- rotation changes for november\n\nNo Trello.",
+      "expected_output": "Tests the listing fallback in the Team chat check. Slack is connected, but every search fails (the workspace's chat tool cannot search), so the skill cannot search the window by date. The account is small: one direct message (Lena Fischer), one group direct message (Dan, Lena, Marcus), and one channel (#oncall). The skill lists the user's direct messages, group direct messages, and channels, reads each between 1:00 PM and 1:30 PM, and says it listed rather than searched. In the window, Marcus Hall (1:12 PM) says the pager rotation sheet is out of date and he will fix it after the meeting, and Lena Fischer (1:13 PM) adds that next week's swap is missing from it. Lena's 12:40 PM direct message and Marcus's 2:05 PM #oncall post are outside the window and stay out.",
+      "expectations": [
+        "The Slack call log shows a failed `slack_search_public_and_private` call and then `slack_list_user_channels` with `types` including `im` and `mpim`.",
+        "The Slack call log shows `slack_read_channel` for each of `D0LENA`, `G0OPS`, and `C0ONCALL`, each with `oldest` empty or at most 1791403200 and `latest` empty or at least 1791405000.",
+        "The response proposes Marcus Hall's 1:12 PM message (the rotation sheet is out of date and he will fix it) and Lena Fischer's 1:13 PM reply (next week's swap is missing), attributed to each.",
+        "In the final notes, each chat point keeps its own speaker: the out-of-date rotation sheet is Marcus Hall's, and next week's missing swap is Lena Fischer's, never credited to Marcus.",
+        "The chat disclosure line uses the `listed conversations for <start> to <end>` form in place of the search part, and names the conversations read.",
+        "Neither the 12:40 PM direct message nor the 2:05 PM #oncall post is presented as chat from during the meeting.",
+        "Zero create-trello-task.sh invocations occur."
+      ],
+      "follow_ups": [
+        "Context: we walked through last week's pages, nothing unusual. For November we're moving to week-long rotations. All three of us attended.",
+        "Yes, include the Slack items you proposed, and approve everything else as drafted.",
+        "Looks good. Finalize it and give me the final document.",
+        "Finalize it now and give me the final document."
+      ]
+    },
+    {
+      "id": 35,
+      "prompt": "Organize my notes from both of this morning's meetings for my journal, one Markdown file each in this folder.\n\nMeeting 1: Design Sync\nStart: Oct 6, 2026 at 9:00 AM\nEnd: 9:30 AM\nDuration: 30 minutes\nAttendees: dan.walker@example.com, priya.raman@example.com\nRaw notes:\n- reviewed checkout mockups\n\nMeeting 2: Hiring Sync\nStart: Oct 6, 2026 at 10:00 AM\nEnd: 10:30 AM\nDuration: 30 minutes\nAttendees: dan.walker@example.com, jordan.lee@example.com\nRaw notes:\n- backend pipeline update\n\nNo Trello. Do the first meeting and save it, then the second and save it.",
+      "expected_output": "Tests the Quality Rule on re-checking work already produced. The user gave both meetings' times without a time zone, and the Slack profile is Pacific. The skill first checks 9:00 to 9:30 AM Pacific for the Design Sync, where it finds only Priya's 9:14 AM lunch question, and 10:00 to 10:30 AM for the Hiring Sync, where Jordan says at 10:18 AM that the backend candidate withdrew. Both files are saved. Then the user says the Design Sync's times were Eastern; the Hiring Sync's were Pacific. That is a method error in work already saved: the Design Sync's real window is 6:00 to 6:30 AM Pacific, where Priya asked Dan at 6:12 AM to share the mockups link, Dan sent the Figma file at 6:13 AM, and Priya posted in #design at 6:20 AM that user testing slots are open Thursday. #design had no activity in the first windows, so only a new date-bounded search of the corrected window finds it; re-reading the conversations already known misses it. The skill must re-check the Design Sync file against the corrected window, update it, leave the Hiring Sync file as it was, and say which file changed and which did not.",
+      "expectations": [
+        "After the user's correction, the Slack call log shows a date-bounded search covering 6:00 to 6:30 AM Pacific on Oct 6 (1791291600 to 1791293400). Reads of conversations already known, without that search, do not satisfy this.",
+        "After the correction, the response proposes Priya's 6:20 AM #design post (user testing slots open Thursday) and the 6:12 to 6:13 AM mockups-link exchange for the Design Sync, and does not present the 9:14 AM lunch message as meeting chat.",
+        "The Design Sync's saved file, as it stands at the end of the run, no longer carries the 9:14 AM lunch message as meeting chat.",
+        "The Hiring Sync is not re-windowed: its saved file still reflects 10:00 to 10:30 AM Pacific (Jordan's 10:18 AM message that the backend candidate withdrew), and the 7:20 AM expense reminder is not presented as its chat.",
+        "After the correction, the response says the Design Sync file changed and the Hiring Sync file did not, naming each.",
+        "Zero create-trello-task.sh invocations occur."
+      ],
+      "follow_ups": [
+        "Context for the Design Sync: Priya and I reviewed the checkout mockups and agreed they're ready for user testing. Both of us attended. Approve it as you propose it and save it.",
+        "Context for the Hiring Sync: the backend pipeline is down to one candidate. Both of us attended. Include any Slack items you proposed, approve it as drafted, and save it.",
+        "Wait, I gave you the Design Sync's times in Eastern; I was in New York for that one. The Hiring Sync's times were Pacific. Fix whatever that affects, and include any Slack items you find.",
+        "Finalize both and tell me which files changed and which didn't."
+      ]
+    },
+    {
+      "id": 36,
+      "prompt": "Organize these meeting notes for my journal. Pull my calendar for context if you can.\n\nMeeting: Roadmap Sync\nStart: Oct 8, 2026 at 2:00 PM\nEnd: 2:45 PM\nDuration: 45 minutes\nAttendees: dan.walker@example.com, priya.raman@example.com\n\nRaw notes:\n- milestone dates hold except reporting\n- need one more engineer for reporting\n\nNo Trello.",
+      "expected_output": "Tests the Calendar source with a connected calendar. The calendar holds the Oct 8 Roadmap Sync (scheduled 2:00 to 2:30 PM, agenda of two numbered items: Q4 milestone dates, staffing for the reporting project, invitees Priya Raman, Dan Walker, and Marcus Hall), the previous week's Roadmap Sync on Oct 1 with a different agenda (hiring plan review), and an unrelated 1:1 with Sam the same morning. The skill finds the Oct 8 event by title and time, captures its agenda in an Agenda section, notes that the meeting ran 15 minutes long (actual end 2:45 PM against the scheduled 2:30 PM), and cross-checks the invitees: Marcus Hall was invited but is not in the user's attendee list, so it asks whether he attended. The user says he did not, so his name is struck through. Nothing from the Oct 1 event or the 1:1 is used.",
+      "expectations": [
+        "The calendar call log shows `list_events`, `search_events`, or `get_event` returning the Oct 8 Roadmap Sync (`evt-roadmap-1008`) before any calendar finding is reported.",
+        "An `###### Agenda` section sits between `###### Attendees` and `###### Notes`, listing the two Oct 8 agenda items (Q4 milestone dates; staffing for the reporting project) in their original order and wording, numbered, and nothing from the Oct 1 agenda (hiring plan review).",
+        "The response proposes a schedule note that the meeting ran 15 minutes long, or ended at 2:45 PM against a scheduled 2:30 PM end, and it appears under the metadata only after approval.",
+        "The skill asks whether Marcus Hall, invited on the calendar event but missing from the user's attendee list, attended, rather than silently adding or dropping him.",
+        "The final Attendees section lists Dan Walker, Marcus Hall, and Priya Raman sorted by first name, with Marcus Hall struck through and no other name struck through.",
+        "Zero create-trello-task.sh invocations occur."
+      ],
+      "follow_ups": [
+        "Context: the Q4 milestone dates hold except the reporting milestone, which slips two weeks. We need one more engineer on reporting; Priya is asking for a transfer. Marcus was invited but didn't make it.",
+        "Yes, approve the calendar items you proposed and everything else as drafted.",
+        "Looks good. Finalize it and give me the final document.",
+        "Finalize it now and give me the final document."
       ]
     }
   ]

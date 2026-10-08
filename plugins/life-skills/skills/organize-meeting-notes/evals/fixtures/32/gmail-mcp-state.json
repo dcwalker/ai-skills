@@ -1,0 +1,122 @@
+{
+  "me": "dan.walker@example.com",
+  "labels": {
+    "INBOX": {
+      "id": "INBOX",
+      "name": "INBOX",
+      "type": "system"
+    },
+    "SENT": {
+      "id": "SENT",
+      "name": "SENT",
+      "type": "system"
+    }
+  },
+  "drafts": {},
+  "threads": {
+    "t-agenda": {
+      "id": "t-agenda",
+      "subject": "Agenda: vendor renewal review",
+      "from": "priya.raman@example.com",
+      "to": [
+        "dan.walker@example.com",
+        "sam.ortiz@acmesupplies.com"
+      ],
+      "date": "2026-10-05T16:20:00-07:00",
+      "snippet": "Agenda for tomorrow's renewal review",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "m-agenda",
+          "from": "priya.raman@example.com",
+          "to": [
+            "dan.walker@example.com",
+            "sam.ortiz@acmesupplies.com"
+          ],
+          "date": "2026-10-05T16:20:00-07:00",
+          "snippet": "Agenda for tomorrow's renewal review",
+          "body": "Agenda for tomorrow's renewal review:\n1. Usage over the last contract year\n2. Renewal pricing and term length\n3. Support SLA changes\n\nPriya"
+        }
+      ]
+    },
+    "t-followup": {
+      "id": "t-followup",
+      "subject": "Re: vendor renewal review - revised pricing",
+      "from": "sam.ortiz@acmesupplies.com",
+      "to": [
+        "dan.walker@example.com",
+        "priya.raman@example.com"
+      ],
+      "date": "2026-10-06T14:05:00-07:00",
+      "snippet": "As promised, the revised two-year pricing",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "m-followup",
+          "from": "sam.ortiz@acmesupplies.com",
+          "to": [
+            "dan.walker@example.com",
+            "priya.raman@example.com"
+          ],
+          "date": "2026-10-06T14:05:00-07:00",
+          "snippet": "As promised, the revised two-year pricing",
+          "body": "Dan, Priya,\n\nAs promised in this morning's review, the revised pricing for a two-year term is 8% below the current rate, with the 4-hour support SLA included. The offer holds until Oct 20.\n\nSam"
+        }
+      ]
+    },
+    "t-old": {
+      "id": "t-old",
+      "subject": "Vendor renewal - early thoughts",
+      "from": "priya.raman@example.com",
+      "to": [
+        "dan.walker@example.com"
+      ],
+      "date": "2026-06-12T09:00:00-07:00",
+      "snippet": "Starting to think about the Acme renewal",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "m-old",
+          "from": "priya.raman@example.com",
+          "to": [
+            "dan.walker@example.com"
+          ],
+          "date": "2026-06-12T09:00:00-07:00",
+          "snippet": "Starting to think about the Acme renewal",
+          "body": "Starting to think about the Acme renewal. We might want to look at other vendors this time."
+        }
+      ]
+    },
+    "t-shipping": {
+      "id": "t-shipping",
+      "subject": "Your order has shipped",
+      "from": "orders@shop.example.com",
+      "to": [
+        "dan.walker@example.com"
+      ],
+      "date": "2026-10-06T08:00:00-07:00",
+      "snippet": "Your order #4471 is on its way",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "m-shipping",
+          "from": "orders@shop.example.com",
+          "to": [
+            "dan.walker@example.com"
+          ],
+          "date": "2026-10-06T08:00:00-07:00",
+          "snippet": "Your order #4471 is on its way",
+          "body": "Your order #4471 is on its way."
+        }
+      ]
+    }
+  }
+}
