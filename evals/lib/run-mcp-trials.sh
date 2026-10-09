@@ -165,6 +165,23 @@ mkdir -p "$TRIALS_DIR"
 # would name a private HOME no rule covers.
 TRIALS_DIR="$(cd "$TRIALS_DIR" && pwd -P)"
 
+# Every eval's stage_skills is checked before the first trial, so a typo in
+# the last eval does not stop the batch after the others have run.
+python3 -c "
+import json, os, sys
+skills_dir, ids = sys.argv[2], set(sys.argv[3:])
+for e in json.load(open(sys.argv[1]))['evals']:
+    if str(e['id']) not in ids:
+        continue
+    names = e.get('stage_skills', [])
+    if not isinstance(names, list) or not all(isinstance(n, str) and n and '/' not in n
+                                              and n not in ('.', '..') for n in names):
+        raise SystemExit(f'ERROR: eval {e[\"id\"]}: stage_skills must be a list of skill directory names')
+    for n in names:
+        if not os.path.isfile(os.path.join(skills_dir, n, 'SKILL.md')):
+            raise SystemExit(f'ERROR: eval {e[\"id\"]} stages skill {n!r}, but {skills_dir}/{n}/SKILL.md does not exist.')
+" "$EVALS_DIR/evals.json" "$(dirname "$SKILL_DIR")" $IDS
+
 for ID in $IDS; do
   PROMPT=$(python3 -c "
 import json, sys

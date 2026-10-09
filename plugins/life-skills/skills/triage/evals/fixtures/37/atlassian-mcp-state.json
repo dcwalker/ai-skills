@@ -1,57 +1,156 @@
 {
   "anchor_date": "2026-10-09",
   "stub_now": "2026-10-09T16:00:00Z",
-  "cloud": {"id": "b7c9e1a2-0000-4000-8000-example00037", "url": "https://home-projects.atlassian.invalid", "name": "home-projects"},
-  "projects": {
-    "HOME": {"key": "HOME", "id": "10001", "name": "Home Projects", "issueTypes": ["Task"]}
+  "cloud": {
+    "id": "b7c9e1a2-0000-4000-8000-example00037",
+    "url": "https://home-projects.atlassian.invalid",
+    "name": "home-projects"
   },
-  "me": {"accountId": "user-1", "displayName": "Dan Walker"},
-  "issues": {
-    "HOME-1": {
-      "key": "HOME-1", "id": "20001", "project": "HOME",
-      "summary": "fence",
-      "description": "Two fence panels on the north side blew down in last week's storm. Replacement panels are $85 each at Cedar Supply; the posts are fine.",
-      "status": {"name": "To Do", "statusCategory": "To Do"},
-      "issuetype": "Task", "priority": null, "labels": [],
-      "assignee": null,
-      "reporter": {"accountId": "user-1", "displayName": "Dan Walker"},
-      "created": "2026-10-05T09:00:00Z", "updated": "2026-10-05T09:00:00Z",
-      "resolution": null, "duedate": null, "rank": "0|a00000:", "comments": []
-    },
-    "HOME-2": {
-      "key": "HOME-2", "id": "20002", "project": "HOME",
-      "summary": "Book the chimney sweep before {{date:2026-11-15|%B %-d, %Y}}",
-      "description": "Annual sweep before the first fire of the season. Use Hearthside Sweeps again; they need two weeks' notice.",
-      "status": {"name": "To Do", "statusCategory": "To Do"},
-      "issuetype": "Task", "priority": "Medium", "labels": ["home", "maintenance"],
-      "assignee": {"accountId": "user-1", "displayName": "Dan Walker"},
-      "reporter": {"accountId": "user-1", "displayName": "Dan Walker"},
-      "created": "2026-10-01T10:00:00Z", "updated": "2026-10-06T10:00:00Z",
-      "resolution": null, "duedate": "2026-11-01", "rank": "0|a00010:", "comments": []
+  "projects": {
+    "HOME": {
+      "key": "HOME",
+      "id": "10001",
+      "name": "Home Projects",
+      "issueTypes": [
+        "Task"
+      ]
     }
   },
-  "users": [{"accountId": "user-1", "displayName": "Dan Walker", "emailAddress": "eval-user@example.com"}],
+  "me": {
+    "accountId": "user-1",
+    "displayName": "Dan Walker"
+  },
+  "issues": {
+    "HOME-1": {
+      "key": "HOME-1",
+      "id": "20001",
+      "project": "HOME",
+      "summary": "fence",
+      "description": "Two fence panels on the north side blew down in last week's storm. Replacement panels are $85 each at Cedar Supply; the posts are fine.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [],
+      "assignee": null,
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-10-05T09:00:00Z",
+      "updated": "2026-10-05T09:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|a00000:",
+      "comments": []
+    },
+    "HOME-2": {
+      "key": "HOME-2",
+      "id": "20002",
+      "project": "HOME",
+      "summary": "Book the chimney sweep before {{date:2026-11-15|%B %-d, %Y}}",
+      "description": "Annual sweep before the first fire of the season. Use Hearthside Sweeps again; they need two weeks' notice.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": "Medium",
+      "labels": [
+        "home",
+        "maintenance"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-10-01T10:00:00Z",
+      "updated": "2026-10-06T10:00:00Z",
+      "resolution": null,
+      "duedate": "2026-11-01",
+      "rank": "0|a00010:",
+      "comments": []
+    }
+  },
+  "users": [
+    {
+      "accountId": "user-1",
+      "displayName": "Dan Walker",
+      "emailAddress": "eval-user@example.com"
+    }
+  ],
   "transitions": [
-    {"id": "11", "name": "To Do", "to": {"name": "To Do", "statusCategory": "To Do"}},
-    {"id": "21", "name": "In Progress", "to": {"name": "In Progress", "statusCategory": "In Progress"}},
-    {"id": "31", "name": "Done", "to": {"name": "Done", "statusCategory": "Done"}}
+    {
+      "id": "11",
+      "name": "To Do",
+      "to": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      }
+    },
+    {
+      "id": "21",
+      "name": "In Progress",
+      "to": {
+        "name": "In Progress",
+        "statusCategory": "In Progress"
+      }
+    },
+    {
+      "id": "31",
+      "name": "Done",
+      "to": {
+        "name": "Done",
+        "statusCategory": "Done"
+      }
+    }
   ],
   "scheduled_changes": [
     {
       "id": "home-3-arrives",
-      "after_call": {"tool": "editJiraIssue", "count": 1},
+      "after_call": {
+        "tool": "searchJiraIssuesUsingJql",
+        "count": 1
+      },
       "changes": [
-        {"op": "set", "path": ["issues", "HOME-3"], "value": {
-          "key": "HOME-3", "id": "20003", "project": "HOME",
-          "summary": "Replace the cracked bathroom tile by the tub",
-          "description": "One tile next to the tub cracked this morning, and water could get behind it. Spare tiles are on the basement shelf.",
-          "status": {"name": "To Do", "statusCategory": "To Do"},
-          "issuetype": "Task", "priority": null, "labels": [],
-          "assignee": null,
-          "reporter": {"accountId": "user-1", "displayName": "Dan Walker"},
-          "created": "2026-10-09T16:00:00Z", "updated": "2026-10-09T16:00:00Z",
-          "resolution": null, "duedate": null, "rank": "0|a00020:", "comments": []
-        }}
+        {
+          "op": "set",
+          "path": [
+            "issues",
+            "HOME-3"
+          ],
+          "value": {
+            "key": "HOME-3",
+            "id": "20003",
+            "project": "HOME",
+            "summary": "Replace the cracked bathroom tile by the tub",
+            "description": "One tile next to the tub cracked this morning, and water could get behind it. Spare tiles are on the basement shelf.",
+            "status": {
+              "name": "To Do",
+              "statusCategory": "To Do"
+            },
+            "issuetype": "Task",
+            "priority": null,
+            "labels": [],
+            "assignee": null,
+            "reporter": {
+              "accountId": "user-1",
+              "displayName": "Dan Walker"
+            },
+            "created": "2026-10-09T16:00:00Z",
+            "updated": "2026-10-09T16:00:00Z",
+            "resolution": null,
+            "duedate": null,
+            "rank": "0|a00020:",
+            "comments": []
+          }
+        }
       ]
     }
   ]

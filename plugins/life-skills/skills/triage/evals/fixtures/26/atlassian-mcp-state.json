@@ -141,7 +141,7 @@
       "id": "20003",
       "project": "HOME",
       "summary": "Get three quotes for repainting the fence",
-      "description": "The back fence needs repainting before winter. Get three quotes from local painters and pick one.",
+      "description": "The back fence needs repainting before {{date:2026-12-21|%Q}}. Get three quotes from local painters and pick one.",
       "status": {
         "name": "In Progress",
         "statusCategory": "In Progress"

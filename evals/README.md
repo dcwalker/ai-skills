@@ -540,7 +540,10 @@ every stub has it:
 
 - An entry fires once, right after the `count`-th call (default 1) to
   `tool`; an optional `after_call.args` object counts only calls whose
-  logged arguments include those values. The triggering call's response is
+  logged arguments include those values. The match is against what the stub
+  logs, which names every parameter, unpassed ones as `null`: a
+  `{"list_id": "list-1"}` match misses a call that named the list by
+  `list_name` instead. The triggering call's response is
   unchanged, so the change shows from the next call on.
 - `changes` apply in order. A `path` is a list of keys from the state's
   root; `set` puts `value` there, `merge` shallow-updates an object,

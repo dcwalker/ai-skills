@@ -64,7 +64,8 @@ the skill works. Each entry is
 - Validation is up front: at startup the stub applies every unfired entry,
   in order, to a throwaway copy of the state, and refuses to start if one
   names an unknown op or a path that does not exist, so a mistyped fixture
-  fails loudly instead of never firing. A change that no longer applies
+  fails loudly instead of never firing. A resumed turn, whose state file is
+  the previous turn's state-out, checks only each entry's shape. A change that no longer applies
   when it fires (the skill deleted its target first) is logged with an
   "error" in place of "changes" and skipped.
 - fixture-dates.py moves dates inside "changes" like any other part of the
@@ -147,7 +148,13 @@ class StubState:
         return schedule
 
     def _check_schedule(self) -> None:
-        """Refuse to start on a schedule that could never apply as written."""
+        """Refuse to start on a schedule that could never apply as written.
+        A resumed turn (the driver seeds it from MCP_STUB_STATE_OUT) checks
+        only the entries' shape: the skill may already have removed a
+        pending change's target, which is logged and skipped when it fires,
+        not a reason to start without the server."""
+        state_file = os.environ.get("MCP_STUB_STATE_FILE")
+        resumed = bool(state_file) and state_file == os.environ.get("MCP_STUB_STATE_OUT")
         trial = copy.deepcopy(self.data)
         ids = set()
         for entry in self._schedule():
@@ -162,7 +169,7 @@ class StubState:
                 raise ValueError(f"scheduled change {name!r}: after_call.count must be a positive integer")
             if not isinstance(entry.get("changes"), list) or not entry["changes"]:
                 raise ValueError(f"scheduled change {name!r} needs a non-empty changes list")
-            if entry.get("fired"):
+            if entry.get("fired") or resumed:
                 continue
             for change in entry["changes"]:
                 try:

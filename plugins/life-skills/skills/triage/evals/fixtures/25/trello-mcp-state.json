@@ -22,7 +22,7 @@
     "card-2": {
       "id": "card-2",
       "name": "Drop off the donation bags at the Eastside thrift store",
-      "desc": "Three bags of kids' clothes in the hall closet. The store's autumn clothing drive closes on the due date.",
+      "desc": "Three bags of kids' clothes in the hall closet. The store's {{date:2026-10-03|%Q}} clothing drive closes on the due date.",
       "list_id": "list-1",
       "board_id": "board-1",
       "labels": ["label-1"],

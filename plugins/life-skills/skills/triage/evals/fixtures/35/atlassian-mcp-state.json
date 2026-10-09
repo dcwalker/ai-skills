@@ -129,7 +129,7 @@
       "key": "HOME-3",
       "id": "20003",
       "project": "HOME",
-      "summary": "Clean the gutters before winter",
+      "summary": "Clean the gutters before {{date:2026-12-21|%Q}}",
       "description": "Front and back gutters are full of leaves. Clear them before the first frost.",
       "status": {
         "name": "To Do",
@@ -221,7 +221,7 @@
       "key": "HOME-6",
       "id": "20006",
       "project": "HOME",
-      "summary": "Service the boiler before winter",
+      "summary": "Service the boiler before {{date:2026-12-21|%Q}}",
       "description": "Annual boiler service. Book with the usual engineer before the heating goes on full time.",
       "status": {
         "name": "To Do",

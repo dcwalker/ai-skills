@@ -59,7 +59,7 @@
       "id": "20001",
       "project": "HOME",
       "summary": "Renew my passport",
-      "description": "Passport expires next spring. Notes: photos taken at the pharmacy booth on {{date:2026-10-05|%B %-d, %Y}}; the online form is half filled in and saved as a draft.",
+      "description": "Passport expires in {{date:2027-04-15|%Q}} {{date:2027-04-15|%Y}}. Notes: photos taken at the pharmacy booth on {{date:2026-10-05|%B %-d, %Y}}; the online form is half filled in and saved as a draft.",
       "status": {
         "name": "To Do",
         "statusCategory": "To Do"

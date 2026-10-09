@@ -40,7 +40,7 @@
     "card-3": {
       "id": "card-3",
       "name": "Renew library card at the Elm Street branch",
-      "desc": "The card expires at the end of {{date:2026-10-31|%B %Y}}. Bring proof of address.",
+      "desc": "The card expires on {{date:2026-10-31|%B %-d, %Y}}. Bring proof of address.",
       "list_id": "list-1",
       "board_id": "board-1",
       "labels": ["label-2"],

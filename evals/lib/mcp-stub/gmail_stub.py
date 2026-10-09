@@ -434,10 +434,10 @@ def create_label(
     MCP's create_label (parameter names copied from its schema; the
     deprecated `color` field is omitted). Nested names ('A/B') create their
     missing parents when autoCreateParentLabels is true. A name that already
-    exists is an error, as in Gmail."""
+    exists, in any letter case, is an error, as in Gmail."""
     labels = state.data["labels"]
-    names = {l["name"]: l for l in labels.values()}
-    if displayName in names:
+    names = {l["name"].lower(): l for l in labels.values()}
+    if displayName.lower() in names:
         raise ValueError(f"gmail-stub: a label named {displayName!r} already exists")
     wanted = [displayName]
     if autoCreateParentLabels and "/" in displayName:
@@ -445,18 +445,24 @@ def create_label(
         wanted = ["/".join(parts[:i]) for i in range(1, len(parts) + 1)]
     created = None
     for name in wanted:
-        if name in names:
+        if name.lower() in names:
             continue
         new_id = f"Label_{len(labels) + 1}"
         while new_id in labels:
             new_id = f"Label_{int(new_id.split('_')[1]) + 1}"
         created = {"id": new_id, "name": name, "type": "user"}
+        if labelListVisibility:
+            created["labelListVisibility"] = labelListVisibility
+        if messageListVisibility:
+            created["messageListVisibility"] = messageListVisibility
         labels[new_id] = created
-        names[name] = created
+        names[name.lower()] = created
     state.flush()
     state.log_call("create_label", {"displayName": displayName,
                                     "autoCreateParentLabels": autoCreateParentLabels,
-                                    "colorPreset": colorPreset}, created)
+                                    "colorPreset": colorPreset,
+                                    "labelListVisibility": labelListVisibility,
+                                    "messageListVisibility": messageListVisibility}, created)
     return created
 
 

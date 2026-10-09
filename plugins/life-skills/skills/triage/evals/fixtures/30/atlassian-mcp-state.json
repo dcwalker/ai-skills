@@ -77,7 +77,7 @@
       "id": "20001",
       "project": "OPS",
       "summary": "Migrate the billing service database to the new Postgres cluster",
-      "description": "The billing service still runs on the old Postgres 11 cluster, which goes out of vendor support at the end of {{date:2027-03-31|%B %Y}}. Moving it needs the billing team, the DBA group, and the SRE on-call rotation. The work covers schema compatibility checks, setting up replication to the new cluster, a dual-write period, a cutover in a maintenance window, and decommissioning the old cluster afterwards. The design notes are on the \"Billing DB migration\" page in Confluence. This will run over several sprints.",
+      "description": "The billing service still runs on the old Postgres 11 cluster, which goes out of vendor support on {{date:2027-03-31|%B %-d, %Y}}. Moving it needs the billing team, the DBA group, and the SRE on-call rotation. The work covers schema compatibility checks, setting up replication to the new cluster, a dual-write period, a cutover in a maintenance window, and decommissioning the old cluster afterwards. The design notes are on the \"Billing DB migration\" page in Confluence. This will run over several sprints.",
       "status": {
         "name": "To Do",
         "statusCategory": "To Do"
