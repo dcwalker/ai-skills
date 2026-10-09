@@ -165,14 +165,23 @@ def resolve_value(value, days: int, anchored: bool, key: str | None = None):
     return shifted if shifted is not None else resolve_tokens(value, days, anchored)
 
 
+# The repository holding this script: evals/lib/fixture-dates.py, two levels up.
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+
+
 def allowed_roots() -> list[str]:
-    """Where this script may read or write: the user's home and $TMPDIR."""
-    roots = {os.path.expanduser("~"), tempfile.gettempdir()}
+    """Where this script may read or write: the user's home, $TMPDIR, and this repo.
+
+    The repo is listed because fixtures are read from it, and a checkout need
+    not sit under the home directory: a cloud container clones to /home/user
+    while HOME is /root.
+    """
+    roots = {os.path.expanduser("~"), tempfile.gettempdir(), REPO_ROOT}
     return sorted({os.path.realpath(root) for root in roots if os.path.isdir(root)})
 
 
 def contained_path(path: str, what: str) -> str:
-    """The resolved path, refused unless it lies under the home or temp directory.
+    """The resolved path, refused unless it lies under the home, temp, or repo directory.
 
     The harness passes these paths in, and a trial's own run directory can be
     anywhere TRIALS_DIR points, so a mistyped one must not read or overwrite
@@ -182,7 +191,7 @@ def contained_path(path: str, what: str) -> str:
     for root in allowed_roots():
         if resolved == root or resolved.startswith(root + os.sep):
             return resolved
-    fail(f"{what} must be inside your home directory or {tempfile.gettempdir()}; got {path!r}")
+    fail(f"{what} must be inside your home directory, {tempfile.gettempdir()}, or {REPO_ROOT}; got {path!r}")
 
 
 def resolve_state(fixture_dir: str, state_path: str) -> dict:
