@@ -135,12 +135,15 @@ a shared Jira query's `ORDER BY`, otherwise rank); a ranking signal (priority,
 an urgent label, Gmail Starred or Important, a due date); oldest first. An
 inbox goes Starred or Important first, then oldest first, without asking;
 `search_threads` lists newest first, so work its listing from the bottom up.
-At 15 or more items, group first and order within each group.
+Step 1a's groups decide batch actions only; they never change this order.
+
+**Number the items.** Once the order is set, give each item its position in it
+(1, 2, 3, ...). The number stays with the item for the whole run.
 
 **Say the order.** Every reply that reports on the items opens with an
 `Order:` line naming the order and where it came from ("Order: list position,
-top to bottom"), then groups the items by outcome, in that order within each
-group.
+top to bottom"), then groups the items by outcome, each group sorted by
+position number, and starts every item's entry with its number.
 
 **Ask when two orders compete.** When the scope spans two platforms, boards,
 or projects, each with its own order, the reply is the order question, with
@@ -462,9 +465,18 @@ block reads pending, no matter how routine the proposals look.
 
 Collect proposals into a summary and ask for confirmation before applying
 anything. Open with the `Order:` line, then group the items by outcome (for
-example: needs your attention, changed, no changes needed, archived), keeping
-the Step 1 processing order within each group; a batch entry sits in its
-group where its earliest item falls. Present it once for the whole run. Do not
+example: needs your attention, changed, no changes needed, archived), each
+group sorted by the Step 1b position numbers, never by urgency, due date, or
+the order changes were applied. Every item's entry starts with its number; a
+batch entry sits in its group at its lowest number. A number never stands in
+for an item: every line that names one gives its number and its title or link,
+batch lines included. When something is time-sensitive (a deadline passed or
+due within a week, a possible fraud or security issue), say so on one `Time-sensitive:`
+line right after the `Order:` line, naming the item's number and title, and
+leave the item where its number puts it. Before sending, read each group's
+numbers top to bottom: they only ever go up, and a group where one goes down
+is reordered before the summary is sent. Present it once for the whole run. Do
+not
 present the same change in multiple places. Items with no
 proposed changes still appear in the summary, flagged as "No changes — looks
 complete. Mark reviewed?" rather than being dropped.
@@ -476,13 +488,13 @@ identical proposals. With no URLs from the platform, a batch entry reads:
 
 ```
 Batch: archive (moves these out of the inbox)
-  - "Earn 3% cash back on groceries this autumn"
-  - "Your exclusive mortgage rate offer"
-  - "Refer a friend, get $50"
+  - 2. "Earn 3% cash back on groceries this autumn"
+  - 4. "Your exclusive mortgage rate offer"
+  - 5. "Refer a friend, get $50"
 ```
 
 A batch entry is always this bulleted list, one item per line, each line the
-item's exact title or link. Never write a batch as an inline or
+item's position number and its exact title or link. Never write a batch as an inline or
 comma-separated list, a table cell, or a count or paraphrase ("9 promotional
 emails", "survey, webinar invite"). This applies everywhere a batch appears,
 including the closing report after changes are applied.
@@ -500,7 +512,7 @@ write `[Picture day moved](thread-14)` or `[taxes](card-1)`; write
 `"Picture day moved" (thread-14)` instead.
 
 ```
-Proposed changes for [ITEM TITLE] ([KEY or URL]):
+[N]. Proposed changes for [ITEM TITLE] ([KEY or URL]):
 
 Action:       [the Step 6 action: now / at a time or place / check-in]
 Title:        [old] → [new]
@@ -548,8 +560,8 @@ Re-run the original Step 0 scope query (same board, filter, label, or inbox
 search) and compare against the set of items processed in this run. If new
 items now match the scope that weren't part of the original corpus, report the
 count and ask whether the user wants to process them in this session or a
-follow-up run. New arrivals processed now take their place in the Step 1
-order.
+follow-up run. New arrivals processed now continue the position numbers after
+the last item, in the Step 1b order among themselves.
 
 ---
 
@@ -576,7 +588,10 @@ never impose more structure than the work justifies.
   changes, even when several items' changes are identical, unless a later
   batch moves it out of scope.
 - Open every report on the items with the `Order:` line, and group the
-  items by outcome, in that order within each group. A scope spanning two sources with their own orders gets the
+  items by outcome, each group sorted by position number, with every entry
+  starting with its number and its title. Urgency goes on the
+  `Time-sensitive:` line, never into the order; check that each group's
+  numbers only go up before sending. A scope spanning two sources with their own orders gets the
   order question first, and nothing is written until it is answered.
 - Name each action from its links too, as something the user does; a
   `Waiting For` item's action is the user's check-in. Never open a link that

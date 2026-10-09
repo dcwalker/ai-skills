@@ -7,11 +7,9 @@ this when an item's context or size is not obvious from the first glance.
 
 ## Groups on a large set (Step 1a)
 
-Grouping does not replace the processing order (Step 1b); it comes first, and
-the order is applied within it. Items keep the chosen order inside each group,
-and each group sits where its earliest item falls in that order. With an inbox
-going oldest first, a sender whose first thread is the oldest in the inbox is
-worked first, even if its other threads are the newest.
+Groups exist to find batch actions. They never change the processing order
+(Step 1b): items still in scope after a batch are worked and reported in that
+order, by position number, as if the group had not been formed.
 
 ## Batch actions (Step 1a)
 
