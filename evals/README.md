@@ -529,9 +529,13 @@ network as before. It has no multi-turn `follow_ups` support, no per-trial
 also cannot strip the developer's settings, so an `Edit` or `Write` allow
 rule, an extra directory, or a `sandbox.excludedCommands` or
 `sandbox.filesystem.allowWrite` entry in `~/.claude/settings.json` widens a
-triage trial's boundary, and so does any hook the developer has configured. None of these gaps fails a trial today: triage's
-`evals.json` declares no `follow_ups`, none of its fixtures carry a `home/`,
-and the skill writes nothing under `$HOME`. The settings gap is about the
+triage trial's boundary, and so does any hook the developer has configured. Two
+of these gaps break triage trials today. Eval 23 scripts a `follow_ups` turn,
+which this driver never sends, so the trial ends at the scope question and
+fails every expectation about the reply that should follow it. Eval 20 is
+graded partly from `tools.log`, the per-call record this driver does not
+keep. The rest do not: none of triage's fixtures carry a `home/`, and the
+skill writes nothing under `$HOME`. The settings gap is about the
 developer's own files rather than the measurement, and the `HOME` gap is not
 purely theoretical either: Step 5a reads `~/references/`, so a triage trial
 run through its own driver reads whatever that directory holds
@@ -560,7 +564,11 @@ follow-up, so a revision eval ("draft it", "shorter", "now add this") is a
 real conversation rather than one prompt describing three. Every turn's
 events land in the same `events.jsonl`, and `transcript.txt` separates them
 with `===== turn N =====` markers so a grader can see what each revision
-actually changed.
+actually changed. Each turn is a new `claude` process, so the stubs restart
+with it; a resumed turn seeds each stub from its `<service>-state-out.json`
+rather than the seed, through a generated `mcp-config.resume.json`, so later
+turns see what earlier turns wrote and the final state holds every turn's
+writes. The seed file is never rewritten, and stays what graders diff against.
 
 Simulated user: an interview-driven skill cannot be scripted that way,
 because `follow_ups` arrive in a fixed order whatever the skill asks. Run
@@ -642,11 +650,18 @@ Five things the shared driver does that a hand-run trial must do for itself:
     rest as zero-token results. Bash reaches only the hosts a `WebFetch(domain:...)` allow rule in
     the loaded settings names, and the trial adds none, which suits every
     eval run through this driver: each service it talks to is a stub. The
-    sandbox gives Bash its own `$TMPDIR`, so `CLAUDE_CODE_TMPDIR` points that
-    into the run directory too. Claude Code documents a fallback to a short
-    system temp directory when that path is long; a 159-character run path
-    did not trigger it, and if it does, temp files land there silently
-    rather than in the run directory. Hooks from the developer's enabled
+    trial's `TMPDIR` and `CLAUDE_CODE_TMPDIR` both point into the run
+    directory, and sandboxed Bash gets `<TMPDIR>/claude-0` as its own
+    `$TMPDIR`. The exception is a long run directory (over 70 characters to
+    its `tmp/`). The sandbox creates its bridge sockets in `TMPDIR`, a Unix
+    socket path cannot exceed about 104 bytes (108 on Linux), and under a
+    117-character path every Bash call failed with "Failed to create bridge
+    sockets" while the preflight, which uses the real `TMPDIR`, passed. So
+    such a trial gets a short private `TMPDIR` from `mktemp -d
+    /tmp/mcp-trial.XXXXXX` (a symlink into the run directory does not work,
+    since bubblewrap cannot follow it). The write checks count it as the
+    trial's own, and after the trial its contents are copied to
+    `tmp/host-tmp/` in the run directory and it is removed. Hooks from the developer's enabled
     plugins still run, outside the sandbox. `disableAllHooks` would stop
     them, but in a trial it also stopped the `managed-only` instruction-files
     setting from applying, which loaded the developer's `~/.claude/rules`

@@ -1,0 +1,36 @@
+{
+  "anchor_date": "2026-10-09",
+  "boards": {
+    "board-1": {"id": "board-1", "name": "Home Projects"}
+  },
+  "lists": {
+    "list-1": {"id": "list-1", "name": "To Do", "board_id": "board-1"}
+  },
+  "cards": {
+    "card-1": {
+      "id": "card-1",
+      "name": "smoke alarms",
+      "desc": "Two of the hallway alarms chirp at night. They take 9V batteries; there's a pack in the garage drawer.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [],
+      "due": null,
+      "due_complete": false,
+      "url": "https://trello.com/c/card-1/smoke-alarms"
+    },
+    "card-2": {
+      "id": "card-2",
+      "name": "Book the chimney sweep before the first fire of the season",
+      "desc": "Call Ashford Chimney (they did it last year) and book a sweep and inspection before we light the first fire.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": ["label-1"],
+      "due": "2026-10-31T17:00:00.000Z",
+      "due_complete": false,
+      "url": "https://trello.com/c/card-2/book-chimney-sweep"
+    }
+  },
+  "labels": {
+    "label-1": {"id": "label-1", "name": "maintenance", "color": "blue", "board_id": "board-1"}
+  }
+}

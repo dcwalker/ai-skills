@@ -273,6 +273,24 @@ print(json.dumps({
   # that look identical in a plain transcript.
   TRIAL_HOME="$RUN_DIR/home"
   mkdir -p "$RUN_DIR/tmp" "$TRIAL_HOME"
+  # The Bash sandbox creates its bridge sockets (srt-mux-<pid>-<n>.sock) and
+  # bubblewrap's mount points in TMPDIR, outside the sandbox, and a Unix
+  # socket path cannot exceed about 104 bytes (108 on Linux). Under a long
+  # TRIALS_DIR every Bash call then fails with "Failed to create bridge
+  # sockets", while the preflight, which runs with the real TMPDIR, passes.
+  # So a long run directory gets a short private TMPDIR under /tmp for those
+  # host-side files; a symlink will not do, since bubblewrap cannot follow it.
+  # Sandboxed Bash takes its own $TMPDIR from this one (<TMPDIR>/claude-0),
+  # so the write checks count it as the trial's, and after the trial its
+  # contents are copied to $RUN_DIR/tmp/host-tmp for the grader and it is
+  # removed.
+  TRIAL_TMP="$RUN_DIR/tmp"
+  TRIAL_HOST_TMP=""
+  if (( ${#TRIAL_TMP} > 70 )); then
+    TRIAL_HOST_TMP="$(mktemp -d /tmp/mcp-trial.XXXXXX)"
+    TRIAL_TMP="$TRIAL_HOST_TMP"
+    trap 'rm -rf "$TRIAL_HOST_TMP"' EXIT
+  fi
   # $HOME is reassigned, but a trial can still write to the real home if it
   # learns the path -- and it does not have to snoop to learn it. Symlinks in
   # $TRIAL_HOME name their targets, and .claude.json carries a `projects` map
@@ -342,19 +360,42 @@ with open(sys.argv[2], "w") as fh:
   # makes a multi-turn eval (draft, then revise, then revise again) a real
   # conversation rather than one prompt describing several.
   TRIAL_TOOLS="Bash,Read,Glob,Grep,Write,Edit,WebFetch,Skill,ToolSearch"
+  #
+  # Each turn is a new claude process, so the stubs restart with it, and a
+  # stub seeds itself from MCP_STUB_STATE_FILE. Left pointing at the seed, a
+  # resumed turn would start from the fixture again and drop every write the
+  # earlier turns made. A resumed turn therefore gets a config that seeds
+  # each stub from its own state-out, where the last turn left it, for every
+  # stub that has one. The seed file stays as it was: graders diff against it.
   run_turn() {
     local turn_prompt="$1" resume_id="${2:-}"
     local -a resume_flag=()
-    [[ -n "$resume_id" ]] && resume_flag=(--resume "$resume_id")
+    local turn_mcp_config="$MCP_CONFIG_PATH"
+    if [[ -n "$resume_id" ]]; then
+      resume_flag=(--resume "$resume_id")
+      turn_mcp_config="$RUN_DIR/mcp-config.resume.json"
+      python3 -c "
+import json, os, sys
+config = json.load(open(sys.argv[1]))
+for server in config['mcpServers'].values():
+    env = server.get('env', {})
+    if os.path.exists(env.get('MCP_STUB_STATE_OUT', '')):
+        env['MCP_STUB_STATE_FILE'] = env['MCP_STUB_STATE_OUT']
+json.dump(config, open(sys.argv[2], 'w'), indent=2)
+" "$MCP_CONFIG_PATH" "$turn_mcp_config" || {
+        echo "  WARNING: could not build the resume config for eval $ID; this turn starts from the seed"
+        turn_mcp_config="$MCP_CONFIG_PATH"
+      }
+    fi
     (
       cd "$WORKSPACE_DIR"
-      HOME="$TRIAL_HOME" TMPDIR="$RUN_DIR/tmp" CLAUDE_CODE_TMPDIR="$RUN_DIR/tmp" \
+      HOME="$TRIAL_HOME" TMPDIR="$TRIAL_TMP" CLAUDE_CODE_TMPDIR="$RUN_DIR/tmp" \
         claude -p --permission-mode dontAsk \
         --tools "$TRIAL_TOOLS" \
         --allowedTools "Bash Read Glob Grep WebFetch TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian mcp__slack mcp__calendar" \
         --strict-mcp-config --verbose ${resume_flag[@]+"${resume_flag[@]}"} \
         --settings "$TRIAL_SETTINGS" \
-        --mcp-config "$MCP_CONFIG_PATH" --output-format stream-json -- "$turn_prompt" \
+        --mcp-config "$turn_mcp_config" --output-format stream-json -- "$turn_prompt" \
         < /dev/null
     ) >> "$RUN_DIR/events.jsonl" 2>> "$RUN_DIR/stderr.txt" || {
       # The preflight runs with the real HOME; a trial runs with its own, so a
@@ -468,7 +509,7 @@ print('ASSISTANT:')
 print(last)
 print()
 " "$RUN_DIR/events.jsonl" >> "$RUN_DIR/conversation.txt"
-      REPLY=$(cd "$SIM_DIR" && HOME="$TRIAL_HOME" TMPDIR="$RUN_DIR/tmp" \
+      REPLY=$(cd "$SIM_DIR" && HOME="$TRIAL_HOME" TMPDIR="$TRIAL_TMP" \
         CLAUDE_CODE_TMPDIR="$RUN_DIR/tmp" \
         CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 \
         claude -p --tools "" --strict-mcp-config --no-session-persistence \
@@ -492,10 +533,13 @@ print()
   fi
 
   python3 - "$RUN_DIR" "$SKILL_NAME" "$RUN_DIR_REAL" "$WORKSPACE_DIR" "$TRIAL_HOME" \
-    "$TRIAL_START" <<'PYEOF'
+    "$TRIAL_START" "$TRIAL_HOST_TMP" <<'PYEOF'
 import json, os, re, shlex, sys
 run_dir, skill_name, run_dir_real, workspace, trial_home = sys.argv[1:6]
 trial_start = float(sys.argv[6]) - 1     # a second's slack for clock granularity
+# The short TMPDIR a long run directory gets (see TRIAL_HOST_TMP) is the
+# trial's own, and its contents are copied into the run directory afterwards.
+host_tmp_real = os.path.realpath(sys.argv[7]) if sys.argv[7] else ""
 
 # events.jsonl is one JSON object per line, across every turn of the trial:
 # each turn ends with a "result" event carrying that turn's usage and
@@ -585,6 +629,8 @@ def resolve(path):
 
 def outside(path):
     real = resolve(path)
+    if host_tmp_real and (real == host_tmp_real or real.startswith(host_tmp_real + os.sep)):
+        return False
     return not (real == run_dir_real or real.startswith(run_dir_real + os.sep)) \
         and not real.startswith("/dev/")
 
@@ -722,7 +768,7 @@ def bash_targets(command):
 # tampering.log and counted in metrics.json, whether or not it went through.
 HARNESS_FILE = re.compile(r"(-calls\.log|-state-out\.json|-state-seed\.json|\.counts\.json)$|"
                           r"^(tools\.log|events\.jsonl|metrics\.json|escapes\.log|"
-                          r"tampering\.log|env\.sh|mcp-config\.json|eval\.json)$")
+                          r"tampering\.log|env\.sh|mcp-config(\.resume)?\.json|eval\.json)$")
 tampering = []
 
 escapes, detection_error = [], None
@@ -886,6 +932,13 @@ for line in open(sys.argv[1]):
     echo "  Nothing was moved or deleted. Inspect those paths, then see" >&2
     echo "  $RUN_DIR/escapes.log and tools.log. Stopping the run." >&2
     exit 1
+  fi
+
+  if [[ -n "$TRIAL_HOST_TMP" ]]; then
+    mkdir -p "$RUN_DIR/tmp/host-tmp"
+    cp -R "$TRIAL_HOST_TMP/." "$RUN_DIR/tmp/host-tmp/" 2> /dev/null || true
+    rm -rf "$TRIAL_HOST_TMP"
+    trap - EXIT
   fi
 
   echo "  -> saved to $RUN_DIR"

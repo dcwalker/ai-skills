@@ -5,13 +5,16 @@ the official `mcp` SDK) that a trial's scratch `.mcp.json` points Claude Code
 at instead of the real third-party server, the same way `evals/lib/gh-stub/gh`
 stands in for the real `gh` binary on PATH. Unlike `gh-stub` (a fresh process
 per call, so `times` caps and call counts have to be persisted to a file via
-GH_STUB_COUNTS_DIR), an MCP stub is one long-lived process for the whole
-trial -- Claude Code launches it once and keeps the connection open -- so it
-can just hold its fake backing state in memory for the trial's duration.
+GH_STUB_COUNTS_DIR), an MCP stub is one long-lived process for each
+`claude` turn -- Claude Code launches it once and keeps the connection open -- so it
+can just hold its fake backing state in memory for that turn's duration. A
+trial with follow-up turns starts a new process per turn; run-mcp-trials.sh
+points each resumed turn's MCP_STUB_STATE_FILE at the previous turn's
+MCP_STUB_STATE_OUT, so state carries across turns.
 
 State model: a stub's backing "database" is a plain JSON object (shape is
 stub-specific, e.g. trello_stub.py's is {"boards", "lists", "cards",
-"labels"}). It's seeded once at startup from MCP_STUB_STATE_FILE and mutated
+"labels"}). It's seeded at startup from MCP_STUB_STATE_FILE and mutated
 in place as tools are called. State is flushed to MCP_STUB_STATE_OUT after
 every tool call (not only on clean shutdown), so a grader can diff final
 state against an expected snapshot even if the trial's `claude` subprocess
