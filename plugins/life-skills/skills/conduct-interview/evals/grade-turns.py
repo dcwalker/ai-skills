@@ -31,9 +31,9 @@ GRADER_SYSTEM = """You grade an AI interviewer's turns in a conversation transcr
 
 For every ASSISTANT turn, in order, judge:
 
-- phase: one of "setup", "interview", "confirm", "draft".
+- phase: one of "setup", "interview", "confirm", "draft". Classify a turn by the question it asks, not by what precedes it: a turn that recaps the deliverable and then asks about the content is "interview".
 - one_inquiry: true if the turn pursues at most one line of inquiry; false if it bundles asks about different subjects, whether as separate questions, a list of questions, or one sentence joined with "and". A second question that only clarifies or narrows the first is still one inquiry. null if the turn asks the user nothing, or only asks for approval of a summary or draft.
-- builds_on_previous: for "interview" turns only, true if the question pursues, narrows, or was chosen because of something the user said (usually their latest answer), such as following up an aside, using a correction, or skipping what the user already volunteered; false if it reads as the next item on a generic list that would have been asked whatever the user had said, or if it ignores something the user just raised that clearly warranted a follow-up. null for the first interview question and for turns in other phases.
+- builds_on_previous: for "interview" turns only, true if the question pursues, narrows, or was chosen because of something the user said (usually their latest answer), such as following up an aside, using a correction, or skipping what the user already volunteered; false if it reads as the next item on a generic list that would have been asked whatever the user had said, or if it ignores something the user just raised that clearly warranted a follow-up. null for the first assistant turn, which has only the opening message to build on, and for turns in other phases.
 - reason: one short sentence.
 
 Reply with only a JSON array, one object per ASSISTANT turn in order: {"turn": <1-based assistant turn number>, "phase": ..., "one_inquiry": ..., "builds_on_previous": ..., "reason": ...}"""
