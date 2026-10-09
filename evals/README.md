@@ -645,9 +645,11 @@ session's real MCP servers, not the stubs.
 
 The simulated user answers only what it is asked. Where its opening message
 does not cover a question, it says it doesn't know or has no preference
-rather than inventing a name, date, or decision; it never volunteers a
-decision before it is asked, and never reverses an instruction its opening
-message gives. That keeps it from supplying facts a skill should have asked
+rather than inventing a name, date, or decision. It never volunteers a
+decision or answers a question before it is asked, never reverses an
+instruction its opening message gives or accepts an offer to drop something
+that message asked for, and, given options it has no preference among,
+takes the one the skill recommends. That keeps it from supplying facts a skill should have asked
 for, but it also means an eval cannot tell a question that built on the
 last answer from one that would have come next anyway. An eval may carry a
 `simulated_user` string: a private briefing appended to the simulated user's
