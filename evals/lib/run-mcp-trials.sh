@@ -342,10 +342,30 @@ with open(sys.argv[2], "w") as fh:
   # makes a multi-turn eval (draft, then revise, then revise again) a real
   # conversation rather than one prompt describing several.
   TRIAL_TOOLS="Bash,Read,Glob,Grep,Write,Edit,WebFetch,Skill,ToolSearch"
+  #
+  # Each turn is a new claude process, so the stubs restart with it, and a
+  # stub seeds itself from MCP_STUB_STATE_FILE. Left pointing at the seed, a
+  # resumed turn would start from the fixture again and drop every write the
+  # earlier turns made. A resumed turn therefore gets a config that seeds
+  # each stub from its own state-out, where the last turn left it, for every
+  # stub that has one. The seed file stays as it was: graders diff against it.
   run_turn() {
     local turn_prompt="$1" resume_id="${2:-}"
     local -a resume_flag=()
-    [[ -n "$resume_id" ]] && resume_flag=(--resume "$resume_id")
+    local turn_mcp_config="$MCP_CONFIG_PATH"
+    if [[ -n "$resume_id" ]]; then
+      resume_flag=(--resume "$resume_id")
+      turn_mcp_config="$RUN_DIR/mcp-config.resume.json"
+      python3 -c "
+import json, os, sys
+config = json.load(open(sys.argv[1]))
+for server in config['mcpServers'].values():
+    env = server.get('env', {})
+    if os.path.exists(env.get('MCP_STUB_STATE_OUT', '')):
+        env['MCP_STUB_STATE_FILE'] = env['MCP_STUB_STATE_OUT']
+json.dump(config, open(sys.argv[2], 'w'), indent=2)
+" "$MCP_CONFIG_PATH" "$turn_mcp_config"
+    fi
     (
       cd "$WORKSPACE_DIR"
       HOME="$TRIAL_HOME" TMPDIR="$RUN_DIR/tmp" CLAUDE_CODE_TMPDIR="$RUN_DIR/tmp" \
@@ -354,7 +374,7 @@ with open(sys.argv[2], "w") as fh:
         --allowedTools "Bash Read Glob Grep WebFetch TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian mcp__slack mcp__calendar" \
         --strict-mcp-config --verbose ${resume_flag[@]+"${resume_flag[@]}"} \
         --settings "$TRIAL_SETTINGS" \
-        --mcp-config "$MCP_CONFIG_PATH" --output-format stream-json -- "$turn_prompt" \
+        --mcp-config "$turn_mcp_config" --output-format stream-json -- "$turn_prompt" \
         < /dev/null
     ) >> "$RUN_DIR/events.jsonl" 2>> "$RUN_DIR/stderr.txt" || {
       # The preflight runs with the real HOME; a trial runs with its own, so a
@@ -722,7 +742,7 @@ def bash_targets(command):
 # tampering.log and counted in metrics.json, whether or not it went through.
 HARNESS_FILE = re.compile(r"(-calls\.log|-state-out\.json|-state-seed\.json|\.counts\.json)$|"
                           r"^(tools\.log|events\.jsonl|metrics\.json|escapes\.log|"
-                          r"tampering\.log|env\.sh|mcp-config\.json|eval\.json)$")
+                          r"tampering\.log|env\.sh|mcp-config(\.resume)?\.json|eval\.json)$")
 tampering = []
 
 escapes, detection_error = [], None

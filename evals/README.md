@@ -564,7 +564,11 @@ follow-up, so a revision eval ("draft it", "shorter", "now add this") is a
 real conversation rather than one prompt describing three. Every turn's
 events land in the same `events.jsonl`, and `transcript.txt` separates them
 with `===== turn N =====` markers so a grader can see what each revision
-actually changed.
+actually changed. Each turn is a new `claude` process, so the stubs restart
+with it; a resumed turn seeds each stub from its `<service>-state-out.json`
+rather than the seed, through a generated `mcp-config.resume.json`, so later
+turns see what earlier turns wrote and the final state holds every turn's
+writes. The seed file is never rewritten, and stays what graders diff against.
 
 Simulated user: an interview-driven skill cannot be scripted that way,
 because `follow_ups` arrive in a fixed order whatever the skill asks. Run
