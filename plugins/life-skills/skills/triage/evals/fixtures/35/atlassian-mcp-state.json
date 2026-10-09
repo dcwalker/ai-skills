@@ -3,7 +3,7 @@
   "stub_now": "2026-10-09T16:00:00Z",
   "cloud": {
     "id": "b7c9e1a2-0000-4000-8000-example00001",
-    "url": "https://danwalker.atlassian.net",
+    "url": "https://home-projects.atlassian.invalid",
     "name": "danwalker"
   },
   "projects": {
@@ -50,6 +50,14 @@
       "name": "Done",
       "to": {
         "name": "Done",
+        "statusCategory": "Done"
+      }
+    },
+    {
+      "id": "41",
+      "name": "Duplicate",
+      "to": {
+        "name": "Duplicate",
         "statusCategory": "Done"
       }
     }

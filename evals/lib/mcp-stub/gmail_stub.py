@@ -4,14 +4,17 @@
 A real, protocol-compliant stdio MCP server (built on the official `mcp`
 SDK) implementing the subset of Gmail operations `triage`'s email workflow
 (Step 7b) actually names: search_threads, get_thread, list_labels,
-create_draft, modify_thread_labels, archive_thread. See common.py's module
-docstring for the general stub-server design.
+create_draft, modify_thread_labels, archive_thread -- plus trash_thread and
+create_label, which the workflow's delete branch and label bootstrap need
+and which the official Gmail MCP offers. See common.py's module docstring
+for the general stub-server design.
 
-Schema fidelity note: in a real session these six tools span TWO connectors
+Schema fidelity note: in a real session these tools span TWO connectors
 -- the official Gmail MCP (search_threads / get_thread / list_labels /
-create_draft, RPC-style camelCase parameters) and a helper connector
-(modify_thread_labels / archive_thread, snake_case parameters). This stub
-serves all six from one server for trial simplicity, but each tool's
+create_draft / trash_thread / create_label, RPC-style camelCase parameters)
+and a helper connector (modify_thread_labels / archive_thread, snake_case
+parameters). This stub serves all of them from one server for trial
+simplicity, but each tool's
 parameter names and shapes were copied from the live connected servers, not
 guessed, so a skill's real calls match instead of silently no-oping.
 
@@ -399,6 +402,62 @@ def archive_thread(thread_id: str) -> dict:
     result = {"thread_id": thread_id, "labelIds": list(t["labelIds"])}
     state.log_call("archive_thread", {"thread_id": thread_id}, result)
     return result
+
+
+@server.tool()
+def trash_thread(threadId: str) -> dict:
+    """Moves an entire thread to the Trash. Mirrors the official Gmail MCP's
+    trash_thread (parameter name copied from its schema): the thread gains
+    the TRASH system label and leaves the inbox."""
+    if threadId not in state.data["threads"]:
+        raise ValueError(f"gmail-stub: no thread with id {threadId!r}")
+    t = state.data["threads"][threadId]
+    if "INBOX" in t["labelIds"]:
+        t["labelIds"].remove("INBOX")
+    if "TRASH" not in t["labelIds"]:
+        t["labelIds"].append("TRASH")
+    state.flush()
+    result = {"id": threadId, "labelIds": list(t["labelIds"])}
+    state.log_call("trash_thread", {"threadId": threadId}, result)
+    return result
+
+
+@server.tool()
+def create_label(
+    displayName: str,
+    autoCreateParentLabels: bool = True,
+    colorPreset: str = "",
+    labelListVisibility: str = "",
+    messageListVisibility: str = "",
+) -> dict:
+    """Creates a new user label and returns it. Mirrors the official Gmail
+    MCP's create_label (parameter names copied from its schema; the
+    deprecated `color` field is omitted). Nested names ('A/B') create their
+    missing parents when autoCreateParentLabels is true. A name that already
+    exists is an error, as in Gmail."""
+    labels = state.data["labels"]
+    names = {l["name"]: l for l in labels.values()}
+    if displayName in names:
+        raise ValueError(f"gmail-stub: a label named {displayName!r} already exists")
+    wanted = [displayName]
+    if autoCreateParentLabels and "/" in displayName:
+        parts = displayName.split("/")
+        wanted = ["/".join(parts[:i]) for i in range(1, len(parts) + 1)]
+    created = None
+    for name in wanted:
+        if name in names:
+            continue
+        new_id = f"Label_{len(labels) + 1}"
+        while new_id in labels:
+            new_id = f"Label_{int(new_id.split('_')[1]) + 1}"
+        created = {"id": new_id, "name": name, "type": "user"}
+        labels[new_id] = created
+        names[name] = created
+    state.flush()
+    state.log_call("create_label", {"displayName": displayName,
+                                    "autoCreateParentLabels": autoCreateParentLabels,
+                                    "colorPreset": colorPreset}, created)
+    return created
 
 
 if __name__ == "__main__":

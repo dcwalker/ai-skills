@@ -389,7 +389,8 @@ protocol-compliant MCP stdio servers (built on the official `mcp` Python SDK,
 not a hand-rolled JSON-RPC shim) that stand in for the real third-party
 server -- `trello_stub.py` implements the subset of Trello tools `triage`
 actually calls, `gmail_stub.py` the six Gmail operations its email workflow
-(Step 7b) names, and `jira_stub.py` the Atlassian MCP's Jira subset
+(Step 7b) names plus the official Gmail MCP's `trash_thread` and
+`create_label`, which its delete branch and label bootstrap need, and `jira_stub.py` the Atlassian MCP's Jira subset
 (including the cloudId-discovery flow via getAccessibleAtlassianResources
 and a documented JQL subset that fails loudly on unsupported constructs,
 plus a getConfluencePage whose response layout is modelled on Confluence's
