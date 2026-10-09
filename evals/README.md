@@ -559,8 +559,11 @@ every stub has it:
   entries' changes to the seed first, and say so in the eval's
   expectations.
 - The stub checks every unfired entry against the seed at startup and
-  refuses to start on an unknown op or a missing path. An entry whose
-  target is gone by the time it fires is logged with an `error` and skipped.
+  refuses to start on an unknown op or a missing path. A resumed turn,
+  seeded from the previous turn's state-out, checks only each entry's
+  shape, since the skill may already have removed a pending change's
+  target. An entry whose target is gone by the time it fires is logged
+  with an `error` and skipped.
 - Dates inside `changes` move with the rest of the fixture, and tokens in
   them resolve. A Slack `ts` shifts only under a `ts` or `thread_ts` key, so
   set the whole message object rather than the bare timestamp.
