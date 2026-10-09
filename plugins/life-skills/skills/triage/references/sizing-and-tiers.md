@@ -5,26 +5,15 @@ professional work, and how big is it — and the tier they select between. The
 tier decides how much enrichment an item gets for the rest of the run, so read
 this when an item's context or size is not obvious from the first glance.
 
-## Agreeing a pace on a large set (Step 1a)
+## Groups on a large set (Step 1a)
 
-At 15+ items, propose a pace before starting, and say why it is not a
-shortcut:
-
-> "This set has 42 items. I'll still review each one individually and confirm
-> every change before applying it, that's the point, but I'll work similar
-> items together (by sender, list, or label) and summarize and confirm
-> proposals every 10 items instead of one giant summary at the end. Sound
-> right?"
-
-Grouping does not replace the processing order (Step 1b); it comes first, and
-the order is applied within it. Items keep the chosen order inside each group,
-and each group sits where its earliest item falls in that order. With an inbox
-going oldest first, a sender whose first thread is the oldest in the inbox is
-worked first, even if its other threads are the newest.
+Groups exist to find batch actions. They never change the processing order
+(Step 1b): items still in scope after a batch are worked and reported in that
+order, by position number, as if the group had not been formed.
 
 ## Batch actions (Step 1a)
 
-A batch action is one change (a label, a move, an archive) applied to several
+A batch action is one change (a label, a move, an archive, a merge) applied to several
 items in a group at once. It is proposed and confirmed like any other change.
 
 **Membership.** Each item's own listing details (subject and snippet, or title

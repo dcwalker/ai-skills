@@ -10,7 +10,7 @@
     "card-1": {
       "id": "card-1",
       "name": "flight",
-      "desc": "Need to book round-trip flights to Austin for the {{date:2027-06-01|%B}} conference, budget under $600.",
+      "desc": "Need to book round-trip flights to Austin for the {{date:2027-06-01|%B %Y}} conference, budget under $600.",
       "list_id": "list-1",
       "board_id": "board-1",
       "labels": [],

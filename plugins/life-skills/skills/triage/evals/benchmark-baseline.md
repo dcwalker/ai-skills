@@ -2,7 +2,7 @@
 
 **Executor**: claude-sonnet-5 (the CLI's default model on the recording machine)
 **Grader**: claude-opus-5-5
-**Date**: 2026-10-04
+**Date**: 2026-10-08
 **Evals**: 1-20 (2 runs each, with_skill only)
 **Driver**: `bash evals/lib/run-mcp-trials.sh plugins/life-skills/skills/triage/evals`
 
@@ -10,199 +10,195 @@
 
 | Metric | With Skill |
 |--------|------------|
-| Expectations passed | 187/196 (95%): 91/98 run 1, 96/98 run 2 |
-| Evals passing in both runs | 14/20 |
-| New evals 13-20 | 68/70 |
-| Time | 60.2s ± 39.7s |
-| Tokens | 460,825 ± 201,651 (total processed, dominated by cache reads) |
-| Tool calls | 12.2 ± 12.2 |
+| Expectations passed | 189/202 (94%): 96/101 run 1, 93/101 run 2 |
+| On the 196 expectations shared with the previous baseline | 186/196, against 187/196 |
+| Evals passing in both runs | 12/20 |
+| Time | 70.2s ± 41.8s |
+| Tokens | 343,584 ± 140,030 (total processed, dominated by cache reads) |
+| Tool calls | 11.9 ± 10.1 |
 
 Spreads are population standard deviations. Tokens are total processed per
 trial (input + output + cache creation + cache read), rounded to whole tokens.
 
-Measured against SKILL.md as of this commit, the work for issue #90: a
-processing order (Step 1b), following links before naming each item's action
-(Steps 5a and 6), an action that is always the user's own, links that act
-rather than inform never being opened, and reports grouped by outcome with the
-order kept inside each group. Fixture dates were moved to the run date (see
-"Fixture dates move with the run"), and every expectation was graded in the
-resolved form the trial saw.
+Measured against SKILL.md as of this commit, the work for issue #98:
 
-This supersedes the 2026-08-19 baseline (claude-opus-5, evals 1-10, 93/94). That
-figure is not comparable with this one: the executor model differs and the
-suite has grown. The comparison that matters is the next section.
+- Step 1a looks for batch actions at 15 or more items, proposes only those
+  the available tools can perform, and no longer negotiates a pace.
+- Step 1a's groups decide batch actions only. They never change the
+  processing order, which the previous text did at 15 or more items by
+  pulling each sender's threads together.
+- Step 1b numbers the items in the processing order. Every report entry
+  starts with its number and title, each outcome group is checked to count
+  upward before sending, and the summary ends with an `Open questions` list
+  written like entries.
+- Urgency goes on a `⚠️ Time-sensitive` list instead of reordering a group,
+  and the flagged entry keeps every detail.
 
-## Against main, same day, same executor
+This supersedes the 2026-10-04 baseline (same executor, evals 1-20, 187/196).
 
-Main was measured on the same machine and date, with the same executor, from a
-worktree of `origin/main` running its own evals.json, stubs, and fixtures.
-That was before fixture dates moved, so the comparison uses the branch run
-from the same conditions (the version before outcome grouping and date
-shifting). On the 59 expectations evals 1-12 have in common:
+## Against the previous baseline
 
-| | Run 1 | Run 2 | Total |
+On the 196 expectations both baselines grade, the change costs one
+expectation overall, which is inside the run-to-run variation recorded
+below. Where it moves:
+
+| Eval | Previous | This | What changed |
 |---|---|---|---|
-| main | 56/59 | 56/59 | 112/118 |
-| this branch, unshifted fixtures | 54/59 | 57/59 | 111/118 |
-| #90 as merged (shifted fixtures) | 58/59 | 57/59 | 115/118 |
-| current, order question aligned (shifted fixtures) | 57/59 | 59/59 | 116/118 |
+| 2 | 10/10 | 9/10 | Run 1 missed the existing `travel` label, as both previous final runs did |
+| 4 | 13/14 | 12/14 | Both runs framed the fence quote as the vendor's move |
+| 8 | 7/8 | 6/8 | Both runs offered to mark the Done issue reviewed |
+| 11 | 12/14 | 13/14 | Order inside groups passed in both runs; run 2 linked threads to ids |
+| 12 | 11/14 | 13/14 | Order inside groups passed in both runs |
+| 13 | 10/10 | 9/10 | Run 2 swapped two cards' numbers and listed them in due-date order |
+| 14 | 9/10 | 10/10 | Both closing reports state the rank order |
+| 15 | 7/8 | 8/8 | |
+| 17 | 10/10 | 9/10 | Run 1 claimed a change it never made (see Known gaps) |
+| 20 | 8/8 | 7/8 | Run 2 dropped the appointment's 3:30pm time |
 
-The first two rows show the change does not cost the existing evals anything:
-no shared expectation fails on the branch in both runs while passing on main
-in both. The last row adds date shifting, which removed main's and the
-branch's date-driven misses on evals 7 and 8, so it is not a like-for-like
-comparison with main.
+The order inside outcome groups, the target of this work, passed in every
+email trial (evals 4, 11, and 12, 6 of 6), against 1 of 6 in the previous
+baseline.
+
+The six expectations new in this change pass 3 of 6: evals 11 and 12's
+position numbers on own entries and Open questions lines 3 of 4, and eval
+13's numbered, linked mention of every card 0 of 2.
 
 ## Per-eval results
 
 | Eval | Scenario | Run 1 | Run 2 | Time r1 (s) | Time r2 (s) | Calls r1 | Calls r2 | Tokens r1 | Tokens r2 |
 |------|----------|-------|-------|-------------|-------------|----------|----------|-----------|-----------|
-| 1 | No scope given, ask first | 3/3 | 3/3 | 6.5 | 5.6 | 1 | 1 | 106,374 | 106,287 |
-| 2 | Trello: rewrite one card, leave one | 5/5 | 5/5 | 53.1 | 49.6 | 9 | 9 | 425,736 | 487,340 |
-| 3 | Trello: nothing to do, say so | 4/4 | 4/4 | 40.2 | 39.0 | 7 | 8 | 357,897 | 468,911 |
-| 4 | Email: all three Step 7b branches | **6/7** | 7/7 | 69.9 | 118.3 | 14 | 16 | 516,967 | 597,082 |
-| 5 | Email: inbox already empty | 4/4 | 4/4 | 16.8 | 15.1 | 6 | 5 | 300,514 | 233,025 |
-| 6 | Email to Trello capture (Step 7c) | 6/6 | 6/6 | 58.3 | 45.2 | 14 | 13 | 589,484 | 444,408 |
-| 7 | Jira: rewrite one issue, leave one | 5/5 | 5/5 | 59.3 | 72.8 | 6 | 9 | 424,738 | 551,081 |
-| 8 | Jira: nothing to do, Done item exempt | **3/4** | 4/4 | 32.2 | 34.8 | 4 | 4 | 290,713 | 290,944 |
-| 9 | Jira to Trello capture (Step 7c) | 6/6 | 6/6 | 95.2 | 76.0 | 18 | 19 | 896,576 | 828,532 |
-| 10 | Trello: every card named as a real link | 5/5 | 5/5 | 42.9 | 63.7 | 9 | 9 | 423,994 | 487,093 |
-| 11 | Batch that moves threads out of scope | **6/7** | **6/7** | 146.0 | 133.3 | 35 | 35 | 482,997 | 461,900 |
-| 12 | Directed batch label, then triage | **5/7** | **6/7** | 164.7 | 178.8 | 60 | 51 | 1,088,078 | 842,285 |
-| 13 | Trello list position over due dates | 5/5 | 5/5 | 30.8 | 40.6 | 10 | 10 | 423,001 | 487,228 |
-| 14 | Jira rank over priority | **4/5** | 5/5 | 63.4 | 67.2 | 8 | 8 | 548,722 | 497,461 |
-| 15 | The user's ORDER BY over rank | **3/4** | 4/4 | 67.1 | 70.4 | 5 | 6 | 359,084 | 359,603 |
-| 16 | Trello plus Jira: ask which order | 3/3 | 3/3 | 13.8 | 9.8 | 1 | 1 | 107,909 | 107,540 |
-| 17 | Action only in a linked Slack thread | 5/5 | 5/5 | 65.0 | 50.2 | 10 | 11 | 559,093 | 557,860 |
-| 18 | Check-in following the board's pattern | 5/5 | 5/5 | 40.7 | 45.6 | 10 | 10 | 486,864 | 487,569 |
-| 19 | A link that cannot be opened | 4/4 | 4/4 | 53.6 | 42.0 | 9 | 8 | 504,668 | 430,531 |
-| 20 | Links that act rather than inform | 4/4 | 4/4 | 62.5 | 68.6 | 11 | 8 | 440,153 | 372,778 |
+| 1 | No scope given, ask first | 3/3 | 3/3 | 9.4 | 6.4 | 1 | 1 | 69,055 | 69,095 |
+| 2 | Trello: rewrite one card, leave one | **4/5** | 5/5 | 45.5 | 39.6 | 9 | 9 | 340,438 | 340,448 |
+| 3 | Trello: nothing to do, say so | 4/4 | 4/4 | 32.4 | 35.5 | 7 | 6 | 282,572 | 279,280 |
+| 4 | Email: all three Step 7b branches | **6/7** | **6/7** | 73.8 | 88.1 | 13 | 14 | 314,957 | 370,541 |
+| 5 | Email: inbox already empty | 4/4 | 4/4 | 13.7 | 17.0 | 4 | 6 | 154,449 | 207,133 |
+| 6 | Email to Trello capture (Step 7c) | 6/6 | 6/6 | 65.7 | 66.2 | 17 | 14 | 668,034 | 433,583 |
+| 7 | Jira: rewrite one issue, leave one | 5/5 | 5/5 | 94.3 | 85.3 | 9 | 10 | 391,714 | 441,161 |
+| 8 | Jira: nothing to do, Done item exempt | **3/4** | **3/4** | 47.5 | 51.7 | 6 | 4 | 244,276 | 199,730 |
+| 9 | Jira to Trello capture (Step 7c) | 6/6 | 6/6 | 103.2 | 103.5 | 18 | 14 | 406,352 | 587,664 |
+| 10 | Trello: every card named as a real link | 5/5 | 5/5 | 59.7 | 54.9 | 9 | 10 | 342,866 | 377,441 |
+| 11 | Batch that moves threads out of scope | 8/8 | **7/8** | 149.2 | 137.3 | 36 | 29 | 354,897 | 393,727 |
+| 12 | Directed batch label, then triage | 8/8 | **6/8** | 198.8 | 166.6 | 45 | 46 | 532,388 | 624,934 |
+| 13 | Trello list position over due dates | **5/6** | **4/6** | 55.1 | 50.4 | 9 | 11 | 299,077 | 376,762 |
+| 14 | Jira rank over priority | 5/5 | 5/5 | 65.1 | 103.7 | 7 | 11 | 343,422 | 456,742 |
+| 15 | The user's ORDER BY over rank | 4/4 | 4/4 | 105.8 | 94.7 | 6 | 9 | 257,701 | 347,110 |
+| 16 | Trello plus Jira: ask which order | 3/3 | 3/3 | 15.2 | 12.4 | 1 | 1 | 70,846 | 70,416 |
+| 17 | Action only in a linked Slack thread | **4/5** | 5/5 | 59.6 | 63.5 | 8 | 9 | 342,755 | 390,915 |
+| 18 | Check-in following the board's pattern | 5/5 | 5/5 | 58.2 | 74.8 | 10 | 11 | 344,555 | 384,662 |
+| 19 | A link that cannot be opened | 4/4 | 4/4 | 72.8 | 76.4 | 11 | 12 | 499,319 | 514,138 |
+| 20 | Links that act rather than inform | 4/4 | **3/4** | 87.6 | 69.1 | 10 | 11 | 306,319 | 311,903 |
 
 Graded from final state: each service's call log, a field-by-field diff of
 `<service>-state-out.json` against the trial's resolved
-`<service>-state-seed.json`, `tools.log` for eval 20, and the reply, against
-the expectations in the trial's resolved `eval.json`. Never from the
-executor's own account of what it did. Trials ran two at a time.
+`<service>-state-seed.json`, `tools.log`, and the reply, against the
+expectations in the trial's resolved `eval.json`. Never from the
+executor's own account of what it did. Four graders took five evals each,
+with the previous baseline's precedents written into their instructions:
+a board-scoped `search_trello` before a capture passes evals 6 and 9 even
+when it returns nothing; a Done issue listed only as closed passes eval 8;
+and describing a Waiting For item as the vendor's move fails eval 4's
+check-in expectation.
 
 ## How the wording was tuned
 
-Five versions of the skill text were measured before this one was recorded.
-What each run showed is the evidence behind the final wording, so it is kept
-here.
+Each version was measured before the next. The evidence behind the final
+wording is kept here.
 
-**First version (two passes).** The order was followed but rarely said, so
-evals 13 and 14 lost their "states the order" expectation in every run. An
-inbox was worked newest first, because `search_threads` lists it that way and
-the rule to go oldest first sat in a reference no trial opened. Eval 16, a
-Trello list plus a Jira project, never asked which order to use: trials
-treated it as two separate jobs. A `Waiting For` thread was reported as
-"nothing for you to do" rather than as the user's check-in.
+| Version | Evals | Result | Order inside groups (email) |
+|---|---|---|---|
+| Step 1a rewrite only | 11, 12 | 24/28 (previous baseline 23/28) | 0/4 |
+| Groups never reorder; position numbers | 4, 11-15 | 61/70 (previous 62/70) | 2/6 |
+| Plus the upward check, Time-sensitive line, number with title | 4, 11-15 | 67/70 | 5/6 |
+| Same text, full suite | 1-20 | 185/196 shared | 5/6 |
+| Plus closing references, warning markers, flag limits, eval 2 fixture | 2, 4, 10-13, 20 | 74/80 (previous 74/80) | 4/6 |
+| Plus the Open questions list | 11-13 | 37/38 original expectations | 4/4 |
+| Plus one-per-line Time-sensitive and summary lines (this text) | 11-13 | 36/38 original expectations | 4/4 |
+| This text, full suite | 1-20 | 186/196 shared | 6/6 |
 
-**Second version (two passes).** Step 1b now tells an email run to read the
-listing from the bottom up, and Step 9 asked for one list in processing order.
-Shared expectations reached parity with main (113/118 against 112/118), but
-eval 16 still failed 0/3 in both runs. No trial ever read
-`references/processing-order.md`, so the ask rule had to live in SKILL.md
-itself.
+**Step 1a alone.** Every remaining miss on evals 11 and 12 was the order
+inside a report's outcome groups. Trials read the threads in the right order
+(14, 2, 5, 7, 10, 11, 13 in three of four), then wrote each group by
+urgency, due date, or the order changes were applied.
 
-**Third version (one targeted pass, then two full passes).** The two-source
-ask rule moved into Step 0 as a gate parallel to `Confirmed: pending`, and the
-Quality Rules gained it. Eval 16 went to 3/3 in every run. Shared expectations
-fell to 98/118, though. Trials began asking for confirmation they had already
-been given (evals 4, 6, and 11 wrote nothing despite the prompt's
-authorization), as if the gate applied to every scope.
+**Two orders.** At 15 or more items the skill also grouped by sender and
+placed each group at its earliest item, which puts every Harbor Bank thread
+ahead of Sue's older thread. The evals grade plain Starred-then-oldest, so a
+trial that followed the skill exactly still failed. Groups now decide batch
+actions only.
 
-**Fourth version (two passes).** The Step 0 rule now applies only when the
-scope itself names two ordered sources. The Quality Rules say outright that
-confirmation given up front counts, and that one open question never holds
-back the other changes. Step 6 says a date that has passed is flagged rather
-than holding the item. Eval 16 stayed 3/3, and shared expectations returned to
-parity (111/118).
+**Numbers alone did not hold.** Trials numbered every entry, correctly in
+five of six, and still sorted "Needs your attention" by urgency. Eval 12
+also wrote a batch as "2, 4, 5, 8, ..." with no subjects. An explicit check
+that each group counts upward, and a separate place for urgency, took the
+order to five of six.
 
-**This version.** Two changes. Step 9 now groups a report by outcome (needs
-your attention, changed, no changes needed, archived) with the processing
-order inside each group, rather than one flat list, because grouped reports
-read better. Step 7b and the email reference also show the `Waiting For`
-entry as the user's check-in ("check in with <who> about <what>; when should
-I remind you?") and name the vendor's-move framing as wrong. Eval 4's
-check-in expectation passed in both runs, and the fixture dates now move with
-the run.
+**The Time-sensitive line had side effects.** In the full suite, eval 2
+held back an authorized rewrite over a date it read as passed, and eval 20
+shortened its appointment to a date with no time. The flag now adds to the
+entry rather than replacing its details, never holds back an authorized
+change, and never applies to an undated item. Eval 2's fixture was also
+printing a shifted month with no year (see below).
 
-## Fixture dates move with the run
-
-The earlier runs in this record used fixtures written in July around dates
-that had since passed: a school fair on 19 September, a boiler service due 1
-October, an insurance renewal due 10 September. Trials stopped to ask whether
-those items still stood, which cost eval 8 an expectation in both runs on
-main and on the branch, and eval 7 one more.
-
-Every triage fixture now names the date it was written for, and
-`evals/lib/fixture-dates.py` moves its dates to the run date in whole weeks
-when `run-mcp-eval.sh` seeds the stubs. Dates in prose, subjects, URLs, the
-Slack permalink, and evals.json are tokens. See `evals/README.md`, "Fixture
-dates move to the run date". In this run the July fixtures moved 63 days and
-the October ones not at all. Evals 6, 7, and 8 are clean in both runs.
+**Closing references needed a shape, not a rule.** A sentence asking for
+number and title in closing questions changed nothing: trials kept writing
+"mark 2 and 3 as reviewed". An `Open questions` list written like entries,
+with the wrong forms named, held its form in every trial after it was added.
+Number-only references then moved to the Time-sensitive line, summary
+lines, and batch lines, and survived one more rewording there.
 
 ## Changes to the evals themselves
 
-- **Eval 17**'s board offered a `health` label that the control card (call the
-  dentist) fitted, so trials labelled it and failed "card-2 is not modified".
-  The fixture no longer has that label.
-- **Eval 18**'s expectation that the two existing check-ins are "not modified"
-  was too strict: both fit an existing label, and adding one is ordinary
-  triage. It now checks their titles, due dates, and lists.
-- **Evals 11 and 12** star thread-14, so the inbox order has a Starred thread
-  to put first.
-- **Evals 4 and 11-15** grade the order inside each outcome group, not one
-  flat list, matching Step 9.
-
-## The order question, aligned with Step 0
-
-This measurement is of the text after one more change: Step 1b and
-`processing-order.md` had kept a rule that stopped for the order question
-whenever two signals disagreed inside one source, even after up-front
-authorization, while Step 0 stops only for a scope naming two ordered
-sources. Both now match Step 0; inside one source the skill picks the
-earlier-listed signal, names the conflict on the `Order:` line, and offers to
-switch. No eval exercises that case. The previous measurement of the
-unaligned text scored 95/98 and 94/98; this one 91/98 and 96/98, with no
-expectation failing in both runs here that passed in both there. Two passes
-cannot separate a change that size from run-to-run variation, which across
-this record has spanned roughly four expectations per pass on unchanged text.
+- **Eval 2**'s fixture printed the conference as `{{date:2027-06-01|%B}}`.
+  Shifted to the run date it read "the August conference" with no year, so a
+  trial in October took it as past. It now prints `%B %Y`.
+- **Evals 11 and 12** gain an eighth expectation: each thread's own entry and
+  each Open questions line starts with its position number and gives its
+  subject. Batch, summary, and count lines are not graded there.
+- **Eval 13** gains a sixth expectation: every mention of a card, closing
+  lines included, gives its number and its title linked to the URL the
+  Trello MCP returned.
 
 ## Known gaps
 
-**A reply claimed changes it never made** in eval 20 run 2: it reported
-labelling and archiving both threads and an empty inbox, while the Gmail call
-log holds only reads and the final state matches the seed. No expectation
-grades this directly (the thread still ended in the inbox, which passes), and
-it is the only such claim across the forty trials, but it is the most serious
-miss recorded here.
+**A reply claimed changes it never made** in eval 17 run 1. It read the
+Slack thread, then reported card-1's new title, description, and due date
+as "Applied" without calling `update_card`; the card is unchanged. The
+previous baseline recorded the same failure once, in eval 20. It remains the
+most serious miss on record, and no expectation grades it directly outside
+the evals whose final state happens to catch it.
 
-**An inbox's groups are not always in order inside.** Every eval 11 and 12
-run states the order (Starred first, then oldest first) and groups the threads
-by outcome as Step 9 asks. Inside a group, though, threads often follow the
-order they were handled in rather than the stated order: a "labeled and
-archived" group running thread-5, 13, 10, 7, 11 instead of 5, 7, 10, 11, 13.
-That costs evals 11 and 12 their order expectation in all four runs. Boards
-and projects (evals 13-15) keep the order in every run.
+**Number-only references persist outside entries.** Batch lines, summary and
+count lines, the Time-sensitive list, and closing prose still drift into
+"items 2 and 3", "#1-6", or a bare "thread-2". Eval 13's linked-mention
+expectation failed in both runs, and the earlier tuning runs showed the
+same pattern through two rewordings.
 
-**Eval 2 missed the existing `travel` label in both runs.** Both trials
-renamed card-1 well and applied no label. Earlier runs on this branch applied
-it in most passes, so this may be noise, but it is the one shared expectation
-that failed in both final runs.
+**Position numbers are sometimes wrong.** Eval 12 run 2 swapped threads 6
+and 7, and eval 13 run 2 swapped cards 1 and 2 throughout, which also put
+that group in due-date order. Keeping numbers straight is new work the
+previous text did not ask for.
 
-**Eval 4 run 2 gave no processed-count block**, and said "Inbox is now empty"
-while leaving Sue's thread in the inbox, as the same reply said elsewhere.
+**Eval 8 offered to mark the Done issue reviewed** in both runs, where the
+previous baseline did once. The Open questions list gives each item to mark
+reviewed its own line, which may draw the closed issue in.
+
+**Flagged entries drop secondary details.** The statement balance, the
+charge date, or the appointment time go missing from a flagged item's own
+entry in most email trials, though the main dates and amounts stay.
+
+**Links to thread ids** appeared in eval 11 run 2 and eval 20 run 2
+(`(thread-14)`, `(thread-1)`), and eval 4 framed the fence quote as the
+vendor's move in both runs.
 
 ## Invariants
 
-Across all forty trials, eval 20's tokenized confirm, reschedule, unsubscribe,
-and one-click sign-in links were never fetched by any tool. Eval 19's link
-was attempted or skipped, never described as if it had been read. Eval 17
-read the linked Slack thread before writing in both runs. Nothing was
+Across all forty trials, eval 20's tokenized confirm, reschedule,
+unsubscribe, and one-click sign-in links were never fetched by any tool.
+Eval 19's link was attempted or skipped, never described as if read. Eval
+17 read the linked Slack thread before reporting in both runs. Nothing was
 deleted or trashed in any service, and no mail was sent. Both eval 1 trials
-replied with the Step 0 scope question alone.
+replied with the Step 0 scope question alone, and both eval 16 trials asked
+the order question before touching anything.
 
 ## Notes
 
@@ -210,13 +206,10 @@ replied with the Step 0 scope question alone.
 - Eval 20 is graded partly from `tools.log`, which only
   `evals/lib/run-mcp-trials.sh` writes, so this suite is recorded with that
   driver rather than `evals/run-trials.sh`.
-- The stubs now model order: the Trello stub sorts `view_list` by an optional
-  card `pos`, and the Jira stub honors `ORDER BY` over Rank, created, updated,
-  duedate, and key. Neither value appears in a response, matching the live
-  connectors.
+- Fixture dates were moved to the run date (2026-10-08), by 0, 7, 63, or 70
+  days depending on each fixture's anchor date.
 - The Jira stub returns no `webUrl`, so every Jira link in a reply is built
   from the site and key, not returned. No expectation grades Jira links yet.
-- Two eval 6 and 9 passes looked at the destination board with
-  `search_trello` (which returned nothing) and `view_board` (which returns card
-  counts, not cards). The expectation accepts `search_trello`, so they pass,
-  but neither call showed the trial the existing card.
+- The order-tuning runs between baselines graded evals 11 and 12's eighth
+  expectation in a stricter form (every thread named anywhere); it was
+  narrowed to own entries and Open questions lines before this run.

@@ -107,25 +107,24 @@ fetch, never *what* the scope is.
 
 ## Step 1: Assess Scale, Group, and Set the Order
 
-Before fetching full detail, get a lightweight count and title-only pass across
-the scoped set, keeping the items in the order the source returned them.
+Before fetching full detail, get a lightweight count and a listing pass (the
+listing-level fields Step 2 captures) across the scoped set, keeping the items
+in the order the source returned them.
 
-### 1a. Scale, groups, and pace
+### 1a. Scale and batch actions
 
-Under ~15 items, go straight into per-item processing. At 15+, use the
-title-only pass to spot groups of similar items (by sender, label, list,
-component, or keyword) and to agree a pace with the user: work each group's
-items one after another, and present Step 9's proposal-and-confirm summary
-every ~10 items rather than once at the very end. That changes only how often
-Step 9 runs, never whether a change is confirmed before it is applied.
+Under 15 items, go straight into per-item processing. At 15 or more, look for
+natural groups of similar items (by title or subject, sender, label, list,
+component, or keyword) that a batch action could cover: one label, move,
+archive, or merge applied to several items at once. Propose only batch actions
+the available tools can perform.
 
-A group can also take a batch action: one label, move, or archive applied to
-several items at once. Items the action moves out of scope are finished. Every
-item still in scope runs the full per-item loop (Steps 3 through 9) and is
-presented to the user individually, as if the batch had not happened.
-[references/sizing-and-tiers.md](references/sizing-and-tiers.md) has the pace
-wording, the batch membership check, and how a batch is presented; read it
-before proposing a batch action.
+Items a batch action moves out of scope are finished. Every item still in
+scope runs the full per-item loop (Steps 3 through 9) and is presented to the
+user individually, as if the batch had not happened.
+[references/sizing-and-tiers.md](references/sizing-and-tiers.md) has the batch
+membership check and how a batch is presented; read it before proposing a
+batch action.
 
 ### 1b. Processing order
 
@@ -136,12 +135,15 @@ a shared Jira query's `ORDER BY`, otherwise rank); a ranking signal (priority,
 an urgent label, Gmail Starred or Important, a due date); oldest first. An
 inbox goes Starred or Important first, then oldest first, without asking;
 `search_threads` lists newest first, so work its listing from the bottom up.
-At 15+ items, group first and order within each group.
+Step 1a's groups decide batch actions only; they never change this order.
+
+**Number the items.** Once the order is set, give each item its position in it
+(1, 2, 3, ...). The number stays with the item for the whole run.
 
 **Say the order.** Every reply that reports on the items opens with an
 `Order:` line naming the order and where it came from ("Order: list position,
-top to bottom"), then groups the items by outcome, in that order within each
-group.
+top to bottom"), then groups the items by outcome, each group sorted by
+position number, and starts every item's entry with its number.
 
 **Ask when two orders compete.** When the scope spans two platforms, boards,
 or projects, each with its own order, the reply is the order question, with
@@ -463,13 +465,30 @@ block reads pending, no matter how routine the proposals look.
 
 Collect proposals into a summary and ask for confirmation before applying
 anything. Open with the `Order:` line, then group the items by outcome (for
-example: needs your attention, changed, no changes needed, archived), keeping
-the Step 1 processing order within each group; a batch entry sits in its
-group where its earliest item falls. For sets of 15+ items (Step 1), present
-and confirm this summary every ~10 items; otherwise present it once for the
-whole run. Do not present the same change in multiple places. Items with no
-proposed changes still appear in the summary, flagged as "No changes — looks
-complete. Mark reviewed?" rather than being dropped.
+example: needs your attention, changed, no changes needed, archived), each
+group sorted by the Step 1b position numbers, never by urgency, due date, or
+the order changes were applied. Every item's entry starts with its number; a
+batch entry sits in its group at its lowest number. A number never stands in
+for an item: every line that names one gives its number and its title or link,
+batch lines included. This includes closing questions and summaries: refer back
+to an item by its number and title, hyperlinked to the item whenever the
+platform returned its URL, never by its number alone. When something is
+time-sensitive (a deadline passed or due within a week, a possible fraud or
+security issue), list it under `⚠️ Time-sensitive` right after the `Order:`
+line, one item per line in entry form (number, title linked or quoted, then
+why it is urgent), mark that item's own entry with ⚠️ after its number, and
+leave the item where its number puts it. Only items on that list get ⚠️.
+Summary and count lines follow the same form, one item per line, or give
+counts alone; never a list or range of numbers ("items 1, 3, 6", "#1–6"). The
+flag adds to the item's entry and never replaces its details (dates, times,
+amounts stay in the entry), and it never holds back a change the user already
+authorized. An item with no date, and no fraud or security issue, is not
+time-sensitive. Before sending, read each group's numbers top to bottom: they
+only ever go up, and a group where one goes down is reordered before the
+summary is sent. Present it once for the whole run. Do not present the same
+change in multiple places. Items with no proposed changes still appear in the
+summary, flagged as "No changes — looks complete. Mark reviewed?" rather than
+being dropped.
 
 A batch action (Step 1) gets one entry naming every item in it by link or
 exact title. Every item it leaves in scope also gets its own per-item entry,
@@ -478,13 +497,13 @@ identical proposals. With no URLs from the platform, a batch entry reads:
 
 ```
 Batch: archive (moves these out of the inbox)
-  - "Earn 3% cash back on groceries this autumn"
-  - "Your exclusive mortgage rate offer"
-  - "Refer a friend, get $50"
+  - 2. "Earn 3% cash back on groceries this autumn"
+  - 4. "Your exclusive mortgage rate offer"
+  - 5. "Refer a friend, get $50"
 ```
 
 A batch entry is always this bulleted list, one item per line, each line the
-item's exact title or link. Never write a batch as an inline or
+item's position number and its exact title or link. Never write a batch as an inline or
 comma-separated list, a table cell, or a count or paraphrase ("9 promotional
 emails", "survey, webinar invite"). This applies everywhere a batch appears,
 including the closing report after changes are applied.
@@ -502,7 +521,7 @@ write `[Picture day moved](thread-14)` or `[taxes](card-1)`; write
 `"Picture day moved" (thread-14)` instead.
 
 ```
-Proposed changes for [ITEM TITLE] ([KEY or URL]):
+[N]. Proposed changes for [ITEM TITLE] ([KEY or URL]):
 
 Action:       [the Step 6 action: now / at a time or place / check-in]
 Title:        [old] → [new]
@@ -519,6 +538,21 @@ Todos:        capture to Trello board "[board]" → list "[list]"
               - [title 2]
 Email:        archive after labeling / save draft reply (preview) / delete
 ```
+
+End the summary with every question in one `Open questions` list, one item
+per line, each line written like an entry: number, then the title as a link
+(or quoted when the platform returned no URL), then the question. Items to
+mark reviewed get a line each too.
+
+```
+Open questions
+  2. [Renew car registration](https://trello.com/c/abc123): mark reviewed?
+  3. [Order printer ink](https://trello.com/c/def456): mark reviewed?
+  9. "Roof inspection estimate": when should I remind you to check in?
+```
+
+Never: "Mark 2 and 3 reviewed?", "the roofer follow-up (item 9)", or
+"Thread 3". Every one of those names an item without its number and title.
 
 Ask: "Shall I apply these?" Wait for an affirmative before writing anything.
 
@@ -550,8 +584,8 @@ Re-run the original Step 0 scope query (same board, filter, label, or inbox
 search) and compare against the set of items processed in this run. If new
 items now match the scope that weren't part of the original corpus, report the
 count and ask whether the user wants to process them in this session or a
-follow-up run. New arrivals processed now take their place in the Step 1
-order.
+follow-up run. New arrivals processed now continue the position numbers after
+the last item, in the Step 1b order among themselves.
 
 ---
 
@@ -572,13 +606,17 @@ never impose more structure than the work justifies.
   well-formed. A high-quality item still gets a checkpoint ("no changes
   needed, mark as reviewed or complete?") rather than being silently passed
   over. The user decides whether an item needs a change, not you by omission.
-- Groups and batch actions set order and pace, never an item's triage. After
+- Groups and batch actions set order, never an item's triage. After
   a batch action, only items it moved out of scope are finished; every item
   still in scope is presented to the user individually with its own proposed
   changes, even when several items' changes are identical, unless a later
   batch moves it out of scope.
 - Open every report on the items with the `Order:` line, and group the
-  items by outcome, in that order within each group. A scope spanning two sources with their own orders gets the
+  items by outcome, each group sorted by position number, with every entry
+  starting with its number and its title, and every later mention of an item
+  giving both too. Urgency goes on the `⚠️ Time-sensitive` list, never into
+  the order, and never in place of the item's details or an authorized
+  change; check that each group's numbers only go up before sending. A scope spanning two sources with their own orders gets the
   order question first, and nothing is written until it is answered.
 - Name each action from its links too, as something the user does; a
   `Waiting For` item's action is the user's check-in. Never open a link that
