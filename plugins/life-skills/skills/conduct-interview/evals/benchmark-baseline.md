@@ -35,7 +35,7 @@
 
 ## Per-turn baseline: evals 9-11 (2026-10-09)
 
-Evals 9-11 run through `evals/lib/run-mcp-trials.sh` with `SIMULATED_USER=1`, so a separate model plays the user from each eval's private `simulated_user` briefing, and are graded turn by turn with `evals/grade-turns.py`. Three runs per eval, against SKILL.md as of this commit. Rates count only turns the grader judged; a question-free turn, or a new topic after the user closed the last one, is not counted.
+Evals 9-11 run through `evals/lib/run-mcp-trials.sh` with `SIMULATED_USER=1`, so a separate model plays the user from each eval's private `simulated_user` briefing, and are graded turn by turn with this directory's `grade-turns.py`. Three runs per eval, against SKILL.md as of this commit. Rates count only turns the grader judged; a question-free turn, or a new topic after the user closed the last one, is not counted.
 
 | Eval | One line of inquiry | Builds on answers |
 |------|---------------------|-------------------|
