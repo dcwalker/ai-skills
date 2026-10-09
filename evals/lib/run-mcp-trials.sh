@@ -25,7 +25,8 @@
 # Set TRIALS_DIR to write the trials somewhere else (see below). Set
 # SIMULATED_USER=1 to have a model play the user in evals that carry no
 # follow_ups (see "simulated user" below); SIMULATED_USER_MAX_TURNS caps the
-# replies it sends (default 40).
+# replies it sends (default 40), and an eval's optional `simulated_user`
+# string briefs it privately.
 #
 #   bash evals/lib/run-mcp-trials.sh plugins/life-skills/skills/writing/evals
 #   bash evals/lib/run-mcp-trials.sh plugins/life-skills/skills/writing/evals 3 7
@@ -426,6 +427,26 @@ for e in data['evals']:
     SIM_DIR="$RUN_DIR/simulated-user"
     mkdir -p "$SIM_DIR"
     SIM_SYSTEM="You are role-playing the user in a test conversation with an AI assistant. The conversation so far follows, starting with your own opening message. Write only your next message to the assistant, in the first person, as that user. Stay consistent with your opening message: never contradict it, and follow any instruction it gives about how you will answer (for example, declining an offer you said you would decline). Answer what the assistant asks; when it asks something your opening message does not cover, give a short, plausible answer that fits it. Do not invent notes, files, or pasted material your opening message does not say you have. Approve the assistant's proposals and drafts unless your opening message says otherwise. Keep replies brief. If the assistant has delivered its final result and asks you nothing more, reply with exactly: DONE"
+    # An eval's optional `simulated_user` briefing gives the simulated user
+    # facts the skill has to draw out, and how to reveal them: an offhand
+    # aside worth following up, a correction to an earlier framing. The skill
+    # never sees it, so a question that pursues one of those facts shows the
+    # skill built on the answer rather than on a script it already had.
+    SIM_BRIEFING=$(python3 -c "
+import json, sys
+data = json.load(open(sys.argv[1]))
+for e in data['evals']:
+    if str(e['id']) == sys.argv[2]:
+        print(e.get('simulated_user', ''))
+        break
+" "$EVALS_DIR/evals.json" "$ID")
+    if [[ -n "$SIM_BRIEFING" ]]; then
+      SIM_SYSTEM="$SIM_SYSTEM
+
+Private background that only you know follows. It describes who you are and what happened. Use it in place of a made-up answer whenever it covers what the assistant asks, follow any instruction in it about when and how to reveal something, and never mention that you were given it.
+
+$SIM_BRIEFING"
+    fi
     printf 'USER:\n%s\n\n' "$PROMPT" > "$RUN_DIR/conversation.txt"
     SIM_TURNS=0
     while (( SIM_TURNS < ${SIMULATED_USER_MAX_TURNS:-40} )); do

@@ -8,7 +8,7 @@
 # Usage: run-mcp-eval.sh <skill-evals-dir> <eval-id> <run-dir>
 #
 #   <skill-evals-dir>  e.g. plugins/life-skills/skills/triage/evals
-#                      Must contain evals.json and fixtures/<eval-id>/.
+#                      Must contain evals.json; fixtures/<eval-id>/ is optional.
 #   <eval-id>          Numeric id matching evals.json and the fixtures/ subdir.
 #   <run-dir>          Fresh directory to build the trial in. Created if
 #                      missing; must be empty. Delete it when done -- there
@@ -57,11 +57,10 @@ SKILL_EVALS_DIR="$(cd "$1" > /dev/null && pwd)"
 EVAL_ID="$2"
 RUN_DIR="$3"
 
+# An eval with no fixture directory is a conversation alone (a simulated-user
+# interview, say): it gets an empty workspace and no stub servers, and
+# --strict-mcp-config still keeps every real server out of reach.
 FIXTURE_DIR="$SKILL_EVALS_DIR/fixtures/$EVAL_ID"
-if [[ ! -d "$FIXTURE_DIR" ]]; then
-  echo "run-mcp-eval: no fixture directory at $FIXTURE_DIR" >&2
-  exit 1
-fi
 
 MCP_STUB_DIR="$SCRIPT_DIR/mcp-stub"
 MCP_STUB_PYTHON="$MCP_STUB_DIR/.venv/bin/python3"
@@ -117,7 +116,7 @@ add_stub_server atlassian jira_stub.py
 add_stub_server slack slack_stub.py
 add_stub_server calendar calendar_stub.py
 
-if [[ "$MCP_SERVERS_JSON" == "{}" ]]; then
+if [[ "$MCP_SERVERS_JSON" == "{}" ]] && [[ -d "$FIXTURE_DIR" ]]; then
   echo "run-mcp-eval: fixture $FIXTURE_DIR provides no recognized *-mcp-state.json file" >&2
   exit 1
 fi

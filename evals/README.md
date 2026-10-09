@@ -576,6 +576,15 @@ simulated user that Agent-tool executors used to play, which is no longer
 safe for skills that consult connected sources: a subagent sees the
 session's real MCP servers, not the stubs.
 
+Without more to go on, the simulated user makes up any answer its opening
+message does not cover, so an eval cannot tell a question that built on the
+last answer from one that would have come next anyway. An eval may carry a
+`simulated_user` string: a private briefing appended to the simulated user's
+instructions and never shown to the skill. It holds the facts the skill has to
+draw out and how to reveal them, such as an aside to drop only in passing or a
+correction to make once the skill assumes the wrong frame. A later question
+that pursues one of those facts is then evidence the skill listened.
+
 Five things the shared driver does that a hand-run trial must do for itself:
 
 - It copies the skill under test into the trial workspace as a project skill
