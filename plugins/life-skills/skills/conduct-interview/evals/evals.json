@@ -96,7 +96,7 @@
     },
     {
       "id": 10,
-      "prompt": "Help me write a Slack message to my current team announcing my promotion to the platform team. I want it to sound warm but not sappy.",
+      "prompt": "Help me write a Slack message to my current team announcing my promotion to the platform team. I want it to sound warm but not sappy. I'm not sure what to say yet, so ask me questions first.",
       "simulated_user": "You are moving from the payments team to the platform team. Your opening message called it a promotion, but it is not: it is a lateral transfer at the same level, and you asked for it because you want to work on infrastructure. The first time the assistant asks anything about the new role, the move, or why it is happening, correct the framing in your answer: 'Actually, I shouldn't have said promotion. It's a lateral move, same level. I asked for it because I want to work on infrastructure.' Other facts, given only when asked: you have been on payments for three years; your last day is the 24th; Priya is taking over the refunds service and the on-call handoff; you will still be in the same office and want people to keep pinging you. Never call the move a promotion again.",
       "expected_output": "Once the user corrects the framing from a promotion to a lateral move they asked for, every later question, summary, and draft uses the corrected frame, and later questions build on it (for example, why they wanted infrastructure work, or what happens to their current work). Each turn asks about one thing.",
       "expectations": [
