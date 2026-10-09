@@ -32,12 +32,13 @@ These principles govern every step of the interview:
 
 ### Step 1: Establish the Deliverable
 
-Before asking any content questions, establish:
+Before asking any content questions, establish the following, one item per turn. Skip any item the user has already answered.
 
 1. **What type of document?** (email, journal entry, meeting notes, debrief, planning doc, status update, etc.)
 2. **Who is the audience?** (self, a manager, a team, a client, etc.)
-3. **Is there an expected length or format?** (brief paragraph, full page, bullet points, etc.)
-4. **What is the purpose?** (inform, persuade, record, plan, etc.)
+3. **Is there an expected length?** (a few sentences, a full page, a quick skim, etc.)
+4. **Is there an expected format?** (paragraphs, bullet points, fixed sections, etc.)
+5. **What is the purpose?** (inform, persuade, record, plan, etc.)
 
 Confirm understanding before proceeding. If the user is unsure about any of these, help them narrow it down through follow-up questions.
 
@@ -50,6 +51,7 @@ Use a one-question-at-a-time format:
 3. If the response is vague or incomplete, ask a clarifying follow-up before moving on.
 4. After each response, provide a running summary of the interview so far so the user can correct mistakes or add context.
 5. Based on the response, form your next question. Let the conversation flow naturally rather than following a rigid script.
+6. Before changing the subject, reread the latest answer for anything new: an aside, a fact the user volunteered, a feeling, a person, a correction. If something there is significant and not yet explored, follow it up first. Move on only when the user has closed the line ("that's the only one", "nothing else") or nothing in the answer is left to explore. Never ask again for something the user already volunteered; build on it instead.
 
 **Question techniques:**
 
@@ -68,6 +70,8 @@ Use a one-question-at-a-time format:
   And what is the weather like?") or joined into one sentence with "and"
   ("What drove the decision, and how did the team react?" is two inquiries
   and belongs in two turns).
+- Housekeeping asks count as their own inquiry. Confirming a date, a spelling, a name, or a number is a separate ask: give it its own turn, or hold it for the Step 3 check and the follow-up list. Never tack it onto a content question.
+- Wrap-up and reflective questions follow the same rule. "How do you feel about it overall?" and "Is there anything else you want?" are two inquiries and belong in two turns.
 
 **Research when needed:**
 
@@ -85,8 +89,8 @@ Use a one-question-at-a-time format:
 When you believe you have enough information:
 
 1. Present the full summary of all questions and answers.
-2. Ask: "Is there anything missing, incorrect, or that you want to add?"
-3. Review the follow-up list. Ask if any items can be resolved now.
+2. Ask: "Is there anything missing, incorrect, or that you want to add?" Ask it on its own, with no other question in the same turn.
+3. Review the follow-up list. In its own turn, ask if any items can be resolved now, one item at a time.
 4. Confirm you are ready to draft.
 
 ### Step 4: Draft the Deliverable
