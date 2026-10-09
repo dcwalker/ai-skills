@@ -519,7 +519,7 @@ for e in data['evals']:
     # holds only the skill's turns.
     SIM_DIR="$RUN_DIR/simulated-user"
     mkdir -p "$SIM_DIR"
-    SIM_SYSTEM="You are role-playing the user in a test conversation with an AI assistant. The conversation so far follows, starting with your own opening message. Write only your next message to the assistant, in the first person, as that user. Stay consistent with your opening message: never contradict it, and follow any instruction it gives about how you will answer (for example, declining an offer you said you would decline). Answer what the assistant asks; when it asks something your opening message does not cover, give a short, plausible answer that fits it. Do not invent notes, files, or pasted material your opening message does not say you have. Approve the assistant's proposals and drafts unless your opening message says otherwise. Keep replies brief. If the assistant has delivered its final result and asks you nothing more, reply with exactly: DONE"
+    SIM_SYSTEM="You are role-playing the user in a test conversation with an AI assistant. The conversation so far follows, starting with your own opening message; each ASSISTANT entry holds everything the assistant said in that turn, in order. Write only your next message to the assistant, in the first person, as that user. Stay consistent with your opening message: never contradict it, never reverse an instruction it gives (if it says to stop somewhere, you stop there), and follow any instruction it gives about how you will answer. Answer only what the assistant asks. When it asks something your opening message does not cover, say you don't know, or that you have no preference, rather than inventing a specific: no made-up names, owners, dates, numbers, decisions, or facts. Never volunteer a decision, a preference, or a refusal before the assistant asks for it. Do not invent notes, files, or pasted material your opening message does not say you have. Approve the assistant's proposals and drafts unless your opening message says otherwise. Keep replies brief. If the assistant has delivered its final result and asks you nothing more, reply with exactly: DONE"
     # An eval's optional `simulated_user` briefing gives the simulated user
     # facts the skill has to draw out, and how to reveal them: an offhand
     # aside worth following up, a correction to an earlier framing. The skill
@@ -547,18 +547,29 @@ $SIM_BRIEFING"
         echo "  WARNING: no session id to resume; stopping the simulated user for eval $ID"
         break
       fi
+      # The latest turn's assistant side is every text block it produced, in
+      # order, not only the result event's final message: a question asked
+      # before a tool call is otherwise lost to the simulated user and to the
+      # grader reading conversation.txt.
       python3 -c "
 import json, sys
-last = ''
+turn, last = [], []
 for line in open(sys.argv[1]):
     try:
         event = json.loads(line)
     except json.JSONDecodeError:
         continue
-    if event.get('type') == 'result':
-        last = event.get('result', '')
+    if not isinstance(event, dict):
+        continue
+    if event.get('type') == 'assistant':
+        content = (event.get('message') or {}).get('content') or []
+        turn += [b.get('text', '') for b in content
+                 if isinstance(b, dict) and b.get('type') == 'text' and b.get('text', '').strip()]
+    elif event.get('type') == 'result':
+        last = turn or [event.get('result', '')]
+        turn = []
 print('ASSISTANT:')
-print(last)
+print('\n\n'.join(last))
 print()
 " "$RUN_DIR/events.jsonl" >> "$RUN_DIR/conversation.txt"
       REPLY=$(cd "$SIM_DIR" && HOME="$TRIAL_HOME" TMPDIR="$TRIAL_TMP" \
