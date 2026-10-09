@@ -364,7 +364,10 @@ for server in config['mcpServers'].values():
     if os.path.exists(env.get('MCP_STUB_STATE_OUT', '')):
         env['MCP_STUB_STATE_FILE'] = env['MCP_STUB_STATE_OUT']
 json.dump(config, open(sys.argv[2], 'w'), indent=2)
-" "$MCP_CONFIG_PATH" "$turn_mcp_config"
+" "$MCP_CONFIG_PATH" "$turn_mcp_config" || {
+        echo "  WARNING: could not build the resume config for eval $ID; this turn starts from the seed"
+        turn_mcp_config="$MCP_CONFIG_PATH"
+      }
     fi
     (
       cd "$WORKSPACE_DIR"
