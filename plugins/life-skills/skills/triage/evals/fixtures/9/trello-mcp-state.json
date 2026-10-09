@@ -11,7 +11,7 @@
     "card-1": {
       "id": "card-1",
       "name": "Renew passport before {{date:2026-12-01|%B}} Japan trip",
-      "desc": "Passport expires in {{date:2027-03-01|%B}}; renew before booking flights.",
+      "desc": "Passport expires in {{date:2027-03-01|%B %Y}}; renew before booking flights.",
       "list_id": "list-1",
       "board_id": "board-1",
       "labels": [],

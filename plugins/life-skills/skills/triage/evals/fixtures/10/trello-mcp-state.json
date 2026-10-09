@@ -10,7 +10,7 @@
     "card-1": {
       "id": "card-1",
       "name": "taxes",
-      "desc": "Gather the {{date:2025-08-03|%Y}} receipts and hand them to the accountant before the {{date:2027-04-15|%B}} filing deadline.",
+      "desc": "Gather the {{date:2025-08-03|%Y}} receipts and hand them to the accountant before the {{date:2027-04-15|%B %Y}} filing deadline.",
       "list_id": "list-1",
       "board_id": "board-1",
       "labels": [],

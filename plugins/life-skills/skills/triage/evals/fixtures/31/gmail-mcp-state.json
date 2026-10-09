@@ -1,0 +1,264 @@
+{
+  "anchor_date": "2026-10-09",
+  "me": "eval-user@example.com",
+  "threads": {
+    "thread-1": {
+      "id": "thread-1",
+      "subject": "Your Lumen sign-in code is 482913",
+      "from": "no-reply@lumenstream.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-21T19:42:00Z",
+      "snippet": "You asked to sign in to Lumen on a TV. Enter 482913 on the screen. This code expires in 10 minutes.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-1",
+          "from": "no-reply@lumenstream.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-21T19:42:00Z",
+          "snippet": "You asked to sign in to Lumen on a TV. Enter 482913 on the screen. This code expires in 10 minutes.",
+          "body": "Hi,\n\nYou asked to sign in to Lumen on a TV. Enter this code on the screen:\n\n482913\n\nThis code expires in 10 minutes.\n\nThe Lumen team"
+        }
+      ]
+    },
+    "thread-2": {
+      "id": "thread-2",
+      "subject": "Flash sale: 40% off everything, tonight only",
+      "from": "hello@oakandthread.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-18T08:15:00Z",
+      "snippet": "Our {{date:2026-09-18|%B %-d, %Y}} flash sale ends at midnight tonight. Shop knitwear, outerwear and more.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-2",
+          "from": "hello@oakandthread.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-18T08:15:00Z",
+          "snippet": "Our {{date:2026-09-18|%B %-d, %Y}} flash sale ends at midnight tonight. Shop knitwear, outerwear and more.",
+          "body": "Tonight only: 40% off everything at Oak & Thread. The {{date:2026-09-18|%B %-d, %Y}} flash sale ends at midnight. Shop knitwear, outerwear and more."
+        }
+      ]
+    },
+    "thread-3": {
+      "id": "thread-3",
+      "subject": "Jordan Reyes and 4 others liked your photo",
+      "from": "notify@snapgrove.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-25T21:03:00Z",
+      "snippet": "Jordan Reyes, Sam Okafor and 3 others liked your photo \"Morning run\".",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-3",
+          "from": "notify@snapgrove.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-25T21:03:00Z",
+          "snippet": "Jordan Reyes, Sam Okafor and 3 others liked your photo \"Morning run\".",
+          "body": "Jordan Reyes, Sam Okafor and 3 others liked your photo \"Morning run\". See who else is active on Snapgrove."
+        }
+      ]
+    },
+    "thread-4": {
+      "id": "thread-4",
+      "subject": "Your Oak & Thread receipt for order #4471",
+      "from": "hello@oakandthread.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-24T14:20:00Z",
+      "snippet": "Thanks for your order: wool overshirt, $89.00. Returns are accepted until {{date:2026-10-24|%B %-d, %Y}} with this receipt.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-4",
+          "from": "hello@oakandthread.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-24T14:20:00Z",
+          "snippet": "Thanks for your order: wool overshirt, $89.00. Returns are accepted until {{date:2026-10-24|%B %-d, %Y}} with this receipt.",
+          "body": "Thanks for your order!\n\nOrder #4471\nWool overshirt (M, charcoal) -- $89.00\n\nReturns and exchanges are accepted until {{date:2026-10-24|%B %-d, %Y}}. Keep this email as your receipt.\n\nOak & Thread"
+        }
+      ]
+    },
+    "thread-5": {
+      "id": "thread-5",
+      "subject": "New sign-in to your Snapgrove account",
+      "from": "notify@snapgrove.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-07T06:51:00Z",
+      "snippet": "We noticed a new sign-in from Firefox on Windows near Rotterdam. If this wasn't you, change your password now.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-5",
+          "from": "notify@snapgrove.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-07T06:51:00Z",
+          "snippet": "We noticed a new sign-in from Firefox on Windows near Rotterdam. If this wasn't you, change your password now.",
+          "body": "We noticed a new sign-in to your Snapgrove account.\n\nDevice: Firefox on Windows\nLocation: near Rotterdam, Netherlands\nTime: {{date:2026-10-07|%B %-d, %Y}}, 06:49 UTC\n\nIf this was you, you can ignore this email. If this wasn't you, change your password in Settings > Security right away.\n\nSnapgrove"
+        }
+      ]
+    },
+    "thread-6": {
+      "id": "thread-6",
+      "subject": "Photos from the lake weekend",
+      "from": "priya.shah@example.com",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-03T17:30:00Z",
+      "snippet": "Finally sorted through them -- here are my favourites from the cabin. The one of the dock at sunset is for your wall!",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-6",
+          "from": "priya.shah@example.com",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-03T17:30:00Z",
+          "snippet": "Finally sorted through them -- here are my favourites from the cabin. The one of the dock at sunset is for your wall!",
+          "body": "Hi Dan,\n\nFinally sorted through them -- here are my favourites from the cabin weekend. The one of the dock at sunset is for your wall!\n\nPriya"
+        }
+      ]
+    },
+    "thread-7": {
+      "id": "thread-7",
+      "subject": "Appointment confirmed: {{date:2026-10-20|%A, %B %-d, %Y}} at 9:30 AM",
+      "from": "reminders@brightsmile-dental.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-06T10:00:00Z",
+      "snippet": "Your cleaning with Dr. Okafor is booked for {{date:2026-10-20|%A, %B %-d, %Y}} at 9:30 AM. Please arrive 10 minutes early.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-7",
+          "from": "reminders@brightsmile-dental.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-06T10:00:00Z",
+          "snippet": "Your cleaning with Dr. Okafor is booked for {{date:2026-10-20|%A, %B %-d, %Y}} at 9:30 AM. Please arrive 10 minutes early.",
+          "body": "Your cleaning with Dr. Okafor is booked for {{date:2026-10-20|%A, %B %-d, %Y}} at 9:30 AM at Brightsmile Dental, 14 Elm Street. Please arrive 10 minutes early.\n\nBrightsmile Dental"
+        }
+      ]
+    },
+    "thread-8": {
+      "id": "thread-8",
+      "subject": "Your Lumen plan renews on {{date:2026-10-15|%B %-d, %Y}}",
+      "from": "no-reply@lumenstream.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-05T12:00:00Z",
+      "snippet": "Your Lumen Premium plan renews on {{date:2026-10-15|%B %-d, %Y}} for $15.99. To change or cancel, visit your account before then.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-8",
+          "from": "no-reply@lumenstream.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-05T12:00:00Z",
+          "snippet": "Your Lumen Premium plan renews on {{date:2026-10-15|%B %-d, %Y}} for $15.99. To change or cancel, visit your account before then.",
+          "body": "Hi,\n\nYour Lumen Premium plan renews on {{date:2026-10-15|%B %-d, %Y}} and your card ending 2210 will be charged $15.99. To change or cancel your plan, visit Account > Plan before then.\n\nThe Lumen team"
+        }
+      ]
+    }
+  },
+  "labels": {
+    "INBOX": {
+      "id": "INBOX",
+      "name": "INBOX",
+      "type": "system"
+    },
+    "SENT": {
+      "id": "SENT",
+      "name": "SENT",
+      "type": "system"
+    },
+    "TRASH": {
+      "id": "TRASH",
+      "name": "TRASH",
+      "type": "system"
+    },
+    "SPAM": {
+      "id": "SPAM",
+      "name": "SPAM",
+      "type": "system"
+    },
+    "STARRED": {
+      "id": "STARRED",
+      "name": "STARRED",
+      "type": "system"
+    },
+    "IMPORTANT": {
+      "id": "IMPORTANT",
+      "name": "IMPORTANT",
+      "type": "system"
+    },
+    "UNREAD": {
+      "id": "UNREAD",
+      "name": "UNREAD",
+      "type": "system"
+    },
+    "Label_1": {
+      "id": "Label_1",
+      "name": "Action",
+      "type": "user"
+    },
+    "Label_2": {
+      "id": "Label_2",
+      "name": "Waiting For",
+      "type": "user"
+    },
+    "Label_3": {
+      "id": "Label_3",
+      "name": "Read-Review",
+      "type": "user"
+    },
+    "Label_4": {
+      "id": "Label_4",
+      "name": "Receipts",
+      "type": "user"
+    }
+  },
+  "drafts": {}
+}

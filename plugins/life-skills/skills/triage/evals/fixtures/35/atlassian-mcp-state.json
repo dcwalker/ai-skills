@@ -1,0 +1,554 @@
+{
+  "anchor_date": "2026-10-09",
+  "stub_now": "2026-10-09T16:00:00Z",
+  "cloud": {
+    "id": "b7c9e1a2-0000-4000-8000-example00001",
+    "url": "https://home-projects.atlassian.invalid",
+    "name": "danwalker"
+  },
+  "projects": {
+    "HOME": {
+      "key": "HOME",
+      "id": "10001",
+      "name": "Home Projects",
+      "issueTypes": [
+        "Task",
+        "Epic"
+      ]
+    }
+  },
+  "users": [
+    {
+      "accountId": "user-1",
+      "displayName": "Dan Walker",
+      "emailAddress": "eval-user@example.com"
+    }
+  ],
+  "me": {
+    "accountId": "user-1",
+    "displayName": "Dan Walker"
+  },
+  "transitions": [
+    {
+      "id": "11",
+      "name": "To Do",
+      "to": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      }
+    },
+    {
+      "id": "21",
+      "name": "In Progress",
+      "to": {
+        "name": "In Progress",
+        "statusCategory": "In Progress"
+      }
+    },
+    {
+      "id": "31",
+      "name": "Done",
+      "to": {
+        "name": "Done",
+        "statusCategory": "Done"
+      }
+    },
+    {
+      "id": "41",
+      "name": "Duplicate",
+      "to": {
+        "name": "Duplicate",
+        "statusCategory": "Done"
+      }
+    }
+  ],
+  "issues": {
+    "HOME-1": {
+      "key": "HOME-1",
+      "id": "20001",
+      "project": "HOME",
+      "summary": "Replace the smoke detector batteries",
+      "description": "All four smoke detectors chirp occasionally. Swap in fresh 9V batteries (a pack is in the hall cupboard) and test each one.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home",
+        "safety"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-06T09:00:00Z",
+      "updated": "2026-09-06T09:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00010:",
+      "comments": []
+    },
+    "HOME-2": {
+      "key": "HOME-2",
+      "id": "20002",
+      "project": "HOME",
+      "summary": "Renew the home insurance policy",
+      "description": "Policy with Harbor Mutual ends {{date:2026-10-31|%B %-d, %Y}}. Compare the renewal quote with last year's and renew online.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home",
+        "finance"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-07T09:00:00Z",
+      "updated": "2026-09-07T09:00:00Z",
+      "resolution": null,
+      "duedate": "2026-10-31",
+      "rank": "0|i00020:",
+      "comments": []
+    },
+    "HOME-3": {
+      "key": "HOME-3",
+      "id": "20003",
+      "project": "HOME",
+      "summary": "Clean the gutters before {{date:2026-12-21|%Q}}",
+      "description": "Front and back gutters are full of leaves. Clear them before the first frost.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home",
+        "maintenance"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-08T09:00:00Z",
+      "updated": "2026-09-08T09:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00030:",
+      "comments": []
+    },
+    "HOME-4": {
+      "key": "HOME-4",
+      "id": "20004",
+      "project": "HOME",
+      "summary": "fence",
+      "description": "Two panels on the back fence blew loose in the storm. Re-screw them to the posts; one post may need a new bracket.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-09T09:00:00Z",
+      "updated": "2026-09-09T09:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00040:",
+      "comments": []
+    },
+    "HOME-5": {
+      "key": "HOME-5",
+      "id": "20005",
+      "project": "HOME",
+      "summary": "Get quotes for kitchen countertops",
+      "description": "Ask at least three fabricators for quartz countertop quotes for the L-shaped run (about 4.2 m).",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home",
+        "kitchen"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-10T09:00:00Z",
+      "updated": "2026-09-10T09:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00050:",
+      "comments": []
+    },
+    "HOME-6": {
+      "key": "HOME-6",
+      "id": "20006",
+      "project": "HOME",
+      "summary": "Service the boiler before {{date:2026-12-21|%Q}}",
+      "description": "Annual boiler service. Book with the usual engineer before the heating goes on full time.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home",
+        "maintenance"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-11T09:00:00Z",
+      "updated": "2026-09-11T09:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00060:",
+      "comments": []
+    },
+    "HOME-7": {
+      "key": "HOME-7",
+      "id": "20007",
+      "project": "HOME",
+      "summary": "Pick a paint colour for the kitchen cabinets",
+      "description": "Narrow it down to two sample pots and try them on the cabinet doors under morning and evening light.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home",
+        "kitchen"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-12T09:00:00Z",
+      "updated": "2026-09-12T09:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00070:",
+      "comments": []
+    },
+    "HOME-8": {
+      "key": "HOME-8",
+      "id": "20008",
+      "project": "HOME",
+      "summary": "Fix the squeaky bedroom door hinge",
+      "description": "Main bedroom door squeaks at the top hinge. Oil it or swap the pin.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-13T09:00:00Z",
+      "updated": "2026-09-13T09:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00080:",
+      "comments": []
+    },
+    "HOME-9": {
+      "key": "HOME-9",
+      "id": "20009",
+      "project": "HOME",
+      "summary": "gutters",
+      "description": "Gutters are full of leaves again -- need doing before the first frost. Ladder is in the garage.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-14T09:00:00Z",
+      "updated": "2026-09-14T09:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00090:",
+      "comments": []
+    },
+    "HOME-10": {
+      "key": "HOME-10",
+      "id": "20010",
+      "project": "HOME",
+      "summary": "Order the kitchen backsplash tiles",
+      "description": "White zellige tiles, about 3 square metres plus 10% spare. Order once the countertop is chosen so the colours match.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home",
+        "kitchen"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-15T09:00:00Z",
+      "updated": "2026-09-15T09:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00100:",
+      "comments": []
+    },
+    "HOME-11": {
+      "key": "HOME-11",
+      "id": "20011",
+      "project": "HOME",
+      "summary": "Repaint the front door",
+      "description": "Paint is peeling at the bottom edge. Sand, prime and repaint in the same green.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-16T09:00:00Z",
+      "updated": "2026-09-16T09:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00110:",
+      "comments": []
+    },
+    "HOME-12": {
+      "key": "HOME-12",
+      "id": "20012",
+      "project": "HOME",
+      "summary": "Book an electrician for the kitchen under-cabinet lights",
+      "description": "Need a qualified electrician to wire LED strips under the wall cabinets, switched by the door.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home",
+        "kitchen"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-17T09:00:00Z",
+      "updated": "2026-09-17T09:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00120:",
+      "comments": []
+    },
+    "HOME-13": {
+      "key": "HOME-13",
+      "id": "20013",
+      "project": "HOME",
+      "summary": "Reseal the bathtub caulk",
+      "description": "Caulk along the tub is black at the corners. Cut it out and reseal with mould-resistant silicone.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-18T09:00:00Z",
+      "updated": "2026-09-18T09:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00130:",
+      "comments": []
+    },
+    "HOME-14": {
+      "key": "HOME-14",
+      "id": "20014",
+      "project": "HOME",
+      "summary": "Clear out the gutters",
+      "description": "Downspout by the back door is blocked too, water pours over the edge when it rains.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-19T09:00:00Z",
+      "updated": "2026-09-19T09:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00140:",
+      "comments": []
+    },
+    "HOME-15": {
+      "key": "HOME-15",
+      "id": "20015",
+      "project": "HOME",
+      "summary": "Donate the old bike",
+      "description": "The blue hybrid in the garage. The community bike workshop takes donations on Saturdays.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-20T09:00:00Z",
+      "updated": "2026-09-20T09:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00150:",
+      "comments": []
+    },
+    "HOME-16": {
+      "key": "HOME-16",
+      "id": "20016",
+      "project": "HOME",
+      "summary": "Set the kitchen remodel budget",
+      "description": "Add up the countertop, paint, tile and electrician costs once quotes are in and set a ceiling for the remodel. Ideally the kitchen tasks would all hang off one epic so I can see the whole remodel in one place.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home",
+        "kitchen"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-21T09:00:00Z",
+      "updated": "2026-09-21T09:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00160:",
+      "comments": []
+    }
+  }
+}

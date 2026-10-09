@@ -1,0 +1,39 @@
+{
+  "anchor_date": "2026-10-09",
+  "boards": {
+    "board-1": {"id": "board-1", "name": "Personal Tasks"}
+  },
+  "lists": {
+    "list-1": {"id": "list-1", "name": "Inbox", "board_id": "board-1"}
+  },
+  "cards": {
+    "card-1": {
+      "id": "card-1",
+      "name": "parking permit",
+      "desc": "The residents' parking permit for the car runs out on {{date:2026-10-05|%A, %B %-d, %Y}}. Renew it on the city portal before then -- need the car registration and a recent utility bill as proof of address.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [],
+      "due": null,
+      "due_complete": false,
+      "pos": 1024,
+      "url": "https://trello.com/c/card-1/parking-permit"
+    },
+    "card-2": {
+      "id": "card-2",
+      "name": "Drop off the donation bags at the Eastside thrift store",
+      "desc": "Three bags of kids' clothes in the hall closet. The store's {{date:2026-10-03|%Q}} clothing drive closes on the due date.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": ["label-1"],
+      "due": "2026-10-03T17:00:00.000Z",
+      "due_complete": false,
+      "pos": 2048,
+      "url": "https://trello.com/c/card-2/drop-off-the-donation-bags"
+    }
+  },
+  "labels": {
+    "label-1": {"id": "label-1", "name": "errands", "color": "yellow", "board_id": "board-1"},
+    "label-2": {"id": "label-2", "name": "car", "color": "blue", "board_id": "board-1"}
+  }
+}

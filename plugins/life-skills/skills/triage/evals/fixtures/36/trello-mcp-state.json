@@ -1,0 +1,63 @@
+{
+  "anchor_date": "2026-10-09",
+  "boards": {
+    "board-1": {"id": "board-1", "name": "Personal Tasks"}
+  },
+  "lists": {
+    "list-1": {"id": "list-1", "name": "Inbox", "board_id": "board-1"},
+    "list-2": {"id": "list-2", "name": "Doing", "board_id": "board-1"},
+    "list-3": {"id": "list-3", "name": "Done", "board_id": "board-1"}
+  },
+  "labels": {
+    "label-1": {"id": "label-1", "name": "home", "color": "green", "board_id": "board-1"},
+    "label-2": {"id": "label-2", "name": "errands", "color": "yellow", "board_id": "board-1"}
+  },
+  "cards": {
+    "card-1": {
+      "id": "card-1",
+      "name": "smoke detector",
+      "desc": "The hallway smoke detector chirps every few minutes. It needs a new 9V battery; spares are in the kitchen drawer.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [],
+      "due": null,
+      "due_complete": false,
+      "pos": 1024,
+      "url": "https://trello.com/c/card-1/smoke-detector"
+    },
+    "card-2": {
+      "id": "card-2",
+      "name": "dry cleaning",
+      "desc": "Pick up the two suits from Prospect Cleaners before Jamie's wedding on {{date:2026-10-17|%A, %B %-d}}. The ticket is on the fridge. Sam said he might grab them if he's passing.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [],
+      "due": "2026-10-16",
+      "due_complete": false,
+      "pos": 2048,
+      "url": "https://trello.com/c/card-2/dry-cleaning"
+    },
+    "card-3": {
+      "id": "card-3",
+      "name": "Renew library card at the Elm Street branch",
+      "desc": "The card expires on {{date:2026-10-31|%B %-d, %Y}}. Bring proof of address.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": ["label-2"],
+      "due": "2026-10-30",
+      "due_complete": false,
+      "pos": 3072,
+      "url": "https://trello.com/c/card-3/renew-library-card"
+    }
+  },
+  "scheduled_changes": [
+    {
+      "id": "card-2-done-by-sam",
+      "after_call": {"tool": "view_list", "count": 1},
+      "changes": [
+        {"op": "merge", "path": ["cards", "card-2"],
+         "value": {"list_id": "list-3", "due_complete": true, "pos": 1024}}
+      ]
+    }
+  ]
+}

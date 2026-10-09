@@ -1,0 +1,129 @@
+{
+  "anchor_date": "2026-10-09",
+  "stub_now": "2026-10-09T16:00:00Z",
+  "cloud": {
+    "id": "b7c9e1a2-0000-4000-8000-example00001",
+    "url": "https://danwalker.atlassian.invalid",
+    "name": "danwalker"
+  },
+  "projects": {
+    "OPS": {
+      "key": "OPS",
+      "id": "10003",
+      "name": "Platform Ops",
+      "issueTypes": [
+        "Epic",
+        "Story",
+        "Task",
+        "Bug"
+      ]
+    }
+  },
+  "users": [
+    {
+      "accountId": "user-1",
+      "displayName": "Dan Walker",
+      "emailAddress": "eval-user@example.com"
+    },
+    {
+      "accountId": "user-2",
+      "displayName": "Priya Shah",
+      "emailAddress": "priya.shah@example.com"
+    },
+    {
+      "accountId": "user-3",
+      "displayName": "Marcus Lee",
+      "emailAddress": "marcus.lee@example.com"
+    },
+    {
+      "accountId": "user-4",
+      "displayName": "Elena Ruiz",
+      "emailAddress": "elena.ruiz@example.com"
+    }
+  ],
+  "me": {
+    "accountId": "user-1",
+    "displayName": "Dan Walker"
+  },
+  "transitions": [
+    {
+      "id": "11",
+      "name": "To Do",
+      "to": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      }
+    },
+    {
+      "id": "21",
+      "name": "In Progress",
+      "to": {
+        "name": "In Progress",
+        "statusCategory": "In Progress"
+      }
+    },
+    {
+      "id": "31",
+      "name": "Done",
+      "to": {
+        "name": "Done",
+        "statusCategory": "Done"
+      }
+    }
+  ],
+  "issues": {
+    "OPS-1": {
+      "key": "OPS-1",
+      "id": "20001",
+      "project": "OPS",
+      "summary": "Migrate the billing service database to the new Postgres cluster",
+      "description": "The billing service still runs on the old Postgres 11 cluster, which goes out of vendor support on {{date:2027-03-31|%B %-d, %Y}}. Moving it needs the billing team, the DBA group, and the SRE on-call rotation. The work covers schema compatibility checks, setting up replication to the new cluster, a dual-write period, a cutover in a maintenance window, and decommissioning the old cluster afterwards. The design notes are on the \"Billing DB migration\" page in Confluence. This will run over several sprints.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Epic",
+      "priority": null,
+      "labels": [
+        "billing",
+        "database"
+      ],
+      "assignee": null,
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-10-01T10:00:00Z",
+      "updated": "2026-10-01T10:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00010:",
+      "comments": []
+    },
+    "OPS-2": {
+      "key": "OPS-2",
+      "id": "20002",
+      "project": "OPS",
+      "summary": "Rotate the TLS certificate on the staging load balancer",
+      "description": "The staging load balancer's TLS certificate expires on {{date:2026-10-23|%B %-d, %Y}}. Request a new one from the internal CA and install it on the load balancer. About an hour's work.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [],
+      "assignee": null,
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-10-05T09:15:00Z",
+      "updated": "2026-10-05T09:15:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00020:",
+      "comments": []
+    }
+  }
+}
