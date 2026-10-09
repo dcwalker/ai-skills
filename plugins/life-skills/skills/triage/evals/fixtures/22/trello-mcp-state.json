@@ -1,0 +1,36 @@
+{
+  "anchor_date": "2026-10-09",
+  "boards": {
+    "board-1": {"id": "board-1", "name": "Personal Tasks"}
+  },
+  "lists": {
+    "list-1": {"id": "list-1", "name": "Inbox", "board_id": "board-1"}
+  },
+  "cards": {
+    "card-1": {
+      "id": "card-1",
+      "name": "oil change",
+      "desc": "Car is due for its 10,000-mile service. Jiffy on Main does walk-ins on Saturday mornings. Needs doing before the road trip on {{date:2026-11-14|%B %-d, %Y}}.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [],
+      "due": null,
+      "due_complete": false,
+      "url": "https://trello.com/c/card-1/oil-change"
+    },
+    "card-2": {
+      "id": "card-2",
+      "name": "Return library books to the Elm Street branch",
+      "desc": "Three books checked out; the late fee starts the day after they're due.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": ["label-1"],
+      "due": "2026-10-20T17:00:00.000Z",
+      "due_complete": false,
+      "url": "https://trello.com/c/card-2/return-library-books"
+    }
+  },
+  "labels": {
+    "label-1": {"id": "label-1", "name": "errands", "color": "green", "board_id": "board-1"}
+  }
+}

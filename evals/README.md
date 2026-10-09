@@ -529,9 +529,11 @@ network as before. It has no multi-turn `follow_ups` support, no per-trial
 also cannot strip the developer's settings, so an `Edit` or `Write` allow
 rule, an extra directory, or a `sandbox.excludedCommands` or
 `sandbox.filesystem.allowWrite` entry in `~/.claude/settings.json` widens a
-triage trial's boundary, and so does any hook the developer has configured. None of these gaps fails a trial today: triage's
-`evals.json` declares no `follow_ups`, none of its fixtures carry a `home/`,
-and the skill writes nothing under `$HOME`. The settings gap is about the
+triage trial's boundary, and so does any hook the developer has configured. Of
+these gaps, only the first fails a trial today: triage's eval 23 scripts a
+`follow_ups` turn, which this driver never sends, so it ends after the scope
+question and measures nothing. The rest do not: none of triage's fixtures
+carry a `home/`, and the skill writes nothing under `$HOME`. The settings gap is about the
 developer's own files rather than the measurement, and the `HOME` gap is not
 purely theoretical either: Step 5a reads `~/references/`, so a triage trial
 run through its own driver reads whatever that directory holds
