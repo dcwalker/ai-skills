@@ -52,3 +52,16 @@ The failures fall into four patterns:
 - Moving on from something just volunteered without following it up: a blocker raised in passing, an unreachable colleague (twice).
 
 The transcript-level checks held in every run: the corrected "promotion" frame never came back in eval 10, and no eval 11 turn listed several report sections at once. The model grader varies by about one borderline turn per trial between gradings of the same transcript, so treat a difference of a turn or two as noise. Eval 10's first three runs are not counted: without "ask me questions first" in the prompt the skill never triggered.
+
+## After tightening the one-question rule and follow-ups (2026-10-09)
+
+Same three evals, three runs each, same grader, against the SKILL.md that splits Step 1's length and format, makes housekeeping and wrap-up asks their own inquiry, keeps the Step 3 question alone, and rereads each answer for anything new before changing the subject.
+
+| Eval | One line of inquiry (before → after) | Builds on answers (before → after) |
+|------|--------------------------------------|------------------------------------|
+| 9 | 10/11 → 17/17 | 6/7 → 8/9 |
+| 10 | 10/12 → 15/15 | 5/6 → 5/9 |
+| 11 | 27/29 → 32/32 | 14/15 → 13/13 |
+| **All** | **47/52 (90%) → 64/64 (100%)** | **25/28 (89%) → 26/31 (84%)** |
+
+The one-question rule held in every turn of every run, against five bundled turns before. Builds-on-answers did not move beyond noise. Of the five turns marked down after the change, a reread finds one clear miss (eval 9: the user asked to discuss the secondary's coverage and the next question went to the disk alerts) and one arguable one; the other three follow from the answer or move on after a complete one, and the grader's own reason on one of them says nothing was left to explore. Conversations got longer, since asks that used to share a turn now take their own: trials cost $17.27 in all, against $12.45 before.
