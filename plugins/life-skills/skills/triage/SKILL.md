@@ -470,10 +470,20 @@ group sorted by the Step 1b position numbers, never by urgency, due date, or
 the order changes were applied. Every item's entry starts with its number; a
 batch entry sits in its group at its lowest number. A number never stands in
 for an item: every line that names one gives its number and its title or link,
-batch lines included. When something is time-sensitive (a deadline passed or
-due within a week, a possible fraud or security issue), say so on one `Time-sensitive:`
-line right after the `Order:` line, naming the item's number and title, and
-leave the item where its number puts it. Before sending, read each group's
+batch lines included. This includes closing questions and summaries: refer back
+to an item by its number and title, hyperlinked to the item whenever the
+platform returned its URL, never by its number alone. When something is
+time-sensitive (a deadline passed or due within a week, a possible fraud or
+security issue), list it under `⚠️ Time-sensitive` right after the `Order:`
+line, one item per line in entry form (number, title linked or quoted, then
+why it is urgent), mark that item's own entry with ⚠️ after its number, and
+leave the item where its number puts it. Only items on that list get ⚠️.
+Summary and count lines follow the same form, one item per line, or give
+counts alone; never a list or range of numbers ("items 1, 3, 6", "#1–6"). The
+flag adds to the item's entry and never replaces its details (dates, times,
+amounts stay in the entry), and it never holds back a change the user already
+authorized. An item with no date, and no fraud or security issue, is not
+time-sensitive. Before sending, read each group's
 numbers top to bottom: they only ever go up, and a group where one goes down
 is reordered before the summary is sent. Present it once for the whole run. Do
 not
@@ -529,6 +539,21 @@ Todos:        capture to Trello board "[board]" → list "[list]"
               - [title 2]
 Email:        archive after labeling / save draft reply (preview) / delete
 ```
+
+End the summary with every question in one `Open questions` list, one item
+per line, each line written like an entry: number, then the title as a link
+(or quoted when the platform returned no URL), then the question. Items to
+mark reviewed get a line each too.
+
+```
+Open questions
+  2. [Renew car registration](https://trello.com/c/abc123): mark reviewed?
+  3. [Order printer ink](https://trello.com/c/def456): mark reviewed?
+  9. "Roof inspection estimate": when should I remind you to check in?
+```
+
+Never: "Mark 2 and 3 reviewed?", "the roofer follow-up (item 9)", or
+"Thread 3". Every one of those names an item without its number and title.
 
 Ask: "Shall I apply these?" Wait for an affirmative before writing anything.
 
@@ -589,9 +614,10 @@ never impose more structure than the work justifies.
   batch moves it out of scope.
 - Open every report on the items with the `Order:` line, and group the
   items by outcome, each group sorted by position number, with every entry
-  starting with its number and its title. Urgency goes on the
-  `Time-sensitive:` line, never into the order; check that each group's
-  numbers only go up before sending. A scope spanning two sources with their own orders gets the
+  starting with its number and its title, and every later mention of an item
+  giving both too. Urgency goes on the `⚠️ Time-sensitive` list, never into
+  the order, and never in place of the item's details or an authorized
+  change; check that each group's numbers only go up before sending. A scope spanning two sources with their own orders gets the
   order question first, and nothing is written until it is answered.
 - Name each action from its links too, as something the user does; a
   `Waiting For` item's action is the user's check-in. Never open a link that

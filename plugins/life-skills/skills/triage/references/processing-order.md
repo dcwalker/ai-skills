@@ -92,7 +92,8 @@ entry in every report, batch lines included, always followed by the item's
 title or link: "2, 4, 5" on its own names nothing. Sorting each outcome group
 by number is what keeps the order: urgency, due date, and the order changes
 were applied never re-sort a group. An urgent item is flagged on the
-`Time-sensitive:` line instead, and stays where its number puts it. Before
+`⚠️ Time-sensitive` list instead, and stays where its number puts it, with
+its entry keeping every detail. Before
 sending, check that each group's numbers only go up.
 
 ## Recording it
@@ -116,13 +117,18 @@ batch:
 
 ```
 Order: Starred or Important first, then oldest first (inbox default)
-Time-sensitive: 4. "Your lease renewal is attached" (reply due tomorrow)
+⚠️ Time-sensitive
+  4. "Your lease renewal is attached": reply due tomorrow
 
 Needs your attention
   1. "Parent-teacher conferences rescheduled": pick a new slot by Friday
-  4. "Your lease renewal is attached": decide whether to renew
+  4. ⚠️ "Your lease renewal is attached": decide whether to renew; reply due
+     tomorrow, Oct 9, by 5pm
 
 Changed
   2. "Notes from Tuesday's planning call": labeled Reference, archived
   3. "Can you review the grant draft?": draft reply saved
+
+Open questions
+  1. "Parent-teacher conferences rescheduled": which slot works for you?
 ```
