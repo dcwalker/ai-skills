@@ -26,6 +26,7 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 
 GRADER_SYSTEM = """You grade an AI interviewer's turns in a conversation transcript. The interviewer follows a skill that establishes a deliverable (setup), interviews the user one line of inquiry at a time (interview), confirms completeness (confirm), then drafts and revises (draft).
 
@@ -37,6 +38,30 @@ For every ASSISTANT turn, in order, judge:
 - reason: one short sentence.
 
 Reply with only a JSON array, one object per ASSISTANT turn in order: {"turn": <1-based assistant turn number>, "phase": ..., "one_inquiry": ..., "builds_on_previous": ..., "reason": ...}"""
+
+
+# The repository holding this script: plugins/<plugin>/skills/<skill>/evals/, five levels up.
+REPO_ROOT = os.path.realpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), *[os.pardir] * 5))
+
+
+def allowed_roots():
+    """Where this script may read or write: the user's home, $TMPDIR, and this repo.
+
+    Trials land under TRIALS_DIR, which defaults to a directory in the repo
+    and is usually pointed at the temp directory instead.
+    """
+    roots = {os.path.expanduser("~"), tempfile.gettempdir(), REPO_ROOT}
+    return sorted({os.path.realpath(root) for root in roots if os.path.isdir(root)})
+
+
+def contained_path(path):
+    """The resolved path, refused unless it lies under the home, temp, or repo directory."""
+    resolved = os.path.realpath(os.path.expanduser(path))
+    for root in allowed_roots():
+        if resolved == root or resolved.startswith(root + os.sep):
+            return resolved
+    raise SystemExit(f"run dir must be inside your home directory, {tempfile.gettempdir()}, "
+                     f"or {REPO_ROOT}; got {path!r}")
 
 
 def parse_conversation(path):
@@ -93,7 +118,7 @@ def main(run_dirs):
     if not run_dirs:
         raise SystemExit(__doc__)
     all_grades = []
-    for run_dir in run_dirs:
+    for run_dir in map(contained_path, run_dirs):
         conversation = os.path.join(run_dir, "conversation.txt")
         if not os.path.isfile(conversation):
             raise SystemExit(f"no conversation.txt in {run_dir}; run with SIMULATED_USER=1")
