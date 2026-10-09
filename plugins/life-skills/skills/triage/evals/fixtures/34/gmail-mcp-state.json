@@ -1,0 +1,30 @@
+{
+  "anchor_date": "2026-10-09",
+  "me": "eval-user@example.com",
+  "threads": {
+    "thread-1": {
+      "id": "thread-1",
+      "subject": "Maya's passport expires soon",
+      "from": "reminders@passports.example",
+      "to": ["eval-user@example.com"],
+      "date": "2026-10-06T14:10:00Z",
+      "snippet": "Maya's passport expires on {{date:2027-01-12|%B %-d, %Y}}. A child renewal needs new photos, a signed form, and an in-person appointment.",
+      "labelIds": ["INBOX", "UNREAD"],
+      "messages": [
+        {
+          "id": "msg-1",
+          "from": "reminders@passports.example",
+          "to": ["eval-user@example.com"],
+          "date": "2026-10-06T14:10:00Z",
+          "snippet": "Maya's passport expires on {{date:2027-01-12|%B %-d, %Y}}. A child renewal needs new photos, a signed form, and an in-person appointment.",
+          "body": "Dear Dan Walker,\n\nThe passport for Maya Walker expires on {{date:2027-01-12|%B %-d, %Y}}. Children's passports cannot be renewed by mail. To renew, you will need to:\n\n1. Get two new passport photos taken.\n2. Complete and sign the child application form, with both parents' signatures.\n3. Book an in-person appointment at your local passport office and bring Maya, the old passport, and her birth certificate.\n\nAllow up to eight weeks for processing after your appointment.\n\nPassport Services"
+        }
+      ]
+    }
+  },
+  "labels": {
+    "Label_1": {"id": "Label_1", "name": "Action", "type": "user"},
+    "Label_2": {"id": "Label_2", "name": "Waiting For", "type": "user"}
+  },
+  "drafts": {}
+}

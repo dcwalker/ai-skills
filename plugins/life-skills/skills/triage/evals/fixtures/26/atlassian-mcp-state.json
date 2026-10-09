@@ -1,0 +1,263 @@
+{
+  "anchor_date": "2026-10-09",
+  "stub_now": "2026-10-09T16:00:00Z",
+  "cloud": {
+    "id": "b7c9e1a2-0000-4000-8000-example00001",
+    "url": "https://danwalker.atlassian.invalid",
+    "name": "danwalker"
+  },
+  "projects": {
+    "HOME": {
+      "key": "HOME",
+      "id": "10001",
+      "name": "Home Projects",
+      "issueTypes": [
+        "Task"
+      ]
+    }
+  },
+  "users": [
+    {
+      "accountId": "user-1",
+      "displayName": "Dan Walker",
+      "emailAddress": "eval-user@example.com"
+    }
+  ],
+  "me": {
+    "accountId": "user-1",
+    "displayName": "Dan Walker"
+  },
+  "transitions": [
+    {
+      "id": "11",
+      "name": "To Do",
+      "to": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      }
+    },
+    {
+      "id": "21",
+      "name": "In Progress",
+      "to": {
+        "name": "In Progress",
+        "statusCategory": "In Progress"
+      }
+    },
+    {
+      "id": "31",
+      "name": "Done",
+      "to": {
+        "name": "Done",
+        "statusCategory": "Done"
+      }
+    }
+  ],
+  "issues": {
+    "HOME-1": {
+      "key": "HOME-1",
+      "id": "20001",
+      "project": "HOME",
+      "summary": "Book the chimney sweep for the living-room fireplace",
+      "description": "Get the chimney swept before we light the first fire of the season. Same company as last year (Ashworth Sweeps).",
+      "status": {
+        "name": "In Progress",
+        "statusCategory": "In Progress"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home",
+        "maintenance"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-24T09:00:00Z",
+      "updated": "2026-10-08T18:20:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00010:",
+      "comments": [
+        {
+          "id": "c-101",
+          "body": "Left a voicemail with Ashworth Sweeps; they said they'd call back with a slot.",
+          "created": "2026-10-08T18:20:00Z",
+          "author": {
+            "accountId": "user-1",
+            "displayName": "Dan Walker"
+          }
+        }
+      ]
+    },
+    "HOME-2": {
+      "key": "HOME-2",
+      "id": "20002",
+      "project": "HOME",
+      "summary": "Replace the cracked pane in the garage window",
+      "description": "The lower-left pane in the garage window is cracked across the corner. Order a replacement pane and fit it.",
+      "status": {
+        "name": "In Progress",
+        "statusCategory": "In Progress"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home",
+        "repairs"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-18T10:00:00Z",
+      "updated": "2026-09-30T17:45:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00020:",
+      "comments": [
+        {
+          "id": "c-201",
+          "body": "Measured the pane: 600 x 450 mm, 4 mm glass. Need to find a glazier.",
+          "created": "2026-09-30T17:45:00Z",
+          "author": {
+            "accountId": "user-1",
+            "displayName": "Dan Walker"
+          }
+        }
+      ]
+    },
+    "HOME-3": {
+      "key": "HOME-3",
+      "id": "20003",
+      "project": "HOME",
+      "summary": "Get three quotes for repainting the fence",
+      "description": "The back fence needs repainting before winter. Get three quotes from local painters and pick one.",
+      "status": {
+        "name": "In Progress",
+        "statusCategory": "In Progress"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home",
+        "garden"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-08-24T09:30:00Z",
+      "updated": "2026-09-16T12:10:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00030:",
+      "comments": [
+        {
+          "id": "c-301",
+          "body": "Emailed two painters asking for quotes. No replies yet.",
+          "created": "2026-09-16T12:10:00Z",
+          "author": {
+            "accountId": "user-1",
+            "displayName": "Dan Walker"
+          }
+        }
+      ]
+    },
+    "HOME-4": {
+      "key": "HOME-4",
+      "id": "20004",
+      "project": "HOME",
+      "summary": "Clear out the loft and donate the old furniture",
+      "description": "Empty the loft, set aside anything worth keeping, and book a charity collection for the old chairs and the bookcase.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home",
+        "declutter"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-08-10T08:00:00Z",
+      "updated": "2026-08-30T19:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00040:",
+      "comments": [
+        {
+          "id": "c-401",
+          "body": "Still need to go up there and see what's actually in it.",
+          "created": "2026-08-30T19:00:00Z",
+          "author": {
+            "accountId": "user-1",
+            "displayName": "Dan Walker"
+          }
+        }
+      ]
+    },
+    "HOME-5": {
+      "key": "HOME-5",
+      "id": "20005",
+      "project": "HOME",
+      "summary": "Renew the home insurance policy",
+      "description": "Renewed with the same insurer at the quoted price.",
+      "status": {
+        "name": "Done",
+        "statusCategory": "Done"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home",
+        "finance"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-07-20T09:00:00Z",
+      "updated": "2026-08-05T11:00:00Z",
+      "resolution": "Done",
+      "duedate": null,
+      "rank": "0|i00050:",
+      "comments": [
+        {
+          "id": "c-501",
+          "body": "Paid and the new certificate is filed.",
+          "created": "2026-08-05T11:00:00Z",
+          "author": {
+            "accountId": "user-1",
+            "displayName": "Dan Walker"
+          }
+        }
+      ]
+    }
+  }
+}

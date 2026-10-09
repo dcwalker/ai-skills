@@ -1,0 +1,40 @@
+{
+  "anchor_date": "2026-10-09",
+  "boards": {
+    "board-1": {"id": "board-1", "name": "Support Ops"}
+  },
+  "lists": {
+    "list-1": {"id": "list-1", "name": "Inbox", "board_id": "board-1"},
+    "list-2": {"id": "list-2", "name": "In Progress", "board_id": "board-1"}
+  },
+  "cards": {
+    "card-1": {
+      "id": "card-1",
+      "name": "could you send the updated on-call rota to the support",
+      "desc": "<@U07KQ3M9TF> asked: could you send the updated on-call rota to the support team before the planning meeting on {{date:2026-10-15|%A, %B %-d}}? It needs the new weekend slots.\n\nCaptured from #support-ops by Slack to Trello\n\n---\nOriginal message:\n> <@U07KQ3M9TF>: could you send the updated on-call rota to the support team before the planning meeting on {{date:2026-10-15|%A, %B %-d}}? It needs the new weekend slots.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [],
+      "due": null,
+      "due_complete": false,
+      "pos": 1024,
+      "url": "https://trello.com/c/card-1/could-you-send-the-updated-on-call-rota"
+    },
+    "card-2": {
+      "id": "card-2",
+      "name": "Update the refund macro to mention the new 30-day window",
+      "desc": "The refund policy changed to a 30-day window. The 'Refund request' macro still says 14 days; edit its text so agents stop quoting the old window. Done when the macro reads 30 days.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": ["label-1"],
+      "due": null,
+      "due_complete": false,
+      "pos": 2048,
+      "url": "https://trello.com/c/card-2/update-the-refund-macro"
+    }
+  },
+  "labels": {
+    "label-1": {"id": "label-1", "name": "macros", "color": "blue", "board_id": "board-1"},
+    "label-2": {"id": "label-2", "name": "scheduling", "color": "purple", "board_id": "board-1"}
+  }
+}

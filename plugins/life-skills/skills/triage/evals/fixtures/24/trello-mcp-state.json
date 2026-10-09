@@ -1,0 +1,40 @@
+{
+  "anchor_date": "2026-10-09",
+  "boards": {
+    "board-1": {"id": "board-1", "name": "Personal Tasks"}
+  },
+  "lists": {
+    "list-1": {"id": "list-1", "name": "Inbox", "board_id": "board-1"},
+    "list-2": {"id": "list-2", "name": "Doing", "board_id": "board-1"}
+  },
+  "cards": {
+    "card-1": {
+      "id": "card-1",
+      "name": "Clean the gutters",
+      "desc": "Before the leaves finish dropping this {{date:2026-10-09|%Q}}.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": ["label-1"],
+      "due": null,
+      "due_complete": false,
+      "pos": 1024,
+      "url": "https://trello.com/c/card-1/clean-the-gutters"
+    },
+    "card-2": {
+      "id": "card-2",
+      "name": "Biscuit vet stuff",
+      "desc": "His yearly checkup at Maplewood Vet is coming up sometime this {{date:2026-10-09|%Q}}.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [],
+      "due": null,
+      "due_complete": false,
+      "pos": 2048,
+      "url": "https://trello.com/c/card-2/biscuit-vet-stuff"
+    }
+  },
+  "labels": {
+    "label-1": {"id": "label-1", "name": "home", "color": "green", "board_id": "board-1"},
+    "label-2": {"id": "label-2", "name": "pets", "color": "orange", "board_id": "board-1"}
+  }
+}

@@ -1,0 +1,342 @@
+{
+  "anchor_date": "2026-10-09",
+  "stub_now": "2026-10-09T16:00:00Z",
+  "cloud": {
+    "id": "b7c9e1a2-0000-4000-8000-example00001",
+    "url": "https://danwalker.atlassian.invalid",
+    "name": "danwalker"
+  },
+  "projects": {
+    "HOME": {
+      "key": "HOME",
+      "id": "10001",
+      "name": "Home Projects",
+      "issueTypes": [
+        "Task"
+      ]
+    }
+  },
+  "users": [
+    {
+      "accountId": "user-1",
+      "displayName": "Dan Walker",
+      "emailAddress": "eval-user@example.com"
+    }
+  ],
+  "me": {
+    "accountId": "user-1",
+    "displayName": "Dan Walker"
+  },
+  "transitions": [
+    {
+      "id": "11",
+      "name": "To Do",
+      "to": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      }
+    },
+    {
+      "id": "21",
+      "name": "In Progress",
+      "to": {
+        "name": "In Progress",
+        "statusCategory": "In Progress"
+      }
+    },
+    {
+      "id": "31",
+      "name": "Done",
+      "to": {
+        "name": "Done",
+        "statusCategory": "Done"
+      }
+    }
+  ],
+  "issues": {
+    "HOME-1": {
+      "key": "HOME-1",
+      "id": "20001",
+      "project": "HOME",
+      "summary": "Renew my passport",
+      "description": "Passport expires next spring. Notes: photos taken at the pharmacy booth on {{date:2026-10-05|%B %-d, %Y}}; the online form is half filled in and saved as a draft.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "admin"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-08-28T02:14:07.000Z",
+      "updated": "2026-08-28T02:14:07.000Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00010:",
+      "comments": []
+    },
+    "HOME-2": {
+      "key": "HOME-2",
+      "id": "20002",
+      "project": "HOME",
+      "summary": "Fix the squeaky back gate hinge",
+      "description": "Bought a can of lubricant for it on {{date:2026-07-02|%B %-d, %Y}}. Hasn't been touched since.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home",
+        "repairs"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-08-28T02:14:07.000Z",
+      "updated": "2026-08-28T02:14:07.000Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00020:",
+      "comments": []
+    },
+    "HOME-3": {
+      "key": "HOME-3",
+      "id": "20003",
+      "project": "HOME",
+      "summary": "Chase the insurance claim for the burst pipe",
+      "description": "Claim reference HX-4471. The loss adjuster visited on {{date:2026-09-25|%B %-d, %Y}} and said the report would follow.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home",
+        "finance"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-08-28T02:14:07.000Z",
+      "updated": "2026-08-28T02:14:07.000Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00030:",
+      "comments": []
+    },
+    "HOME-4": {
+      "key": "HOME-4",
+      "id": "20004",
+      "project": "HOME",
+      "summary": "Plant the tulip bulbs in the front bed",
+      "description": "Two bags of bulbs are in the shed. Plant them in the front bed.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "garden"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-08-28T02:14:07.000Z",
+      "updated": "2026-08-28T02:14:07.000Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00040:",
+      "comments": []
+    },
+    "HOME-5": {
+      "key": "HOME-5",
+      "id": "20005",
+      "project": "HOME",
+      "summary": "Sell the old bike online",
+      "description": "The blue road bike in the garage. Take photos and list it.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "declutter"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-08-28T02:14:07.000Z",
+      "updated": "2026-08-28T02:14:07.000Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00050:",
+      "comments": []
+    },
+    "HOME-6": {
+      "key": "HOME-6",
+      "id": "20006",
+      "project": "HOME",
+      "summary": "Book a boiler service",
+      "description": "Annual service, same engineer as last year.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home",
+        "maintenance"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-08-28T02:14:07.000Z",
+      "updated": "2026-10-07T17:30:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00060:",
+      "comments": [
+        {
+          "id": "c-601",
+          "body": "Engineer offered two slots next week; need to pick one.",
+          "created": "2026-10-07T17:30:00Z",
+          "author": {
+            "accountId": "user-1",
+            "displayName": "Dan Walker"
+          }
+        }
+      ]
+    },
+    "HOME-7": {
+      "key": "HOME-7",
+      "id": "20007",
+      "project": "HOME",
+      "summary": "Replace the hallway light switch",
+      "description": "The switch plate is cracked. Buy a matching plate and swap it.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "home",
+        "repairs"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-08-28T02:14:07.000Z",
+      "updated": "2026-08-28T02:14:07.000Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00070:",
+      "comments": []
+    },
+    "HOME-8": {
+      "key": "HOME-8",
+      "id": "20008",
+      "project": "HOME",
+      "summary": "Sort the photo boxes in the loft",
+      "description": "Go through the three photo boxes and scan the ones worth keeping.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "declutter"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-08-28T02:14:07.000Z",
+      "updated": "2026-08-28T02:14:07.000Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00080:",
+      "comments": []
+    },
+    "HOME-9": {
+      "key": "HOME-9",
+      "id": "20009",
+      "project": "HOME",
+      "summary": "Return the borrowed ladder to Sam",
+      "description": "Sam lent us the extension ladder for the gutters. Drop it back at his place.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [
+        "errands"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-10-06T19:05:00Z",
+      "updated": "2026-10-06T19:05:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00090:",
+      "comments": []
+    }
+  }
+}

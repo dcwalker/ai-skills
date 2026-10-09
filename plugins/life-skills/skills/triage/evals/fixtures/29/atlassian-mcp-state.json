@@ -1,0 +1,252 @@
+{
+  "anchor_date": "2026-10-09",
+  "stub_now": "2026-10-09T16:00:00Z",
+  "cloud": {
+    "id": "b7c9e1a2-0000-4000-8000-example00001",
+    "url": "https://danwalker.atlassian.invalid",
+    "name": "danwalker"
+  },
+  "projects": {
+    "WEB": {
+      "key": "WEB",
+      "id": "10002",
+      "name": "Storefront Web",
+      "issueTypes": [
+        "Bug",
+        "Story",
+        "Task",
+        "Epic"
+      ]
+    }
+  },
+  "users": [
+    {
+      "accountId": "user-1",
+      "displayName": "Dan Walker",
+      "emailAddress": "eval-user@example.com"
+    },
+    {
+      "accountId": "user-2",
+      "displayName": "Priya Shah",
+      "emailAddress": "priya.shah@example.com"
+    },
+    {
+      "accountId": "user-3",
+      "displayName": "Marcus Lee",
+      "emailAddress": "marcus.lee@example.com"
+    }
+  ],
+  "me": {
+    "accountId": "user-1",
+    "displayName": "Dan Walker"
+  },
+  "transitions": [
+    {
+      "id": "11",
+      "name": "To Do",
+      "to": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      }
+    },
+    {
+      "id": "21",
+      "name": "In Progress",
+      "to": {
+        "name": "In Progress",
+        "statusCategory": "In Progress"
+      }
+    },
+    {
+      "id": "31",
+      "name": "Done",
+      "to": {
+        "name": "Done",
+        "statusCategory": "Done"
+      }
+    }
+  ],
+  "issues": {
+    "WEB-1": {
+      "key": "WEB-1",
+      "id": "20001",
+      "project": "WEB",
+      "summary": "Fix checkout timeout when a discount code is applied",
+      "description": "Applying a discount code at checkout hangs for about 30 seconds and then fails with a 504 Gateway Timeout. Reproducible on staging with code SAVE10. It started after the last promotions service deploy. Done when a valid code applies in under a second and checkout completes.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Bug",
+      "priority": "High",
+      "labels": [
+        "checkout",
+        "promotions",
+        "bug"
+      ],
+      "assignee": {
+        "accountId": "user-2",
+        "displayName": "Priya Shah"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-28T10:00:00Z",
+      "updated": "2026-10-02T15:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00010:",
+      "comments": []
+    },
+    "WEB-5": {
+      "key": "WEB-5",
+      "id": "20005",
+      "project": "WEB",
+      "summary": "Drop the legacy discount_codes table",
+      "description": "Once every discount code lives in the new promotions schema, remove the legacy discount_codes table and the old read path that still queries it. Done when the table and its read path are gone and nothing references them.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": "Medium",
+      "labels": [
+        "promotions",
+        "tech-debt"
+      ],
+      "assignee": {
+        "accountId": "user-3",
+        "displayName": "Marcus Lee"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-30T11:00:00Z",
+      "updated": "2026-09-30T11:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00020:",
+      "comments": []
+    },
+    "WEB-2": {
+      "key": "WEB-2",
+      "id": "20002",
+      "project": "WEB",
+      "summary": "Add an index for discount code lookups in the promotions service",
+      "description": "The promotions service does a full table scan of discount codes on every lookup. Add an index on the code column. This is likely part of why applying a discount code at checkout is slow. Done when lookups use the index and p95 lookup time is under 50 ms.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": "Medium",
+      "labels": [
+        "promotions",
+        "performance"
+      ],
+      "assignee": {
+        "accountId": "user-3",
+        "displayName": "Marcus Lee"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-29T09:30:00Z",
+      "updated": "2026-09-29T09:30:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00030:",
+      "comments": []
+    },
+    "WEB-3": {
+      "key": "WEB-3",
+      "id": "20003",
+      "project": "WEB",
+      "summary": "Migrate discount codes to the new promotions schema",
+      "description": "Move every existing discount code from the legacy discount_codes table into the new promotions schema, keeping codes, expiry dates and usage counts. Done when all codes resolve from the new schema in production.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Story",
+      "priority": "Medium",
+      "labels": [
+        "promotions",
+        "migration"
+      ],
+      "assignee": {
+        "accountId": "user-2",
+        "displayName": "Priya Shah"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-25T14:00:00Z",
+      "updated": "2026-09-25T14:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00040:",
+      "comments": []
+    },
+    "WEB-4": {
+      "key": "WEB-4",
+      "id": "20004",
+      "project": "WEB",
+      "summary": "Checkout returns 504 after entering a promo code",
+      "description": "Customer support reports that entering a promo code at checkout spins for a long time and then fails with a gateway timeout (504). Several customers have hit it since the last promotions deploy.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Bug",
+      "priority": null,
+      "labels": [],
+      "assignee": null,
+      "reporter": {
+        "accountId": "user-3",
+        "displayName": "Marcus Lee"
+      },
+      "created": "2026-10-05T16:20:00Z",
+      "updated": "2026-10-05T16:20:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00050:",
+      "comments": []
+    },
+    "WEB-6": {
+      "key": "WEB-6",
+      "id": "20006",
+      "project": "WEB",
+      "summary": "Update the footer copyright year",
+      "description": "The site footer still shows last year. Make it read the current year automatically. Done when the footer shows the current year without a manual change.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": "Low",
+      "labels": [
+        "content",
+        "footer"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-10-01T09:00:00Z",
+      "updated": "2026-10-01T09:00:00Z",
+      "resolution": null,
+      "duedate": null,
+      "rank": "0|i00060:",
+      "comments": []
+    }
+  }
+}

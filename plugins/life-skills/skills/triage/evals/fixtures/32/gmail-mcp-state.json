@@ -1,0 +1,184 @@
+{
+  "anchor_date": "2026-10-09",
+  "me": "eval-user@example.com",
+  "threads": {
+    "thread-1": {
+      "id": "thread-1",
+      "subject": "Kindergarten registration packet",
+      "from": "registrar@maplewood-school.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-09-29T15:10:00Z",
+      "snippet": "Please complete the attached registration packet, including immunization records and proof of address, and return it to the front office by {{date:2026-10-30|%B %-d, %Y}}.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-1",
+          "from": "registrar@maplewood-school.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-09-29T15:10:00Z",
+          "snippet": "Please complete the attached registration packet, including immunization records and proof of address, and return it to the front office by {{date:2026-10-30|%B %-d, %Y}}.",
+          "body": "Dear families,\n\nPlease complete the attached registration packet for the {{date:2027-09-01|%Y}} kindergarten intake. The packet needs the signed enrollment form, a copy of your child's immunization records, and proof of address (a utility bill or lease). Return it to the front office by {{date:2026-10-30|%B %-d, %Y}}.\n\nMaplewood Elementary Registrar"
+        }
+      ]
+    },
+    "thread-2": {
+      "id": "thread-2",
+      "subject": "Gutter replacement quote",
+      "from": "eval-user@example.com",
+      "to": [
+        "quotes@cedarline-roofing.example"
+      ],
+      "date": "2026-10-06T18:25:00Z",
+      "snippet": "Thanks for coming out Tuesday to look at the gutters. Could you send the written quote by Friday, {{date:2026-10-16|%B %-d, %Y}}?",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-2",
+          "from": "eval-user@example.com",
+          "to": [
+            "quotes@cedarline-roofing.example"
+          ],
+          "date": "2026-10-06T18:25:00Z",
+          "snippet": "Thanks for coming out Tuesday to look at the gutters. Could you send the written quote by Friday, {{date:2026-10-16|%B %-d, %Y}}?",
+          "body": "Hi Marco,\n\nThanks for coming out Tuesday to look at the gutters. Could you send the written quote by Friday, {{date:2026-10-16|%B %-d, %Y}}? I'd like to get the work booked before the leaves come down.\n\nDan"
+        }
+      ]
+    },
+    "thread-3": {
+      "id": "thread-3",
+      "subject": "Your Greenleaf Grocers receipt",
+      "from": "receipts@greenleafgrocers.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-01T19:02:00Z",
+      "snippet": "Thanks for shopping with us. Total $64.18, paid with card ending 2210.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-3",
+          "from": "receipts@greenleafgrocers.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-01T19:02:00Z",
+          "snippet": "Thanks for shopping with us. Total $64.18, paid with card ending 2210.",
+          "body": "Greenleaf Grocers -- Riverside\n\n14 items. Total $64.18, paid with card ending 2210.\n\nThank you for shopping with us."
+        }
+      ]
+    },
+    "thread-4": {
+      "id": "thread-4",
+      "subject": "This week's long read: why old houses breathe",
+      "from": "digest@homecraftweekly.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-04T07:00:00Z",
+      "snippet": "A 30-minute read on lime plaster, vapour-open walls, and what modern insulation gets wrong in pre-war houses.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-4",
+          "from": "digest@homecraftweekly.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-04T07:00:00Z",
+          "snippet": "A 30-minute read on lime plaster, vapour-open walls, and what modern insulation gets wrong in pre-war houses.",
+          "body": "This week's long read: why old houses breathe. A 30-minute essay on lime plaster, vapour-open walls, and what modern insulation gets wrong in pre-war houses."
+        }
+      ]
+    },
+    "thread-5": {
+      "id": "thread-5",
+      "subject": "Your hold is ready: \"The Backyard Orchard\"",
+      "from": "holds@riverside-library.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-07T09:40:00Z",
+      "snippet": "Your hold \"The Backyard Orchard\" is ready at the Riverside branch. It will be kept for you until {{date:2026-10-14|%B %-d, %Y}}.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "msg-5",
+          "from": "holds@riverside-library.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-07T09:40:00Z",
+          "snippet": "Your hold \"The Backyard Orchard\" is ready at the Riverside branch. It will be kept for you until {{date:2026-10-14|%B %-d, %Y}}.",
+          "body": "Your hold \"The Backyard Orchard\" is ready for pickup at the Riverside branch front desk. It will be kept for you until {{date:2026-10-14|%B %-d, %Y}}; bring your library card.\n\nRiverside Public Library"
+        }
+      ]
+    }
+  },
+  "labels": {
+    "INBOX": {
+      "id": "INBOX",
+      "name": "INBOX",
+      "type": "system"
+    },
+    "SENT": {
+      "id": "SENT",
+      "name": "SENT",
+      "type": "system"
+    },
+    "TRASH": {
+      "id": "TRASH",
+      "name": "TRASH",
+      "type": "system"
+    },
+    "SPAM": {
+      "id": "SPAM",
+      "name": "SPAM",
+      "type": "system"
+    },
+    "STARRED": {
+      "id": "STARRED",
+      "name": "STARRED",
+      "type": "system"
+    },
+    "IMPORTANT": {
+      "id": "IMPORTANT",
+      "name": "IMPORTANT",
+      "type": "system"
+    },
+    "UNREAD": {
+      "id": "UNREAD",
+      "name": "UNREAD",
+      "type": "system"
+    },
+    "Label_1": {
+      "id": "Label_1",
+      "name": "Read-Review",
+      "type": "user"
+    },
+    "Label_2": {
+      "id": "Label_2",
+      "name": "Receipts",
+      "type": "user"
+    },
+    "Label_3": {
+      "id": "Label_3",
+      "name": "Family",
+      "type": "user"
+    }
+  },
+  "drafts": {}
+}

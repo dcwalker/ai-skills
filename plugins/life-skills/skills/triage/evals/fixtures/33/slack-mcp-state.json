@@ -1,0 +1,56 @@
+{
+  "anchor_date": "2026-10-09",
+  "me": {
+    "id": "U0DAN",
+    "name": "dan.walker",
+    "display_name": "dan.walker",
+    "real_name": "Dan Walker",
+    "email": "dan.walker@example.com",
+    "title": "Support Lead",
+    "timezone": "America/Los_Angeles",
+    "org": "northwind-support"
+  },
+  "users": {
+    "U0DAN": {
+      "id": "U0DAN",
+      "name": "dan.walker",
+      "display_name": "dan.walker",
+      "real_name": "Dan Walker",
+      "email": "dan.walker@example.com",
+      "title": "Support Lead",
+      "timezone": "America/Los_Angeles"
+    },
+    "U07KQ3M9TF": {
+      "id": "U07KQ3M9TF",
+      "name": "priya.shah",
+      "display_name": "priya.shah",
+      "real_name": "Priya Shah",
+      "email": "priya.shah@example.com",
+      "title": "Support Operations Manager",
+      "timezone": "America/Los_Angeles"
+    }
+  },
+  "channels": {
+    "C07SUPOPS": {
+      "id": "C07SUPOPS",
+      "name": "support-ops",
+      "purpose": "Support team operations",
+      "creator": "U07KQ3M9TF",
+      "created": "2025-02-03 09:00:00 PST",
+      "is_archived": false,
+      "type": "public_channel"
+    }
+  },
+  "messages": {
+    "C07SUPOPS": [
+      {
+        "ts": "1791216300.000100",
+        "time": "2026-10-05 09:05:00 PDT",
+        "user": "U07KQ3M9TF",
+        "text": "<@U0DAN|dan.walker> could you send the updated on-call rota to the support team before the planning meeting on {{date:2026-10-15|%A, %B %-d}}? It needs the new weekend slots.",
+        "thread_ts": null,
+        "reactions": [{"name": "trello", "count": 1}]
+      }
+    ]
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "anchor_date": "2026-10-09",
+  "stub_now": "2026-10-09T16:00:00Z",
+  "cloud": {
+    "id": "b7c9e1a2-0000-4000-8000-example00001",
+    "url": "https://danwalker.atlassian.invalid",
+    "name": "danwalker"
+  },
+  "projects": {
+    "HOME": {
+      "key": "HOME",
+      "id": "10001",
+      "name": "Home Projects",
+      "issueTypes": [
+        "Task"
+      ]
+    }
+  },
+  "users": [
+    {
+      "accountId": "user-1",
+      "displayName": "Dan Walker",
+      "emailAddress": "eval-user@example.com"
+    }
+  ],
+  "me": {
+    "accountId": "user-1",
+    "displayName": "Dan Walker"
+  },
+  "transitions": [
+    {
+      "id": "11",
+      "name": "To Do",
+      "to": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      }
+    },
+    {
+      "id": "21",
+      "name": "In Progress",
+      "to": {
+        "name": "In Progress",
+        "statusCategory": "In Progress"
+      }
+    },
+    {
+      "id": "31",
+      "name": "Done",
+      "to": {
+        "name": "Done",
+        "statusCategory": "Done"
+      }
+    }
+  ],
+  "issues": {
+    "HOME-1": {
+      "key": "HOME-1",
+      "id": "20001",
+      "project": "HOME",
+      "summary": "Replace the smoke alarm batteries",
+      "description": "Both smoke alarms chirp now and then. Swap in fresh 9V batteries and test them.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": "Low",
+      "labels": [
+        "home",
+        "safety"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-24T09:00:00Z",
+      "updated": "2026-09-24T09:00:00Z",
+      "resolution": null,
+      "duedate": "2026-10-16",
+      "rank": "0|i00010:",
+      "comments": []
+    },
+    "HOME-2": {
+      "key": "HOME-2",
+      "id": "20002",
+      "project": "HOME",
+      "summary": "Clear the gutters before the leaves fall",
+      "description": "The front gutter overflowed in the last storm. Clear both gutters and check the downpipe.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": "High",
+      "labels": [
+        "home",
+        "maintenance"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-14T09:00:00Z",
+      "updated": "2026-09-14T09:00:00Z",
+      "resolution": null,
+      "duedate": "2026-11-20",
+      "rank": "0|i00020:",
+      "comments": []
+    },
+    "HOME-3": {
+      "key": "HOME-3",
+      "id": "20003",
+      "project": "HOME",
+      "summary": "garage",
+      "description": "Sort the garage shelves and take the old paint tins to the recycling centre on Mill Road so the car fits again.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": "Medium",
+      "labels": [
+        "home",
+        "declutter"
+      ],
+      "assignee": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "reporter": {
+        "accountId": "user-1",
+        "displayName": "Dan Walker"
+      },
+      "created": "2026-09-02T09:00:00Z",
+      "updated": "2026-09-02T09:00:00Z",
+      "resolution": null,
+      "duedate": "2026-10-30",
+      "rank": "0|i00030:",
+      "comments": []
+    }
+  }
+}
