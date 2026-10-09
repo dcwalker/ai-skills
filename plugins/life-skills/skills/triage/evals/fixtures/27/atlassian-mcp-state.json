@@ -59,7 +59,7 @@
       "id": "20001",
       "project": "HOME",
       "summary": "Renew my passport",
-      "description": "Passport expires in {{date:2027-04-15|%Q}} {{date:2027-04-15|%Y}}. Notes: photos taken at the pharmacy booth on {{date:2026-10-05|%B %-d, %Y}}; the online form is half filled in and saved as a draft.",
+      "description": "Passport expires in {{date:2027-04-15|%Q}} {{date:2027-04-15|%Y}}. Notes: photos taken at the pharmacy booth on {{date:2026-10-09|%B %-d, %Y}}; the online form is half filled in and saved as a draft.",
       "status": {
         "name": "To Do",
         "statusCategory": "To Do"
@@ -231,7 +231,7 @@
         "displayName": "Dan Walker"
       },
       "created": "2026-08-28T02:14:07.000Z",
-      "updated": "2026-10-07T17:30:00Z",
+      "updated": "2026-10-09T09:30:00Z",
       "resolution": null,
       "duedate": null,
       "rank": "0|i00060:",
@@ -239,7 +239,7 @@
         {
           "id": "c-601",
           "body": "Engineer offered two slots next week; need to pick one.",
-          "created": "2026-10-07T17:30:00Z",
+          "created": "2026-10-09T09:30:00Z",
           "author": {
             "accountId": "user-1",
             "displayName": "Dan Walker"

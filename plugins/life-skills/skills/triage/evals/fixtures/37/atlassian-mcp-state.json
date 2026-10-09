@@ -115,7 +115,7 @@
     {
       "id": "home-3-arrives",
       "after_call": {
-        "tool": "searchJiraIssuesUsingJql",
+        "tool": "getJiraIssue",
         "count": 1
       },
       "changes": [

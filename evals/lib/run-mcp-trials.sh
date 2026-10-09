@@ -60,8 +60,7 @@ shift
 # as `<plugin>:<skill>`. A trial that picks the installed copy runs stale
 # instructions, and nothing in its transcript says so. Turning the skill's
 # own plugin off for the trial leaves the staged copy as the only one. The
-# other skills in that plugin go with it; no MCP-backed eval relies on a
-# sibling skill today. Hiding just the one skill is not possible: the
+# other skills in that plugin go with it. Hiding just the one skill is not possible: the
 # skillOverrides setting does not apply to plugin skills. The per-trial
 # TRIAL_SETTINGS below carries this enabledPlugins entry. An eval whose skill
 # hands work to a sibling (triage's stall interview runs conduct-interview)
@@ -147,15 +146,37 @@ rm -f "$PREFLIGHT_LOG"
 
 if [[ $# -gt 0 ]]; then
   IDS="$*"
-  for ID in $IDS; do
-    rm -rf "${TRIALS_DIR:?}/$ID"
-  done
 else
   IDS=$(python3 -c "
 import json, sys
 data = json.load(open(sys.argv[1]))
 print(' '.join(str(e['id']) for e in data['evals']))
 " "$EVALS_DIR/evals.json")
+fi
+
+# Every eval's stage_skills is checked before the first trial, before any earlier
+# result is cleared, so a typo in the last eval neither stops the batch
+# after the others have run nor costs the previous trial set.
+python3 -c "
+import json, os, sys
+skills_dir, ids = sys.argv[2], set(sys.argv[3:])
+for e in json.load(open(sys.argv[1]))['evals']:
+    if str(e['id']) not in ids:
+        continue
+    names = e.get('stage_skills', [])
+    if not isinstance(names, list) or not all(isinstance(n, str) and n and '/' not in n and not any(c.isspace() for c in n)
+                                              and n not in ('.', '..') for n in names):
+        raise SystemExit(f'ERROR: eval {e[\"id\"]}: stage_skills must be a list of skill directory names')
+    for n in names:
+        if not os.path.isfile(os.path.join(skills_dir, n, 'SKILL.md')):
+            raise SystemExit(f'ERROR: eval {e[\"id\"]} stages skill {n!r}, but {skills_dir}/{n}/SKILL.md does not exist.')
+" "$EVALS_DIR/evals.json" "$(dirname "$SKILL_DIR")" $IDS
+
+if [[ $# -gt 0 ]]; then
+  for ID in $IDS; do
+    rm -rf "${TRIALS_DIR:?}/$ID"
+  done
+else
   rm -rf "$TRIALS_DIR"
 fi
 mkdir -p "$TRIALS_DIR"
@@ -165,22 +186,6 @@ mkdir -p "$TRIALS_DIR"
 # would name a private HOME no rule covers.
 TRIALS_DIR="$(cd "$TRIALS_DIR" && pwd -P)"
 
-# Every eval's stage_skills is checked before the first trial, so a typo in
-# the last eval does not stop the batch after the others have run.
-python3 -c "
-import json, os, sys
-skills_dir, ids = sys.argv[2], set(sys.argv[3:])
-for e in json.load(open(sys.argv[1]))['evals']:
-    if str(e['id']) not in ids:
-        continue
-    names = e.get('stage_skills', [])
-    if not isinstance(names, list) or not all(isinstance(n, str) and n and '/' not in n
-                                              and n not in ('.', '..') for n in names):
-        raise SystemExit(f'ERROR: eval {e[\"id\"]}: stage_skills must be a list of skill directory names')
-    for n in names:
-        if not os.path.isfile(os.path.join(skills_dir, n, 'SKILL.md')):
-            raise SystemExit(f'ERROR: eval {e[\"id\"]} stages skill {n!r}, but {skills_dir}/{n}/SKILL.md does not exist.')
-" "$EVALS_DIR/evals.json" "$(dirname "$SKILL_DIR")" $IDS
 
 for ID in $IDS; do
   PROMPT=$(python3 -c "
@@ -238,7 +243,7 @@ import json, sys
 for e in json.load(open(sys.argv[1]))['evals']:
     if str(e['id']) == sys.argv[2]:
         names = e.get('stage_skills', [])
-        if not isinstance(names, list) or not all(isinstance(n, str) and n and '/' not in n
+        if not isinstance(names, list) or not all(isinstance(n, str) and n and '/' not in n and not any(c.isspace() for c in n)
                                                   and n not in ('.', '..') for n in names):
             raise SystemExit(f'eval {sys.argv[2]}: stage_skills must be a list of skill directory names')
         print('\n'.join(names))

@@ -110,7 +110,7 @@
         "eval-user@example.com"
       ],
       "date": "2026-10-07T09:40:00Z",
-      "snippet": "Your hold \"The Backyard Orchard\" is ready at the Riverside branch. It will be kept for you until {{date:2026-10-14|%B %-d, %Y}}.",
+      "snippet": "Your hold \"The Backyard Orchard\" is ready at the Riverside branch. It will be kept for you until {{date:2026-10-21|%B %-d, %Y}}.",
       "labelIds": [
         "INBOX"
       ],
@@ -122,8 +122,8 @@
             "eval-user@example.com"
           ],
           "date": "2026-10-07T09:40:00Z",
-          "snippet": "Your hold \"The Backyard Orchard\" is ready at the Riverside branch. It will be kept for you until {{date:2026-10-14|%B %-d, %Y}}.",
-          "body": "Your hold \"The Backyard Orchard\" is ready for pickup at the Riverside branch front desk. It will be kept for you until {{date:2026-10-14|%B %-d, %Y}}; bring your library card.\n\nRiverside Public Library"
+          "snippet": "Your hold \"The Backyard Orchard\" is ready at the Riverside branch. It will be kept for you until {{date:2026-10-21|%B %-d, %Y}}.",
+          "body": "Your hold \"The Backyard Orchard\" is ready for pickup at the Riverside branch front desk. It will be kept for you until {{date:2026-10-21|%B %-d, %Y}}; bring your library card.\n\nRiverside Public Library"
         }
       ]
     }
