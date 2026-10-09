@@ -124,6 +124,24 @@ def _call_matches(trigger: dict, tool: str, args: dict) -> bool:
     return all(isinstance(args, dict) and args.get(k) == v for k, v in wanted.items())
 
 
+def _check_entry_shape(entry: dict, ids: set) -> str:
+    """Raise unless a scheduled-change entry is well formed; record its id in
+    `ids` and return it."""
+    name = entry.get("id")
+    if not name or name in ids:
+        raise ValueError(f"scheduled change needs a unique id, got {name!r}")
+    ids.add(name)
+    trigger = entry.get("after_call")
+    if not isinstance(trigger, dict) or not trigger.get("tool"):
+        raise ValueError(f"scheduled change {name!r} needs after_call.tool")
+    count = trigger.get("count", 1)
+    if not isinstance(count, int) or count < 1:
+        raise ValueError(f"scheduled change {name!r}: after_call.count must be a positive integer")
+    if not isinstance(entry.get("changes"), list) or not entry["changes"]:
+        raise ValueError(f"scheduled change {name!r} needs a non-empty changes list")
+    return name
+
+
 class StubState:
     """In-memory state for one MCP stub server process, with load/flush/log."""
 
@@ -158,17 +176,7 @@ class StubState:
         trial = copy.deepcopy(self.data)
         ids = set()
         for entry in self._schedule():
-            name = entry.get("id")
-            if not name or name in ids:
-                raise ValueError(f"scheduled change needs a unique id, got {name!r}")
-            ids.add(name)
-            trigger = entry.get("after_call")
-            if not isinstance(trigger, dict) or not trigger.get("tool"):
-                raise ValueError(f"scheduled change {name!r} needs after_call.tool")
-            if not isinstance(trigger.get("count", 1), int) or trigger.get("count", 1) < 1:
-                raise ValueError(f"scheduled change {name!r}: after_call.count must be a positive integer")
-            if not isinstance(entry.get("changes"), list) or not entry["changes"]:
-                raise ValueError(f"scheduled change {name!r} needs a non-empty changes list")
+            name = _check_entry_shape(entry, ids)
             if entry.get("fired") or resumed:
                 continue
             for change in entry["changes"]:
