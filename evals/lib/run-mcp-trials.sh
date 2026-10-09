@@ -154,9 +154,9 @@ print(' '.join(str(e['id']) for e in data['evals']))
 " "$EVALS_DIR/evals.json")
 fi
 
-# Every eval's stage_skills is checked before the first trial, before any earlier
-# result is cleared, so a typo in the last eval neither stops the batch
-# after the others have run nor costs the previous trial set.
+# Every eval's stage_skills is checked before the first trial and before
+# any earlier result is cleared, so a typo in the last eval neither stops
+# the batch after the others have run nor costs the previous trial set.
 python3 -c "
 import json, os, sys
 skills_dir, ids = sys.argv[2], set(sys.argv[3:])
@@ -185,7 +185,6 @@ mkdir -p "$TRIALS_DIR"
 # both fall under it, so a run dir reached through a symlink (/tmp on macOS)
 # would name a private HOME no rule covers.
 TRIALS_DIR="$(cd "$TRIALS_DIR" && pwd -P)"
-
 
 for ID in $IDS; do
   PROMPT=$(python3 -c "
@@ -235,26 +234,17 @@ else:
   # plugin to stage too, for a skill that hands part of its work to another
   # (triage's Step 8b stall interview runs conduct-interview). Turning the
   # plugin off above takes those siblings away with it, so without this the
-  # hand-off has nothing to load. A name that does not resolve to a sibling
-  # with a SKILL.md stops the batch: a typo that silently staged nothing
-  # would measure the sibling's absence.
+  # hand-off has nothing to load. Every eval's list was validated before the
+  # first trial (see above), so here it is only read.
   STAGE_SKILLS=$(python3 -c "
 import json, sys
 for e in json.load(open(sys.argv[1]))['evals']:
     if str(e['id']) == sys.argv[2]:
-        names = e.get('stage_skills', [])
-        if not isinstance(names, list) or not all(isinstance(n, str) and n and '/' not in n and not any(c.isspace() for c in n)
-                                                  and n not in ('.', '..') for n in names):
-            raise SystemExit(f'eval {sys.argv[2]}: stage_skills must be a list of skill directory names')
-        print('\n'.join(names))
+        print('\n'.join(e.get('stage_skills', [])))
         break
 " "$EVALS_DIR/evals.json" "$ID")
   for SIBLING in $STAGE_SKILLS; do
     SIBLING_DIR="$(dirname "$SKILL_DIR")/$SIBLING"
-    if [[ ! -f "$SIBLING_DIR/SKILL.md" ]]; then
-      echo "ERROR: eval $ID stages skill '$SIBLING', but $SIBLING_DIR/SKILL.md does not exist." >&2
-      exit 1
-    fi
     stage_skill "$SIBLING_DIR"
     echo "  staged sibling skill $SIBLING"
   done

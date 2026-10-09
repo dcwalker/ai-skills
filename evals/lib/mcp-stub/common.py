@@ -6,8 +6,9 @@ at instead of the real third-party server, the same way `evals/lib/gh-stub/gh`
 stands in for the real `gh` binary on PATH. Unlike `gh-stub` (a fresh process
 per call, so `times` caps and call counts have to be persisted to a file via
 GH_STUB_COUNTS_DIR), an MCP stub is one long-lived process for each
-`claude` turn -- Claude Code launches it once and keeps the connection open -- so it
-can just hold its fake backing state in memory for that turn's duration. A
+`claude` turn -- Claude Code launches it once and keeps the connection
+open -- so it can just hold its fake backing state in memory for that
+turn's duration. A
 trial with follow-up turns starts a new process per turn; run-mcp-trials.sh
 points each resumed turn's MCP_STUB_STATE_FILE at the previous turn's
 MCP_STUB_STATE_OUT, so state carries across turns.
@@ -65,9 +66,9 @@ the skill works. Each entry is
   in order, to a throwaway copy of the state, and refuses to start if one
   names an unknown op or a path that does not exist, so a mistyped fixture
   fails loudly instead of never firing. A resumed turn, whose state file is
-  the previous turn's state-out, checks only each entry's shape. A change that no longer applies
-  when it fires (the skill deleted its target first) is logged with an
-  "error" in place of "changes" and skipped.
+  the previous turn's state-out, checks only each entry's shape. A change
+  that no longer applies when it fires (the skill deleted its target first)
+  is logged with an "error" in place of "changes" and skipped.
 - fixture-dates.py moves dates inside "changes" like any other part of the
   state: ISO values shift and {{date:...}} tokens resolve. A Slack "ts" or
   "thread_ts" value shifts only under a key of that name, so set the message
@@ -127,6 +128,8 @@ def _call_matches(trigger: dict, tool: str, args: dict) -> bool:
 def _check_entry_shape(entry: dict, ids: set) -> str:
     """Raise unless a scheduled-change entry is well formed; record its id in
     `ids` and return it."""
+    if not isinstance(entry, dict):
+        raise ValueError(f"scheduled change must be an object, got {entry!r}")
     name = entry.get("id")
     if not name or name in ids:
         raise ValueError(f"scheduled change needs a unique id, got {name!r}")
