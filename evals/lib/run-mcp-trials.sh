@@ -63,7 +63,10 @@ shift
 # other skills in that plugin go with it; no MCP-backed eval relies on a
 # sibling skill today. Hiding just the one skill is not possible: the
 # skillOverrides setting does not apply to plugin skills. The per-trial
-# TRIAL_SETTINGS below carries this enabledPlugins entry.
+# TRIAL_SETTINGS below carries this enabledPlugins entry. An eval whose skill
+# hands work to a sibling (triage's stall interview runs conduct-interview)
+# names it in its optional `stage_skills` list, and the sibling is staged
+# beside the skill under test the same way (see stage_skill below).
 PLUGIN_NAME="$(basename "$(dirname "$(dirname "$SKILL_DIR")")")"
 MARKETPLACE_FILE="$SCRIPT_DIR/../../.claude-plugin/marketplace.json"
 MARKETPLACE_NAME="$(python3 -c "import json, sys; print(json.load(open(sys.argv[1]))['name'])" \
@@ -186,16 +189,53 @@ else:
   # measures the skill's absence and reports it as the skill's behavior.
   # Copying it in makes the trial exercise the working-tree version, which
   # is also what a benchmark of an edited-but-uninstalled skill needs.
-  if [[ -f "$SKILL_DIR/SKILL.md" ]]; then
-    SKILL_DEST="$WORKSPACE_DIR/.claude/skills/$SKILL_NAME"
-    mkdir -p "$SKILL_DEST"
-    cp "$SKILL_DIR/SKILL.md" "$SKILL_DEST/"
+  #
+  # stage_skill <skill dir>: copy one skill into the workspace's
+  # .claude/skills/<name>/ -- SKILL.md plus references/ and scripts/, never
+  # evals/, which would hand the trial its own answer key.
+  stage_skill() {
+    local source_dir="$1" dest
+    dest="$WORKSPACE_DIR/.claude/skills/$(basename "$source_dir")"
+    mkdir -p "$dest"
+    cp "$source_dir/SKILL.md" "$dest/"
     for EXTRA in references scripts; do
-      [[ -d "$SKILL_DIR/$EXTRA" ]] && cp -R "$SKILL_DIR/$EXTRA" "$SKILL_DEST/"
+      [[ -d "$source_dir/$EXTRA" ]] && cp -R "$source_dir/$EXTRA" "$dest/"
     done
+    return 0
+  }
+  if [[ -f "$SKILL_DIR/SKILL.md" ]]; then
+    stage_skill "$SKILL_DIR"
   else
     echo "  WARNING: no SKILL.md at $SKILL_DIR; the trial will run without the skill"
   fi
+
+  # An eval's optional `stage_skills` names sibling skills in the same
+  # plugin to stage too, for a skill that hands part of its work to another
+  # (triage's Step 8b stall interview runs conduct-interview). Turning the
+  # plugin off above takes those siblings away with it, so without this the
+  # hand-off has nothing to load. A name that does not resolve to a sibling
+  # with a SKILL.md stops the batch: a typo that silently staged nothing
+  # would measure the sibling's absence.
+  STAGE_SKILLS=$(python3 -c "
+import json, sys
+for e in json.load(open(sys.argv[1]))['evals']:
+    if str(e['id']) == sys.argv[2]:
+        names = e.get('stage_skills', [])
+        if not isinstance(names, list) or not all(isinstance(n, str) and n and '/' not in n
+                                                  and n not in ('.', '..') for n in names):
+            raise SystemExit(f'eval {sys.argv[2]}: stage_skills must be a list of skill directory names')
+        print('\n'.join(names))
+        break
+" "$EVALS_DIR/evals.json" "$ID")
+  for SIBLING in $STAGE_SKILLS; do
+    SIBLING_DIR="$(dirname "$SKILL_DIR")/$SIBLING"
+    if [[ ! -f "$SIBLING_DIR/SKILL.md" ]]; then
+      echo "ERROR: eval $ID stages skill '$SIBLING', but $SIBLING_DIR/SKILL.md does not exist." >&2
+      exit 1
+    fi
+    stage_skill "$SIBLING_DIR"
+    echo "  staged sibling skill $SIBLING"
+  done
 
   # Writes stay inside $RUN_DIR, which holds the workspace, the private HOME,
   # and TMPDIR. A private HOME alone does not do it: eval 19 of the

@@ -419,6 +419,14 @@ resolution (against an optional top-level `"me"` address in the fixture),
 which is what a corpus search for "mail I wrote to this person" needs; a
 fixture that declares no `"me"` makes `from:me`/`to:me` match nothing rather
 than everything.
+`gmail_stub.py` returns a `viewUrl` on each thread from `search_threads`
+and `get_thread`, and on each message from `get_thread`. The field name
+comes from the live Gmail MCP's tool descriptions, which say both tools
+return one for the thread and for each message; the URL format is not
+documented, so the stub's `https://mail.google.com/mail/u/0/#all/<id>` is a
+placeholder, unverified against a live response. A fixture's thread or
+message can set its own `"viewUrl"`, or `null` for none. The Atlassian
+tools document no URL in their output, so `jira_stub.py` adds none.
 
 Changing a stub that several skills share changes what their trials see, so
 check before deciding which evals to re-run:
@@ -511,6 +519,47 @@ written to `$RUN_DIR/eval.json` with its `run_date` and `shift_days`. Grade
 against those two, never the raw fixture and `evals.json`, whose dates are
 the anchor's. A fixture with no `anchor_date` loads unchanged, and a token in
 one is an error. Set `EVAL_RUN_DATE` to reproduce a run as of a given day.
+
+### Fixtures that change during a trial
+
+Some rules only show when the service changes while the skill works: an
+item someone else closes before the skill reaches it, or a new item that
+arrives before the run ends. Any stub's state file can carry a top-level
+`"scheduled_changes"` list for that, handled in `mcp-stub/common.py` so
+every stub has it:
+
+```json
+"scheduled_changes": [
+  {"id": "card-2-done-elsewhere",
+   "after_call": {"tool": "view_list", "count": 1},
+   "changes": [{"op": "merge", "path": ["cards", "card-2"],
+                "value": {"list_id": "list-3", "due_complete": true}}]}
+]
+```
+
+- An entry fires once, right after the `count`-th call (default 1) to
+  `tool`; an optional `after_call.args` object counts only calls whose
+  logged arguments include those values. The triggering call's response is
+  unchanged, so the change shows from the next call on.
+- `changes` apply in order. A `path` is a list of keys from the state's
+  root; `set` puts `value` there, `merge` shallow-updates an object,
+  `append` adds to a list, and `delete` removes the path.
+- The call log records the firing as its own line, in a call's shape, with
+  `"tool": "_scheduled_change"`, the entry's `id` and trigger, and the
+  changes applied, right after the triggering call. Graders read when the
+  state moved from there.
+- The stub keeps each entry's `calls_seen` and `fired` in the state, so a
+  resumed turn carries on counting and never fires an entry twice. Those
+  keys and the list are bookkeeping, and the changes are not the skill's
+  writes: when diffing final state against the seed, apply the fired
+  entries' changes to the seed first, and say so in the eval's
+  expectations.
+- The stub checks every unfired entry against the seed at startup and
+  refuses to start on an unknown op or a missing path. An entry whose
+  target is gone by the time it fires is logged with an `error` and skipped.
+- Dates inside `changes` move with the rest of the fixture, and tokens in
+  them resolve. A Slack `ts` shifts only under a `ts` or `thread_ts` key, so
+  set the whole message object rather than the bare timestamp.
 
 `evals/lib/run-mcp-trials.sh <skill-evals-dir> [id ...]` is the batch driver
 for any skill's MCP-backed trials: it runs each eval's `claude -p` subprocess
@@ -614,7 +663,13 @@ Five things the shared driver does that a hand-run trial must do for itself:
   skill's own plugin off, and `metrics.json` records any plugin-qualified
   invocation of the skill as `installed_skill_invoked`, with a warning. The
   plugin's other skills go off with it, since `skillOverrides` does not apply
-  to plugin skills.
+  to plugin skills. An eval whose skill hands work to a sibling in the same
+  plugin lists it in an optional `"stage_skills"` array (triage's stall
+  interview runs `conduct-interview`: `"stage_skills": ["conduct-interview"]`),
+  and the driver stages each one beside the skill under test the same way,
+  `SKILL.md`, `references/`, and `scripts/` only. A name with no sibling
+  `SKILL.md` behind it stops the batch. triage's own `run-trials.sh` does not
+  read this key.
 - It passes an explicit `--allowedTools` allowlist instead of
   `--dangerously-skip-permissions`, which refuses to run as root and so rules
   out containers and CI. Each stub server is allowed wholesale, write tools
