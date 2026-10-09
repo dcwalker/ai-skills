@@ -32,8 +32,10 @@ State model (the fake Gmail "database"):
         "date": "<ISO datetime>",
         "snippet": "...",
         "labelIds": ["INBOX", "UNREAD", "Label_7", ...],
+        "viewUrl": "<optional: overrides the generated URL; null omits it>",
         "messages": [{"id": "...", "from": "...", "to": [...],
-                       "date": "...", "snippet": "...", "body": "..."}]
+                       "date": "...", "snippet": "...", "body": "...",
+                       "viewUrl": "<optional, as for the thread>"}]
     }},
     "labels": {"<label_id>": {"id": "...", "name": "...",
                                "type": "system" or "user"}},
@@ -46,6 +48,22 @@ State model (the fake Gmail "database"):
 The optional top-level "me" is the fixture's account owner, and it is what
 `from:me` / `to:me` resolve to, as they do in real Gmail. A fixture that
 omits it makes those two terms match nothing (see below).
+
+View URLs: the live Gmail MCP's tool descriptions say search_threads
+"returns a list of threads, including their IDs, `viewUrl`, and related
+messages (each with their own `viewUrl`)" and get_thread returns "its
+`viewUrl` and a list of its messages (each with their own `viewUrl`)", and
+its view and format enums list `view_url` "(if applicable)" in every one.
+So search_threads gives each thread a "viewUrl", and get_thread gives the
+thread and each of its messages one. The field name comes from those
+descriptions; the URL format does not, because none is documented. The
+stub's https://mail.google.com/mail/u/0/#all/<id> (the thread's or the
+message's own id) is a plausible Gmail web address and a placeholder,
+unverified against a live response. A thread or message whose fixture
+entry sets "viewUrl" returns that value instead, and one that sets it to
+null returns no viewUrl at all, for an eval about a thread with no link.
+search_threads' listing carries no messages here (unlike the live tool's
+related-message previews), so message URLs come only from get_thread.
 
 Query support in search_threads is a small, documented subset of Gmail
 syntax -- enough for triage's scoped-inbox flow and writing's corpus
@@ -72,9 +90,25 @@ from mcp.server.mcpserver import MCPServer  # noqa: E402
 server = MCPServer("gmail-stub")
 
 
+_VIEW_URL_BASE = "https://mail.google.com/mail/u/0/#all/"  # placeholder format; see View URLs above
+
+
+def _with_view_url(view: dict, source: dict) -> dict:
+    """Add the thread's or message's viewUrl: the fixture's own when it sets
+    one, none when it sets null, otherwise the placeholder built from its id."""
+    if "viewUrl" in source:
+        url = source["viewUrl"]
+    else:
+        url = _VIEW_URL_BASE + source["id"]
+    view.pop("viewUrl", None)
+    if url is not None:
+        view["viewUrl"] = url
+    return view
+
+
 def _thread_listing(t: dict) -> dict:
     """THREAD_VIEW_MINIMAL shape: no message bodies."""
-    return {
+    return _with_view_url({
         "id": t["id"],
         "snippet": t["snippet"],
         "subject": t["subject"],
@@ -82,7 +116,7 @@ def _thread_listing(t: dict) -> dict:
         "to": t["to"],
         "date": t["date"],
         "labelIds": t["labelIds"],
-    }
+    }, t)
 
 
 def _resolve_address(addr: str) -> str:
@@ -229,8 +263,9 @@ def search_threads(
     includeTrash: bool = False,
 ) -> dict:
     """Lists email threads, filtered by a Gmail-syntax query string. Returns
-    listing-level fields only (no message bodies) -- use get_thread for a
-    full body. The stub supports a documented subset of query operators:
+    listing-level fields only (no message bodies), including each thread's
+    ID and `viewUrl` -- use get_thread for a full body. The stub supports
+    a documented subset of query operators:
     in:inbox, in:sent, in:anywhere, from:, to:, subject:, label:<id>,
     is:unread, is:read, is:starred, is:important, bare words, "quoted
     phrases", OR between terms, and '-' negation. from:me and to:me resolve to the fixture's "me" address.
@@ -253,7 +288,8 @@ def search_threads(
 
 @server.tool()
 def get_thread(threadId: str, messageFormat: str = "FULL_CONTENT") -> dict:
-    """Retrieves one email thread including its messages. FULL_CONTENT (the
+    """Retrieves one email thread, including its `viewUrl` and its messages
+    (each with their own `viewUrl`). FULL_CONTENT (the
     default) includes each message's full body; MINIMAL and METADATA_ONLY
     progressively strip body and subject/snippet, mirroring the real tool."""
     if threadId not in state.data["threads"]:
@@ -261,7 +297,7 @@ def get_thread(threadId: str, messageFormat: str = "FULL_CONTENT") -> dict:
     t = state.data["threads"][threadId]
     messages = []
     for m in t["messages"]:
-        msg = dict(m)
+        msg = _with_view_url(dict(m), m)
         if messageFormat == "MINIMAL":
             msg.pop("body", None)
         elif messageFormat == "METADATA_ONLY":
