@@ -483,13 +483,12 @@ counts alone; never a list or range of numbers ("items 1, 3, 6", "#1–6"). The
 flag adds to the item's entry and never replaces its details (dates, times,
 amounts stay in the entry), and it never holds back a change the user already
 authorized. An item with no date, and no fraud or security issue, is not
-time-sensitive. Before sending, read each group's
-numbers top to bottom: they only ever go up, and a group where one goes down
-is reordered before the summary is sent. Present it once for the whole run. Do
-not
-present the same change in multiple places. Items with no
-proposed changes still appear in the summary, flagged as "No changes — looks
-complete. Mark reviewed?" rather than being dropped.
+time-sensitive. Before sending, read each group's numbers top to bottom: they
+only ever go up, and a group where one goes down is reordered before the
+summary is sent. Present it once for the whole run. Do not present the same
+change in multiple places. Items with no proposed changes still appear in the
+summary, flagged as "No changes — looks complete. Mark reviewed?" rather than
+being dropped.
 
 A batch action (Step 1) gets one entry naming every item in it by link or
 exact title. Every item it leaves in scope also gets its own per-item entry,
