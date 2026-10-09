@@ -650,11 +650,18 @@ Five things the shared driver does that a hand-run trial must do for itself:
     rest as zero-token results. Bash reaches only the hosts a `WebFetch(domain:...)` allow rule in
     the loaded settings names, and the trial adds none, which suits every
     eval run through this driver: each service it talks to is a stub. The
-    sandbox gives Bash its own `$TMPDIR`, so `CLAUDE_CODE_TMPDIR` points that
-    into the run directory too. Claude Code documents a fallback to a short
-    system temp directory when that path is long; a 159-character run path
-    did not trigger it, and if it does, temp files land there silently
-    rather than in the run directory. Hooks from the developer's enabled
+    trial's `TMPDIR` and `CLAUDE_CODE_TMPDIR` both point into the run
+    directory, and sandboxed Bash gets `<TMPDIR>/claude-0` as its own
+    `$TMPDIR`. The exception is a long run directory (over 70 characters to
+    its `tmp/`). The sandbox creates its bridge sockets in `TMPDIR`, a Unix
+    socket path cannot exceed about 104 bytes (108 on Linux), and under a
+    117-character path every Bash call failed with "Failed to create bridge
+    sockets" while the preflight, which uses the real `TMPDIR`, passed. So
+    such a trial gets a short private `TMPDIR` from `mktemp -d
+    /tmp/mcp-trial.XXXXXX` (a symlink into the run directory does not work,
+    since bubblewrap cannot follow it). The write checks count it as the
+    trial's own, and after the trial its contents are copied to
+    `tmp/host-tmp/` in the run directory and it is removed. Hooks from the developer's enabled
     plugins still run, outside the sandbox. `disableAllHooks` would stop
     them, but in a trial it also stopped the `managed-only` instruction-files
     setting from applying, which loaded the developer's `~/.claude/rules`
