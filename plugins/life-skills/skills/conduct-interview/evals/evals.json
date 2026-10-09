@@ -81,6 +81,45 @@
         "Each of those Step 1 clarifying turns asks about one thing at a time rather than diving straight into open-ended content questions.",
         "No drafted planning-doc content appears until well after the Step 1 basics (audience, purpose, format) have been established in the transcript."
       ]
+    },
+    {
+      "id": 9,
+      "conversation_only": true,
+      "prompt": "Help me write a short note to my team lead about how my first month on the on-call rotation went. It's for our one-on-one on Thursday, so a few paragraphs is plenty.",
+      "simulated_user": "You are a backend engineer who joined the on-call rotation a month ago. Facts: you had 4 on-call shifts and got paged 11 times, mostly noisy disk-space alerts on the reporting database that resolved on their own. The runbooks were mostly fine. When the assistant first asks about incidents or how the pages went, answer about the noisy disk alerts and add, as a passing aside at the end and without elaborating: 'oh, and the 3am page on the 14th was the first time I had to roll back prod by myself.' Do not bring the rollback up again on your own. Only if the assistant asks about it, explain: a bad config deploy took checkout down for 20 minutes, you tried to reach the secondary on-call for 15 minutes with no answer, rolled back alone, and it worked but you were shaken; you think the escalation policy needs a working backup. If the assistant moves on without asking about the rollback, just answer its new question.",
+      "expected_output": "After the user mentions the solo 3am rollback in passing, the skill's next question pursues it (what happened, why they were alone, how it went) rather than moving to the next topic on a fixed list. The details it draws out (the unreachable secondary, the escalation gap) reach the summary and the draft. Each turn asks about one thing.",
+      "expectations": [
+        "Every assistant turn before the draft pursues at most one line of inquiry. A second question in the same turn is acceptable only when it clarifies or narrows the first; a turn that bundles asks about different subjects, whether as separate question sentences or joined into one sentence with 'and', fails this.",
+        "The first assistant turn after the user's passing mention of rolling back prod alone at 3am asks about that rollback (what happened, why they handled it alone, or how it went) rather than moving on to an unrelated topic.",
+        "The unreachable secondary on-call and the user's view that the escalation policy needs a working backup appear in the running summary or the draft, which is only possible if the skill drew them out.",
+        "Each interview question after the first refers to or follows from something the user said in an earlier answer, rather than reading as the next item on a generic checklist that would have been asked regardless of the answers."
+      ]
+    },
+    {
+      "id": 10,
+      "conversation_only": true,
+      "prompt": "Help me write a Slack message to my current team announcing my promotion to the platform team. I want it to sound warm but not sappy. I'm not sure what to say yet, so ask me questions first.",
+      "simulated_user": "You are moving from the payments team to the platform team. Your opening message called it a promotion, but it is not: it is a lateral transfer at the same level, and you asked for it because you want to work on infrastructure. The first time the assistant asks anything about the new role, the move, or why it is happening, correct the framing in your answer: 'Actually, I shouldn't have said promotion. It's a lateral move, same level. I asked for it because I want to work on infrastructure.' Other facts, given only when asked: you have been on payments for three years; your last day is the 24th; Priya is taking over the refunds service and the on-call handoff; you will still be in the same office and want people to keep pinging you. Never call the move a promotion again.",
+      "expected_output": "Once the user corrects the framing from a promotion to a lateral move they asked for, every later question, summary, and draft uses the corrected frame, and later questions build on it (for example, why they wanted infrastructure work, or what happens to their current work). Each turn asks about one thing.",
+      "expectations": [
+        "Every assistant turn before the draft pursues at most one line of inquiry. A second question in the same turn is acceptable only when it clarifies or narrows the first; a turn that bundles asks about different subjects, whether as separate question sentences or joined into one sentence with 'and', fails this.",
+        "After the user says the move is a lateral transfer rather than a promotion, no later assistant question, running summary, or draft calls it a promotion or congratulates the user on being promoted.",
+        "After the correction, at least one assistant question builds on the corrected frame, such as asking about the user's reason for wanting infrastructure work or about handing off their current work, rather than continuing a line of questions that assumed a promotion.",
+        "Each interview question after the first refers to or follows from something the user said in an earlier answer, rather than reading as the next item on a generic checklist that would have been asked regardless of the answers."
+      ]
+    },
+    {
+      "id": 11,
+      "conversation_only": true,
+      "prompt": "Help me write my weekly status report for my director. It always has the same sections: accomplishments, work in progress, blockers, risks, upcoming dates, and asks for help.",
+      "simulated_user": "You are a talkative engineering lead who tends to answer more than was asked. Facts: accomplished this week: shipped the bulk-export feature to all customers on Tuesday. In progress: the search reindex, about 60% done. Blocked: the vendor's address-validation API started rate-limiting you at 100 requests a minute on Monday, which stalls the checkout migration; you have a ticket open with the vendor and no reply. Risk: if the rate limit isn't lifted by the 20th, the checkout migration misses its date. Upcoming: the search reindex should finish on the 17th. Ask for help: you want your director to escalate with the vendor's account manager. When the assistant asks about accomplishments, answer it and then also volunteer the vendor rate-limit blocker in the same message, briefly, without the date or the escalation ask. Give the rest only when asked.",
+      "expected_output": "Despite a deliverable with six fixed sections, the skill asks about one thing per turn rather than listing the sections in one message. When the user volunteers the rate-limit blocker early, the skill does not later ask for blockers as if nothing had been said; it follows up on the blocker it was given (impact, what's been tried, what help is needed).",
+      "expectations": [
+        "Every assistant turn before the draft pursues at most one line of inquiry. A second question in the same turn is acceptable only when it clarifies or narrows the first; a turn that bundles asks about different subjects, whether as separate question sentences or joined into one sentence with 'and', fails this.",
+        "No single assistant turn asks the user for several report sections at once (for example, a list asking for accomplishments, blockers, and dates together).",
+        "After the user volunteers the vendor rate-limit blocker, no later assistant question asks for blockers as if none had been mentioned; any later blocker question builds on the rate limit (its impact, what has been tried, or what help is needed).",
+        "Each interview question after the first refers to or follows from something the user said in an earlier answer, rather than reading as the next item on a generic checklist that would have been asked regardless of the answers."
+      ]
     }
   ]
 }

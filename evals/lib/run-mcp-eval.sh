@@ -8,7 +8,8 @@
 # Usage: run-mcp-eval.sh <skill-evals-dir> <eval-id> <run-dir>
 #
 #   <skill-evals-dir>  e.g. plugins/life-skills/skills/triage/evals
-#                      Must contain evals.json and fixtures/<eval-id>/.
+#                      Must contain evals.json and fixtures/<eval-id>/, unless
+#                      the eval is marked "conversation_only": true.
 #   <eval-id>          Numeric id matching evals.json and the fixtures/ subdir.
 #   <run-dir>          Fresh directory to build the trial in. Created if
 #                      missing; must be empty. Delete it when done -- there
@@ -57,9 +58,21 @@ SKILL_EVALS_DIR="$(cd "$1" > /dev/null && pwd)"
 EVAL_ID="$2"
 RUN_DIR="$3"
 
+# An eval marked "conversation_only": true in evals.json (a simulated-user
+# interview, say) needs no fixture: it gets an empty workspace and no stub
+# servers, and --strict-mcp-config still keeps every real server out of reach.
+# Any other eval must have a fixture directory, so a misnamed one fails here
+# rather than running as a trial with no data.
 FIXTURE_DIR="$SKILL_EVALS_DIR/fixtures/$EVAL_ID"
-if [[ ! -d "$FIXTURE_DIR" ]]; then
-  echo "run-mcp-eval: no fixture directory at $FIXTURE_DIR" >&2
+CONVERSATION_ONLY=$(python3 -c "
+import json, sys
+for e in json.load(open(sys.argv[1]))['evals']:
+    if str(e['id']) == sys.argv[2]:
+        print('1' if e.get('conversation_only') is True else '')
+        break
+" "$SKILL_EVALS_DIR/evals.json" "$EVAL_ID")
+if [[ ! -d "$FIXTURE_DIR" ]] && [[ -z "$CONVERSATION_ONLY" ]]; then
+  echo "run-mcp-eval: no fixture directory at $FIXTURE_DIR (mark the eval \"conversation_only\": true if it needs none)" >&2
   exit 1
 fi
 
@@ -117,7 +130,7 @@ add_stub_server atlassian jira_stub.py
 add_stub_server slack slack_stub.py
 add_stub_server calendar calendar_stub.py
 
-if [[ "$MCP_SERVERS_JSON" == "{}" ]]; then
+if [[ "$MCP_SERVERS_JSON" == "{}" ]] && [[ -z "$CONVERSATION_ONLY" ]]; then
   echo "run-mcp-eval: fixture $FIXTURE_DIR provides no recognized *-mcp-state.json file" >&2
   exit 1
 fi
