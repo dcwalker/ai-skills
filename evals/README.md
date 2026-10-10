@@ -633,15 +633,24 @@ second `claude -p` playing the user, one reply per turn, from the eval's
 prompt and the conversation so far. It never sees `expected_output` or the
 expectations, runs with no tools, no MCP servers, and none of the running
 user's instructions, and replies `DONE` once the skill has delivered its
-result and asks nothing more. `SIMULATED_USER_MAX_TURNS` caps its replies
+result and asks nothing more. Each turn's assistant side, for the simulated
+user and in `conversation.txt`, is every text block the skill wrote that
+turn, in order, not only its final message, so a question asked before a
+tool call is not lost. `SIMULATED_USER_MAX_TURNS` caps its replies
 (default 40). `conversation.txt` records both sides for the grader, and
 `simulated-user-turns` the number of replies sent. This replaces the
 simulated user that Agent-tool executors used to play, which is no longer
 safe for skills that consult connected sources: a subagent sees the
 session's real MCP servers, not the stubs.
 
-Without more to go on, the simulated user makes up any answer its opening
-message does not cover, so an eval cannot tell a question that built on the
+The simulated user answers only what it is asked. Where its opening message
+does not cover a question, it says it doesn't know or has no preference
+rather than inventing a name, date, or decision. It never volunteers a
+decision or answers a question before it is asked, never reverses an
+instruction its opening message gives or accepts an offer to drop something
+that message asked for, and, given options it has no preference among,
+takes the one the skill recommends. That keeps it from supplying facts a skill should have asked
+for, but it also means an eval cannot tell a question that built on the
 last answer from one that would have come next anyway. An eval may carry a
 `simulated_user` string: a private briefing appended to the simulated user's
 instructions and never shown to the skill. It holds the facts the skill has to

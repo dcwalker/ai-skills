@@ -154,9 +154,9 @@ print(' '.join(str(e['id']) for e in data['evals']))
 " "$EVALS_DIR/evals.json")
 fi
 
-# Every eval's stage_skills is checked before the first trial, before any earlier
-# result is cleared, so a typo in the last eval neither stops the batch
-# after the others have run nor costs the previous trial set.
+# Every eval's stage_skills is checked before the first trial and before
+# any earlier result is cleared, so a typo in the last eval neither stops
+# the batch after the others have run nor costs the previous trial set.
 python3 -c "
 import json, os, sys
 skills_dir, ids = sys.argv[2], set(sys.argv[3:])
@@ -185,7 +185,6 @@ mkdir -p "$TRIALS_DIR"
 # both fall under it, so a run dir reached through a symlink (/tmp on macOS)
 # would name a private HOME no rule covers.
 TRIALS_DIR="$(cd "$TRIALS_DIR" && pwd -P)"
-
 
 for ID in $IDS; do
   PROMPT=$(python3 -c "
@@ -235,26 +234,17 @@ else:
   # plugin to stage too, for a skill that hands part of its work to another
   # (triage's Step 8b stall interview runs conduct-interview). Turning the
   # plugin off above takes those siblings away with it, so without this the
-  # hand-off has nothing to load. A name that does not resolve to a sibling
-  # with a SKILL.md stops the batch: a typo that silently staged nothing
-  # would measure the sibling's absence.
+  # hand-off has nothing to load. Every eval's list was validated before the
+  # first trial (see above), so here it is only read.
   STAGE_SKILLS=$(python3 -c "
 import json, sys
 for e in json.load(open(sys.argv[1]))['evals']:
     if str(e['id']) == sys.argv[2]:
-        names = e.get('stage_skills', [])
-        if not isinstance(names, list) or not all(isinstance(n, str) and n and '/' not in n and not any(c.isspace() for c in n)
-                                                  and n not in ('.', '..') for n in names):
-            raise SystemExit(f'eval {sys.argv[2]}: stage_skills must be a list of skill directory names')
-        print('\n'.join(names))
+        print('\n'.join(e.get('stage_skills', [])))
         break
 " "$EVALS_DIR/evals.json" "$ID")
   for SIBLING in $STAGE_SKILLS; do
     SIBLING_DIR="$(dirname "$SKILL_DIR")/$SIBLING"
-    if [[ ! -f "$SIBLING_DIR/SKILL.md" ]]; then
-      echo "ERROR: eval $ID stages skill '$SIBLING', but $SIBLING_DIR/SKILL.md does not exist." >&2
-      exit 1
-    fi
     stage_skill "$SIBLING_DIR"
     echo "  staged sibling skill $SIBLING"
   done
@@ -529,7 +519,7 @@ for e in data['evals']:
     # holds only the skill's turns.
     SIM_DIR="$RUN_DIR/simulated-user"
     mkdir -p "$SIM_DIR"
-    SIM_SYSTEM="You are role-playing the user in a test conversation with an AI assistant. The conversation so far follows, starting with your own opening message. Write only your next message to the assistant, in the first person, as that user. Stay consistent with your opening message: never contradict it, and follow any instruction it gives about how you will answer (for example, declining an offer you said you would decline). Answer what the assistant asks; when it asks something your opening message does not cover, give a short, plausible answer that fits it. Do not invent notes, files, or pasted material your opening message does not say you have. Approve the assistant's proposals and drafts unless your opening message says otherwise. Keep replies brief. If the assistant has delivered its final result and asks you nothing more, reply with exactly: DONE"
+    SIM_SYSTEM="You are role-playing the user in a test conversation with an AI assistant. The conversation so far follows, starting with your own opening message; each ASSISTANT entry holds everything the assistant said in that turn, in order. Write only your next message to the assistant, in the first person, as that user. Stay consistent with your opening message: never contradict it, never reverse an instruction it gives (if it says to stop somewhere, you stop there), and follow any instruction it gives about how you will answer. Answer only what the assistant asks. When it asks something your opening message does not cover, say you don't know, or that you have no preference, rather than inventing a specific: no made-up names, owners, dates, numbers, decisions, or facts. Never volunteer a decision, a preference, a refusal, or an answer to a question the assistant has not asked yet (such as saying there is nothing more to add before it asks). Never accept an offer to skip, shorten, or drop something your opening message asked for. When your opening message says you will answer something at a particular point ('when you get to X, I'll tell you...'), wait until the assistant actually asks about X. Accept dates and values the assistant works out from what you said unless your opening message contradicts them. Do not correct or deny what the assistant says about you unless your opening message contradicts it. Do not invent notes, files, or pasted material your opening message does not say you have. Approve the assistant's proposals and drafts unless your opening message says otherwise; when it offers options and you have no preference, accept the one it recommends or lists first rather than picking an alternative. Keep replies brief. If the assistant has delivered its final result and asks you nothing more, reply with exactly: DONE. An offer of further help at the end of a final result is not a question."
     # An eval's optional `simulated_user` briefing gives the simulated user
     # facts the skill has to draw out, and how to reveal them: an offhand
     # aside worth following up, a correction to an earlier framing. The skill
@@ -557,18 +547,29 @@ $SIM_BRIEFING"
         echo "  WARNING: no session id to resume; stopping the simulated user for eval $ID"
         break
       fi
+      # The latest turn's assistant side is every text block it produced, in
+      # order, not only the result event's final message: a question asked
+      # before a tool call is otherwise lost to the simulated user and to the
+      # grader reading conversation.txt.
       python3 -c "
 import json, sys
-last = ''
+turn, last = [], []
 for line in open(sys.argv[1]):
     try:
         event = json.loads(line)
     except json.JSONDecodeError:
         continue
-    if event.get('type') == 'result':
-        last = event.get('result', '')
+    if not isinstance(event, dict):
+        continue
+    if event.get('type') == 'assistant':
+        content = (event.get('message') or {}).get('content') or []
+        turn += [b.get('text', '') for b in content
+                 if isinstance(b, dict) and b.get('type') == 'text' and b.get('text', '').strip()]
+    elif event.get('type') == 'result':
+        last = turn or [event.get('result', '')]
+        turn = []
 print('ASSISTANT:')
-print(last)
+print('\n\n'.join(last))
 print()
 " "$RUN_DIR/events.jsonl" >> "$RUN_DIR/conversation.txt"
       REPLY=$(cd "$SIM_DIR" && HOME="$TRIAL_HOME" TMPDIR="$TRIAL_TMP" \
