@@ -335,7 +335,9 @@ def search_threads(
     name>, after:, before:, newer_than:, older_than:, is:unread, is:read,
     is:starred, is:important, bare words, "quoted phrases", OR between
     terms, and '-' negation. from:me and to:me resolve to the fixture's "me" address.
-    Results come newest first."""
+    Results come newest first, at most 50 per page (20 by default). When more
+    remain, the response carries a nextPageToken: pass it as pageToken to get
+    the next page."""
     matches = []
     for t in state.data["threads"].values():
         if not includeTrash and "TRASH" in t["labelIds"] and "in:trash" not in query and "in:anywhere" not in query:
@@ -343,10 +345,23 @@ def search_threads(
         if not query or _thread_matches(t, query):
             matches.append(_thread_listing(t))
     matches.sort(key=lambda m: m["date"], reverse=True)
-    result = {"threads": matches[:pageSize]}
+    # Paging as the live tool does: pageSize defaults to 20 and is capped at
+    # 50, and a page with more after it carries nextPageToken and
+    # resultCountEstimate (both seen in a live response, 2026-10-10). The
+    # token here is the next offset as a string, opaque to the caller.
+    size = min(max(pageSize or 20, 1), 50)
+    try:
+        start = int(pageToken) if pageToken else 0
+    except ValueError:
+        raise ValueError(f"gmail-stub: invalid pageToken {pageToken!r}") from None
+    result = {"threads": matches[start:start + size]}
+    if start + size < len(matches):
+        result["nextPageToken"] = str(start + size)
+        result["resultCountEstimate"] = str(len(matches))
     state.log_call(
         "search_threads",
-        {"query": query, "pageSize": pageSize, "view": view, "includeTrash": includeTrash},
+        {"query": query, "pageSize": pageSize, "pageToken": pageToken, "view": view,
+         "includeTrash": includeTrash},
         result,
     )
     return result
@@ -452,6 +467,10 @@ def modify_thread_labels(
     ids must already exist (see list_labels)."""
     if thread_id not in state.data["threads"]:
         raise ValueError(f"gmail-stub: no thread with id {thread_id!r}")
+    if not add_label_ids and not remove_label_ids:
+        # A call whose label lists were misnamed reaches here with neither,
+        # and answering success would hide that nothing changed.
+        raise ValueError("gmail-stub: give add_label_ids or remove_label_ids (label ids to add or remove)")
     system_ids = {"INBOX", "UNREAD", "STARRED", "IMPORTANT", "TRASH", "SPAM"}
     for lbl in add_label_ids or []:
         if lbl not in system_ids and lbl not in state.data["labels"]:

@@ -98,6 +98,12 @@ Edit: update(ref={"object":"node","id":"<body id>"}, container=C, engine="prose"
 - delete: {"op":"delete","target":{"kind":"find","text":"<exact words>"}} or a block target with ifHash + ifRev.
 Chips: "blocks" beside "from" (or in doc) maps keys to {"type":"pending","intent"} | {"type":"date","value":"YYYY-MM-DD"} | {"type":"mention","user":"me"}; the text holds <?claude block key?>.""",
     "topic.editing": """# topic.editing (eval stub, condensed)
+Op shapes, inside update(ref={"object":"node","id":"<body id>"}, container=C, engine="prose", payload={"ops":[...]}):
+- insert: {"op":"insert","target":{"kind":"root"},"side":"end"|"start","source":{"from":{"kind":"inline","content":"<markdown>"},"as":"markdown"}}, or target {"kind":"blocks","ids":["<block id>"]} with side "before"|"after".
+- replace words: {"op":"replace","target":{"kind":"find","text":"<exact words>"},"with":{"from":{"kind":"inline","content":"<new words>"},"as":"text"}}.
+- replace a block: {"op":"replace","target":{"kind":"blocks","ids":["<id>"]},"ifHash":"<h>","ifRev":<rev>,"with":{"from":{"kind":"inline","content":"<markdown>"},"as":"markdown"}}.
+- delete: {"op":"delete","target":{"kind":"find","text":"<exact words>"}} or a block target with ifHash + ifRev.
+In a batch, an op is never a member by itself: wrap it as {"verb":"update","ref":{"object":"node","id":"<body id>"},"engine":"prose","payload":{"ops":[...]}}.
 Guards: a whole-block replace or delete carries "ifHash" (the block's h) and "ifRev" (the rev of the read that showed it), or "force":true. Missing -> missing_guard; a changed block -> guard_mismatch. Words not found -> find_none. Re-read the block and retry.
 Supported ops: insert, replace, delete. Others are refused as unsupported.""",
     "topic.comments": """# topic.comments (eval stub, condensed)
@@ -269,10 +275,15 @@ def _apply_op(node: dict, op: dict, rev: int) -> list:
     if name == "insert":
         content, _, chips = _source(op, "source")
         new = _blocks_from_markdown(content, chips, rev)
+        side = op.get("side")
         if target.get("kind") == "root":
-            at = 0 if op.get("side") == "start" else len(node["blocks"])
+            if side not in ("end", "start"):
+                _refuse("bad_side", "insert at the root takes side \"end\" or \"start\"")
+            at = 0 if side == "start" else len(node["blocks"])
         elif target.get("kind") == "blocks" and target.get("ids"):
-            at = _index(node, target["ids"][0]) + (0 if op.get("side") == "before" else 1)
+            if side not in ("before", "after"):
+                _refuse("bad_side", "insert beside a block takes side \"before\" or \"after\"")
+            at = _index(node, target["ids"][0]) + (0 if side == "before" else 1)
         else:
             _refuse("bad_target", "insert takes target {kind:root} or {kind:blocks, ids:[...]}")
         node["blocks"][at:at] = new
@@ -313,8 +324,20 @@ def _apply_op(node: dict, op: dict, rev: int) -> list:
     return []
 
 
+def _payload(payload):
+    """The live schema types payload as an object or a string, so a JSON
+    string is read as the object it spells."""
+    if isinstance(payload, str):
+        try:
+            return json.loads(payload)
+        except ValueError:
+            _refuse("bad_payload", "payload is an object, or a string holding one as JSON")
+    return payload
+
+
 def _update_node(node_id: str, payload, answering: str | None) -> dict:
     node = _node(node_id)
+    payload = _payload(payload)
     ops = (payload or {}).get("ops") if isinstance(payload, dict) else None
     if not isinstance(ops, list) or not ops:
         _refuse("bad_payload", "payload must be {\"ops\":[...]}")
@@ -342,6 +365,7 @@ def _thread_rows(root_id: str) -> list:
 
 
 def _create_utterance(container: dict | None, payload) -> dict:
+    payload = _payload(payload)
     value = (payload or {}).get("value") if isinstance(payload, dict) else None
     if not isinstance(value, dict):
         _refuse("bad_payload", "payload is {\"value\":{\"body\":...,\"parent\":{...}}}")
@@ -389,7 +413,10 @@ def guide(items: list[str] | None = None) -> str:
     """Docs guides: topic.index, topic.editing, topic.comments (condensed
     to what this eval stub implements)."""
     wanted = items or ["topic.index"]
-    result = "\n\n".join(_GUIDE.get(i, f"# {i}\n(not available in this eval stub; {_SUPPORTED})") for i in wanted)
+    # A bare topic name ("editing") finds its topic too, rather than leaving a
+    # trial to guess call shapes after a refusal.
+    result = "\n\n".join(_GUIDE.get(i) or _GUIDE.get(f"topic.{i}")
+                           or f"# {i}\n(not available in this eval stub; {_SUPPORTED})" for i in wanted)
     state.log_call("guide", {"items": wanted}, "<guide text>")
     return result
 
@@ -420,14 +447,21 @@ def batch(container: dict | None = None, batch: list | None = None, opId: str | 
                       "created": {"bound": True, "id": doc_id, "link": link}}
         else:
             _doc(container.get("id", ""))
+            # The tool applies a batch atomically: a refused member leaves the
+            # doc as it was before the batch, not with the earlier members in.
+            saved = copy.deepcopy({key: state.data[key] for key in ("nodes", "comments")})
             acks = []
-            for member in batch or []:
-                if member.get("verb") == "create" and member.get("object") == "utterance":
-                    acks.append(_create_utterance(container, member.get("payload")))
-                elif member.get("verb") == "update" and (member.get("ref") or {}).get("object") == "node":
-                    acks.append(_update_node(member["ref"]["id"], member.get("payload"), None))
-                else:
-                    _refuse("unsupported", f"batch member {member!r} is not implemented ({_SUPPORTED})")
+            try:
+                for member in batch or []:
+                    if member.get("verb") == "create" and member.get("object") == "utterance":
+                        acks.append(_create_utterance(container, member.get("payload")))
+                    elif member.get("verb") == "update" and (member.get("ref") or {}).get("object") == "node":
+                        acks.append(_update_node(member["ref"]["id"], member.get("payload"), None))
+                    else:
+                        _refuse("unsupported", f"batch member {member!r} is not implemented ({_SUPPORTED})")
+            except ValueError:
+                state.data.update(saved)
+                raise
             result = {"verdict": "allow", "acks": acks}
     except ValueError as refusal:
         state.log_call("batch", args, {"error": str(refusal)})
@@ -472,7 +506,7 @@ def read(ref: dict, container: dict | None = None, engine: str | None = None,
         elif kind == "node":
             node = _node(ref.get("id", ""))
             blocks = node["blocks"]
-            options = payload if isinstance(payload, dict) else {}
+            options = _payload(payload) or {}
             if options.get("kind") == "view" and "sinceRev" in options:
                 blocks = [b for b in blocks if b["rev"] > options["sinceRev"]]
             elif options.get("kind") == "search":
@@ -517,7 +551,7 @@ def query(object: str = "utterance", container: dict | None = None, payload: dic
     try:
         if container:
             _doc(container.get("id", ""))
-        options = payload if isinstance(payload, dict) else {}
+        options = _payload(payload) or {}
         under = options.get("under") or {}
         rows = state.data["comments"]
         if under.get("object") == "node":

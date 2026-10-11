@@ -669,7 +669,7 @@ draw out and how to reveal them, such as an aside to drop only in passing or a
 correction to make once the skill assumes the wrong frame. A later question
 that pursues one of those facts is then evidence the skill listened.
 
-Five things the shared driver does that a hand-run trial must do for itself:
+Eight things the shared driver does that a hand-run trial must do for itself:
 
 - It copies the skill under test into the trial workspace as a project skill
   (`.claude/skills/<name>/`). A trial subprocess otherwise sees only the
@@ -697,6 +697,18 @@ Five things the shared driver does that a hand-run trial must do for itself:
   `SKILL.md`, `references/`, and `scripts/` only. A name with no sibling
   `SKILL.md` behind it stops the batch. triage's own `run-trials.sh` does not
   read this key.
+- The same `enabledPlugins` setting turns off every other plugin the
+  developer has enabled in `~/.claude/settings.json` or
+  `settings.local.json`. The private `HOME` links the developer's plugins
+  directory and copies their settings, so without it a trial loaded
+  unrelated plugins alongside the staged skill.
+- Auto-memory is off in every trial (`CLAUDE_CODE_DISABLE_AUTO_MEMORY=1`),
+  as it already was in the preflight. With it on, a sift-email trial saved
+  links it should have reported into a memory file under its private `HOME`.
+- `WebFetch` is offered but left off `--allowedTools`, so under `dontAsk`
+  every call is denied. Unlike Bash it runs outside the sandbox, and trials
+  fetched real web pages with it. The attempted call still appears in
+  `tools.log`.
 - It passes an explicit `--allowedTools` allowlist instead of
   `--dangerously-skip-permissions`, which refuses to run as root and so rules
   out containers and CI. Each stub server is allowed wholesale, write tools
@@ -779,6 +791,11 @@ Five things the shared driver does that a hand-run trial must do for itself:
   how a trial starts with state already in place. A fixture can hand the
   trial its own prior cache, or somebody else's, and grade what the skill
   does with each.
+
+The model's clock is the machine's. A fixture's `stub_now` and its dates move
+to the run date in whole weeks, so they can sit up to six days and a few hours
+from what `date` or the model's own context says. Grade nothing that depends
+on the exact time a trial writes.
 
 ## Live sandbox cases
 
