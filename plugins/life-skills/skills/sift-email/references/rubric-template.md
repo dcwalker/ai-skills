@@ -4,6 +4,8 @@ This doc defines what "important" means to me. Sift reads it in full before ever
 run and updates it when I correct a label. Rules I write by hand are never
 deleted by sift. Keep it under about two pages.
 
+Timezone: UTC (change to yours, such as Europe/Berlin)
+
 ## Always important
 
 Senders, topics, or situations that should always get AI/Important.
@@ -20,12 +22,20 @@ What counts as someone waiting on me specifically.
 
 ## Low priority
 
-Everything that doesn't meet the rules above, including:
+Legitimate mail that doesn't meet the rules above, including:
 
 - Automated notifications that only confirm something already done
 - Group threads where I am Cc'd and nothing is asked of me
-- Newsletters, promotions, and marketing, even when worded urgently
+- Newsletters I signed up for
+- Receipts and statements
 - Social network notifications
+
+## Junk
+
+Mail I never want, including:
+
+- Promotions and marketing I didn't ask for, even when worded urgently
+- Spam-like or phishing-like messages
 
 ## Permissions
 
