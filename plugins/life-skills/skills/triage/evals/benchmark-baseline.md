@@ -78,6 +78,32 @@ The other suites that share these stubs (writing and organize-meeting-notes)
 see only the new `viewUrl` field and tools. None of their expectations
 grades a thread URL or a trash or label call, so none was re-run.
 
+## Gmail stub re-check (2026-10-10, issue #109)
+
+The numbers above are still the baseline of record. For issue #109 the Gmail
+stub changed under these evals: `list_labels` and `create_label` now return
+the live connector's shapes (`labelId`, `labelType`, counts), and the stub
+offers the official connector's `label_thread` and `unlabel_thread`. Every
+eval with a Gmail fixture (4, 5, 6, 11, 12, 19, 20, 21, 24, 31, 32, and 34)
+was re-run twice against SKILL.md as committed here.
+
+They scored 163/178, against 161/178 for the same evals above. No changed
+result traces to the stub. Every trial read label ids from `labelId`, none
+created a duplicate label or hit a label error, and evals 31 and 32 used the
+id `create_label` returned. What moved is the variation the section above
+describes: thread links, position numbers, and amounts in the email reports
+(evals 4, 11, and 12), eval 24 rewriting the card description instead of
+adding to it, and eval 32 run 2 leaving out the user's check-in. Many trials
+labeled with `label_thread` where these baseline trials used
+`modify_thread_labels`; the expectations grade final labels, so either
+passes. Evals 4 and 5 named the label tool in their call-log expectations and
+now name all three.
+
+Evals 11 and 12 also trashed the nine promotional mailers that these
+baseline trials archived. Those prompts do not authorize deletion, and no
+expectation catches it. The tool arrived in ca23d99, after these two evals
+last ran, so the stub change did not cause it; it is recorded on issue #102.
+
 ## Per-eval results
 
 | Eval | Scenario | Run 1 | Run 2 | Time r1 (s) | Time r2 (s) | Calls r1 | Calls r2 | Tokens r1 | Tokens r2 |

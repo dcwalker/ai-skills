@@ -45,7 +45,7 @@
         "Exactly one draft exists in the final Gmail state, addressed to sue@example.com (and/or created with replyToMessageId msg-1), with reply content consistent with sending the Q3 forecast -- and no draft is fabricated for any other thread.",
         "thread-2 (fence quote) has the 'Waiting For' label (Label_2) in its final labelIds and no longer has INBOX.",
         "thread-3 (long-read newsletter) has the 'Read-Review' label (Label_3) in its final labelIds and no longer has INBOX.",
-        "No create-label operation occurs and no thread is trashed/deleted -- the call log contains only reads plus create_draft, modify_thread_labels, and archive_thread calls.",
+        "No create-label operation occurs and no thread is trashed/deleted -- the call log contains only reads plus create_draft, archive_thread, and label-change calls (modify_thread_labels, label_thread, or unlabel_thread).",
         "The response includes a processed-count summary of what happened to the three threads (drafted, waiting-for, read-review), consistent with the actual final state.",
         "The response describes the fence-quote thread's next step as the user's own check-in with the vendor (for example 'check in with North Fence about the quote'), not as the vendor's task, and does not state a check-in date the thread does not give: it asks when to check in, or leaves the date to the user.",
         "The response states the processing order (oldest first). It may group threads by outcome; within any group holding more than one thread, the threads appear oldest first: the fence quote (thread-2, {{date:2026-07-27|%B %-d}}), then Sue's Q3 forecast (thread-1, {{date:2026-07-29|%B %-d}}), then the newsletter (thread-3, {{date:2026-07-30|%B %-d}}).",
@@ -59,7 +59,7 @@
       "expected_output": "The inbox is empty -- the account's only thread is an already-archived receipt carrying a topical reference label, which does not match the in:inbox scope. The skill should report the inbox is already empty (zero threads to process) and make no writes. It must not widen the scope to all mail uninvited, and must not invent work on the archived receipt.",
       "expectations": [
         "A search scoped to the inbox (in:inbox) appears in the call log.",
-        "No write call appears in the call log -- no create_draft, modify_thread_labels, or archive_thread.",
+        "No write call appears in the call log -- no create_draft, modify_thread_labels, label_thread, unlabel_thread, or archive_thread.",
         "The final Gmail state is semantically identical to the seed state.",
         "The response states the inbox is empty / there is nothing to process, and does not claim any thread was processed or expand into archived mail without being asked."
       ]
