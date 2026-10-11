@@ -101,6 +101,9 @@ should be findable by.
 
 import copy
 import datetime
+from typing import Annotated
+
+from pydantic import Field
 
 from common import StubState
 
@@ -501,33 +504,40 @@ def _change_labels(t: dict, add: list[str], remove: list[str]) -> None:
             t["labelIds"].remove(lbl)
 
 
+# The official connector's parameter names are camelCase. A validation alias
+# publishes those names in the tool's schema and accepts only them, while the
+# Python parameters stay snake_case.
+ThreadIdArg = Annotated[str, Field(validation_alias="threadId")]
+LabelIdsArg = Annotated[list[str], Field(validation_alias="labelIds")]
+
+
 @server.tool()
-def label_thread(threadId: str, labelIds: list[str]) -> dict:
+def label_thread(thread_id: ThreadIdArg, label_ids: LabelIdsArg) -> dict:
     """Adds labels to an entire thread. Mirrors the official Gmail MCP's
     label_thread: label ids, not names (see list_labels), and an empty
     object back on success, as a live call returned (2026-10-10)."""
-    if threadId not in state.data["threads"]:
-        raise ValueError(f"gmail-stub: no thread with id {threadId!r}")
-    _check_label_ids(labelIds)
-    _change_labels(state.data["threads"][threadId], labelIds, [])
+    if thread_id not in state.data["threads"]:
+        raise ValueError(f"gmail-stub: no thread with id {thread_id!r}")
+    _check_label_ids(label_ids)
+    _change_labels(state.data["threads"][thread_id], label_ids, [])
     state.flush()
     result = {}
-    state.log_call("label_thread", {"threadId": threadId, "labelIds": labelIds}, result)
+    state.log_call("label_thread", {"threadId": thread_id, "labelIds": label_ids}, result)
     return result
 
 
 @server.tool()
-def unlabel_thread(threadId: str, labelIds: list[str]) -> dict:
+def unlabel_thread(thread_id: ThreadIdArg, label_ids: LabelIdsArg) -> dict:
     """Removes labels from an entire thread. Mirrors the official Gmail
     MCP's unlabel_thread: label ids, and an empty object back on success.
     A listed label the thread does not carry is left alone."""
-    if threadId not in state.data["threads"]:
-        raise ValueError(f"gmail-stub: no thread with id {threadId!r}")
-    _check_label_ids(labelIds)
-    _change_labels(state.data["threads"][threadId], [], labelIds)
+    if thread_id not in state.data["threads"]:
+        raise ValueError(f"gmail-stub: no thread with id {thread_id!r}")
+    _check_label_ids(label_ids)
+    _change_labels(state.data["threads"][thread_id], [], label_ids)
     state.flush()
     result = {}
-    state.log_call("unlabel_thread", {"threadId": threadId, "labelIds": labelIds}, result)
+    state.log_call("unlabel_thread", {"threadId": thread_id, "labelIds": label_ids}, result)
     return result
 
 

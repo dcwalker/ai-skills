@@ -68,6 +68,9 @@ import hashlib
 import json
 import re
 import uuid
+from typing import Annotated
+
+from pydantic import Field
 
 from common import StubState
 
@@ -85,6 +88,11 @@ Edit: update(ref={"object":"node","id":"<body id>"}, container=C, engine="prose"
 Comments: create(object="utterance", container=C, payload={"value":{"body":"...","parent":{"object":"node","id":"<body id>","anchor":{"kind":"find","text":"<words in the doc>"}}}}); reply with parent {"object":"utterance","id":"<thread id>"}; list with query(object="utterance", container=C, payload={"under":{"object":"node","id":"<body id>"}})."""
 
 server = MCPServer("docs-stub", instructions=_INSTRUCTIONS)
+
+# The live connector names this parameter opId. A validation alias publishes
+# that name in each tool's schema and accepts only it, while the Python
+# parameter stays snake_case.
+OpIdArg = Annotated[str | None, Field(validation_alias="opId")]
 
 _GUIDE = {
     "topic.index": """# topic.index (eval stub, condensed)
@@ -496,10 +504,10 @@ def guide(items: list[str] | None = None) -> str:
 
 
 @server.tool()
-def batch(container: dict | None = None, batch: list | None = None, opId: str | None = None,
+def batch(container: dict | None = None, batch: list | None = None, op_id: OpIdArg = None,
           verbose: bool | None = None) -> dict:
     """Create a doc, or apply several operations to one doc atomically."""
-    args = {"container": container, "batch": batch, "opId": opId}
+    args = {"container": container, "batch": batch, "opId": op_id}
     container = container or {}
     try:
         if "create" in container:
@@ -517,7 +525,7 @@ def batch(container: dict | None = None, batch: list | None = None, opId: str | 
 
 @server.tool()
 def update(ref: dict, payload: dict | str, container: dict | None = None, engine: str | None = None,
-           opId: str | None = None, answering: str | None = None, verbose: bool | None = None) -> dict:
+           op_id: OpIdArg = None, answering: str | None = None, verbose: bool | None = None) -> dict:
     """Edit a tab's contents."""
     args = {"ref": ref, "payload": payload, "container": container, "engine": engine, "answering": answering}
     try:
@@ -573,7 +581,7 @@ def read(ref: dict, container: dict | None = None, engine: str | None = None,
 
 @server.tool()
 def create(object: str, payload: dict | str, container: dict | None = None, artifact: str | None = None,
-           engine: str | None = None, opId: str | None = None, verbose: bool | None = None) -> dict:
+           engine: str | None = None, op_id: OpIdArg = None, verbose: bool | None = None) -> dict:
     """Create one object in a doc: a comment (utterance)."""
     args = {"object": object, "payload": payload, "container": container}
     try:
