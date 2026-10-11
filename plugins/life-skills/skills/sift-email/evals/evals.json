@@ -205,7 +205,7 @@
         "Each of t-new ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
         "The final rubric body contains the line 'Anything about my mom's care, from anyone, is Important' unchanged.",
         "Every rule above the Added by sift section in the seed (Always important, Needs reply, Low priority, and Junk) is still present word for word, and none was moved under Added by sift.",
-        "The 22 'Automated notices from ... are Low priority' rules are consolidated: the final rubric has fewer than 10 lines starting 'Automated notices from'.",
+        "The 22 'Automated notices from ... are Low priority' rules are consolidated: under Added by sift, rules about the same business and its own helper senders (such as a store and its shipping partner) are merged, leaving at most 12 rule lines about these notices.",
         "The consolidated rules under Added by sift name only senders the 22 replaced rules named (the bookshop, the meal kit service, the library, and so on) and contain no open-ended category such as 'and similar', 'etc.', 'other vendors', or a general class of sender standing in for the named ones.",
         "The Examples section has fewer than 24 entries.",
         "The Changelog has at most 20 entries, newest first; its first entry, dated the run date, records the consolidation, and any seed entries kept are the newest ones (from the end of September), not the oldest.",

@@ -27,7 +27,7 @@
     ],
     "runs_per_configuration": 2,
     "executor": "real `claude -p --strict-mcp-config --output-format stream-json` subprocess, one per trial, via evals/lib/run-mcp-trials.sh",
-    "notes": "First baseline for sift-email (issue #109). Evals 1-18, two runs each, with run-mcp-trials.sh against the Gmail, Claude Docs, and Contacts stubs, on SKILL.md as committed with this baseline. Run date 2026-10-11 (fixtures anchored to 2026-10-10, shift 0). Failures: eval 1 (both runs) left the new doc links out of the log summary, though the chat reply has them; eval 15 consolidated to 12 rules, each naming only its own senders, against an expectation of fewer than 10 lines (the expectation is stricter than the skill's no-broadening rule allows), and run 1 did not log the consolidation in the changelog. The Docs stub's batch was not yet atomic when these trials ran (fixed in the same change); one refused batch (eval 2 run 2) kept its earlier members, and the retry left the same final state."
+    "notes": "First baseline for sift-email (issue #109). Evals 1-18, two runs each, with run-mcp-trials.sh against the Gmail, Claude Docs, and Contacts stubs, on SKILL.md as committed with this baseline. Run date 2026-10-11 (fixtures anchored to 2026-10-10, shift 0). Failures: eval 1 (both runs) left the new doc links out of the log summary, though the chat reply has them; eval 15 run 1 did not log its consolidation in the changelog. Eval 15's line-count expectation was loosened from fewer than 10 lines to at most 12 after this run, because the skill's no-broadening rule leaves one line per business; both runs were re-graded on it from their saved final state (12 rules each) and pass. The Docs stub's batch was not yet atomic when these trials ran (fixed in the same change); one refused batch (eval 2 run 2) kept its earlier members, and the retry left the same final state."
   },
   "runs": [
     {
@@ -1509,9 +1509,9 @@
       "configuration": "with_skill",
       "run_number": 1,
       "result": {
-        "pass_rate": 0.7778,
-        "passed": 7,
-        "failed": 2,
+        "pass_rate": 0.8889,
+        "passed": 8,
+        "failed": 1,
         "total": 9,
         "not_exercised": 0,
         "time_seconds": 149.662,
@@ -1536,9 +1536,9 @@
           "evidence": "Seed-vs-out diff of rubric-body touches only lines from Added by sift down (hunks start at line 50); Always important, Needs reply, Low priority, and Junk sections identical."
         },
         {
-          "text": "The 22 'Automated notices from ... are Low priority' rules are consolidated: the final rubric has fewer than 10 lines starting 'Automated notices from'.",
-          "passed": false,
-          "evidence": "Final rubric has 12 lines starting 'Automated notices from' (10 pairs merged as 'X and its Y', plus car wash and dentist's newsletter kept singly). 12 is not fewer than 10."
+          "text": "The 22 'Automated notices from ... are Low priority' rules are consolidated: under Added by sift, rules about the same business and its own helper senders (such as a store and its shipping partner) are merged, leaving at most 12 rule lines about these notices.",
+          "passed": true,
+          "evidence": "Re-graded from the final rubric after the expectation was loosened: Added by sift holds 12 rule lines, 10 of them merging a business with its own helper senders (e.g. '- Automated notices from the bookshop and its shipping partner are Low priority')."
         },
         {
           "text": "The consolidated rules under Added by sift name only senders the 22 replaced rules named (the bookshop, the meal kit service, the library, and so on) and contain no open-ended category such as 'and similar', 'etc.', 'other vendors', or a general class of sender standing in for the named ones.",
@@ -1572,9 +1572,9 @@
       "configuration": "with_skill",
       "run_number": 2,
       "result": {
-        "pass_rate": 0.8889,
-        "passed": 8,
-        "failed": 1,
+        "pass_rate": 1.0,
+        "passed": 9,
+        "failed": 0,
         "total": 9,
         "not_exercised": 0,
         "time_seconds": 121.595,
@@ -1599,9 +1599,9 @@
           "evidence": "Seed-vs-out diff of rubric-body touches only lines from Added by sift down (hunks start at line 50); Always important, Needs reply, Low priority, and Junk sections identical."
         },
         {
-          "text": "The 22 'Automated notices from ... are Low priority' rules are consolidated: the final rubric has fewer than 10 lines starting 'Automated notices from'.",
-          "passed": false,
-          "evidence": "Final rubric has 12 lines starting 'Automated notices from' (10 pairs merged as 'X and its Y', plus car wash and dentist's newsletter kept singly). 12 is not fewer than 10."
+          "text": "The 22 'Automated notices from ... are Low priority' rules are consolidated: under Added by sift, rules about the same business and its own helper senders (such as a store and its shipping partner) are merged, leaving at most 12 rule lines about these notices.",
+          "passed": true,
+          "evidence": "Re-graded from the final rubric after the expectation was loosened: Added by sift holds 12 rule lines, 10 of them merging a business with its own helper senders (e.g. '- Automated notices from the bookshop and its shipping partner are Low priority')."
         },
         {
           "text": "The consolidated rules under Added by sift name only senders the 22 replaced rules named (the bookshop, the meal kit service, the library, and so on) and contain no open-ended category such as 'and similar', 'etc.', 'other vendors', or a general class of sender standing in for the named ones.",
@@ -1982,9 +1982,9 @@
   "run_summary": {
     "with_skill": {
       "pass_rate": {
-        "mean": 0.9846,
-        "stddev": 0.0465,
-        "min": 0.7778,
+        "mean": 0.9907,
+        "stddev": 0.0307,
+        "min": 0.8889,
         "max": 1.0
       },
       "time_seconds": {

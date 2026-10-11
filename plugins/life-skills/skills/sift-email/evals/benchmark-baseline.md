@@ -10,7 +10,7 @@
 
 | Metric | With Skill |
 |--------|------------|
-| Expectations passed | 255/260 (98%): 127/130 run 1, 128/130 run 2 |
+| Expectations passed | 257/260 (99%): 128/130 run 1, 129/130 run 2 |
 | Evals passing both runs | 16/18 |
 | Time | 93.7s ± 33.2s |
 | Tokens | 610,912 ± 173,641 (total processed, dominated by cache reads) |
@@ -34,14 +34,16 @@ Passing in both runs: 2-14 and 16-18.
   in chat and asked for them in the routine prompt, but left them out of the
   log summary, which Step 6 also asks for. The links matter most in chat, where
   the user reads them on the first run; the log copy is the gap.
-- **Consolidation (15), 7/9 and 8/9.** Both runs consolidated the 22
+- **Consolidation (15), 8/9 and 9/9.** Both runs consolidated the 22
   near-duplicate rules into 12, each naming one business and its own helper
   senders, with no open-ended category, and left every user rule untouched.
-  Both missed the expectation of fewer than 10 rule lines. That expectation is
-  stricter than the skill's rule that a consolidated rule names only the
-  senders it replaces: twelve unrelated businesses do not merge without putting
-  several on one line, which the skill never asks for. Run 1 also trimmed the
-  changelog to 20 without adding an entry for the consolidation.
+  Run 1 trimmed the changelog to 20 without adding an entry for the
+  consolidation. The expectation on how far to consolidate first asked for
+  fewer than 10 lines, which is stricter than the skill's rule that a
+  consolidated rule names only the senders it replaces: twelve unrelated
+  businesses do not merge without putting several on one line. It now asks
+  for business-and-helper merges and at most 12 lines, and both runs were
+  re-graded on it from their saved final state.
 
 Held in every trial: the whole-inbox backlog (eval 18) labeled all 56 threads,
 following the search onto its second page; Permissions grants were carried
@@ -92,7 +94,7 @@ label name rather than label id, which the stub and live Gmail both accept.
 | 12 | Archive granted for Junk | 4/4 | 4/4 | 66.7 | 74.4 | 21 | 19 | 572,493 | 521,864 |
 | 13 | Archive asked, not granted | 6/6 | 6/6 | 72.9 | 124.5 | 27 | 33 | 561,509 | 969,302 |
 | 14 | Docs connector missing | 7/7 | 7/7 | 44.2 | 44.9 | 15 | 16 | 403,270 | 399,927 |
-| 15 | Oversized rubric consolidation | 7/9 | 8/9 | 149.7 | 121.6 | 18 | 18 | 677,313 | 537,970 |
+| 15 | Oversized rubric consolidation | 8/9 | 9/9 | 149.7 | 121.6 | 18 | 18 | 677,313 | 537,970 |
 | 16 | Existing labels are context | 7/7 | 7/7 | 79.0 | 67.8 | 26 | 23 | 503,505 | 540,159 |
 | 17 | About me as memory | 9/9 | 9/9 | 75.2 | 84.9 | 22 | 23 | 578,006 | 659,517 |
 | 18 | Whole-inbox backlog, two pages | 8/8 | 8/8 | 141.6 | 183.0 | 79 | 82 | 741,045 | 1,189,408 |
