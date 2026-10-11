@@ -444,7 +444,7 @@ json.dump(config, open(sys.argv[2], 'w'), indent=2)
       HOME="$TRIAL_HOME" TMPDIR="$TRIAL_TMP" CLAUDE_CODE_TMPDIR="$RUN_DIR/tmp" \
         claude -p --permission-mode dontAsk \
         --tools "$TRIAL_TOOLS" \
-        --allowedTools "Bash Read Glob Grep WebFetch TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian mcp__slack mcp__calendar" \
+        --allowedTools "Bash Read Glob Grep WebFetch TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian mcp__slack mcp__calendar mcp__docs mcp__contacts" \
         --strict-mcp-config --verbose ${resume_flag[@]+"${resume_flag[@]}"} \
         --settings "$TRIAL_SETTINGS" \
         --mcp-config "$turn_mcp_config" --output-format stream-json -- "$turn_prompt" \

@@ -129,6 +129,8 @@ add_stub_server gmail gmail_stub.py
 add_stub_server atlassian jira_stub.py
 add_stub_server slack slack_stub.py
 add_stub_server calendar calendar_stub.py
+add_stub_server docs docs_stub.py
+add_stub_server contacts contacts_stub.py
 
 if [[ "$MCP_SERVERS_JSON" == "{}" ]] && [[ -z "$CONVERSATION_ONLY" ]]; then
   echo "run-mcp-eval: fixture $FIXTURE_DIR provides no recognized *-mcp-state.json file" >&2
@@ -172,7 +174,7 @@ ENV_FILE="$RUN_DIR/env.sh"
     echo "export TRELLO_FIXTURE_LOG=\"$RUN_DIR/trello-calls.log\""
   fi
   # Per-service grading artifacts (only for services this fixture wired up):
-  for SERVICE in trello gmail atlassian slack calendar; do
+  for SERVICE in trello gmail atlassian slack calendar docs contacts; do
     if [[ -f "$FIXTURE_DIR/$SERVICE-mcp-state.json" ]]; then
       VAR="$(echo "$SERVICE" | tr '[:lower:]' '[:upper:]')"
       echo "export ${VAR}_STATE_SEED=\"$RUN_DIR/$SERVICE-state-seed.json\""
