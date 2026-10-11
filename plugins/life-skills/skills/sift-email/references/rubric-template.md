@@ -1,10 +1,46 @@
 # Email Sift Rubric
 
-This doc defines what "important" means to me. Sift reads it in full before every
-run and updates it when I correct a label. Rules I write by hand are never
-deleted by sift. Keep it under about two pages.
+Sift labels new Gmail by importance on a schedule, and reads this doc in full
+before every run. It's my definition of what matters. Every rule above "Added
+by sift" is mine, and sift never changes those. Keep it under about two pages.
 
 Timezone: UTC (change to yours, such as Europe/Berlin)
+
+## How to use this doc
+
+- **Change a rule:** edit any section above "Added by sift". Sift never changes those.
+- **Correct a label:** in Gmail, swap the AI label for the right one, or add
+  AI/Wrong. Sift learns from it on its next run and records the change in the
+  Changelog.
+- **Answer a question:** sift asks in comments that start with "Sift:". Reply
+  in the thread, and the next run applies your answer.
+- **Allow more than labels:** add it under Permissions, for example
+  "Archive threads labeled AI/Junk".
+- **Tell sift about yourself:** add notes under About me, grouped by topic.
+  Sift adds its own notes there too, each starting with "(inferred)". Edit one
+  to correct it, or remove "(inferred)" to make it yours.
+
+## Labels
+
+| Label | Meaning |
+|---|---|
+| AI/Important | I'd want to see it today |
+| AI/Low priority | Legitimate, nothing urgent |
+| AI/Junk | Mail I never want |
+| AI/Needs reply | Someone is waiting on me |
+| AI/Sifted | Sift has evaluated it |
+| AI/Wrong | I add this to flag a bad call |
+
+## About me
+
+Who I am, the people in my mail, and what matters to me right now, grouped by
+topic so related notes sit together. Sift reads this before every run. Lines
+I write are mine. Sift adds lines that start with "(inferred)", with where it
+learned each one and when, and it edits only those lines.
+
+### (topic, such as Kids' soccer, Home, or Work)
+
+- (I add these)
 
 ## Always important
 
@@ -15,10 +51,19 @@ Senders, topics, or situations that should always get AI/Important.
 
 ## Needs reply
 
-What counts as someone waiting on me specifically.
+What counts as someone waiting on me specifically. It depends on the message,
+not on who sent it.
 
 - A direct question addressed to me by name or as the only recipient
 - Requests for a decision, approval, or volunteer sign-up
+- A statement addressed to me that needs me to acknowledge it, such as a
+  confirmation someone is waiting on
+
+Not a reply, even from someone I know:
+
+- A message to a group that only shares information, such as a note to all
+  tenants about a visit
+- An acknowledgment of my own message, such as "ok, thanks" or "got it"
 
 ## Low priority
 
@@ -36,6 +81,13 @@ Mail I never want, including:
 
 - Promotions and marketing I didn't ask for, even when worded urgently
 - Spam-like or phishing-like messages
+
+## Added by sift
+
+Rules sift learned from my corrections. Sift adds, sharpens, and consolidates
+rules only here. A rule here can narrow one of mine for the cases it names.
+
+- (sift adds these)
 
 ## Permissions
 
