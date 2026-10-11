@@ -194,6 +194,7 @@ underlying data.
 **life-skills:**
 [conduct-interview](plugins/life-skills/skills/conduct-interview/evals/benchmark-baseline.md) ·
 [organize-meeting-notes](plugins/life-skills/skills/organize-meeting-notes/evals/benchmark-baseline.md) ·
+[sift-email](plugins/life-skills/skills/sift-email/evals/benchmark-baseline.md) ·
 [triage](plugins/life-skills/skills/triage/evals/benchmark-baseline.md) ·
 [writing](plugins/life-skills/skills/writing/evals/benchmark-baseline.md)
 
@@ -223,7 +224,7 @@ dates, and totals.
   prepares an isolated trial (scratch repo, stubs on `PATH`, fixture env
   vars); the executor is then a Claude subagent pointed at the prepared
   workspace.
-- MCP-backed skills (`triage`, `writing`): trials must be real `claude -p`
+- MCP-backed skills (`sift-email`, `triage`, `writing`): trials must be real `claude -p`
   subprocesses. Run `bash evals/lib/run-mcp-trials.sh <skill-evals-dir>`
   (`triage` has its own equivalent driver at
   `plugins/life-skills/skills/triage/evals/run-trials.sh`); it wires the MCP

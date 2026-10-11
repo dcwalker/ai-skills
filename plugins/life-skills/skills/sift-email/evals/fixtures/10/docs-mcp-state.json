@@ -1,0 +1,390 @@
+{
+  "anchor_date": "2026-10-10",
+  "me": {
+    "principal": "u_pat",
+    "name": "Pat Example"
+  },
+  "docs": {
+    "5f0c2a7e-1b3d-4c8e-9a10-0000000000a1": {
+      "name": "Email Sift Rubric",
+      "tabs": [
+        {
+          "id": "rubric-tab",
+          "name": "Email Sift Rubric",
+          "node": "rubric-body"
+        }
+      ]
+    },
+    "5f0c2a7e-1b3d-4c8e-9a10-0000000000b2": {
+      "name": "Email Sift Log",
+      "tabs": [
+        {
+          "id": "log-tab",
+          "name": "Email Sift Log",
+          "node": "log-body"
+        }
+      ]
+    }
+  },
+  "nodes": {
+    "rubric-body": {
+      "doc": "5f0c2a7e-1b3d-4c8e-9a10-0000000000a1",
+      "rev": 1,
+      "blocks": [
+        {
+          "id": "rubric-body.0",
+          "kind": "heading",
+          "markdown": "# Email Sift Rubric",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.1",
+          "kind": "paragraph",
+          "markdown": "Sift labels new Gmail by importance on a schedule, and reads this doc in full before every run. It's my definition of what matters. Every rule above \"Added by sift\" is mine, and sift never changes those. Keep it under about two pages.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.2",
+          "kind": "paragraph",
+          "markdown": "Timezone: America/Chicago",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.3",
+          "kind": "heading",
+          "markdown": "## How to use this doc",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.4",
+          "kind": "list",
+          "markdown": "- **Change a rule:** edit any section above \"Added by sift\". Sift never changes those.\n- **Correct a label:** in Gmail, swap the AI label for the right one, or add AI/Wrong. Sift learns from it on its next run and records the change in the Changelog.\n- **Answer a question:** sift asks in comments that start with \"Sift:\". Reply in the thread, and the next run applies your answer.\n- **Allow more than labels:** add it under Permissions, for example \"Archive threads labeled AI/Junk\".\n- **Tell sift about yourself:** add notes under About me, grouped by topic. Sift adds its own notes there too, each starting with \"(inferred)\". Edit one to correct it, or remove \"(inferred)\" to make it yours.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.5",
+          "kind": "heading",
+          "markdown": "## Labels",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.6",
+          "kind": "table",
+          "markdown": "| Label | Meaning |\n|---|---|\n| AI/Important | I'd want to see it today |\n| AI/Low priority | Legitimate, nothing urgent |\n| AI/Junk | Mail I never want |\n| AI/Needs reply | Someone is waiting on me |\n| AI/Sifted | Sift has evaluated it |\n| AI/Wrong | I add this to flag a bad call |",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.7",
+          "kind": "heading",
+          "markdown": "## About me",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.8",
+          "kind": "paragraph",
+          "markdown": "Who I am, the people in my mail, and what matters to me right now, grouped by topic so related notes sit together. Sift reads this before every run. Lines I write are mine. Sift adds lines that start with \"(inferred)\", with where it learned each one and when, and it edits only those lines.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.9",
+          "kind": "heading",
+          "markdown": "### (topic, such as Kids' soccer, Home, or Work)",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.10",
+          "kind": "list",
+          "markdown": "- (I add these)",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.11",
+          "kind": "heading",
+          "markdown": "## Always important",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.12",
+          "kind": "paragraph",
+          "markdown": "Senders, topics, or situations that should always get AI/Important.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.13",
+          "kind": "list",
+          "markdown": "- Anything from a person I have written to in the last 90 days, unless it is clearly bulk mail\n- Deadlines, payments, or schedule changes affecting the next 7 days\n- Anything from my kids' coaches or teachers",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.14",
+          "kind": "heading",
+          "markdown": "## Needs reply",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.15",
+          "kind": "paragraph",
+          "markdown": "What counts as someone waiting on me specifically. It depends on the message, not on who sent it.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.16",
+          "kind": "list",
+          "markdown": "- A direct question addressed to me by name or as the only recipient\n- Requests for a decision, approval, or volunteer sign-up\n- A statement addressed to me that needs me to acknowledge it, such as a confirmation someone is waiting on",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.17",
+          "kind": "paragraph",
+          "markdown": "Not a reply, even from someone I know:",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.18",
+          "kind": "list",
+          "markdown": "- A message to a group that only shares information, such as a note to all tenants about a visit\n- An acknowledgment of my own message, such as \"ok, thanks\" or \"got it\"",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.19",
+          "kind": "heading",
+          "markdown": "## Low priority",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.20",
+          "kind": "paragraph",
+          "markdown": "Legitimate mail that doesn't meet the rules above, including:",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.21",
+          "kind": "list",
+          "markdown": "- Automated notifications that only confirm something already done\n- Group threads where I am Cc'd and nothing is asked of me\n- Newsletters I signed up for\n- Receipts and statements\n- Social network notifications",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.22",
+          "kind": "heading",
+          "markdown": "## Junk",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.23",
+          "kind": "paragraph",
+          "markdown": "Mail I never want, including:",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.24",
+          "kind": "list",
+          "markdown": "- Promotions and marketing I didn't ask for, even when worded urgently\n- Spam-like or phishing-like messages",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.25",
+          "kind": "heading",
+          "markdown": "## Added by sift",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.26",
+          "kind": "paragraph",
+          "markdown": "Rules sift learned from my corrections. Sift adds, sharpens, and consolidates rules only here. A rule here can narrow one of mine for the cases it names.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.27",
+          "kind": "list",
+          "markdown": "- (sift adds these)",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.28",
+          "kind": "heading",
+          "markdown": "## Permissions",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.29",
+          "kind": "paragraph",
+          "markdown": "Actions beyond labeling that sift may take, by category. Empty means labels only.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.30",
+          "kind": "list",
+          "markdown": "- (none yet)",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.31",
+          "kind": "heading",
+          "markdown": "## Examples",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.32",
+          "kind": "paragraph",
+          "markdown": "Real cases that teach the rules. Format: sender | subject | correct label | why.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.33",
+          "kind": "list",
+          "markdown": "- (sift adds these from corrections)",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.34",
+          "kind": "heading",
+          "markdown": "## Changelog",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.35",
+          "kind": "paragraph",
+          "markdown": "Newest first. Date | change | prompted by.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.36",
+          "kind": "list",
+          "markdown": "- (sift adds these)",
+          "rev": 1
+        }
+      ]
+    },
+    "log-body": {
+      "doc": "5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "rev": 1,
+      "blocks": [
+        {
+          "id": "log-body.0",
+          "kind": "heading",
+          "markdown": "# Email Sift Log",
+          "rev": 1
+        },
+        {
+          "id": "log-body.1",
+          "kind": "paragraph",
+          "markdown": "What sift did on each run, newest first, so I can check any call. To correct one, change its label in Gmail (see the rubric's \"How to use this doc\").",
+          "rev": 1
+        },
+        {
+          "id": "log-body.2",
+          "kind": "heading",
+          "markdown": "## Runs",
+          "rev": 1
+        },
+        {
+          "id": "log-body.3",
+          "kind": "paragraph",
+          "markdown": "Each run adds its date and time, a short summary, then one line per thread:",
+          "rev": 1
+        },
+        {
+          "id": "log-body.4",
+          "kind": "paragraph",
+          "markdown": "time | thread id | sender | subject | labels applied | reason",
+          "rev": 1
+        },
+        {
+          "id": "log-body.5",
+          "kind": "paragraph",
+          "markdown": "Times are in the timezone the rubric names.",
+          "rev": 1
+        },
+        {
+          "id": "log-body.6",
+          "kind": "heading",
+          "markdown": "### {{date:2026-10-09}} 07:00",
+          "rev": 1
+        },
+        {
+          "id": "log-body.7",
+          "kind": "paragraph",
+          "markdown": "Run {{date:2026-10-09}} 07:00: processed 1. Opened 1 question.",
+          "rev": 1
+        },
+        {
+          "id": "log-body.8",
+          "kind": "list",
+          "markdown": "- 07:00 | t-asked | treasurer@maplegrovepta.example | Reimbursement form | AI/Low priority, AI/Sifted | Form with no deadline",
+          "rev": 1
+        },
+        {
+          "id": "log-body.9",
+          "kind": "heading",
+          "markdown": "## Weekly summaries",
+          "rev": 1
+        },
+        {
+          "id": "log-body.10",
+          "kind": "paragraph",
+          "markdown": "Runs older than 30 days, rolled up to one line per week.",
+          "rev": 1
+        },
+        {
+          "id": "log-body.11",
+          "kind": "list",
+          "markdown": "- (none yet)",
+          "rev": 1
+        }
+      ]
+    }
+  },
+  "comments": [
+    {
+      "seq": 1,
+      "at": "2026-10-09T14:00:00.000Z",
+      "verb": "create",
+      "id": "q-1",
+      "node": "rubric-body",
+      "actor": {
+        "principal": "u_pat",
+        "channel": "external",
+        "via": "mcp",
+        "self": true,
+        "name": "Pat Example"
+      },
+      "payload": {
+        "value": {
+          "body": "Sift: You marked 'Reimbursement form' from treasurer@maplegrovepta.example (Oct 7) wrong. I had it as Low priority. Should mail like this be Important or Junk?",
+          "parent": {
+            "object": "node",
+            "id": "rubric-body",
+            "anchor": {
+              "kind": "chars",
+              "block": "rubric-body.21",
+              "quote": "Receipts and statements"
+            }
+          }
+        }
+      }
+    },
+    {
+      "seq": 2,
+      "at": "2026-10-09T23:10:00.000Z",
+      "verb": "create",
+      "id": "a-1",
+      "node": "rubric-body",
+      "actor": {
+        "principal": "u_pat",
+        "channel": "editor",
+        "via": "editor",
+        "self": true,
+        "name": "Pat Example"
+      },
+      "payload": {
+        "value": {
+          "body": "Important. Anything from the PTA treasurer is about money I'm owed or owe.",
+          "parent": {
+            "object": "utterance",
+            "id": "q-1"
+          }
+        }
+      }
+    }
+  ]
+}

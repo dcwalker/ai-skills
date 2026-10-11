@@ -1,0 +1,182 @@
+{
+  "anchor_date": "2026-10-10",
+  "stub_now": "2026-10-10T15:00:00Z",
+  "me": "pat@example.com",
+  "labels": {
+    "INBOX": {
+      "id": "INBOX",
+      "name": "INBOX",
+      "type": "system"
+    },
+    "SENT": {
+      "id": "SENT",
+      "name": "SENT",
+      "type": "system"
+    },
+    "TRASH": {
+      "id": "TRASH",
+      "name": "TRASH",
+      "type": "system"
+    },
+    "SPAM": {
+      "id": "SPAM",
+      "name": "SPAM",
+      "type": "system"
+    },
+    "STARRED": {
+      "id": "STARRED",
+      "name": "STARRED",
+      "type": "system"
+    },
+    "IMPORTANT": {
+      "id": "IMPORTANT",
+      "name": "IMPORTANT",
+      "type": "system"
+    },
+    "UNREAD": {
+      "id": "UNREAD",
+      "name": "UNREAD",
+      "type": "system"
+    },
+    "Label_1": {
+      "id": "Label_1",
+      "name": "Soccer",
+      "type": "user"
+    },
+    "Label_2": {
+      "id": "Label_2",
+      "name": "Receipts",
+      "type": "user"
+    },
+    "Label_3": {
+      "id": "Label_3",
+      "name": "Newsletter",
+      "type": "user"
+    },
+    "Label_4": {
+      "id": "Label_4",
+      "name": "School",
+      "type": "user"
+    },
+    "Label_20": {
+      "id": "Label_20",
+      "name": "AI",
+      "type": "user"
+    },
+    "Label_21": {
+      "id": "Label_21",
+      "name": "AI/Important",
+      "type": "user"
+    },
+    "Label_22": {
+      "id": "Label_22",
+      "name": "AI/Low priority",
+      "type": "user"
+    },
+    "Label_23": {
+      "id": "Label_23",
+      "name": "AI/Junk",
+      "type": "user"
+    },
+    "Label_24": {
+      "id": "Label_24",
+      "name": "AI/Needs reply",
+      "type": "user"
+    },
+    "Label_25": {
+      "id": "Label_25",
+      "name": "AI/Sifted",
+      "type": "user"
+    },
+    "Label_26": {
+      "id": "Label_26",
+      "name": "AI/Wrong",
+      "type": "user"
+    }
+  },
+  "threads": {
+    "t-webinar": {
+      "id": "t-webinar",
+      "subject": "Reminder: webinar Tuesday",
+      "from": "events@cloudco.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-08T17:00:00Z",
+      "snippet": "Reminder: 'Scaling your stack' webinar is Tuesday at 10am. Add it to your calendar.",
+      "labelIds": [
+        "INBOX",
+        "Label_21",
+        "Label_25",
+        "Label_26"
+      ],
+      "messages": [
+        {
+          "id": "t-webinar-m1",
+          "from": "events@cloudco.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-08T17:00:00Z",
+          "snippet": "Reminder: 'Scaling your stack' webinar is Tuesday at 10am. Add it to your calendar.",
+          "body": "Reminder: 'Scaling your stack' webinar is Tuesday at 10am. Add it to your calendar."
+        }
+      ]
+    },
+    "t-pta": {
+      "id": "t-pta",
+      "subject": "PTA budget draft",
+      "from": "treasurer@maplegrovepta.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-08T19:00:00Z",
+      "snippet": "Attached is the draft budget for next week's meeting. Comments welcome.",
+      "labelIds": [
+        "INBOX",
+        "Label_23",
+        "Label_25",
+        "Label_26"
+      ],
+      "messages": [
+        {
+          "id": "t-pta-m1",
+          "from": "treasurer@maplegrovepta.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-08T19:00:00Z",
+          "snippet": "Attached is the draft budget for next week's meeting. Comments welcome.",
+          "body": "Attached is the draft budget for next week's meeting. Comments welcome."
+        }
+      ]
+    },
+    "t-new": {
+      "id": "t-new",
+      "subject": "Your hold is ready",
+      "from": "noreply@citylibrary.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-10T14:00:00Z",
+      "snippet": "Your hold on 'The Overstory' is ready for pickup until Oct 17.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "t-new-m1",
+          "from": "noreply@citylibrary.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T14:00:00Z",
+          "snippet": "Your hold on 'The Overstory' is ready for pickup until Oct 17.",
+          "body": "Your hold on 'The Overstory' is ready for pickup until Oct 17."
+        }
+      ]
+    }
+  },
+  "drafts": {}
+}
