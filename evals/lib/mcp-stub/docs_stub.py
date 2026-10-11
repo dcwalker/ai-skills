@@ -269,59 +269,83 @@ def _source(op: dict, key: str) -> tuple[str, str, dict]:
     return origin["content"], spec.get("as", "markdown"), spec.get("blocks") or {}
 
 
+def _insert_index(node: dict, op: dict, target: dict) -> int:
+    """Where an insert lands: the root's start or end, or beside a block."""
+    side = op.get("side")
+    if target.get("kind") == "root":
+        if side not in ("end", "start"):
+            _refuse("bad_side", "insert at the root takes side \"end\" or \"start\"")
+        return 0 if side == "start" else len(node["blocks"])
+    if target.get("kind") == "blocks" and target.get("ids"):
+        if side not in ("before", "after"):
+            _refuse("bad_side", "insert beside a block takes side \"before\" or \"after\"")
+        return _index(node, target["ids"][0]) + (0 if side == "before" else 1)
+    _refuse("bad_target", "insert takes target {kind:root} or {kind:blocks, ids:[...]}")
+    return 0
+
+
+def _edit_words(node: dict, target: dict, replacement: str, rev: int) -> list:
+    """Replace the quoted words (or delete them, with an empty replacement)."""
+    block = _find(node, target.get("text", ""), target.get("nth", 1))
+    block["markdown"] = block["markdown"].replace(target["text"], replacement, 1)
+    block["rev"] = rev
+    return [block]
+
+
+def _target_blocks(node: dict, op: dict, target: dict) -> list:
+    """The blocks a whole-block op names, after its guard is checked."""
+    olds = [node["blocks"][_index(node, i)] for i in target["ids"]]
+    _check_guard(op, olds)
+    return olds
+
+
+def _op_insert(node: dict, op: dict, target: dict, rev: int) -> list:
+    content, _, chips = _source(op, "source")
+    new = _blocks_from_markdown(content, chips, rev)
+    at = _insert_index(node, op, target)
+    node["blocks"][at:at] = new
+    return new
+
+
+def _op_replace(node: dict, op: dict, target: dict, rev: int) -> list:
+    content, _, chips = _source(op, "with")
+    if target.get("kind") == "find":
+        return _edit_words(node, target, content, rev)
+    if target.get("kind") == "blocks" and target.get("ids"):
+        first = _index(node, target["ids"][0])
+        olds = _target_blocks(node, op, target)
+        new = _blocks_from_markdown(content, chips, rev)
+        for old in olds:
+            node["blocks"].remove(old)
+        node["blocks"][first:first] = new
+        return new
+    _refuse("bad_target", "replace takes target {kind:find, text} or {kind:blocks, ids:[...]}")
+    return []
+
+
+def _op_delete(node: dict, op: dict, target: dict, rev: int) -> list:
+    if target.get("kind") == "find":
+        return _edit_words(node, target, "", rev)
+    if target.get("kind") == "blocks" and target.get("ids"):
+        olds = _target_blocks(node, op, target)
+        if len(olds) == len(node["blocks"]):
+            _refuse("last_block", "a tab keeps one block; replace it instead")
+        for old in olds:
+            node["blocks"].remove(old)
+        return []
+    _refuse("bad_target", "delete takes target {kind:find, text} or {kind:blocks, ids:[...]}")
+    return []
+
+
+_OPS = {"insert": _op_insert, "replace": _op_replace, "delete": _op_delete}
+
+
 def _apply_op(node: dict, op: dict, rev: int) -> list:
     """Apply one prose op to a body; returns the blocks it wrote."""
-    name, target = op.get("op"), op.get("target") or {}
-    if name == "insert":
-        content, _, chips = _source(op, "source")
-        new = _blocks_from_markdown(content, chips, rev)
-        side = op.get("side")
-        if target.get("kind") == "root":
-            if side not in ("end", "start"):
-                _refuse("bad_side", "insert at the root takes side \"end\" or \"start\"")
-            at = 0 if side == "start" else len(node["blocks"])
-        elif target.get("kind") == "blocks" and target.get("ids"):
-            if side not in ("before", "after"):
-                _refuse("bad_side", "insert beside a block takes side \"before\" or \"after\"")
-            at = _index(node, target["ids"][0]) + (0 if side == "before" else 1)
-        else:
-            _refuse("bad_target", "insert takes target {kind:root} or {kind:blocks, ids:[...]}")
-        node["blocks"][at:at] = new
-        return new
-    if name == "replace":
-        content, _, chips = _source(op, "with")
-        if target.get("kind") == "find":
-            block = _find(node, target.get("text", ""), target.get("nth", 1))
-            block["markdown"] = block["markdown"].replace(target["text"], content, 1)
-            block["rev"] = rev
-            return [block]
-        if target.get("kind") == "blocks" and target.get("ids"):
-            first = _index(node, target["ids"][0])
-            olds = [node["blocks"][_index(node, i)] for i in target["ids"]]
-            _check_guard(op, olds)
-            new = _blocks_from_markdown(content, chips, rev)
-            for old in olds:
-                node["blocks"].remove(old)
-            node["blocks"][first:first] = new
-            return new
-        _refuse("bad_target", "replace takes target {kind:find, text} or {kind:blocks, ids:[...]}")
-    if name == "delete":
-        if target.get("kind") == "find":
-            block = _find(node, target.get("text", ""), target.get("nth", 1))
-            block["markdown"] = block["markdown"].replace(target["text"], "", 1)
-            block["rev"] = rev
-            return [block]
-        if target.get("kind") == "blocks" and target.get("ids"):
-            olds = [node["blocks"][_index(node, i)] for i in target["ids"]]
-            _check_guard(op, olds)
-            if len(olds) == len(node["blocks"]):
-                _refuse("last_block", "a tab keeps one block; replace it instead")
-            for old in olds:
-                node["blocks"].remove(old)
-            return []
-        _refuse("bad_target", "delete takes target {kind:find, text} or {kind:blocks, ids:[...]}")
-    _refuse("unsupported", f"op {name!r} is not implemented by this stub ({_SUPPORTED})")
-    return []
+    handler = _OPS.get(op.get("op"))
+    if handler is None:
+        _refuse("unsupported", f"op {op.get('op')!r} is not implemented by this stub ({_SUPPORTED})")
+    return handler(node, op, op.get("target") or {}, rev)
 
 
 def _payload(payload):
@@ -364,6 +388,39 @@ def _thread_rows(root_id: str) -> list:
             if c["id"] == root_id or c["payload"]["value"].get("parent", {}).get("id") == root_id]
 
 
+def _comment_on_body(container: dict | None, parent: dict) -> tuple[str, dict, dict]:
+    """A new thread anchored on words in a body: its node, stored parent, and
+    the anchor the response reports."""
+    node = _node(parent.get("id", ""))
+    if container:
+        _doc(container.get("id", ""))
+    anchor = parent.get("anchor") or {}
+    if anchor.get("kind") != "find" or not anchor.get("text"):
+        _refuse("bad_anchor", "a comment on a body needs anchor {kind:find, text:<words in the doc>}")
+    block = _find(node, anchor["text"], anchor.get("nth", 1))
+    stored = {"object": "node", "id": parent["id"],
+              "anchor": {"kind": "chars", "block": block["id"], "quote": anchor["text"]}}
+    return parent["id"], stored, {"anchor": {"quote": anchor["text"], "block": block["id"]}}
+
+
+def _reply_in_thread(parent: dict, value: dict) -> tuple[str, dict, dict]:
+    """A reply or resolve under an existing thread."""
+    roots = [c for c in state.data["comments"] if c["id"] == parent.get("id")]
+    if not roots:
+        _refuse("access", f"no comment with id {parent.get('id')!r} that you can see")
+    if value.get("kind") == "resolve" and any(
+            r["actor"].get("via") != "mcp" for r in _thread_rows(parent["id"])):
+        _refuse("not_yours", "a person wrote in this thread; it is theirs to resolve")
+    return roots[0]["node"], {"object": "utterance", "id": parent["id"]}, {}
+
+
+def _check_body(value: dict) -> None:
+    if value.get("kind") != "resolve" and not str(value.get("body", "")).strip():
+        _refuse("bad_payload", "a comment needs a non-empty body")
+    if len(str(value.get("body", "")).encode()) > 4096:
+        _refuse("row_too_large", "comment bodies are limited to 4096 bytes", dim="body")
+
+
 def _create_utterance(container: dict | None, payload) -> dict:
     payload = _payload(payload)
     value = (payload or {}).get("value") if isinstance(payload, dict) else None
@@ -371,33 +428,12 @@ def _create_utterance(container: dict | None, payload) -> dict:
         _refuse("bad_payload", "payload is {\"value\":{\"body\":...,\"parent\":{...}}}")
     parent = value.get("parent") or {}
     if parent.get("object") == "node":
-        node = _node(parent.get("id", ""))
-        if container:
-            _doc(container.get("id", ""))
-        anchor = parent.get("anchor") or {}
-        if anchor.get("kind") != "find" or not anchor.get("text"):
-            _refuse("bad_anchor", "a comment on a body needs anchor {kind:find, text:<words in the doc>}")
-        block = _find(node, anchor["text"], anchor.get("nth", 1))
-        stored_parent = {"object": "node", "id": parent["id"],
-                         "anchor": {"kind": "chars", "block": block["id"], "quote": anchor["text"]}}
-        node_id = parent["id"]
-        response_extra = {"anchor": {"quote": anchor["text"], "block": block["id"]}}
+        node_id, stored_parent, response_extra = _comment_on_body(container, parent)
     elif parent.get("object") == "utterance":
-        roots = [c for c in state.data["comments"] if c["id"] == parent.get("id")]
-        if not roots:
-            _refuse("access", f"no comment with id {parent.get('id')!r} that you can see")
-        node_id = roots[0]["node"]
-        stored_parent = {"object": "utterance", "id": parent["id"]}
-        response_extra = {}
-        if value.get("kind") == "resolve" and any(
-                r["actor"].get("via") != "mcp" for r in _thread_rows(parent["id"])):
-            _refuse("not_yours", "a person wrote in this thread; it is theirs to resolve")
+        node_id, stored_parent, response_extra = _reply_in_thread(parent, value)
     else:
         _refuse("bad_parent", "parent is {object:node, id, anchor} or {object:utterance, id}")
-    if value.get("kind") != "resolve" and not str(value.get("body", "")).strip():
-        _refuse("bad_payload", "a comment needs a non-empty body")
-    if len(str(value.get("body", "")).encode()) > 4096:
-        _refuse("row_too_large", "comment bodies are limited to 4096 bytes", dim="body")
+    _check_body(value)
     seq = max((c["seq"] for c in state.data["comments"]), default=0) + 1
     row_id = str(uuid.uuid4())
     stored_value = {k: v for k, v in value.items() if k != "parent"}
@@ -406,6 +442,44 @@ def _create_utterance(container: dict | None, payload) -> dict:
                                    "node": node_id, "actor": _actor(),
                                    "payload": {"value": stored_value}})
     return {"verdict": "allow", **response_extra, "minted": row_id}
+
+
+def _create_doc(spec: dict) -> dict:
+    """A doc birth: one tab whose body holds the given markdown."""
+    doc_spec = spec.get("doc") or {}
+    doc_id, tab_id, node_id = str(uuid.uuid4()), uuid.uuid4().hex[:12], uuid.uuid4().hex[:12]
+    blocks = _blocks_from_markdown(doc_spec.get("markdown", ""), doc_spec.get("blocks"), 1)
+    if not blocks:
+        blocks = [{"id": _new_block_id(), "kind": "paragraph", "markdown": "", "rev": 1}]
+    name = spec.get("name") or "Untitled"
+    state.data["docs"][doc_id] = {"name": name, "tabs": [{"id": tab_id, "name": name, "node": node_id}]}
+    state.data["nodes"][node_id] = {"doc": doc_id, "rev": 1, "blocks": blocks}
+    return {"verdict": "allow",
+            "acks": [{"verdict": "allow", "minted": tab_id},
+                     {"verdict": "allow", "id": node_id, "rev": 1, "session": _SESSION,
+                      "xml": _xml(node_id, blocks)}],
+            "lids": {"f": tab_id, "n": node_id},
+            "created": {"bound": True, "id": doc_id, "link": f"https://claude.ai/code/artifact/{doc_id}"}}
+
+
+def _apply_member(container: dict, member: dict) -> dict:
+    if member.get("verb") == "create" and member.get("object") == "utterance":
+        return _create_utterance(container, member.get("payload"))
+    if member.get("verb") == "update" and (member.get("ref") or {}).get("object") == "node":
+        return _update_node(member["ref"]["id"], member.get("payload"), None)
+    _refuse("unsupported", f"batch member {member!r} is not implemented ({_SUPPORTED})")
+    return {}
+
+
+def _apply_members(container: dict, members: list) -> list:
+    """Apply a batch's members atomically: a refused member leaves the doc as
+    it was before the batch, not with the earlier members in."""
+    saved = copy.deepcopy({key: state.data[key] for key in ("nodes", "comments")})
+    try:
+        return [_apply_member(container, member) for member in members]
+    except ValueError:
+        state.data.update(saved)
+        raise
 
 
 @server.tool()
@@ -429,40 +503,10 @@ def batch(container: dict | None = None, batch: list | None = None, opId: str | 
     container = container or {}
     try:
         if "create" in container:
-            spec = container["create"] or {}
-            doc_spec = spec.get("doc") or {}
-            doc_id, tab_id, node_id = str(uuid.uuid4()), uuid.uuid4().hex[:12], uuid.uuid4().hex[:12]
-            blocks = _blocks_from_markdown(doc_spec.get("markdown", ""), doc_spec.get("blocks"), 1)
-            if not blocks:
-                blocks = [{"id": _new_block_id(), "kind": "paragraph", "markdown": "", "rev": 1}]
-            name = spec.get("name") or "Untitled"
-            state.data["docs"][doc_id] = {"name": name, "tabs": [{"id": tab_id, "name": name, "node": node_id}]}
-            state.data["nodes"][node_id] = {"doc": doc_id, "rev": 1, "blocks": blocks}
-            link = f"https://claude.ai/code/artifact/{doc_id}"
-            result = {"verdict": "allow",
-                      "acks": [{"verdict": "allow", "minted": tab_id},
-                               {"verdict": "allow", "id": node_id, "rev": 1, "session": _SESSION,
-                                "xml": _xml(node_id, blocks)}],
-                      "lids": {"f": tab_id, "n": node_id},
-                      "created": {"bound": True, "id": doc_id, "link": link}}
+            result = _create_doc(container["create"] or {})
         else:
             _doc(container.get("id", ""))
-            # The tool applies a batch atomically: a refused member leaves the
-            # doc as it was before the batch, not with the earlier members in.
-            saved = copy.deepcopy({key: state.data[key] for key in ("nodes", "comments")})
-            acks = []
-            try:
-                for member in batch or []:
-                    if member.get("verb") == "create" and member.get("object") == "utterance":
-                        acks.append(_create_utterance(container, member.get("payload")))
-                    elif member.get("verb") == "update" and (member.get("ref") or {}).get("object") == "node":
-                        acks.append(_update_node(member["ref"]["id"], member.get("payload"), None))
-                    else:
-                        _refuse("unsupported", f"batch member {member!r} is not implemented ({_SUPPORTED})")
-            except ValueError:
-                state.data.update(saved)
-                raise
-            result = {"verdict": "allow", "acks": acks}
+            result = {"verdict": "allow", "acks": _apply_members(container, batch or [])}
     except ValueError as refusal:
         state.log_call("batch", args, {"error": str(refusal)})
         raise

@@ -471,17 +471,9 @@ def modify_thread_labels(
         # A call whose label lists were misnamed reaches here with neither,
         # and answering success would hide that nothing changed.
         raise ValueError("gmail-stub: give add_label_ids or remove_label_ids (label ids to add or remove)")
-    system_ids = {"INBOX", "UNREAD", "STARRED", "IMPORTANT", "TRASH", "SPAM"}
-    for lbl in add_label_ids or []:
-        if lbl not in system_ids and lbl not in state.data["labels"]:
-            raise ValueError(f"gmail-stub: no label with id {lbl!r} -- use list_labels for ids")
+    _check_label_ids(add_label_ids or [])
     t = state.data["threads"][thread_id]
-    for lbl in add_label_ids or []:
-        if lbl not in t["labelIds"]:
-            t["labelIds"].append(lbl)
-    for lbl in remove_label_ids or []:
-        if lbl in t["labelIds"]:
-            t["labelIds"].remove(lbl)
+    _change_labels(t, add_label_ids or [], remove_label_ids or [])
     state.flush()
     result = {"thread_id": thread_id, "labelIds": list(t["labelIds"])}
     state.log_call(
@@ -499,6 +491,16 @@ def _check_label_ids(label_ids: list[str]) -> None:
             raise ValueError(f"gmail-stub: no label with id {lbl!r} -- use list_labels for ids")
 
 
+def _change_labels(t: dict, add: list[str], remove: list[str]) -> None:
+    """Add and remove label ids on a thread, leaving every other label alone."""
+    for lbl in add:
+        if lbl not in t["labelIds"]:
+            t["labelIds"].append(lbl)
+    for lbl in remove:
+        if lbl in t["labelIds"]:
+            t["labelIds"].remove(lbl)
+
+
 @server.tool()
 def label_thread(threadId: str, labelIds: list[str]) -> dict:
     """Adds labels to an entire thread. Mirrors the official Gmail MCP's
@@ -507,10 +509,7 @@ def label_thread(threadId: str, labelIds: list[str]) -> dict:
     if threadId not in state.data["threads"]:
         raise ValueError(f"gmail-stub: no thread with id {threadId!r}")
     _check_label_ids(labelIds)
-    t = state.data["threads"][threadId]
-    for lbl in labelIds:
-        if lbl not in t["labelIds"]:
-            t["labelIds"].append(lbl)
+    _change_labels(state.data["threads"][threadId], labelIds, [])
     state.flush()
     result = {}
     state.log_call("label_thread", {"threadId": threadId, "labelIds": labelIds}, result)
@@ -525,10 +524,7 @@ def unlabel_thread(threadId: str, labelIds: list[str]) -> dict:
     if threadId not in state.data["threads"]:
         raise ValueError(f"gmail-stub: no thread with id {threadId!r}")
     _check_label_ids(labelIds)
-    t = state.data["threads"][threadId]
-    for lbl in labelIds:
-        if lbl in t["labelIds"]:
-            t["labelIds"].remove(lbl)
+    _change_labels(state.data["threads"][threadId], [], labelIds)
     state.flush()
     result = {}
     state.log_call("unlabel_thread", {"threadId": threadId, "labelIds": labelIds}, result)
