@@ -59,6 +59,11 @@ mark read, mute, trash, or move mail. Sift only adds and removes `AI/` labels,
 so nothing it does can hide a message. The user may later grant more for specific
 categories; that grant lives in the rubric, not here.
 
+When the rubric asks for a label of its own, such as "label event invitations
+as invitation", create it under `AI/` in title case, `AI/Invitation`, never as
+a bare `invitation` beside the user's own labels. Apply it alongside the
+thread's priority label, never in place of one.
+
 Searches and label changes take label IDs, not names. List the labels once at
 the start of a run and use the IDs from then on.
 
@@ -92,16 +97,18 @@ the user's timezone; use it for every time sift writes.
 
 Everything above the rubric's **Added by sift** section is the user's: the
 how-to, the label key, the About me notes, and the user's rules. Sift never
-rewords, moves, or removes any of it, with two exceptions: lines under About
-me that start with `(inferred)` are sift's own (see [About me](#about-me)), and
-a template placeholder, a line wholly in parentheses such as `- (I add these)`
+rewords, moves, or removes any of it, with three exceptions: lines under
+About me that start with `(inferred)` are sift's own (see [About me](#about-me));
+sift may move the user's About me lines, never changing their words, to keep
+related notes together; and a template placeholder, a line wholly in parentheses such as `- (I add these)`
 or `### (topic, such as Kids' soccer, Home, or Work)`, may be replaced by the
 first real entry in its place. Its own rules go under Added by sift, each one
 learned from the user's corrections, so a sift rule may narrow one of the
 user's rules for exactly the cases its corrections cover, and no further.
 
 Before moving on, tidy About me as [About me](#about-me) describes: remove
-`(inferred)` lines whose end date has passed or whose sender has gone quiet.
+`(inferred)` lines whose end date has passed or whose sender has gone quiet,
+and regroup any note that sits apart from the notes it relates to.
 If the rest of the rubric runs past roughly two pages, or the changelog past 20
 entries, consolidate it this run as
 [Keeping the rubric healthy](#keeping-the-rubric-healthy) describes.
@@ -248,7 +255,8 @@ Batch the calls where the tools allow.
 
 Then carry out whatever the rubric's Permissions section grants for the label
 just applied, such as archiving a thread labeled `AI/Junk` when Permissions
-says so, and nothing it doesn't grant. A grant applies on every run, without
+says so, or adding a label the rubric asks for (under `AI/`, as
+[Labels](#labels) describes), and nothing it doesn't grant. A grant applies on every run, without
 asking.
 
 ## Step 5: Log
@@ -328,13 +336,20 @@ related notes sit together.
 - **Write what you learn.** After a lookup tells you who a sender is, or the
   user's own mail shows what matters to them now (an event they keep writing
   about, a sale they are running), add one line under the topic it belongs
-  to, creating the heading when none fits:
+  to, next to the notes it most relates to (the same person, team, or event)
+  rather than at the end, creating the heading when none fits:
   `(inferred) <fact> | <source> | <date learned>`, for example
   `(inferred) jordan.lee@riversideunited.example coaches the U12 team | Contacts | 2026-10-10`.
   A fact with an end date says so ("until November 1").
 - **Edit only `(inferred)` lines.** Every other line is the user's. When the
   user edits an inferred line, take the edit as a correction; when they remove
   `(inferred)`, the line is theirs from then on.
+- **Keep it grouped.** Each topic heading holds the notes about one subject,
+  and related notes sit next to each other within it. When a note sits under
+  the wrong topic or apart from its related notes, move it; when two headings
+  cover the same subject, merge them. This applies to the user's lines as
+  well as sift's, moved but never reworded, and nothing is dropped. Note a
+  reorganization in the changelog.
 - **Keep it current.** Remove an inferred line once its end date has passed,
   or once its sender has not written in 180 days. Re-check a sourced fact
   older than 90 days before relying on it, and update its date. Past about

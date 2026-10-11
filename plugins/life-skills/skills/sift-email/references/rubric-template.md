@@ -36,7 +36,9 @@ Timezone: UTC (change to yours, such as Europe/Berlin)
 Who I am, the people in my mail, and what matters to me right now, grouped by
 topic so related notes sit together. Sift reads this before every run. Lines
 I write are mine. Sift adds lines that start with "(inferred)", with where it
-learned each one and when, and it edits only those lines.
+learned each one and when, and it edits only those lines. To keep related notes
+together, sift may move any line here, mine included, but never changes my
+words.
 
 ### (topic, such as Kids' soccer, Home, or Work)
 
@@ -91,7 +93,10 @@ rules only here. A rule here can narrow one of mine for the cases it names.
 
 ## Permissions
 
-Actions beyond labeling that sift may take, by category. Empty means labels only.
+Actions beyond priority labels that sift may take, by category. Empty means
+priority labels only. For example: "Archive threads labeled AI/Junk", or
+"Label event invitations as invitation". Sift creates any label I name here
+under AI/ in title case (AI/Invitation).
 
 - (none yet)
 
