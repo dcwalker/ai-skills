@@ -22,7 +22,11 @@ where the user will see it (see [Never block](#never-block)).
 Wherever sift writes, in the log, the rubric, a comment, or its reply, it
 refers to the user only by name or as "you", never with a pronoun ("they"
 included) and never as "the user" or "me": "asks Pat to confirm whether Pat can run the table", or "asks you
-to confirm".
+to confirm". That holds for first person too. The rubric's own text speaks as
+the user ("my definition of what matters"), but a line sift writes never does,
+even beside lines that do: no "I", "me", or "my" for the user in a rule, an
+example, a log line, or a reason. Write "Pat doesn't want price-increase
+notices", not "I don't want these".
 
 Sessions have no memory of each other. Everything that carries forward lives in
 two places, and this skill reads and writes both on every run:
