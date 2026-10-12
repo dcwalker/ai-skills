@@ -4,17 +4,42 @@ Sift is meant to run as a scheduled cloud routine. The routine needs:
 
 - **Connectors:** Gmail, Claude Docs, and the Google Contacts connector. A
   routine includes the account's connectors by default; keep these three.
-- **The docs' links in its prompt,** for example: "Run sift-email. Rubric:
-  <link>. Log: <link>." Leave them out on the first run; the summary reports
-  the links to add.
-- **The plugin installed** by the cloud environment's setup script, since
-  locally installed plugins do not reach cloud sessions. The setup script's
-  result is cached, so a newly released version of this skill reaches the
-  routine only after the cache rebuilds (edit the setup script, or wait about
-  seven days).
+- **This skill's repository** attached to the routine, so each run has a
+  checkout of it.
+- **A prompt that reads the skill from the checkout,** with the docs' links
+  once they exist, for example: "Sift my inbox. Read
+  plugins/life-skills/skills/sift-email/SKILL.md in this repository, and the
+  files in its references/ folder, and follow them as the sift-email skill's
+  instructions for this run. Rubric: <link> Log: <link>"
 - **A schedule** of an hour or longer between runs, the shortest a routine
   allows. Most runs find nothing new and stop early, so a few runs a day cost
   far less than hourly ones.
+
+## Why the checkout, not the plugin
+
+Two things get in the way of invoking the installed skill from a routine:
+
+- **The skill runs only when called directly.** Its frontmatter sets
+  `disable-model-invocation: true`, so Claude never starts a bulk-labeling run
+  on its own. That setting also stops the skill from running when a scheduled
+  task fires with it as the prompt.
+- **Plugins reach a routine late.** A cloud session gets plugins only from the
+  environment's setup script, and that script's result is cached, so a new
+  release of this skill reaches the routine only after the cache rebuilds
+  (edit the setup script, or wait about seven days).
+
+Reading SKILL.md from the checkout avoids both: every run follows the
+skill as it is on the repository's default branch. Anything merged there
+reaches the routine on its next run.
+
+## Setting it up
+
+1. Create the routine with its schedule turned off, and leave the doc links
+   out of the prompt. Say instead that this is the first run, so sift creates
+   the rubric and log.
+2. Run it once by hand. Its summary reports the two doc links.
+3. Add the links to the prompt, then turn on the schedule.
+4. Set the rubric's Timezone line, so log times read in local time.
 
 ## Running at set times of day
 
