@@ -1,0 +1,468 @@
+{
+  "anchor_date": "2026-10-10",
+  "stub_now": "2026-10-10T15:00:00Z",
+  "me": "pat@example.com",
+  "labels": {
+    "INBOX": {
+      "id": "INBOX",
+      "name": "INBOX",
+      "type": "system"
+    },
+    "SENT": {
+      "id": "SENT",
+      "name": "SENT",
+      "type": "system"
+    },
+    "TRASH": {
+      "id": "TRASH",
+      "name": "TRASH",
+      "type": "system"
+    },
+    "SPAM": {
+      "id": "SPAM",
+      "name": "SPAM",
+      "type": "system"
+    },
+    "STARRED": {
+      "id": "STARRED",
+      "name": "STARRED",
+      "type": "system"
+    },
+    "IMPORTANT": {
+      "id": "IMPORTANT",
+      "name": "IMPORTANT",
+      "type": "system"
+    },
+    "UNREAD": {
+      "id": "UNREAD",
+      "name": "UNREAD",
+      "type": "system"
+    },
+    "Label_1": {
+      "id": "Label_1",
+      "name": "Soccer",
+      "type": "user"
+    },
+    "Label_2": {
+      "id": "Label_2",
+      "name": "Receipts",
+      "type": "user"
+    },
+    "Label_3": {
+      "id": "Label_3",
+      "name": "Newsletter",
+      "type": "user"
+    },
+    "Label_4": {
+      "id": "Label_4",
+      "name": "School",
+      "type": "user"
+    },
+    "Label_20": {
+      "id": "Label_20",
+      "name": "AI",
+      "type": "user"
+    },
+    "Label_21": {
+      "id": "Label_21",
+      "name": "AI/Important",
+      "type": "user"
+    },
+    "Label_22": {
+      "id": "Label_22",
+      "name": "AI/Low priority",
+      "type": "user"
+    },
+    "Label_23": {
+      "id": "Label_23",
+      "name": "AI/Junk",
+      "type": "user"
+    },
+    "Label_24": {
+      "id": "Label_24",
+      "name": "AI/Needs reply",
+      "type": "user"
+    },
+    "Label_25": {
+      "id": "Label_25",
+      "name": "AI/Sifted",
+      "type": "user"
+    },
+    "Label_26": {
+      "id": "Label_26",
+      "name": "AI/Wrong",
+      "type": "user"
+    }
+  },
+  "threads": {
+    "t-receipt": {
+      "id": "t-receipt",
+      "subject": "Thanks for your visit",
+      "from": "rx@cornerpharmacy.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-10T11:20:00Z",
+      "snippet": "Thanks for picking up your prescription today. Your receipt is attached.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-receipt-m1",
+          "from": "rx@cornerpharmacy.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T11:20:00Z",
+          "snippet": "Thanks for picking up your prescription today. Your receipt is attached.",
+          "body": "Thanks for picking up your prescription today. Your receipt is attached.",
+          "attachments": [
+            {
+              "filename": "receipt-20261010.pdf",
+              "mimeType": "application/pdf"
+            }
+          ]
+        }
+      ]
+    },
+    "t-invoice": {
+      "id": "t-invoice",
+      "subject": "Invoice #2026-118",
+      "from": "billing@fairviewlandscaping.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-09T16:00:00Z",
+      "snippet": "Attached is the invoice for October lawn care. $180.00 due October 31.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-invoice-m1",
+          "from": "billing@fairviewlandscaping.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-09T16:00:00Z",
+          "snippet": "Attached is the invoice for October lawn care. $180.00 due October 31.",
+          "body": "Attached is the invoice for October lawn care. $180.00 due October 31.",
+          "attachments": [
+            {
+              "filename": "invoice-2026-118.pdf",
+              "mimeType": "application/pdf"
+            }
+          ]
+        }
+      ]
+    },
+    "t-statement": {
+      "id": "t-statement",
+      "subject": "Your October statement",
+      "from": "statements@cedarbank.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-09T12:00:00Z",
+      "snippet": "Statement for account ending 4410: opening balance $2,140.18, 23 transactions, closing balance $1,876.42.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-statement-m1",
+          "from": "statements@cedarbank.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-09T12:00:00Z",
+          "snippet": "Statement for account ending 4410: opening balance $2,140.18, 23 transactions, closing balance $1,876.42.",
+          "body": "Statement for account ending 4410: opening balance $2,140.18, 23 transactions, closing balance $1,876.42."
+        }
+      ]
+    },
+    "t-ask-receipt": {
+      "id": "t-ask-receipt",
+      "subject": "Thursday",
+      "from": "riley.chen@example.com",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-10T09:15:00Z",
+      "snippet": "Hi Pat, where is my receipt for Thursday? I need it for the team reimbursement.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "t-ask-receipt-m1",
+          "from": "riley.chen@example.com",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T09:15:00Z",
+          "snippet": "Hi Pat, where is my receipt for Thursday? I need it for the team reimbursement.",
+          "body": "Hi Pat, where is my receipt for Thursday? I need it for the team reimbursement."
+        }
+      ]
+    },
+    "t-no-invoice": {
+      "id": "t-no-invoice",
+      "subject": "Gutter cleaning",
+      "from": "sam.ortega@example.org",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-10T10:05:00Z",
+      "snippet": "Heads up, I never got an invoice in the mail from the gutter company. Did you?",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "t-no-invoice-m1",
+          "from": "sam.ortega@example.org",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T10:05:00Z",
+          "snippet": "Heads up, I never got an invoice in the mail from the gutter company. Did you?",
+          "body": "Heads up, I never got an invoice in the mail from the gutter company. Did you?"
+        }
+      ]
+    },
+    "t-gazette": {
+      "id": "t-gazette",
+      "subject": "The Riverside Gazette: October issue",
+      "from": "editor@riversidegazette.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-10T07:00:00Z",
+      "snippet": "In this issue: the new library wing, a fall recipe, and neighborhood events for the month ahead.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-gazette-m1",
+          "from": "editor@riversidegazette.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T07:00:00Z",
+          "snippet": "In this issue: the new library wing, a fall recipe, and neighborhood events for the month ahead.",
+          "body": "In this issue: the new library wing, a fall recipe, and neighborhood events for the month ahead."
+        }
+      ]
+    },
+    "t-friday": {
+      "id": "t-friday",
+      "subject": "Friday update",
+      "from": "office@maplegrovepta.example",
+      "to": [
+        "families@maplegrovepta.example"
+      ],
+      "date": "2026-10-10T08:00:00Z",
+      "snippet": "This week at Maple Grove: book fair recap, picture day reminders, upcoming dates, and a volunteer spotlight.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-friday-m1",
+          "from": "office@maplegrovepta.example",
+          "to": [
+            "families@maplegrovepta.example"
+          ],
+          "date": "2026-10-10T08:00:00Z",
+          "snippet": "This week at Maple Grove: book fair recap, picture day reminders, upcoming dates, and a volunteer spotlight.",
+          "body": "This week at Maple Grove: book fair recap, picture day reminders, upcoming dates, and a volunteer spotlight."
+        }
+      ]
+    },
+    "t-sale": {
+      "id": "t-sale",
+      "subject": "48-hour sale: 30% off everything",
+      "from": "promo@shoeplanet.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-10T06:00:00Z",
+      "snippet": "Our biggest sale of the season ends Sunday at midnight. Shop now.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "t-sale-m1",
+          "from": "promo@shoeplanet.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T06:00:00Z",
+          "snippet": "Our biggest sale of the season ends Sunday at midnight. Shop now.",
+          "body": "Our biggest sale of the season ends Sunday at midnight. Shop now."
+        }
+      ]
+    },
+    "t-flight": {
+      "id": "t-flight",
+      "subject": "Your trip to Denver: check in now",
+      "from": "trips@skylineair.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-10T05:30:00Z",
+      "snippet": "Flight SK 412 departs Monday, October 12 at 8:15am. Check in now to get your boarding pass.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-flight-m1",
+          "from": "trips@skylineair.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T05:30:00Z",
+          "snippet": "Flight SK 412 departs Monday, October 12 at 8:15am. Check in now to get your boarding pass.",
+          "body": "Flight SK 412 departs Monday, October 12 at 8:15am. Check in now to get your boarding pass."
+        }
+      ]
+    },
+    "t-travel-deal": {
+      "id": "t-travel-deal",
+      "subject": "Where to next? Fares from $49",
+      "from": "deals@skylineair.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-10T04:00:00Z",
+      "snippet": "Fall fares are here. Book by Sunday to save on flights to 40 cities.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "t-travel-deal-m1",
+          "from": "deals@skylineair.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T04:00:00Z",
+          "snippet": "Fall fares are here. Book by Sunday to save on flights to 40 cities.",
+          "body": "Fall fares are here. Book by Sunday to save on flights to 40 cities."
+        }
+      ]
+    },
+    "t-delivery": {
+      "id": "t-delivery",
+      "subject": "Out for delivery today",
+      "from": "tracking@parcelnorth.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-10T09:40:00Z",
+      "snippet": "Your package from Ironworks Hardware is out for delivery and should arrive by 7pm.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-delivery-m1",
+          "from": "tracking@parcelnorth.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T09:40:00Z",
+          "snippet": "Your package from Ironworks Hardware is out for delivery and should arrive by 7pm.",
+          "body": "Your package from Ironworks Hardware is out for delivery and should arrive by 7pm."
+        }
+      ]
+    },
+    "t-appointment": {
+      "id": "t-appointment",
+      "subject": "Reminder: cleaning on Wednesday",
+      "from": "frontdesk@brightsmiledental.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-10T10:30:00Z",
+      "snippet": "This is a reminder of your cleaning appointment on Wednesday, October 14 at 2:00pm.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-appointment-m1",
+          "from": "frontdesk@brightsmiledental.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T10:30:00Z",
+          "snippet": "This is a reminder of your cleaning appointment on Wednesday, October 14 at 2:00pm.",
+          "body": "This is a reminder of your cleaning appointment on Wednesday, October 14 at 2:00pm."
+        }
+      ]
+    },
+    "t-security": {
+      "id": "t-security",
+      "subject": "New sign-in to your account",
+      "from": "no-reply@accounts.streamflix.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-10T02:10:00Z",
+      "snippet": "We noticed a new sign-in to your Streamflix account from a Chrome browser on Windows. If this was you, no action is needed.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "t-security-m1",
+          "from": "no-reply@accounts.streamflix.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T02:10:00Z",
+          "snippet": "We noticed a new sign-in to your Streamflix account from a Chrome browser on Windows. If this was you, no action is needed.",
+          "body": "We noticed a new sign-in to your Streamflix account from a Chrome browser on Windows. If this was you, no action is needed."
+        }
+      ]
+    },
+    "t-fake-security": {
+      "id": "t-fake-security",
+      "subject": "Unusual sign-in: verify your account",
+      "from": "alerts@streamfIix-support.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-10T03:00:00Z",
+      "snippet": "We blocked a sign-in attempt. Verify your identity within 24 hours or your account will be closed: http://streamfIix-support.example/verify",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "t-fake-security-m1",
+          "from": "alerts@streamfIix-support.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T03:00:00Z",
+          "snippet": "We blocked a sign-in attempt. Verify your identity within 24 hours or your account will be closed: http://streamfIix-support.example/verify",
+          "body": "We blocked a sign-in attempt. Verify your identity within 24 hours or your account will be closed: http://streamfIix-support.example/verify"
+        }
+      ]
+    }
+  },
+  "drafts": {}
+}

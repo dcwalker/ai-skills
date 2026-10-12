@@ -184,71 +184,89 @@
         {
           "id": "rubric-body.25",
           "kind": "heading",
-          "markdown": "## Added by sift",
+          "markdown": "## Category labels",
           "rev": 1
         },
         {
           "id": "rubric-body.26",
           "kind": "paragraph",
-          "markdown": "Rules sift learned from my corrections. Sift adds, sharpens, and consolidates rules only here. A rule here can narrow one of mine for the cases it names.",
+          "markdown": "Labels sift adds alongside the priority label, judged on what a message is, not on the words it happens to use. Sift creates each one under AI/.",
           "rev": 1
         },
         {
           "id": "rubric-body.27",
           "kind": "list",
-          "markdown": "- (sift adds these)",
+          "markdown": "- **Receipts, statements, and invoices:** label a message AI/Receipt, AI/Statement, or AI/Invoice when it is one, or carries one as an attachment. A message that only talks about one, such as \"where is my receipt for Thursday?\" or \"I never got an invoice in the mail\", gets none of these labels.\n- **Newsletters:** label a message AI/Newsletter when it works as a newsletter, whatever it calls itself: a \"newsletter\", a \"gazette\", or a regular Friday update that reads like one.\n- **Travel:** label AI/Travel the booking confirmations, itineraries, boarding passes, and check-in reminders for trips I've booked. Travel deals and \"where to next?\" marketing don't count.\n- **Deliveries:** label AI/Delivery the tracking updates, \"out for delivery\", and \"delivered\" notices for orders I've placed. Shipping promotions don't count.\n- **Appointments:** label AI/Appointment the confirmations, reminders, and reschedules for appointments I have, such as a doctor, dentist, or car service. \"Book your next visit\" promotions don't count.\n- **Account security:** label AI/Security the sign-in alerts, password resets, and verification codes from services I use. A message that only looks like one, from a lookalike sender, is Junk instead.",
           "rev": 1
         },
         {
           "id": "rubric-body.28",
           "kind": "heading",
-          "markdown": "## Permissions",
+          "markdown": "## Added by sift",
           "rev": 1
         },
         {
           "id": "rubric-body.29",
           "kind": "paragraph",
-          "markdown": "Actions beyond priority labels that sift may take, by category. Empty means priority labels only. For example: \"Archive threads labeled AI/Junk\", or \"Label event invitations as invitation\". Sift creates any label I name here under AI/ in title case (AI/Invitation).",
+          "markdown": "Rules sift learned from my corrections. Sift adds, sharpens, and consolidates rules only here. A rule here can narrow one of mine for the cases it names.",
           "rev": 1
         },
         {
           "id": "rubric-body.30",
           "kind": "list",
-          "markdown": "- Label event invitations as invitation",
+          "markdown": "- (sift adds these)",
           "rev": 1
         },
         {
           "id": "rubric-body.31",
           "kind": "heading",
-          "markdown": "## Examples",
+          "markdown": "## Permissions",
           "rev": 1
         },
         {
           "id": "rubric-body.32",
           "kind": "paragraph",
-          "markdown": "Real cases that teach the rules. Format: sender | subject | correct label | why.",
+          "markdown": "Actions beyond priority labels that sift may take, by category. Empty means priority labels only. For example: \"Archive threads labeled AI/Junk\", or \"Label event invitations as invitation\". Sift creates any label I name here under AI/ in title case (AI/Invitation).",
           "rev": 1
         },
         {
           "id": "rubric-body.33",
           "kind": "list",
-          "markdown": "- (sift adds these from corrections)",
+          "markdown": "- Label event invitations as invitation",
           "rev": 1
         },
         {
           "id": "rubric-body.34",
           "kind": "heading",
-          "markdown": "## Changelog",
+          "markdown": "## Examples",
           "rev": 1
         },
         {
           "id": "rubric-body.35",
           "kind": "paragraph",
-          "markdown": "Newest first. Date | change | prompted by.",
+          "markdown": "Real cases that teach the rules. Format: sender | subject | correct label | why.",
           "rev": 1
         },
         {
           "id": "rubric-body.36",
+          "kind": "list",
+          "markdown": "- (sift adds these from corrections)",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.37",
+          "kind": "heading",
+          "markdown": "## Changelog",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.38",
+          "kind": "paragraph",
+          "markdown": "Newest first. Date | change | prompted by.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.39",
           "kind": "list",
           "markdown": "- (sift adds these)",
           "rev": 1

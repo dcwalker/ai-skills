@@ -150,12 +150,13 @@
     {
       "id": 11,
       "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
-      "expected_output": "Everything in the inbox was sifted on the last run, no labels were corrected, no question is open, and no thread has a new message. Sift changes no labels and no rubric text, writes a run summary reporting zero at the top of the log, and says there was nothing new.",
+      "expected_output": "Everything in the inbox was sifted on the last run, no labels were corrected, no question is open, and no thread has a new message. Step 2's cheap checks all come back empty, so sift stops without reading the rubric: it changes no labels and no rubric text, adds one 'nothing new' line to the log's Runs section, and says there was nothing new.",
       "expectations": [
         "No label_thread, unlabel_thread, modify_thread_labels, create_label, archive_thread, or trash_thread call appears in the Gmail call log.",
         "The Gmail final state is identical to the seed.",
         "The rubric body is unchanged from the seed.",
-        "The log body gains a run summary dated the run date that reports zero threads processed, and gains no per-thread lines.",
+        "The log body gains one line dated the run date saying nothing was new (or zero processed), and gains no per-thread lines.",
+        "The rubric's body is never read whole: the docs call log has no read of the rubric body (rubric-body) other than one whose payload is a search (kind 'search', such as for its Timezone line). A query of the rubric's comments, and reads of the log, are fine.",
         "The response says there was nothing new to sift."
       ]
     },
@@ -282,6 +283,23 @@
         "The PTA auction line sits under the same heading as the Maple Grove Elementary line, not under the soccer heading.",
         "The landlord line and the car line both sit under the Home heading.",
         "The Changelog gains an entry dated the run date that records reorganizing About me.",
+        "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 21,
+      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "The rubric's Category labels section asks for AI/Receipt, AI/Statement, AI/Invoice, AI/Newsletter, AI/Travel, AI/Delivery, AI/Appointment, and AI/Security, judged on what a message is, not its words. A booked flight, a delivery update, a dental appointment reminder, and a real sign-in alert get theirs; a fare sale gets no AI/Travel, and a sign-in alert from a lookalike domain is Junk with no AI/Security. The pharmacy receipt (attached), the landscaping invoice (attached), and the bank statement (in the body) get their labels. Riley asking where a receipt is, and Sam saying an invoice never arrived, only talk about one, so they get none. The Riverside Gazette and the PTA's Friday update both work as newsletters and get AI/Newsletter, while a one-off sale email does not. Every label is created under AI/.",
+      "expectations": [
+        "Each of t-receipt, t-invoice, t-statement, t-ask-receipt, t-no-invoice, t-gazette, t-friday, t-sale, t-flight, t-travel-deal, t-delivery, t-appointment, t-security, t-fake-security ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+        "t-receipt ends with a label named exactly 'AI/Receipt', t-invoice with 'AI/Invoice', and t-statement with 'AI/Statement' (resolve ids through the final Gmail labels).",
+        "t-ask-receipt and t-no-invoice end with none of AI/Receipt, AI/Statement, or AI/Invoice.",
+        "t-gazette and t-friday each end with a label named exactly 'AI/Newsletter'.",
+        "t-sale does not end with AI/Newsletter.",
+        "t-flight ends with 'AI/Travel', t-delivery with 'AI/Delivery', t-appointment with 'AI/Appointment', and t-security with 'AI/Security'.",
+        "t-travel-deal does not end with AI/Travel, and t-fake-security (a lookalike sender) ends with AI/Junk and without AI/Security.",
+        "The final Gmail labels contain no label for these categories outside AI/ (no 'Receipt', 'Invoice', 'Statement', 'Newsletter', 'Travel', 'Delivery', 'Appointment', or 'Security' without the AI/ prefix).",
         "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]

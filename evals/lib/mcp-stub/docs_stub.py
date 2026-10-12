@@ -83,7 +83,7 @@ from mcp.server.mcpserver import MCPServer  # noqa: E402
 _INSTRUCTIONS = """Claude Docs (eval stub): docs you create and edit here.
 Make a doc with ONE batch call: batch(container={"kind":"project","create":{"name":"<title>","doc":{"markdown":"# <title>\\n\\n<body>","blocks":{...chips, optional}}}}, batch=[]).
 The ack's "lids" gives the tab id (f) and its body id (n); "created.link" is the doc's link.
-Read a doc: read(ref={"object":"project","id":"<doc id or link>"}) lists its tabs; read(ref={"object":"node","id":"<body id>"}, container={"kind":"project","id":"<doc id>"}, engine="prose") returns the body as xml with block ids and h hashes.
+Read a doc: read(ref={"object":"project","id":"<doc id or link>"}) lists its tabs; read(ref={"object":"node","id":"<body id>"}, container={"kind":"project","id":"<doc id>"}, engine="prose") returns the body as xml with block ids and h hashes; payload={"kind":"search","text":"<words>"} returns only the blocks containing those words.
 Edit: update(ref={"object":"node","id":"<body id>"}, container=C, engine="prose", payload={"ops":[...]}). Ops: insert, replace, delete. guide(items=["topic.index"]) has the shapes.
 Comments: create(object="utterance", container=C, payload={"value":{"body":"...","parent":{"object":"node","id":"<body id>","anchor":{"kind":"find","text":"<words in the doc>"}}}}); reply with parent {"object":"utterance","id":"<thread id>"}; list with query(object="utterance", container=C, payload={"under":{"object":"node","id":"<body id>"}})."""
 
@@ -98,7 +98,7 @@ _GUIDE = {
     "topic.index": """# topic.index (eval stub, condensed)
 C = {"kind":"project","id":"<doc id>"}.
 Create: batch(container={"kind":"project","create":{"name":"T","doc":{"markdown":"# T\\n\\n<?claude block s1?>","blocks":{"s1":{"type":"pending","intent":"what comes"}}}}}, batch=[]) -> acks, lids {f: tab id, n: body id}, created {link}.
-Read: read(ref={"object":"project","id":"<doc id>"}) -> files [{id, name, content {kind:"node", id, engine:"prose"}}]. read(ref={"object":"node","id":"<body id>"}, container=C, engine="prose", payload?) -> data.xml; payload {"kind":"view","sinceRev":N} returns only blocks changed after rev N.
+Read: read(ref={"object":"project","id":"<doc id>"}) -> files [{id, name, content {kind:"node", id, engine:"prose"}}]. read(ref={"object":"node","id":"<body id>"}, container=C, engine="prose", payload?) -> data.xml; payload {"kind":"view","sinceRev":N} returns only blocks changed after rev N; payload {"kind":"search","text":"<words>"} returns only the blocks containing those words, so one line can be read without the whole body.
 Edit: update(ref={"object":"node","id":"<body id>"}, container=C, engine="prose", payload={"ops":[op, ...]}):
 - insert: {"op":"insert","target":{"kind":"root"},"side":"end"|"start","source":{"from":{"kind":"inline","content":"<markdown>"},"as":"markdown"}}, or target {"kind":"blocks","ids":["<block id>"]} with side "before"|"after".
 - replace words: {"op":"replace","target":{"kind":"find","text":"<exact words>"},"with":{"from":{"kind":"inline","content":"<new words>"},"as":"text"}}.

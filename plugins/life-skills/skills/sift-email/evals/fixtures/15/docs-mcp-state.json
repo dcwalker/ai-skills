@@ -184,71 +184,89 @@
         {
           "id": "rubric-body.25",
           "kind": "heading",
-          "markdown": "## Added by sift",
+          "markdown": "## Category labels",
           "rev": 1
         },
         {
           "id": "rubric-body.26",
           "kind": "paragraph",
-          "markdown": "Rules sift learned from my corrections. Sift adds, sharpens, and consolidates rules only here. A rule here can narrow one of mine for the cases it names.",
+          "markdown": "Labels sift adds alongside the priority label, judged on what a message is, not on the words it happens to use. Sift creates each one under AI/.",
           "rev": 1
         },
         {
           "id": "rubric-body.27",
           "kind": "list",
-          "markdown": "- Automated notices from the bookshop are Low priority\n- Automated notices from the bookshop's shipping partner are Low priority\n- Automated notices from the meal kit service are Low priority\n- Automated notices from the meal kit's courier are Low priority\n- Automated notices from the streaming service are Low priority\n- Automated notices from the streaming service's billing team are Low priority\n- Automated notices from the neighborhood digest are Low priority\n- Automated notices from the neighborhood app are Low priority\n- Automated notices from the library are Low priority\n- Automated notices from the library's hold system are Low priority\n- Automated notices from the bank are Low priority\n- Automated notices from the bank's statements team are Low priority\n- Automated notices from the utility company are Low priority\n- Automated notices from the utility's outage alerts are Low priority\n- Automated notices from the gym are Low priority\n- Automated notices from the gym's class reminders are Low priority\n- Automated notices from the car wash are Low priority\n- Automated notices from the pharmacy are Low priority\n- Automated notices from the pharmacy's refill reminders are Low priority\n- Automated notices from the dentist's newsletter are Low priority\n- Automated notices from the hardware store are Low priority\n- Automated notices from the hardware store's rewards program are Low priority",
+          "markdown": "- **Receipts, statements, and invoices:** label a message AI/Receipt, AI/Statement, or AI/Invoice when it is one, or carries one as an attachment. A message that only talks about one, such as \"where is my receipt for Thursday?\" or \"I never got an invoice in the mail\", gets none of these labels.\n- **Newsletters:** label a message AI/Newsletter when it works as a newsletter, whatever it calls itself: a \"newsletter\", a \"gazette\", or a regular Friday update that reads like one.\n- **Travel:** label AI/Travel the booking confirmations, itineraries, boarding passes, and check-in reminders for trips I've booked. Travel deals and \"where to next?\" marketing don't count.\n- **Deliveries:** label AI/Delivery the tracking updates, \"out for delivery\", and \"delivered\" notices for orders I've placed. Shipping promotions don't count.\n- **Appointments:** label AI/Appointment the confirmations, reminders, and reschedules for appointments I have, such as a doctor, dentist, or car service. \"Book your next visit\" promotions don't count.\n- **Account security:** label AI/Security the sign-in alerts, password resets, and verification codes from services I use. A message that only looks like one, from a lookalike sender, is Junk instead.",
           "rev": 1
         },
         {
           "id": "rubric-body.28",
           "kind": "heading",
-          "markdown": "## Permissions",
+          "markdown": "## Added by sift",
           "rev": 1
         },
         {
           "id": "rubric-body.29",
           "kind": "paragraph",
-          "markdown": "Actions beyond priority labels that sift may take, by category. Empty means priority labels only. For example: \"Archive threads labeled AI/Junk\", or \"Label event invitations as invitation\". Sift creates any label I name here under AI/ in title case (AI/Invitation).",
+          "markdown": "Rules sift learned from my corrections. Sift adds, sharpens, and consolidates rules only here. A rule here can narrow one of mine for the cases it names.",
           "rev": 1
         },
         {
           "id": "rubric-body.30",
           "kind": "list",
-          "markdown": "- (none yet)",
+          "markdown": "- Automated notices from the bookshop are Low priority\n- Automated notices from the bookshop's shipping partner are Low priority\n- Automated notices from the meal kit service are Low priority\n- Automated notices from the meal kit's courier are Low priority\n- Automated notices from the streaming service are Low priority\n- Automated notices from the streaming service's billing team are Low priority\n- Automated notices from the neighborhood digest are Low priority\n- Automated notices from the neighborhood app are Low priority\n- Automated notices from the library are Low priority\n- Automated notices from the library's hold system are Low priority\n- Automated notices from the bank are Low priority\n- Automated notices from the bank's statements team are Low priority\n- Automated notices from the utility company are Low priority\n- Automated notices from the utility's outage alerts are Low priority\n- Automated notices from the gym are Low priority\n- Automated notices from the gym's class reminders are Low priority\n- Automated notices from the car wash are Low priority\n- Automated notices from the pharmacy are Low priority\n- Automated notices from the pharmacy's refill reminders are Low priority\n- Automated notices from the dentist's newsletter are Low priority\n- Automated notices from the hardware store are Low priority\n- Automated notices from the hardware store's rewards program are Low priority",
           "rev": 1
         },
         {
           "id": "rubric-body.31",
           "kind": "heading",
-          "markdown": "## Examples",
+          "markdown": "## Permissions",
           "rev": 1
         },
         {
           "id": "rubric-body.32",
           "kind": "paragraph",
-          "markdown": "Real cases that teach the rules. Format: sender | subject | correct label | why.",
+          "markdown": "Actions beyond priority labels that sift may take, by category. Empty means priority labels only. For example: \"Archive threads labeled AI/Junk\", or \"Label event invitations as invitation\". Sift creates any label I name here under AI/ in title case (AI/Invitation).",
           "rev": 1
         },
         {
           "id": "rubric-body.33",
           "kind": "list",
-          "markdown": "- orders@bookshop.example | Your order has shipped | AI/Low priority | routine automated notice\n- tracking@parcelnorth.example | Out for delivery today | AI/Low priority | routine automated notice\n- hello@mealkit.example | Your box is on its way | AI/Low priority | routine automated notice\n- dispatch@mealkit-couriers.example | Driver is nearby | AI/Low priority | routine automated notice\n- no-reply@streamflix.example | New this week | AI/Low priority | routine automated notice\n- billing@streamflix.example | Payment received | AI/Low priority | routine automated notice\n- digest@neighborly.example | This week on Neighborly | AI/Low priority | routine automated notice\n- alerts@neighborly.example | A neighbor replied | AI/Low priority | routine automated notice\n- noreply@citylibrary.example | Your hold is ready | AI/Low priority | routine automated notice\n- holds@citylibrary.example | Item due soon | AI/Low priority | routine automated notice\n- alerts@cedarbank.example | Deposit posted | AI/Low priority | routine automated notice\n- statements@cedarbank.example | Statement ready | AI/Low priority | routine automated notice\n- billing@citypower.example | Your bill is ready | AI/Low priority | routine automated notice\n- outages@citypower.example | Outage resolved | AI/Low priority | routine automated notice\n- hello@ridgegym.example | Your monthly summary | AI/Low priority | routine automated notice\n- classes@ridgegym.example | Class reminder: Tuesday spin | AI/Low priority | routine automated notice\n- receipts@sparklewash.example | Thanks for your visit | AI/Low priority | routine automated notice\n- rx@cornerpharmacy.example | Prescription ready | AI/Low priority | routine automated notice\n- refills@cornerpharmacy.example | Time to refill | AI/Low priority | routine automated notice\n- news@brightsmiledental.example | Fall newsletter | AI/Low priority | routine automated notice\n- orders@ironworkshardware.example | Order confirmed | AI/Low priority | routine automated notice\n- rewards@ironworkshardware.example | You earned points | AI/Low priority | routine automated notice\n- orders@bookshop.example | Your order was delivered | AI/Low priority | routine automated notice\n- noreply@citylibrary.example | New arrivals | AI/Low priority | routine automated notice",
+          "markdown": "- (none yet)",
           "rev": 1
         },
         {
           "id": "rubric-body.34",
           "kind": "heading",
-          "markdown": "## Changelog",
+          "markdown": "## Examples",
           "rev": 1
         },
         {
           "id": "rubric-body.35",
           "kind": "paragraph",
-          "markdown": "Newest first. Date | change | prompted by.",
+          "markdown": "Real cases that teach the rules. Format: sender | subject | correct label | why.",
           "rev": 1
         },
         {
           "id": "rubric-body.36",
+          "kind": "list",
+          "markdown": "- orders@bookshop.example | Your order has shipped | AI/Low priority | routine automated notice\n- tracking@parcelnorth.example | Out for delivery today | AI/Low priority | routine automated notice\n- hello@mealkit.example | Your box is on its way | AI/Low priority | routine automated notice\n- dispatch@mealkit-couriers.example | Driver is nearby | AI/Low priority | routine automated notice\n- no-reply@streamflix.example | New this week | AI/Low priority | routine automated notice\n- billing@streamflix.example | Payment received | AI/Low priority | routine automated notice\n- digest@neighborly.example | This week on Neighborly | AI/Low priority | routine automated notice\n- alerts@neighborly.example | A neighbor replied | AI/Low priority | routine automated notice\n- noreply@citylibrary.example | Your hold is ready | AI/Low priority | routine automated notice\n- holds@citylibrary.example | Item due soon | AI/Low priority | routine automated notice\n- alerts@cedarbank.example | Deposit posted | AI/Low priority | routine automated notice\n- statements@cedarbank.example | Statement ready | AI/Low priority | routine automated notice\n- billing@citypower.example | Your bill is ready | AI/Low priority | routine automated notice\n- outages@citypower.example | Outage resolved | AI/Low priority | routine automated notice\n- hello@ridgegym.example | Your monthly summary | AI/Low priority | routine automated notice\n- classes@ridgegym.example | Class reminder: Tuesday spin | AI/Low priority | routine automated notice\n- receipts@sparklewash.example | Thanks for your visit | AI/Low priority | routine automated notice\n- rx@cornerpharmacy.example | Prescription ready | AI/Low priority | routine automated notice\n- refills@cornerpharmacy.example | Time to refill | AI/Low priority | routine automated notice\n- news@brightsmiledental.example | Fall newsletter | AI/Low priority | routine automated notice\n- orders@ironworkshardware.example | Order confirmed | AI/Low priority | routine automated notice\n- rewards@ironworkshardware.example | You earned points | AI/Low priority | routine automated notice\n- orders@bookshop.example | Your order was delivered | AI/Low priority | routine automated notice\n- noreply@citylibrary.example | New arrivals | AI/Low priority | routine automated notice",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.37",
+          "kind": "heading",
+          "markdown": "## Changelog",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.38",
+          "kind": "paragraph",
+          "markdown": "Newest first. Date | change | prompted by.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.39",
           "kind": "list",
           "markdown": "- {{date:2026-09-22}} | added 'Automated notices from the hardware store's rewards program are Low priority' | you moved a notice from the hardware store's rewards program to Low priority\n- {{date:2026-09-21}} | added 'Automated notices from the hardware store are Low priority' | you moved a notice from the hardware store to Low priority\n- {{date:2026-09-20}} | added 'Automated notices from the dentist's newsletter are Low priority' | you moved a notice from the dentist's newsletter to Low priority\n- {{date:2026-09-19}} | added 'Automated notices from the pharmacy's refill reminders are Low priority' | you moved a notice from the pharmacy's refill reminders to Low priority\n- {{date:2026-09-18}} | added 'Automated notices from the pharmacy are Low priority' | you moved a notice from the pharmacy to Low priority\n- {{date:2026-09-17}} | added 'Automated notices from the car wash are Low priority' | you moved a notice from the car wash to Low priority\n- {{date:2026-09-16}} | added 'Automated notices from the gym's class reminders are Low priority' | you moved a notice from the gym's class reminders to Low priority\n- {{date:2026-09-15}} | added 'Automated notices from the gym are Low priority' | you moved a notice from the gym to Low priority\n- {{date:2026-09-14}} | added 'Automated notices from the utility's outage alerts are Low priority' | you moved a notice from the utility's outage alerts to Low priority\n- {{date:2026-09-13}} | added 'Automated notices from the utility company are Low priority' | you moved a notice from the utility company to Low priority\n- {{date:2026-09-12}} | added 'Automated notices from the bank's statements team are Low priority' | you moved a notice from the bank's statements team to Low priority\n- {{date:2026-09-11}} | added 'Automated notices from the bank are Low priority' | you moved a notice from the bank to Low priority\n- {{date:2026-09-10}} | added 'Automated notices from the library's hold system are Low priority' | you moved a notice from the library's hold system to Low priority\n- {{date:2026-09-09}} | added 'Automated notices from the library are Low priority' | you moved a notice from the library to Low priority\n- {{date:2026-09-08}} | added 'Automated notices from the neighborhood app are Low priority' | you moved a notice from the neighborhood app to Low priority\n- {{date:2026-09-07}} | added 'Automated notices from the neighborhood digest are Low priority' | you moved a notice from the neighborhood digest to Low priority\n- {{date:2026-09-06}} | added 'Automated notices from the streaming service's billing team are Low priority' | you moved a notice from the streaming service's billing team to Low priority\n- {{date:2026-09-05}} | added 'Automated notices from the streaming service are Low priority' | you moved a notice from the streaming service to Low priority\n- {{date:2026-09-04}} | added 'Automated notices from the meal kit's courier are Low priority' | you moved a notice from the meal kit's courier to Low priority\n- {{date:2026-09-03}} | added 'Automated notices from the meal kit service are Low priority' | you moved a notice from the meal kit service to Low priority\n- {{date:2026-09-02}} | added 'Automated notices from the bookshop's shipping partner are Low priority' | you moved a notice from the bookshop's shipping partner to Low priority\n- {{date:2026-09-01}} | added 'Automated notices from the bookshop are Low priority' | you moved a notice from the bookshop to Low priority",
           "rev": 1
