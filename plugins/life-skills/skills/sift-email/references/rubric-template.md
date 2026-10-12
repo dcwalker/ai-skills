@@ -84,6 +84,32 @@ Mail I never want, including:
 - Promotions and marketing I didn't ask for, even when worded urgently
 - Spam-like or phishing-like messages
 
+## Category labels
+
+Labels sift adds alongside the priority label, judged on what a message is,
+not on the words it happens to use. Sift creates each one under AI/.
+
+- **Receipts, statements, and invoices:** label a message AI/Receipt,
+  AI/Statement, or AI/Invoice when it is one, or carries one as an attachment.
+  A message that only talks about one, such as "where is my receipt for
+  Thursday?" or "I never got an invoice in the mail", gets none of these
+  labels.
+- **Newsletters:** label a message AI/Newsletter when it works as a newsletter,
+  whatever it calls itself: a "newsletter", a "gazette", or a regular Friday
+  update that reads like one.
+- **Travel:** label AI/Travel the booking confirmations, itineraries, boarding
+  passes, and check-in reminders for trips I've booked. Travel deals and
+  "where to next?" marketing don't count.
+- **Deliveries:** label AI/Delivery the tracking updates, "out for delivery",
+  and "delivered" notices for orders I've placed. Shipping promotions don't
+  count.
+- **Appointments:** label AI/Appointment the confirmations, reminders, and
+  reschedules for appointments I have, such as a doctor, dentist, or car
+  service. "Book your next visit" promotions don't count.
+- **Account security:** label AI/Security the sign-in alerts, password resets,
+  and verification codes from services I use. A message that only looks like
+  one, from a lookalike sender, is Junk instead.
+
 ## Added by sift
 
 Rules sift learned from my corrections. Sift adds, sharpens, and consolidates

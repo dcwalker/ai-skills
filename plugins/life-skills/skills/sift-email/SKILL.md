@@ -19,8 +19,8 @@ unclear it takes the safe default, finishes the run, and leaves the question
 where the user will see it (see [Never block](#never-block)).
 
 Wherever sift writes, in the log, the rubric, a comment, or its reply, it
-refers to the user only by name or as "you", never with a pronoun, "they"
-included: "asks Pat to confirm whether Pat can run the table", or "asks you
+refers to the user only by name or as "you", never with a pronoun ("they"
+included) and never as "the user" or "me": "asks Pat to confirm whether Pat can run the table", or "asks you
 to confirm".
 
 Sessions have no memory of each other. Everything that carries forward lives in
@@ -48,10 +48,10 @@ Every thread sift evaluates gets `AI/Sifted` and exactly one priority label:
 `AI/Important`, `AI/Low priority`, or `AI/Junk`. `AI/Needs reply` is added on
 top of any of them when it applies. `AI/Sifted` is the record of what sift has
 seen, so a thread that carries it but no priority label is one the user
-removed a label from (Step 2).
+removed a label from (Step 4).
 
 Gmail labels a whole thread, including messages that arrive later, so a new
-reply in a sifted thread already carries the old labels. Step 3 finds those
+reply in a sifted thread already carries the old labels. Step 5 finds those
 replies by date instead.
 
 Create any missing labels on the first run. Never create other labels, archive,
@@ -59,10 +59,13 @@ mark read, mute, trash, or move mail. Sift only adds and removes `AI/` labels,
 so nothing it does can hide a message. The user may later grant more for specific
 categories; that grant lives in the rubric, not here.
 
-When the rubric asks for a label of its own, such as "label event invitations
-as invitation", create it under `AI/` in title case, `AI/Invitation`, never as
-a bare `invitation` beside the user's own labels. Apply it alongside the
-thread's priority label, never in place of one.
+When the rubric asks for a label of its own, in its Category labels or
+Permissions section, such as "label event invitations as invitation", create
+it under `AI/` in title case, `AI/Invitation`, never as a bare `invitation`
+beside the user's own labels. Apply it alongside the thread's priority label,
+never in place of one. Decide by what the message is, as the rubric describes
+it, not by whether it uses a particular word: a message asking where a receipt
+is does not get `AI/Receipt`.
 
 Searches and label changes take label IDs, not names. List the labels once at
 the start of a run and use the IDs from then on.
@@ -83,15 +86,17 @@ the only place a later run will find them, so don't save them anywhere else,
 such as a memory file. Never guess at an existing doc, and never create a
 second pair when links were given.
 
-If a link does not open, or the docs connector is missing, still run the
-labeling with the starter rubric's rules, skip every doc update, and say in the
-summary which doc could not be opened or which connector to turn on. Don't try
-to open a doc link any other way, such as fetching it on the web.
+If a link does not open, or the docs connector is missing, keep going: label
+the whole inbox with the starter rubric's rules, skip every doc update, and say
+in the summary which doc could not be opened or which connector to turn on. A
+missing doc is never a reason to stop the run or to wait for the user. Don't
+try to open a doc link any other way, such as fetching it on the web.
 
 Before the first doc edit in a run, read the docs connector's own guide for
 how to edit blocks and comment, rather than guessing the call shapes.
 
-Read the whole rubric. It is the user's own definition of importance, so where
+Unless Step 2 ends the run, read the whole rubric before Step 3. It is the
+user's own definition of importance, so where
 it disagrees with your instincts, follow the rubric. The rubric's header names
 the user's timezone; use it for every time sift writes.
 
@@ -106,14 +111,67 @@ first real entry in its place. Its own rules go under Added by sift, each one
 learned from the user's corrections, so a sift rule may narrow one of the
 user's rules for exactly the cases its corrections cover, and no further.
 
-Before moving on, tidy About me as [About me](#about-me) describes: remove
-`(inferred)` lines whose end date has passed or whose sender has gone quiet,
-and regroup any note that sits apart from the notes it relates to.
-If the rest of the rubric runs past roughly two pages, or the changelog past 20
-entries, consolidate it this run as
-[Keeping the rubric healthy](#keeping-the-rubric-healthy) describes.
+## Step 2: Check whether there is anything to do
 
-## Step 2: Learn from corrections
+Most scheduled runs find nothing new, so check that cheaply before reading the
+rubric. A first run, with no doc links given, always has work: skip to Step 3.
+
+From the log, read only the newest run heading, for the last run's date and
+time, and from the rubric only its Timezone line (search the doc for it rather
+than reading it whole). Then run each of these checks once, using label IDs. Each needs only a
+single search or query, and the first result answers it:
+
+- An inbox thread sift has not evaluated: `in:inbox -label:<AI/Sifted id>`.
+- A sifted inbox thread with a message since the last run:
+  `in:inbox label:<AI/Sifted id> after:<date of the last run>`, whose newest
+  message is later than the last run.
+- A thread the user marked wrong: `label:<AI/Wrong id>`.
+- A sifted thread with no priority label:
+  `label:<AI/Sifted id> -label:<AI/Important id> -label:<AI/Low priority id> -label:<AI/Junk id>`.
+- A thread carrying two priority labels, one search for each pair.
+- A comment thread on the rubric whose latest comment is the user's (see
+  [Never block](#never-block)).
+
+If every check comes back empty, the run has nothing to do. Don't read the rest
+of the rubric or tidy it. Add one line to the log's Runs section, "<date> <time>:
+nothing new", or, when the newest run entry is already an empty run from
+today, update its time instead. Say "Nothing new" in chat, and stop.
+
+A swap, where the user replaced sift's label with another priority label,
+leaves nothing these checks find. Step 4 catches it on the next run that has
+work.
+
+## Step 3: Tidy the rubric
+
+Do this on every run, before anything else touches the rubric, even when no
+mail is new. Go through these four checks in order, and fix each one that
+fails. A fresh-looking rubric is not a reason to skip them: read the actual
+headings and lines.
+
+1. **Expired notes.** Under About me, remove each `(inferred)` line whose end
+   date has passed or whose sender has not written in 180 days.
+2. **One heading per subject.** Under About me, if two headings cover the same
+   subject (`### Soccer` and `### Kids' soccer`), merge them into one and move
+   every note from both under it.
+3. **Notes under the right heading.** Under About me, move each note that sits
+   under the wrong heading, or apart from the notes about the same person,
+   team, or event, so it sits with them. Check every line, the user's own
+   included, and "Right now:" lines too: a line about the school's auction
+   belongs under the school's heading even though it is time-limited. Move
+   the user's lines, never reword them, and drop nothing.
+4. **Size.** If the rubric outside About me runs past roughly two pages, or
+   the changelog past 20 entries, consolidate it as
+   [Keeping the rubric healthy](#keeping-the-rubric-healthy) describes:
+   merge overlapping rules under Added by sift, trim the examples to the most
+   instructive, and keep the newest 20 changelog entries, counting the one
+   this step adds.
+
+Record what this step changed in one changelog entry dated the run's date,
+such as "Reorganized About me: merged Soccer into Kids' soccer, moved two
+notes". When all four checks pass, the step changes nothing and adds no
+entry.
+
+## Step 4: Learn from corrections
 
 Do this before labeling, so today's run benefits from yesterday's feedback.
 
@@ -169,7 +227,7 @@ change in the rubric's changelog with the run's date (today, not the date of
 the mail or the answer that prompted it). The changelog records rubric
 changes only; an opened question goes in the run summary, not the changelog.
 
-## Step 3: Gather new mail
+## Step 5: Gather new mail
 
 Two searches, using label IDs:
 
@@ -188,16 +246,18 @@ Fetch metadata only (sender, recipients, subject, date, snippet, existing
 labels). Read a full body only when the metadata can't settle the call, such as
 a snippet that points to "see attached" or a portal.
 
-If nothing matches, write a run summary reporting zero (Step 6) and stop.
+If nothing matches, write a run summary reporting zero (Step 8) and stop.
 The summary still matters: the next run's new-reply search starts from its
 date.
 
-## Step 4: Label
+## Step 6: Label
 
 For each thread, decide using the rubric, then what is known about the sender
 and the message.
 
-**Who the sender is.** For each sender, in this order:
+**Who the sender is.** Before looking anyone up, go through every sender in
+this run and settle which ones About me already covers; look up only the rest,
+even when looking several up at once. Then for each sender, in this order:
 
 1. **Check About me first.** If it already says who this sender is, use that
    and do no lookup for them this run. The user's own About me lines carry the
@@ -259,16 +319,17 @@ says so, or adding a label the rubric asks for (under `AI/`, as
 [Labels](#labels) describes), and nothing it doesn't grant. A grant applies on every run, without
 asking.
 
-## Step 5: Log
+## Step 7: Log
 
 Under the log's Runs section, add a heading for this run (its date and time,
-newest run first), then one line per thread:
+newest run first), then one line per thread. On a run that created the docs,
+the summary under that heading (Step 8) starts with both docs' links.
 
 `<time> | <thread id> | <sender> | <subject> | <labels applied> | <one-sentence reason>`
 
 The time is when the run started, read from the system clock (for example,
 with `date`) and converted to the rubric's timezone. Never use a message's
-timestamp or a made-up time. The thread id is what Step 2 uses to
+timestamp or a made-up time. The thread id is what Step 4 uses to
 tell which labels sift applied. The reason is how the user audits a call
 later, so make it specific: "Coach asking for carpool volunteers by Friday"
 beats "Seems important."
@@ -276,17 +337,18 @@ beats "Seems important."
 Keep the log to the last 30 days. When older entries exist, replace them with a
 one-line summary per week (counts by label, corrections received).
 
-## Step 6: Summarize
+## Step 8: Summarize
 
-Before writing the summary, check that this run did all of these, and finish
-any it missed:
+Before writing the summary, go through this checklist. It is not optional: for
+each item this run has not done, do it now, then continue.
 
-- About me was tidied at the start (Step 1).
+- Step 3's four checks all pass now: no expired `(inferred)` line, no two
+  About me headings for one subject, no note under the wrong heading, and the
+  rubric within its size limits.
 - Every sender whose lookup found something has an `(inferred)` note, and no
-  sender About me already covered was looked up again.
+  sender About me already covered was looked up.
 - Every action the Permissions section grants was carried out.
-- A rubric past roughly two pages, or a changelog past 20 entries, was
-  consolidated.
+- On a run that created the docs, the log summary carries both doc links.
 
 Write the run summary directly under this run's heading in the log, above its
 thread lines, then repeat it in chat:
@@ -307,7 +369,8 @@ it too. For the same reason, end on the summary, never on an offer or a
 question: anything that needs the user's answer is a comment on the rubric
 (see [Never block](#never-block)). When the request asked for an action the
 rubric does not grant, such as archiving, say it was not done and that the
-grant belongs in the rubric's Permissions section.
+grant belongs in the rubric's Permissions section. Do not offer to do it, or
+to add the grant yourself: Permissions is the user's to write.
 
 ## Never block
 
@@ -315,14 +378,14 @@ When a run needs the user's judgment, it does not wait for it:
 
 1. Take the safe default. For an unclear correction, keep the thread's current
    labels, `AI/Wrong` included, until the user answers. For an unclear new
-   thread, apply the tie-breaking rules in Step 4.
+   thread, apply the tie-breaking rules in Step 6.
 2. Open a comment on the rubric doc, anchored on the rule or example it is
    about (or the doc's title when none fits). Start it with `Sift:`, name the
    thread by sender, subject, and date, say what sift did, and ask one
    specific question.
 3. List the question in the run summary.
 
-The next run reads the user's replies in Step 2 and applies them. Don't open
+The next run reads the user's replies in Step 4 and applies them. Don't open
 a second comment for a question that already has an open one, and don't put
 the question, or any offer to do more, at the end of the reply: the run ends on
 its summary.
@@ -331,7 +394,8 @@ its summary.
 
 The rubric's About me section is sift's memory between runs, shared with the
 user and grouped under topic headings (`### Kids' soccer`, `### Home`) so
-related notes sit together.
+related notes sit together. Step 3 applies the grouping and expiry rules below
+at the start of every run.
 
 - **Write what you learn.** After a lookup tells you who a sender is, or the
   user's own mail shows what matters to them now (an event they keep writing
