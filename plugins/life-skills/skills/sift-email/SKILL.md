@@ -1,6 +1,6 @@
 ---
 name: sift-email
-description: "Bulk-label new Gmail by importance in one unattended pass, guided by a living rubric in Claude Docs that learns from the user's corrections. No per-item review, and it never stops to ask, so it can run as a scheduled routine. Use whenever the user asks to sift, sort, or label new mail, or wants to know what's important without going through it themselves: \"sift my email\", \"sift my inbox\", \"run sift\", \"label my new mail\", \"what's important in my inbox\", \"flag anything important since this morning\", \"check my corrections\". For interactive, one-by-one processing of emails, cards, or tickets, use triage instead."
+description: "Bulk-label new Gmail by importance in one unattended pass, guided by a living rubric in Claude Docs that learns from the user's corrections. No per-item review, and it never stops to ask, so it can run as a scheduled routine. It runs only when called directly, with /sift-email or by a routine that reads this file, never on its own. For interactive, one-by-one processing of emails, cards, or tickets, use triage instead."
 disable-model-invocation: true
 metadata:
   category: life-skills
