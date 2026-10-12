@@ -1,0 +1,2371 @@
+{
+  "metadata": {
+    "skill_name": "sift-email",
+    "skill_path": "plugins/life-skills/skills/sift-email",
+    "executor_model": "claude-sonnet-5-5",
+    "analyzer_model": "claude-opus-5-5",
+    "timestamp": "2026-10-11T00:00:00Z",
+    "evals_run": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+    ],
+    "runs_per_configuration": 2,
+    "executor": "real `claude -p --strict-mcp-config --output-format stream-json` subprocess, one per trial, via evals/lib/run-mcp-trials.sh",
+    "notes": "Baseline for sift-email (issue #109), evals 1-21, two runs each, with run-mcp-trials.sh against the Gmail, Claude Docs, and Contacts stubs, on SKILL.md as committed with this baseline. Run date 2026-10-11 (fixtures anchored to 2026-10-10, shift 0). Eval 11 was re-run after the Docs stub's guide gained the search read it had been missing (the real connector documents it); its two re-runs replace the round's first eval 11 results, and every other eval is from the same round. Failures: eval 11 run 2 read the whole rubric for its Timezone line instead of searching for it; eval 20 run 2 skipped Step 3 (Tidy the rubric) and said the rubric looked clean, leaving the duplicate soccer heading and the misplaced auction note. Not graded, seen in a few trials: made-up log times copied from an earlier entry, summary counts that disagree with the labels applied (eval 18 run 2), the user called \"the user\" in log or rubric text, rules a step wider than one correction, an About me note added from a message alone or missed after a lookup, and replies closing with a suggestion to add a Permissions grant."
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 9,
+        "failed": 0,
+        "total": 9,
+        "not_exercised": 0,
+        "time_seconds": 149.507,
+        "tokens": 1003704,
+        "tool_calls": 37,
+        "errors": 1
+      },
+      "expectations": [
+        {
+          "text": "The Gmail call log shows create_label calls for at least AI/Sifted and every priority label the run applies; no label is created outside AI/ other than the AI parent label itself, which Gmail creates for nested names.",
+          "passed": true,
+          "evidence": "gmail-calls.log has create_label for AI/Important, AI/Low priority, AI/Junk, AI/Needs reply, AI/Sifted, AI/Wrong, and AI/Delivery (a rubric category label). Final labels map gains Label_12 AI, Label_13 AI/Important, Label_14 AI/Low priority, Label_15 AI/Junk, Label_16 AI/Needs reply, Label_17 AI/Sifted, Label_18 AI/Wrong, Label_19 AI/Delivery; the AI parent is auto-created for nested names. No non-AI label created."
+        },
+        {
+          "text": "Each of t-coach, t-promo, and t-receipt ends with the AI/Sifted label and exactly one of the AI/Important, AI/Low priority, or AI/Junk labels in its final labelIds (resolve the label ids through the final Gmail state's labels).",
+          "passed": true,
+          "evidence": "Final labelIds: t-coach AI/Important + AI/Sifted; t-promo AI/Junk + AI/Sifted; t-receipt AI/Low priority + AI/Sifted (+ AI/Delivery). Exactly one priority label each, resolved via the out-state labels map."
+        },
+        {
+          "text": "t-coach (a coach asking the user to drive by Friday) ends with AI/Important and AI/Needs reply.",
+          "passed": true,
+          "evidence": "t-coach ends with AI/Important and AI/Needs reply (plus AI/Sifted, INBOX, UNREAD)."
+        },
+        {
+          "text": "t-promo (an unsolicited sale) does not end with AI/Important.",
+          "passed": true,
+          "evidence": "t-promo ends with AI/Junk, not AI/Important."
+        },
+        {
+          "text": "The final Claude Docs state holds two new docs named like 'Email Sift Rubric' and 'Email Sift Log'. The rubric body has the template's How to use this doc, Labels, and About me sections, its rule sections (Always important, Needs reply, Low priority, Junk, Added by sift, Permissions, Examples, Changelog), and a Timezone line. The log body has its Runs section holding this run's heading, summary, and one line per thread naming its thread id.",
+          "passed": true,
+          "evidence": "docs-state-out holds two new docs, 'Email Sift Rubric' and 'Email Sift Log' (rubric fd08bef0-7e9e-4d3c-bb73-b06f421bf0eb and log 27d74ad0-de54-47bd-ab7d-70e79a98b33b). Rubric body carries the full template: Timezone line, How to use this doc, Labels, About me, Always important, Needs reply, Low priority, Junk, Category labels, Added by sift, Permissions, Examples, Changelog. Log body's Runs section has this run's heading, a summary, and lines for t-coach, t-promo, and t-receipt by thread id."
+        },
+        {
+          "text": "The response gives both new docs' links (https://claude.ai/code/artifact/<id> for the ids created) and asks the user to add them to the routine prompt.",
+          "passed": true,
+          "evidence": "transcript.txt lists both https://claude.ai/code/artifact/ links matching the created ids (rubric fd08bef0-7e9e-4d3c-bb73-b06f421bf0eb and log 27d74ad0-de54-47bd-ab7d-70e79a98b33b) and asks to add them to the routine prompt."
+        },
+        {
+          "text": "The log's summary for this run also contains both new docs' links.",
+          "passed": true,
+          "evidence": "The log's new run entry starts with both artifact links and the request to add them to the routine prompt."
+        },
+        {
+          "text": "The response does not ask the user a question before acting and does not end the run waiting for an answer: labels were applied in the same turn.",
+          "passed": true,
+          "evidence": "No question before acting; label_thread calls 15-17 applied labels in the single turn, and the reply ends on the summary without waiting for an answer."
+        },
+        {
+          "text": "Every thread keeps all of its seed labels (INBOX, UNREAD), so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "t-coach and t-promo keep INBOX and UNREAD; t-receipt keeps INBOX (its only seed label). No archive, mark-read, trash, or move call in gmail-calls.log."
+        }
+      ]
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 9,
+        "failed": 0,
+        "total": 9,
+        "not_exercised": 0,
+        "time_seconds": 110.943,
+        "tokens": 713022,
+        "tool_calls": 31,
+        "errors": 1
+      },
+      "expectations": [
+        {
+          "text": "The Gmail call log shows create_label calls for at least AI/Sifted and every priority label the run applies; no label is created outside AI/ other than the AI parent label itself, which Gmail creates for nested names.",
+          "passed": true,
+          "evidence": "gmail-calls.log has create_label for AI/Important, AI/Low priority, AI/Junk, AI/Needs reply, AI/Sifted, AI/Wrong, and AI/Delivery (a rubric category label). Final labels map gains Label_12 AI, Label_13 AI/Important, Label_14 AI/Low priority, Label_15 AI/Junk, Label_16 AI/Needs reply, Label_17 AI/Sifted, Label_18 AI/Wrong, Label_19 AI/Delivery; the AI parent is auto-created for nested names. No non-AI label created."
+        },
+        {
+          "text": "Each of t-coach, t-promo, and t-receipt ends with the AI/Sifted label and exactly one of the AI/Important, AI/Low priority, or AI/Junk labels in its final labelIds (resolve the label ids through the final Gmail state's labels).",
+          "passed": true,
+          "evidence": "Final labelIds: t-coach AI/Important + AI/Sifted; t-promo AI/Junk + AI/Sifted; t-receipt AI/Low priority + AI/Sifted (+ AI/Delivery). Exactly one priority label each, resolved via the out-state labels map."
+        },
+        {
+          "text": "t-coach (a coach asking the user to drive by Friday) ends with AI/Important and AI/Needs reply.",
+          "passed": true,
+          "evidence": "t-coach ends with AI/Important and AI/Needs reply (plus AI/Sifted, INBOX, UNREAD)."
+        },
+        {
+          "text": "t-promo (an unsolicited sale) does not end with AI/Important.",
+          "passed": true,
+          "evidence": "t-promo ends with AI/Junk, not AI/Important."
+        },
+        {
+          "text": "The final Claude Docs state holds two new docs named like 'Email Sift Rubric' and 'Email Sift Log'. The rubric body has the template's How to use this doc, Labels, and About me sections, its rule sections (Always important, Needs reply, Low priority, Junk, Added by sift, Permissions, Examples, Changelog), and a Timezone line. The log body has its Runs section holding this run's heading, summary, and one line per thread naming its thread id.",
+          "passed": true,
+          "evidence": "docs-state-out holds two new docs, 'Email Sift Rubric' and 'Email Sift Log' (rubric b249c484-2698-4b8c-9fab-50a70f083836 and log 9bb1ae6b-dee6-4802-9e41-19d17537de4c). Rubric body carries the full template: Timezone line, How to use this doc, Labels, About me, Always important, Needs reply, Low priority, Junk, Category labels, Added by sift, Permissions, Examples, Changelog. Log body's Runs section has this run's heading, a summary, and lines for t-coach, t-promo, and t-receipt by thread id."
+        },
+        {
+          "text": "The response gives both new docs' links (https://claude.ai/code/artifact/<id> for the ids created) and asks the user to add them to the routine prompt.",
+          "passed": true,
+          "evidence": "transcript.txt lists both https://claude.ai/code/artifact/ links matching the created ids (rubric b249c484-2698-4b8c-9fab-50a70f083836 and log 9bb1ae6b-dee6-4802-9e41-19d17537de4c) and asks to add them to the routine prompt."
+        },
+        {
+          "text": "The log's summary for this run also contains both new docs' links.",
+          "passed": true,
+          "evidence": "The log's new run entry starts with both artifact links and the request to add them to the routine prompt."
+        },
+        {
+          "text": "The response does not ask the user a question before acting and does not end the run waiting for an answer: labels were applied in the same turn.",
+          "passed": true,
+          "evidence": "No question before acting; label_thread calls 12-14 plus modify_thread_labels adding AI/Delivery to t-receipt applied labels in the single turn, and the reply ends on the summary without waiting for an answer."
+        },
+        {
+          "text": "Every thread keeps all of its seed labels (INBOX, UNREAD), so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "t-coach and t-promo keep INBOX and UNREAD; t-receipt keeps INBOX (its only seed label). No archive, mark-read, trash, or move call in gmail-calls.log."
+        }
+      ]
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 11,
+        "failed": 0,
+        "total": 11,
+        "not_exercised": 0,
+        "time_seconds": 130.946,
+        "tokens": 761648,
+        "tool_calls": 41,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Each of t-coach, t-landlord, t-stranger, t-urgent-shop, t-broadcast, t-ack ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "Final labelIds: t-coach 21+24+25; t-landlord 21+24+25; t-stranger 23+25; t-urgent-shop 23+25; t-broadcast 22+25; t-ack 21+25. Each has Label_25 and exactly one priority label."
+        },
+        {
+          "text": "t-coach ends with AI/Important (Label_21) and AI/Needs reply (Label_24).",
+          "passed": true,
+          "evidence": "t-coach ends with Label_21 and Label_24 (label_thread call 20)."
+        },
+        {
+          "text": "t-landlord ends with AI/Important (Label_21) and AI/Needs reply (Label_24).",
+          "passed": true,
+          "evidence": "t-landlord ends with Label_21 and Label_24 (label_thread call 19)."
+        },
+        {
+          "text": "t-urgent-shop ends with AI/Junk (Label_23) or AI/Low priority (Label_22), not AI/Important.",
+          "passed": true,
+          "evidence": "t-urgent-shop ends with Label_23 (AI/Junk), not Label_21."
+        },
+        {
+          "text": "t-stranger does not end with AI/Important.",
+          "passed": true,
+          "evidence": "t-stranger ends with Label_23 (AI/Junk), not Label_21."
+        },
+        {
+          "text": "t-broadcast (the landlord's note to all tenants that only shares information) does not end with AI/Needs reply (Label_24).",
+          "passed": true,
+          "evidence": "t-broadcast ends with Label_22 + Label_25, no Label_24."
+        },
+        {
+          "text": "t-ack (Riley's 'Got it, thanks!' reply to the user's own message) does not end with AI/Needs reply (Label_24).",
+          "passed": true,
+          "evidence": "t-ack ends with Label_21 + Label_25, no Label_24 (log reason: 'only an acknowledgment so no reply needed')."
+        },
+        {
+          "text": "The calls show the run looked up who the senders are: a search_contacts call for the coach's address or name, and a Gmail search for mail the user sent to the landlord (from:me or in:sent with the landlord's address) or a contacts search for the landlord.",
+          "passed": true,
+          "evidence": "contacts-calls.log: search_contacts 'jordan.lee@riversideunited.example'. gmail-calls.log: search_threads 'from:me to:morgan@harborprops.example', plus search_contacts for morgan@harborprops.example."
+        },
+        {
+          "text": "The log body gains one line per labeled thread naming its thread id, the labels applied, and a specific reason.",
+          "passed": true,
+          "evidence": "Log gains six lines, one each for t-landlord, t-coach, t-ack, t-broadcast, t-stranger, t-urgent-shop, each with labels applied and a specific reason (e.g. 'Direct question needing a decision (Tuesday or Wednesday), from the landlord Pat corresponded with last month')."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "gmail-state-out vs seed: every thread keeps its seed non-AI labels (INBOX, UNREAD; t-sent-landlord keeps SENT); only AI/ labels changed. Gmail call log has only list_labels, search_threads, get_thread, create_label (AI/ only), and label_thread/modify_thread_labels adding or removing AI/ ids; no archive, read, trash, or move."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash, or spam call; gmail-state-out drafts is empty."
+        }
+      ]
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 11,
+        "failed": 0,
+        "total": 11,
+        "not_exercised": 0,
+        "time_seconds": 167.708,
+        "tokens": 1110921,
+        "tool_calls": 50,
+        "errors": 1
+      },
+      "expectations": [
+        {
+          "text": "Each of t-coach, t-landlord, t-stranger, t-urgent-shop, t-broadcast, t-ack ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "Final labelIds: t-coach 21+24+25; t-landlord 21+24+25; t-stranger 23+25; t-urgent-shop 23+25; t-broadcast 22+25; t-ack 22+25. Each has Label_25 and exactly one priority label."
+        },
+        {
+          "text": "t-coach ends with AI/Important (Label_21) and AI/Needs reply (Label_24).",
+          "passed": true,
+          "evidence": "t-coach ends with Label_21 and Label_24 (modify_thread_labels call 21)."
+        },
+        {
+          "text": "t-landlord ends with AI/Important (Label_21) and AI/Needs reply (Label_24).",
+          "passed": true,
+          "evidence": "t-landlord ends with Label_21 and Label_24 (modify_thread_labels call 20)."
+        },
+        {
+          "text": "t-urgent-shop ends with AI/Junk (Label_23) or AI/Low priority (Label_22), not AI/Important.",
+          "passed": true,
+          "evidence": "t-urgent-shop ends with Label_23 (AI/Junk), not Label_21."
+        },
+        {
+          "text": "t-stranger does not end with AI/Important.",
+          "passed": true,
+          "evidence": "t-stranger ends with Label_23 (AI/Junk), not Label_21."
+        },
+        {
+          "text": "t-broadcast (the landlord's note to all tenants that only shares information) does not end with AI/Needs reply (Label_24).",
+          "passed": true,
+          "evidence": "t-broadcast ends with Label_22 + Label_25, no Label_24."
+        },
+        {
+          "text": "t-ack (Riley's 'Got it, thanks!' reply to the user's own message) does not end with AI/Needs reply (Label_24).",
+          "passed": true,
+          "evidence": "t-ack ends with Label_22 + Label_25, no Label_24."
+        },
+        {
+          "text": "The calls show the run looked up who the senders are: a search_contacts call for the coach's address or name, and a Gmail search for mail the user sent to the landlord (from:me or in:sent with the landlord's address) or a contacts search for the landlord.",
+          "passed": true,
+          "evidence": "contacts-calls.log: search_contacts 'riversideunited.example' (coach's domain) and 'harborprops.example'. gmail-calls.log: search_threads 'from:me to:jordan.lee@riversideunited.example' and 'from:me to:morgan@harborprops.example'."
+        },
+        {
+          "text": "The log body gains one line per labeled thread naming its thread id, the labels applied, and a specific reason.",
+          "passed": true,
+          "evidence": "Log gains six lines naming t-urgent-shop, t-stranger, t-landlord, t-coach, t-broadcast, t-ack with priority labels and specific reasons (e.g. 'Landlord, written to within 90 days, asking Pat to pick Tuesday or Wednesday for the technician'). The labels column omits AI/Sifted, which every thread did receive."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "gmail-state-out vs seed: every thread keeps its seed non-AI labels (INBOX, UNREAD; t-sent-landlord keeps SENT); only AI/ labels changed. Gmail call log has only list_labels, search_threads, get_thread, create_label (AI/ only), and label_thread/modify_thread_labels adding or removing AI/ ids; no archive, read, trash, or move."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash, or spam call; gmail-state-out drafts is empty."
+        }
+      ]
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "not_exercised": 0,
+        "time_seconds": 60.025,
+        "tokens": 424557,
+        "tool_calls": 23,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Each of t-new ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "t-new final labelIds: Label_22 + Label_25 + INBOX + UNREAD; exactly one priority label."
+        },
+        {
+          "text": "t-new ends with AI/Low priority (Label_22).",
+          "passed": true,
+          "evidence": "t-new ends with Label_22 (AI/Low priority)."
+        },
+        {
+          "text": "The Gmail call log shows a search for the sender's earlier mail (from:orders@trailgear.example or the sender's domain, beyond the inbox) or a search by the Receipts label, before t-new is labeled.",
+          "passed": true,
+          "evidence": "search_threads 'from:orders@trailgear.example' (call 8) and 'label:Label_2 trailgear' (call 9) precede label_thread on t-new (call 11)."
+        },
+        {
+          "text": "The log line for t-new gives a reason that refers to the user's earlier orders or the Receipts label, not only to the subject's wording.",
+          "passed": true,
+          "evidence": "Log line for t-new: 'Review request tied to confirmed order #87554 (trekking poles, 2026-09-12); not unsolicited marketing, but nothing urgent.', citing the earlier order rather than the subject wording."
+        },
+        {
+          "text": "t-old-1, t-old-2, and t-old-3 end with exactly their seed labels.",
+          "passed": true,
+          "evidence": "t-old-1, t-old-2, t-old-3 end with only Receipts (Label_2), identical to seed."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "gmail-state-out vs seed: every thread keeps its seed non-AI labels (INBOX, UNREAD, Label_2); only AI/ labels changed. Gmail call log has only list_labels, search_threads, get_thread, create_label (AI/ only), and label_thread/modify_thread_labels adding or removing AI/ ids; no archive, read, trash, or move."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash, or spam call; gmail-state-out drafts is empty."
+        }
+      ]
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "not_exercised": 0,
+        "time_seconds": 64.373,
+        "tokens": 547472,
+        "tool_calls": 23,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Each of t-new ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "t-new final labelIds: Label_22 + Label_25 + INBOX + UNREAD; exactly one priority label."
+        },
+        {
+          "text": "t-new ends with AI/Low priority (Label_22).",
+          "passed": true,
+          "evidence": "t-new ends with Label_22 (AI/Low priority)."
+        },
+        {
+          "text": "The Gmail call log shows a search for the sender's earlier mail (from:orders@trailgear.example or the sender's domain, beyond the inbox) or a search by the Receipts label, before t-new is labeled.",
+          "passed": true,
+          "evidence": "search_threads 'from:orders@trailgear.example' (call 9) and 'label:Label_2 trailgear' (call 10) precede label_thread on t-new (call 11)."
+        },
+        {
+          "text": "The log line for t-new gives a reason that refers to the user's earlier orders or the Receipts label, not only to the subject's wording.",
+          "passed": true,
+          "evidence": "Log line for t-new: 'Review request for a confirmed order (trekking poles, order #87554), not unsolicited marketing', citing the earlier order rather than the subject wording."
+        },
+        {
+          "text": "t-old-1, t-old-2, and t-old-3 end with exactly their seed labels.",
+          "passed": true,
+          "evidence": "t-old-1, t-old-2, t-old-3 end with only Receipts (Label_2), identical to seed."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "gmail-state-out vs seed: every thread keeps its seed non-AI labels (INBOX, UNREAD, Label_2); only AI/ labels changed. Gmail call log has only list_labels, search_threads, get_thread, create_label (AI/ only), and label_thread/modify_thread_labels adding or removing AI/ ids; no archive, read, trash, or move."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash, or spam call; gmail-state-out drafts is empty."
+        }
+      ]
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "not_exercised": 0,
+        "time_seconds": 103.917,
+        "tokens": 694065,
+        "tool_calls": 34,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Each of t-news, t-sale, t-phish, t-statement ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "Final: t-news 22+25 (+AI/Newsletter); t-sale 23+25; t-phish 23+25; t-statement 22+25 (+AI/Statement). Each has Label_25 and exactly one priority label."
+        },
+        {
+          "text": "t-news ends with AI/Low priority (Label_22).",
+          "passed": true,
+          "evidence": "t-news ends with Label_22 (plus AI/Newsletter, a rubric category label)."
+        },
+        {
+          "text": "t-statement ends with AI/Low priority (Label_22).",
+          "passed": true,
+          "evidence": "t-statement ends with Label_22 (plus AI/Statement)."
+        },
+        {
+          "text": "t-sale ends with AI/Junk (Label_23).",
+          "passed": true,
+          "evidence": "t-sale ends with Label_23."
+        },
+        {
+          "text": "t-phish ends with AI/Junk (Label_23), not AI/Important.",
+          "passed": true,
+          "evidence": "t-phish ends with Label_23, not Label_21 (log reason cites the paypa1-support lookalike domain)."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "gmail-state-out vs seed: every thread keeps its seed non-AI labels (INBOX, UNREAD, Newsletter Label_3); only AI/ labels changed. Gmail call log has only list_labels, search_threads, get_thread, create_label (AI/ only), and label_thread/modify_thread_labels adding or removing AI/ ids; no archive, read, trash, or move. New labels created: AI/Newsletter and AI/Statement only."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash, or spam call; gmail-state-out drafts is empty."
+        }
+      ]
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "not_exercised": 0,
+        "time_seconds": 87.389,
+        "tokens": 659836,
+        "tool_calls": 30,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Each of t-news, t-sale, t-phish, t-statement ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "Final: t-news 22+25 (+AI/Newsletter); t-sale 23+25; t-phish 23+25; t-statement 22+25 (+AI/Statement). Each has Label_25 and exactly one priority label."
+        },
+        {
+          "text": "t-news ends with AI/Low priority (Label_22).",
+          "passed": true,
+          "evidence": "t-news ends with Label_22 (plus AI/Newsletter, a rubric category label)."
+        },
+        {
+          "text": "t-statement ends with AI/Low priority (Label_22).",
+          "passed": true,
+          "evidence": "t-statement ends with Label_22 (plus AI/Statement)."
+        },
+        {
+          "text": "t-sale ends with AI/Junk (Label_23).",
+          "passed": true,
+          "evidence": "t-sale ends with Label_23."
+        },
+        {
+          "text": "t-phish ends with AI/Junk (Label_23), not AI/Important.",
+          "passed": true,
+          "evidence": "t-phish ends with Label_23, not Label_21 (log reason cites the paypa1-support lookalike domain)."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "gmail-state-out vs seed: every thread keeps its seed non-AI labels (INBOX, UNREAD, Newsletter Label_3); only AI/ labels changed. Gmail call log has only list_labels, search_threads, get_thread, create_label (AI/ only), and label_thread/modify_thread_labels adding or removing AI/ ids; no archive, read, trash, or move. New labels created: AI/Newsletter and AI/Statement only."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash, or spam call; gmail-state-out drafts is empty."
+        }
+      ]
+    },
+    {
+      "eval_id": 5,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 9,
+        "failed": 0,
+        "total": 9,
+        "not_exercised": 0,
+        "time_seconds": 104.898,
+        "tokens": 609972,
+        "tool_calls": 29,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "t-webinar ends with AI/Low priority (Label_22) and AI/Sifted, without AI/Important (Label_21) or AI/Wrong (Label_26).",
+          "passed": true,
+          "evidence": "t-webinar final: Label_22 + Label_25 + INBOX; Label_21 and Label_26 removed (modify_thread_labels call 11)."
+        },
+        {
+          "text": "t-pta ends with AI/Low priority (Label_22) and AI/Sifted, without AI/Junk (Label_23) or AI/Wrong (Label_26).",
+          "passed": true,
+          "evidence": "t-pta final: Label_22 + Label_25 + INBOX; Label_23 and Label_26 removed (modify_thread_labels call 10)."
+        },
+        {
+          "text": "Each of t-new ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "t-new final: Label_21 + Label_25 + INBOX + UNREAD; exactly one priority label."
+        },
+        {
+          "text": "The rubric body gains at least one rule or example covering vendor webinar or event reminders and at least one covering the PTA or school-group mail, and the Changelog section gains entries dated the run date for these changes.",
+          "passed": true,
+          "evidence": "Added by sift gains a treasurer@maplegrovepta.example rule (PTA budget drafts not junk) and an events@cloudco.example webinar-reminder rule; Examples gains both; Changelog gains two entries dated 2026-10-11 (run_date)."
+        },
+        {
+          "text": "No line above the rubric's Added by sift section is removed, reworded, or moved: every rule under Always important, Needs reply, Low priority, and Junk matches the seed word for word, and the new rules go under Added by sift (or as Examples).",
+          "passed": true,
+          "evidence": "rubric-body diff touches only the three placeholder lines under Added by sift, Examples, and Changelog; every line above Added by sift matches the seed."
+        },
+        {
+          "text": "The new rules stay within what the two corrections show, one about vendor webinar or event reminders and one about PTA or school-group mail like the budget draft; neither becomes a general class such as all vendor or marketing mail, or all parent or school organizations.",
+          "passed": true,
+          "evidence": "PTA rule names treasurer@maplegrovepta.example and PTA documents; webinar rule covers 'Automated webinar/event reminders from marketing senders such as events@cloudco.example'. Both stay within vendor webinar/event reminders and PTA mail; neither covers all vendor mail or all school organizations."
+        },
+        {
+          "text": "No question comment is opened on the rubric for t-webinar or t-pta, since both directions are clear.",
+          "passed": true,
+          "evidence": "docs-state-out comments list is empty (seed 0, out 0)."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "gmail-state-out vs seed: every thread keeps its seed non-AI labels (INBOX, UNREAD); only AI/ labels changed. Gmail call log has only list_labels, search_threads, get_thread, create_label (AI/ only), and label_thread/modify_thread_labels adding or removing AI/ ids; no archive, read, trash, or move."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash, or spam call; gmail-state-out drafts is empty."
+        }
+      ]
+    },
+    {
+      "eval_id": 5,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 9,
+        "failed": 0,
+        "total": 9,
+        "not_exercised": 0,
+        "time_seconds": 193.356,
+        "tokens": 1107160,
+        "tool_calls": 38,
+        "errors": 1
+      },
+      "expectations": [
+        {
+          "text": "t-webinar ends with AI/Low priority (Label_22) and AI/Sifted, without AI/Important (Label_21) or AI/Wrong (Label_26).",
+          "passed": true,
+          "evidence": "t-webinar final: Label_22 + Label_25 + INBOX; Label_21 and Label_26 removed (modify_thread_labels call 16)."
+        },
+        {
+          "text": "t-pta ends with AI/Low priority (Label_22) and AI/Sifted, without AI/Junk (Label_23) or AI/Wrong (Label_26).",
+          "passed": true,
+          "evidence": "t-pta final: Label_22 + Label_25 + INBOX; Label_23 and Label_26 removed (modify_thread_labels call 15)."
+        },
+        {
+          "text": "Each of t-new ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "t-new final: Label_21 + Label_25 + INBOX + UNREAD; exactly one priority label."
+        },
+        {
+          "text": "The rubric body gains at least one rule or example covering vendor webinar or event reminders and at least one covering the PTA or school-group mail, and the Changelog section gains entries dated the run date for these changes.",
+          "passed": true,
+          "evidence": "Added by sift gains a PTA rule naming treasurer@maplegrovepta.example's budget draft and a vendor webinar-reminder rule naming events@cloudco.example; Examples gains both; Changelog gains two entries dated 2026-10-11."
+        },
+        {
+          "text": "No line above the rubric's Added by sift section is removed, reworded, or moved: every rule under Always important, Needs reply, Low priority, and Junk matches the seed word for word, and the new rules go under Added by sift (or as Examples).",
+          "passed": true,
+          "evidence": "rubric-body diff: the About me placeholder heading and line are replaced by School and Library headings with (inferred) lines (an allowed placeholder replacement), plus the three placeholders under Added by sift, Examples, Changelog. Always important, Needs reply, Low priority, and Junk match the seed word for word."
+        },
+        {
+          "text": "The new rules stay within what the two corrections show, one about vendor webinar or event reminders and one about PTA or school-group mail like the budget draft; neither becomes a general class such as all vendor or marketing mail, or all parent or school organizations.",
+          "passed": true,
+          "evidence": "Webinar rule is scoped to 'a webinar or event reminder from a vendor's events address (events@cloudco.example)'. PTA rule reads 'PTA/school-organization mail from a first-time sender with an attachment isn't automatically junk', naming treasurer@maplegrovepta.example. It is wider than the one sender, but narrowed to first-time senders with an attachment, matching the expectation's allowed 'PTA or school-group mail like the budget draft' and not all school organizations. Borderline pass."
+        },
+        {
+          "text": "No question comment is opened on the rubric for t-webinar or t-pta, since both directions are clear.",
+          "passed": true,
+          "evidence": "docs-state-out comments list is empty (seed 0, out 0)."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "gmail-state-out vs seed: every thread keeps its seed non-AI labels (INBOX, UNREAD); only AI/ labels changed. Gmail call log has only list_labels, search_threads, get_thread, create_label (AI/ only), and label_thread/modify_thread_labels adding or removing AI/ ids; no archive, read, trash, or move."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash, or spam call; gmail-state-out drafts is empty."
+        }
+      ]
+    },
+    {
+      "eval_id": 6,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "not_exercised": 0,
+        "time_seconds": 132.804,
+        "tokens": 798820,
+        "tool_calls": 31,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "t-survey still carries AI/Low priority (Label_22) and does not carry AI/Important (Label_21) or AI/Junk (Label_23).",
+          "passed": true,
+          "evidence": "t-survey final: AI/Low priority, AI/Sifted, AI/Wrong, INBOX, identical to seed; no Label_21 or Label_23. No label call on t-survey in gmail-calls.log."
+        },
+        {
+          "text": "The Claude Docs state gains exactly one new comment thread on the rubric body whose first comment starts with 'Sift:', names the survey (by sender, subject, or date), and asks a question.",
+          "passed": true,
+          "evidence": "docs-state-out comments: seed 0, out 1. Comment 22264d58-48c3-4eae-a13a-35d6c4e974e3 on rubric-body: \"Sift: research@citypolls.example's \\\"Quick survey about city parks\\\" (Oct 8) was labeled AI/Low priority, then marked AI/Wrong ... Should messages like this be Important, or Junk?\""
+        },
+        {
+          "text": "No rubric rule or example is added about surveys or citypolls.example, and the Changelog gains no entry about the survey or the opened question.",
+          "passed": true,
+          "evidence": "rubric-body diff only replaces the About me placeholder with a Kids' soccer (inferred) line about jordan.lee; Added by sift, Examples, and Changelog are unchanged, with no survey or citypolls.example mention."
+        },
+        {
+          "text": "Each of t-new ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "t-new final: Label_21 + Label_25 + INBOX + UNREAD; exactly one priority label."
+        },
+        {
+          "text": "t-new (a coach's heads-up to the team list moving Monday's practice) ends with AI/Important (Label_21) and without AI/Needs reply (Label_24), since it only shares information.",
+          "passed": true,
+          "evidence": "t-new ends with Label_21 and no Label_24."
+        },
+        {
+          "text": "The response lists the open question about the survey and does not wait for an answer before finishing the run.",
+          "passed": true,
+          "evidence": "transcript.txt reports the survey question opened on the rubric and that the next run applies the answer; t-new was labeled in the same turn and the reply ends on the summary."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "gmail-state-out vs seed: every thread keeps its seed non-AI labels (INBOX, UNREAD); only AI/ labels changed. Gmail call log has only list_labels, search_threads, get_thread, create_label (AI/ only), and label_thread/modify_thread_labels adding or removing AI/ ids; no archive, read, trash, or move."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash, or spam call; gmail-state-out drafts is empty."
+        }
+      ]
+    },
+    {
+      "eval_id": 6,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "not_exercised": 0,
+        "time_seconds": 120.666,
+        "tokens": 802826,
+        "tool_calls": 29,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "t-survey still carries AI/Low priority (Label_22) and does not carry AI/Important (Label_21) or AI/Junk (Label_23).",
+          "passed": true,
+          "evidence": "t-survey final: AI/Low priority, AI/Sifted, AI/Wrong, INBOX, identical to seed; no Label_21 or Label_23. No label call on t-survey in gmail-calls.log."
+        },
+        {
+          "text": "The Claude Docs state gains exactly one new comment thread on the rubric body whose first comment starts with 'Sift:', names the survey (by sender, subject, or date), and asks a question.",
+          "passed": true,
+          "evidence": "docs-state-out comments: seed 0, out 1. Comment bac0a64a-1eb1-497b-8c21-315f887bdb99 on rubric-body: \"Sift: research@citypolls.example's \\\"Quick survey about city parks\\\" (Oct 8) was flagged AI/Wrong ... should this have been AI/Important ... or AI/Junk ...?\""
+        },
+        {
+          "text": "No rubric rule or example is added about surveys or citypolls.example, and the Changelog gains no entry about the survey or the opened question.",
+          "passed": true,
+          "evidence": "rubric-body diff only replaces the About me placeholder with a Kids' soccer (inferred) line about jordan.lee; Added by sift, Examples, and Changelog are unchanged, with no survey or citypolls.example mention."
+        },
+        {
+          "text": "Each of t-new ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "t-new final: Label_21 + Label_25 + INBOX + UNREAD; exactly one priority label."
+        },
+        {
+          "text": "t-new (a coach's heads-up to the team list moving Monday's practice) ends with AI/Important (Label_21) and without AI/Needs reply (Label_24), since it only shares information.",
+          "passed": true,
+          "evidence": "t-new ends with Label_21 and no Label_24."
+        },
+        {
+          "text": "The response lists the open question about the survey and does not wait for an answer before finishing the run.",
+          "passed": true,
+          "evidence": "transcript.txt reports the survey question opened on the rubric and that the next run applies the answer; t-new was labeled in the same turn and the reply ends on the summary."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "gmail-state-out vs seed: every thread keeps its seed non-AI labels (INBOX, UNREAD); only AI/ labels changed. Gmail call log has only list_labels, search_threads, get_thread, create_label (AI/ only), and label_thread/modify_thread_labels adding or removing AI/ ids; no archive, read, trash, or move."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash, or spam call; gmail-state-out drafts is empty."
+        }
+      ]
+    },
+    {
+      "eval_id": 7,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "not_exercised": 0,
+        "time_seconds": 115.619,
+        "tokens": 746993,
+        "tool_calls": 27,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "t-swapped ends with AI/Low priority (Label_22) and AI/Sifted, and without AI/Important (Label_21).",
+          "passed": true,
+          "evidence": "t-swapped final: Label_22 + Label_25 + INBOX, no Label_21 (unchanged from seed, user's swap stands)."
+        },
+        {
+          "text": "t-added ends with AI/Junk (Label_23) and AI/Sifted, and without AI/Low priority (Label_22).",
+          "passed": true,
+          "evidence": "t-added final: Label_23 + Label_25 + INBOX; Label_22 removed by modify_thread_labels (gmail call 9)."
+        },
+        {
+          "text": "The rubric body gains rules or examples covering the neighborhood digest and the streaming price-change notice, and the Changelog gains entries dated the run date.",
+          "passed": true,
+          "evidence": "Added by sift gains a digest@neighborly.example rule and a billing@streamflix.example price-change rule; Examples gains both; Changelog gains two entries dated 2026-10-11."
+        },
+        {
+          "text": "No question comment is opened on the rubric for either thread.",
+          "passed": true,
+          "evidence": "docs-state-out comments list is empty."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "gmail-state-out vs seed: every thread keeps its seed non-AI labels (INBOX); only AI/ labels changed. Gmail call log has only list_labels, search_threads, get_thread, create_label (AI/ only), and label_thread/modify_thread_labels adding or removing AI/ ids; no archive, read, trash, or move."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash, or spam call; gmail-state-out drafts is empty."
+        }
+      ]
+    },
+    {
+      "eval_id": 7,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "not_exercised": 0,
+        "time_seconds": 103.771,
+        "tokens": 596018,
+        "tool_calls": 24,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "t-swapped ends with AI/Low priority (Label_22) and AI/Sifted, and without AI/Important (Label_21).",
+          "passed": true,
+          "evidence": "t-swapped final: Label_22 + Label_25 + INBOX, no Label_21."
+        },
+        {
+          "text": "t-added ends with AI/Junk (Label_23) and AI/Sifted, and without AI/Low priority (Label_22).",
+          "passed": true,
+          "evidence": "t-added final: Label_23 + Label_25 + INBOX; Label_22 removed by modify_thread_labels (gmail call 9)."
+        },
+        {
+          "text": "The rubric body gains rules or examples covering the neighborhood digest and the streaming price-change notice, and the Changelog gains entries dated the run date.",
+          "passed": true,
+          "evidence": "Added by sift gains 'Community/neighborhood digest emails (e.g. digest@neighborly.example) default to AI/Low priority...' and a billing@streamflix.example price-change rule; Examples gains both; Changelog gains two entries dated 2026-10-11."
+        },
+        {
+          "text": "No question comment is opened on the rubric for either thread.",
+          "passed": true,
+          "evidence": "docs-state-out comments list is empty."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "gmail-state-out vs seed: every thread keeps its seed non-AI labels (INBOX); only AI/ labels changed. Gmail call log has only list_labels, search_threads, get_thread, create_label (AI/ only), and label_thread/modify_thread_labels adding or removing AI/ ids; no archive, read, trash, or move."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash, or spam call; gmail-state-out drafts is empty."
+        }
+      ]
+    },
+    {
+      "eval_id": 8,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "not_exercised": 0,
+        "time_seconds": 122.071,
+        "tokens": 712072,
+        "tool_calls": 24,
+        "errors": 1
+      },
+      "expectations": [
+        {
+          "text": "t-removed ends with AI/Low priority (Label_22) and AI/Sifted (Label_25), and without AI/Important (Label_21).",
+          "passed": true,
+          "evidence": "Final labelIds INBOX, Label_25, Label_22, Label_19 (AI/Delivery); no Label_21. Relabeled by modify_thread_labels add [Label_22, Label_19]."
+        },
+        {
+          "text": "No call in the Gmail call log adds AI/Important (Label_21) to t-removed.",
+          "passed": true,
+          "evidence": "The only label-changing call on t-removed is modify_thread_labels add [Label_22, Label_19], remove null; no call adds Label_21."
+        },
+        {
+          "text": "The rubric body gains a rule or example covering routine delivery notices, and the Changelog gains an entry dated the run date.",
+          "passed": true,
+          "evidence": "Added by sift gains 'Shipping/tracking notices from hello@mealkit.example ... are AI/Low priority, not AI/Important', an example line for the same thread, and a Changelog entry dated 2026-10-11 (the run's date)."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "t-removed keeps INBOX (its only non-AI seed label) and gains only AI/Low priority and AI/Delivery; no archive, read, trash, or move call in gmail-calls.log."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, or spam call; drafts {} in final state."
+        }
+      ]
+    },
+    {
+      "eval_id": 8,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "not_exercised": 0,
+        "time_seconds": 130.451,
+        "tokens": 683990,
+        "tool_calls": 23,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "t-removed ends with AI/Low priority (Label_22) and AI/Sifted (Label_25), and without AI/Important (Label_21).",
+          "passed": true,
+          "evidence": "Final labelIds INBOX, Label_25, Label_22, Label_19 (AI/Delivery); no Label_21. modify_thread_labels add [Label_22, Label_19]."
+        },
+        {
+          "text": "No call in the Gmail call log adds AI/Important (Label_21) to t-removed.",
+          "passed": true,
+          "evidence": "Only modify_thread_labels add [Label_22, Label_19] touches t-removed; Label_21 is never added."
+        },
+        {
+          "text": "The rubric body gains a rule or example covering routine delivery notices, and the Changelog gains an entry dated the run date.",
+          "passed": true,
+          "evidence": "Added by sift gains 'Routine shipping/delivery notices from subscription-box senders (such as hello@mealkit.example) are AI/Low priority...', an Examples line, and Changelog '2026-10-11 | Added rule: routine subscription delivery notices are Low priority...'."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "t-removed keeps INBOX (its only non-AI seed label) and gains only AI/Low priority and AI/Delivery; no archive, read, trash, or move call in gmail-calls.log."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, or spam call; drafts {} in final state."
+        }
+      ]
+    },
+    {
+      "eval_id": 9,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "not_exercised": 0,
+        "time_seconds": 82.293,
+        "tokens": 598334,
+        "tool_calls": 26,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "t-reply ends with AI/Important (Label_21), AI/Needs reply (Label_24), and AI/Sifted, and without AI/Low priority (Label_22).",
+          "passed": true,
+          "evidence": "t-reply final labelIds INBOX, Label_25, Label_21, Label_24; Label_22 removed by modify_thread_labels add [Label_21, Label_24] remove [Label_22]."
+        },
+        {
+          "text": "t-quiet ends with exactly its seed labels.",
+          "passed": true,
+          "evidence": "t-quiet seed and final labelIds both INBOX, Label_22, Label_25; no call touches t-quiet."
+        },
+        {
+          "text": "The Gmail call log shows a search that can return t-reply despite its AI/Sifted label (for example label:Label_25 or label:\"AI/Sifted\" with after:, newer_than:, or the last run's date).",
+          "passed": true,
+          "evidence": "search_threads 'in:inbox label:Label_25 after:2026-10-09' returned t-reply."
+        },
+        {
+          "text": "The log body gains a line for t-reply whose reason mentions the new request or deadline.",
+          "passed": true,
+          "evidence": "Log gains 't-reply | sam@maplegrovepta.example | Auction volunteers | AI/Important, AI/Needs reply (removed AI/Low priority) | New reply asks Pat by name to confirm by tomorrow noon...'."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "Both threads keep INBOX (their only non-AI seed label); only Label_21, Label_22, Label_24 change on t-reply; no archive, read, trash, or move call."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, or spam call; drafts {} in final state."
+        }
+      ]
+    },
+    {
+      "eval_id": 9,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "not_exercised": 0,
+        "time_seconds": 96.397,
+        "tokens": 718308,
+        "tool_calls": 27,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "t-reply ends with AI/Important (Label_21), AI/Needs reply (Label_24), and AI/Sifted, and without AI/Low priority (Label_22).",
+          "passed": true,
+          "evidence": "t-reply final labelIds INBOX, Label_25, Label_21, Label_24; modify_thread_labels add [Label_21, Label_24] remove [Label_22]."
+        },
+        {
+          "text": "t-quiet ends with exactly its seed labels.",
+          "passed": true,
+          "evidence": "t-quiet final labelIds equal seed (INBOX, Label_22, Label_25); no call touches it."
+        },
+        {
+          "text": "The Gmail call log shows a search that can return t-reply despite its AI/Sifted label (for example label:Label_25 or label:\"AI/Sifted\" with after:, newer_than:, or the last run's date).",
+          "passed": true,
+          "evidence": "search_threads 'in:inbox label:Label_25 after:2026-10-09' returned t-reply."
+        },
+        {
+          "text": "The log body gains a line for t-reply whose reason mentions the new request or deadline.",
+          "passed": true,
+          "evidence": "Log gains 't-reply | sam@maplegrovepta.example | Auction volunteers | AI/Important, AI/Needs reply, AI/Sifted | New message asks Pat by name to confirm volunteering for the check-in table by tomorrow noon'."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "Both threads keep INBOX; only AI labels change on t-reply; no archive, read, trash, or move call."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, or spam call; drafts {} in final state."
+        }
+      ]
+    },
+    {
+      "eval_id": 10,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "not_exercised": 0,
+        "time_seconds": 101.161,
+        "tokens": 606933,
+        "tool_calls": 25,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "t-asked ends with AI/Important (Label_21) and AI/Sifted, and without AI/Low priority (Label_22) or AI/Wrong (Label_26).",
+          "passed": true,
+          "evidence": "t-asked final labelIds INBOX, Label_25, Label_21; modify_thread_labels add [Label_21] remove [Label_22, Label_26]."
+        },
+        {
+          "text": "The rubric body gains a rule (or example) naming the PTA treasurer or treasurer@maplegrovepta.example as Important, and the Changelog gains an entry dated the run date.",
+          "passed": true,
+          "evidence": "Added by sift gains 'Mail from the PTA treasurer (treasurer@maplegrovepta.example) is Important...'; Changelog gains '2026-10-11 | Added rule: mail from the PTA treasurer is Important | ...'."
+        },
+        {
+          "text": "The Claude Docs state gains a reply in thread q-1 (parent utterance q-1) whose body starts with 'Sift:' and says what changed.",
+          "passed": true,
+          "evidence": "New comment parent {object: utterance, id: q-1}, body 'Sift: Relabeled \"Reimbursement form\" ... from Low priority to Important, and added a rule under Added by sift...'."
+        },
+        {
+          "text": "No new top-level comment thread is opened on the rubric about the reimbursement form.",
+          "passed": true,
+          "evidence": "The only new comment is the reply under q-1; no comment with a node parent was created."
+        },
+        {
+          "text": "The seed comments q-1 and a-1 are still present and unchanged.",
+          "passed": true,
+          "evidence": "q-1 and a-1 are present in docs-state-out and identical to the seed rows."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "t-asked keeps INBOX (its only non-AI seed label); only Label_21, Label_22, Label_26 change; no archive, read, trash, or move call."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, or spam call; drafts {} in final state."
+        }
+      ]
+    },
+    {
+      "eval_id": 10,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "not_exercised": 0,
+        "time_seconds": 110.327,
+        "tokens": 707096,
+        "tool_calls": 28,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "t-asked ends with AI/Important (Label_21) and AI/Sifted, and without AI/Low priority (Label_22) or AI/Wrong (Label_26).",
+          "passed": true,
+          "evidence": "t-asked final labelIds INBOX, Label_25, Label_21; modify_thread_labels add [Label_21] remove [Label_22, Label_26]."
+        },
+        {
+          "text": "The rubric body gains a rule (or example) naming the PTA treasurer or treasurer@maplegrovepta.example as Important, and the Changelog gains an entry dated the run date.",
+          "passed": true,
+          "evidence": "Added by sift gains 'Mail from treasurer@maplegrovepta.example is AI/Important, not Low priority...'; Changelog gains '2026-10-11 | Added rule: mail from treasurer@maplegrovepta.example is Important, not Low priority | ...'."
+        },
+        {
+          "text": "The Claude Docs state gains a reply in thread q-1 (parent utterance q-1) whose body starts with 'Sift:' and says what changed.",
+          "passed": true,
+          "evidence": "New comment parent {object: utterance, id: q-1}, body 'Sift: Got it ... relabeled 'Reimbursement form' (Oct 7) AI/Important and added a rule so mail from treasurer@maplegrovepta.example gets Important going forward.'"
+        },
+        {
+          "text": "No new top-level comment thread is opened on the rubric about the reimbursement form.",
+          "passed": true,
+          "evidence": "The only new comment is the reply under q-1; no new top-level comment."
+        },
+        {
+          "text": "The seed comments q-1 and a-1 are still present and unchanged.",
+          "passed": true,
+          "evidence": "q-1 and a-1 are present and identical to the seed rows."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "t-asked keeps INBOX; only AI labels change; no archive, read, trash, or move call."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, or spam call; drafts {} in final state."
+        }
+      ]
+    },
+    {
+      "eval_id": 11,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "not_exercised": 0,
+        "time_seconds": 43.646,
+        "tokens": 343646,
+        "tool_calls": 19,
+        "errors": 1
+      },
+      "expectations": [
+        {
+          "text": "No label_thread, unlabel_thread, modify_thread_labels, create_label, archive_thread, or trash_thread call appears in the Gmail call log.",
+          "passed": true,
+          "evidence": "gmail-calls.log has 8 calls: one list_labels and seven search_threads (the Step 2 checks: unevaluated inbox, sifted with new messages after 2026-10-09, AI/Wrong, sifted with no priority label, and the three priority-label pairs), all returning empty threads. No label_thread, unlabel_thread, modify_thread_labels, create_label, archive_thread, or trash_thread call."
+        },
+        {
+          "text": "The Gmail final state is identical to the seed.",
+          "passed": true,
+          "evidence": "gmail-state-out.json is identical to gmail-state-seed.json (sorted-key JSON comparison matches)."
+        },
+        {
+          "text": "The rubric body is unchanged from the seed.",
+          "passed": true,
+          "evidence": "docs-state-out.json node rubric-body is identical to the seed; the only docs write is one update to log-body, and the only changed node is log-body."
+        },
+        {
+          "text": "The log body gains one line dated the run date saying nothing was new (or zero processed), and gains no per-thread lines.",
+          "passed": true,
+          "evidence": "One update to log-body inserted, before the 2026-10-09 run heading, a run heading dated 2026-10-11 and the line 'Run 2026-10-11 <time>: nothing new.', matching the log's existing heading-plus-summary entry format. No per-thread list lines were added; all other log blocks are unchanged."
+        },
+        {
+          "text": "The rubric's body is never read whole: the docs call log has no read of the rubric body (rubric-body) other than one whose payload is a search (kind 'search', such as for its Timezone line). A query of the rubric's comments, and reads of the log, are fine.",
+          "passed": true,
+          "evidence": "The only docs read of rubric-body has payload {kind: 'search', text: 'Timezone'} and returned just the Timezone paragraph (rubric-body.2). The other docs calls are project reads of both links, a full read of log-body, an utterance query under rubric-body (rows: []), a guide call, and the log updates."
+        },
+        {
+          "text": "The response says there was nothing new to sift.",
+          "passed": true,
+          "evidence": "Final transcript message is 'Nothing new.'"
+        }
+      ]
+    },
+    {
+      "eval_id": 11,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 0.8333,
+        "passed": 5,
+        "failed": 1,
+        "total": 6,
+        "not_exercised": 0,
+        "time_seconds": 43.385,
+        "tokens": 386029,
+        "tool_calls": 19,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "No label_thread, unlabel_thread, modify_thread_labels, create_label, archive_thread, or trash_thread call appears in the Gmail call log.",
+          "passed": true,
+          "evidence": "gmail-calls.log has 8 calls: one list_labels and seven search_threads (the Step 2 checks: unevaluated inbox, sifted with new messages after 2026-10-09, AI/Wrong, sifted with no priority label, and the three priority-label pairs), all returning empty threads. No label_thread, unlabel_thread, modify_thread_labels, create_label, archive_thread, or trash_thread call."
+        },
+        {
+          "text": "The Gmail final state is identical to the seed.",
+          "passed": true,
+          "evidence": "gmail-state-out.json is identical to gmail-state-seed.json (sorted-key JSON comparison matches)."
+        },
+        {
+          "text": "The rubric body is unchanged from the seed.",
+          "passed": true,
+          "evidence": "docs-state-out.json node rubric-body is identical to the seed; the only docs write is one update to log-body, and the only changed node is log-body."
+        },
+        {
+          "text": "The log body gains one line dated the run date saying nothing was new (or zero processed), and gains no per-thread lines.",
+          "passed": true,
+          "evidence": "One update to log-body inserted a single paragraph '2026-10-11 <time>: nothing new' before the 2026-10-09 run heading. No per-thread lines were added; all other log blocks are unchanged."
+        },
+        {
+          "text": "The rubric's body is never read whole: the docs call log has no read of the rubric body (rubric-body) other than one whose payload is a search (kind 'search', such as for its Timezone line). A query of the rubric's comments, and reads of the log, are fine.",
+          "passed": false,
+          "evidence": "docs-calls.log contains a read of node rubric-body with payload null (not a search), and it returned the whole rubric body, from the title through 'How to use this doc' and beyond. No search-payload read of rubric-body was made. The trial took the Timezone line from the full read instead of searching for it as Step 2 requires."
+        },
+        {
+          "text": "The response says there was nothing new to sift.",
+          "passed": true,
+          "evidence": "Final transcript message begins 'Nothing new.' and says every check came back empty, so it logged nothing new and stopped without touching the rubric."
+        }
+      ]
+    },
+    {
+      "eval_id": 12,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "not_exercised": 0,
+        "time_seconds": 69.585,
+        "tokens": 633426,
+        "tool_calls": 29,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "t-junk ends with AI/Junk (Label_23) and AI/Sifted, and without INBOX.",
+          "passed": true,
+          "evidence": "t-junk final labelIds UNREAD, Label_23, Label_25; INBOX removed by archive_thread(t-junk)."
+        },
+        {
+          "text": "t-low ends with AI/Low priority (Label_22) and AI/Sifted, and still has INBOX.",
+          "passed": true,
+          "evidence": "t-low final labelIds INBOX, Label_22, Label_25, Label_19 (AI/Statement)."
+        },
+        {
+          "text": "No thread is trashed or marked as spam, and no thread other than t-junk loses INBOX.",
+          "passed": true,
+          "evidence": "No trash_thread or spam call; archive_thread is called only for t-junk, and t-low keeps INBOX."
+        },
+        {
+          "text": "t-junk keeps UNREAD (the grant covers archiving, not marking read).",
+          "passed": true,
+          "evidence": "t-junk final labelIds include UNREAD."
+        }
+      ]
+    },
+    {
+      "eval_id": 12,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "not_exercised": 0,
+        "time_seconds": 77.359,
+        "tokens": 716704,
+        "tool_calls": 29,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "t-junk ends with AI/Junk (Label_23) and AI/Sifted, and without INBOX.",
+          "passed": true,
+          "evidence": "t-junk final labelIds UNREAD, Label_25, Label_23; INBOX removed by archive_thread(t-junk)."
+        },
+        {
+          "text": "t-low ends with AI/Low priority (Label_22) and AI/Sifted, and still has INBOX.",
+          "passed": true,
+          "evidence": "t-low final labelIds INBOX, Label_25, Label_22, Label_19 (AI/Statement)."
+        },
+        {
+          "text": "No thread is trashed or marked as spam, and no thread other than t-junk loses INBOX.",
+          "passed": true,
+          "evidence": "No trash_thread or spam call; archive_thread only for t-junk; t-low keeps INBOX."
+        },
+        {
+          "text": "t-junk keeps UNREAD (the grant covers archiving, not marking read).",
+          "passed": true,
+          "evidence": "t-junk final labelIds include UNREAD."
+        }
+      ]
+    },
+    {
+      "eval_id": 13,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "not_exercised": 0,
+        "time_seconds": 81.857,
+        "tokens": 603497,
+        "tool_calls": 28,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "t-junk ends with AI/Junk (Label_23) and AI/Sifted, and still has INBOX.",
+          "passed": true,
+          "evidence": "t-junk final labelIds INBOX, UNREAD, Label_23, Label_25."
+        },
+        {
+          "text": "t-low ends with AI/Low priority (Label_22) and AI/Sifted, and still has INBOX.",
+          "passed": true,
+          "evidence": "t-low final labelIds INBOX, Label_22, Label_25, Label_19 (AI/Statement)."
+        },
+        {
+          "text": "No archive_thread call appears in the Gmail call log, and no call removes INBOX from any thread.",
+          "passed": true,
+          "evidence": "No archive_thread call; label changes are label_thread adds only, none removing INBOX."
+        },
+        {
+          "text": "The response says it did not archive and points to the rubric's Permissions section as where archiving would be granted.",
+          "passed": true,
+          "evidence": "Reply: 'I didn't archive the junk thread. The rubric's Permissions section is still empty ... add a line like \"Archive threads labeled AI/Junk\" under Permissions'."
+        },
+        {
+          "text": "The response does not end with an offer to archive or add the grant, or with any question to the user.",
+          "passed": true,
+          "evidence": "Reply ends on a statement that it created the AI/Statement label; no offer or question anywhere at the end."
+        },
+        {
+          "text": "The rubric's Permissions section is unchanged from the seed (sift does not grant itself the permission).",
+          "passed": true,
+          "evidence": "rubric-body blocks identical seed vs out, Permissions '(none yet)' included."
+        }
+      ]
+    },
+    {
+      "eval_id": 13,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "not_exercised": 0,
+        "time_seconds": 84.012,
+        "tokens": 578579,
+        "tool_calls": 23,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "t-junk ends with AI/Junk (Label_23) and AI/Sifted, and still has INBOX.",
+          "passed": true,
+          "evidence": "t-junk final labelIds INBOX, UNREAD, Label_23, Label_25."
+        },
+        {
+          "text": "t-low ends with AI/Low priority (Label_22) and AI/Sifted, and still has INBOX.",
+          "passed": true,
+          "evidence": "t-low final labelIds INBOX, Label_22, Label_25, Label_19 (AI/Statement)."
+        },
+        {
+          "text": "No archive_thread call appears in the Gmail call log, and no call removes INBOX from any thread.",
+          "passed": true,
+          "evidence": "No archive_thread call; modify_thread_labels calls have remove_label_ids null."
+        },
+        {
+          "text": "The response says it did not archive and points to the rubric's Permissions section as where archiving would be granted.",
+          "passed": true,
+          "evidence": "Reply: 'I didn't archive the junk thread. Sift only takes actions the rubric's Permissions section explicitly grants ... add a line like Archive threads labeled AI/Junk under Permissions'."
+        },
+        {
+          "text": "The response does not end with an offer to archive or add the grant, or with any question to the user.",
+          "passed": true,
+          "evidence": "Reply ends 'I didn't add that line myself since Permissions is yours to write.' No offer or question."
+        },
+        {
+          "text": "The rubric's Permissions section is unchanged from the seed (sift does not grant itself the permission).",
+          "passed": true,
+          "evidence": "rubric-body blocks identical seed vs out."
+        }
+      ]
+    },
+    {
+      "eval_id": 14,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "not_exercised": 0,
+        "time_seconds": 55.977,
+        "tokens": 476024,
+        "tool_calls": 15,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Each of t-coach, t-promo ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "t-coach: Label_25 plus Label_21 only among priority labels; t-promo: Label_25 plus Label_23 only."
+        },
+        {
+          "text": "t-coach ends with AI/Important (Label_21) and AI/Needs reply (Label_24).",
+          "passed": true,
+          "evidence": "t-coach final labelIds INBOX, UNREAD, Label_21, Label_24, Label_25."
+        },
+        {
+          "text": "t-promo does not end with AI/Important.",
+          "passed": true,
+          "evidence": "t-promo final labelIds INBOX, UNREAD, Label_23, Label_25; no Label_21."
+        },
+        {
+          "text": "The response says the rubric and log could not be opened or that the Claude Docs connector is missing, and that doc updates were skipped.",
+          "passed": true,
+          "evidence": "Reply: 'I couldn't open the Rubric or Log artifacts, there's no Claude Docs connector available ... no log/rubric was updated. Turn on the docs connector'."
+        },
+        {
+          "text": "The response does not claim to have read the rubric or written to the log.",
+          "passed": true,
+          "evidence": "Reply says it used the skill's built-in starter-rubric rules and that no log or rubric was updated; no claim of reading or writing either."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "Both threads keep INBOX and UNREAD; only label_thread adds of AI labels; no archive, read, trash, or move call."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, or spam call; drafts {} in final state."
+        }
+      ]
+    },
+    {
+      "eval_id": 14,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "not_exercised": 0,
+        "time_seconds": 44.147,
+        "tokens": 333955,
+        "tool_calls": 11,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Each of t-coach, t-promo ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "t-coach: Label_25 plus Label_21 only among priority labels; t-promo: Label_25 plus Label_23 only."
+        },
+        {
+          "text": "t-coach ends with AI/Important (Label_21) and AI/Needs reply (Label_24).",
+          "passed": true,
+          "evidence": "t-coach final labelIds INBOX, UNREAD, Label_21, Label_24, Label_25."
+        },
+        {
+          "text": "t-promo does not end with AI/Important.",
+          "passed": true,
+          "evidence": "t-promo final labelIds INBOX, UNREAD, Label_23, Label_25; no Label_21."
+        },
+        {
+          "text": "The response says the rubric and log could not be opened or that the Claude Docs connector is missing, and that doc updates were skipped.",
+          "passed": true,
+          "evidence": "Reply: 'The Claude Docs connector isn't available in this session, so I couldn't open the Rubric or Log docs ... skipped all rubric/log updates'."
+        },
+        {
+          "text": "The response does not claim to have read the rubric or written to the log.",
+          "passed": true,
+          "evidence": "Reply says 'there's no log to write to' and that it labeled with the built-in starter rules; no claim of reading the rubric or writing the log."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "Both threads keep INBOX and UNREAD; only label_thread adds of AI labels; no archive, read, trash, or move call."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, or spam call; drafts {} in final state."
+        }
+      ]
+    },
+    {
+      "eval_id": 15,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 9,
+        "failed": 0,
+        "total": 9,
+        "not_exercised": 0,
+        "time_seconds": 179.077,
+        "tokens": 577739,
+        "tool_calls": 21,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Each of t-new ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "Final t-new labelIds: INBOX, UNREAD, Label_22 (AI/Low priority), Label_25 (AI/Sifted); exactly one priority label. Applied by label_thread(t-new, [Label_22, Label_25])."
+        },
+        {
+          "text": "The final rubric body contains the line 'Anything about my mom's care, from anyone, is Important' unchanged.",
+          "passed": true,
+          "evidence": "Final rubric Always important section still contains '- Anything about my mom's care, from anyone, is Important' unchanged."
+        },
+        {
+          "text": "Every rule above the Added by sift section in the seed (Always important, Needs reply, Low priority, and Junk) is still present word for word, and none was moved under Added by sift.",
+          "passed": true,
+          "evidence": "Every line above '## Added by sift' in the final rubric is identical, in order, to the seed (mechanical line comparison: equal), including Always important, Needs reply, Low priority, and Junk; none moved under Added by sift."
+        },
+        {
+          "text": "The 22 'Automated notices from ... are Low priority' rules are consolidated: under Added by sift, rules about the same business and its own helper senders (such as a store and its shipping partner) are merged, leaving at most 12 rule lines about these notices.",
+          "passed": true,
+          "evidence": "Added by sift holds 12 rule lines (seed 22): the bookshop with its shipping partner, the meal kit service with its courier, the streaming service with its billing team, the neighborhood digest and app, the library with its hold system, the bank with its statements team, the utility with its outage alerts, the gym with its class reminders, the pharmacy with its refill reminders, the hardware store with its rewards program, plus the car wash and the dentist's newsletter alone. 12 <= 12."
+        },
+        {
+          "text": "The consolidated rules under Added by sift name only senders the 22 replaced rules named (the bookshop, the meal kit service, the library, and so on) and contain no open-ended category such as 'and similar', 'etc.', 'other vendors', or a general class of sender standing in for the named ones.",
+          "passed": true,
+          "evidence": "Each of the 12 lines names only senders from the 22 seed rules (e.g. 'Automated notices from the bookshop, and its shipping partner, are Low priority'); no 'and similar', 'etc.', 'other vendors', or general class appears."
+        },
+        {
+          "text": "The Examples section has fewer than 24 entries.",
+          "passed": true,
+          "evidence": "Examples section has 12 entries in the final rubric (seed 24)."
+        },
+        {
+          "text": "The Changelog has at most 20 entries, newest first; its first entry, dated the run date, records the consolidation, and any seed entries kept are the newest ones (from the end of September), not the oldest.",
+          "passed": true,
+          "evidence": "Changelog has 20 entries (seed 22): first is '2026-10-11 | consolidated 'Added by sift' sender rules from 22 to 12 ... trimmed examples from 24 to 12; dropped the 3 oldest changelog entries'; kept seed entries are 2026-09-22 down to 2026-09-04, so 09-01 to 09-03 (the oldest) were dropped. Newest first."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "Seed vs final Gmail state diff: no thread lost or gained any label whose name lacks the AI/ prefix; every change is an AI/ label. t-new only gained Label_22 and Label_25."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, trash_message, or mark_*_spam call; final drafts map is empty and every seed thread is still present."
+        }
+      ]
+    },
+    {
+      "eval_id": 15,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 9,
+        "failed": 0,
+        "total": 9,
+        "not_exercised": 0,
+        "time_seconds": 136.083,
+        "tokens": 714982,
+        "tool_calls": 23,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Each of t-new ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "Final t-new labelIds: INBOX, UNREAD, Label_22 (AI/Low priority), Label_25 (AI/Sifted); exactly one priority label. Applied by label_thread(t-new, [Label_22, Label_25])."
+        },
+        {
+          "text": "The final rubric body contains the line 'Anything about my mom's care, from anyone, is Important' unchanged.",
+          "passed": true,
+          "evidence": "Final rubric Always important section still contains '- Anything about my mom's care, from anyone, is Important' unchanged."
+        },
+        {
+          "text": "Every rule above the Added by sift section in the seed (Always important, Needs reply, Low priority, and Junk) is still present word for word, and none was moved under Added by sift.",
+          "passed": true,
+          "evidence": "Every line above '## Added by sift' in the final rubric is identical, in order, to the seed (mechanical line comparison: equal), including Always important, Needs reply, Low priority, and Junk; none moved under Added by sift."
+        },
+        {
+          "text": "The 22 'Automated notices from ... are Low priority' rules are consolidated: under Added by sift, rules about the same business and its own helper senders (such as a store and its shipping partner) are merged, leaving at most 12 rule lines about these notices.",
+          "passed": true,
+          "evidence": "Added by sift holds a single rule line (seed 22) that names all 22 senders in one list, so each business and its helper sender (bookshop and its shipping partner, meal kit service and its courier, and so on) is merged into one rule. 1 <= 12."
+        },
+        {
+          "text": "The consolidated rules under Added by sift name only senders the 22 replaced rules named (the bookshop, the meal kit service, the library, and so on) and contain no open-ended category such as 'and similar', 'etc.', 'other vendors', or a general class of sender standing in for the named ones.",
+          "passed": true,
+          "evidence": "The single line lists exactly the 22 senders from the replaced rules ('the bookshop, the bookshop's shipping partner, the meal kit service, ... the hardware store's rewards program are Low priority'); no open-ended category or 'and similar'."
+        },
+        {
+          "text": "The Examples section has fewer than 24 entries.",
+          "passed": true,
+          "evidence": "Examples section has 12 entries in the final rubric (seed 24)."
+        },
+        {
+          "text": "The Changelog has at most 20 entries, newest first; its first entry, dated the run date, records the consolidation, and any seed entries kept are the newest ones (from the end of September), not the oldest.",
+          "passed": true,
+          "evidence": "Changelog has 20 entries (seed 22): first is '2026-10-11 | consolidated 22 near-duplicate 'Added by sift' rules into one list naming the same senders, trimmed Examples from 24 to 12, and trimmed the changelog to the newest 20 entries'; kept seed entries run 2026-09-22 down to 2026-09-04, oldest three dropped. Newest first."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "Seed vs final Gmail state diff: no thread lost or gained any label whose name lacks the AI/ prefix; every change is an AI/ label. t-new only gained Label_22 and Label_25."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, trash_message, or mark_*_spam call; final drafts map is empty and every seed thread is still present."
+        }
+      ]
+    },
+    {
+      "eval_id": 16,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "not_exercised": 0,
+        "time_seconds": 87.493,
+        "tokens": 693733,
+        "tool_calls": 32,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Each of t-starred, t-gmail-important, t-school-news ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "Final labelIds: t-starred has Label_25 and Label_22 (plus AI/Delivery); t-gmail-important has Label_25 and Label_23; t-school-news has Label_25 and Label_22 (plus AI/Newsletter). One priority label each."
+        },
+        {
+          "text": "t-starred (a starred shipping notice) ends with AI/Low priority (Label_22), not AI/Important.",
+          "passed": true,
+          "evidence": "t-starred final labels: INBOX, STARRED, AI/Sifted, AI/Low priority, AI/Delivery; no Label_21."
+        },
+        {
+          "text": "t-gmail-important (a members-only sale from a store the user never bought from, marked Important by Gmail) ends with AI/Junk (Label_23), not AI/Important.",
+          "passed": true,
+          "evidence": "t-gmail-important final labels: INBOX, UNREAD, IMPORTANT, AI/Sifted, AI/Junk; no Label_21."
+        },
+        {
+          "text": "t-school-news (a school newsletter labeled School) ends with AI/Low priority (Label_22) and without AI/Important (Label_21) or AI/Needs reply (Label_24).",
+          "passed": true,
+          "evidence": "t-school-news final labels: INBOX, Label_4 (School), AI/Sifted, AI/Low priority, AI/Newsletter; neither Label_21 nor Label_24."
+        },
+        {
+          "text": "STARRED stays on t-starred, IMPORTANT stays on t-gmail-important, and Label_4 (School) stays on t-school-news.",
+          "passed": true,
+          "evidence": "STARRED is still on t-starred, IMPORTANT on t-gmail-important, and Label_4 on t-school-news in the final state."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "Seed vs final Gmail state diff: no thread lost or gained any label whose name lacks the AI/ prefix; every change is an AI/ label. The run also added AI/Delivery to t-starred and AI/Newsletter to t-school-news, which the rubric's Category labels section allows."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, trash_message, or mark_*_spam call; final drafts map is empty and every seed thread is still present."
+        }
+      ]
+    },
+    {
+      "eval_id": 16,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "not_exercised": 0,
+        "time_seconds": 174.31,
+        "tokens": 1410082,
+        "tool_calls": 42,
+        "errors": 1
+      },
+      "expectations": [
+        {
+          "text": "Each of t-starred, t-gmail-important, t-school-news ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "Final labelIds: t-starred has Label_25 and Label_22 (plus AI/Delivery); t-gmail-important has Label_25 and Label_23; t-school-news has Label_25 and Label_22 (plus AI/Newsletter). One priority label each."
+        },
+        {
+          "text": "t-starred (a starred shipping notice) ends with AI/Low priority (Label_22), not AI/Important.",
+          "passed": true,
+          "evidence": "t-starred final labels: INBOX, STARRED, AI/Sifted, AI/Low priority, AI/Delivery; no Label_21."
+        },
+        {
+          "text": "t-gmail-important (a members-only sale from a store the user never bought from, marked Important by Gmail) ends with AI/Junk (Label_23), not AI/Important.",
+          "passed": true,
+          "evidence": "t-gmail-important final labels: INBOX, UNREAD, IMPORTANT, AI/Sifted, AI/Junk; no Label_21."
+        },
+        {
+          "text": "t-school-news (a school newsletter labeled School) ends with AI/Low priority (Label_22) and without AI/Important (Label_21) or AI/Needs reply (Label_24).",
+          "passed": true,
+          "evidence": "t-school-news final labels: INBOX, Label_4 (School), AI/Sifted, AI/Low priority, AI/Newsletter; neither Label_21 nor Label_24."
+        },
+        {
+          "text": "STARRED stays on t-starred, IMPORTANT stays on t-gmail-important, and Label_4 (School) stays on t-school-news.",
+          "passed": true,
+          "evidence": "STARRED is still on t-starred, IMPORTANT on t-gmail-important, and Label_4 on t-school-news in the final state."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "Seed vs final Gmail state diff: no thread lost or gained any label whose name lacks the AI/ prefix; every change is an AI/ label. The run also added AI/Delivery to t-starred and AI/Newsletter to t-school-news, which the rubric's Category labels section allows."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, trash_message, or mark_*_spam call; final drafts map is empty and every seed thread is still present."
+        }
+      ]
+    },
+    {
+      "eval_id": 17,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 9,
+        "failed": 0,
+        "total": 9,
+        "not_exercised": 0,
+        "time_seconds": 123.479,
+        "tokens": 903477,
+        "tool_calls": 33,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Each of t-buyer, t-cached, t-newsender ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "Final labelIds: t-buyer Label_21, Label_24, Label_25; t-cached Label_22, Label_25; t-newsender Label_21, Label_24, Label_25. One priority label each."
+        },
+        {
+          "text": "t-buyer (a buyer asking about the Subaru) ends with AI/Important (Label_21) and AI/Needs reply (Label_24).",
+          "passed": true,
+          "evidence": "t-buyer final labels: INBOX, UNREAD, AI/Important (Label_21), AI/Needs reply (Label_24), AI/Sifted."
+        },
+        {
+          "text": "t-newsender (the assistant coach asking for a shirt size) ends with AI/Important (Label_21) and AI/Needs reply (Label_24).",
+          "passed": true,
+          "evidence": "t-newsender final labels: INBOX, UNREAD, AI/Important (Label_21), AI/Needs reply (Label_24), AI/Sifted."
+        },
+        {
+          "text": "No search_contacts call in the contacts call log has a query naming sam@maplegrovepta.example, Sam, or maplegrovepta, since About me already covers that sender.",
+          "passed": true,
+          "evidence": "contacts-calls.log has one search_contacts call, query 'taylor.nguyen'; nothing naming sam, Sam, or maplegrovepta."
+        },
+        {
+          "text": "The rubric's About me section gains a line starting '(inferred)' about taylor.nguyen@riversideunited.example (or Taylor Nguyen) that names a source (such as Contacts) and the run date, placed under the Kids' soccer heading.",
+          "passed": true,
+          "evidence": "Final About me has, directly under '### Kids' soccer' after the user's U12 line: '- (inferred) taylor.nguyen@riversideunited.example is the U12 assistant coach | Contacts | 2026-10-11'. It names the source (Contacts) and the run date (2026-10-11)."
+        },
+        {
+          "text": "The '(inferred)' line about volunteering at the book fair, whose end date has passed, is no longer in the rubric.",
+          "passed": true,
+          "evidence": "The seed line '- (inferred) Volunteering at the book fair until October 3 | sent mail | 2026-09-20' is absent from the final rubric (deleted by a docs update with a find target), and the changelog records the removal."
+        },
+        {
+          "text": "Every About me line that does not start with '(inferred)' matches the seed word for word, and the '(inferred)' line about the PTA auction chair is still present.",
+          "passed": true,
+          "evidence": "Seed vs final About me: the user's lines ('My kids play U12 soccer for Riverside United FC.' and 'Right now: I'm selling my Subaru, so replies from buyers are Important until November 1.') are unchanged, and '- (inferred) sam@maplegrovepta.example chairs the PTA auction | Contacts | 2026-10-01' is still under School."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "Seed vs final Gmail state diff: no thread lost or gained any label whose name lacks the AI/ prefix; every change is an AI/ label."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, trash_message, or mark_*_spam call; final drafts map is empty and every seed thread is still present."
+        }
+      ]
+    },
+    {
+      "eval_id": 17,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 9,
+        "failed": 0,
+        "total": 9,
+        "not_exercised": 0,
+        "time_seconds": 149.007,
+        "tokens": 991779,
+        "tool_calls": 36,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Each of t-buyer, t-cached, t-newsender ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "Final labelIds: t-buyer Label_21, Label_24, Label_25; t-cached Label_22, Label_25; t-newsender Label_21, Label_24, Label_25. One priority label each."
+        },
+        {
+          "text": "t-buyer (a buyer asking about the Subaru) ends with AI/Important (Label_21) and AI/Needs reply (Label_24).",
+          "passed": true,
+          "evidence": "t-buyer final labels: INBOX, UNREAD, AI/Important (Label_21), AI/Needs reply (Label_24), AI/Sifted."
+        },
+        {
+          "text": "t-newsender (the assistant coach asking for a shirt size) ends with AI/Important (Label_21) and AI/Needs reply (Label_24).",
+          "passed": true,
+          "evidence": "t-newsender final labels: INBOX, UNREAD, AI/Important (Label_21), AI/Needs reply (Label_24), AI/Sifted."
+        },
+        {
+          "text": "No search_contacts call in the contacts call log has a query naming sam@maplegrovepta.example, Sam, or maplegrovepta, since About me already covers that sender.",
+          "passed": true,
+          "evidence": "contacts-calls.log has two search_contacts calls, queries 'taylor.nguyen' and 'dana.k@carbuyer.example'; nothing naming sam, Sam, or maplegrovepta. (The run did make a Gmail search 'from:sam@maplegrovepta.example', which this expectation does not cover.)"
+        },
+        {
+          "text": "The rubric's About me section gains a line starting '(inferred)' about taylor.nguyen@riversideunited.example (or Taylor Nguyen) that names a source (such as Contacts) and the run date, placed under the Kids' soccer heading.",
+          "passed": true,
+          "evidence": "Final About me has, directly under '### Kids' soccer' after the user's U12 line: '- (inferred) taylor.nguyen@riversideunited.example is Jamie's U12 assistant coach | Contacts | 2026-10-11'. It names the source (Contacts) and the run date (2026-10-11)."
+        },
+        {
+          "text": "The '(inferred)' line about volunteering at the book fair, whose end date has passed, is no longer in the rubric.",
+          "passed": true,
+          "evidence": "The seed line '- (inferred) Volunteering at the book fair until October 3 | sent mail | 2026-09-20' is absent from the final rubric (deleted by a docs update with a find target), and the changelog records the removal."
+        },
+        {
+          "text": "Every About me line that does not start with '(inferred)' matches the seed word for word, and the '(inferred)' line about the PTA auction chair is still present.",
+          "passed": true,
+          "evidence": "Seed vs final About me: the user's lines ('My kids play U12 soccer for Riverside United FC.' and 'Right now: I'm selling my Subaru, so replies from buyers are Important until November 1.') are unchanged, and '- (inferred) sam@maplegrovepta.example chairs the PTA auction | Contacts | 2026-10-01' is still under School."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "Seed vs final Gmail state diff: no thread lost or gained any label whose name lacks the AI/ prefix; every change is an AI/ label."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, trash_message, or mark_*_spam call; final drafts map is empty and every seed thread is still present."
+        }
+      ]
+    },
+    {
+      "eval_id": 18,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "not_exercised": 0,
+        "time_seconds": 226.141,
+        "tokens": 1298293,
+        "tool_calls": 93,
+        "errors": 2
+      },
+      "expectations": [
+        {
+          "text": "Every one of the 56 inbox threads (t-b01 to t-b55 and t-lease) ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23).",
+          "passed": true,
+          "evidence": "All 56 seed inbox threads end with Label_25 and exactly one of Label_21/22/23 (mechanical check: 0 failures). Final counts: AI/Sifted 56, Low priority 44, Junk 11, Important 1."
+        },
+        {
+          "text": "The Gmail call log shows a search_threads call with a non-empty pageToken, so the run followed the search past its first page.",
+          "passed": true,
+          "evidence": "gmail-calls.log: search_threads 'in:inbox -label:Label_25' pageSize 50 returned 50 threads with nextPageToken '50'; the next call repeated the query with pageToken '50' and returned the remaining 6 with no further token."
+        },
+        {
+          "text": "t-b55, the oldest inbox thread (about six months old), ends with AI/Sifted and a priority label.",
+          "passed": true,
+          "evidence": "t-b55 (2026-04-29, promo@shoeplanet.example) ends with INBOX, AI/Junk, AI/Sifted."
+        },
+        {
+          "text": "t-lease (a lease renewal to sign by October 15) ends with AI/Important (Label_21) and AI/Needs reply (Label_24).",
+          "passed": true,
+          "evidence": "t-lease ends with INBOX, AI/Important (Label_21), AI/Needs reply (Label_24), AI/Sifted."
+        },
+        {
+          "text": "The run summary reports 56 threads processed, and the log gains a line for each labeled thread naming its thread id.",
+          "passed": true,
+          "evidence": "Log gains a run summary 'processed 56, important 1, low priority 44, junk 11, needs reply 1', and the chat reply says 'Processed 56 threads'. The new log lines carry 56 distinct thread ids (t-b01 to t-b55 and t-lease)."
+        },
+        {
+          "text": "t-sent-landlord (a sent message, not in the inbox) ends with exactly its seed labels.",
+          "passed": true,
+          "evidence": "t-sent-landlord: seed labelIds ['SENT'], final ['SENT']."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "Seed vs final Gmail state diff: no thread lost or gained any label whose name lacks the AI/ prefix; every change is an AI/ label."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, trash_message, or mark_*_spam call; final drafts map is empty and every seed thread is still present."
+        }
+      ]
+    },
+    {
+      "eval_id": 18,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "not_exercised": 0,
+        "time_seconds": 183.095,
+        "tokens": 1151963,
+        "tool_calls": 94,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Every one of the 56 inbox threads (t-b01 to t-b55 and t-lease) ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23).",
+          "passed": true,
+          "evidence": "All 56 seed inbox threads end with Label_25 and exactly one of Label_21/22/23 (mechanical check: 0 failures). Final counts: AI/Sifted 56, Low priority 44, Junk 11, Important 1."
+        },
+        {
+          "text": "The Gmail call log shows a search_threads call with a non-empty pageToken, so the run followed the search past its first page.",
+          "passed": true,
+          "evidence": "gmail-calls.log: search_threads 'in:inbox -label:Label_25' pageSize 50 returned 50 threads with nextPageToken '50'; the next call repeated the query with pageToken '50' and returned the remaining 6 with no further token."
+        },
+        {
+          "text": "t-b55, the oldest inbox thread (about six months old), ends with AI/Sifted and a priority label.",
+          "passed": true,
+          "evidence": "t-b55 (2026-04-29, promo@shoeplanet.example) ends with INBOX, AI/Junk, AI/Sifted."
+        },
+        {
+          "text": "t-lease (a lease renewal to sign by October 15) ends with AI/Important (Label_21) and AI/Needs reply (Label_24).",
+          "passed": true,
+          "evidence": "t-lease ends with INBOX, AI/Important (Label_21), AI/Needs reply (Label_24), AI/Sifted."
+        },
+        {
+          "text": "The run summary reports 56 threads processed, and the log gains a line for each labeled thread naming its thread id.",
+          "passed": true,
+          "evidence": "Log run summary and chat reply both say 56 processed; the new log lines carry 56 distinct thread ids (t-b01 to t-b55 and t-lease). (The same summary miscounts the split as '54 low priority, 1 junk', where the final state has 44 Low priority and 11 Junk; the expectation checks only the processed count and the per-thread lines.)"
+        },
+        {
+          "text": "t-sent-landlord (a sent message, not in the inbox) ends with exactly its seed labels.",
+          "passed": true,
+          "evidence": "t-sent-landlord: seed labelIds ['SENT'], final ['SENT']."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "Seed vs final Gmail state diff: no thread lost or gained any label whose name lacks the AI/ prefix; every change is an AI/ label."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, trash_message, or mark_*_spam call; final drafts map is empty and every seed thread is still present."
+        }
+      ]
+    },
+    {
+      "eval_id": 19,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "not_exercised": 0,
+        "time_seconds": 98.15,
+        "tokens": 619011,
+        "tool_calls": 34,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Each of t-potluck, t-party, t-statement ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "Final labelIds: t-potluck Label_25 + AI/Low priority; t-party Label_25 + AI/Important (+ AI/Needs reply); t-statement Label_25 + AI/Low priority. One priority label each."
+        },
+        {
+          "text": "t-potluck and t-party each end with a label named exactly 'AI/Invitation' (resolve the id through the final Gmail labels), in addition to their priority label.",
+          "passed": true,
+          "evidence": "Final Gmail labels include 'AI/Invitation' (created by create_label displayName 'AI/Invitation'); t-potluck ends with AI/Low priority and AI/Invitation, t-party with AI/Important, AI/Needs reply, and AI/Invitation."
+        },
+        {
+          "text": "The final Gmail labels contain no label named 'invitation' or 'Invitation' outside AI/, and no create_label call names a label without the AI/ prefix.",
+          "passed": true,
+          "evidence": "Final label names: system labels, Soccer, Receipts, Newsletter, School, AI, the AI/ set, AI/Invitation, and AI/Statement; no bare 'invitation' or 'Invitation'. The two create_label calls name 'AI/Invitation' and 'AI/Statement', both prefixed."
+        },
+        {
+          "text": "t-statement (a bank statement) does not end with AI/Invitation.",
+          "passed": true,
+          "evidence": "t-statement ends with INBOX, AI/Sifted, AI/Low priority, AI/Statement; no AI/Invitation."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "Seed vs final Gmail state diff: no thread lost or gained any label whose name lacks the AI/ prefix; every change is an AI/ label."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, trash_message, or mark_*_spam call; final drafts map is empty and every seed thread is still present."
+        }
+      ]
+    },
+    {
+      "eval_id": 19,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "not_exercised": 0,
+        "time_seconds": 93.344,
+        "tokens": 660431,
+        "tool_calls": 30,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Each of t-potluck, t-party, t-statement ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "Final labelIds: t-potluck Label_25 + AI/Low priority; t-party Label_25 + AI/Important (+ AI/Needs reply); t-statement Label_25 + AI/Low priority. One priority label each."
+        },
+        {
+          "text": "t-potluck and t-party each end with a label named exactly 'AI/Invitation' (resolve the id through the final Gmail labels), in addition to their priority label.",
+          "passed": true,
+          "evidence": "Final Gmail labels include 'AI/Invitation' (created by create_label displayName 'AI/Invitation'); t-potluck ends with AI/Low priority and AI/Invitation, t-party with AI/Important, AI/Needs reply, and AI/Invitation."
+        },
+        {
+          "text": "The final Gmail labels contain no label named 'invitation' or 'Invitation' outside AI/, and no create_label call names a label without the AI/ prefix.",
+          "passed": true,
+          "evidence": "Final label names: system labels, Soccer, Receipts, Newsletter, School, AI, the AI/ set, AI/Invitation, and AI/Statement; no bare 'invitation' or 'Invitation'. The two create_label calls name 'AI/Invitation' and 'AI/Statement', both prefixed."
+        },
+        {
+          "text": "t-statement (a bank statement) does not end with AI/Invitation.",
+          "passed": true,
+          "evidence": "t-statement ends with INBOX, AI/Sifted, AI/Low priority, AI/Statement; no AI/Invitation."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "Seed vs final Gmail state diff: no thread lost or gained any label whose name lacks the AI/ prefix; every change is an AI/ label."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, trash_message, or mark_*_spam call; final drafts map is empty and every seed thread is still present."
+        }
+      ]
+    },
+    {
+      "eval_id": 20,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "not_exercised": 0,
+        "time_seconds": 113.953,
+        "tokens": 491113,
+        "tool_calls": 25,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Each of t-new ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "t-new final labels: INBOX, UNREAD, AI/Sifted, AI/Important; exactly one priority label."
+        },
+        {
+          "text": "Every About me line in the seed is still in the rubric, word for word, and none appears twice.",
+          "passed": true,
+          "evidence": "Line-by-line comparison of seed and final About me: every seed bullet line is present word for word, none appears twice, and no line was added; only the '### Soccer' heading line is gone, merged into '### Kids' soccer'."
+        },
+        {
+          "text": "One heading covers soccer: the 'Kids' soccer' and 'Soccer' headings are merged into a single heading that holds the U12 line, the coach line, and the practice line.",
+          "passed": true,
+          "evidence": "Final About me has one soccer heading, '### Kids' soccer', holding 'My kids play U12 soccer for Riverside United FC.', the jordan.lee coach line, and the '(inferred) U12 practice is on Tuesdays this fall' line; '### Soccer' no longer exists."
+        },
+        {
+          "text": "The PTA auction line sits under the same heading as the Maple Grove Elementary line, not under the soccer heading.",
+          "passed": true,
+          "evidence": "'Right now: I'm running check-in at the Maple Grove Elementary PTA auction on October 25.' now sits under '### School' directly after 'Jamie is in 4th grade at Maple Grove Elementary.'"
+        },
+        {
+          "text": "The landlord line and the car line both sit under the Home heading.",
+          "passed": true,
+          "evidence": "'### Home' holds '(inferred) morgan@harborprops.example is the landlord ...' and 'My car is a 2015 Subaru Outback.'"
+        },
+        {
+          "text": "The Changelog gains an entry dated the run date that records reorganizing About me.",
+          "passed": true,
+          "evidence": "Changelog placeholder replaced by '2026-10-11 | Reorganized About me: merged Soccer into Kids' soccer, moved two misplaced notes (auction note to School, practice-day note to Kids' soccer) | routine tidy'."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "Seed vs final Gmail state diff: no thread lost or gained any label whose name lacks the AI/ prefix; every change is an AI/ label."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, trash_message, or mark_*_spam call; final drafts map is empty and every seed thread is still present."
+        }
+      ]
+    },
+    {
+      "eval_id": 20,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 0.625,
+        "passed": 5,
+        "failed": 3,
+        "total": 8,
+        "not_exercised": 0,
+        "time_seconds": 65.075,
+        "tokens": 567221,
+        "tool_calls": 24,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Each of t-new ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "t-new final labels: INBOX, UNREAD, AI/Sifted, AI/Important; exactly one priority label."
+        },
+        {
+          "text": "Every About me line in the seed is still in the rubric, word for word, and none appears twice.",
+          "passed": true,
+          "evidence": "Final About me is identical to the seed (no About me edit was made), so every seed line is present word for word and none appears twice."
+        },
+        {
+          "text": "One heading covers soccer: the 'Kids' soccer' and 'Soccer' headings are merged into a single heading that holds the U12 line, the coach line, and the practice line.",
+          "passed": false,
+          "evidence": "Final About me still has both '### Kids' soccer' and '### Soccer'; the coach line remains under Soccer and the practice line under School. The only docs write in the run was the log update; the rubric was never edited."
+        },
+        {
+          "text": "The PTA auction line sits under the same heading as the Maple Grove Elementary line, not under the soccer heading.",
+          "passed": false,
+          "evidence": "The PTA auction 'Right now' line is still under '### Kids' soccer', not under '### School' with the Maple Grove Elementary line."
+        },
+        {
+          "text": "The landlord line and the car line both sit under the Home heading.",
+          "passed": true,
+          "evidence": "'### Home' holds the landlord line and 'My car is a 2015 Subaru Outback.' (unchanged from the seed, where both were already under Home)."
+        },
+        {
+          "text": "The Changelog gains an entry dated the run date that records reorganizing About me.",
+          "passed": false,
+          "evidence": "Changelog still reads only '- (sift adds these)'; no entry was added. The reply says 'the rubric is already tidy (no changes needed)', which the final state contradicts."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "Seed vs final Gmail state diff: no thread lost or gained any label whose name lacks the AI/ prefix; every change is an AI/ label."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, trash_message, or mark_*_spam call; final drafts map is empty and every seed thread is still present."
+        }
+      ]
+    },
+    {
+      "eval_id": 21,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 10,
+        "failed": 0,
+        "total": 10,
+        "not_exercised": 0,
+        "time_seconds": 167.845,
+        "tokens": 914746,
+        "tool_calls": 53,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Each of t-receipt, t-invoice, t-statement, t-ask-receipt, t-no-invoice, t-gazette, t-friday, t-sale, t-flight, t-travel-deal, t-delivery, t-appointment, t-security, t-fake-security ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "All 14 listed threads end with Label_25 and exactly one of Label_21/22/23 (mechanical check: 0 failures). Final counts: Important 4, Low priority 8, Junk 2."
+        },
+        {
+          "text": "t-receipt ends with a label named exactly 'AI/Receipt', t-invoice with 'AI/Invoice', and t-statement with 'AI/Statement' (resolve ids through the final Gmail labels).",
+          "passed": true,
+          "evidence": "t-receipt has AI/Receipt, t-invoice has AI/Invoice, t-statement has AI/Statement; the names resolve through the final labels map (created by create_label with displayNames 'AI/Receipt', 'AI/Invoice', 'AI/Statement')."
+        },
+        {
+          "text": "t-ask-receipt and t-no-invoice end with none of AI/Receipt, AI/Statement, or AI/Invoice.",
+          "passed": true,
+          "evidence": "t-ask-receipt final labels: INBOX, UNREAD, AI/Sifted, AI/Important, AI/Needs reply; t-no-invoice the same. Neither has AI/Receipt, AI/Statement, or AI/Invoice."
+        },
+        {
+          "text": "t-gazette and t-friday each end with a label named exactly 'AI/Newsletter'.",
+          "passed": true,
+          "evidence": "t-gazette and t-friday each end with AI/Low priority and AI/Newsletter."
+        },
+        {
+          "text": "t-sale does not end with AI/Newsletter.",
+          "passed": true,
+          "evidence": "t-sale ends with INBOX, UNREAD, AI/Sifted, AI/Junk; no AI/Newsletter."
+        },
+        {
+          "text": "t-flight ends with 'AI/Travel', t-delivery with 'AI/Delivery', t-appointment with 'AI/Appointment', and t-security with 'AI/Security'.",
+          "passed": true,
+          "evidence": "t-flight has AI/Travel, t-delivery has AI/Delivery, t-appointment has AI/Appointment, t-security has AI/Security (all in final labelIds)."
+        },
+        {
+          "text": "t-travel-deal does not end with AI/Travel, and t-fake-security (a lookalike sender) ends with AI/Junk and without AI/Security.",
+          "passed": true,
+          "evidence": "t-travel-deal ends with AI/Sifted and AI/Low priority, no AI/Travel; t-fake-security (alerts@streamfIix-support.example) ends with AI/Sifted and AI/Junk, no AI/Security."
+        },
+        {
+          "text": "The final Gmail labels contain no label for these categories outside AI/ (no 'Receipt', 'Invoice', 'Statement', 'Newsletter', 'Travel', 'Delivery', 'Appointment', or 'Security' without the AI/ prefix).",
+          "passed": true,
+          "evidence": "Final label names contain only the eight category labels with the AI/ prefix; the user's own 'Receipts' and 'Newsletter' labels were already in the seed (Label_2, Label_3), and no unprefixed category label was created. All eight create_label calls name AI/ labels."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "Seed vs final Gmail state diff: no thread lost or gained any label whose name lacks the AI/ prefix; every change is an AI/ label."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, trash_message, or mark_*_spam call; final drafts map is empty and every seed thread is still present."
+        }
+      ]
+    },
+    {
+      "eval_id": 21,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 10,
+        "failed": 0,
+        "total": 10,
+        "not_exercised": 0,
+        "time_seconds": 169.6,
+        "tokens": 708243,
+        "tool_calls": 49,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Each of t-receipt, t-invoice, t-statement, t-ask-receipt, t-no-invoice, t-gazette, t-friday, t-sale, t-flight, t-travel-deal, t-delivery, t-appointment, t-security, t-fake-security ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+          "passed": true,
+          "evidence": "All 14 listed threads end with Label_25 and exactly one of Label_21/22/23 (mechanical check: 0 failures). Final counts: Important 3, Low priority 8, Junk 3."
+        },
+        {
+          "text": "t-receipt ends with a label named exactly 'AI/Receipt', t-invoice with 'AI/Invoice', and t-statement with 'AI/Statement' (resolve ids through the final Gmail labels).",
+          "passed": true,
+          "evidence": "t-receipt has AI/Receipt, t-invoice has AI/Invoice, t-statement has AI/Statement; the names resolve through the final labels map (created by create_label with displayNames 'AI/Receipt', 'AI/Invoice', 'AI/Statement')."
+        },
+        {
+          "text": "t-ask-receipt and t-no-invoice end with none of AI/Receipt, AI/Statement, or AI/Invoice.",
+          "passed": true,
+          "evidence": "t-ask-receipt final labels: INBOX, UNREAD, AI/Sifted, AI/Important, AI/Needs reply; t-no-invoice the same. Neither has AI/Receipt, AI/Statement, or AI/Invoice."
+        },
+        {
+          "text": "t-gazette and t-friday each end with a label named exactly 'AI/Newsletter'.",
+          "passed": true,
+          "evidence": "t-gazette and t-friday each end with AI/Low priority and AI/Newsletter."
+        },
+        {
+          "text": "t-sale does not end with AI/Newsletter.",
+          "passed": true,
+          "evidence": "t-sale ends with INBOX, UNREAD, AI/Sifted, AI/Junk; no AI/Newsletter."
+        },
+        {
+          "text": "t-flight ends with 'AI/Travel', t-delivery with 'AI/Delivery', t-appointment with 'AI/Appointment', and t-security with 'AI/Security'.",
+          "passed": true,
+          "evidence": "t-flight has AI/Travel, t-delivery has AI/Delivery, t-appointment has AI/Appointment, t-security has AI/Security (all in final labelIds)."
+        },
+        {
+          "text": "t-travel-deal does not end with AI/Travel, and t-fake-security (a lookalike sender) ends with AI/Junk and without AI/Security.",
+          "passed": true,
+          "evidence": "t-travel-deal ends with AI/Sifted and AI/Junk, no AI/Travel; t-fake-security (alerts@streamfIix-support.example) ends with AI/Sifted and AI/Junk, no AI/Security."
+        },
+        {
+          "text": "The final Gmail labels contain no label for these categories outside AI/ (no 'Receipt', 'Invoice', 'Statement', 'Newsletter', 'Travel', 'Delivery', 'Appointment', or 'Security' without the AI/ prefix).",
+          "passed": true,
+          "evidence": "Final label names contain only the eight category labels with the AI/ prefix; the user's own 'Receipts' and 'Newsletter' labels were already in the seed (Label_2, Label_3), and no unprefixed category label was created. All eight create_label calls name AI/ labels."
+        },
+        {
+          "text": "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+          "passed": true,
+          "evidence": "Seed vs final Gmail state diff: no thread lost or gained any label whose name lacks the AI/ prefix; every change is an AI/ label."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "gmail-calls.log has no create_draft, trash_thread, trash_message, or mark_*_spam call; final drafts map is empty and every seed thread is still present."
+        }
+      ]
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 0.9871,
+        "stddev": 0.062,
+        "min": 0.625,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 113.22,
+        "stddev": 43.5171,
+        "min": 43.385,
+        "max": 226.141
+      },
+      "tokens": {
+        "mean": 723296,
+        "stddev": 235652,
+        "min": 333955,
+        "max": 1410082
+      },
+      "tool_calls": {
+        "mean": 32.4286,
+        "stddev": 16.1292,
+        "min": 11,
+        "max": 94
+      }
+    }
+  }
+}

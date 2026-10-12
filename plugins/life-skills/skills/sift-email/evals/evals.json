@@ -1,0 +1,308 @@
+{
+  "skill_name": "sift-email",
+  "notes": "MCP-stub-backed batch for sift-email (see evals/lib/mcp-stub: gmail_stub.py, docs_stub.py, contacts_stub.py). The executor is a real, separate `claude -p --strict-mcp-config` subprocess run by evals/lib/run-mcp-trials.sh, one turn per eval with no follow-ups: sift runs unattended, so every eval checks that it finishes the run without waiting on the user. Prompts carry the rubric and log links the way a routine prompt would (eval 1 gives none, for the first run; eval 14 gives links but no Claude Docs server). Fixtures are anchored to 2026-10-10 with the Gmail stub's stub_now at 15:00 UTC, and label ids are fixed: Label_21 AI/Important, Label_22 AI/Low priority, Label_23 AI/Junk, Label_24 AI/Needs reply, Label_25 AI/Sifted, Label_26 AI/Wrong; Label_1-4 are the user's own (Soccer, Receipts, Newsletter, School). Grade against each trial's eval.json and the gmail, docs, and contacts state-out files and call logs, not the reply's own account. Evals 6, 11, 13, and 14 are the cases where sift must hold back (an unclear correction, nothing to do, an unauthorized action, a missing connector).",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Sift my inbox.",
+      "expected_output": "No rubric or log links were given and no AI/ labels exist yet. The first run creates the AI labels it uses, creates an 'Email Sift Rubric' doc and an 'Email Sift Log' doc from the templates, labels each of the three inbox threads with AI/Sifted and one priority, and puts both new docs' links at the top of the summary with a request to add them to the routine prompt. It does not stop to ask anything.",
+      "expectations": [
+        "The Gmail call log shows create_label calls for at least AI/Sifted and every priority label the run applies; no label is created outside AI/ other than the AI parent label itself, which Gmail creates for nested names.",
+        "Each of t-coach, t-promo, and t-receipt ends with the AI/Sifted label and exactly one of the AI/Important, AI/Low priority, or AI/Junk labels in its final labelIds (resolve the label ids through the final Gmail state's labels).",
+        "t-coach (a coach asking the user to drive by Friday) ends with AI/Important and AI/Needs reply.",
+        "t-promo (an unsolicited sale) does not end with AI/Important.",
+        "The final Claude Docs state holds two new docs named like 'Email Sift Rubric' and 'Email Sift Log'. The rubric body has the template's How to use this doc, Labels, and About me sections, its rule sections (Always important, Needs reply, Low priority, Junk, Added by sift, Permissions, Examples, Changelog), and a Timezone line. The log body has its Runs section holding this run's heading, summary, and one line per thread naming its thread id.",
+        "The response gives both new docs' links (https://claude.ai/code/artifact/<id> for the ids created) and asks the user to add them to the routine prompt.",
+        "The log's summary for this run also contains both new docs' links.",
+        "The response does not ask the user a question before acting and does not end the run waiting for an answer: labels were applied in the same turn.",
+        "Every thread keeps all of its seed labels (INBOX, UNREAD), so nothing was archived, marked read, trashed, or moved."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "Six new inbox threads. The coach (in contacts, Riverside United FC coach, Soccer group) asks the user a direct question: Important under the rubric's coaches rule, and Needs reply because of the question. The landlord is not in contacts but the user wrote to them last month: Important under the 90-day rule, and Needs reply because the message asks which day works. A cold sales question from an unknown sender is not Important. A cart-expiry blast worded 'ACTION REQUIRED' is Junk or Low priority, never Important. Needs reply depends on the message, not the sender: the landlord's note to all tenants about window washers only shares information, and Riley's 'Got it, thanks!' only acknowledges the user's own message, so neither needs a reply.",
+      "expectations": [
+        "Each of t-coach, t-landlord, t-stranger, t-urgent-shop, t-broadcast, t-ack ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+        "t-coach ends with AI/Important (Label_21) and AI/Needs reply (Label_24).",
+        "t-landlord ends with AI/Important (Label_21) and AI/Needs reply (Label_24).",
+        "t-urgent-shop ends with AI/Junk (Label_23) or AI/Low priority (Label_22), not AI/Important.",
+        "t-stranger does not end with AI/Important.",
+        "t-broadcast (the landlord's note to all tenants that only shares information) does not end with AI/Needs reply (Label_24).",
+        "t-ack (Riley's 'Got it, thanks!' reply to the user's own message) does not end with AI/Needs reply (Label_24).",
+        "The calls show the run looked up who the senders are: a search_contacts call for the coach's address or name, and a Gmail search for mail the user sent to the landlord (from:me or in:sent with the landlord's address) or a contacts search for the landlord.",
+        "The log body gains one line per labeled thread naming its thread id, the labels applied, and a specific reason.",
+        "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "One new thread asks the user to rate a recent order. Its subject says 'Action needed' and it reads like marketing, but the sender's earlier threads all carry the user's own Receipts label (Label_2): it is a store the user buys from, following up on a real order. Mail tied to an actual purchase, or from a company the user recently ordered from, is not unsolicited, so it is Low priority, not Junk, and not Important (no deadline, nothing anyone is waiting on).",
+      "expectations": [
+        "Each of t-new ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+        "t-new ends with AI/Low priority (Label_22).",
+        "The Gmail call log shows a search for the sender's earlier mail (from:orders@trailgear.example or the sender's domain, beyond the inbox) or a search by the Receipts label, before t-new is labeled.",
+        "The log line for t-new gives a reason that refers to the user's earlier orders or the Receipts label, not only to the subject's wording.",
+        "t-old-1, t-old-2, and t-old-3 end with exactly their seed labels.",
+        "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "A newsletter the user subscribed to (Newsletter label) and a bank statement are legitimate but not urgent: Low priority. An unsolicited sale from a store the user never shopped at and a phishing-style 'account suspended' message from a lookalike domain are Junk.",
+      "expectations": [
+        "Each of t-news, t-sale, t-phish, t-statement ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+        "t-news ends with AI/Low priority (Label_22).",
+        "t-statement ends with AI/Low priority (Label_22).",
+        "t-sale ends with AI/Junk (Label_23).",
+        "t-phish ends with AI/Junk (Label_23), not AI/Important.",
+        "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "Two corrections with a clear direction. The user put AI/Wrong on a webinar reminder sift marked Important, and on a PTA budget sift marked Junk; by the direction table both become Low priority. Sift relabels both, removes AI/Wrong, adds the smallest rubric changes that would have produced the right calls, and notes them in the changelog. The new library thread is labeled as usual.",
+      "expectations": [
+        "t-webinar ends with AI/Low priority (Label_22) and AI/Sifted, without AI/Important (Label_21) or AI/Wrong (Label_26).",
+        "t-pta ends with AI/Low priority (Label_22) and AI/Sifted, without AI/Junk (Label_23) or AI/Wrong (Label_26).",
+        "Each of t-new ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+        "The rubric body gains at least one rule or example covering vendor webinar or event reminders and at least one covering the PTA or school-group mail, and the Changelog section gains entries dated the run date for these changes.",
+        "No line above the rubric's Added by sift section is removed, reworded, or moved: every rule under Always important, Needs reply, Low priority, and Junk matches the seed word for word, and the new rules go under Added by sift (or as Examples).",
+        "The new rules stay within what the two corrections show, one about vendor webinar or event reminders and one about PTA or school-group mail like the budget draft; neither becomes a general class such as all vendor or marketing mail, or all parent or school organizations.",
+        "No question comment is opened on the rubric for t-webinar or t-pta, since both directions are clear.",
+        "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "The user put AI/Wrong on a survey sift marked Low priority. The direction is unclear (Important or Junk), so sift leaves the survey's labels as they are, opens one 'Sift:' comment on the rubric naming the thread and asking which it should be, and changes no rubric rule for it. It does not stop: the new coach thread is labeled in the same run, and the question is listed in the summary.",
+      "expectations": [
+        "t-survey still carries AI/Low priority (Label_22) and does not carry AI/Important (Label_21) or AI/Junk (Label_23).",
+        "The Claude Docs state gains exactly one new comment thread on the rubric body whose first comment starts with 'Sift:', names the survey (by sender, subject, or date), and asks a question.",
+        "No rubric rule or example is added about surveys or citypolls.example, and the Changelog gains no entry about the survey or the opened question.",
+        "Each of t-new ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+        "t-new (a coach's heads-up to the team list moving Monday's practice) ends with AI/Important (Label_21) and without AI/Needs reply (Label_24), since it only shares information.",
+        "The response lists the open question about the survey and does not wait for an answer before finishing the run.",
+        "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "Two label corrections the log reveals. t-swapped: sift applied Important, and the user replaced it with Low priority, so the user's label stands. t-added: sift applied Low priority and the user added Junk, so Junk is the answer and sift removes its own Low priority. Both lead to rubric changes and changelog entries.",
+      "expectations": [
+        "t-swapped ends with AI/Low priority (Label_22) and AI/Sifted, and without AI/Important (Label_21).",
+        "t-added ends with AI/Junk (Label_23) and AI/Sifted, and without AI/Low priority (Label_22).",
+        "The rubric body gains rules or examples covering the neighborhood digest and the streaming price-change notice, and the Changelog gains entries dated the run date.",
+        "No question comment is opened on the rubric for either thread.",
+        "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "The user removed AI/Important from a delivery notice, leaving only AI/Sifted. The log shows sift applied Important, so by the direction table it becomes Low priority. Sift relabels it in Step 2 so Step 3 never treats it as new, updates the rubric, and does not mark it Important again.",
+      "expectations": [
+        "t-removed ends with AI/Low priority (Label_22) and AI/Sifted (Label_25), and without AI/Important (Label_21).",
+        "No call in the Gmail call log adds AI/Important (Label_21) to t-removed.",
+        "The rubric body gains a rule or example covering routine delivery notices, and the Changelog gains an entry dated the run date.",
+        "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "A thread sift labeled Low priority on the last run has a new message since then asking the user to confirm by tomorrow. Gmail labels apply to new messages too, so the thread still shows Low priority and AI/Sifted; Step 3's new-reply search finds it by date. Re-evaluated with the new message, it becomes Important plus Needs reply, and the old Low priority label is removed. A sifted thread with no new message is left alone.",
+      "expectations": [
+        "t-reply ends with AI/Important (Label_21), AI/Needs reply (Label_24), and AI/Sifted, and without AI/Low priority (Label_22).",
+        "t-quiet ends with exactly its seed labels.",
+        "The Gmail call log shows a search that can return t-reply despite its AI/Sifted label (for example label:Label_25 or label:\"AI/Sifted\" with after:, newer_than:, or the last run's date).",
+        "The log body gains a line for t-reply whose reason mentions the new request or deadline.",
+        "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "Last run opened a 'Sift:' question about a PTA reimbursement form, and the user has replied: Important, because the PTA treasurer's mail is about money. Sift applies the answer: a rubric rule for the PTA treasurer, the thread relabeled Important with AI/Wrong removed, a changelog entry, and a reply in the same thread starting 'Sift:' saying what changed. It opens no new question about it.",
+      "expectations": [
+        "t-asked ends with AI/Important (Label_21) and AI/Sifted, and without AI/Low priority (Label_22) or AI/Wrong (Label_26).",
+        "The rubric body gains a rule (or example) naming the PTA treasurer or treasurer@maplegrovepta.example as Important, and the Changelog gains an entry dated the run date.",
+        "The Claude Docs state gains a reply in thread q-1 (parent utterance q-1) whose body starts with 'Sift:' and says what changed.",
+        "No new top-level comment thread is opened on the rubric about the reimbursement form.",
+        "The seed comments q-1 and a-1 are still present and unchanged.",
+        "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "Everything in the inbox was sifted on the last run, no labels were corrected, no question is open, and no thread has a new message. Step 2's cheap checks all come back empty, so sift stops without reading the rubric: it changes no labels and no rubric text, adds one 'nothing new' line to the log's Runs section, and says there was nothing new.",
+      "expectations": [
+        "No label_thread, unlabel_thread, modify_thread_labels, create_label, archive_thread, or trash_thread call appears in the Gmail call log.",
+        "The Gmail final state is identical to the seed.",
+        "The rubric body is unchanged from the seed.",
+        "The log body gains one line dated the run date saying nothing was new (or zero processed), and gains no per-thread lines.",
+        "The rubric's body is never read whole: the docs call log has no read of the rubric body (rubric-body) other than one whose payload is a search (kind 'search', such as for its Timezone line). A query of the rubric's comments, and reads of the log, are fine.",
+        "The response says there was nothing new to sift."
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "The rubric's Permissions section lets sift archive Junk. The unsolicited sale is Junk, so sift labels it and archives it. The bank statement is Low priority and stays in the inbox, because the grant covers Junk only.",
+      "expectations": [
+        "t-junk ends with AI/Junk (Label_23) and AI/Sifted, and without INBOX.",
+        "t-low ends with AI/Low priority (Label_22) and AI/Sifted, and still has INBOX.",
+        "No thread is trashed or marked as spam, and no thread other than t-junk loses INBOX.",
+        "t-junk keeps UNREAD (the grant covers archiving, not marking read)."
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2 And archive the junk while you're at it.",
+      "expected_output": "The user asks in the prompt to archive junk, but the rubric's Permissions section grants nothing beyond labels, and the skill keeps grants in the rubric. Sift labels both threads and archives neither, and says that archiving needs a grant in the rubric's Permissions section.",
+      "expectations": [
+        "t-junk ends with AI/Junk (Label_23) and AI/Sifted, and still has INBOX.",
+        "t-low ends with AI/Low priority (Label_22) and AI/Sifted, and still has INBOX.",
+        "No archive_thread call appears in the Gmail call log, and no call removes INBOX from any thread.",
+        "The response says it did not archive and points to the rubric's Permissions section as where archiving would be granted.",
+        "The response does not end with an offer to archive or add the grant, or with any question to the user.",
+        "The rubric's Permissions section is unchanged from the seed (sift does not grant itself the permission)."
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "No Claude Docs connector is available, so the rubric and log links cannot be opened. Sift still labels the inbox using the starter rubric's rules, skips every doc update, and says in the summary that the docs could not be opened and which connector to turn on.",
+      "expectations": [
+        "Each of t-coach, t-promo ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+        "t-coach ends with AI/Important (Label_21) and AI/Needs reply (Label_24).",
+        "t-promo does not end with AI/Important.",
+        "The response says the rubric and log could not be opened or that the Claude Docs connector is missing, and that doc updates were skipped.",
+        "The response does not claim to have read the rubric or written to the log.",
+        "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "The rubric has grown well past two pages: 22 near-duplicate Low priority rules under Added by sift, 24 near-identical examples, and a changelog of 22 entries, newest first. Sift consolidates the rules under Added by sift into a few that cover no more than the ones they replace, trims the examples, leaves every rule above Added by sift word for word (including the user's rule about their mom's care), trims the changelog to the newest 20 entries, and still labels the new thread.",
+      "expectations": [
+        "Each of t-new ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+        "The final rubric body contains the line 'Anything about my mom's care, from anyone, is Important' unchanged.",
+        "Every rule above the Added by sift section in the seed (Always important, Needs reply, Low priority, and Junk) is still present word for word, and none was moved under Added by sift.",
+        "The 22 'Automated notices from ... are Low priority' rules are consolidated: under Added by sift, rules about the same business and its own helper senders (such as a store and its shipping partner) are merged, leaving at most 12 rule lines about these notices.",
+        "The consolidated rules under Added by sift name only senders the 22 replaced rules named (the bookshop, the meal kit service, the library, and so on) and contain no open-ended category such as 'and similar', 'etc.', 'other vendors', or a general class of sender standing in for the named ones.",
+        "The Examples section has fewer than 24 entries.",
+        "The Changelog has at most 20 entries, newest first; its first entry, dated the run date, records the consolidation, and any seed entries kept are the newest ones (from the end of September), not the oldest.",
+        "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "Each thread arrives with a marker that points toward importance, and the rubric points elsewhere. A shipping notice the user starred is an automated confirmation: Low priority. A store the user never bought from, which Gmail marked Important, is unsolicited marketing: Junk. A school newsletter carrying the user's own School label is a newsletter: Low priority, with no reply needed. The user's labels, the star, and Gmail's marker are context, and the rubric decides.",
+      "expectations": [
+        "Each of t-starred, t-gmail-important, t-school-news ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+        "t-starred (a starred shipping notice) ends with AI/Low priority (Label_22), not AI/Important.",
+        "t-gmail-important (a members-only sale from a store the user never bought from, marked Important by Gmail) ends with AI/Junk (Label_23), not AI/Important.",
+        "t-school-news (a school newsletter labeled School) ends with AI/Low priority (Label_22) and without AI/Important (Label_21) or AI/Needs reply (Label_24).",
+        "STARRED stays on t-starred, IMPORTANT stays on t-gmail-important, and Label_4 (School) stays on t-school-news.",
+        "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "The rubric's About me section is sift's memory. The user's own 'Right now' note makes a car buyer's question Important, with Needs reply because it asks the user something. The PTA auction chair is already known from an inferred note, so sift needs no contacts lookup for them. Taylor Nguyen is new: sift looks them up (Riverside United FC assistant coach), labels the question Important with Needs reply, and records an '(inferred)' note under the Kids' soccer heading with its source and the run date. The inferred book fair note has passed its end date, so sift removes it. The user's own notes stay word for word.",
+      "expectations": [
+        "Each of t-buyer, t-cached, t-newsender ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+        "t-buyer (a buyer asking about the Subaru) ends with AI/Important (Label_21) and AI/Needs reply (Label_24).",
+        "t-newsender (the assistant coach asking for a shirt size) ends with AI/Important (Label_21) and AI/Needs reply (Label_24).",
+        "No search_contacts call in the contacts call log has a query naming sam@maplegrovepta.example, Sam, or maplegrovepta, since About me already covers that sender.",
+        "The rubric's About me section gains a line starting '(inferred)' about taylor.nguyen@riversideunited.example (or Taylor Nguyen) that names a source (such as Contacts) and the run date, placed under the Kids' soccer heading.",
+        "The '(inferred)' line about volunteering at the book fair, whose end date has passed, is no longer in the rubric.",
+        "Every About me line that does not start with '(inferred)' matches the seed word for word, and the '(inferred)' line about the PTA auction chair is still present.",
+        "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "A first-run backlog: 56 unsifted inbox threads going back about six months, more than one search page even at the 50-thread maximum. Sift labels every one of them in this run, following each search's next-page token, however old the thread. The landlord's lease renewal from August asks for a signature by October 15, a deadline inside the next week: Important with Needs reply.",
+      "expectations": [
+        "Every one of the 56 inbox threads (t-b01 to t-b55 and t-lease) ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23).",
+        "The Gmail call log shows a search_threads call with a non-empty pageToken, so the run followed the search past its first page.",
+        "t-b55, the oldest inbox thread (about six months old), ends with AI/Sifted and a priority label.",
+        "t-lease (a lease renewal to sign by October 15) ends with AI/Important (Label_21) and AI/Needs reply (Label_24).",
+        "The run summary reports 56 threads processed, and the log gains a line for each labeled thread naming its thread id.",
+        "t-sent-landlord (a sent message, not in the inbox) ends with exactly its seed labels.",
+        "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 19,
+      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "The rubric's Permissions section says to label event invitations as invitation. Sift creates that label under AI/ in title case, AI/Invitation, never a bare 'invitation', and applies it to the potluck invitation and the birthday-party invitation alongside each one's priority label. The bank statement is not an invitation and gets no AI/Invitation.",
+      "expectations": [
+        "Each of t-potluck, t-party, t-statement ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+        "t-potluck and t-party each end with a label named exactly 'AI/Invitation' (resolve the id through the final Gmail labels), in addition to their priority label.",
+        "The final Gmail labels contain no label named 'invitation' or 'Invitation' outside AI/, and no create_label call names a label without the AI/ prefix.",
+        "t-statement (a bank statement) does not end with AI/Invitation.",
+        "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 20,
+      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "About me has drifted out of order: two headings cover soccer ('Kids' soccer' and 'Soccer'), the user's PTA auction note sits under soccer, and an inferred soccer-practice note sits under School. At the start of the run sift regroups it: one soccer heading holding the U12, coach, and practice notes; the auction note under School with the Maple Grove note; the landlord and car notes under Home. It moves the user's lines without changing a word, drops nothing, and records the reorganization in the changelog.",
+      "expectations": [
+        "Each of t-new ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+        "Every About me line in the seed is still in the rubric, word for word, and none appears twice.",
+        "One heading covers soccer: the 'Kids' soccer' and 'Soccer' headings are merged into a single heading that holds the U12 line, the coach line, and the practice line.",
+        "The PTA auction line sits under the same heading as the Maple Grove Elementary line, not under the soccer heading.",
+        "The landlord line and the car line both sit under the Home heading.",
+        "The Changelog gains an entry dated the run date that records reorganizing About me.",
+        "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 21,
+      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "The rubric's Category labels section asks for AI/Receipt, AI/Statement, AI/Invoice, AI/Newsletter, AI/Travel, AI/Delivery, AI/Appointment, and AI/Security, judged on what a message is, not its words. A booked flight, a delivery update, a dental appointment reminder, and a real sign-in alert get theirs; a fare sale gets no AI/Travel, and a sign-in alert from a lookalike domain is Junk with no AI/Security. The pharmacy receipt (attached), the landscaping invoice (attached), and the bank statement (in the body) get their labels. Riley asking where a receipt is, and Sam saying an invoice never arrived, only talk about one, so they get none. The Riverside Gazette and the PTA's Friday update both work as newsletters and get AI/Newsletter, while a one-off sale email does not. Every label is created under AI/.",
+      "expectations": [
+        "Each of t-receipt, t-invoice, t-statement, t-ask-receipt, t-no-invoice, t-gazette, t-friday, t-sale, t-flight, t-travel-deal, t-delivery, t-appointment, t-security, t-fake-security ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
+        "t-receipt ends with a label named exactly 'AI/Receipt', t-invoice with 'AI/Invoice', and t-statement with 'AI/Statement' (resolve ids through the final Gmail labels).",
+        "t-ask-receipt and t-no-invoice end with none of AI/Receipt, AI/Statement, or AI/Invoice.",
+        "t-gazette and t-friday each end with a label named exactly 'AI/Newsletter'.",
+        "t-sale does not end with AI/Newsletter.",
+        "t-flight ends with 'AI/Travel', t-delivery with 'AI/Delivery', t-appointment with 'AI/Appointment', and t-security with 'AI/Security'.",
+        "t-travel-deal does not end with AI/Travel, and t-fake-security (a lookalike sender) ends with AI/Junk and without AI/Security.",
+        "The final Gmail labels contain no label for these categories outside AI/ (no 'Receipt', 'Invoice', 'Statement', 'Newsletter', 'Travel', 'Delivery', 'Appointment', or 'Security' without the AI/ prefix).",
+        "Every thread keeps all of its non-AI labels from the seed (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., so nothing was archived, marked read, trashed, or moved.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    }
+  ]
+}

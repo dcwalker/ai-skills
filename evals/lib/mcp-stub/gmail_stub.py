@@ -6,8 +6,10 @@ SDK) implementing the subset of Gmail operations `triage`'s email workflow
 (Step 7b) actually names: search_threads, get_thread, list_labels,
 create_draft, modify_thread_labels, archive_thread -- plus trash_thread and
 create_label, which the workflow's delete branch and label bootstrap need
-and which the official Gmail MCP offers. See common.py's module docstring
-for the general stub-server design.
+and which the official Gmail MCP offers -- and label_thread and
+unlabel_thread, which `sift-email` labels with through the official
+connector rather than the helper's modify_thread_labels. See common.py's
+module docstring for the general stub-server design.
 
 Schema fidelity note: in a real session these tools span TWO connectors
 -- the official Gmail MCP (search_threads / get_thread / list_labels /
@@ -45,7 +47,8 @@ State model (the fake Gmail "database"):
     "drafts": {"<draft_id>": {"id": "...", "to": [...], "cc": [...],
                                "bcc": [...], "subject": "...", "body": "...",
                                "replyToMessageId": null or "<message_id>"}},
-    "me": "user@example.com"
+    "me": "user@example.com",
+    "stub_now": "<ISO datetime, optional: the stub's fixed 'now'>"
   }
 
 The optional top-level "me" is the fixture's account owner, and it is what
@@ -69,11 +72,26 @@ search_threads' listing carries no messages here (unlike the live tool's
 related-message previews), so message URLs come only from get_thread.
 
 Query support in search_threads is a small, documented subset of Gmail
-syntax -- enough for triage's scoped-inbox flow and writing's corpus
-searches: `in:inbox`, `in:sent`, `in:anywhere`, `from:<addr|me>`,
-`to:<addr|me>`, `subject:<word>`, `label:<label_id>`, `is:unread`, bare
-words (matched against subject+snippet), "quoted phrases", an uppercase
-`OR` between two terms, and `-` negation of any of these.
+syntax -- enough for triage's scoped-inbox flow, writing's corpus searches,
+and sift-email's unprocessed-mail search: `in:inbox`, `in:sent`,
+`in:anywhere`, `from:<addr|me>`, `to:<addr|me>`, `subject:<word>`,
+`label:<label_id|name>`, `is:unread`, `after:`/`before:`,
+`newer_than:`/`older_than:`, bare words (matched against subject+snippet),
+"quoted phrases", an uppercase `OR` between two terms, and `-` negation of
+any of these.
+
+`label:` takes a label id, which is the only form the live connector's
+search_threads description documents. A display name, quoted when it holds
+a space (`label:"AI/Low priority"`), matches too, because a live read-only
+search with a quoted nested label name returned that label's threads
+(2026-10-10). Names compare without regard to letter case.
+
+`newer_than:`/`older_than:` take a number and a unit (d, m, or y; a month
+counts as 30 days and a year as 365) and count back from the fixture's
+optional top-level "stub_now", which fixture-dates.py moves with the rest of
+the state, or from the real time without one. A fixture whose threads are
+found by age should set "stub_now", or the same trial finds different
+threads depending on the day it runs.
 Anything fancier matches nothing rather than silently matching everything,
 and the raw query is always logged so a grader can see exactly what was
 asked for. `from:` and `to:` match the thread-level participants, not each
@@ -83,6 +101,9 @@ should be findable by.
 
 import copy
 import datetime
+from typing import Annotated
+
+from pydantic import Field
 
 from common import StubState
 
@@ -149,7 +170,49 @@ def _in_matches(t: dict, place: str) -> bool:
 # card being extended -- the failure looked like "no new samples" every time.
 # The relative forms (`newer_than:2d`) stay unimplemented; nothing needs them.
 _UNIMPLEMENTED = ("is:", "has:", "category:",
-                  "newer", "older", "size:", "larger:", "smaller:")
+                  "newer:", "older:", "size:", "larger:", "smaller:")
+
+_AGE_UNITS = {"d": 1, "m": 30, "y": 365}
+
+
+def _stub_now() -> datetime.datetime:
+    now = state.data.get("stub_now")
+    if now:
+        return datetime.datetime.fromisoformat(now.replace("Z", "+00:00"))
+    return datetime.datetime.now(datetime.timezone.utc)
+
+
+def _thread_datetime(t: dict):
+    """The thread's date as an aware datetime (UTC when it names no zone),
+    or None if it is unparseable."""
+    try:
+        moment = datetime.datetime.fromisoformat(t["date"].replace("Z", "+00:00"))
+    except (KeyError, TypeError, ValueError, AttributeError):
+        return None
+    if moment.tzinfo is None:
+        moment = moment.replace(tzinfo=datetime.timezone.utc)
+    return moment
+
+
+def _age_matches(t: dict, arg: str, newer: bool) -> bool:
+    """newer_than:/older_than: -- relative to stub_now. A malformed argument
+    matches nothing, like an unparseable after:/before: date."""
+    if len(arg) < 2 or not arg[:-1].isdigit() or arg[-1].lower() not in _AGE_UNITS:
+        return False
+    actual = _thread_datetime(t)
+    if actual is None:
+        return False
+    cutoff = _stub_now() - datetime.timedelta(days=int(arg[:-1]) * _AGE_UNITS[arg[-1].lower()])
+    return actual > cutoff if newer else actual < cutoff
+
+
+def _label_matches(t: dict, arg: str) -> bool:
+    """A label id, or a label's display name in any letter case."""
+    wanted = arg.strip('"')
+    if wanted in t["labelIds"]:
+        return True
+    ids = {l["id"] for l in state.data["labels"].values() if l["name"].lower() == wanted.lower()}
+    return any(i in t["labelIds"] for i in ids)
 
 
 def _parse_query_date(arg: str):
@@ -187,7 +250,9 @@ _OPERATORS = {
     "to:": lambda t, arg: bool(_resolve_address(arg)) and any(
         _resolve_address(arg) in r.lower() for r in t["to"]),
     "subject:": lambda t, arg: arg.lower() in t["subject"].lower(),
-    "label:": lambda t, arg: arg in t["labelIds"],
+    "label:": _label_matches,
+    "newer_than:": lambda t, arg: _age_matches(t, arg, newer=True),
+    "older_than:": lambda t, arg: _age_matches(t, arg, newer=False),
     "after:": lambda t, arg: _date_matches(t, arg, newer=True),
     "before:": lambda t, arg: _date_matches(t, arg, newer=False),
 }
@@ -269,10 +334,13 @@ def search_threads(
     listing-level fields only (no message bodies), including each thread's
     ID and `viewUrl` -- use get_thread for a full body. The stub supports
     a documented subset of query operators:
-    in:inbox, in:sent, in:anywhere, from:, to:, subject:, label:<id>,
-    is:unread, is:read, is:starred, is:important, bare words, "quoted
-    phrases", OR between terms, and '-' negation. from:me and to:me resolve to the fixture's "me" address.
-    Results come newest first."""
+    in:inbox, in:sent, in:anywhere, from:, to:, subject:, label:<id or
+    name>, after:, before:, newer_than:, older_than:, is:unread, is:read,
+    is:starred, is:important, bare words, "quoted phrases", OR between
+    terms, and '-' negation. from:me and to:me resolve to the fixture's "me" address.
+    Results come newest first, at most 50 per page (20 by default). When more
+    remain, the response carries a nextPageToken: pass it as pageToken to get
+    the next page."""
     matches = []
     for t in state.data["threads"].values():
         if not includeTrash and "TRASH" in t["labelIds"] and "in:trash" not in query and "in:anywhere" not in query:
@@ -280,10 +348,23 @@ def search_threads(
         if not query or _thread_matches(t, query):
             matches.append(_thread_listing(t))
     matches.sort(key=lambda m: m["date"], reverse=True)
-    result = {"threads": matches[:pageSize]}
+    # Paging as the live tool does: pageSize defaults to 20 and is capped at
+    # 50, and a page with more after it carries nextPageToken and
+    # resultCountEstimate (both seen in a live response, 2026-10-10). The
+    # token here is the next offset as a string, opaque to the caller.
+    size = min(max(pageSize or 20, 1), 50)
+    try:
+        start = int(pageToken) if pageToken else 0
+    except ValueError:
+        raise ValueError(f"gmail-stub: invalid pageToken {pageToken!r}") from None
+    result = {"threads": matches[start:start + size]}
+    if start + size < len(matches):
+        result["nextPageToken"] = str(start + size)
+        result["resultCountEstimate"] = str(len(matches))
     state.log_call(
         "search_threads",
-        {"query": query, "pageSize": pageSize, "view": view, "includeTrash": includeTrash},
+        {"query": query, "pageSize": pageSize, "pageToken": pageToken, "view": view,
+         "includeTrash": includeTrash},
         result,
     )
     return result
@@ -312,12 +393,34 @@ def get_thread(threadId: str, messageFormat: str = "FULL_CONTENT") -> dict:
     return result
 
 
+def _label_view(label: dict) -> dict:
+    """A label as the live list_labels returns one (2026-10-10): labelId,
+    name, labelType in upper case, the two visibilities when set, and
+    message and thread counts, which the stub counts from its threads. The
+    fixture keeps its own {id, name, type} shape."""
+    threads = [t for t in state.data["threads"].values() if label["id"] in t["labelIds"]]
+    messages = [m for t in threads for m in t.get("messages", [])]
+    view = {"labelId": label["id"], "name": label["name"],
+            "labelType": str(label.get("type", "user")).upper()}
+    for key in ("labelListVisibility", "messageListVisibility"):
+        if key in label:
+            view[key] = label[key]
+    view.update({
+        "messagesTotal": len(messages),
+        "messagesUnread": sum(1 for t in threads if "UNREAD" in t["labelIds"] for _ in t.get("messages", [])),
+        "threadsTotal": len(threads),
+        "threadsUnread": sum(1 for t in threads if "UNREAD" in t["labelIds"]),
+    })
+    return view
+
+
 @server.tool()
 def list_labels(pageSize: int = 0, pageToken: str = "") -> dict:
-    """Lists all labels in the account, with each label's id, name, and
-    type (system or user). Use the returned ids with modify_thread_labels
+    """Lists all labels in the account. Each carries its labelId, name,
+    labelType (SYSTEM or USER), and message and thread counts. Use the
+    labelId values with label_thread, unlabel_thread, modify_thread_labels,
     and search_threads' label: operator."""
-    result = {"labels": list(state.data["labels"].values())}
+    result = {"labels": [_label_view(l) for l in state.data["labels"].values()]}
     state.log_call("list_labels", {}, result)
     return result
 
@@ -367,17 +470,13 @@ def modify_thread_labels(
     ids must already exist (see list_labels)."""
     if thread_id not in state.data["threads"]:
         raise ValueError(f"gmail-stub: no thread with id {thread_id!r}")
-    system_ids = {"INBOX", "UNREAD", "STARRED", "IMPORTANT", "TRASH", "SPAM"}
-    for lbl in add_label_ids or []:
-        if lbl not in system_ids and lbl not in state.data["labels"]:
-            raise ValueError(f"gmail-stub: no label with id {lbl!r} -- use list_labels for ids")
+    if not add_label_ids and not remove_label_ids:
+        # A call whose label lists were misnamed reaches here with neither,
+        # and answering success would hide that nothing changed.
+        raise ValueError("gmail-stub: give add_label_ids or remove_label_ids (label ids to add or remove)")
+    _check_label_ids(add_label_ids or [])
     t = state.data["threads"][thread_id]
-    for lbl in add_label_ids or []:
-        if lbl not in t["labelIds"]:
-            t["labelIds"].append(lbl)
-    for lbl in remove_label_ids or []:
-        if lbl in t["labelIds"]:
-            t["labelIds"].remove(lbl)
+    _change_labels(t, add_label_ids or [], remove_label_ids or [])
     state.flush()
     result = {"thread_id": thread_id, "labelIds": list(t["labelIds"])}
     state.log_call(
@@ -385,6 +484,60 @@ def modify_thread_labels(
         {"thread_id": thread_id, "add_label_ids": add_label_ids, "remove_label_ids": remove_label_ids},
         result,
     )
+    return result
+
+
+def _check_label_ids(label_ids: list[str]) -> None:
+    system_ids = {"INBOX", "UNREAD", "STARRED", "IMPORTANT", "TRASH", "SPAM"}
+    for lbl in label_ids:
+        if lbl not in system_ids and lbl not in state.data["labels"]:
+            raise ValueError(f"gmail-stub: no label with id {lbl!r} -- use list_labels for ids")
+
+
+def _change_labels(t: dict, add: list[str], remove: list[str]) -> None:
+    """Add and remove label ids on a thread, leaving every other label alone."""
+    for lbl in add:
+        if lbl not in t["labelIds"]:
+            t["labelIds"].append(lbl)
+    for lbl in remove:
+        if lbl in t["labelIds"]:
+            t["labelIds"].remove(lbl)
+
+
+# The official connector's parameter names are camelCase. A validation alias
+# publishes those names in the tool's schema and accepts only them, while the
+# Python parameters stay snake_case.
+ThreadIdArg = Annotated[str, Field(validation_alias="threadId")]
+LabelIdsArg = Annotated[list[str], Field(validation_alias="labelIds")]
+
+
+@server.tool()
+def label_thread(thread_id: ThreadIdArg, label_ids: LabelIdsArg) -> dict:
+    """Adds labels to an entire thread. Mirrors the official Gmail MCP's
+    label_thread: label ids, not names (see list_labels), and an empty
+    object back on success, as a live call returned (2026-10-10)."""
+    if thread_id not in state.data["threads"]:
+        raise ValueError(f"gmail-stub: no thread with id {thread_id!r}")
+    _check_label_ids(label_ids)
+    _change_labels(state.data["threads"][thread_id], label_ids, [])
+    state.flush()
+    result = {}
+    state.log_call("label_thread", {"threadId": thread_id, "labelIds": label_ids}, result)
+    return result
+
+
+@server.tool()
+def unlabel_thread(thread_id: ThreadIdArg, label_ids: LabelIdsArg) -> dict:
+    """Removes labels from an entire thread. Mirrors the official Gmail
+    MCP's unlabel_thread: label ids, and an empty object back on success.
+    A listed label the thread does not carry is left alone."""
+    if thread_id not in state.data["threads"]:
+        raise ValueError(f"gmail-stub: no thread with id {thread_id!r}")
+    _check_label_ids(label_ids)
+    _change_labels(state.data["threads"][thread_id], [], label_ids)
+    state.flush()
+    result = {}
+    state.log_call("unlabel_thread", {"threadId": thread_id, "labelIds": label_ids}, result)
     return result
 
 
@@ -458,12 +611,18 @@ def create_label(
         labels[new_id] = created
         names[name.lower()] = created
     state.flush()
+    # The live create_label returned the new label as color, labelId, the
+    # two visibilities (defaulting to LABEL_SHOW and SHOW), and name.
+    result = {"color": {}, "labelId": created["id"],
+              "labelListVisibility": created.get("labelListVisibility", "LABEL_SHOW"),
+              "messageListVisibility": created.get("messageListVisibility", "SHOW"),
+              "name": created["name"]}
     state.log_call("create_label", {"displayName": displayName,
                                     "autoCreateParentLabels": autoCreateParentLabels,
                                     "colorPreset": colorPreset,
                                     "labelListVisibility": labelListVisibility,
-                                    "messageListVisibility": messageListVisibility}, created)
-    return created
+                                    "messageListVisibility": messageListVisibility}, result)
+    return result
 
 
 if __name__ == "__main__":

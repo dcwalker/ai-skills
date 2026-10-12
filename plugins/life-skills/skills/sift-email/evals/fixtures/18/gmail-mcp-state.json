@@ -1,0 +1,1525 @@
+{
+  "anchor_date": "2026-10-10",
+  "stub_now": "2026-10-10T15:00:00Z",
+  "me": "pat@example.com",
+  "labels": {
+    "INBOX": {
+      "id": "INBOX",
+      "name": "INBOX",
+      "type": "system"
+    },
+    "SENT": {
+      "id": "SENT",
+      "name": "SENT",
+      "type": "system"
+    },
+    "TRASH": {
+      "id": "TRASH",
+      "name": "TRASH",
+      "type": "system"
+    },
+    "SPAM": {
+      "id": "SPAM",
+      "name": "SPAM",
+      "type": "system"
+    },
+    "STARRED": {
+      "id": "STARRED",
+      "name": "STARRED",
+      "type": "system"
+    },
+    "IMPORTANT": {
+      "id": "IMPORTANT",
+      "name": "IMPORTANT",
+      "type": "system"
+    },
+    "UNREAD": {
+      "id": "UNREAD",
+      "name": "UNREAD",
+      "type": "system"
+    },
+    "Label_1": {
+      "id": "Label_1",
+      "name": "Soccer",
+      "type": "user"
+    },
+    "Label_2": {
+      "id": "Label_2",
+      "name": "Receipts",
+      "type": "user"
+    },
+    "Label_3": {
+      "id": "Label_3",
+      "name": "Newsletter",
+      "type": "user"
+    },
+    "Label_4": {
+      "id": "Label_4",
+      "name": "School",
+      "type": "user"
+    },
+    "Label_20": {
+      "id": "Label_20",
+      "name": "AI",
+      "type": "user"
+    },
+    "Label_21": {
+      "id": "Label_21",
+      "name": "AI/Important",
+      "type": "user"
+    },
+    "Label_22": {
+      "id": "Label_22",
+      "name": "AI/Low priority",
+      "type": "user"
+    },
+    "Label_23": {
+      "id": "Label_23",
+      "name": "AI/Junk",
+      "type": "user"
+    },
+    "Label_24": {
+      "id": "Label_24",
+      "name": "AI/Needs reply",
+      "type": "user"
+    },
+    "Label_25": {
+      "id": "Label_25",
+      "name": "AI/Sifted",
+      "type": "user"
+    },
+    "Label_26": {
+      "id": "Label_26",
+      "name": "AI/Wrong",
+      "type": "user"
+    }
+  },
+  "threads": {
+    "t-b01": {
+      "id": "t-b01",
+      "subject": "Your order has shipped (1)",
+      "from": "orders@bookshop.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-08T16:00:00Z",
+      "snippet": "Your order has shipped and should arrive this week.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b01-m1",
+          "from": "orders@bookshop.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-08T16:00:00Z",
+          "snippet": "Your order has shipped and should arrive this week.",
+          "body": "Your order has shipped and should arrive this week."
+        }
+      ]
+    },
+    "t-b02": {
+      "id": "t-b02",
+      "subject": "Morning Brief (2)",
+      "from": "editor@morningbrief.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-05T16:00:00Z",
+      "snippet": "Today: city news, a new trail, and the weekend weather.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b02-m1",
+          "from": "editor@morningbrief.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-05T16:00:00Z",
+          "snippet": "Today: city news, a new trail, and the weekend weather.",
+          "body": "Today: city news, a new trail, and the weekend weather."
+        }
+      ]
+    },
+    "t-b03": {
+      "id": "t-b03",
+      "subject": "Your statement is ready (3)",
+      "from": "statements@cedarbank.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-02T16:00:00Z",
+      "snippet": "Your monthly statement for account ending 4410 is ready.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b03-m1",
+          "from": "statements@cedarbank.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-02T16:00:00Z",
+          "snippet": "Your monthly statement for account ending 4410 is ready.",
+          "body": "Your monthly statement for account ending 4410 is ready."
+        }
+      ]
+    },
+    "t-b04": {
+      "id": "t-b04",
+      "subject": "This week on Neighborly (4)",
+      "from": "digest@neighborly.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-09-29T16:00:00Z",
+      "snippet": "New posts near you, including a lost cat on Pine St.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b04-m1",
+          "from": "digest@neighborly.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-09-29T16:00:00Z",
+          "snippet": "New posts near you, including a lost cat on Pine St.",
+          "body": "New posts near you, including a lost cat on Pine St."
+        }
+      ]
+    },
+    "t-b05": {
+      "id": "t-b05",
+      "subject": "Sale: boots up to 60% off (5)",
+      "from": "promo@shoeplanet.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-09-26T16:00:00Z",
+      "snippet": "You haven't shopped with us yet! Big savings on boots.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b05-m1",
+          "from": "promo@shoeplanet.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-09-26T16:00:00Z",
+          "snippet": "You haven't shopped with us yet! Big savings on boots.",
+          "body": "You haven't shopped with us yet! Big savings on boots."
+        }
+      ]
+    },
+    "t-b06": {
+      "id": "t-b06",
+      "subject": "Your order has shipped (6)",
+      "from": "orders@bookshop.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-09-23T16:00:00Z",
+      "snippet": "Your order has shipped and should arrive this week.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b06-m1",
+          "from": "orders@bookshop.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-09-23T16:00:00Z",
+          "snippet": "Your order has shipped and should arrive this week.",
+          "body": "Your order has shipped and should arrive this week."
+        }
+      ]
+    },
+    "t-b07": {
+      "id": "t-b07",
+      "subject": "Morning Brief (7)",
+      "from": "editor@morningbrief.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-09-20T16:00:00Z",
+      "snippet": "Today: city news, a new trail, and the weekend weather.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b07-m1",
+          "from": "editor@morningbrief.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-09-20T16:00:00Z",
+          "snippet": "Today: city news, a new trail, and the weekend weather.",
+          "body": "Today: city news, a new trail, and the weekend weather."
+        }
+      ]
+    },
+    "t-b08": {
+      "id": "t-b08",
+      "subject": "Your statement is ready (8)",
+      "from": "statements@cedarbank.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-09-17T16:00:00Z",
+      "snippet": "Your monthly statement for account ending 4410 is ready.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b08-m1",
+          "from": "statements@cedarbank.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-09-17T16:00:00Z",
+          "snippet": "Your monthly statement for account ending 4410 is ready.",
+          "body": "Your monthly statement for account ending 4410 is ready."
+        }
+      ]
+    },
+    "t-b09": {
+      "id": "t-b09",
+      "subject": "This week on Neighborly (9)",
+      "from": "digest@neighborly.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-09-14T16:00:00Z",
+      "snippet": "New posts near you, including a lost cat on Pine St.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b09-m1",
+          "from": "digest@neighborly.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-09-14T16:00:00Z",
+          "snippet": "New posts near you, including a lost cat on Pine St.",
+          "body": "New posts near you, including a lost cat on Pine St."
+        }
+      ]
+    },
+    "t-b10": {
+      "id": "t-b10",
+      "subject": "Sale: boots up to 60% off (10)",
+      "from": "promo@shoeplanet.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-09-11T16:00:00Z",
+      "snippet": "You haven't shopped with us yet! Big savings on boots.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b10-m1",
+          "from": "promo@shoeplanet.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-09-11T16:00:00Z",
+          "snippet": "You haven't shopped with us yet! Big savings on boots.",
+          "body": "You haven't shopped with us yet! Big savings on boots."
+        }
+      ]
+    },
+    "t-b11": {
+      "id": "t-b11",
+      "subject": "Your order has shipped (11)",
+      "from": "orders@bookshop.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-09-08T16:00:00Z",
+      "snippet": "Your order has shipped and should arrive this week.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b11-m1",
+          "from": "orders@bookshop.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-09-08T16:00:00Z",
+          "snippet": "Your order has shipped and should arrive this week.",
+          "body": "Your order has shipped and should arrive this week."
+        }
+      ]
+    },
+    "t-b12": {
+      "id": "t-b12",
+      "subject": "Morning Brief (12)",
+      "from": "editor@morningbrief.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-09-05T16:00:00Z",
+      "snippet": "Today: city news, a new trail, and the weekend weather.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b12-m1",
+          "from": "editor@morningbrief.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-09-05T16:00:00Z",
+          "snippet": "Today: city news, a new trail, and the weekend weather.",
+          "body": "Today: city news, a new trail, and the weekend weather."
+        }
+      ]
+    },
+    "t-b13": {
+      "id": "t-b13",
+      "subject": "Your statement is ready (13)",
+      "from": "statements@cedarbank.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-09-02T16:00:00Z",
+      "snippet": "Your monthly statement for account ending 4410 is ready.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b13-m1",
+          "from": "statements@cedarbank.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-09-02T16:00:00Z",
+          "snippet": "Your monthly statement for account ending 4410 is ready.",
+          "body": "Your monthly statement for account ending 4410 is ready."
+        }
+      ]
+    },
+    "t-b14": {
+      "id": "t-b14",
+      "subject": "This week on Neighborly (14)",
+      "from": "digest@neighborly.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-08-30T16:00:00Z",
+      "snippet": "New posts near you, including a lost cat on Pine St.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b14-m1",
+          "from": "digest@neighborly.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-08-30T16:00:00Z",
+          "snippet": "New posts near you, including a lost cat on Pine St.",
+          "body": "New posts near you, including a lost cat on Pine St."
+        }
+      ]
+    },
+    "t-b15": {
+      "id": "t-b15",
+      "subject": "Sale: boots up to 60% off (15)",
+      "from": "promo@shoeplanet.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-08-27T16:00:00Z",
+      "snippet": "You haven't shopped with us yet! Big savings on boots.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b15-m1",
+          "from": "promo@shoeplanet.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-08-27T16:00:00Z",
+          "snippet": "You haven't shopped with us yet! Big savings on boots.",
+          "body": "You haven't shopped with us yet! Big savings on boots."
+        }
+      ]
+    },
+    "t-b16": {
+      "id": "t-b16",
+      "subject": "Your order has shipped (16)",
+      "from": "orders@bookshop.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-08-24T16:00:00Z",
+      "snippet": "Your order has shipped and should arrive this week.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b16-m1",
+          "from": "orders@bookshop.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-08-24T16:00:00Z",
+          "snippet": "Your order has shipped and should arrive this week.",
+          "body": "Your order has shipped and should arrive this week."
+        }
+      ]
+    },
+    "t-b17": {
+      "id": "t-b17",
+      "subject": "Morning Brief (17)",
+      "from": "editor@morningbrief.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-08-21T16:00:00Z",
+      "snippet": "Today: city news, a new trail, and the weekend weather.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b17-m1",
+          "from": "editor@morningbrief.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-08-21T16:00:00Z",
+          "snippet": "Today: city news, a new trail, and the weekend weather.",
+          "body": "Today: city news, a new trail, and the weekend weather."
+        }
+      ]
+    },
+    "t-b18": {
+      "id": "t-b18",
+      "subject": "Your statement is ready (18)",
+      "from": "statements@cedarbank.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-08-18T16:00:00Z",
+      "snippet": "Your monthly statement for account ending 4410 is ready.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b18-m1",
+          "from": "statements@cedarbank.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-08-18T16:00:00Z",
+          "snippet": "Your monthly statement for account ending 4410 is ready.",
+          "body": "Your monthly statement for account ending 4410 is ready."
+        }
+      ]
+    },
+    "t-b19": {
+      "id": "t-b19",
+      "subject": "This week on Neighborly (19)",
+      "from": "digest@neighborly.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-08-15T16:00:00Z",
+      "snippet": "New posts near you, including a lost cat on Pine St.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b19-m1",
+          "from": "digest@neighborly.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-08-15T16:00:00Z",
+          "snippet": "New posts near you, including a lost cat on Pine St.",
+          "body": "New posts near you, including a lost cat on Pine St."
+        }
+      ]
+    },
+    "t-b20": {
+      "id": "t-b20",
+      "subject": "Sale: boots up to 60% off (20)",
+      "from": "promo@shoeplanet.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-08-12T16:00:00Z",
+      "snippet": "You haven't shopped with us yet! Big savings on boots.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b20-m1",
+          "from": "promo@shoeplanet.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-08-12T16:00:00Z",
+          "snippet": "You haven't shopped with us yet! Big savings on boots.",
+          "body": "You haven't shopped with us yet! Big savings on boots."
+        }
+      ]
+    },
+    "t-b21": {
+      "id": "t-b21",
+      "subject": "Your order has shipped (21)",
+      "from": "orders@bookshop.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-08-09T16:00:00Z",
+      "snippet": "Your order has shipped and should arrive this week.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b21-m1",
+          "from": "orders@bookshop.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-08-09T16:00:00Z",
+          "snippet": "Your order has shipped and should arrive this week.",
+          "body": "Your order has shipped and should arrive this week."
+        }
+      ]
+    },
+    "t-b22": {
+      "id": "t-b22",
+      "subject": "Morning Brief (22)",
+      "from": "editor@morningbrief.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-08-06T16:00:00Z",
+      "snippet": "Today: city news, a new trail, and the weekend weather.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b22-m1",
+          "from": "editor@morningbrief.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-08-06T16:00:00Z",
+          "snippet": "Today: city news, a new trail, and the weekend weather.",
+          "body": "Today: city news, a new trail, and the weekend weather."
+        }
+      ]
+    },
+    "t-b23": {
+      "id": "t-b23",
+      "subject": "Your statement is ready (23)",
+      "from": "statements@cedarbank.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-08-03T16:00:00Z",
+      "snippet": "Your monthly statement for account ending 4410 is ready.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b23-m1",
+          "from": "statements@cedarbank.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-08-03T16:00:00Z",
+          "snippet": "Your monthly statement for account ending 4410 is ready.",
+          "body": "Your monthly statement for account ending 4410 is ready."
+        }
+      ]
+    },
+    "t-b24": {
+      "id": "t-b24",
+      "subject": "This week on Neighborly (24)",
+      "from": "digest@neighborly.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-07-31T16:00:00Z",
+      "snippet": "New posts near you, including a lost cat on Pine St.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b24-m1",
+          "from": "digest@neighborly.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-07-31T16:00:00Z",
+          "snippet": "New posts near you, including a lost cat on Pine St.",
+          "body": "New posts near you, including a lost cat on Pine St."
+        }
+      ]
+    },
+    "t-b25": {
+      "id": "t-b25",
+      "subject": "Sale: boots up to 60% off (25)",
+      "from": "promo@shoeplanet.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-07-28T16:00:00Z",
+      "snippet": "You haven't shopped with us yet! Big savings on boots.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b25-m1",
+          "from": "promo@shoeplanet.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-07-28T16:00:00Z",
+          "snippet": "You haven't shopped with us yet! Big savings on boots.",
+          "body": "You haven't shopped with us yet! Big savings on boots."
+        }
+      ]
+    },
+    "t-b26": {
+      "id": "t-b26",
+      "subject": "Your order has shipped (26)",
+      "from": "orders@bookshop.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-07-25T16:00:00Z",
+      "snippet": "Your order has shipped and should arrive this week.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b26-m1",
+          "from": "orders@bookshop.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-07-25T16:00:00Z",
+          "snippet": "Your order has shipped and should arrive this week.",
+          "body": "Your order has shipped and should arrive this week."
+        }
+      ]
+    },
+    "t-b27": {
+      "id": "t-b27",
+      "subject": "Morning Brief (27)",
+      "from": "editor@morningbrief.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-07-22T16:00:00Z",
+      "snippet": "Today: city news, a new trail, and the weekend weather.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b27-m1",
+          "from": "editor@morningbrief.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-07-22T16:00:00Z",
+          "snippet": "Today: city news, a new trail, and the weekend weather.",
+          "body": "Today: city news, a new trail, and the weekend weather."
+        }
+      ]
+    },
+    "t-b28": {
+      "id": "t-b28",
+      "subject": "Your statement is ready (28)",
+      "from": "statements@cedarbank.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-07-19T16:00:00Z",
+      "snippet": "Your monthly statement for account ending 4410 is ready.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b28-m1",
+          "from": "statements@cedarbank.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-07-19T16:00:00Z",
+          "snippet": "Your monthly statement for account ending 4410 is ready.",
+          "body": "Your monthly statement for account ending 4410 is ready."
+        }
+      ]
+    },
+    "t-b29": {
+      "id": "t-b29",
+      "subject": "This week on Neighborly (29)",
+      "from": "digest@neighborly.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-07-16T16:00:00Z",
+      "snippet": "New posts near you, including a lost cat on Pine St.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b29-m1",
+          "from": "digest@neighborly.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-07-16T16:00:00Z",
+          "snippet": "New posts near you, including a lost cat on Pine St.",
+          "body": "New posts near you, including a lost cat on Pine St."
+        }
+      ]
+    },
+    "t-b30": {
+      "id": "t-b30",
+      "subject": "Sale: boots up to 60% off (30)",
+      "from": "promo@shoeplanet.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-07-13T16:00:00Z",
+      "snippet": "You haven't shopped with us yet! Big savings on boots.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b30-m1",
+          "from": "promo@shoeplanet.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-07-13T16:00:00Z",
+          "snippet": "You haven't shopped with us yet! Big savings on boots.",
+          "body": "You haven't shopped with us yet! Big savings on boots."
+        }
+      ]
+    },
+    "t-b31": {
+      "id": "t-b31",
+      "subject": "Your order has shipped (31)",
+      "from": "orders@bookshop.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-07-10T16:00:00Z",
+      "snippet": "Your order has shipped and should arrive this week.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b31-m1",
+          "from": "orders@bookshop.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-07-10T16:00:00Z",
+          "snippet": "Your order has shipped and should arrive this week.",
+          "body": "Your order has shipped and should arrive this week."
+        }
+      ]
+    },
+    "t-b32": {
+      "id": "t-b32",
+      "subject": "Morning Brief (32)",
+      "from": "editor@morningbrief.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-07-07T16:00:00Z",
+      "snippet": "Today: city news, a new trail, and the weekend weather.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b32-m1",
+          "from": "editor@morningbrief.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-07-07T16:00:00Z",
+          "snippet": "Today: city news, a new trail, and the weekend weather.",
+          "body": "Today: city news, a new trail, and the weekend weather."
+        }
+      ]
+    },
+    "t-b33": {
+      "id": "t-b33",
+      "subject": "Your statement is ready (33)",
+      "from": "statements@cedarbank.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-07-04T16:00:00Z",
+      "snippet": "Your monthly statement for account ending 4410 is ready.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b33-m1",
+          "from": "statements@cedarbank.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-07-04T16:00:00Z",
+          "snippet": "Your monthly statement for account ending 4410 is ready.",
+          "body": "Your monthly statement for account ending 4410 is ready."
+        }
+      ]
+    },
+    "t-b34": {
+      "id": "t-b34",
+      "subject": "This week on Neighborly (34)",
+      "from": "digest@neighborly.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-07-01T16:00:00Z",
+      "snippet": "New posts near you, including a lost cat on Pine St.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b34-m1",
+          "from": "digest@neighborly.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-07-01T16:00:00Z",
+          "snippet": "New posts near you, including a lost cat on Pine St.",
+          "body": "New posts near you, including a lost cat on Pine St."
+        }
+      ]
+    },
+    "t-b35": {
+      "id": "t-b35",
+      "subject": "Sale: boots up to 60% off (35)",
+      "from": "promo@shoeplanet.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-06-28T16:00:00Z",
+      "snippet": "You haven't shopped with us yet! Big savings on boots.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b35-m1",
+          "from": "promo@shoeplanet.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-06-28T16:00:00Z",
+          "snippet": "You haven't shopped with us yet! Big savings on boots.",
+          "body": "You haven't shopped with us yet! Big savings on boots."
+        }
+      ]
+    },
+    "t-b36": {
+      "id": "t-b36",
+      "subject": "Your order has shipped (36)",
+      "from": "orders@bookshop.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-06-25T16:00:00Z",
+      "snippet": "Your order has shipped and should arrive this week.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b36-m1",
+          "from": "orders@bookshop.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-06-25T16:00:00Z",
+          "snippet": "Your order has shipped and should arrive this week.",
+          "body": "Your order has shipped and should arrive this week."
+        }
+      ]
+    },
+    "t-b37": {
+      "id": "t-b37",
+      "subject": "Morning Brief (37)",
+      "from": "editor@morningbrief.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-06-22T16:00:00Z",
+      "snippet": "Today: city news, a new trail, and the weekend weather.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b37-m1",
+          "from": "editor@morningbrief.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-06-22T16:00:00Z",
+          "snippet": "Today: city news, a new trail, and the weekend weather.",
+          "body": "Today: city news, a new trail, and the weekend weather."
+        }
+      ]
+    },
+    "t-b38": {
+      "id": "t-b38",
+      "subject": "Your statement is ready (38)",
+      "from": "statements@cedarbank.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-06-19T16:00:00Z",
+      "snippet": "Your monthly statement for account ending 4410 is ready.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b38-m1",
+          "from": "statements@cedarbank.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-06-19T16:00:00Z",
+          "snippet": "Your monthly statement for account ending 4410 is ready.",
+          "body": "Your monthly statement for account ending 4410 is ready."
+        }
+      ]
+    },
+    "t-b39": {
+      "id": "t-b39",
+      "subject": "This week on Neighborly (39)",
+      "from": "digest@neighborly.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-06-16T16:00:00Z",
+      "snippet": "New posts near you, including a lost cat on Pine St.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b39-m1",
+          "from": "digest@neighborly.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-06-16T16:00:00Z",
+          "snippet": "New posts near you, including a lost cat on Pine St.",
+          "body": "New posts near you, including a lost cat on Pine St."
+        }
+      ]
+    },
+    "t-b40": {
+      "id": "t-b40",
+      "subject": "Sale: boots up to 60% off (40)",
+      "from": "promo@shoeplanet.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-06-13T16:00:00Z",
+      "snippet": "You haven't shopped with us yet! Big savings on boots.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b40-m1",
+          "from": "promo@shoeplanet.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-06-13T16:00:00Z",
+          "snippet": "You haven't shopped with us yet! Big savings on boots.",
+          "body": "You haven't shopped with us yet! Big savings on boots."
+        }
+      ]
+    },
+    "t-b41": {
+      "id": "t-b41",
+      "subject": "Your order has shipped (41)",
+      "from": "orders@bookshop.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-06-10T16:00:00Z",
+      "snippet": "Your order has shipped and should arrive this week.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b41-m1",
+          "from": "orders@bookshop.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-06-10T16:00:00Z",
+          "snippet": "Your order has shipped and should arrive this week.",
+          "body": "Your order has shipped and should arrive this week."
+        }
+      ]
+    },
+    "t-b42": {
+      "id": "t-b42",
+      "subject": "Morning Brief (42)",
+      "from": "editor@morningbrief.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-06-07T16:00:00Z",
+      "snippet": "Today: city news, a new trail, and the weekend weather.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b42-m1",
+          "from": "editor@morningbrief.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-06-07T16:00:00Z",
+          "snippet": "Today: city news, a new trail, and the weekend weather.",
+          "body": "Today: city news, a new trail, and the weekend weather."
+        }
+      ]
+    },
+    "t-b43": {
+      "id": "t-b43",
+      "subject": "Your statement is ready (43)",
+      "from": "statements@cedarbank.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-06-04T16:00:00Z",
+      "snippet": "Your monthly statement for account ending 4410 is ready.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b43-m1",
+          "from": "statements@cedarbank.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-06-04T16:00:00Z",
+          "snippet": "Your monthly statement for account ending 4410 is ready.",
+          "body": "Your monthly statement for account ending 4410 is ready."
+        }
+      ]
+    },
+    "t-b44": {
+      "id": "t-b44",
+      "subject": "This week on Neighborly (44)",
+      "from": "digest@neighborly.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-06-01T16:00:00Z",
+      "snippet": "New posts near you, including a lost cat on Pine St.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b44-m1",
+          "from": "digest@neighborly.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-06-01T16:00:00Z",
+          "snippet": "New posts near you, including a lost cat on Pine St.",
+          "body": "New posts near you, including a lost cat on Pine St."
+        }
+      ]
+    },
+    "t-b45": {
+      "id": "t-b45",
+      "subject": "Sale: boots up to 60% off (45)",
+      "from": "promo@shoeplanet.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-05-29T16:00:00Z",
+      "snippet": "You haven't shopped with us yet! Big savings on boots.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b45-m1",
+          "from": "promo@shoeplanet.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-05-29T16:00:00Z",
+          "snippet": "You haven't shopped with us yet! Big savings on boots.",
+          "body": "You haven't shopped with us yet! Big savings on boots."
+        }
+      ]
+    },
+    "t-b46": {
+      "id": "t-b46",
+      "subject": "Your order has shipped (46)",
+      "from": "orders@bookshop.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-05-26T16:00:00Z",
+      "snippet": "Your order has shipped and should arrive this week.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b46-m1",
+          "from": "orders@bookshop.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-05-26T16:00:00Z",
+          "snippet": "Your order has shipped and should arrive this week.",
+          "body": "Your order has shipped and should arrive this week."
+        }
+      ]
+    },
+    "t-b47": {
+      "id": "t-b47",
+      "subject": "Morning Brief (47)",
+      "from": "editor@morningbrief.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-05-23T16:00:00Z",
+      "snippet": "Today: city news, a new trail, and the weekend weather.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b47-m1",
+          "from": "editor@morningbrief.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-05-23T16:00:00Z",
+          "snippet": "Today: city news, a new trail, and the weekend weather.",
+          "body": "Today: city news, a new trail, and the weekend weather."
+        }
+      ]
+    },
+    "t-b48": {
+      "id": "t-b48",
+      "subject": "Your statement is ready (48)",
+      "from": "statements@cedarbank.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-05-20T16:00:00Z",
+      "snippet": "Your monthly statement for account ending 4410 is ready.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b48-m1",
+          "from": "statements@cedarbank.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-05-20T16:00:00Z",
+          "snippet": "Your monthly statement for account ending 4410 is ready.",
+          "body": "Your monthly statement for account ending 4410 is ready."
+        }
+      ]
+    },
+    "t-b49": {
+      "id": "t-b49",
+      "subject": "This week on Neighborly (49)",
+      "from": "digest@neighborly.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-05-17T16:00:00Z",
+      "snippet": "New posts near you, including a lost cat on Pine St.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b49-m1",
+          "from": "digest@neighborly.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-05-17T16:00:00Z",
+          "snippet": "New posts near you, including a lost cat on Pine St.",
+          "body": "New posts near you, including a lost cat on Pine St."
+        }
+      ]
+    },
+    "t-b50": {
+      "id": "t-b50",
+      "subject": "Sale: boots up to 60% off (50)",
+      "from": "promo@shoeplanet.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-05-14T16:00:00Z",
+      "snippet": "You haven't shopped with us yet! Big savings on boots.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b50-m1",
+          "from": "promo@shoeplanet.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-05-14T16:00:00Z",
+          "snippet": "You haven't shopped with us yet! Big savings on boots.",
+          "body": "You haven't shopped with us yet! Big savings on boots."
+        }
+      ]
+    },
+    "t-b51": {
+      "id": "t-b51",
+      "subject": "Your order has shipped (51)",
+      "from": "orders@bookshop.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-05-11T16:00:00Z",
+      "snippet": "Your order has shipped and should arrive this week.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b51-m1",
+          "from": "orders@bookshop.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-05-11T16:00:00Z",
+          "snippet": "Your order has shipped and should arrive this week.",
+          "body": "Your order has shipped and should arrive this week."
+        }
+      ]
+    },
+    "t-b52": {
+      "id": "t-b52",
+      "subject": "Morning Brief (52)",
+      "from": "editor@morningbrief.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-05-08T16:00:00Z",
+      "snippet": "Today: city news, a new trail, and the weekend weather.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b52-m1",
+          "from": "editor@morningbrief.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-05-08T16:00:00Z",
+          "snippet": "Today: city news, a new trail, and the weekend weather.",
+          "body": "Today: city news, a new trail, and the weekend weather."
+        }
+      ]
+    },
+    "t-b53": {
+      "id": "t-b53",
+      "subject": "Your statement is ready (53)",
+      "from": "statements@cedarbank.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-05-05T16:00:00Z",
+      "snippet": "Your monthly statement for account ending 4410 is ready.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b53-m1",
+          "from": "statements@cedarbank.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-05-05T16:00:00Z",
+          "snippet": "Your monthly statement for account ending 4410 is ready.",
+          "body": "Your monthly statement for account ending 4410 is ready."
+        }
+      ]
+    },
+    "t-b54": {
+      "id": "t-b54",
+      "subject": "This week on Neighborly (54)",
+      "from": "digest@neighborly.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-05-02T16:00:00Z",
+      "snippet": "New posts near you, including a lost cat on Pine St.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b54-m1",
+          "from": "digest@neighborly.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-05-02T16:00:00Z",
+          "snippet": "New posts near you, including a lost cat on Pine St.",
+          "body": "New posts near you, including a lost cat on Pine St."
+        }
+      ]
+    },
+    "t-b55": {
+      "id": "t-b55",
+      "subject": "Sale: boots up to 60% off (55)",
+      "from": "promo@shoeplanet.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-04-29T16:00:00Z",
+      "snippet": "You haven't shopped with us yet! Big savings on boots.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-b55-m1",
+          "from": "promo@shoeplanet.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-04-29T16:00:00Z",
+          "snippet": "You haven't shopped with us yet! Big savings on boots.",
+          "body": "You haven't shopped with us yet! Big savings on boots."
+        }
+      ]
+    },
+    "t-lease": {
+      "id": "t-lease",
+      "subject": "Lease renewal: please sign by Oct 15",
+      "from": "morgan@harborprops.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-08-20T16:00:00Z",
+      "snippet": "Hi Pat, your renewal is attached. Please sign and return it by October 15 so we can lock in the rate.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-lease-m1",
+          "from": "morgan@harborprops.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-08-20T16:00:00Z",
+          "snippet": "Hi Pat, your renewal is attached. Please sign and return it by October 15 so we can lock in the rate.",
+          "body": "Hi Pat, your renewal is attached. Please sign and return it by October 15 so we can lock in the rate."
+        }
+      ]
+    },
+    "t-sent-landlord": {
+      "id": "t-sent-landlord",
+      "subject": "Re: Lease renewal",
+      "from": "pat@example.com",
+      "to": [
+        "morgan@harborprops.example"
+      ],
+      "date": "2026-09-14T16:00:00Z",
+      "snippet": "Thanks Morgan, will do.",
+      "labelIds": [
+        "SENT"
+      ],
+      "messages": [
+        {
+          "id": "t-sent-landlord-m1",
+          "from": "pat@example.com",
+          "to": [
+            "morgan@harborprops.example"
+          ],
+          "date": "2026-09-14T16:00:00Z",
+          "snippet": "Thanks Morgan, will do.",
+          "body": "Thanks Morgan, will do."
+        }
+      ]
+    }
+  },
+  "drafts": {}
+}

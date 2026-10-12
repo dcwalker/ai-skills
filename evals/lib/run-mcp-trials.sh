@@ -274,12 +274,26 @@ for e in json.load(open(sys.argv[1]))['evals']:
   #   stop them, but it also stopped the managed-only instruction-files
   #   setting triage's driver relies on (issue #88), so it is not used.
   #   https://code.claude.com/docs/en/sandboxing
+  #
+  # Every other plugin the developer has enabled is switched off too. The
+  # private HOME links ~/.claude/plugins and copies settings.json, so without
+  # this a trial loaded the developer's own plugins (the sift-email trials for
+  # issue #109 listed software-development and swift-lsp). None was used, but
+  # a trial measures the staged skill and its stubs, nothing else.
   RUN_DIR_REAL="$(cd "$RUN_DIR" && pwd -P)"
   TRIAL_SETTINGS="$(python3 -c '
-import json, sys
-plugin, run_dir = sys.argv[1], sys.argv[2]
+import json, os, sys
+plugin, run_dir, home = sys.argv[1], sys.argv[2], sys.argv[3]
+disabled = {plugin: False}
+for name in ("settings.json", "settings.local.json"):
+    try:
+        with open(os.path.join(home, ".claude", name)) as fh:
+            enabled = json.load(fh).get("enabledPlugins") or {}
+    except (OSError, ValueError):
+        continue
+    disabled.update({key: False for key in enabled})
 print(json.dumps({
-    "enabledPlugins": {plugin: False},
+    "enabledPlugins": disabled,
     "permissions": {"allow": [f"Edit(/{run_dir}/**)"]},
     "sandbox": {
         "enabled": True,
@@ -288,7 +302,7 @@ print(json.dumps({
         "filesystem": {"allowWrite": [run_dir]},
     },
 }))
-' "$PLUGIN_NAME@$MARKETPLACE_NAME" "$RUN_DIR_REAL")"
+' "$PLUGIN_NAME@$MARKETPLACE_NAME" "$RUN_DIR_REAL" "$HOME")"
 
   # `|| true` on the claude call: a failing trial (session limit, transient
   # API error) must not abort the batch under set -e -- its events.jsonl
@@ -412,6 +426,14 @@ with open(sys.argv[2], "w") as fh:
   # makes a multi-turn eval (draft, then revise, then revise again) a real
   # conversation rather than one prompt describing several.
   TRIAL_TOOLS="Bash,Read,Glob,Grep,Write,Edit,WebFetch,Skill,ToolSearch"
+  # WebFetch is offered but not pre-approved, so under dontAsk every call is
+  # denied: it is not sandboxed like Bash, and the sift-email trials for issue
+  # #109 fetched real claude.ai pages with it. The attempt still shows in
+  # tools.log, which is what triage's eval 20 grades.
+  #
+  # Auto-memory is off for the same reason as in the preflight. With it on, a
+  # trial wrote the doc links it should have reported into a memory file
+  # under its private HOME (sift-email eval 1, issue #109).
   #
   # Each turn is a new claude process, so the stubs restart with it, and a
   # stub seeds itself from MCP_STUB_STATE_FILE. Left pointing at the seed, a
@@ -442,9 +464,10 @@ json.dump(config, open(sys.argv[2], 'w'), indent=2)
     (
       cd "$WORKSPACE_DIR"
       HOME="$TRIAL_HOME" TMPDIR="$TRIAL_TMP" CLAUDE_CODE_TMPDIR="$RUN_DIR/tmp" \
+        CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 \
         claude -p --permission-mode dontAsk \
         --tools "$TRIAL_TOOLS" \
-        --allowedTools "Bash Read Glob Grep WebFetch TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian mcp__slack mcp__calendar" \
+        --allowedTools "Bash Read Glob Grep TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian mcp__slack mcp__calendar mcp__docs mcp__contacts" \
         --strict-mcp-config --verbose ${resume_flag[@]+"${resume_flag[@]}"} \
         --settings "$TRIAL_SETTINGS" \
         --mcp-config "$turn_mcp_config" --output-format stream-json -- "$turn_prompt" \

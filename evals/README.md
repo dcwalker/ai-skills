@@ -380,7 +380,7 @@ loudly rather than quietly reach a live account. Before this was enforced,
 developer's real Trello credentials were exported by their shell profile, and
 a trial created three real cards on a real personal board.
 
-## MCP stub servers (Trello, Gmail, Jira, Slack)
+## MCP stub servers (Trello, Gmail, Jira, Slack, Calendar, Claude Docs, Contacts)
 
 `triage` and `writing` depend on real MCP tools (Trello, Gmail, Jira, and
 Slack) rather than a CLI on `PATH`, so they need a different mocking seam
@@ -399,6 +399,13 @@ REST v2 docs rather than a live response; see its docstring),
 calls, and `calendar_stub.py` the Google Calendar connector's read tools
 (event layouts copied from a live test event; attendee and calendar-list
 layouts follow the schema and are flagged unverified in its docstring),
+`docs_stub.py` the Claude Docs connector's doc and comment tools (doc
+birth, block inserts and replaces, tab reads, and comments, with responses
+shaped on a cloud routine's live calls; replies, resolves, and guards follow
+the connector's guide and are flagged unverified), and `contacts_stub.py`
+the Google Contacts read tools `search_contacts` and `get_contact` (text
+responses whose layout, apart from the documented group line, is flagged
+unverified),
 each backed by an in-memory fake "database" seeded from a fixture
 file. Tool names and parameter schemas were confirmed against
 live connected MCP servers, not guessed from prose, so a skill's real tool
@@ -419,7 +426,10 @@ supports and where it diverges from the live server.
 resolution (against an optional top-level `"me"` address in the fixture),
 which is what a corpus search for "mail I wrote to this person" needs; a
 fixture that declares no `"me"` makes `from:me`/`to:me` match nothing rather
-than everything.
+than everything. For `sift-email`, `gmail_stub.py` also serves the
+official connector's `label_thread` and `unlabel_thread`, matches `label:`
+by display name as well as id, and answers `newer_than:`/`older_than:`
+against the fixture's optional `stub_now`.
 `gmail_stub.py` returns a `viewUrl` on each thread from `search_threads`
 and `get_thread`, and on each message from `get_thread`. The field name
 comes from the live Gmail MCP's tool descriptions, which say both tools
@@ -475,7 +485,8 @@ waiting three seconds for stdin that is not coming.
 
 `run-mcp-eval.sh` wires every `<service>-mcp-state.json` a fixture provides
 (`trello-mcp-state.json`, `gmail-mcp-state.json`, `atlassian-mcp-state.json`,
-`slack-mcp-state.json`, `calendar-mcp-state.json`)
+`slack-mcp-state.json`, `calendar-mcp-state.json`, `docs-mcp-state.json`,
+`contacts-mcp-state.json`)
 into a scratch
 `mcp-config.json` naming those stubs as the *only* MCP servers, so no real
 third-party server is reachable during a trial. A fixture that provides
@@ -658,7 +669,7 @@ draw out and how to reveal them, such as an aside to drop only in passing or a
 correction to make once the skill assumes the wrong frame. A later question
 that pursues one of those facts is then evidence the skill listened.
 
-Five things the shared driver does that a hand-run trial must do for itself:
+Eight things the shared driver does that a hand-run trial must do for itself:
 
 - It copies the skill under test into the trial workspace as a project skill
   (`.claude/skills/<name>/`). A trial subprocess otherwise sees only the
@@ -686,6 +697,18 @@ Five things the shared driver does that a hand-run trial must do for itself:
   `SKILL.md`, `references/`, and `scripts/` only. A name with no sibling
   `SKILL.md` behind it stops the batch. triage's own `run-trials.sh` does not
   read this key.
+- The same `enabledPlugins` setting turns off every other plugin the
+  developer has enabled in `~/.claude/settings.json` or
+  `settings.local.json`. The private `HOME` links the developer's plugins
+  directory and copies their settings, so without it a trial loaded
+  unrelated plugins alongside the staged skill.
+- Auto-memory is off in every trial (`CLAUDE_CODE_DISABLE_AUTO_MEMORY=1`),
+  as it already was in the preflight. With it on, a sift-email trial saved
+  links it should have reported into a memory file under its private `HOME`.
+- `WebFetch` is offered but left off `--allowedTools`, so under `dontAsk`
+  every call is denied. Unlike Bash it runs outside the sandbox, and trials
+  fetched real web pages with it. The attempted call still appears in
+  `tools.log`.
 - It passes an explicit `--allowedTools` allowlist instead of
   `--dangerously-skip-permissions`, which refuses to run as root and so rules
   out containers and CI. Each stub server is allowed wholesale, write tools
@@ -768,6 +791,11 @@ Five things the shared driver does that a hand-run trial must do for itself:
   how a trial starts with state already in place. A fixture can hand the
   trial its own prior cache, or somebody else's, and grade what the skill
   does with each.
+
+The model's clock is the machine's. A fixture's `stub_now` and its dates move
+to the run date in whole weeks, so they can sit up to six days and a few hours
+from what `date` or the model's own context says. Grade nothing that depends
+on the exact time a trial writes.
 
 ## Live sandbox cases
 

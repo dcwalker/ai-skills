@@ -1,0 +1,33 @@
+{
+  "anchor_date": "2026-10-10",
+  "contacts": {
+    "people/c201": {
+      "names": [
+        "Taylor Nguyen"
+      ],
+      "emails": [
+        "taylor.nguyen@riversideunited.example"
+      ],
+      "organizations": [
+        "Riverside United FC — U12 Assistant Coach"
+      ],
+      "groups": [
+        {
+          "id": "contactGroups/soccer",
+          "name": "Soccer"
+        }
+      ]
+    },
+    "people/c202": {
+      "names": [
+        "Sam Ortega"
+      ],
+      "emails": [
+        "sam@maplegrovepta.example"
+      ],
+      "organizations": [
+        "Maple Grove PTA — Auction Chair"
+      ]
+    }
+  }
+}

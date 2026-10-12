@@ -1,0 +1,126 @@
+{
+  "anchor_date": "2026-10-10",
+  "stub_now": "2026-10-10T15:00:00Z",
+  "me": "pat@example.com",
+  "labels": {
+    "INBOX": {
+      "id": "INBOX",
+      "name": "INBOX",
+      "type": "system"
+    },
+    "SENT": {
+      "id": "SENT",
+      "name": "SENT",
+      "type": "system"
+    },
+    "TRASH": {
+      "id": "TRASH",
+      "name": "TRASH",
+      "type": "system"
+    },
+    "SPAM": {
+      "id": "SPAM",
+      "name": "SPAM",
+      "type": "system"
+    },
+    "STARRED": {
+      "id": "STARRED",
+      "name": "STARRED",
+      "type": "system"
+    },
+    "IMPORTANT": {
+      "id": "IMPORTANT",
+      "name": "IMPORTANT",
+      "type": "system"
+    },
+    "UNREAD": {
+      "id": "UNREAD",
+      "name": "UNREAD",
+      "type": "system"
+    },
+    "Label_1": {
+      "id": "Label_1",
+      "name": "Soccer",
+      "type": "user"
+    },
+    "Label_2": {
+      "id": "Label_2",
+      "name": "Receipts",
+      "type": "user"
+    },
+    "Label_3": {
+      "id": "Label_3",
+      "name": "Newsletter",
+      "type": "user"
+    },
+    "Label_4": {
+      "id": "Label_4",
+      "name": "School",
+      "type": "user"
+    },
+    "Label_20": {
+      "id": "Label_20",
+      "name": "AI",
+      "type": "user"
+    },
+    "Label_21": {
+      "id": "Label_21",
+      "name": "AI/Important",
+      "type": "user"
+    },
+    "Label_22": {
+      "id": "Label_22",
+      "name": "AI/Low priority",
+      "type": "user"
+    },
+    "Label_23": {
+      "id": "Label_23",
+      "name": "AI/Junk",
+      "type": "user"
+    },
+    "Label_24": {
+      "id": "Label_24",
+      "name": "AI/Needs reply",
+      "type": "user"
+    },
+    "Label_25": {
+      "id": "Label_25",
+      "name": "AI/Sifted",
+      "type": "user"
+    },
+    "Label_26": {
+      "id": "Label_26",
+      "name": "AI/Wrong",
+      "type": "user"
+    }
+  },
+  "threads": {
+    "t-removed": {
+      "id": "t-removed",
+      "subject": "Your box is on its way",
+      "from": "hello@mealkit.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-08T13:00:00Z",
+      "snippet": "Your Thursday box ships tomorrow. Tracking will follow.",
+      "labelIds": [
+        "INBOX",
+        "Label_25"
+      ],
+      "messages": [
+        {
+          "id": "t-removed-m1",
+          "from": "hello@mealkit.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-08T13:00:00Z",
+          "snippet": "Your Thursday box ships tomorrow. Tracking will follow.",
+          "body": "Your Thursday box ships tomorrow. Tracking will follow."
+        }
+      ]
+    }
+  },
+  "drafts": {}
+}
