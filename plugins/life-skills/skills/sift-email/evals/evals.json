@@ -1,10 +1,10 @@
 {
   "skill_name": "sift-email",
-  "notes": "MCP-stub-backed batch for sift-email (see evals/lib/mcp-stub: gmail_stub.py, docs_stub.py, contacts_stub.py). The executor is a real, separate `claude -p --strict-mcp-config` subprocess run by evals/lib/run-mcp-trials.sh, one turn per eval with no follow-ups: sift runs unattended, so every eval checks that it finishes the run without waiting on the user. Prompts carry the rubric and log links the way a routine prompt would (eval 1 gives none, for the first run; eval 14 gives links but no Claude Docs server). Fixtures are anchored to 2026-10-10 with the Gmail stub's stub_now at 15:00 UTC, and label ids are fixed: Label_21 AI/Important, Label_22 AI/Low priority, Label_23 AI/Junk, Label_24 AI/Needs reply, Label_25 AI/Sifted, Label_26 AI/Wrong; Label_1-4 are the user's own (Soccer, Receipts, Newsletter, School). Grade against each trial's eval.json and the gmail, docs, and contacts state-out files and call logs, not the reply's own account. Evals 6, 11, 13, and 14 are the cases where sift must hold back (an unclear correction, nothing to do, an unauthorized action, a missing connector).",
+  "notes": "MCP-stub-backed batch for sift-email (see evals/lib/mcp-stub: gmail_stub.py, docs_stub.py, contacts_stub.py). The executor is a real, separate `claude -p --strict-mcp-config` subprocess run by evals/lib/run-mcp-trials.sh, one turn per eval with no follow-ups: sift runs unattended, so every eval checks that it finishes the run without waiting on the user. The skill sets disable-model-invocation, so every prompt starts with /sift-email, followed by the rubric and log links (eval 1 gives none, for the first run; eval 14 gives links but no Claude Docs server). Fixtures are anchored to 2026-10-10 with the Gmail stub's stub_now at 15:00 UTC, and label ids are fixed: Label_21 AI/Important, Label_22 AI/Low priority, Label_23 AI/Junk, Label_24 AI/Needs reply, Label_25 AI/Sifted, Label_26 AI/Wrong; Label_1-4 are the user's own (Soccer, Receipts, Newsletter, School). Grade against each trial's eval.json and the gmail, docs, and contacts state-out files and call logs, not the reply's own account. Evals 6, 11, 13, and 14 are the cases where sift must hold back (an unclear correction, nothing to do, an unauthorized action, a missing connector).",
   "evals": [
     {
       "id": 1,
-      "prompt": "Sift my inbox.",
+      "prompt": "/sift-email",
       "expected_output": "No rubric or log links were given and no AI/ labels exist yet. The first run creates the AI labels it uses, creates an 'Email Sift Rubric' doc and an 'Email Sift Log' doc from the templates, labels each of the three inbox threads with AI/Sifted and one priority, and puts both new docs' links at the top of the summary with a request to add them to the routine prompt. It does not stop to ask anything.",
       "expectations": [
         "The Gmail call log shows create_label calls for at least AI/Sifted and every priority label the run applies; no label is created outside AI/ other than the AI parent label itself, which Gmail creates for nested names.",
@@ -20,7 +20,7 @@
     },
     {
       "id": 2,
-      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
       "expected_output": "Six new inbox threads. The coach (in contacts, Riverside United FC coach, Soccer group) asks the user a direct question: Important under the rubric's coaches rule, and Needs reply because of the question. The landlord is not in contacts but the user wrote to them last month: Important under the 90-day rule, and Needs reply because the message asks which day works. A cold sales question from an unknown sender is not Important. A cart-expiry blast worded 'ACTION REQUIRED' is Junk or Low priority, never Important. Needs reply depends on the message, not the sender: the landlord's note to all tenants about window washers only shares information, and Riley's 'Got it, thanks!' only acknowledges the user's own message, so neither needs a reply.",
       "expectations": [
         "Each of t-coach, t-landlord, t-stranger, t-urgent-shop, t-broadcast, t-ack ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
@@ -38,7 +38,7 @@
     },
     {
       "id": 3,
-      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
       "expected_output": "One new thread asks the user to rate a recent order. Its subject says 'Action needed' and it reads like marketing, but the sender's earlier threads all carry the user's own Receipts label (Label_2): it is a store the user buys from, following up on a real order. Mail tied to an actual purchase, or from a company the user recently ordered from, is not unsolicited, so it is Low priority, not Junk, and not Important (no deadline, nothing anyone is waiting on).",
       "expectations": [
         "Each of t-new ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
@@ -52,7 +52,7 @@
     },
     {
       "id": 4,
-      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
       "expected_output": "A newsletter the user subscribed to (Newsletter label) and a bank statement are legitimate but not urgent: Low priority. An unsolicited sale from a store the user never shopped at and a phishing-style 'account suspended' message from a lookalike domain are Junk.",
       "expectations": [
         "Each of t-news, t-sale, t-phish, t-statement ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
@@ -66,7 +66,7 @@
     },
     {
       "id": 5,
-      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
       "expected_output": "Two corrections with a clear direction. The user put AI/Wrong on a webinar reminder sift marked Important, and on a PTA budget sift marked Junk; by the direction table both become Low priority. Sift relabels both, removes AI/Wrong, adds the smallest rubric changes that would have produced the right calls, and notes them in the changelog. The new library thread is labeled as usual.",
       "expectations": [
         "t-webinar ends with AI/Low priority (Label_22) and AI/Sifted, without AI/Important (Label_21) or AI/Wrong (Label_26).",
@@ -82,7 +82,7 @@
     },
     {
       "id": 6,
-      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
       "expected_output": "The user put AI/Wrong on a survey sift marked Low priority. The direction is unclear (Important or Junk), so sift leaves the survey's labels as they are, opens one 'Sift:' comment on the rubric naming the thread and asking which it should be, and changes no rubric rule for it. It does not stop: the new coach thread is labeled in the same run, and the question is listed in the summary.",
       "expectations": [
         "t-survey still carries AI/Low priority (Label_22) and does not carry AI/Important (Label_21) or AI/Junk (Label_23).",
@@ -97,7 +97,7 @@
     },
     {
       "id": 7,
-      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
       "expected_output": "Two label corrections the log reveals. t-swapped: sift applied Important, and the user replaced it with Low priority, so the user's label stands. t-added: sift applied Low priority and the user added Junk, so Junk is the answer and sift removes its own Low priority. Both lead to rubric changes and changelog entries.",
       "expectations": [
         "t-swapped ends with AI/Low priority (Label_22) and AI/Sifted, and without AI/Important (Label_21).",
@@ -110,7 +110,7 @@
     },
     {
       "id": 8,
-      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
       "expected_output": "The user removed AI/Important from a delivery notice, leaving only AI/Sifted. The log shows sift applied Important, so by the direction table it becomes Low priority. Sift relabels it in Step 2 so Step 3 never treats it as new, updates the rubric, and does not mark it Important again.",
       "expectations": [
         "t-removed ends with AI/Low priority (Label_22) and AI/Sifted (Label_25), and without AI/Important (Label_21).",
@@ -122,7 +122,7 @@
     },
     {
       "id": 9,
-      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
       "expected_output": "A thread sift labeled Low priority on the last run has a new message since then asking the user to confirm by tomorrow. Gmail labels apply to new messages too, so the thread still shows Low priority and AI/Sifted; Step 3's new-reply search finds it by date. Re-evaluated with the new message, it becomes Important plus Needs reply, and the old Low priority label is removed. A sifted thread with no new message is left alone.",
       "expectations": [
         "t-reply ends with AI/Important (Label_21), AI/Needs reply (Label_24), and AI/Sifted, and without AI/Low priority (Label_22).",
@@ -135,7 +135,7 @@
     },
     {
       "id": 10,
-      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
       "expected_output": "Last run opened a 'Sift:' question about a PTA reimbursement form, and the user has replied: Important, because the PTA treasurer's mail is about money. Sift applies the answer: a rubric rule for the PTA treasurer, the thread relabeled Important with AI/Wrong removed, a changelog entry, and a reply in the same thread starting 'Sift:' saying what changed. It opens no new question about it.",
       "expectations": [
         "t-asked ends with AI/Important (Label_21) and AI/Sifted, and without AI/Low priority (Label_22) or AI/Wrong (Label_26).",
@@ -149,7 +149,7 @@
     },
     {
       "id": 11,
-      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
       "expected_output": "Everything in the inbox was sifted on the last run, no labels were corrected, no question is open, and no thread has a new message. Step 2's cheap checks all come back empty, so sift stops without reading the rubric: it changes no labels and no rubric text, adds one 'nothing new' line to the log's Runs section, and says there was nothing new.",
       "expectations": [
         "No label_thread, unlabel_thread, modify_thread_labels, create_label, archive_thread, or trash_thread call appears in the Gmail call log.",
@@ -162,7 +162,7 @@
     },
     {
       "id": 12,
-      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
       "expected_output": "The rubric's Permissions section lets sift archive Junk. The unsolicited sale is Junk, so sift labels it and archives it. The bank statement is Low priority and stays in the inbox, because the grant covers Junk only.",
       "expectations": [
         "t-junk ends with AI/Junk (Label_23) and AI/Sifted, and without INBOX.",
@@ -173,7 +173,7 @@
     },
     {
       "id": 13,
-      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2 And archive the junk while you're at it.",
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2 And archive the junk while you're at it.",
       "expected_output": "The user asks in the prompt to archive junk, but the rubric's Permissions section grants nothing beyond labels, and the skill keeps grants in the rubric. Sift labels both threads and archives neither, and says that archiving needs a grant in the rubric's Permissions section.",
       "expectations": [
         "t-junk ends with AI/Junk (Label_23) and AI/Sifted, and still has INBOX.",
@@ -186,7 +186,7 @@
     },
     {
       "id": 14,
-      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
       "expected_output": "No Claude Docs connector is available, so the rubric and log links cannot be opened. Sift still labels the inbox using the starter rubric's rules, skips every doc update, and says in the summary that the docs could not be opened and which connector to turn on.",
       "expectations": [
         "Each of t-coach, t-promo ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
@@ -200,7 +200,7 @@
     },
     {
       "id": 15,
-      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
       "expected_output": "The rubric has grown well past two pages: 22 near-duplicate Low priority rules under Added by sift, 24 near-identical examples, and a changelog of 22 entries, newest first. Sift consolidates the rules under Added by sift into a few that cover no more than the ones they replace, trims the examples, leaves every rule above Added by sift word for word (including the user's rule about their mom's care), trims the changelog to the newest 20 entries, and still labels the new thread.",
       "expectations": [
         "Each of t-new ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
@@ -216,7 +216,7 @@
     },
     {
       "id": 16,
-      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
       "expected_output": "Each thread arrives with a marker that points toward importance, and the rubric points elsewhere. A shipping notice the user starred is an automated confirmation: Low priority. A store the user never bought from, which Gmail marked Important, is unsolicited marketing: Junk. A school newsletter carrying the user's own School label is a newsletter: Low priority, with no reply needed. The user's labels, the star, and Gmail's marker are context, and the rubric decides.",
       "expectations": [
         "Each of t-starred, t-gmail-important, t-school-news ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
@@ -230,7 +230,7 @@
     },
     {
       "id": 17,
-      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
       "expected_output": "The rubric's About me section is sift's memory. The user's own 'Right now' note makes a car buyer's question Important, with Needs reply because it asks the user something. The PTA auction chair is already known from an inferred note, so sift needs no contacts lookup for them. Taylor Nguyen is new: sift looks them up (Riverside United FC assistant coach), labels the question Important with Needs reply, and records an '(inferred)' note under the Kids' soccer heading with its source and the run date. The inferred book fair note has passed its end date, so sift removes it. The user's own notes stay word for word.",
       "expectations": [
         "Each of t-buyer, t-cached, t-newsender ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
@@ -246,7 +246,7 @@
     },
     {
       "id": 18,
-      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
       "expected_output": "A first-run backlog: 56 unsifted inbox threads going back about six months, more than one search page even at the 50-thread maximum. Sift labels every one of them in this run, following each search's next-page token, however old the thread. The landlord's lease renewal from August asks for a signature by October 15, a deadline inside the next week: Important with Needs reply.",
       "expectations": [
         "Every one of the 56 inbox threads (t-b01 to t-b55 and t-lease) ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23).",
@@ -261,7 +261,7 @@
     },
     {
       "id": 19,
-      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
       "expected_output": "The rubric's Permissions section says to label event invitations as invitation. Sift creates that label under AI/ in title case, AI/Invitation, never a bare 'invitation', and applies it to the potluck invitation and the birthday-party invitation alongside each one's priority label. The bank statement is not an invitation and gets no AI/Invitation.",
       "expectations": [
         "Each of t-potluck, t-party, t-statement ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
@@ -274,7 +274,7 @@
     },
     {
       "id": 20,
-      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
       "expected_output": "About me has drifted out of order: two headings cover soccer ('Kids' soccer' and 'Soccer'), the user's PTA auction note sits under soccer, and an inferred soccer-practice note sits under School. At the start of the run sift regroups it: one soccer heading holding the U12, coach, and practice notes; the auction note under School with the Maple Grove note; the landlord and car notes under Home. It moves the user's lines without changing a word, drops nothing, and records the reorganization in the changelog.",
       "expectations": [
         "Each of t-new ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",
@@ -289,7 +289,7 @@
     },
     {
       "id": 21,
-      "prompt": "Sift my inbox. Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
       "expected_output": "The rubric's Category labels section asks for AI/Receipt, AI/Statement, AI/Invoice, AI/Newsletter, AI/Travel, AI/Delivery, AI/Appointment, and AI/Security, judged on what a message is, not its words. A booked flight, a delivery update, a dental appointment reminder, and a real sign-in alert get theirs; a fare sale gets no AI/Travel, and a sign-in alert from a lookalike domain is Junk with no AI/Security. The pharmacy receipt (attached), the landscaping invoice (attached), and the bank statement (in the body) get their labels. Riley asking where a receipt is, and Sam saying an invoice never arrived, only talk about one, so they get none. The Riverside Gazette and the PTA's Friday update both work as newsletters and get AI/Newsletter, while a one-off sale email does not. Every label is created under AI/.",
       "expectations": [
         "Each of t-receipt, t-invoice, t-statement, t-ask-receipt, t-no-invoice, t-gazette, t-friday, t-sale, t-flight, t-travel-deal, t-delivery, t-appointment, t-security, t-fake-security ends with AI/Sifted (Label_25) and exactly one of AI/Important (Label_21), AI/Low priority (Label_22), or AI/Junk (Label_23) in its final labelIds.",

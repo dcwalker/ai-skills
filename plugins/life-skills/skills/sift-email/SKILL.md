@@ -1,6 +1,7 @@
 ---
 name: sift-email
-description: "Bulk-label new Gmail by importance in one unattended pass, guided by a living rubric in Claude Docs that learns from the user's corrections. No per-item review, and it never stops to ask, so it can run as a scheduled routine. Use whenever the user asks to sift, sort, or label new mail, or wants to know what's important without going through it themselves: \"sift my email\", \"sift my inbox\", \"run sift\", \"label my new mail\", \"what's important in my inbox\", \"flag anything important since this morning\", \"check my corrections\". For interactive, one-by-one processing of emails, cards, or tickets, use triage instead."
+description: "Bulk-label new Gmail by importance in one unattended pass, guided by a living rubric in Claude Docs that learns from the user's corrections. No per-item review, and it never stops to ask, so it can run as a scheduled routine. It runs only when called directly, with /sift-email or by a routine that reads this file, never on its own. For interactive, one-by-one processing of emails, cards, or tickets, use triage instead."
+disable-model-invocation: true
 metadata:
   category: life-skills
 ---
@@ -21,7 +22,11 @@ where the user will see it (see [Never block](#never-block)).
 Wherever sift writes, in the log, the rubric, a comment, or its reply, it
 refers to the user only by name or as "you", never with a pronoun ("they"
 included) and never as "the user" or "me": "asks Pat to confirm whether Pat can run the table", or "asks you
-to confirm".
+to confirm". That holds for first person too. The rubric's own text speaks as
+the user ("my definition of what matters"), but a line sift writes never does,
+even beside lines that do: no "I", "me", or "my" for the user in a rule, an
+example, a log line, or a reason. Write "Pat doesn't want price-increase
+notices", not "I don't want these".
 
 Sessions have no memory of each other. Everything that carries forward lives in
 two places, and this skill reads and writes both on every run:
@@ -97,8 +102,9 @@ how to edit blocks and comment, rather than guessing the call shapes.
 
 Unless Step 2 ends the run, read the whole rubric before Step 3. It is the
 user's own definition of importance, so where
-it disagrees with your instincts, follow the rubric. The rubric's header names
-the user's timezone; use it for every time sift writes.
+it disagrees with your instincts, follow the rubric. The rubric's Timezone line
+names the user's timezone, and every date and time sift writes is the run's
+date and time in that timezone (Step 2 says how to read it).
 
 Everything above the rubric's **Added by sift** section is the user's: the
 how-to, the label key, the About me notes, and the user's rules. Sift never
@@ -118,7 +124,19 @@ rubric. A first run, with no doc links given, always has work: skip to Step 3.
 
 From the log, read only the newest run heading, for the last run's date and
 time, and from the rubric only its Timezone line (search the doc for it rather
-than reading it whole). Then run each of these checks once, using label IDs. Each needs only a
+than reading it whole).
+
+Then read the system clock once, in that timezone (for example,
+`TZ=<the Timezone line's zone> date '+%Y-%m-%d %H:%M'`). That is the run's date
+and time, and every date or time sift writes this run uses it: the log heading
+and lines, the "nothing new" line, changelog entries, About me dates, and the
+check for whether a note's end date has passed. Never use the machine's own
+local date, the date your environment reports, or a message's date: near
+midnight they fall on a different day than the user's. A first run, which
+skips this step, reads the clock the same way in the starter rubric's
+timezone.
+
+Then run each of these checks once, using label IDs. Each needs only a
 single search or query, and the first result answers it:
 
 - An inbox thread sift has not evaluated: `in:inbox -label:<AI/Sifted id>`.
@@ -135,7 +153,7 @@ single search or query, and the first result answers it:
 If every check comes back empty, the run has nothing to do. Don't read the rest
 of the rubric or tidy it. Add one line to the log's Runs section, "<date> <time>:
 nothing new", or, when the newest run entry is already an empty run from
-today, update its time instead. Say "Nothing new" in chat, and stop.
+the run's date, update its time instead. Say "Nothing new" in chat, and stop.
 
 A swap, where the user replaced sift's label with another priority label,
 leaves nothing these checks find. Step 4 catches it on the next run that has
@@ -223,8 +241,8 @@ If a correction is genuinely ambiguous, don't guess and don't stop. Open it
 as a question, and leave the rubric alone for that item.
 
 After handling a correction, remove `AI/Wrong` from the thread and note the
-change in the rubric's changelog with the run's date (today, not the date of
-the mail or the answer that prompted it). The changelog records rubric
+change in the rubric's changelog with the run's date (from Step 2, not the
+date of the mail or the answer that prompted it). The changelog records rubric
 changes only; an opened question goes in the run summary, not the changelog.
 
 ## Step 5: Gather new mail
@@ -327,9 +345,8 @@ the summary under that heading (Step 8) starts with both docs' links.
 
 `<time> | <thread id> | <sender> | <subject> | <labels applied> | <one-sentence reason>`
 
-The time is when the run started, read from the system clock (for example,
-with `date`) and converted to the rubric's timezone. Never use a message's
-timestamp or a made-up time. The thread id is what Step 4 uses to
+The date and time are the run's, read from the clock in Step 2. Never use a
+message's timestamp or a made-up time. The thread id is what Step 4 uses to
 tell which labels sift applied. The reason is how the user audits a call
 later, so make it specific: "Coach asking for carpool volunteers by Friday"
 beats "Seems important."
@@ -402,7 +419,8 @@ at the start of every run.
   about, a sale they are running), add one line under the topic it belongs
   to, next to the notes it most relates to (the same person, team, or event)
   rather than at the end, creating the heading when none fits:
-  `(inferred) <fact> | <source> | <date learned>`, for example
+  `(inferred) <fact> | <source> | <date learned>`, the date learned being the
+  run's date from Step 2, for example
   `(inferred) jordan.lee@riversideunited.example coaches the U12 team | Contacts | 2026-10-10`.
   A fact with an end date says so ("until November 1").
 - **Edit only `(inferred)` lines.** Every other line is the user's. When the
@@ -431,5 +449,6 @@ changelog keeps the last 20 entries, this run's included, newest first.
 ## Running it as a routine
 
 Sift is meant to run on a schedule. For the setup a Claude Code cloud routine
-needs (connectors, the doc links in its prompt, the plugin install, and the
-schedule), see `references/running-as-a-routine.md`.
+needs (connectors, the repository checkout it reads this skill from, the doc
+links in its prompt, and the schedule), see
+`references/running-as-a-routine.md`.
