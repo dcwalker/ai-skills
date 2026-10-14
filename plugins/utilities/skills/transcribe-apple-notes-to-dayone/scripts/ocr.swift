@@ -33,7 +33,8 @@ func recognize(_ image: CGImage) throws -> [String] {
 
 // A row is blank when every pixel is near white once drawn onto white.
 func blankRows(_ image: CGImage) -> [Bool] {
-    let width = image.width, height = image.height
+    let width = image.width
+    let height = image.height
     var pixels = [UInt8](repeating: 255, count: width * height * 4)
     let context = CGContext(data: &pixels, width: width, height: height, bitsPerComponent: 8,
                             bytesPerRow: width * 4, space: CGColorSpaceCreateDeviceRGB(),
@@ -54,7 +55,8 @@ func cuts(_ image: CGImage) -> [Int] {
     let height = image.height
     if height <= maxHeight { return [0, height] }
     let blank = blankRows(image)
-    var result = [0], y = 0
+    var result = [0]
+    var y = 0
     while y + maxHeight < height {
         let floor = y + maxHeight * 3 / 5
         var cut = y + maxHeight
