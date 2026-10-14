@@ -18,8 +18,10 @@ import os
 import re
 import struct
 import sys
-import tempfile
 import zlib
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from safe_paths import contained_path
 
 
 def read_stream(data, start):
@@ -91,24 +93,6 @@ def rgb_row(pixels, alpha, first_pixel, width, n):
         return row
     a = alpha[first_pixel : first_pixel + width]
     return bytes(255 - ((255 - row[i]) * a[i // 3]) // 255 for i in range(len(row)))
-
-
-def allowed_roots():
-    """Where this script may read or write: the user's home and $TMPDIR."""
-    roots = {os.path.expanduser("~"), tempfile.gettempdir()}
-    return sorted({os.path.realpath(root) for root in roots if os.path.isdir(root)})
-
-
-def contained_path(path, name):
-    """Resolve path, refusing anything outside the allowed roots."""
-    resolved = os.path.realpath(os.path.expanduser(path))
-    for root in allowed_roots():
-        if resolved == root or resolved.startswith(root + os.sep):
-            return resolved
-    sys.exit(
-        f"{name} must be inside your home directory or {tempfile.gettempdir()}; "
-        f"got {path!r}. Create working folders with mktemp -d."
-    )
 
 
 def main():

@@ -24,8 +24,10 @@ import re
 import struct
 import subprocess
 import sys
-import tempfile
 from datetime import datetime
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from safe_paths import contained_path
 
 SCAN_JS = r"""
 function run(argv) {
@@ -85,24 +87,6 @@ def scan(args):
         )
     notes.sort(key=lambda n: n["created"], reverse=True)
     print(json.dumps(notes, indent=1, ensure_ascii=False))
-
-
-def allowed_roots():
-    """Where this script may write: the user's home and $TMPDIR."""
-    roots = {os.path.expanduser("~"), tempfile.gettempdir()}
-    return sorted({os.path.realpath(root) for root in roots if os.path.isdir(root)})
-
-
-def contained_path(path, name):
-    """Resolve path, refusing anything outside the allowed roots."""
-    resolved = os.path.realpath(os.path.expanduser(path))
-    for root in allowed_roots():
-        if resolved == root or resolved.startswith(root + os.sep):
-            return resolved
-    sys.exit(
-        f"{name} must be inside your home directory or {tempfile.gettempdir()}; "
-        f"got {path!r}. Create working folders with mktemp -d."
-    )
 
 
 def extract(args):
