@@ -100,7 +100,9 @@ def scan(args):
         note["handwritten"] = note["images"] > 0 and note["typed_chars"] <= len(
             note["name"]
         )
-    notes.sort(key=lambda n: n["created"], reverse=True)
+    # Sort by instant: local ISO strings with different UTC offsets (either
+    # side of a daylight saving change) do not sort chronologically as text.
+    notes.sort(key=lambda n: datetime.fromisoformat(n["created"]), reverse=True)
     print(json.dumps(notes, indent=1, ensure_ascii=False))
 
 
