@@ -6,10 +6,11 @@ Subcommands:
   verify  Report what Day One stored for entries, to confirm a write landed.
 
 The dayone CLI turns an entry body into Day One's rich text by parsing it as
-Markdown, which joins plain newlines into one paragraph and turns lines like
-"1. Item" or "- item" into lists. write keeps the handwritten layout by
-ending each line with a Markdown hard break (a trailing backslash) and
-escaping characters that would start a list, heading, or quote.
+Markdown, which joins plain newlines into one paragraph, turns lines like
+"1. Item" or "- item" into lists, and reads characters like * and _ as
+formatting. write keeps the handwritten text literal: each line is trimmed,
+blank lines are dropped, Markdown punctuation is backslash-escaped, and every
+line but the last ends with a Markdown hard break (a trailing backslash).
 """
 
 import argparse
@@ -19,20 +20,25 @@ import subprocess
 import sys
 from datetime import datetime
 
-MARKDOWN_LINE_START = re.compile(r"^(\s*)(\d+)([.)])(\s)|^(\s*)([-+*#>])(\s|$)")
+# ASCII punctuation Markdown can read as formatting, links, HTML, or entities
+# anywhere in a line. Escaping it keeps the character literal.
+INLINE_SPECIAL = re.compile(r"([\\`*_\[\]<>~|!&=])")
+# What else can change a line's meaning when it comes first: headings,
+# quotes, list bullets, setext underlines (--- or ===), and numbered lists.
+LINE_START_SPECIAL = re.compile(r"^([#>+\-])|^(\d+)([.)])")
 
 
 def escape_line(line):
-    def repl(m):
-        if m.group(2) is not None:
-            return f"{m.group(1)}{m.group(2)}\\{m.group(3)}{m.group(4)}"
-        return f"{m.group(5)}\\{m.group(6)}{m.group(7)}"
-
-    return MARKDOWN_LINE_START.sub(repl, line, count=1)
+    line = INLINE_SPECIAL.sub(r"\\\1", line.strip())
+    return LINE_START_SPECIAL.sub(
+        lambda m: f"\\{m.group(1)}" if m.group(1) else f"{m.group(2)}\\{m.group(3)}",
+        line,
+        count=1,
+    )
 
 
 def entry_body(text, image_count):
-    lines = [escape_line(line.rstrip()) for line in text.strip().split("\n")]
+    lines = [escape_line(line) for line in text.split("\n") if line.strip()]
     body = "\\\n".join(lines)
     placeholders = "\n\n".join("![](dayone-moment://)" for _ in range(image_count))
     return body + ("\n\n" + placeholders if placeholders else "")

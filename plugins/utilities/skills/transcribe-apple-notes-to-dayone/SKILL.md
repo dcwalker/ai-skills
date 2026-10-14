@@ -148,7 +148,9 @@ python3 scripts/dayone_entry.py verify --journal-id <id> \
 ```
 
 An entry is good when its date matches the note, `images` equals the images
-attached, `line_breaks` is one less than the transcription's line count, and
+attached, `line_breaks` is one less than the transcription's count of
+non-blank lines (`write` drops blank lines and escapes Markdown punctuation,
+so the text shows exactly as transcribed), and
 `outbox_pending` is 0 after the sync. Investigate anything else before
 moving on.
 
