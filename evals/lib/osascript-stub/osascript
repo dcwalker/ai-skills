@@ -1,0 +1,191 @@
+#!/usr/bin/env python3
+"""Fail-closed fake `osascript` that stands in for Apple Notes in skill evals.
+
+The real osascript drives the developer's own Notes app, so a trial that
+reads, moves, or deletes notes would touch real notes. This stub never runs
+the real binary. It answers the three scripts transcribe-apple-notes-to-dayone's
+notes.py sends, recognized by their text, from a JSON state file:
+
+  folders (-l JavaScript, maps accounts() to folders()) -> accounts and folders
+  scan  (-l JavaScript, uses Notes.accounts.byName)  -> JSON note summaries
+  body  ("return body of note id")                   -> the note's HTML body
+  move  ("move note id ... to folder")               -> moves the note
+
+Anything else -- another script, `-e` snippets written ad hoc, a different
+language -- fails with "osascript-stub: unsupported script", logged with its
+full text, so a fixture gap or an off-script approach is visible to the grader.
+
+Environment (set by run-eval.sh / run-mcp-eval.sh from notes-fixture.json):
+  NOTES_STUB_STATE    Mutable state file, seeded from the fixture; moves land here.
+  NOTES_STUB_IMAGES   Directory the fixture's image paths are relative to.
+  NOTES_STUB_LOG      One JSON line per invocation: argv and the action taken.
+
+State format:
+  {"accounts": {"<account>": {"folders": {"<folder>": [<note>, ...]}}}}
+  <note> = {"id": "x-coredata://.../ICNote/p101", "name": "...",
+            "created": "2026-03-02T15:15:00Z",
+            "images": ["p101.png", ...],     # inline drawings, in order
+            "typed_text": "..."}             # optional typed text
+"""
+
+import base64
+import json
+import os
+import sys
+
+
+def fail(message, code=1):
+    print(message, file=sys.stderr)
+    sys.exit(code)
+
+
+def log(entry):
+    path = os.environ.get("NOTES_STUB_LOG")
+    if path:
+        with open(path, "a") as f:
+            f.write(json.dumps(entry) + "\n")
+
+
+def load_state():
+    path = os.environ.get("NOTES_STUB_STATE")
+    if not path or not os.path.isfile(path):
+        fail(
+            "osascript-stub: NOTES_STUB_STATE is not set; this trial has no Notes fixture"
+        )
+    with open(path) as f:
+        return path, json.load(f)
+
+
+def save_state(path, state):
+    with open(path, "w") as f:
+        json.dump(state, f, indent=1)
+
+
+def parse_args(argv):
+    """Return (language, script, script_args) from an osascript argv."""
+    language, scripts, rest = "AppleScript", [], []
+    i = 0
+    while i < len(argv):
+        if argv[i] == "-l" and i + 1 < len(argv):
+            language = argv[i + 1]
+            i += 2
+        elif argv[i] == "-e" and i + 1 < len(argv):
+            scripts.append(argv[i + 1])
+            i += 2
+        else:
+            rest = argv[i:]
+            break
+    return language, "\n".join(scripts), rest
+
+
+def find_note(state, note_id):
+    for account in state["accounts"].values():
+        for folder, notes in account["folders"].items():
+            for note in notes:
+                if note["id"] == note_id:
+                    return folder, notes, note
+    fail(f'execution error: Notes got an error: Can’t get note id "{note_id}". (-1728)')
+
+
+def note_body(note):
+    parts = [
+        f"<div>{line}</div>" for line in note.get("typed_text", "").split("\n") if line
+    ]
+    for image in note.get("images", []):
+        with open(
+            os.path.join(os.environ.get("NOTES_STUB_IMAGES", ""), image), "rb"
+        ) as f:
+            encoded = base64.b64encode(f.read()).decode()
+        parts.append(
+            f'<div><img style="max-width: 100%;" src="data:image/png;base64,{encoded}"></div>'
+        )
+    return "".join(parts)
+
+
+def folders(state):
+    return json.dumps(
+        [
+            {
+                "account": name,
+                "folders": [
+                    {"name": f, "notes": len(notes)}
+                    for f, notes in account["folders"].items()
+                ],
+            }
+            for name, account in state["accounts"].items()
+        ]
+    )
+
+
+def scan(state, args):
+    account_name, folder_name = args[0], args[1]
+    account = state["accounts"].get(account_name)
+    if account is None:
+        fail("execution error: Error: Can't get object. (-1728)")
+    if folder_name not in account["folders"]:
+        fail("execution error: Error: Can't get object. (-1728)")
+    notes = account["folders"][folder_name]
+    return json.dumps(
+        [
+            {
+                "id": n["id"],
+                "name": n["name"],
+                "created": n["created"],
+                "images": len(n.get("images", [])),
+                "typed_chars": len(n.get("typed_text", "")),
+            }
+            for n in notes
+        ]
+    )
+
+
+def move(path, state, args):
+    note_id, account_name, folder_name = args[0], args[1], args[2]
+    account = state["accounts"].get(account_name)
+    if account is None:
+        fail(
+            f'execution error: Notes got an error: Can’t get account "{account_name}". (-1728)'
+        )
+    _, source, note = find_note(state, note_id)
+    source.remove(note)
+    account["folders"].setdefault(folder_name, []).append(note)
+    save_state(path, state)
+    return ""
+
+
+def main():
+    language, script, args = parse_args(sys.argv[1:])
+    entry = {"argv": sys.argv[1:]}
+    if not os.environ.get("AI_SKILLS_EVAL"):
+        log(dict(entry, action="refused"))
+        fail(
+            "osascript-stub: AI_SKILLS_EVAL is not set; refusing outside an eval trial"
+        )
+    path, state = load_state()
+    if (
+        language == "JavaScript"
+        and "accounts().map" in script
+        and "folders()" in script
+    ):
+        action, output = "folders", folders(state)
+    elif (
+        language == "JavaScript"
+        and "Notes.accounts.byName" in script
+        and len(args) >= 2
+    ):
+        action, output = "scan", scan(state, args)
+    elif "return body of note id" in script and args:
+        action, output = "body", note_body(find_note(state, args[0])[2])
+    elif "move note id" in script and len(args) >= 3:
+        action, output = "move", move(path, state, args)
+    else:
+        log(dict(entry, action="unsupported"))
+        fail(
+            "osascript-stub: unsupported script; only the notes.py folders, scan, body, and move scripts are fixtured"
+        )
+    log(dict(entry, action=action))
+    print(output)
+
+
+if __name__ == "__main__":
+    main()

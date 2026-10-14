@@ -25,6 +25,9 @@ evals/
 │   │                     without contacting anything. See below.
 │   ├── trash-stub/trash  Fake `trash`; moves paths into the trial's own
 │   │                     $HOME/.Trash, never the real one. See below.
+│   ├── osascript-stub/osascript, dayone-stub/dayone, swift-stub/swift
+│   │                     Fake Apple Notes, Day One CLI, and handwriting
+│   │                     recognition, driven by fixture state. See below.
 │   ├── git-fixture.sh    Builds a scratch git repo from a fixture spec.
 │   ├── run-eval.sh       Per-eval harness: wires fixture + gh-stub + env vars,
 │   │                     and writes <run-dir>/in-trial.sh to run commands
@@ -54,6 +57,12 @@ plugins/<plugin>/skills/<skill>/evals/
         │                      sonar-project.properties file in repo/.
         ├── trello-fixture.json Optional: canned create-trello-task.sh
         │                      responses (organize-meeting-notes).
+        ├── notes-fixture.json  Optional: Apple Notes state for the
+        │                      osascript stub (transcribe-apple-notes-to-dayone).
+        ├── dayone-fixture.json Optional: Day One state for the dayone stub.
+        ├── ocr-fixture.json    Optional: canned recognition text for the
+        │                      swift stub, keyed by image SHA-256.
+        ├── images/            Images notes-fixture.json refers to.
         ├── home/              Optional: seeds the trial's private HOME,
         │                      for skills that keep state across sessions
         │                      or clean up under $HOME. run-eval.sh and
@@ -315,6 +324,41 @@ write `info.plist` files with `plutil` (tidy-workspace 16 and 17) need macOS.
 Pass a `$HOME` path to `in-trial.sh` as one quoted string, so the trial's
 shell expands it rather than the caller's.
 
+## The Notes, Day One, and OCR stubs
+
+`transcribe-apple-notes-to-dayone` drives Apple Notes through `osascript`,
+writes to Day One through the `dayone` CLI, and recognizes handwriting with
+`swift scripts/ocr.swift`. The first two act on the developer's own notes and
+journal (the CLI signs in with stored credentials, like `gh`), so all three
+are shadowed on `PATH` in every mode by fail-closed stubs that refuse when
+`AI_SKILLS_EVAL` or their fixture is missing and never exec the real binary.
+
+A fixture seeds them with three optional files, wired by
+`emit_notes_dayone_fixture_env` in `isolation-env.sh` for both harnesses:
+
+- `notes-fixture.json`: accounts, folders, and notes (name, creation time,
+  image files under the fixture's `images/`, optional typed text). The
+  `osascript` stub answers only the scan, body, and move scripts the skill's
+  `notes.py` sends; any other script fails as unsupported and is logged.
+- `dayone-fixture.json`: sign-in state, journals, entries, and the outbox.
+  The stub keeps the real CLI's local-first model (writes queue outbox items
+  that only `sync` clears) and turns a body into `richTextJSON` the way the
+  CLI's Markdown parser does for the cases that matter: plain newlines join
+  into a paragraph, trailing backslashes are line breaks, escapes are
+  removed, and unescaped list markers, headings, and emphasis are consumed.
+  Rewriting an entry that has attachments keeps its old rich text, as the
+  real CLI 0.21.1 does.
+- `ocr-fixture.json`: the text "recognized" for each image, keyed by the
+  image's SHA-256, including planted recognition errors for the skill to
+  correct against the image.
+
+The stubs write to copies of the first two fixtures in the run directory,
+`notes-state.json` and `dayone-state.json`, which are the final state a
+grader reads, and log each call to `notes-calls.log`, `dayone-calls.log`, and
+`ocr-calls.log`. Trials with any of these fixtures run with
+`TZ=America/Chicago`. The skill's `evals/build_fixtures.py` regenerates its
+fixtures, rendering the invented notes in a handwriting-style font.
+
 ## The Trello fixture hook
 
 `organize-meeting-notes`'s bundled `create-trello-task.sh` reads
@@ -352,6 +396,8 @@ preserve when adding a stub, a fixture hook, or a bundled script:
   server, so a real scan from a trial is never wanted.
 - `trash-stub` is also prepended in every mode, and refuses unless `$HOME` is
   a private trial home, so nothing reaches the real Trash.
+- `osascript-stub`, `dayone-stub`, and `swift-stub` are prepended in every
+  mode too, so no trial reaches the real Notes app or Day One account.
 
 The same preamble also neutralizes the host's git configuration
 (`GIT_CONFIG_GLOBAL`/`GIT_CONFIG_SYSTEM` and the `GIT_CONFIG_COUNT`/`KEY`/

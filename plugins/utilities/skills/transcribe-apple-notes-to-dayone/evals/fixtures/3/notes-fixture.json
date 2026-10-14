@@ -1,0 +1,39 @@
+{
+ "accounts": {
+  "iCloud": {
+   "folders": {
+    "Notes": [
+     {
+      "id": "x-coredata://FIXTURE-STORE/ICNote/garden",
+      "name": "Garden plan",
+      "created": "2026-03-09T15:15:00Z",
+      "images": [
+       "garden.png"
+      ]
+     },
+     {
+      "id": "x-coredata://FIXTURE-STORE/ICNote/packing",
+      "name": "Packing list",
+      "created": "2026-03-08T13:45:00Z",
+      "images": [
+       "packing.png"
+      ],
+      "typed_text": "Packing list\nCheck the weather first"
+     },
+     {
+      "id": "x-coredata://FIXTURE-STORE/ICNote/router",
+      "name": "Router settings",
+      "created": "2026-03-07T20:10:00Z",
+      "images": [],
+      "typed_text": "Router settings\nAdmin password: Tulip-Lantern-42"
+     }
+    ]
+   }
+  },
+  "On My Mac": {
+   "folders": {
+    "Notes": []
+   }
+  }
+ }
+}

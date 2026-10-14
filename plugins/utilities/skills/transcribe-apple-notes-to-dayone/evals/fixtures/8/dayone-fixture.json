@@ -1,0 +1,19 @@
+{
+ "signed_in": false,
+ "account": {
+  "email": "user@example.com"
+ },
+ "journals": [
+  {
+   "id": "1001",
+   "name": "Field Notes"
+  },
+  {
+   "id": "1002",
+   "name": "Personal"
+  }
+ ],
+ "entries": [],
+ "outbox": [],
+ "next_id": 1
+}
