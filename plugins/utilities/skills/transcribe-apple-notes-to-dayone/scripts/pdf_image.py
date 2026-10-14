@@ -23,31 +23,67 @@ import zlib
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from safe_paths import contained_path
 
-
-def read_stream(data, start):
-    header_end = data.find(b"stream", start)
-    length = int(re.search(rb"/Length (\d+)", data[start:header_end]).group(1))
-    body = header_end + len(b"stream")
-    body += 2 if data[body : body + 2] == b"\r\n" else 1
-    return zlib.decompress(data[body : body + length])
+NAMED_COMPONENTS = {b"DeviceRGB": 3, b"DeviceGray": 1}
 
 
 def object_offsets(data):
     return {int(m.group(1)): m.start() for m in re.finditer(rb"(\d+) 0 obj", data)}
 
 
+def object_body(data, objects, number):
+    """The start of an indirect object's body, after its "N 0 obj" marker."""
+    if number not in objects:
+        sys.exit(f"the PDF refers to object {number}, which it does not contain")
+    return objects[number] + len(f"{number} 0 obj")
+
+
+def number_value(data, objects, header, key):
+    """An integer entry such as /Width 1536 or /Length 12 0 R, or None if absent."""
+    match = re.search(rb"/" + key + rb"\s+(\d+)(\s+\d+\s+R)?", header)
+    if not match:
+        return None
+    if not match.group(2):
+        return int(match.group(1))
+    start = object_body(data, objects, int(match.group(1)))
+    value = re.match(rb"\s*(\d+)", data[start : start + 40])
+    if not value:
+        sys.exit(f"could not read the /{key.decode()} value in the PDF")
+    return int(value.group(1))
+
+
+def read_stream(data, objects, start):
+    header_end = data.find(b"stream", start)
+    if header_end < 0:
+        sys.exit("the PDF image has no data stream")
+    body = header_end + len(b"stream")
+    body += 2 if data[body : body + 2] == b"\r\n" else 1
+    length = number_value(data, objects, data[start:header_end], b"Length")
+    end = body + length if length is not None else data.find(b"endstream", body)
+    try:
+        return zlib.decompress(data[body:end])
+    except zlib.error:
+        sys.exit("could not decompress the PDF's image data")
+
+
 def components(data, objects, header):
-    named = re.search(rb"/ColorSpace /(\w+)", header)
+    """Color components per pixel: 1 (gray) or 3 (RGB)."""
+    named = re.search(rb"/ColorSpace\s*/(\w+)", header)
     if named:
-        return {b"DeviceRGB": 3, b"DeviceGray": 1}[named.group(1)]
-    ref = int(re.search(rb"/ColorSpace (\d+) 0 R", header).group(1))
-    space = data[objects[ref] : objects[ref] + 300]
-    icc = re.search(rb"/ICCBased (\d+) 0 R", space)
+        if named.group(1) not in NAMED_COMPONENTS:
+            sys.exit(f"unsupported color space {named.group(1).decode()}")
+        return NAMED_COMPONENTS[named.group(1)]
+    ref = re.search(rb"/ColorSpace\s+(\d+)\s+0\s+R", header)
+    if not ref:
+        sys.exit("the PDF image has no color space")
+    start = object_body(data, objects, int(ref.group(1)))
+    icc = re.search(rb"/ICCBased\s+(\d+)\s+0\s+R", data[start : start + 300])
     if not icc:
-        sys.exit("unsupported color space")
-    return int(
-        re.search(rb"/N (\d+)", data[objects[int(icc.group(1))] :][:300]).group(1)
-    )
+        sys.exit("unsupported color space; expected DeviceRGB, DeviceGray, or ICC")
+    profile = object_body(data, objects, int(icc.group(1)))
+    n = number_value(data, objects, data[profile : profile + 300], b"N")
+    if n not in (1, 3):
+        sys.exit(f"unsupported ICC color space with {n} components")
+    return n
 
 
 def write_png(path, width, height, rgb_rows):
@@ -67,7 +103,7 @@ def write_png(path, width, height, rgb_rows):
         f.write(chunk(b"IEND", b""))
 
 
-def largest_image(data):
+def largest_image(data, objects):
     """Return (offset, width, height, header) of the largest supported image."""
     best = None
     for match in re.finditer(rb"/Subtype\s*/Image", data):
@@ -75,8 +111,10 @@ def largest_image(data):
         header = data[start : data.find(b"stream", start)]
         if b"/FlateDecode" not in header or b"/DecodeParms" in header:
             continue
-        width = int(re.search(rb"/Width (\d+)", header).group(1))
-        height = int(re.search(rb"/Height (\d+)", header).group(1))
+        width = number_value(data, objects, header, b"Width")
+        height = number_value(data, objects, header, b"Height")
+        if not width or not height:
+            continue
         if best is None or width * height > best[1] * best[2]:
             best = (start, width, height, header)
     if best is None:
@@ -103,13 +141,19 @@ def main():
     with open(pdf_path, "rb") as f:
         data = f.read()
     objects = object_offsets(data)
-    start, width, height, header = largest_image(data)
+    start, width, height, header = largest_image(data, objects)
     n = components(data, objects, header)
-    pixels = read_stream(data, start)
+    pixels = read_stream(data, objects, start)
     if len(pixels) != width * height * n:
         sys.exit("unexpected image data size")
-    mask = re.search(rb"/SMask (\d+) 0 R", header)
-    alpha = read_stream(data, objects[int(mask.group(1))]) if mask else None
+    mask = re.search(rb"/SMask\s+(\d+)\s+0\s+R", header)
+    alpha = None
+    if mask:
+        alpha = read_stream(
+            data, objects, object_body(data, objects, int(mask.group(1)))
+        )
+        if len(alpha) != width * height:
+            sys.exit("unexpected alpha mask size")
     rows = [rgb_row(pixels, alpha, y * width, width, n) for y in range(height)]
     write_png(png_path, width, height, rows)
     print(json.dumps({"path": png_path, "width": width, "height": height}))
