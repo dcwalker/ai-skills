@@ -14,6 +14,7 @@ Personal Claude Code plugins and skills, distributed as a plugin marketplace.
 
 - **life-skills** — Personal life-organization skills: `conduct-interview`, `organize-meeting-notes`, `sift-email`, `triage`, `writing`.
 - **software-development** — Software development workflow skills: `analyze-logs`, `commit`, `create-branch`, `create-github-issue`, `fix-pr-checks`, `implement-feature`, `land-pr`, `pr`, `resolve-pr-comments`, `resolve-sonarqube-issues`, `review-code`, `review-readme`, `tidy-workspace`, `update-dependabot-bulk`.
+- **utilities** — General-purpose utility skills: `transcribe-apple-notes-to-dayone` (macOS only).
 
 ## Usage
 
@@ -44,6 +45,7 @@ Then install a plugin from it:
 ```text
 /plugin install life-skills@dcwalker-skills
 /plugin install software-development@dcwalker-skills
+/plugin install utilities@dcwalker-skills
 ```
 
 Run `/plugin` to browse installed and available plugins, or to update/remove one later.
@@ -72,10 +74,11 @@ Updating is therefore two stages, and the second is the one that matters:
 claude plugin marketplace update dcwalker-skills
 claude plugin update life-skills@dcwalker-skills
 claude plugin update software-development@dcwalker-skills
+claude plugin update utilities@dcwalker-skills
 ```
 
 The marketplace update is shared; each installed plugin then needs its own
-update. Updating one does not touch the other, so a skill added to
+update. Updating one does not touch the others, so a skill added to
 `software-development` stays missing until that second line runs.
 
 The equivalents live under `/plugin` in the app: update the marketplace, then
@@ -91,7 +94,7 @@ to:
 claude plugin list
 ```
 
-Matching versions across both plugins, at the commit you expect, means the
+Matching versions across all plugins, at the commit you expect, means the
 update worked and only a restart is missing. A plugin still showing the old
 commit was not updated — most likely its `plugin update` line was skipped, or
 the marketplace update failed first.
