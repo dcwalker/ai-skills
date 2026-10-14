@@ -65,37 +65,39 @@ def write(args):
     print(json.dumps(dayone(cmd, entry_body(text, len(args.image)))))
 
 
-def verify(args):
-    wanted, found, cursor = set(args.entry_id), {}, None
-    while wanted - set(found):
-        cmd = [
-            "list",
-            "entries",
-            "--journal-id",
-            args.journal_id,
-            "--limit",
-            "100",
-            "--fields",
-            "id,date,moments,richTextJSON",
-        ]
+def summarize_entry(item):
+    """What verify reports for one stored entry."""
+    rich = item.get("richTextJSON") or "{}"
+    contents = (json.loads(rich) if isinstance(rich, str) else rich).get("contents", [])
+    texts = [node["text"] for node in contents if "text" in node]
+    return {
+        "date": datetime.fromtimestamp(item["date"] / 1000).astimezone().isoformat(),
+        "images": len(item.get("moments") or []),
+        "line_breaks": texts.count("\n"),
+        "first_line": texts[0] if texts else "",
+    }
+
+
+def journal_pages(journal_id):
+    """Yield each page of a journal's entries, following the CLI's cursor."""
+    cmd = ["list", "entries", "--journal-id", journal_id, "--limit", "100"]
+    cmd += ["--fields", "id,date,moments,richTextJSON"]
+    cursor = None
+    while True:
         page = dayone(cmd + (["--cursor", cursor] if cursor else []))
-        for item in page.get("items", []):
-            if item["id"] in wanted:
-                rich = item.get("richTextJSON") or "{}"
-                contents = (json.loads(rich) if isinstance(rich, str) else rich).get(
-                    "contents", []
-                )
-                texts = [node["text"] for node in contents if "text" in node]
-                found[item["id"]] = {
-                    "date": datetime.fromtimestamp(item["date"] / 1000)
-                    .astimezone()
-                    .isoformat(),
-                    "images": len(item.get("moments") or []),
-                    "line_breaks": texts.count("\n"),
-                    "first_line": texts[0] if texts else "",
-                }
+        yield page.get("items", [])
         cursor = page.get("next_cursor")
         if not cursor:
+            return
+
+
+def verify(args):
+    wanted, found = set(args.entry_id), {}
+    for items in journal_pages(args.journal_id):
+        for item in items:
+            if item["id"] in wanted:
+                found[item["id"]] = summarize_entry(item)
+        if not wanted - set(found):
             break
     outbox = dayone(["outbox", "list"]).get("items", [])
     print(

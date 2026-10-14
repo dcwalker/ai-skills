@@ -65,6 +65,34 @@ def write_png(path, width, height, rgb_rows):
         f.write(chunk(b"IEND", b""))
 
 
+def largest_image(data):
+    """Return (offset, width, height, header) of the largest supported image."""
+    best = None
+    for match in re.finditer(rb"/Subtype\s*/Image", data):
+        start = data.rfind(b"<<", 0, match.start())
+        header = data[start : data.find(b"stream", start)]
+        if b"/FlateDecode" not in header or b"/DecodeParms" in header:
+            continue
+        width = int(re.search(rb"/Width (\d+)", header).group(1))
+        height = int(re.search(rb"/Height (\d+)", header).group(1))
+        if best is None or width * height > best[1] * best[2]:
+            best = (start, width, height, header)
+    if best is None:
+        sys.exit("no supported embedded image found")
+    return best
+
+
+def rgb_row(pixels, alpha, first_pixel, width, n):
+    """One row as RGB bytes, composited onto white when there is an alpha mask."""
+    row = pixels[first_pixel * n : (first_pixel + width) * n]
+    if n == 1:
+        row = bytes(v for v in row for _ in range(3))
+    if alpha is None:
+        return row
+    a = alpha[first_pixel : first_pixel + width]
+    return bytes(255 - ((255 - row[i]) * a[i // 3]) // 255 for i in range(len(row)))
+
+
 def allowed_roots():
     """Where this script may read or write: the user's home and $TMPDIR."""
     roots = {os.path.expanduser("~"), tempfile.gettempdir()}
@@ -91,36 +119,14 @@ def main():
     with open(pdf_path, "rb") as f:
         data = f.read()
     objects = object_offsets(data)
-    best = None
-    for match in re.finditer(rb"/Subtype\s*/Image", data):
-        start = data.rfind(b"<<", 0, match.start())
-        header = data[start : data.find(b"stream", start)]
-        if b"/FlateDecode" not in header or b"/DecodeParms" in header:
-            continue
-        width = int(re.search(rb"/Width (\d+)", header).group(1))
-        height = int(re.search(rb"/Height (\d+)", header).group(1))
-        if best is None or width * height > best[1] * best[2]:
-            best = (start, width, height, header)
-    if best is None:
-        sys.exit("no supported embedded image found")
-    start, width, height, header = best
+    start, width, height, header = largest_image(data)
     n = components(data, objects, header)
     pixels = read_stream(data, start)
     if len(pixels) != width * height * n:
         sys.exit("unexpected image data size")
     mask = re.search(rb"/SMask (\d+) 0 R", header)
     alpha = read_stream(data, objects[int(mask.group(1))]) if mask else None
-    rows = []
-    for y in range(height):
-        row = pixels[y * width * n : (y + 1) * width * n]
-        if n == 1:
-            row = bytes(v for v in row for _ in range(3))
-        if alpha is not None:
-            a = alpha[y * width : (y + 1) * width]
-            row = bytes(
-                255 - ((255 - row[i]) * a[i // 3]) // 255 for i in range(len(row))
-            )
-        rows.append(row)
+    rows = [rgb_row(pixels, alpha, y * width, width, n) for y in range(height)]
     write_png(png_path, width, height, rows)
     print(json.dumps({"path": png_path, "width": width, "height": height}))
 
