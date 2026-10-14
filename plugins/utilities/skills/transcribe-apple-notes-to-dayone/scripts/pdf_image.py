@@ -30,7 +30,7 @@ def object_offsets(data):
     return {int(m.group(1)): m.start() for m in re.finditer(rb"(\d+) 0 obj", data)}
 
 
-def object_body(data, objects, number):
+def object_body(objects, number):
     """The start of an indirect object's body, after its "N 0 obj" marker."""
     if number not in objects:
         sys.exit(f"the PDF refers to object {number}, which it does not contain")
@@ -44,7 +44,7 @@ def number_value(data, objects, header, key):
         return None
     if not match.group(2):
         return int(match.group(1))
-    start = object_body(data, objects, int(match.group(1)))
+    start = object_body(objects, int(match.group(1)))
     value = re.match(rb"\s*(\d+)", data[start : start + 40])
     if not value:
         sys.exit(f"could not read the /{key.decode()} value in the PDF")
@@ -75,11 +75,11 @@ def components(data, objects, header):
     ref = re.search(rb"/ColorSpace\s+(\d+)\s+0\s+R", header)
     if not ref:
         sys.exit("the PDF image has no color space")
-    start = object_body(data, objects, int(ref.group(1)))
+    start = object_body(objects, int(ref.group(1)))
     icc = re.search(rb"/ICCBased\s+(\d+)\s+0\s+R", data[start : start + 300])
     if not icc:
         sys.exit("unsupported color space; expected DeviceRGB, DeviceGray, or ICC")
-    profile = object_body(data, objects, int(icc.group(1)))
+    profile = object_body(objects, int(icc.group(1)))
     n = number_value(data, objects, data[profile : profile + 300], b"N")
     if n not in (1, 3):
         sys.exit(f"unsupported ICC color space with {n} components")
@@ -149,9 +149,7 @@ def main():
     mask = re.search(rb"/SMask\s+(\d+)\s+0\s+R", header)
     alpha = None
     if mask:
-        alpha = read_stream(
-            data, objects, object_body(data, objects, int(mask.group(1)))
-        )
+        alpha = read_stream(data, objects, object_body(objects, int(mask.group(1))))
         if len(alpha) != width * height:
             sys.exit("unexpected alpha mask size")
     rows = [rgb_row(pixels, alpha, y * width, width, n) for y in range(height)]
