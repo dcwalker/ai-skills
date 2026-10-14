@@ -31,7 +31,8 @@ Notes. Notes are never edited or deleted.
 The bundled scripts live in `scripts/`, resolved relative to this `SKILL.md`.
 Do not hard-code an absolute install path: it contains a version identifier
 that changes on every plugin update. Keep working files (extracted images,
-transcriptions, results) in a temporary directory, never in a repository.
+transcriptions, results) in a directory created with `mktemp -d`, never in a
+repository; the scripts write only under `$HOME` or `$TMPDIR`.
 
 | Script | Purpose |
 |--------|---------|

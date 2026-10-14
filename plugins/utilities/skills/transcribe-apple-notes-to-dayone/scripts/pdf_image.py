@@ -8,12 +8,17 @@ inline image, but File > Export as PDF embeds the drawing at full resolution
 as a single Flate-encoded image. This writes the largest such image to a PNG,
 composited onto white when it has an alpha mask, and prints its size as JSON.
 Rendering the PDF page instead would scale the drawing down to letter size.
+
+Both paths must lie under the user's home directory or $TMPDIR (where
+mktemp creates files).
 """
 
 import json
+import os
 import re
 import struct
 import sys
+import tempfile
 import zlib
 
 
@@ -60,10 +65,30 @@ def write_png(path, width, height, rgb_rows):
         f.write(chunk(b"IEND", b""))
 
 
+def allowed_roots():
+    """Where this script may read or write: the user's home and $TMPDIR."""
+    roots = {os.path.expanduser("~"), tempfile.gettempdir()}
+    return sorted({os.path.realpath(root) for root in roots if os.path.isdir(root)})
+
+
+def contained_path(path, name):
+    """Resolve path, refusing anything outside the allowed roots."""
+    resolved = os.path.realpath(os.path.expanduser(path))
+    for root in allowed_roots():
+        if resolved == root or resolved.startswith(root + os.sep):
+            return resolved
+    sys.exit(
+        f"{name} must be inside your home directory or {tempfile.gettempdir()}; "
+        f"got {path!r}. Create working folders with mktemp -d."
+    )
+
+
 def main():
     if len(sys.argv) != 3:
         sys.exit(__doc__)
-    with open(sys.argv[1], "rb") as f:
+    pdf_path = contained_path(sys.argv[1], "the PDF")
+    png_path = contained_path(sys.argv[2], "the output PNG")
+    with open(pdf_path, "rb") as f:
         data = f.read()
     objects = object_offsets(data)
     best = None
@@ -96,8 +121,8 @@ def main():
                 255 - ((255 - row[i]) * a[i // 3]) // 255 for i in range(len(row))
             )
         rows.append(row)
-    write_png(sys.argv[2], width, height, rows)
-    print(json.dumps({"path": sys.argv[2], "width": width, "height": height}))
+    write_png(png_path, width, height, rows)
+    print(json.dumps({"path": png_path, "width": width, "height": height}))
 
 
 if __name__ == "__main__":

@@ -10,6 +10,9 @@ Subcommands:
 Note IDs, account names, and folder names are passed to osascript as
 arguments, never interpolated into script source, so names with quotes or
 spaces are safe. macOS asks once for permission to control Notes.
+
+extract writes only under the user's home directory or $TMPDIR (where
+mktemp creates files).
 """
 
 import argparse
@@ -21,6 +24,7 @@ import re
 import struct
 import subprocess
 import sys
+import tempfile
 from datetime import datetime
 
 SCAN_JS = r"""
@@ -83,9 +87,28 @@ def scan(args):
     print(json.dumps(notes, indent=1, ensure_ascii=False))
 
 
+def allowed_roots():
+    """Where this script may write: the user's home and $TMPDIR."""
+    roots = {os.path.expanduser("~"), tempfile.gettempdir()}
+    return sorted({os.path.realpath(root) for root in roots if os.path.isdir(root)})
+
+
+def contained_path(path, name):
+    """Resolve path, refusing anything outside the allowed roots."""
+    resolved = os.path.realpath(os.path.expanduser(path))
+    for root in allowed_roots():
+        if resolved == root or resolved.startswith(root + os.sep):
+            return resolved
+    sys.exit(
+        f"{name} must be inside your home directory or {tempfile.gettempdir()}; "
+        f"got {path!r}. Create working folders with mktemp -d."
+    )
+
+
 def extract(args):
+    out = contained_path(args.out, "--out")
     body = osascript(["-e", BODY_AS, args.id])
-    os.makedirs(args.out, exist_ok=True)
+    os.makedirs(out, exist_ok=True)
     images, seen = [], {}
     for index, (kind, encoded) in enumerate(
         re.findall(r'src="data:image/(\w+);base64,([^"]+)"', body)
@@ -96,7 +119,7 @@ def extract(args):
             # Notes sometimes stores the same drawing twice; attach it once.
             images[seen[digest]]["copies"] += 1
             continue
-        path = os.path.join(args.out, f"img{index}.{kind}")
+        path = os.path.join(out, f"img{index}.{kind}")
         with open(path, "wb") as f:
             f.write(data)
         width, height = png_size(data)
