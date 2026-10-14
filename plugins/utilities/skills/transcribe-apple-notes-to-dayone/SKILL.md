@@ -36,6 +36,7 @@ repository; the scripts write only under `$HOME` or `$TMPDIR`.
 
 | Script | Purpose |
 |--------|---------|
+| `scripts/notes.py folders` | List every Notes account and folder with its note count |
 | `scripts/notes.py scan` | List a folder's notes, newest first, with image count and typed-text length, never note text |
 | `scripts/notes.py extract` | Save a note's inline images; reports size and duplicate copies |
 | `scripts/notes.py move` | Move a note to a folder, creating the folder if needed |
@@ -44,21 +45,42 @@ repository; the scripts write only under `$HOME` or `$TMPDIR`.
 | `scripts/dayone_entry.py write` | Create an entry with line breaks preserved and images attached |
 | `scripts/dayone_entry.py verify` | Confirm entries landed: date, image count, line breaks, sync queue |
 
-## Step 1: Confirm the settings
+## Step 1: Settle the settings
 
-Ask for anything the user has not given. Do not guess these:
+Check before asking, so any question names real options:
 
-1. **Source**: Notes account (often `iCloud`) and folder.
-2. **Destination**: Day One journal. Run `dayone list journals` and confirm
-   the journal by name; use its numeric id from then on.
+1. Run `dayone auth whoami`. If it fails, stop: tell the user to sign in
+   (`dayone auth login` or `dayone setup`) themselves, and ask nothing else.
+2. Run `dayone list journals` and
+   `python3 scripts/notes.py folders`, which lists every Notes account and
+   folder with its note count.
+
+Then settle five settings. Three have no default; ask for any the user has
+not given or that the checks contradict, and do nothing else until they
+answer:
+
+1. **Source**: Notes account and folder. "My iCloud Notes folder" means
+   account `iCloud`, folder `Notes`; a name that matches a listed folder is
+   settled. Ask only when the request names no folder, or names one that
+   does not exist, listing the real folders.
+2. **Destination**: a Day One journal from `dayone list journals`, matched by
+   name; use its numeric id from then on. If the named journal does not
+   exist, list the journals and ask which to use; never create one or pick
+   one yourself.
 3. **Done folder**: the Notes folder imported notes move to, in the same
    account (for example `Exported to Day One`). It is created if missing.
-4. **Batch size**: default 10. The user reviews each batch in Day One before
-   the next one starts.
-5. **Corrections**: by default, fix recognition errors and misspellings,
-   including likely-intended words and the official spelling of product
-   names, and keep the user's wording otherwise. Confirm this or the user's
-   preference.
+
+Two have defaults. Use them without asking, and state them in the first
+report so the user can change them:
+
+4. **Batch size**: 10, unless the user gives another. The user reviews each
+   batch in Day One before the next one starts.
+5. **Corrections**: fix recognition errors and misspellings, including
+   likely-intended words and the official spelling of product names, and
+   keep the user's wording otherwise, unless the user says otherwise.
+
+This skill never deletes notes. If the user asks for notes to be deleted
+after import, say so and offer to move them to a done folder instead.
 
 The CLI cannot add tags. If the user wants entries tagged, tell them now that
 they will add tags in the Day One app after each batch.

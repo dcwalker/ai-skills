@@ -2,6 +2,7 @@
 """Read and move Apple Notes through AppleScript, for transcribe-apple-notes-to-dayone.
 
 Subcommands:
+  folders  List every account and folder with its note count, as JSON.
   scan     List a folder's notes as JSON, newest first, with structure only
            (image count, typed-text length), never the note text itself.
   extract  Save a note's inline images to a directory and print their details.
@@ -46,6 +47,15 @@ function run(argv) {
 }
 """
 
+FOLDERS_JS = r"""
+function run() {
+  return JSON.stringify(Application('Notes').accounts().map(a => ({
+    account: a.name(),
+    folders: a.folders().map(f => ({name: f.name(), notes: f.notes.length})),
+  })));
+}
+"""
+
 BODY_AS = """on run argv
   tell application "Notes" to return body of note id (item 1 of argv)
 end run"""
@@ -72,6 +82,11 @@ def png_size(data):
     if data[:8] == b"\x89PNG\r\n\x1a\n":
         return struct.unpack(">II", data[16:24])
     return None, None
+
+
+def folders(_args):
+    accounts = json.loads(osascript(["-e", FOLDERS_JS], "JavaScript"))
+    print(json.dumps(accounts, indent=1, ensure_ascii=False))
 
 
 def scan(args):
@@ -122,6 +137,8 @@ def main():
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
     sub = parser.add_subparsers(dest="command", required=True)
+    p = sub.add_parser("folders", help="list accounts and folders with note counts")
+    p.set_defaults(func=folders)
     p = sub.add_parser("scan", help="list a folder's notes as JSON, newest first")
     p.add_argument("--account", required=True, help='Notes account name, e.g. "iCloud"')
     p.add_argument("--folder", required=True)
