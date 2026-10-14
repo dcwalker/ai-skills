@@ -148,7 +148,50 @@ emit_isolation_env() {
   # the trial's own $HOME/.Trash and refuses when $HOME is the real home.
   echo "export PATH=\"$lib_dir/trash-stub:\$PATH\""
 
+  # osascript, dayone, and swift are shadowed in every mode. osascript drives
+  # the developer's own Notes app and dayone writes to their Day One account
+  # with its stored login, so neither may run for real in a trial. swift is
+  # shadowed because transcribe-apple-notes-to-dayone's handwriting
+  # recognition runs through it; the stub serves canned text from a fixture.
+  # All three refuse without their fixture and never exec the real binary.
+  echo "export PATH=\"$lib_dir/osascript-stub:$lib_dir/dayone-stub:$lib_dir/swift-stub:\$PATH\""
+
   # Explicit: a caller under `set -e` must not inherit the exit status of
   # whatever the last echo happened to be.
+  return 0
+}
+
+# Emit the env lines that seed the Notes, Day One, and OCR stubs from a
+# fixture, for whichever of notes-fixture.json, dayone-fixture.json, and
+# ocr-fixture.json the fixture ships. The Notes and Day One fixtures are
+# copied into the run directory first: the stubs write to those copies, so
+# the fixture stays the untouched seed and the copy is the final state a
+# grader reads ($RUN_DIR/notes-state.json, $RUN_DIR/dayone-state.json).
+# Trials with any of these fixtures run in America/Chicago, so the local
+# times the skill prints and passes on do not depend on the host's zone.
+emit_notes_dayone_fixture_env() {
+  local fixture_dir="$1" run_dir="$2"
+  local any=""
+  if [[ -f "$fixture_dir/notes-fixture.json" ]]; then
+    cp "$fixture_dir/notes-fixture.json" "$run_dir/notes-state.json"
+    echo "export NOTES_STUB_STATE=\"$run_dir/notes-state.json\""
+    echo "export NOTES_STUB_IMAGES=\"$fixture_dir/images\""
+    echo "export NOTES_STUB_LOG=\"$run_dir/notes-calls.log\""
+    any=1
+  fi
+  if [[ -f "$fixture_dir/dayone-fixture.json" ]]; then
+    cp "$fixture_dir/dayone-fixture.json" "$run_dir/dayone-state.json"
+    echo "export DAYONE_STUB_STATE=\"$run_dir/dayone-state.json\""
+    echo "export DAYONE_STUB_LOG=\"$run_dir/dayone-calls.log\""
+    any=1
+  fi
+  if [[ -f "$fixture_dir/ocr-fixture.json" ]]; then
+    echo "export OCR_STUB_FIXTURE=\"$fixture_dir/ocr-fixture.json\""
+    echo "export OCR_STUB_LOG=\"$run_dir/ocr-calls.log\""
+    any=1
+  fi
+  if [[ -n "$any" ]]; then
+    echo "export TZ=\"America/Chicago\""
+  fi
   return 0
 }

@@ -132,7 +132,13 @@ add_stub_server calendar calendar_stub.py
 add_stub_server docs docs_stub.py
 add_stub_server contacts contacts_stub.py
 
-if [[ "$MCP_SERVERS_JSON" == "{}" ]] && [[ -z "$CONVERSATION_ONLY" ]]; then
+# A fixture that seeds the CLI stubs (Notes, Day One, OCR) needs no MCP server.
+CLI_STUB_FIXTURE=""
+for CLI_FIXTURE in notes-fixture.json dayone-fixture.json ocr-fixture.json; do
+  [[ -f "$FIXTURE_DIR/$CLI_FIXTURE" ]] && CLI_STUB_FIXTURE=1
+done
+
+if [[ "$MCP_SERVERS_JSON" == "{}" ]] && [[ -z "$CONVERSATION_ONLY" ]] && [[ -z "$CLI_STUB_FIXTURE" ]]; then
   echo "run-mcp-eval: fixture $FIXTURE_DIR provides no recognized *-mcp-state.json file" >&2
   exit 1
 fi
@@ -163,6 +169,7 @@ ENV_FILE="$RUN_DIR/env.sh"
   # run-eval.sh uses covers both -- scrubbing the credentials, and shadowing gh,
   # which authenticates from its own keyring and so ignores GH_TOKEN entirely.
   emit_isolation_env "$SCRIPT_DIR"
+  emit_notes_dayone_fixture_env "$FIXTURE_DIR" "$RUN_DIR"
   echo "export GH_STUB_LOG=\"$RUN_DIR/gh-calls.log\""
   echo "export GH_STUB_COUNTS_DIR=\"$RUN_DIR\""
   # organize-meeting-notes creates cards through its bundled script rather

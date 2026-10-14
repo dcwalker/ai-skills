@@ -1,0 +1,74 @@
+#!/usr/bin/env python3
+"""Fail-closed fake `swift` that serves canned handwriting recognition in evals.
+
+transcribe-apple-notes-to-dayone recognizes handwriting with
+`swift scripts/ocr.swift <image> [<slice-dir>] [<max-slice-height>]`, which
+runs Apple's Vision framework. Its output varies with the OS release, and a
+sandboxed trial cannot rely on a Swift toolchain, so this stub answers from
+OCR_STUB_FIXTURE instead: a JSON map from an image's SHA-256 to the text
+recognition "returned" for it, recognition errors included, so an eval can
+check that the skill corrects them against the image.
+
+Only ocr.swift is served. Any other swift invocation, and an image with no
+fixture entry, fails loudly rather than producing empty text that would read
+as a blank note.
+
+Environment (set by run-eval.sh / run-mcp-eval.sh from ocr-fixture.json):
+  OCR_STUB_FIXTURE  {"<sha256 of the image file>": "line one\\nline two", ...}
+  OCR_STUB_LOG      One JSON line per invocation: argv, image hash, outcome.
+"""
+
+import hashlib
+import json
+import os
+import sys
+
+
+def log(entry):
+    path = os.environ.get("OCR_STUB_LOG")
+    if path:
+        with open(path, "a") as f:
+            f.write(json.dumps(entry) + "\n")
+
+
+def fail(entry, message):
+    log(dict(entry, outcome="error"))
+    print(message, file=sys.stderr)
+    sys.exit(1)
+
+
+def main():
+    argv = sys.argv[1:]
+    entry = {"argv": argv}
+    if not os.environ.get("AI_SKILLS_EVAL"):
+        fail(
+            entry,
+            "swift-stub: AI_SKILLS_EVAL is not set; refusing outside an eval trial",
+        )
+    if not argv or os.path.basename(argv[0]) != "ocr.swift" or len(argv) < 2:
+        fail(
+            entry,
+            "swift-stub: only `swift ocr.swift <image> ...` is supported in this trial",
+        )
+    fixture = os.environ.get("OCR_STUB_FIXTURE")
+    if not fixture or not os.path.isfile(fixture):
+        fail(
+            entry,
+            "swift-stub: OCR_STUB_FIXTURE is not set; this trial has no OCR fixture",
+        )
+    try:
+        with open(argv[1], "rb") as f:
+            digest = hashlib.sha256(f.read()).hexdigest()
+    except OSError as error:
+        fail(entry, f"swift-stub: cannot read image {argv[1]}: {error}")
+    entry["sha256"] = digest
+    with open(fixture) as f:
+        texts = json.load(f)
+    if digest not in texts:
+        fail(entry, f"swift-stub: no OCR fixture for {argv[1]} (sha256 {digest})")
+    log(dict(entry, outcome="ok"))
+    print(texts[digest])
+
+
+if __name__ == "__main__":
+    main()

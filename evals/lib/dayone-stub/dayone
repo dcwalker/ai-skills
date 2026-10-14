@@ -1,0 +1,464 @@
+#!/usr/bin/env python3
+"""Fail-closed fake `dayone` CLI for offline, deterministic skill evals.
+
+The real CLI signs in with stored credentials and syncs to a live Day One
+account, so a trial must never reach it. This stub keeps journals, entries,
+and the sync outbox in a JSON state file and answers the commands
+transcribe-apple-notes-to-dayone uses, in the real CLI's JSON shapes:
+
+  --version | auth whoami | auth login (always refused) | profile list
+  sync | sync-schedule status | user-settings get
+  list journals | list entries [--journal-id ID] [--limit N] [--offset N]
+                                [--cursor C] [--fields a,b] [--sort asc|desc]
+  entry write --journal-id ID [--entry-id ID] [--date D] (--body T | --body-stdin)
+              [--attach PATH [--attach-type T]]...
+  entry delete --journal-id ID --entry-id ID
+  outbox list [--payload] | outbox clear (--id ID | --all | --failed)
+
+Anything else fails with "dayone-stub: unsupported command", logged.
+
+Fidelity points an eval can rely on:
+- Writes are local: they queue outbox items that only `sync` clears.
+- The body is parsed as Markdown into richTextJSON the way the CLI does for
+  the cases that matter here: a plain newline is a soft break (a space), a
+  trailing backslash is a hard break (a "\\n" node), backslash escapes are
+  removed, and unescaped list markers, headings, setext underlines, and
+  emphasis are consumed as formatting, so text written without escaping comes
+  out altered. `![](dayone-moment://)` places the next attachment.
+- Rewriting an existing entry that has attachments keeps its old
+  richTextJSON (only `body` changes), and --attach adds another moment, as
+  the real CLI 0.21.1 does.
+- When the fixture has "signed_in": false, whoami, writes, and sync fail with
+  the real CLI's "no auth session" message; local reads still work.
+
+Environment (set by run-eval.sh / run-mcp-eval.sh from dayone-fixture.json):
+  DAYONE_STUB_STATE  Mutable state file, seeded from the fixture.
+  DAYONE_STUB_LOG    One JSON line per invocation: argv, stdin body, outcome.
+
+State format:
+  {"signed_in": true, "account": {"email": "..."},
+   "journals": [{"id": "1001", "name": "Field Notes"}],
+   "entries": [{"id", "journal_id", "date" (epoch ms), "body", "richTextJSON",
+                "moments": [{"id", "type", "md5"}], "tags": [], "deleted"}],
+   "outbox": [{"id", "status", "kind"}], "next_id": 1}
+"""
+
+import hashlib
+import json
+import os
+import re
+import sys
+from datetime import datetime, timezone
+
+NO_AUTH = "no auth session for this endpoint; run `dayone auth login` first"
+PUNCT = r"""!"#$%&'()*+,\-./:;<=>?@\[\\\]^_`{|}~"""
+PLACEHOLDER = re.compile(r"!\[\]\(dayone-moment://([0-9A-Fa-f]*)\)")
+
+
+class StubError(Exception):
+    pass
+
+
+def log(entry):
+    path = os.environ.get("DAYONE_STUB_LOG")
+    if path:
+        with open(path, "a") as f:
+            f.write(json.dumps(entry) + "\n")
+
+
+# --- Markdown to richTextJSON -------------------------------------------------
+
+
+def unescape(text):
+    return re.sub(r"\\([" + PUNCT + r"])", r"\1", text)
+
+
+def strip_inline_formatting(text):
+    """Remove unescaped emphasis markers, as a Markdown parser would."""
+    text = re.sub(r"(?<![\\\w])(\*\*|__)(?=\S)(.+?)(?<=\S)\1", r"\2", text)
+    text = re.sub(r"(?<![\\\w*])\*(?=\S)(.+?)(?<=\S)(?<!\\)\*", r"\1", text)
+    text = re.sub(r"(?<![\\\w])_(?=\S)(.+?)(?<=\S)(?<!\\)_(?!\w)", r"\1", text)
+    return text
+
+
+def line_nodes(raw_line):
+    """One source line -> (text, attributes) after block markers are consumed."""
+    attrs = {}
+    match = re.match(r"^\s{0,3}(#{1,6})\s+(.*)$", raw_line)
+    if match:
+        attrs = {"line": {"header": len(match.group(1))}}
+        raw_line = match.group(2)
+    match = re.match(r"^\s{0,3}(\d+)[.)]\s+(.*)$", raw_line)
+    if match:
+        attrs = {"line": {"listStyle": "numbered"}}
+        raw_line = match.group(2)
+    match = re.match(r"^\s{0,3}[-+*]\s+(.*)$", raw_line)
+    if match:
+        attrs = {"line": {"listStyle": "bulleted"}}
+        raw_line = match.group(1)
+    return unescape(strip_inline_formatting(raw_line)), attrs
+
+
+def paragraph_nodes(paragraph):
+    lines = paragraph.split("\n")
+    # A setext underline turns the line above it into a heading and vanishes.
+    nodes, i = [], 0
+    while i < len(lines):
+        line = lines[i]
+        if (
+            i + 1 < len(lines)
+            and re.match(r"^\s{0,3}(=+|-+)\s*$", lines[i + 1])
+            and line.strip()
+        ):
+            nodes.append(
+                {
+                    "text": unescape(line.rstrip("\\").strip()),
+                    "attributes": {"line": {"header": 1}},
+                }
+            )
+            nodes.append({"text": "\n"})
+            i += 2
+            continue
+        hard = bool(re.search(r"(?<!\\)(\\\\)*\\$", line))
+        text, attrs = line_nodes(line[:-1] if hard else line)
+        node = {"text": text}
+        if attrs:
+            node["attributes"] = attrs
+        nodes.append(node)
+        if i < len(lines) - 1:
+            nodes.append({"text": "\n" if hard or attrs else " "})
+        i += 1
+    return nodes
+
+
+def rich_text(body, new_moment_ids):
+    contents, pending = [], list(new_moment_ids)
+    pos = 0
+    for match in list(PLACEHOLDER.finditer(body)) + [None]:
+        segment = body[pos : match.start() if match else len(body)]
+        paragraphs = [p for p in re.split(r"\n\s*\n", segment) if p.strip()]
+        for index, paragraph in enumerate(paragraphs):
+            contents.extend(paragraph_nodes(paragraph.strip("\n")))
+            if index < len(paragraphs) - 1:
+                contents.append({"text": "\n\n"})
+        if match:
+            identifier = match.group(1).upper() or (pending.pop(0) if pending else None)
+            if identifier:
+                if contents and "text" in contents[-1]:
+                    contents[-1]["text"] += "\n\n"
+                contents.append(
+                    {"embeddedObjects": [{"identifier": identifier, "type": "photo"}]}
+                )
+            pos = match.end()
+    for identifier in pending:
+        contents.append(
+            {"embeddedObjects": [{"identifier": identifier, "type": "photo"}]}
+        )
+    return json.dumps(
+        {
+            "contents": contents,
+            "meta": {"created": {"platform": "dayone-cli"}, "version": 1},
+        }
+    )
+
+
+# --- Commands -----------------------------------------------------------------
+
+
+def take(args, flag, default=None, many=False):
+    values, rest, i = [], [], 0
+    while i < len(args):
+        if args[i] == flag and i + 1 < len(args):
+            values.append(args[i + 1])
+            i += 2
+        else:
+            rest.append(args[i])
+            i += 1
+    args[:] = rest
+    if many:
+        return values
+    return values[-1] if values else default
+
+
+def take_switch(args, flag):
+    if flag in args:
+        args.remove(flag)
+        return True
+    return False
+
+
+def require_auth(state):
+    if not state.get("signed_in", True):
+        raise StubError(NO_AUTH)
+
+
+def journal(state, journal_id):
+    for j in state["journals"]:
+        if j["id"] == journal_id:
+            return j
+    raise StubError(f"journal not found: {journal_id}")
+
+
+def parse_date(value):
+    if re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+        dt = datetime.strptime(value, "%Y-%m-%d").astimezone()
+    else:
+        try:
+            dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        except ValueError:
+            raise StubError(f"invalid --date '{value}': expected YYYY-MM-DD or RFC3339")
+        if dt.tzinfo is None:
+            raise StubError(f"invalid --date '{value}': RFC3339 needs a UTC offset")
+    return int(dt.timestamp() * 1000)
+
+
+def new_id(state, salt):
+    state["next_id"] = state.get("next_id", 1) + 1
+    return hashlib.md5(f"{salt}:{state['next_id']}".encode()).hexdigest().upper()
+
+
+def entry_write(state, args, stdin_body):
+    require_auth(state)
+    journal_id = take(args, "--journal-id")
+    if not journal_id:
+        raise StubError("--journal-id is required")
+    journal(state, journal_id)
+    entry_id = take(args, "--entry-id")
+    date = take(args, "--date")
+    body = take(args, "--body")
+    attaches = take(args, "--attach", many=True)
+    take(args, "--attach-type", many=True)
+    all_day = take_switch(args, "--all-day")
+    if take_switch(args, "--body-stdin"):
+        body = stdin_body
+    if body is None:
+        raise StubError("either --body or --body-stdin is required")
+    if args:
+        raise StubError(f"unexpected arguments: {' '.join(args)}")
+    moments = []
+    for path in attaches:
+        if not os.path.isfile(path):
+            raise StubError(f"attachment not found: {path}")
+        with open(path, "rb") as f:
+            moments.append(
+                {
+                    "id": new_id(state, path),
+                    "type": "image",
+                    "md5": hashlib.md5(f.read()).hexdigest(),
+                }
+            )
+    existing = next(
+        (e for e in state["entries"] if entry_id and e["id"] == entry_id.upper()), None
+    )
+    if existing:
+        if existing["moments"]:
+            # The CLI keeps the old rich text for an entry with attachments.
+            rich = json.loads(existing["richTextJSON"])
+            for moment in moments:
+                rich["contents"].append(
+                    {"embeddedObjects": [{"identifier": moment["id"], "type": "photo"}]}
+                )
+            existing["richTextJSON"] = json.dumps(rich)
+        else:
+            existing["richTextJSON"] = rich_text(body, [m["id"] for m in moments])
+        existing["body"] = body
+        existing["moments"] += moments
+        if date:
+            existing["date"] = parse_date(date)
+        entry, kind = existing, "update"
+    else:
+        entry = {
+            "id": (entry_id or new_id(state, journal_id)).upper(),
+            "journal_id": journal_id,
+            "date": parse_date(date)
+            if date
+            else int(datetime.now(timezone.utc).timestamp() * 1000),
+            "isAllDay": all_day,
+            "body": body,
+            "richTextJSON": rich_text(body, [m["id"] for m in moments]),
+            "moments": moments,
+            "tags": [],
+            "deleted": False,
+        }
+        state["entries"].append(entry)
+        kind = "create"
+    outbox_id = f"entry:{journal_id}:{entry['id']}"
+    state["outbox"].append({"id": outbox_id, "status": "pending", "kind": kind})
+    for moment in moments:
+        state["outbox"].append(
+            {
+                "id": f"original_media:{journal_id}:{entry['id']}:{moment['id']}",
+                "status": "pending",
+                "kind": "create",
+            }
+        )
+    return {
+        "ok": True,
+        "journal_id": journal_id,
+        "entry_id": entry["id"],
+        "queued": True,
+        "outbox_id": outbox_id,
+        "synced": False,
+    }
+
+
+def entry_delete(state, args):
+    require_auth(state)
+    journal_id, entry_id = take(args, "--journal-id"), take(args, "--entry-id")
+    entry = next(
+        (
+            e
+            for e in state["entries"]
+            if e["id"] == (entry_id or "").upper() and e["journal_id"] == journal_id
+        ),
+        None,
+    )
+    if not entry or entry["deleted"]:
+        raise StubError(f"entry not found: {entry_id}")
+    entry["deleted"] = True
+    outbox_id = f"entry:{journal_id}:{entry['id']}"
+    state["outbox"].append({"id": outbox_id, "status": "pending", "kind": "delete"})
+    return {
+        "ok": True,
+        "journal_id": journal_id,
+        "entry_id": entry["id"],
+        "operation": "delete",
+        "queued": True,
+        "outbox_id": outbox_id,
+        "synced": False,
+    }
+
+
+def list_entries(state, args):
+    journal_id = take(args, "--journal-id")
+    limit = int(take(args, "--limit", "50"))
+    offset = int(take(args, "--cursor", None) or take(args, "--offset", "0"))
+    fields = take(args, "--fields")
+    order = take(args, "--sort", "desc")
+    take(args, "--sort-method")
+    entries = [
+        e
+        for e in state["entries"]
+        if not e["deleted"] and (not journal_id or e["journal_id"] == journal_id)
+    ]
+    entries.sort(key=lambda e: e["date"], reverse=order != "asc")
+    page = entries[offset : offset + limit]
+    items = []
+    for e in page:
+        item = {k: v for k, v in e.items() if k != "deleted"}
+        if fields:
+            item = {k: item.get(k) for k in fields.split(",")}
+        items.append(item)
+    more = offset + limit < len(entries)
+    return {
+        "ok": True,
+        "count": len(items),
+        "limit": limit,
+        "offset": offset,
+        "items": items,
+        "next_cursor": str(offset + limit) if more else None,
+    }
+
+
+def run(state, argv, stdin_body):
+    args = list(argv)
+    take(args, "--profile")
+    take(args, "--api-host")
+    if args in (["--version"], ["-V"]):
+        return "dayone 0.21.1"
+    head = args[:2]
+    rest = args[2:]
+    if head == ["auth", "whoami"]:
+        require_auth(state)
+        return {
+            "ok": True,
+            "email": state.get("account", {}).get("email", "user@example.com"),
+        }
+    if head == ["auth", "login"]:
+        raise StubError("dayone-stub: signing in is not available in this trial")
+    if head == ["profile", "list"]:
+        return {"ok": True, "profiles": [{"name": "production", "is_active": True}]}
+    if args[:1] == ["sync"]:
+        require_auth(state)
+        pushed = len(state["outbox"])
+        state["outbox"] = []
+        return {
+            "ok": True,
+            "locked": False,
+            "resources": [
+                {
+                    "resource": "outbox:post",
+                    "changed_count": pushed,
+                    "status": "success",
+                    "error": None,
+                }
+            ],
+        }
+    if head == ["sync-schedule", "status"]:
+        return {"ok": True, "enabled": False}
+    if head == ["user-settings", "get"]:
+        require_auth(state)
+        return {"ok": True, "settings": {}}
+    if head == ["list", "journals"]:
+        return {"ok": True, "count": len(state["journals"]), "items": state["journals"]}
+    if head == ["list", "entries"]:
+        return list_entries(state, rest)
+    if head == ["entry", "write"]:
+        return entry_write(state, rest, stdin_body)
+    if head == ["entry", "delete"]:
+        return entry_delete(state, rest)
+    if head == ["outbox", "list"]:
+        take_switch(rest, "--payload")
+        return {"ok": True, "items": state["outbox"]}
+    if head == ["outbox", "clear"]:
+        target = take(rest, "--id")
+        before = len(state["outbox"])
+        if take_switch(rest, "--all"):
+            state["outbox"] = []
+        elif take_switch(rest, "--failed"):
+            state["outbox"] = [i for i in state["outbox"] if i["status"] != "failed"]
+        elif target:
+            state["outbox"] = [i for i in state["outbox"] if i["id"] != target]
+        return {"ok": True, "removed": before - len(state["outbox"])}
+    raise StubError("dayone-stub: unsupported command: " + " ".join(argv))
+
+
+def main():
+    argv = sys.argv[1:]
+    stdin_body = None
+    if "--body-stdin" in argv:
+        stdin_body = sys.stdin.read()
+    entry = {"argv": argv}
+    if stdin_body is not None:
+        entry["stdin"] = stdin_body
+    if not os.environ.get("AI_SKILLS_EVAL"):
+        log(dict(entry, outcome="refused"))
+        print(
+            "dayone-stub: AI_SKILLS_EVAL is not set; refusing outside an eval trial",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    path = os.environ.get("DAYONE_STUB_STATE")
+    if not path or not os.path.isfile(path):
+        log(dict(entry, outcome="no-fixture"))
+        print(
+            "dayone-stub: DAYONE_STUB_STATE is not set; this trial has no Day One fixture",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    with open(path) as f:
+        state = json.load(f)
+    try:
+        result = run(state, argv, stdin_body)
+    except StubError as error:
+        log(dict(entry, outcome="error", error=str(error)))
+        print(f"error: {error}", file=sys.stderr)
+        sys.exit(1)
+    with open(path, "w") as f:
+        json.dump(state, f, indent=1)
+    log(dict(entry, outcome="ok"))
+    print(result if isinstance(result, str) else json.dumps(result, indent=2))
+
+
+if __name__ == "__main__":
+    main()
