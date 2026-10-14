@@ -3,7 +3,7 @@
 // Usage: swift ocr.swift <image> [<slice-dir>] [<max-slice-height>]
 //
 // Prints the recognized text, one line per detected line of handwriting.
-// Images taller than max-slice-height (default 2000 px) are cut into slices
+// Images taller than max-slice-height (default 2000 px) plus a 10% margin are cut into slices
 // at fully blank rows, so no line of writing is split, and each slice is
 // recognized separately; Vision misses or garbles much of a very tall image.
 // When slice-dir is given, each slice is also saved there as sliceN.png so
@@ -57,10 +57,15 @@ func cuts(_ image: CGImage) -> [Int] {
     let blank = blankRows(image)
     var result = [0]
     var y = 0
-    while y + maxHeight < height {
+    // Leave at least minTail rows for the last slice; Vision rejects images
+    // 2 px or less tall, and a sliver holds no writing anyway.
+    let minTail = maxHeight / 10
+    while height - y > maxHeight + minTail {
         let floor = y + maxHeight * 3 / 5
         var cut = y + maxHeight
-        for t in stride(from: y + maxHeight, to: floor, by: -1) where (t - 3..<t + 3).allSatisfy({ blank[$0] }) {
+        // Clamp the 6-row window: the first candidate can sit within 2 rows of the bottom.
+        for t in stride(from: y + maxHeight, to: floor, by: -1)
+        where (max(0, t - 3)..<min(height, t + 3)).allSatisfy({ blank[$0] }) {
             cut = t
             break
         }
@@ -72,6 +77,9 @@ func cuts(_ image: CGImage) -> [Int] {
 }
 
 let bounds = cuts(cg)
+if let dir = sliceDir, bounds.count > 2 {
+    try FileManager.default.createDirectory(atPath: dir, withIntermediateDirectories: true)
+}
 for i in 0..<(bounds.count - 1) {
     let rect = CGRect(x: 0, y: bounds[i], width: cg.width, height: bounds[i + 1] - bounds[i])
     guard let slice = cg.cropping(to: rect) else { continue }
