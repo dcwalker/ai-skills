@@ -3,9 +3,10 @@
 // Usage: swift ocr.swift <image> [<slice-dir>] [<max-slice-height>]
 //
 // Prints the recognized text, one line per detected line of handwriting.
-// Images taller than max-slice-height (default 2000 px) plus a 10% margin are cut into slices
-// at fully blank rows, so no line of writing is split, and each slice is
-// recognized separately; Vision misses or garbles much of a very tall image.
+// Images more than 10% taller than max-slice-height (default 2000 px) are
+// cut into slices at fully blank rows, so no line of writing is split, and
+// each slice is recognized separately; Vision misses or garbles much of a
+// very tall image.
 // When slice-dir is given, each slice is also saved there as sliceN.png so
 // it can be compared against the text. Each slice's text is preceded by a
 // "--- slice N" header.
