@@ -1,0 +1,32 @@
+{
+ "accounts": {
+  "iCloud": {
+   "folders": {
+    "Notes": [
+     {
+      "id": "x-coredata://FIXTURE-STORE/ICNote/pantry",
+      "name": "Pantry restock",
+      "created": "2026-03-04T14:20:00Z",
+      "images": [
+       "pantry.png",
+       "pantry.png"
+      ]
+     },
+     {
+      "id": "x-coredata://FIXTURE-STORE/ICNote/bike",
+      "name": "Bike repair",
+      "created": "2026-03-02T22:40:00Z",
+      "images": [
+       "bike.png"
+      ]
+     }
+    ]
+   }
+  },
+  "On My Mac": {
+   "folders": {
+    "Notes": []
+   }
+  }
+ }
+}

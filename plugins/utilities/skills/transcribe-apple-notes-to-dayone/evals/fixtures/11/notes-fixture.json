@@ -1,0 +1,31 @@
+{
+ "accounts": {
+  "iCloud": {
+   "folders": {
+    "Notes": [
+     {
+      "id": "x-coredata://FIXTURE-STORE/ICNote/garden",
+      "name": "Garden plan",
+      "created": "2026-03-09T15:15:00Z",
+      "images": [
+       "garden.png"
+      ]
+     },
+     {
+      "id": "x-coredata://FIXTURE-STORE/ICNote/bike",
+      "name": "Bike repair",
+      "created": "2026-03-02T22:40:00Z",
+      "images": [
+       "bike.png"
+      ]
+     }
+    ]
+   }
+  },
+  "On My Mac": {
+   "folders": {
+    "Notes": []
+   }
+  }
+ }
+}

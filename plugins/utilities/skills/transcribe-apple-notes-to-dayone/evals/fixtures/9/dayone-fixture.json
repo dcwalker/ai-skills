@@ -1,0 +1,37 @@
+{
+ "signed_in": true,
+ "account": {
+  "email": "user@example.com"
+ },
+ "journals": [
+  {
+   "id": "1001",
+   "name": "Field Notes"
+  },
+  {
+   "id": "1002",
+   "name": "Personal"
+  }
+ ],
+ "entries": [
+  {
+   "id": "576A1AAAC5DD9EBC0560182376BE8812",
+   "journal_id": "1001",
+   "date": 1773069300000,
+   "isAllDay": false,
+   "body": "Garden plan\\\nOrder tomato seedlinqs\\\nFix the drip Iine\\\nCompost bin by the fence\\\nAsk Priya about rnulch\n\n![](dayone-moment://)",
+   "richTextJSON": "{\"contents\": [{\"text\": \"Garden plan\"}, {\"text\": \"\\n\"}, {\"text\": \"Order tomato seedlinqs\"}, {\"text\": \"\\n\"}, {\"text\": \"Fix the drip Iine\"}, {\"text\": \"\\n\"}, {\"text\": \"Compost bin by the fence\"}, {\"text\": \"\\n\"}, {\"text\": \"Ask Priya about rnulch\\n\\n\"}, {\"embeddedObjects\": [{\"identifier\": \"A23CF0D138B2803EAE7ECA316A25B347\", \"type\": \"photo\"}]}], \"meta\": {\"created\": {\"platform\": \"dayone-cli\"}, \"version\": 1}}",
+   "moments": [
+    {
+     "id": "A23CF0D138B2803EAE7ECA316A25B347",
+     "type": "image",
+     "md5": "188286028e8869b813c56f3205c5082b"
+    }
+   ],
+   "tags": [],
+   "deleted": false
+  }
+ ],
+ "outbox": [],
+ "next_id": 3
+}

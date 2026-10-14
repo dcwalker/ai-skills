@@ -1,0 +1,23 @@
+{
+ "accounts": {
+  "iCloud": {
+   "folders": {
+    "Notes": [
+     {
+      "id": "x-coredata://FIXTURE-STORE/ICNote/garden",
+      "name": "Garden plan",
+      "created": "2026-03-09T15:15:00Z",
+      "images": [
+       "garden.png"
+      ]
+     }
+    ]
+   }
+  },
+  "On My Mac": {
+   "folders": {
+    "Notes": []
+   }
+  }
+ }
+}

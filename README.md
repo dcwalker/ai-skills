@@ -217,6 +217,9 @@ underlying data.
 [tidy-workspace](plugins/software-development/skills/tidy-workspace/evals/benchmark-baseline.md) ·
 [update-dependabot-bulk](plugins/software-development/skills/update-dependabot-bulk/evals/benchmark-baseline.md)
 
+**utilities:**
+[transcribe-apple-notes-to-dayone](plugins/utilities/skills/transcribe-apple-notes-to-dayone/evals/benchmark-baseline.md)
+
 Repo-wide: `python3 evals/lib/report.py` prints one table across every
 committed baseline: per-skill eval counts, expectation pass rates, baseline
 dates, and totals.

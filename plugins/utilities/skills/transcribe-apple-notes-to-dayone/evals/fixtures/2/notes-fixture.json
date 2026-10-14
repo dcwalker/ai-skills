@@ -1,0 +1,23 @@
+{
+ "accounts": {
+  "iCloud": {
+   "folders": {
+    "Notes": [
+     {
+      "id": "x-coredata://FIXTURE-STORE/ICNote/sprint",
+      "name": "Sprint ideas",
+      "created": "2026-03-10T16:00:00Z",
+      "images": [
+       "sprint.png"
+      ]
+     }
+    ]
+   }
+  },
+  "On My Mac": {
+   "folders": {
+    "Notes": []
+   }
+  }
+ }
+}
