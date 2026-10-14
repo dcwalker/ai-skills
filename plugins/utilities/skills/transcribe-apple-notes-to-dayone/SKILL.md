@@ -1,6 +1,6 @@
 ---
 name: transcribe-apple-notes-to-dayone
-description: Turn handwritten Apple Notes into Day One journal entries, each holding the handwriting as a PNG and a corrected plain-text transcription, dated with the note's creation date, then move each note into a done folder. Works in reviewed batches on macOS with the dayone CLI. Use when the user wants to import, transcribe, OCR, or move handwritten (Apple Pencil or drawing) notes from Apple Notes into Day One.
+description: Turn handwritten Apple Notes into Day One journal entries, each holding the handwriting as a PNG and a corrected plain-text transcription, dated with the note's creation date, then move each note into a done folder. Works in reviewed batches on macOS with the dayone CLI. Use when the user wants to import, transcribe, OCR, or move handwritten (Apple Pencil or drawing) notes from Apple Notes into Day One, and when they want to correct the text of a Day One entry that was imported from a handwritten note: an entry with an image cannot be edited in place through the CLI.
 metadata:
   category: utilities
 ---
@@ -79,8 +79,10 @@ report so the user can change them:
    likely-intended words and the official spelling of product names, and
    keep the user's wording otherwise, unless the user says otherwise.
 
-This skill never deletes notes. If the user asks for notes to be deleted
-after import, say so and offer to move them to a done folder instead.
+This skill never deletes notes. If the request asks for notes to be deleted
+(after import or otherwise), the first thing the reply says is that notes
+are moved to a done folder, never deleted, and it asks the user to name that
+folder or agree to one. Do not leave the delete request unanswered.
 
 The CLI cannot add tags. If the user wants entries tagged, tell them now that
 they will add tags in the Day One app after each batch.
@@ -202,8 +204,12 @@ Re-attaching the image does not help either; it adds a second copy.
 
 To correct an entry, write a new entry with the fixed text and the same
 image, verify it, then delete the old one with `dayone entry delete` and
-sync. Deleting needs the user's confirmation first, and tags added in the app
-are lost with the old entry, so say so when asking.
+sync. Deleting needs the user's confirmation first. When asking, say three
+things: why a new entry was written instead of editing the old one (the CLI
+cannot change the text of an entry that has an image), which entry will be
+deleted, and that any tags added to it in the Day One app are lost with it.
+The CLI's copy of an entry may not show tags added in the app, so do not tell
+the user an entry has none.
 
 ## Rules
 
