@@ -9,11 +9,16 @@ recorded one), and an ISO 8601 timestamp combining the two. Standard library
 only, so it runs wherever Python 3 does. Reads JPEG files; for HEIC or PNG
 files, or when a field is missing, the output says so and the caller should
 fall back to another tool (exiftool, mdls) or another time source.
+
+Photos must lie under the user's home directory or $TMPDIR, so a mistyped or
+hostile argument cannot read files elsewhere.
 """
 
 import json
+import os
 import struct
 import sys
+import tempfile
 
 EXIF_IFD_POINTER = 0x8769
 DATE_TIME_ORIGINAL = 0x9003
@@ -63,11 +68,31 @@ def ascii_value(tiff, entry, endian):
     return value.split(b"\x00", 1)[0].decode("ascii", "replace").strip() or None
 
 
+def allowed_roots():
+    """Where photos may be read from: the user's home and $TMPDIR."""
+    roots = {os.path.expanduser("~"), tempfile.gettempdir()}
+    return sorted({os.path.realpath(root) for root in roots if os.path.isdir(root)})
+
+
+def contained_path(path):
+    """Resolve path, or return None if it is outside the allowed roots."""
+    resolved = os.path.realpath(os.path.expanduser(path))
+    for root in allowed_roots():
+        if resolved == root or resolved.startswith(root + os.sep):
+            return resolved
+    return None
+
+
 def capture_time(path):
     result = {"path": path, "date_time_original": None,
               "offset_time_original": None, "iso": None}
+    resolved = contained_path(path)
+    if resolved is None:
+        result["error"] = (f"outside your home directory and {tempfile.gettempdir()}; "
+                           "copy the photo there first")
+        return result
     try:
-        with open(path, "rb") as handle:
+        with open(resolved, "rb") as handle:
             data = handle.read()
     except OSError as error:
         result["error"] = str(error)
