@@ -1,6 +1,6 @@
 ---
 name: transcribe-apple-notes-to-dayone
-description: Turn handwritten Apple Notes into Day One journal entries, each holding the handwriting as a PNG and a corrected plain-text transcription, dated with the note's creation date, then move each note into a done folder. Works in reviewed batches on macOS with the dayone CLI. Use when the user wants to import, transcribe, OCR, or move handwritten (Apple Pencil or drawing) notes from Apple Notes into Day One, and when they want to correct the text of a Day One entry that was imported from a handwritten note: an entry with an image cannot be edited in place through the CLI.
+description: Turn handwritten Apple Notes into Day One journal entries, each holding the handwriting as a PNG and a corrected plain-text transcription, dated with the note's creation date, then move each note into a done folder. Works in reviewed batches on macOS with the dayone CLI. Use when the user wants to import, transcribe, OCR, or move handwritten (Apple Pencil or drawing) notes from Apple Notes into Day One, and when they want to correct the text of a Day One entry that was imported from a handwritten note: the text of an entry with an image cannot be edited in place through the CLI.
 metadata:
   category: utilities
 ---
@@ -198,23 +198,83 @@ Then wait for the user before starting the next batch.
 
 ## Fixing an entry after it is written
 
+### The date can be changed in place
+
+`entry write` with `--entry-id` and `--date` changes an existing entry's
+date, and the change reaches the server. On an entry that has an image the
+rich text comes back unchanged, so the transcription and the attachment are
+untouched. Use this whenever only the date is wrong; recreating the entry is
+for text corrections.
+
+A body is still required: `--date` on its own fails with `missing body;
+provide --body or --body-stdin`. Send the stored body back with its Markdown
+hard breaks intact, the way `entry_body` writes them, because a text-only
+entry regenerates its rich text from the body and plain newlines collapse
+into one paragraph. A body that already carries hard breaks can go back
+verbatim.
+
+Write the offset of the entry's own zone, not the machine's. Day One shows an
+entry at its recorded zone, so an entry recorded three hours ahead of the
+machine displays its header time only when `--date` carries that entry's
+offset; send the machine's offset instead and it displays three hours late.
+The CLI cannot show an entry's zone, so for any entry that is not in the
+local zone, take the offset from an export or from what the user sees in the
+app, and confirm the result the same way.
+
+### The text cannot be changed in place
+
 The CLI cannot change the text of an existing entry that has an image: it
 keeps the old rich text and stores the new text only locally, with no error.
 Re-attaching the image does not help either; it adds a second copy.
 
-To correct an entry, write a new entry with the fixed text and the same
+To correct the text, write a new entry with the fixed text and the same
 image, verify it, then delete the old one with `dayone entry delete` and
-sync. Deleting needs the user's confirmation first. When asking, say three
+sync. That needs the image file, which the CLI cannot retrieve: its store
+keeps only a thumbnail and the moment's metadata. The image is still on disk
+while the note's working files survive; after they are gone it has to come
+from the note in Notes, or from a Day One export taken in the app, where each
+exported photo is named by the `md5` its moment records and carries the width
+and height recorded with it.
+
+Deleting needs the user's confirmation first. When asking, say three
 things: why a new entry was written instead of editing the old one (the CLI
 cannot change the text of an entry that has an image), which entry will be
 deleted, and that any tags added to it in the Day One app are lost with it.
 The CLI's copy of an entry may not show tags added in the app, so do not tell
 the user an entry has none.
 
+## What a write does to an entry
+
+After a write the CLI's own copy of the entry reports no time zone:
+`time_zone` is null, and so is `timeZone` in its `data_json`. The entry keeps
+its zone regardless; in one account's export, every entry written through
+the CLI still carried one, including every entry this skill created. Never
+read that null as data loss, and never use the CLI's view to work out what
+time an entry displays.
+
+A write can still move the zone to the writing machine's. In that same
+export, 3 of 136 written entries had come back in the machine's zone rather
+than their own, which is one sample and not a rate. Since the zone decides
+the wall time Day One shows, a
+date written for an entry recorded in another zone can display hours off the
+time intended, and the CLI cannot show that it happened. For an entry whose
+zone is not the local machine's, confirm the displayed time in the app or in
+an export before calling it fixed. The Day One app ships its own `dayone`
+binary with `-z, --time-zone`, but its only command is `new`, so it cannot
+set the zone of an entry that already exists.
+
+A write replaces the whole body and carries no version with it, so the last
+write wins. Several devices sync to one account, nothing is locked, and the
+local store is a cache that changes between reads: both entry ids and bodies
+move. Re-read an entry in the same step that writes it, and compare its body,
+date, and moment ids against what the plan was built from. Report an entry
+that changed instead of overwriting it.
+
 ## Rules
 
 - Never edit or delete a note in Notes; only move it, after its entry
   verifies.
 - Never delete a Day One entry without the user's confirmation.
+- Never overwrite an entry that changed since it was read; report it instead.
 - Never run the import while a first-time `dayone sync` is still in progress.
 - Never print or quote the content of notes outside the batch.
