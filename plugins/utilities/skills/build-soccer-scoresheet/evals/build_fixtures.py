@@ -21,6 +21,12 @@ from PIL import Image, ImageDraw, ImageFont
 HERE = os.path.dirname(os.path.abspath(__file__))
 FIXTURES = os.path.join(HERE, "fixtures")
 
+TEAM_APP_FILE = "team-app.txt"
+NOTES_FILE = "notes.txt"
+HOME_GAME = "Home or Away: Home"
+QATAR_OFFSET = "+03:00"
+ARGENTINA_COACH = "Coach: Lionel Scaloni"
+
 ARGENTINA = [
     (1, "Franco Armani", "GK"), (2, "Juan Foyth", "DEF"),
     (3, "Nicolás Tagliafico", "DEF"), (4, "Gonzalo Montiel", "DEF"),
@@ -140,7 +146,7 @@ def team_app(path, header, roster, staff, extra=()):
 def build_final(base):
     """Eval 1: the final, every kind of input, extra time and penalties."""
     team_app(
-        os.path.join(base, "team-app.txt"),
+        os.path.join(base, TEAM_APP_FILE),
         [
             "Game: Argentina vs. France",
             "Date/Time: Sun, Dec 18, 2022 · 6:00 PM - 8:00 PM (AST, UTC+3)",
@@ -148,20 +154,20 @@ def build_final(base):
             "Location: Lusail Stadium",
             "Address: Lusail Stadium, Lusail, Qatar",
             "Opponent: France",
-            "Home or Away: Home",
+            HOME_GAME,
             ("Notes: FIFA World Cup Qatar 2022 Final. Competition page: "
             "https://www.fifa.com/en/tournaments/mens/worldcup/qatar2022"),
             "Result: T 3-3",
         ],
         roster_lines(ARGENTINA),
-        ["Coach: Lionel Scaloni"],
+        [ARGENTINA_COACH],
     )
     write(
         os.path.join(base, "france-roster.txt"),
         "\n".join(["France squad, copied from the federation site"] + roster_lines(FRANCE)
                   + ["", "Coach: Didier Deschamps"]),
     )
-    notes_file(os.path.join(base, "notes.txt"), [
+    notes_file(os.path.join(base, NOTES_FILE), [
         ("2022-12-18 17:45:10 +03:00",
          ("Starting XI Argentina: 23 E. Martínez; 26 Molina, 13 Romero, 19 Otamendi, "
          "3 Tagliafico; 7 De Paul, 24 Enzo Fernández, 20 Mac Allister; 10 Messi, "
@@ -215,33 +221,33 @@ def build_final(base):
     watch_screenshot(os.path.join(shots, "IMG_4130.PNG"), "8:10", "04:21.37")
     photos = os.path.join(base, "photos")
     os.makedirs(photos)
-    photo(os.path.join(photos, "IMG_4101.jpg"), "2022:12:18 17:48:12", "+03:00",
+    photo(os.path.join(photos, "IMG_4101.jpg"), "2022:12:18 17:48:12", QATAR_OFFSET,
           "Teams walking out", "#3a6ea5")
-    photo(os.path.join(photos, "IMG_4133.jpg"), "2022:12:18 20:25:44", "+03:00",
+    photo(os.path.join(photos, "IMG_4133.jpg"), "2022:12:18 20:25:44", QATAR_OFFSET,
           "Messi celebrating his goal", "#2e8b57")
-    photo(os.path.join(photos, "IMG_4170.jpg"), "2022:12:18 21:20:05", "+03:00",
+    photo(os.path.join(photos, "IMG_4170.jpg"), "2022:12:18 21:20:05", QATAR_OFFSET,
           "Trophy lift", "#b8860b")
 
 
 def build_mexico(base):
     """Eval 2: no anchor at all for the second half."""
     team_app(
-        os.path.join(base, "team-app.txt"),
+        os.path.join(base, TEAM_APP_FILE),
         [
             "Game: Argentina vs. Mexico",
             "Date/Time: Sat, Nov 26, 2022 · 10:00 PM - 12:00 AM (AST, UTC+3)",
             "Location: Lusail Stadium",
             "Address: Lusail Stadium, Lusail, Qatar",
             "Opponent: Mexico",
-            "Home or Away: Home",
+            HOME_GAME,
             ("Notes: FIFA World Cup Qatar 2022, Group C. Competition page: "
             "https://www.fifa.com/en/tournaments/mens/worldcup/qatar2022"),
             "Result: W 2-0",
         ],
         roster_lines(ARGENTINA),
-        ["Coach: Lionel Scaloni"],
+        [ARGENTINA_COACH],
     )
-    notes_file(os.path.join(base, "notes.txt"), [
+    notes_file(os.path.join(base, NOTES_FILE), [
         ("2022-11-26 22:00:15 +03:00", "Kickoff"),
         ("2022-11-26 22:47:40 +03:00", "HT 0-0, pretty flat"),
         ("2022-11-26 23:22:20 +03:00",
@@ -254,7 +260,7 @@ def build_mexico(base):
 def build_poland(base):
     """Eval 3: substitute coach, no opponent roster, a saved penalty, a photo."""
     team_app(
-        os.path.join(base, "team-app.txt"),
+        os.path.join(base, TEAM_APP_FILE),
         [
             "Game: Poland vs. Argentina",
             "Date/Time: Wed, Nov 30, 2022 · 10:00 PM - 12:00 AM (AST, UTC+3)",
@@ -267,9 +273,9 @@ def build_poland(base):
             "Result: W 2-0",
         ],
         roster_lines(ARGENTINA),
-        ["Coach: Lionel Scaloni"],
+        [ARGENTINA_COACH],
     )
-    notes_file(os.path.join(base, "notes.txt"), [
+    notes_file(os.path.join(base, NOTES_FILE), [
         ("2022-11-30 21:30:00 +03:00",
          "Scaloni is out sick today, Pablo Aimar is running the team"),
         ("2022-11-30 22:00:10 +03:00", "Kickoff"),
@@ -282,21 +288,21 @@ def build_poland(base):
     ])
     photos = os.path.join(base, "photos")
     os.makedirs(photos)
-    photo(os.path.join(photos, "IMG_5001.jpg"), "2022:11:30 22:51:02", "+03:00",
+    photo(os.path.join(photos, "IMG_5001.jpg"), "2022:11:30 22:51:02", QATAR_OFFSET,
           "Halftime huddle", "#3a6ea5")
 
 
 def build_australia(base):
     """Eval 4: club tournament, period length and halftime unknown."""
     team_app(
-        os.path.join(base, "team-app.txt"),
+        os.path.join(base, TEAM_APP_FILE),
         [
             "Game: France vs. Australia",
             "Date/Time: Sat, Oct 10, 2026 · 10:00 AM (PDT, UTC-7)",
             "Location: Riverside Fields, Field 3",
             "Address: 100 Example Way, Springfield",
             "Opponent: Australia",
-            "Home or Away: Home",
+            HOME_GAME,
             ("Notes: Fall World Cup Tournament, Pool B. Every team in the "
             "tournament is named after a World Cup country."),
             "Result: W 4-1",
@@ -304,7 +310,7 @@ def build_australia(base):
         roster_lines(FRANCE, with_positions=False),
         ["Coach: Didier Deschamps"],
     )
-    notes_file(os.path.join(base, "notes.txt"), [
+    notes_file(os.path.join(base, NOTES_FILE), [
         ("2026-10-10 10:00:05 -07:00", "Kickoff"),
         ("2026-10-10 10:08:50 -07:00", "Australia score first, Goodwin. 0-1"),
         ("2026-10-10 10:27:00 -07:00", "Rabiot header 1-1, Theo cross"),
@@ -317,7 +323,7 @@ def build_australia(base):
 def build_saudi(base):
     """Eval 5: Veo's AI tags credit a goal to the wrong team."""
     team_app(
-        os.path.join(base, "team-app.txt"),
+        os.path.join(base, TEAM_APP_FILE),
         [
             "Club schedule export (Sprocket)",
             "TUE 22 NOV GAME",
@@ -362,7 +368,7 @@ def build_saudi(base):
         "54’ · ARG · AI · Kickoff",
     ]
     write(os.path.join(base, "veo-events.txt"), "\n".join(events_panel))
-    notes_file(os.path.join(base, "notes.txt"), [
+    notes_file(os.path.join(base, NOTES_FILE), [
         ("2022-11-22 13:09:31 +03:00", "Messi pen 1-0"),
         ("2022-11-22 14:12:30 +03:00", "Al-Shehri equalizes?! 1-1"),
         ("2022-11-22 14:17:30 +03:00", "Al-Dawsari screamer. 1-2. Stunned."),
@@ -428,14 +434,14 @@ def build_portugal(base):
     written minute the tracker corrects, one it cannot, and a post-match card.
     """
     team_app(
-        os.path.join(base, "team-app.txt"),
+        os.path.join(base, TEAM_APP_FILE),
         [
             "Game: Morocco vs. Portugal",
             "Date/Time: Sat, Dec 10, 2022 · 6:00 PM - 8:00 PM (AST, UTC+3)",
             "Location: Al Thumama Stadium",
             "Address: Al Thumama Stadium, Doha, Qatar",
             "Opponent: Portugal",
-            "Home or Away: Home",
+            HOME_GAME,
             ("Notes: FIFA World Cup Qatar 2022, Quarter-final. Competition page: "
             "https://www.fifa.com/en/tournaments/mens/worldcup/qatar2022"),
             "Result: W 1-0",
