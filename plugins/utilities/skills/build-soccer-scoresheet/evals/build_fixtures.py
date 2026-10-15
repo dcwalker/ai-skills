@@ -60,11 +60,12 @@ FONT_PATHS = [
 
 
 def font(size):
-    """A font with accented Latin letters; Pillow's default lacks them."""
+    """A font with accented Latin letters. Pillow's built-in font lacks them,
+    so falling back to it would render player names wrong; stop instead."""
     for path in FONT_PATHS:
         if os.path.exists(path):
             return ImageFont.truetype(path, size)
-    return ImageFont.load_default(size=size)
+    raise SystemExit(f"No font with accented letters found; looked for {', '.join(FONT_PATHS)}")
 
 
 def roster_lines(players, with_positions=True):
