@@ -407,7 +407,8 @@ def journal_export(base, zone, offset_hours, entries):
             photo(temp, moment.strftime("%Y:%m:%d %H:%M:%S"), None, caption,
                   "#2e8b57" if index % 2 else "#3a6ea5")
             with open(temp, "rb") as handle:
-                digest = hashlib.md5(handle.read()).hexdigest()
+                # Journal exports name photos by MD5; this is a file name, not security.
+                digest = hashlib.md5(handle.read(), usedforsecurity=False).hexdigest()
             os.rename(temp, os.path.join(photos, f"{digest}.jpeg"))
             moment_id = f"{index + 101:032X}"
             entry["text"] = f"![](journal-moment://{moment_id})"
