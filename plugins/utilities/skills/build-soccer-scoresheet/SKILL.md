@@ -40,11 +40,15 @@ Report every disagreement to the user rather than resolving it silently.
 ## Step 1: Inventory the inputs
 
 Open every file the user provided and list what each one contributes. Look
-at images yourself; do not rely on file names.
+at images yourself; do not rely on file names. Tell screenshots from photos:
+a screenshot (a status bar, an app or watch screen) is only a source to read
+data from, such as the time, the game clock, the score, or who scored and
+assisted, and it never appears in the report. Photos of the game do.
 
 - **Team app screenshots** (Sprocket, TeamSnap, Demosphere game trackers):
   the status-bar time (wall clock, minutes only), the game clock (with
-  seconds) and period label, the score, and any event list with minutes.
+  seconds) and period label, the score, and any event list with minutes,
+  scorers, and assists.
 - **Watch stopwatch screenshots**: the watch's time of day (minutes only) and
   the stopwatch reading, which is elapsed time in the current period.
 - **Notes**: from any notes or journal app, usually one short entry per
@@ -61,11 +65,13 @@ at images yourself; do not rely on file names.
 - **Photos**: the capture time from EXIF `DateTimeOriginal` plus
   `OffsetTimeOriginal`. Run `python3 scripts/photo_time.py <photo>...`
   (standard library only, resolved relative to this `SKILL.md`), or use
-  `exiftool` or `mdls` if you prefer. Exported photos often lose the
+  `exiftool` or `mdls` if you prefer. The script reads only under the
+  user's home and `$TMPDIR`; if it refuses a photo, copy the photos into a
+  working folder under home (`mktemp -d ~/scoresheet.XXXX`) rather than
+  changing `TMPDIR`. Exported photos often lose the
   offset; then the time is local, in the zone of the notes or the match. A
-  photo may show an event (a
-  celebration, a substitution board) or just the day. Keep every photo for
-  the report.
+  photo may show an event (a celebration, a substitution board) or just the
+  day. Keep every photo for the report.
 - **Links**: recordings, team app pages, competition pages.
 
 Record the time zone of every wall-clock source. Phone, watch, notes, and
@@ -321,7 +327,9 @@ everything else stays as written.
   `  ![Short description](path/to/photo.jpg)`. Other photos get their own
   line at their minute (`- **52'** - Photo`), or `**Pre-match**` and
   `**Post-match**` in place of the minute, with the image indented below.
-  Use paths relative to where the report will be saved.
+  Use paths relative to where the report will be saved. Screenshots (app,
+  tracker, watch, or video frames) are sources only; never embed them or
+  give them a line.
 - **Video links**: when an event's moment in the recording can be linked,
   append ` ([video](link))` to its line. YouTube supports a `t=<seconds>`
   parameter (`?t=` on a bare URL, `&t=` when the URL already has `?v=`),

@@ -4,7 +4,7 @@
   "skill_path": "plugins/utilities/skills/build-soccer-scoresheet",
   "executor_model": "claude-opus-5-5",
   "analyzer_model": "claude-opus-5-5",
-  "timestamp": "2026-10-15T18:44:41Z",
+  "timestamp": "2026-10-15T19:03:03Z",
   "evals_run": [
    1,
    2,
@@ -15,7 +15,7 @@
   ],
   "runs_per_configuration": 1,
   "executor": "Agent-tool subagents, one per eval, each pointed at a copy of fixtures/<id>/inputs as its working directory, with SKILL.md loaded and no browser, web, calendar, email, or connector access",
-  "notes": "Graded against each trial's written report and its final reply. Eval 2, 4, and 6 trials stop to ask the user, as the skill directs, so their expectations are checked against the draft and question in the reply. Eval 6's report was withheld pending the user's choice of 76' or 77'; the draft in the reply was graded. The recording check (reading jersey numbers from video) is not exercised: trials have no recording access."
+  "notes": "Graded against each trial's written report and its final reply. Eval 2, 4, and 6 trials stop to ask the user, as the skill directs, so their expectations are checked against the draft and question in the reply. Eval 6's report was withheld pending the user's choice of 76' or 77'; the draft in the reply was graded. The recording check (reading jersey numbers from video) is not exercised: trials have no recording access. Evals 1 and 6 were rerun after SKILL.md gained the rule that screenshots are sources only and never appear in the report; each gained an expectation for it. Evals 2-5 carry over from the previous run, whose SKILL.md differed only in that rule and in the photo_time.py path note."
  },
  "runs": [
   {
@@ -24,11 +24,11 @@
    "run_number": 1,
    "result": {
     "pass_rate": 1.0,
-    "passed": 11,
+    "passed": 12,
     "failed": 0,
-    "total": 11,
-    "time_seconds": 97.3,
-    "tokens": 91785,
+    "total": 12,
+    "time_seconds": 108.1,
+    "tokens": 93539,
     "errors": 0
    },
    "expectations": [
@@ -85,7 +85,12 @@
     {
      "text": "Match Observations contains the observation from the notes, Post-Match Commentary states there are no notes (rather than placeholder text), and Recording is a single line in the form [YouTube | Argentina vs. France](https://www.youtube.com/watch?v=WCF2022demo).",
      "passed": true,
-     "evidence": "Observation copied; No notes; YouTube recording line."
+     "evidence": "Seven sections; YouTube recording line; 45+8', 90+8', 105+1', 120+3' verified in the iteration-3 report."
+    },
+    {
+     "text": "No screenshot (IMG_4112, IMG_4119, IMG_4127, IMG_4130, or anything under screenshots/) is embedded or listed as an event in scoresheet.md; only the three photos appear as images.",
+     "passed": true,
+     "evidence": "Only photo images are embedded; no screenshot path or file name appears."
     }
    ],
    "notes": []
@@ -264,18 +269,18 @@
    "run_number": 1,
    "result": {
     "pass_rate": 1.0,
-    "passed": 9,
+    "passed": 10,
     "failed": 0,
-    "total": 9,
-    "time_seconds": 66.5,
-    "tokens": 83027,
+    "total": 10,
+    "time_seconds": 86.4,
+    "tokens": 85288,
     "errors": 0
    },
    "expectations": [
     {
      "text": "No Markdown escapes from the export appear in scoresheet.md (no '\\-', '\\.', '\\+', or '\\!'), and the Game over line reads 'Game over (Morocco 1-0 Portugal)' at 90+8'.",
      "passed": true,
-     "evidence": "Draft has no escapes; 'Game over (Morocco 1-0 Portugal)' at 90+8'. File withheld pending the 76'/77' question; draft shown in the reply."
+     "evidence": "scoresheet.md saved as a draft with no escapes; 'Game over (Morocco 1-0 Portugal)' at 90+8'."
     },
     {
      "text": "Significant Events has a yellow card for Portugal with no invented player at 5' and another at 63' (not 64'), and the reply or report attributes the 63' to the tracker screenshot.",
@@ -316,6 +321,11 @@
      "text": "The Portugal roster section says there is no opponent roster, and Match Observations, Post-Match Commentary, and Recording each hold a short statement that there is nothing.",
      "passed": true,
      "evidence": "No opponent roster; No observations / No notes / No recording."
+    },
+    {
+     "text": "The tracker screenshot (IMG_7311) is not embedded or listed as an event; only the two photos from the notes export appear as images.",
+     "passed": true,
+     "evidence": "Only photo images are embedded; no screenshot path or file name appears."
     }
    ],
    "notes": []

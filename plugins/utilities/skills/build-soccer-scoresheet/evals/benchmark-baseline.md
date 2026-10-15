@@ -10,14 +10,17 @@
 
 | Metric | With Skill | Without Skill | Delta |
 |--------|------------|---------------|-------|
-| Expectations passed | 40/40 (100%) | 15/40 (38%) | +25 |
+| Expectations passed | 42/42 (100%) | 17/42 (40%) | +25 |
 | Evals fully passing | 6/6 | 1/6 | +5 |
-| Time | 48.9s ± 28.3s | 42.7s ± 25.2s | +6.2s |
-| Tokens | 78,892 ± 7,481 | 70,364 ± 6,742 | +8,528 |
+| Time | 54.0s ± 35.0s | 42.7s ± 25.2s | +11.4s |
+| Tokens | 79,561 ± 8,357 | 70,364 ± 6,742 | +9,197 |
 
 `benchmark-baseline.json` holds the with-skill runs only. The without-skill
 runs for evals 1-4 come from the first iteration, whose inputs were the same;
-evals 5 and 6 were rerun after their fixtures changed.
+evals 5 and 6 were rerun after their fixtures changed. With-skill evals 1
+and 6 were rerun after the rule that screenshots never appear in the report
+was added; the new expectation was graded on the existing without-skill
+outputs, which also left screenshots out.
 
 Each trial is one Agent-tool subagent working in a copy of
 `fixtures/<id>/inputs`, with no browser, web, calendar, email, or connector
@@ -28,12 +31,12 @@ fixtures sit mid-minute so each expected minute is unambiguous.
 
 | Eval | Case | With | Without |
 |------|------|------|---------|
-| 1 | World Cup final: screenshots, watch, notes, photos, extra time, shootout | 11/11 | 3/11 |
+| 1 | World Cup final: screenshots, watch, notes, photos, extra time, shootout | 12/12 | 4/12 |
 | 2 | No second-half anchor: estimate and ask | 4/4 | 2/4 |
 | 3 | Substitute coach, no opponent roster, saved penalty | 7/7 | 1/7 |
 | 4 | Club tournament with unknown period length: ask | 3/3 | 3/3 |
 | 5 | Team app result vs Veo AI tags | 6/6 | 3/6 |
-| 6 | Journal export with written minutes and shorthand | 9/9 | 3/9 |
+| 6 | Journal export with written minutes and shorthand | 10/10 | 4/10 |
 
 ## What the evals found
 
@@ -52,5 +55,8 @@ fixtures sit mid-minute so each expected minute is unambiguous.
   resolves disagreeing minutes across sources and asks when they stay
   unresolved, writes team names instead of us and them, and adds
   Post-match lines.
+- **Screenshots stay out of the report.** They are read for the clock, the
+  score, and who scored, and only game photos are embedded; evals 1 and 6
+  check this.
 - **Not exercised**: reading jersey numbers from a recording to fill a gap.
   Trials have no recording access.

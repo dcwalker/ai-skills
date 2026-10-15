@@ -20,7 +20,8 @@
         "The shootout is listed in kick order (Mbappé scored, Messi scored, Coman saved, Dybala scored, Tchouaméni missed, Paredes scored, Kolo Muani scored, Montiel scored) without game minutes, and the final line records the 3-3 draw with Argentina winning 4-2 on penalties.",
         "All three photos are embedded as Markdown images whose paths resolve from scoresheet.md, in chronological order: IMG_4101 before kickoff, IMG_4133 directly with the 108' Messi goal, IMG_4170 after the game.",
         "The 108' goal line links to the YouTube video with a t value of 8850 seconds (8820 to 8880 accepted), computed from the 17:58:00 stream start.",
-        "Match Observations contains the observation from the notes, Post-Match Commentary states there are no notes (rather than placeholder text), and Recording is a single line in the form [YouTube | Argentina vs. France](https://www.youtube.com/watch?v=WCF2022demo)."
+        "Match Observations contains the observation from the notes, Post-Match Commentary states there are no notes (rather than placeholder text), and Recording is a single line in the form [YouTube | Argentina vs. France](https://www.youtube.com/watch?v=WCF2022demo).",
+        "No screenshot (IMG_4112, IMG_4119, IMG_4127, IMG_4130, or anything under screenshots/) is embedded or listed as an event in scoresheet.md; only the three photos appear as images."
       ]
     },
     {
@@ -99,7 +100,8 @@
         "Walid Regragui's yellow card appears after the Game over line with Post-match in place of a minute.",
         "No event line says us, we, them, or they; the opponent is called Portugal.",
         "Both photos are embedded with paths that resolve from scoresheet.md: the warmup photo before kickoff (Pre-match) and the Hakimi photo at 32'.",
-        "The Portugal roster section says there is no opponent roster, and Match Observations, Post-Match Commentary, and Recording each hold a short statement that there is nothing."
+        "The Portugal roster section says there is no opponent roster, and Match Observations, Post-Match Commentary, and Recording each hold a short statement that there is nothing.",
+        "The tracker screenshot (IMG_7311) is not embedded or listed as an event; only the two photos from the notes export appear as images."
       ]
     }
   ]
