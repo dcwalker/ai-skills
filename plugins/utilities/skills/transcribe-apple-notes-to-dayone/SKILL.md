@@ -247,14 +247,15 @@ the user an entry has none.
 
 After a write the CLI's own copy of the entry reports no time zone:
 `time_zone` is null, and so is `timeZone` in its `data_json`. The entry keeps
-its zone regardless. An export taken in the app showed all 136 written
-entries still carrying one, including every entry this skill created. Never
+its zone regardless; in one account's export, every entry written through
+the CLI still carried one, including every entry this skill created. Never
 read that null as data loss, and never use the CLI's view to work out what
 time an entry displays.
 
-A write can still move the zone to the writing machine's. Of those 136
-entries, 3 recorded in a different zone came back in the writing machine's
-zone. Since the zone decides the wall time Day One shows, a
+A write can still move the zone to the writing machine's. In that same
+export, 3 of 136 written entries had come back in the machine's zone rather
+than their own, which is one sample and not a rate. Since the zone decides
+the wall time Day One shows, a
 date written for an entry recorded in another zone can display hours off the
 time intended, and the CLI cannot show that it happened. For an entry whose
 zone is not the local machine's, confirm the displayed time in the app or in
