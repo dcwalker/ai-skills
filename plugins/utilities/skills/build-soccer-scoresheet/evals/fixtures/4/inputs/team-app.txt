@@ -1,0 +1,37 @@
+Game: France vs. Australia
+Date/Time: Sat, Oct 10, 2026 · 10:00 AM (PDT, UTC-7)
+Location: Riverside Fields, Field 3
+Address: 100 Example Way, Springfield
+Opponent: Australia
+Home or Away: Home
+Notes: Fall World Cup Tournament, Pool B. Every team in the tournament is named after a World Cup country.
+Result: W 4-1
+
+Roster (#)
+#1 Hugo Lloris
+#2 Benjamin Pavard
+#3 Axel Disasi
+#4 Raphaël Varane
+#5 Jules Koundé
+#6 Mattéo Guendouzi
+#7 Antoine Griezmann
+#8 Aurélien Tchouaméni
+#9 Olivier Giroud
+#10 Kylian Mbappé
+#11 Ousmane Dembélé
+#12 Randal Kolo Muani
+#13 Youssouf Fofana
+#14 Adrien Rabiot
+#15 Jordan Veretout
+#16 Steve Mandanda
+#17 William Saliba
+#18 Dayot Upamecano
+#20 Kingsley Coman
+#22 Theo Hernández
+#23 Alphonse Areola
+#24 Ibrahima Konaté
+#25 Eduardo Camavinga
+#26 Marcus Thuram
+
+Staff
+Coach: Didier Deschamps

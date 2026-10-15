@@ -1,6 +1,6 @@
 {
   "name": "utilities",
-  "description": "General-purpose utility skills. Includes: transcribe-apple-notes-to-dayone.",
+  "description": "General-purpose utility skills. Includes: build-soccer-scoresheet, transcribe-apple-notes-to-dayone.",
   "author": {
     "name": "Dan Walker"
   }

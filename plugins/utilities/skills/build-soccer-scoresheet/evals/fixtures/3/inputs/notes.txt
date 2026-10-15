@@ -1,0 +1,25 @@
+Notes export. Each note starts with its creation time.
+
+[2022-11-30 21:30:00 +03:00]
+Scaloni is out sick today, Pablo Aimar is running the team
+
+[2022-11-30 22:00:10 +03:00]
+Kickoff
+
+[2022-11-30 22:38:40 +03:00]
+Messi penalty SAVED by Szczęsny
+
+[2022-11-30 22:50:20 +03:00]
+Halftime 0-0
+
+[2022-11-30 23:03:00 +03:00]
+2nd half go
+
+[2022-11-30 23:03:40 +03:00]
+GOAL Mac Allister! Molina cross. 1-0
+
+[2022-11-30 23:24:30 +03:00]
+Julián Álvarez 2-0, Enzo assist
+
+[2022-11-30 23:53:30 +03:00]
+FT 2-0

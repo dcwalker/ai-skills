@@ -1,0 +1,18 @@
+[
+  {
+    "timeframe": [
+      300,
+      3310
+    ],
+    "duration": 3010,
+    "is_confirmed": false
+  },
+  {
+    "timeframe": [
+      4500,
+      7630
+    ],
+    "duration": 3130,
+    "is_confirmed": false
+  }
+]

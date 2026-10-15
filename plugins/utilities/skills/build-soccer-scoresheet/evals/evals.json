@@ -1,0 +1,106 @@
+{
+  "skill_name": "build-soccer-scoresheet",
+  "notes": "Fixtures come from build_fixtures.py; each eval's inputs are in fixtures/<id>/inputs and are copied to the trial's inputs/ directory. Trials have no team app, Veo, calendar, or email access, so every fact must come from the inputs. Wall-clock times are planted mid-minute so each expected minute is unambiguous.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Can you build the scoresheet for the World Cup final, Argentina vs France? Everything I have is in inputs/: the team app export, France's squad, my notes from my phone, screenshots from the game tracker app and my watch, and a few photos. Save it as scoresheet.md in the current directory.",
+      "expected_output": "scoresheet.md follows the template with Argentina as home team, Start Time 18:00 AST (UTC+3) on 2022-12-18 at Lusail Stadium, a linked competition, both rosters sorted by number with positions, Starter and Substitute labels from the notes' starting XIs, and both coaches. Significant Events lists every event at the minute derived from the anchors (23', 36', 41', 45+8', 55', 64', 71', 80', 81', 87', 90+8', 91', 102', 105+1', 108', 118', 120+1', 120+3'), the shootout in kick order, and Game over with Argentina winning 4-2 on penalties. Photos appear inline in chronological order, the 108' goal has a YouTube ?t= link, observations come from the notes, Post-Match Commentary says no notes, and Recording links the YouTube stream.",
+      "files": [
+        "fixtures/1/inputs"
+      ],
+      "expectations": [
+        "scoresheet.md exists and its sections appear in this order: '# Match Report: Argentina vs. France', '## Match Details', '## Rosters', '## Significant Events', '## Match Observations', '## Post-Match Commentary', '## Recording'.",
+        "Match Details give Date 2022-12-18, a Start Time of 18:00 with the time zone (AST or UTC+3), Venue Lusail Stadium with its location, and Competition as a Markdown link to the fifa.com Qatar 2022 page.",
+        "Both rosters are sorted by jersey number with Starter entries before Substitute entries; the Argentina starters are exactly #3, #7, #9, #10, #11, #13, #19, #20, #23, #24, #26 and the France starters are exactly #1, #4, #5, #7, #8, #9, #10, #11, #14, #18, #22.",
+        "Roster lines use the template shape '**#10 Lionel Messi** (FWD) - Starter', and each team ends with a Coach line: Lionel Scaloni for Argentina, Didier Deschamps for France.",
+        "Significant Events has Goal (penalty) Lionel Messi #10 at 23', Goal Ángel Di María #11 assisted by Alexis Mac Allister #20 at 36', and both France substitutions (Thuram #26 for Giroud #9, Kolo Muani #12 for Dembélé #11) at 41'.",
+        "Halftime is at 45+8', the Rabiot yellow card at 55', Acuña for Di María at 64', both France substitutions at 71', Mbappé's penalty at 80', Mbappé's goal assisted by Thuram at 81', and Thuram's yellow card at 87'.",
+        "End of regulation is at 90+8', Montiel for Molina at 91', Paredes for De Paul at 102', extra-time halftime at 105+1', Messi's goal at 108', Mbappé's penalty at 118', Dybala for Tagliafico at 120+1', and end of extra time at 120+3'. No event uses a minute counted from the start of its period (such as 10' for the Rabiot card).",
+        "The shootout is listed in kick order (Mbappé scored, Messi scored, Coman saved, Dybala scored, Tchouaméni missed, Paredes scored, Kolo Muani scored, Montiel scored) without game minutes, and the final line records the 3-3 draw with Argentina winning 4-2 on penalties.",
+        "All three photos are embedded as Markdown images whose paths resolve from scoresheet.md, in chronological order: IMG_4101 before kickoff, IMG_4133 directly with the 108' Messi goal, IMG_4170 after the game.",
+        "The 108' goal line links to the YouTube video with a t value of 8850 seconds (8820 to 8880 accepted), computed from the 17:58:00 stream start.",
+        "Match Observations contains the observation from the notes, Post-Match Commentary states there are no notes (rather than placeholder text), and Recording is a single line in the form [YouTube | Argentina vs. France](https://www.youtube.com/watch?v=WCF2022demo)."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Make a match report for Argentina vs Mexico from the group stage. My notes and the team app export are in inputs/. Put it in report.md here.",
+      "expected_output": "The first half converts cleanly from the kickoff note, but nothing marks the second-half kickoff. The skill estimates it, marks the second-half minutes as estimates, and asks the user to confirm before treating the report as final. It does not present 64' and 87' (or any other second-half minutes) as settled facts.",
+      "files": [
+        "fixtures/2/inputs"
+      ],
+      "expectations": [
+        "The final reply tells the user that the second half has no anchor (no second-half kickoff time) and asks them to confirm the estimated second-half kickoff or minutes.",
+        "Any second-half minute that appears in report.md or the reply is marked as estimated (for example with '(est.)'), and the reply explains how the estimate was made.",
+        "Halftime is placed at 45+3', derived from the 22:00:15 kickoff note and the 22:47:40 halftime note.",
+        "No second-half event is given a minute counted from the second-half restart (such as 19' or 42' for the goals)."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Write up our 2-0 win over Poland as a scoresheet, saved to scoresheet.md. The team app export, my notes, and a photo are in inputs/. I don't have Poland's roster and there's no video of this one.",
+      "expected_output": "scoresheet.md follows the template. Argentina's roster comes from the team app, sorted by number with positions and no Starter or Substitute labels. The coach line reads '~~Lionel Scaloni~~ Pablo Aimar'. Poland's roster section says no opponent roster. Events: Kickoff 1', Messi's penalty saved by Szczęsny at 39', Halftime 45+6' with the huddle photo, second-half kickoff 46', Mac Allister goal (assist Molina) 46', Álvarez goal (assist Enzo Fernández) 67', Game over 90+6' with the 2-0 score. Observations, Post-Match Commentary, and Recording state that there is nothing for them.",
+      "files": [
+        "fixtures/3/inputs"
+      ],
+      "expectations": [
+        "The title is '# Match Report: Poland vs. Argentina' (Poland home, per the team app's Away), and Match Details give 2022-11-30, a 22:00 Start Time with the time zone, and Stadium 974 with its location.",
+        "The Argentina roster lists all 26 players sorted by jersey number with positions, and no line carries a Starter or Substitute label.",
+        "The Argentina coach line shows Lionel Scaloni struck through followed by Pablo Aimar, as '~~Lionel Scaloni~~ Pablo Aimar'.",
+        "The Poland roster section contains a plain statement that there is no opponent roster and lists no invented players.",
+        "Significant Events has Messi's penalty missed (saved by Szczęsny) at 39', Halftime at 45+6', Alexis Mac Allister #20 scoring at 46' assisted by Nahuel Molina #26, Julián Álvarez #9 scoring at 67' assisted by Enzo Fernández #24, and Game over at 90+6'.",
+        "The photo IMG_5001.jpg is embedded with a path that resolves from scoresheet.md, at the halftime break (after the Halftime line and before the second-half events).",
+        "Match Observations, Post-Match Commentary, and Recording each contain a short statement that there is nothing (such as 'No observations', 'No notes', 'No recording') rather than template placeholder text."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Can you turn my notes from Saturday's tournament game into a scoresheet? We were France (every team in the tournament is named after a World Cup country), and we beat Australia 4-1. Notes and the team app export are in inputs/.",
+      "expected_output": "Nothing in the inputs gives the period length, the halftime, or the second-half kickoff, so the later goals cannot be placed. The skill asks the user for the period length and halftime timing (or the second-half kickoff) instead of assuming 2x45 or any other format, and does not deliver a report with guessed second-half minutes.",
+      "files": [
+        "fixtures/4/inputs"
+      ],
+      "expectations": [
+        "The final reply asks the user for the game's period length (half length) or when halftime and the second-half kickoff happened.",
+        "The skill does not assume a 45-minute half or any other period length: no report or reply presents minutes for the 11:13:30 and 11:16:40 goals as settled.",
+        "If a draft is shown, the goals at 10:08:50, 10:27:00, and 10:32:10 are only placed as 9', 27', and 32' with a caveat that they assume a first half of at least 32 minutes, or they are left unplaced."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Build the scoresheet for the Argentina vs Saudi Arabia game. Inputs are in inputs/: the Sprocket schedule export, what I copied from Veo (match info, periods, and the events panel), and my notes. Save it as scoresheet.md.",
+      "expected_output": "The Sprocket result (L 1-2) is the official score. Veo's AI credited the 48' goal to Argentina, which contradicts Sprocket and the notes; the skill follows Sprocket and the notes (Al-Shehri for Saudi Arabia) and tells the user about the mismatch. Minutes come from Veo's recording start and period boundaries: Messi penalty 10', Halftime 45+6', Al-Shehri 48', Al-Dawsari 53', Game over 90+8' with Argentina 1-2 Saudi Arabia. Saudi Arabia's roster section says no opponent roster, and Recording links the Veo match.",
+      "files": [
+        "fixtures/5/inputs"
+      ],
+      "expectations": [
+        "The report's final score is Argentina 1-2 Saudi Arabia, and nothing in it gives Argentina two goals.",
+        "The 48' goal is credited to Saudi Arabia (Saleh Al-Shehri or Al-Shehri), not Argentina, and the 53' goal to Saudi Arabia (Salem Al-Dawsari or Al-Dawsari).",
+        "The final reply tells the user that Veo's tags disagree with the Sprocket result (Veo credited a goal to Argentina or showed 2-1) and that the report follows Sprocket.",
+        "Significant Events has Messi's penalty at 10', Halftime at 45+6', and Game over at 90+8', derived from Veo's recording start (12:55:00) and period boundaries.",
+        "The Saudi Arabia roster section states there is no opponent roster, and the Argentina coach line names Lionel Scaloni.",
+        "Recording is a single line linking the Veo match: [Veo | Argentina vs. Saudi Arabia](https://app.veo.co/matches/20221122-argentina-vs-saudi-arabia-example/)."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Here's the export of my notes from the Morocco vs Portugal quarterfinal (inputs/notes-export/), plus the team app page and a screenshot from the game tracker. Can you make the scoresheet? Save it to scoresheet.md.",
+      "expected_output": "The skill reads the journal export (UTC times, Asia/Qatar zone, escaped Markdown), derives the first-half kickoff from the written minutes, and writes the report with team names instead of us and them. The 64' note is corrected to 63' by the tracker screenshot. Youssef's goal is kept but marked unconfirmed. Walid's entry is a one-sided substitution, and the reply asks whether it was 76' (computed) or 77' (written). Cheddira's two yellows come at 90+2' and 90+3', Game over at 90+8', and the coach's yellow after the game is a Post-match line. Photos are pre-match and at 32'.",
+      "files": [
+        "fixtures/6/inputs"
+      ],
+      "expectations": [
+        "No Markdown escapes from the export appear in scoresheet.md (no '\\-', '\\.', '\\+', or '\\!'), and the Game over line reads 'Game over (Morocco 1-0 Portugal)' at 90+8'.",
+        "Significant Events has a yellow card for Portugal with no invented player at 5' and another at 63' (not 64'), and the reply or report attributes the 63' to the tracker screenshot.",
+        "The 42' goal names Youssef En-Nesyri #19, assisted by Yahia Attiyat Allah #25, and is marked unconfirmed (for example '(unconfirmed)'), and the reply mentions the user's question mark.",
+        "Halftime is at 45+4', Walid Cheddira #21 gets a Yellow Card at 90+2' and a Second Yellow Card (or red) at 90+3'.",
+        "Walid Cheddira's substitution uses the template shape with only the ON part ('Substitution: Walid Cheddira #21 ↑ ON'), and the reply shows the user that the timestamp gives 76' while the note says 77' and asks which is right.",
+        "Walid Regragui's yellow card appears after the Game over line with Post-match in place of a minute.",
+        "No event line says us, we, them, or they; the opponent is called Portugal.",
+        "Both photos are embedded with paths that resolve from scoresheet.md: the warmup photo before kickoff (Pre-match) and the Hakimi photo at 32'.",
+        "The Portugal roster section says there is no opponent roster, and Match Observations, Post-Match Commentary, and Recording each hold a short statement that there is nothing."
+      ]
+    }
+  ]
+}

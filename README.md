@@ -14,7 +14,7 @@ Personal Claude Code plugins and skills, distributed as a plugin marketplace.
 
 - **life-skills** — Personal life-organization skills: `conduct-interview`, `organize-meeting-notes`, `sift-email`, `triage`, `writing`.
 - **software-development** — Software development workflow skills: `analyze-logs`, `commit`, `create-branch`, `create-github-issue`, `fix-pr-checks`, `implement-feature`, `land-pr`, `pr`, `resolve-pr-comments`, `resolve-sonarqube-issues`, `review-code`, `review-readme`, `tidy-workspace`, `update-dependabot-bulk`.
-- **utilities** — General-purpose utility skills: `transcribe-apple-notes-to-dayone` (macOS only).
+- **utilities** — General-purpose utility skills: `build-soccer-scoresheet`, `transcribe-apple-notes-to-dayone` (macOS only).
 
 ## Usage
 
@@ -218,6 +218,7 @@ underlying data.
 [update-dependabot-bulk](plugins/software-development/skills/update-dependabot-bulk/evals/benchmark-baseline.md)
 
 **utilities:**
+[build-soccer-scoresheet](plugins/utilities/skills/build-soccer-scoresheet/evals/benchmark-baseline.md) ·
 [transcribe-apple-notes-to-dayone](plugins/utilities/skills/transcribe-apple-notes-to-dayone/evals/benchmark-baseline.md)
 
 Repo-wide: `python3 evals/lib/report.py` prints one table across every
