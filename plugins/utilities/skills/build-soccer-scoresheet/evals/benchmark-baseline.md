@@ -10,10 +10,10 @@
 
 | Metric | With Skill | Without Skill | Delta |
 |--------|------------|---------------|-------|
-| Expectations passed | 45/45 (100%) | 17/45 (38%) | +28 |
-| Evals fully passing | 6/6 | 1/6 | +5 |
-| Time | 62.2s ± 35.4s | 41.4s ± 25.4s | +20.8s |
-| Tokens | 83,826 ± 8,902 | 70,184 ± 6,768 | +13,642 |
+| Expectations passed | 46/47 (98%) | 17/47 (36%) | +29 |
+| Evals fully passing | 5/6 | 1/6 | +4 |
+| Time | 57.1s ± 30.6s | 41.4s ± 25.4s | +15.7s |
+| Tokens | 83,678 ± 8,815 | 70,184 ± 6,768 | +13,494 |
 
 `benchmark-baseline.json` holds the with-skill runs only. The without-skill
 runs for evals 1-4 come from the first iteration, whose inputs were the same;
@@ -33,10 +33,10 @@ fixtures sit mid-minute so each expected minute is unambiguous.
 |------|------|------|---------|
 | 1 | World Cup final: screenshots, watch, notes, photos, extra time, shootout | 13/13 | 4/13 |
 | 2 | No second-half anchor: estimate and ask | 4/4 | 2/4 |
-| 3 | Substitute coach, absent player, no opponent roster, saved penalty | 8/8 | 1/8 |
+| 3 | Substitute coach, absent player, no opponent roster, saved penalty | 9/9 | 1/9 |
 | 4 | Club tournament with unknown period length: ask | 3/3 | 3/3 |
 | 5 | Team app result vs Veo AI tags | 7/7 | 3/7 |
-| 6 | Journal export with written minutes and shorthand | 10/10 | 4/10 |
+| 6 | Journal export with written minutes and shorthand | 10/11 | 4/11 |
 
 ## What the evals found
 
@@ -76,5 +76,13 @@ fixtures sit mid-minute so each expected minute is unambiguous.
   each image followed by `📷 **minute** - *caption*`, and when a note's written
   minute and its own timestamp disagree, the written minute is used without
   asking (a tracker screenshot or recording still outranks it).
+- **Kickoff lines carry the minutes already played.** The clock starts at
+  the whistle, so the opening kickoff is `0'` and the second-half kickoff in
+  2×45 is `45'`; play after it is `46'`. Evals 1, 3, and 6 were rerun, and
+  eval 3 checks it. In that rerun eval 6 quoted the "FT!!! 1-0 semis"
+  full-time note under Match Observations, a miss its earlier run did not
+  make. The without-skill run of eval 6 has no Moment line. Its eval 3
+  output is no longer available, so the kickoff check counts as a miss
+  there without being regraded.
 - **Not exercised**: reading jersey numbers from a recording to fill a gap.
   Trials have no recording access.

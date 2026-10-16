@@ -459,6 +459,7 @@ def build_portugal(base):
         ("2022-12-10 19:03:05", "2nd half", None),
         ("2022-12-10 19:20:40", "64’ yellow on them", None),
         ("2022-12-10 19:33:30", "77’ Walid in", None),
+        ("2022-12-10 19:45:10", "88’ great save Bounou\\!", None),
         ("2022-12-10 19:49:20", "90\\+2 yellow Walid", None),
         ("2022-12-10 19:50:40", "90\\+3 second yellow Walid\\. Down to 10", None),
         ("2022-12-10 19:55:20", "FT\\!\\!\\! 1\\-0 semis", None),

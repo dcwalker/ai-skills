@@ -42,7 +42,7 @@
     {
       "id": 3,
       "prompt": "Write up our 2-0 win over Poland as a scoresheet, saved to scoresheet.md. The team app export, my notes, and a photo are in inputs/. I don't have Poland's roster and there's no video of this one.",
-      "expected_output": "scoresheet.md follows the template. Argentina's roster comes from the team app, sorted by number with positions and no Starter or Substitute labels, with Paulo Dybala's name struck through and marked Absent. The coach line reads '~~Lionel Scaloni~~ Pablo Aimar'. Poland's roster section says no opponent roster. Events: Kickoff 1', Messi's penalty saved by Szczęsny at 39', Halftime 45+6' with the huddle photo, second-half kickoff 46', Mac Allister goal (assist Molina) 46', Álvarez goal (assist Enzo Fernández) 67', Game over 90+6' with the 2-0 score. Observations, Post-Match Commentary, and Recording state that there is nothing for them.",
+      "expected_output": "scoresheet.md follows the template. Argentina's roster comes from the team app, sorted by number with positions and no Starter or Substitute labels, with Paulo Dybala's name struck through and marked Absent. The coach line reads '~~Lionel Scaloni~~ Pablo Aimar'. Poland's roster section says no opponent roster. Events: Kickoff 0', Messi's penalty saved by Szczęsny at 39', Halftime 45+6' with the huddle photo, second-half kickoff 45', Mac Allister goal (assist Molina) 46', Álvarez goal (assist Enzo Fernández) 67', Game over 90+6' with the 2-0 score. Observations, Post-Match Commentary, and Recording state that there is nothing for them.",
       "files": [
         "fixtures/3/inputs"
       ],
@@ -54,7 +54,8 @@
         "Significant Events has Messi's penalty missed (saved by Szczęsny) at 39', Halftime at 45+6', Alexis Mac Allister #20 scoring at 46' assisted by Nahuel Molina #26, Julián Álvarez #9 scoring at 67' assisted by Enzo Fernández #24, and Game over at 90+6'.",
         "The photo IMG_5001.jpg appears in the '## Photos' section after Significant Events, not as list items and not in Significant Events: each is the image (line ending in a backslash, caption as alt text) followed by '📷 **<minute>** - *<caption>*', with one blank line between photos, with a path that resolves from scoresheet.md, at minute 45+6'; the caption describes the halftime huddle.",
         "Match Observations, Post-Match Commentary, and Recording each contain a short statement that there is nothing (such as 'No observations', 'No notes', 'No recording') rather than template placeholder text.",
-        "Significant Events lines carry their emoji: ❌ on Messi's missed penalty, ⚽ on both goals, ⏱️ on kickoff, halftime, and second-half kickoff, and 🏁 on Game over."
+        "Significant Events lines carry their emoji: ❌ on Messi's missed penalty, ⚽ on both goals, ⏱️ on kickoff, halftime, and second-half kickoff, and 🏁 on Game over.",
+        "The kickoff line is at 0' and the second-half kickoff line is at 45', the minutes already played when the whistle blew, not 1' and 46'."
       ]
     },
     {
@@ -90,7 +91,7 @@
     {
       "id": 6,
       "prompt": "Here's the export of my notes from the Morocco vs Portugal quarterfinal (inputs/notes-export/), plus the team app page and a screenshot from the game tracker. Can you make the scoresheet? Save it to scoresheet.md.",
-      "expected_output": "The skill reads the journal export (UTC times, Asia/Qatar zone, escaped Markdown), derives the first-half kickoff from the written minutes, and writes the report with team names instead of us and them. The 64' note is corrected to 63' by the tracker screenshot. Youssef's goal is kept but marked unconfirmed. Walid's entry is a one-sided substitution at 77', the written minute, which outranks the 76' from the note's timestamp; the reply mentions the difference. Cheddira's two yellows come at 90+2' and 90+3', Game over at 90+8', and the coach's yellow after the game is a Post-match line. Photos are pre-match and at 32'.",
+      "expected_output": "The skill reads the journal export (UTC times, Asia/Qatar zone, escaped Markdown), derives the first-half kickoff from the written minutes, and writes the report with team names instead of us and them. The 64' note is corrected to 63' by the tracker screenshot. Youssef's goal is kept but marked unconfirmed. Walid's entry is a one-sided substitution at 77', the written minute, which outranks the 76' from the note's timestamp; the reply mentions the difference. Bounou's great save is a ✨ Moment at 88'. Cheddira's two yellows come at 90+2' and 90+3', Game over at 90+8', and the coach's yellow after the game is a Post-match line. Photos are pre-match and at 32'.",
       "files": [
         "fixtures/6/inputs"
       ],
@@ -104,7 +105,8 @@
         "No event line says us, we, them, or they; the opponent is called Portugal.",
         "Both photos appear in the '## Photos' section after Significant Events, not as list items and not in Significant Events: each is the image (line ending in a backslash, caption as alt text) followed by '📷 **<minute>** - *<caption>*', with one blank line between photos, with paths that resolve from scoresheet.md: the warmup photo (Pre-match) then the Hakimi photo (32'); captions describe them (warm-ups; Hakimi on the ball).",
         "The Portugal roster section says there is no opponent roster, and Match Observations, Post-Match Commentary, and Recording each hold a short statement that there is nothing.",
-        "The tracker screenshot (IMG_7311) is not embedded or listed as an event; only the two photos from the notes export appear as images."
+        "The tracker screenshot (IMG_7311) is not embedded or listed as an event; only the two photos from the notes export appear as images.",
+        "Significant Events lists Bounou's great save as a Moment at 88' with the ✨ emoji ('- **88'** - ✨ Moment: Yassine Bounou #1 ...'), not as an Incident."
       ]
     }
   ]

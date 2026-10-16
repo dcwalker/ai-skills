@@ -189,6 +189,12 @@ extra-time period, and so on):
 - **Extra time** continues the same way: with 15-minute periods, the first
   starts at `91'` and ends at `105+N'`, the second starts at `106'` and ends
   at `120+N'`.
+- **Kickoffs** carry the minutes already played, S, because the clock
+  starts at the whistle: `0'` for the opening kickoff, `45'` for the
+  second-half kickoff in 2×45 (`30'` in 2×30), and `90'` and `105'` for the
+  extra-time kickoffs. Play after the whistle is `S + 1'` onward. The
+  script's `kickoff_minute` gives this. A halftime line (`45+2'`) still comes
+  before the second-half kickoff (`45'`); the order follows time.
 - **Penalty shootout** kicks have no minute. List them in kick order after
   the end of extra time.
 
@@ -261,12 +267,17 @@ event's offset (event wall-clock time minus recording start, or the video
 platform's event link), pause, and step through the 30 seconds before and
 after, taking screenshots and zooming on the players near the touchline, the
 substitution board, or the referee. Fill the gap only when a jersey number is
-clearly legible and matches a roster player; append ` (from video)` to that
-event and tell the user which frames you used. If nothing is legible, leave
-the gap and say you checked. Never download the video to do this without
+clearly legible. For a team with a roster, the number must match a roster
+player; for a team without one (usually the opponent), the number alone goes
+in: `Goal: Poland #9 (from video)`. Append ` (from video)` to that event and
+tell the user which frames you used. If nothing is legible, leave the gap and
+say you checked. Never download the video to do this without
 asking the user first.
-- Incidents the user thought worth noting (a hard foul with no call, an
-  injury) are events too: `- **74'** - ⚠️ Incident: ...`, in the user's terms.
+- Other things the user thought worth noting are events too, in the user's
+  terms. A highlight (a shot off the post, a great save, a near miss) is a
+  Moment: `- **24'** - ✨ Moment: ...`. Something negative (an injury, a hard
+  foul with no call) is an Incident: `- **74'** - ⚠️ Incident: ...`. When in
+  doubt, prefer Moment; Incident reads like a card or a foul.
 - Events after the final whistle (a card shown to a coach after the game)
   go after the Game over line, with **Post-match** in place of a minute.
 
@@ -299,7 +310,7 @@ everything else stays as written.
 
 ## Significant Events
 
-- **1'** - ⏱️ Kickoff
+- **0'** - ⏱️ Kickoff
 - **32'** - ⚽ Goal: [Player Name] #[Number] (Assisted by [Player Name] #[Number])
 - **45+2'** - 🟨 Yellow Card: [Player Name] #[Number] (Tactical foul)
 - **68'** - 🔄 Substitution: [Player Name] #[Number] ↑ ON, [Player Name] #[Number] ↓ OFF
@@ -360,14 +371,14 @@ with no `## Rosters` heading above them.
   (with `saved by Name #N` when known), `Yellow Card`, `Second Yellow Card`,
   `Red Card`, `Substitution`, `Kickoff`, `Halftime`, `Second half kickoff`,
   `End of regulation`, `Extra time kickoff`, `Extra time halftime`,
-  `End of extra time`, `Game over`, `Incident`. Put a card's reason in
+  `End of extra time`, `Game over`, `Moment`, `Incident`. Put a card's reason in
   parentheses when known. Cards and incidents after the final whistle use
   **Post-match** in place of a minute, after the Game over line.
 - Each event's wording starts with its emoji, so the timeline scans at a
   glance: ⚽ any goal (`Goal`, `Goal (penalty)`, `Own goal`), ❌
   `Penalty missed`, 🟨 `Yellow Card`, 🟨🟥 `Second Yellow Card`, 🟥
   `Red Card`, 🔄 `Substitution`, ⏱️ kickoffs, halftimes, and the ends of
-  regulation and extra time, 🏁 `Game over`, ⚠️ `Incident`.
+  regulation and extra time, 🏁 `Game over`, ✨ `Moment`, ⚠️ `Incident`.
 - Estimated minutes, only in a draft the user has not yet confirmed, end in
   `(est.)`.
 - Shootout kicks use **Pens** in place of a minute, one line per kick in
