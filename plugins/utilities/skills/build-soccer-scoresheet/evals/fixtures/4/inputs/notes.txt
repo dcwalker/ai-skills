@@ -1,0 +1,19 @@
+Notes export. Each note starts with its creation time.
+
+[2026-10-10 10:00:05 -07:00]
+Kickoff
+
+[2026-10-10 10:08:50 -07:00]
+Australia score first, Goodwin. 0-1
+
+[2026-10-10 10:27:00 -07:00]
+Rabiot header 1-1, Theo cross
+
+[2026-10-10 10:32:10 -07:00]
+Giroud 2-1, Rabiot assist
+
+[2026-10-10 11:13:30 -07:00]
+Mbappé header 3-1, Dembélé cross
+
+[2026-10-10 11:16:40 -07:00]
+Giroud again 4-1, Mbappé assist

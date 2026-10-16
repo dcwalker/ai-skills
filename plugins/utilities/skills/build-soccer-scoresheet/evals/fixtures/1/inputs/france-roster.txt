@@ -1,0 +1,28 @@
+France squad, copied from the federation site
+Roster (# / Position)
+#1 Hugo Lloris / GK
+#2 Benjamin Pavard / DEF
+#3 Axel Disasi / DEF
+#4 Raphaël Varane / DEF
+#5 Jules Koundé / DEF
+#6 Mattéo Guendouzi / MID
+#7 Antoine Griezmann / FWD
+#8 Aurélien Tchouaméni / MID
+#9 Olivier Giroud / FWD
+#10 Kylian Mbappé / FWD
+#11 Ousmane Dembélé / FWD
+#12 Randal Kolo Muani / FWD
+#13 Youssouf Fofana / MID
+#14 Adrien Rabiot / MID
+#15 Jordan Veretout / MID
+#16 Steve Mandanda / GK
+#17 William Saliba / DEF
+#18 Dayot Upamecano / DEF
+#20 Kingsley Coman / FWD
+#22 Theo Hernández / DEF
+#23 Alphonse Areola / GK
+#24 Ibrahima Konaté / DEF
+#25 Eduardo Camavinga / MID
+#26 Marcus Thuram / FWD
+
+Coach: Didier Deschamps

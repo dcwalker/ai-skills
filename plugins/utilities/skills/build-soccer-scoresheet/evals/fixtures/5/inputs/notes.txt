@@ -1,0 +1,10 @@
+Notes export. Each note starts with its creation time.
+
+[2022-11-22 13:09:31 +03:00]
+Messi pen 1-0
+
+[2022-11-22 14:12:30 +03:00]
+Al-Shehri equalizes?! 1-1
+
+[2022-11-22 14:17:30 +03:00]
+Al-Dawsari screamer. 1-2. Stunned.
