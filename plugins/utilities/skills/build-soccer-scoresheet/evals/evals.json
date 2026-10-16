@@ -106,7 +106,8 @@
         "Both photos appear in the '## Photos' section after Significant Events, not as list items and not in Significant Events: each is the image (line ending in a backslash, caption as alt text) followed by '📷 **<minute>** - *<caption>*', with one blank line between photos, with paths that resolve from scoresheet.md: the warmup photo (Pre-match) then the Hakimi photo (32'); captions describe them (warm-ups; Hakimi on the ball).",
         "The Portugal roster section says there is no opponent roster, and Match Observations, Post-Match Commentary, and Recording each hold a short statement that there is nothing.",
         "The tracker screenshot (IMG_7311) is not embedded or listed as an event; only the two photos from the notes export appear as images.",
-        "Significant Events lists Bounou's great save as a Moment at 88' with the ✨ emoji ('- **88'** - ✨ Moment: Yassine Bounou #1 ...'), not as an Incident."
+        "Significant Events lists Bounou's great save as a Moment at 88' with the ✨ emoji ('- **88'** - ✨ Moment: Yassine Bounou #1 ...'), not as an Incident.",
+        "The 42' goal line describes the finish as a header, from the user's notes, after the scorer and assist (for example '(Assisted by Yahia Attiyat Allah #25). Header ...')."
       ]
     }
   ]

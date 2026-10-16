@@ -10,10 +10,10 @@
 
 | Metric | With Skill | Without Skill | Delta |
 |--------|------------|---------------|-------|
-| Expectations passed | 46/47 (98%) | 17/47 (36%) | +29 |
-| Evals fully passing | 5/6 | 1/6 | +4 |
-| Time | 57.1s ± 30.6s | 41.4s ± 25.4s | +15.7s |
-| Tokens | 83,678 ± 8,815 | 70,184 ± 6,768 | +13,494 |
+| Expectations passed | 48/48 (100%) | 17/48 (35%) | +31 |
+| Evals fully passing | 6/6 | 1/6 | +5 |
+| Time | 56.9s ± 33.3s | 41.4s ± 25.4s | +15.5s |
+| Tokens | 84,135 ± 9,832 | 70,184 ± 6,768 | +13,951 |
 
 `benchmark-baseline.json` holds the with-skill runs only. The without-skill
 runs for evals 1-4 come from the first iteration, whose inputs were the same;
@@ -36,7 +36,7 @@ fixtures sit mid-minute so each expected minute is unambiguous.
 | 3 | Substitute coach, absent player, no opponent roster, saved penalty | 9/9 | 1/9 |
 | 4 | Club tournament with unknown period length: ask | 3/3 | 3/3 |
 | 5 | Team app result vs Veo AI tags | 7/7 | 3/7 |
-| 6 | Journal export with written minutes and shorthand | 10/11 | 4/11 |
+| 6 | Journal export with written minutes and shorthand | 12/12 | 4/12 |
 
 ## What the evals found
 
@@ -84,5 +84,11 @@ fixtures sit mid-minute so each expected minute is unambiguous.
   make. The without-skill run of eval 6 has no Moment line. Its eval 3
   output is no longer available, so the kickoff check counts as a miss
   there without being regraded.
-- **Not exercised**: reading jersey numbers from a recording to fill a gap.
-  Trials have no recording access.
+- **Goal lines carry the assist and how the goal went in.** The rules for
+  crediting an assist and describing a finish are in
+  `references/goals.md`; eval 6 checks that its header is described, and
+  evals 1 and 6 were rerun (both pass every check, including the Match
+  Observations miss above). The without-skill run of eval 6 is counted as
+  a miss on the new check.
+- **Not exercised**: reading jersey numbers, assists, or the finish from a
+  recording. Trials have no recording access.

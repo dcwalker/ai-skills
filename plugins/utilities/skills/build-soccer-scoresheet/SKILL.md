@@ -261,9 +261,9 @@ Notes are shorthand. Resolve them against the rosters:
   the recording fills it in (below).
 
 **Fill gaps from the recording.** When an event is missing a player (the
-player going off in a substitution, the player booked, the scorer) and a
-recording is available, look at it. Open the recording in the browser at the
-event's offset (event wall-clock time minus recording start, or the video
+player going off in a substitution, the player booked, the scorer, the
+assist) and a recording is available, look at it. Open the recording in the
+browser at the event's offset (event wall-clock time minus recording start, or the video
 platform's event link), pause, and step through the 30 seconds before and
 after, taking screenshots and zooming on the players near the touchline, the
 substitution board, or the referee. Fill the gap only when a jersey number is
@@ -273,6 +273,7 @@ in: `Goal: Poland #9 (from video)`. Append ` (from video)` to that event and
 tell the user which frames you used. If nothing is legible, leave the gap and
 say you checked. Never download the video to do this without
 asking the user first.
+
 - Other things the user thought worth noting are events too, in the user's
   terms. A highlight (a shot off the post, a great save, a near miss) is a
   Moment: `- **24'** - ✨ Moment: ...`. Something negative (an injury, a hard
@@ -280,6 +281,15 @@ asking the user first.
   doubt, prefer Moment; Incident reads like a card or a foul.
 - Events after the final whistle (a card shown to a coach after the game)
   go after the Game over line, with **Post-match** in place of a minute.
+
+**Assists and how each goal was scored.** For every goal, look for an
+assist and for how the goal went in, in the notes, team app, coach messages,
+and recording; with a recording, watch the build-up before the goal as well
+as the finish. [references/goals.md](references/goals.md) has the rules for
+crediting an assist (a final pass or a saved or blocked shot that leads
+straight to the goal; none for a penalty, direct free kick, or corner) and
+what a goal description covers: where the shot came from, how it was struck,
+where it went in, and whether the keeper touched it.
 
 ## Step 6: Write the report
 
@@ -311,7 +321,7 @@ everything else stays as written.
 ## Significant Events
 
 - **0'** - ⏱️ Kickoff
-- **32'** - ⚽ Goal: [Player Name] #[Number] (Assisted by [Player Name] #[Number])
+- **32'** - ⚽ Goal: [Player Name] #[Number] (Assisted by [Player Name] #[Number]). [How the goal was scored]
 - **45+2'** - 🟨 Yellow Card: [Player Name] #[Number] (Tactical foul)
 - **68'** - 🔄 Substitution: [Player Name] #[Number] ↑ ON, [Player Name] #[Number] ↓ OFF
 - **90+2'** - 🏁 Game over ([Home Team] [score]-[score] [Away Team])
@@ -372,8 +382,11 @@ with no `## Rosters` heading above them.
   `Red Card`, `Substitution`, `Kickoff`, `Halftime`, `Second half kickoff`,
   `End of regulation`, `Extra time kickoff`, `Extra time halftime`,
   `End of extra time`, `Game over`, `Moment`, `Incident`. Put a card's reason in
-  parentheses when known. Cards and incidents after the final whistle use
-  **Post-match** in place of a minute, after the Game over line.
+  parentheses when known. A goal's description follows the scorer and
+  assist as a sentence or two (see
+  [references/goals.md](references/goals.md)); leave it off when no source
+  shows how the goal was scored. Cards and incidents after the final
+  whistle use **Post-match** in place of a minute, after the Game over line.
 - Each event's wording starts with its emoji, so the timeline scans at a
   glance: ⚽ any goal (`Goal`, `Goal (penalty)`, `Own goal`), ❌
   `Penalty missed`, 🟨 `Yellow Card`, 🟨🟥 `Second Yellow Card`, 🟥
