@@ -44,6 +44,13 @@ a game. Each one shows:
   only). Names at the bottom of the screen are often cut off; resolve them
   by jersey number against the roster.
 
+## Coach messages
+
+Messages a coach posts to the team in the Sprocket app arrive by email from
+`noreply@sprocketsports.com`, with the subject `<team name> You have a
+message from <coach>` and the message text in the body. Search for that
+sender and the team name around the game date.
+
 ## Using it in the report
 
 - Match Details: date, kickoff time (the start time; arrival time is

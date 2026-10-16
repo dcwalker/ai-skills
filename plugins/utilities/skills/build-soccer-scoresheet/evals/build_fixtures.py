@@ -277,7 +277,8 @@ def build_poland(base):
     )
     notes_file(os.path.join(base, NOTES_FILE), [
         ("2022-11-30 21:30:00 +03:00",
-         "Scaloni is out sick today, Pablo Aimar is running the team"),
+         ("Scaloni is out sick today, Pablo Aimar is running the team. "
+          "Dybala is away too")),
         ("2022-11-30 22:00:10 +03:00", "Kickoff"),
         ("2022-11-30 22:38:40 +03:00", "Messi penalty SAVED by Szczęsny"),
         ("2022-11-30 22:50:20 +03:00", "Halftime 0-0"),

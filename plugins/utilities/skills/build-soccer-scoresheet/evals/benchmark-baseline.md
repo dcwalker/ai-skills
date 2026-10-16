@@ -12,8 +12,8 @@
 |--------|------------|---------------|-------|
 | Expectations passed | 42/42 (100%) | 17/42 (40%) | +25 |
 | Evals fully passing | 6/6 | 1/6 | +5 |
-| Time | 63.1s ± 30.9s | 42.7s ± 25.2s | +20.4s |
-| Tokens | 81,972 ± 7,745 | 70,364 ± 6,742 | +11,608 |
+| Time | 58.8s ± 28.0s | 41.4s ± 25.4s | +17.4s |
+| Tokens | 81,677 ± 6,712 | 70,184 ± 6,768 | +11,493 |
 
 `benchmark-baseline.json` holds the with-skill runs only. The without-skill
 runs for evals 1-4 come from the first iteration, whose inputs were the same;
@@ -33,7 +33,7 @@ fixtures sit mid-minute so each expected minute is unambiguous.
 |------|------|------|---------|
 | 1 | World Cup final: screenshots, watch, notes, photos, extra time, shootout | 12/12 | 4/12 |
 | 2 | No second-half anchor: estimate and ask | 4/4 | 2/4 |
-| 3 | Substitute coach, no opponent roster, saved penalty | 7/7 | 1/7 |
+| 3 | Substitute coach, absent player, no opponent roster, saved penalty | 7/7 | 1/7 |
 | 4 | Club tournament with unknown period length: ask | 3/3 | 3/3 |
 | 5 | Team app result vs Veo AI tags | 6/6 | 3/6 |
 | 6 | Journal export with written minutes and shorthand | 10/10 | 4/10 |

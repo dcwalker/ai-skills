@@ -87,15 +87,27 @@ team is the user's, kickoff time with time zone, venue, competition, final
 result, both rosters, and the coaches.
 
 For anything the inputs lack, look it up, in this order: the team app, the
-video platform, the calendar, email (search for the opponent, the date, or
-"recording", "video", "Veo"), then the web. Read the matching reference file
-for how to reach a product's data. Then confirm what you found with the user
+video platform, the calendar, email, then the web. Read the matching
+reference file for how to reach a product's data.
+
+In email, search the days around the game for the opponent, the team name,
+the coach, and words like "recording" or "video". Coaches often message the
+team through the team app, which relays each message as a notification email
+from the app's own address with the team name in the subject, not from the
+coach. Read every coach message from the day of the game through the next
+few days: post-match comments go in Post-Match Commentary, and pre-game
+notes can say who is missing or who is covering for the coach. Then confirm what you found with the user
 in one message, naming the source of each item, before writing the report.
 Skip the confirmation only for details the user handed you directly.
 
 Coaching staff come from the team app's staff list, whatever their title
-there. If the notes say someone else coached this game, show the regular
-coach struck through, followed by the substitute (see the template).
+there. If the notes or a coach message say someone else coached this game,
+show the regular coach struck through, followed by the substitute (see the
+template).
+
+A player any source says missed the game (a coach message, the notes) stays
+on the roster marked Absent (see the template); tell the user which source
+said so.
 
 Starters are rarely recorded anywhere. Label players Starter or Substitute
 only when the notes (or another input) name the starting lineup.
@@ -165,17 +177,17 @@ extra-time period, and so on):
   the end of extra time.
 
 Video platforms often number minutes continuously without stoppage notation
-(Veo shows `61'` for the first minute of second-half stoppage in 2×30).
-Recompute every minute from the period boundaries rather than copying the
-platform's number.
+(`61'` for the first minute of second-half stoppage in 2×30), and their
+numbering can drift. Recompute every minute from the period kickoffs rather
+than copying the platform's number.
 
 **When sources disagree on a minute** (the minute the user wrote, the
 minute computed from the timestamp, a team app or tracker screenshot, the
 video platform's event time), compare every source that covers the event
 and use the minute they support. A recording time outranks a tracker
 screenshot, which outranks a written minute read off a watch by eye. Game
-tracker clocks are started and paused by hand (Sprocket labels its clock
-"unofficial"), so they often run several seconds behind the real kickoff,
+tracker clocks are started and paused by hand, so they often run several
+seconds behind the real kickoff,
 by a different amount each half; trust a tracker for which team scored and
 the order of goals more than for the exact second. Events within a few
 seconds of a minute boundary are where sources split. If the sources
@@ -309,6 +321,9 @@ everything else stays as written.
 - The coach line comes last. A substitute coach is written
   `- **Coach:** ~~Regular Coach~~ Substitute Coach`. List other staff
   (assistant coach, team manager) on their own lines with their role.
+- A player who missed the game keeps their line with ` - Absent` at the
+  end, in place of any Starter or Substitute label:
+  `- **#25 Firstname Lastname** (GK) - Absent`.
 - With no roster for a team, the section holds the line `No opponent roster`
   (or `No roster` for the user's own team).
 
