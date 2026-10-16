@@ -12,8 +12,8 @@
 |--------|------------|---------------|-------|
 | Expectations passed | 42/42 (100%) | 17/42 (40%) | +25 |
 | Evals fully passing | 6/6 | 1/6 | +5 |
-| Time | 58.8s ± 28.0s | 41.4s ± 25.4s | +17.4s |
-| Tokens | 81,677 ± 6,712 | 70,184 ± 6,768 | +11,493 |
+| Time | 58.0s ± 28.5s | 41.4s ± 25.4s | +16.6s |
+| Tokens | 81,393 ± 6,856 | 70,184 ± 6,768 | +11,209 |
 
 `benchmark-baseline.json` holds the with-skill runs only. The without-skill
 runs for evals 1-4 come from the first iteration, whose inputs were the same;

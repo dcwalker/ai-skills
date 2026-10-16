@@ -4,7 +4,7 @@
   "skill_path": "plugins/utilities/skills/build-soccer-scoresheet",
   "executor_model": "claude-opus-5-5",
   "analyzer_model": "claude-opus-5-5",
-  "timestamp": "2026-10-16T01:08:43Z",
+  "timestamp": "2026-10-16T01:11:08Z",
   "evals_run": [
    1,
    2,
@@ -15,7 +15,7 @@
   ],
   "runs_per_configuration": 1,
   "executor": "Agent-tool subagents, one per eval, each pointed at a copy of fixtures/<id>/inputs as its working directory, with SKILL.md loaded and no browser, web, calendar, email, or connector access",
-  "notes": "Graded against each trial's written report and its final reply. Eval 2, 4, and 6 trials stop to ask the user, as the skill directs, so their expectations are checked against the draft and question in the reply. Eval 6's report was withheld pending the user's choice of 76' or 77'; the draft in the reply was graded. All six with-skill evals were rerun after a real-game test added guidance on hand-started tracker clocks, screenshots inside notes exports, quoting observations, Sprocket's Scorekeeper screen, and Veo kickoff events. Eval 3 (with and without the skill) and eval 1 (with) were rerun after the skill gained the Absent roster label and the coach-message email search, and eval 3's notes gained an absent player; evals 2, 4, 5, and 6 carry over, since those rules do not reach them. The recording check (reading jersey numbers from video) is not exercised: trials have no recording access."
+  "notes": "Graded against each trial's written report and its final reply. Eval 2, 4, and 6 trials stop to ask the user, as the skill directs, so their expectations are checked against the draft and question in the reply. Eval 6's report was withheld pending the user's choice of 76' or 77'; the draft in the reply was graded. All six with-skill evals were rerun after a real-game test added guidance on hand-started tracker clocks, screenshots inside notes exports, quoting observations, Sprocket's Scorekeeper screen, and Veo kickoff events. Eval 3 (with and without the skill) and eval 1 (with) were rerun after the skill gained the Absent roster label and the coach-message email search, and eval 3's notes gained an absent player; evals 2, 4, 5, and 6 carry over, since those rules do not reach them. Eval 3 was rerun again after absent players' names became struck through. The recording check (reading jersey numbers from video) is not exercised: trials have no recording access."
  },
  "runs": [
   {
@@ -141,20 +141,20 @@
     "passed": 7,
     "failed": 0,
     "total": 7,
-    "time_seconds": 46.3,
-    "tokens": 79541,
+    "time_seconds": 41.4,
+    "tokens": 77836,
     "errors": 0
    },
    "expectations": [
     {
      "text": "The title is '# Match Report: Poland vs. Argentina' (Poland home, per the team app's Away), and Match Details give 2022-11-30, a 22:00 Start Time with the time zone, and Stadium 974 with its location.",
      "passed": true,
-     "evidence": "Poland vs. Argentina; 2022-11-30, 22:00 AST, Stadium 974."
+     "evidence": "Poland vs. Argentina; 2022-11-30, 22:00 AST (UTC+3), Stadium 974."
     },
     {
-     "text": "The Argentina roster lists all 26 players sorted by jersey number with positions, no line carries a Starter or Substitute label, and #21 Paulo Dybala's line ends with ' - Absent' because the notes say he is away.",
+     "text": "The Argentina roster lists all 26 players sorted by jersey number with positions, no line carries a Starter or Substitute label, and #21 Paulo Dybala's line strikes through his name and ends with ' - Absent' ('**#21 ~~Paulo Dybala~~** (FWD) - Absent') because the notes say he is away.",
      "passed": true,
-     "evidence": "26 players by number with positions, no Starter/Substitute labels, '#21 Paulo Dybala (FWD) - Absent'."
+     "evidence": "26 players by number with positions, no labels, '**#21 ~~Paulo Dybala~~** (FWD) - Absent'."
     },
     {
      "text": "The Argentina coach line shows Lionel Scaloni struck through followed by Pablo Aimar, as '~~Lionel Scaloni~~ Pablo Aimar'.",
@@ -174,7 +174,7 @@
     {
      "text": "The photo IMG_5001.jpg is embedded with a path that resolves from scoresheet.md, at the halftime break (after the Halftime line and before the second-half events).",
      "passed": true,
-     "evidence": "Photo under Halftime."
+     "evidence": "Photo under Halftime, before 46'."
     },
     {
      "text": "Match Observations, Post-Match Commentary, and Recording each contain a short statement that there is nothing (such as 'No observations', 'No notes', 'No recording') rather than template placeholder text.",

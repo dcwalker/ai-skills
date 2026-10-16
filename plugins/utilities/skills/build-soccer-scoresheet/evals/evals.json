@@ -41,13 +41,13 @@
     {
       "id": 3,
       "prompt": "Write up our 2-0 win over Poland as a scoresheet, saved to scoresheet.md. The team app export, my notes, and a photo are in inputs/. I don't have Poland's roster and there's no video of this one.",
-      "expected_output": "scoresheet.md follows the template. Argentina's roster comes from the team app, sorted by number with positions and no Starter or Substitute labels, with Paulo Dybala marked Absent. The coach line reads '~~Lionel Scaloni~~ Pablo Aimar'. Poland's roster section says no opponent roster. Events: Kickoff 1', Messi's penalty saved by Szczęsny at 39', Halftime 45+6' with the huddle photo, second-half kickoff 46', Mac Allister goal (assist Molina) 46', Álvarez goal (assist Enzo Fernández) 67', Game over 90+6' with the 2-0 score. Observations, Post-Match Commentary, and Recording state that there is nothing for them.",
+      "expected_output": "scoresheet.md follows the template. Argentina's roster comes from the team app, sorted by number with positions and no Starter or Substitute labels, with Paulo Dybala's name struck through and marked Absent. The coach line reads '~~Lionel Scaloni~~ Pablo Aimar'. Poland's roster section says no opponent roster. Events: Kickoff 1', Messi's penalty saved by Szczęsny at 39', Halftime 45+6' with the huddle photo, second-half kickoff 46', Mac Allister goal (assist Molina) 46', Álvarez goal (assist Enzo Fernández) 67', Game over 90+6' with the 2-0 score. Observations, Post-Match Commentary, and Recording state that there is nothing for them.",
       "files": [
         "fixtures/3/inputs"
       ],
       "expectations": [
         "The title is '# Match Report: Poland vs. Argentina' (Poland home, per the team app's Away), and Match Details give 2022-11-30, a 22:00 Start Time with the time zone, and Stadium 974 with its location.",
-        "The Argentina roster lists all 26 players sorted by jersey number with positions, no line carries a Starter or Substitute label, and #21 Paulo Dybala's line ends with ' - Absent' because the notes say he is away.",
+        "The Argentina roster lists all 26 players sorted by jersey number with positions, no line carries a Starter or Substitute label, and #21 Paulo Dybala's line strikes through his name and ends with ' - Absent' ('**#21 ~~Paulo Dybala~~** (FWD) - Absent') because the notes say he is away.",
         "The Argentina coach line shows Lionel Scaloni struck through followed by Pablo Aimar, as '~~Lionel Scaloni~~ Pablo Aimar'.",
         "The Poland roster section contains a plain statement that there is no opponent roster and lists no invented players.",
         "Significant Events has Messi's penalty missed (saved by Szczęsny) at 39', Halftime at 45+6', Alexis Mac Allister #20 scoring at 46' assisted by Nahuel Molina #26, Julián Álvarez #9 scoring at 67' assisted by Enzo Fernández #24, and Game over at 90+6'.",

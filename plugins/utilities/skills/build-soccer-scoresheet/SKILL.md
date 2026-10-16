@@ -106,8 +106,8 @@ show the regular coach struck through, followed by the substitute (see the
 template).
 
 A player any source says missed the game (a coach message, the notes) stays
-on the roster marked Absent (see the template); tell the user which source
-said so.
+on the roster, name struck through and marked Absent (see the template);
+tell the user which source said so.
 
 Starters are rarely recorded anywhere. Label players Starter or Substitute
 only when the notes (or another input) name the starting lineup.
@@ -321,9 +321,9 @@ everything else stays as written.
 - The coach line comes last. A substitute coach is written
   `- **Coach:** ~~Regular Coach~~ Substitute Coach`. List other staff
   (assistant coach, team manager) on their own lines with their role.
-- A player who missed the game keeps their line with ` - Absent` at the
-  end, in place of any Starter or Substitute label:
-  `- **#25 Firstname Lastname** (GK) - Absent`.
+- A player who missed the game keeps their line, with their name struck
+  through and ` - Absent` at the end in place of any Starter or Substitute
+  label: `- **#25 ~~Firstname Lastname~~** (GK) - Absent`.
 - With no roster for a team, the section holds the line `No opponent roster`
   (or `No roster` for the user's own team).
 
