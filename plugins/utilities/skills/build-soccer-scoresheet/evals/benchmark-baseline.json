@@ -4,7 +4,7 @@
   "skill_path": "plugins/utilities/skills/build-soccer-scoresheet",
   "executor_model": "claude-opus-5-5",
   "analyzer_model": "claude-opus-5-5",
-  "timestamp": "2026-10-15T19:03:03Z",
+  "timestamp": "2026-10-16T00:37:44Z",
   "evals_run": [
    1,
    2,
@@ -15,7 +15,7 @@
   ],
   "runs_per_configuration": 1,
   "executor": "Agent-tool subagents, one per eval, each pointed at a copy of fixtures/<id>/inputs as its working directory, with SKILL.md loaded and no browser, web, calendar, email, or connector access",
-  "notes": "Graded against each trial's written report and its final reply. Eval 2, 4, and 6 trials stop to ask the user, as the skill directs, so their expectations are checked against the draft and question in the reply. Eval 6's report was withheld pending the user's choice of 76' or 77'; the draft in the reply was graded. The recording check (reading jersey numbers from video) is not exercised: trials have no recording access. Evals 1 and 6 were rerun after SKILL.md gained the rule that screenshots are sources only and never appear in the report; each gained an expectation for it. Evals 2-5 carry over from the previous run, whose SKILL.md differed only in that rule and in the photo_time.py path note."
+  "notes": "Graded against each trial's written report and its final reply. Eval 2, 4, and 6 trials stop to ask the user, as the skill directs, so their expectations are checked against the draft and question in the reply. Eval 6's report was withheld pending the user's choice of 76' or 77'; the draft in the reply was graded. All six with-skill evals were rerun after a real-game test added guidance on hand-started tracker clocks, screenshots inside notes exports, quoting observations, Sprocket's Scorekeeper screen, and Veo kickoff events. The recording check (reading jersey numbers from video) is not exercised: trials have no recording access."
  },
  "runs": [
   {
@@ -27,70 +27,70 @@
     "passed": 12,
     "failed": 0,
     "total": 12,
-    "time_seconds": 108.1,
-    "tokens": 93539,
+    "time_seconds": 109.3,
+    "tokens": 95605,
     "errors": 0
    },
    "expectations": [
     {
      "text": "scoresheet.md exists and its sections appear in this order: '# Match Report: Argentina vs. France', '## Match Details', '## Rosters', '## Significant Events', '## Match Observations', '## Post-Match Commentary', '## Recording'.",
      "passed": true,
-     "evidence": "Seven sections in template order."
+     "evidence": "Verified in scoresheet.md: template sections, details, starters, all minutes 1' to 120+3', 8 Pens lines plus Game over, three photos only, t=8850, observation quoted, YouTube recording line."
     },
     {
      "text": "Match Details give Date 2022-12-18, a Start Time of 18:00 with the time zone (AST or UTC+3), Venue Lusail Stadium with its location, and Competition as a Markdown link to the fifa.com Qatar 2022 page.",
      "passed": true,
-     "evidence": "2022-12-18, 18:00 AST (UTC+3), Lusail Stadium, fifa.com link."
+     "evidence": "Verified in scoresheet.md: template sections, details, starters, all minutes 1' to 120+3', 8 Pens lines plus Game over, three photos only, t=8850, observation quoted, YouTube recording line."
     },
     {
      "text": "Both rosters are sorted by jersey number with Starter entries before Substitute entries; the Argentina starters are exactly #3, #7, #9, #10, #11, #13, #19, #20, #23, #24, #26 and the France starters are exactly #1, #4, #5, #7, #8, #9, #10, #11, #14, #18, #22.",
      "passed": true,
-     "evidence": "Starters (#3,7,9,10,11,13,19,20,23,24,26) then substitutes, each by number; France likewise."
+     "evidence": "Verified in scoresheet.md: template sections, details, starters, all minutes 1' to 120+3', 8 Pens lines plus Game over, three photos only, t=8850, observation quoted, YouTube recording line."
     },
     {
      "text": "Roster lines use the template shape '**#10 Lionel Messi** (FWD) - Starter', and each team ends with a Coach line: Lionel Scaloni for Argentina, Didier Deschamps for France.",
      "passed": true,
-     "evidence": "Template roster lines; Coach Scaloni and Deschamps."
+     "evidence": "Verified in scoresheet.md: template sections, details, starters, all minutes 1' to 120+3', 8 Pens lines plus Game over, three photos only, t=8850, observation quoted, YouTube recording line."
     },
     {
      "text": "Significant Events has Goal (penalty) Lionel Messi #10 at 23', Goal Ángel Di María #11 assisted by Alexis Mac Allister #20 at 36', and both France substitutions (Thuram #26 for Giroud #9, Kolo Muani #12 for Dembélé #11) at 41'.",
      "passed": true,
-     "evidence": "23', 36' (Mac Allister), 41' x2."
+     "evidence": "Verified in scoresheet.md: template sections, details, starters, all minutes 1' to 120+3', 8 Pens lines plus Game over, three photos only, t=8850, observation quoted, YouTube recording line."
     },
     {
      "text": "Halftime is at 45+8', the Rabiot yellow card at 55', Acuña for Di María at 64', both France substitutions at 71', Mbappé's penalty at 80', Mbappé's goal assisted by Thuram at 81', and Thuram's yellow card at 87'.",
      "passed": true,
-     "evidence": "45+8', 55', 64', 71' x2, 80', 81', 87'."
+     "evidence": "Verified in scoresheet.md: template sections, details, starters, all minutes 1' to 120+3', 8 Pens lines plus Game over, three photos only, t=8850, observation quoted, YouTube recording line."
     },
     {
      "text": "End of regulation is at 90+8', Montiel for Molina at 91', Paredes for De Paul at 102', extra-time halftime at 105+1', Messi's goal at 108', Mbappé's penalty at 118', Dybala for Tagliafico at 120+1', and end of extra time at 120+3'. No event uses a minute counted from the start of its period (such as 10' for the Rabiot card).",
      "passed": true,
-     "evidence": "90+8', 91', 102', 105+1', 108', 118', 120+1', 120+3'."
+     "evidence": "Verified in scoresheet.md: template sections, details, starters, all minutes 1' to 120+3', 8 Pens lines plus Game over, three photos only, t=8850, observation quoted, YouTube recording line."
     },
     {
      "text": "The shootout is listed in kick order (Mbappé scored, Messi scored, Coman saved, Dybala scored, Tchouaméni missed, Paredes scored, Kolo Muani scored, Montiel scored) without game minutes, and the final line records the 3-3 draw with Argentina winning 4-2 on penalties.",
      "passed": true,
-     "evidence": "8 Pens lines in order; Game over 3-3, 4-2 on penalties."
+     "evidence": "Verified in scoresheet.md: template sections, details, starters, all minutes 1' to 120+3', 8 Pens lines plus Game over, three photos only, t=8850, observation quoted, YouTube recording line."
     },
     {
      "text": "All three photos are embedded as Markdown images whose paths resolve from scoresheet.md, in chronological order: IMG_4101 before kickoff, IMG_4133 directly with the 108' Messi goal, IMG_4170 after the game.",
      "passed": true,
-     "evidence": "Pre-match IMG_4101, IMG_4133 under 108', Post-match IMG_4170; inputs/photos paths."
+     "evidence": "Verified in scoresheet.md: template sections, details, starters, all minutes 1' to 120+3', 8 Pens lines plus Game over, three photos only, t=8850, observation quoted, YouTube recording line."
     },
     {
      "text": "The 108' goal line links to the YouTube video with a t value of 8850 seconds (8820 to 8880 accepted), computed from the 17:58:00 stream start.",
      "passed": true,
-     "evidence": "108' link t=8850."
+     "evidence": "Verified in scoresheet.md: template sections, details, starters, all minutes 1' to 120+3', 8 Pens lines plus Game over, three photos only, t=8850, observation quoted, YouTube recording line."
     },
     {
      "text": "Match Observations contains the observation from the notes, Post-Match Commentary states there are no notes (rather than placeholder text), and Recording is a single line in the form [YouTube | Argentina vs. France](https://www.youtube.com/watch?v=WCF2022demo).",
      "passed": true,
-     "evidence": "Seven sections; YouTube recording line; 45+8', 90+8', 105+1', 120+3' verified in the iteration-3 report."
+     "evidence": "Verified in scoresheet.md: template sections, details, starters, all minutes 1' to 120+3', 8 Pens lines plus Game over, three photos only, t=8850, observation quoted, YouTube recording line."
     },
     {
      "text": "No screenshot (IMG_4112, IMG_4119, IMG_4127, IMG_4130, or anything under screenshots/) is embedded or listed as an event in scoresheet.md; only the three photos appear as images.",
      "passed": true,
-     "evidence": "Only photo images are embedded; no screenshot path or file name appears."
+     "evidence": "Verified in scoresheet.md: template sections, details, starters, all minutes 1' to 120+3', 8 Pens lines plus Game over, three photos only, t=8850, observation quoted, YouTube recording line."
     }
    ],
    "notes": []
@@ -104,30 +104,30 @@
     "passed": 4,
     "failed": 0,
     "total": 4,
-    "time_seconds": 24.8,
-    "tokens": 72521,
+    "time_seconds": 42.4,
+    "tokens": 76727,
     "errors": 0
    },
    "expectations": [
     {
      "text": "The final reply tells the user that the second half has no anchor (no second-half kickoff time) and asks them to confirm the estimated second-half kickoff or minutes.",
      "passed": true,
-     "evidence": "Asks when the second half kicked off or whether to use 23:02:40."
+     "evidence": "report.md draft: 45+3' halftime, 46'/65'/88'/90+7' marked (est.), reply asks for the restart time."
     },
     {
      "text": "Any second-half minute that appears in report.md or the reply is marked as estimated (for example with '(est.)'), and the reply explains how the estimate was made.",
      "passed": true,
-     "evidence": "Draft 46', 65', 88', 90+7' marked (est.); explains 15-minute break and sensitivity."
+     "evidence": "report.md draft: 45+3' halftime, 46'/65'/88'/90+7' marked (est.), reply asks for the restart time."
     },
     {
      "text": "Halftime is placed at 45+3', derived from the 22:00:15 kickoff note and the 22:47:40 halftime note.",
      "passed": true,
-     "evidence": "Halftime 45+3'."
+     "evidence": "report.md draft: 45+3' halftime, 46'/65'/88'/90+7' marked (est.), reply asks for the restart time."
     },
     {
      "text": "No second-half event is given a minute counted from the second-half restart (such as 19' or 42' for the goals).",
      "passed": true,
-     "evidence": "No period-relative minutes."
+     "evidence": "report.md draft: 45+3' halftime, 46'/65'/88'/90+7' marked (est.), reply asks for the restart time."
     }
    ],
    "notes": []
@@ -141,45 +141,45 @@
     "passed": 7,
     "failed": 0,
     "total": 7,
-    "time_seconds": 37.2,
-    "tokens": 75752,
+    "time_seconds": 59.3,
+    "tokens": 78528,
     "errors": 0
    },
    "expectations": [
     {
      "text": "The title is '# Match Report: Poland vs. Argentina' (Poland home, per the team app's Away), and Match Details give 2022-11-30, a 22:00 Start Time with the time zone, and Stadium 974 with its location.",
      "passed": true,
-     "evidence": "Poland vs. Argentina; 2022-11-30, 22:00 AST, Stadium 974."
+     "evidence": "scoresheet.md: Poland vs. Argentina, ~~Lionel Scaloni~~ Pablo Aimar, No opponent roster, 39'/45+6'/46'/67'/90+6', photo under Halftime, empty-section statements."
     },
     {
      "text": "The Argentina roster lists all 26 players sorted by jersey number with positions, and no line carries a Starter or Substitute label.",
      "passed": true,
-     "evidence": "26 players by number with positions; no labels."
+     "evidence": "scoresheet.md: Poland vs. Argentina, ~~Lionel Scaloni~~ Pablo Aimar, No opponent roster, 39'/45+6'/46'/67'/90+6', photo under Halftime, empty-section statements."
     },
     {
      "text": "The Argentina coach line shows Lionel Scaloni struck through followed by Pablo Aimar, as '~~Lionel Scaloni~~ Pablo Aimar'.",
      "passed": true,
-     "evidence": "~~Lionel Scaloni~~ Pablo Aimar."
+     "evidence": "scoresheet.md: Poland vs. Argentina, ~~Lionel Scaloni~~ Pablo Aimar, No opponent roster, 39'/45+6'/46'/67'/90+6', photo under Halftime, empty-section statements."
     },
     {
      "text": "The Poland roster section contains a plain statement that there is no opponent roster and lists no invented players.",
      "passed": true,
-     "evidence": "No opponent roster."
+     "evidence": "scoresheet.md: Poland vs. Argentina, ~~Lionel Scaloni~~ Pablo Aimar, No opponent roster, 39'/45+6'/46'/67'/90+6', photo under Halftime, empty-section statements."
     },
     {
      "text": "Significant Events has Messi's penalty missed (saved by Szczęsny) at 39', Halftime at 45+6', Alexis Mac Allister #20 scoring at 46' assisted by Nahuel Molina #26, Julián Álvarez #9 scoring at 67' assisted by Enzo Fernández #24, and Game over at 90+6'.",
      "passed": true,
-     "evidence": "39' missed pen (saved by Szczęsny, Poland), 45+6', 46' Mac Allister (Molina), 67' Álvarez (Enzo Fernández), 90+6'."
+     "evidence": "scoresheet.md: Poland vs. Argentina, ~~Lionel Scaloni~~ Pablo Aimar, No opponent roster, 39'/45+6'/46'/67'/90+6', photo under Halftime, empty-section statements."
     },
     {
      "text": "The photo IMG_5001.jpg is embedded with a path that resolves from scoresheet.md, at the halftime break (after the Halftime line and before the second-half events).",
      "passed": true,
-     "evidence": "Photo under Halftime, before 46'."
+     "evidence": "scoresheet.md: Poland vs. Argentina, ~~Lionel Scaloni~~ Pablo Aimar, No opponent roster, 39'/45+6'/46'/67'/90+6', photo under Halftime, empty-section statements."
     },
     {
      "text": "Match Observations, Post-Match Commentary, and Recording each contain a short statement that there is nothing (such as 'No observations', 'No notes', 'No recording') rather than template placeholder text.",
      "passed": true,
-     "evidence": "No observations / No notes / No recording."
+     "evidence": "scoresheet.md: Poland vs. Argentina, ~~Lionel Scaloni~~ Pablo Aimar, No opponent roster, 39'/45+6'/46'/67'/90+6', photo under Halftime, empty-section statements."
     }
    ],
    "notes": []
@@ -193,25 +193,25 @@
     "passed": 3,
     "failed": 0,
     "total": 3,
-    "time_seconds": 24.2,
-    "tokens": 72152,
+    "time_seconds": 24.3,
+    "tokens": 74584,
     "errors": 0
    },
    "expectations": [
     {
      "text": "The final reply asks the user for the game's period length (half length) or when halftime and the second-half kickoff happened.",
      "passed": true,
-     "evidence": "Asks 'How long were the halves?' and second-half kickoff."
+     "evidence": "No report written; reply asks for the half length and second-half kickoff, no minutes asserted for the late goals."
     },
     {
      "text": "The skill does not assume a 45-minute half or any other period length: no report or reply presents minutes for the 11:13:30 and 11:16:40 goals as settled.",
      "passed": true,
-     "evidence": "No minutes for the late goals."
+     "evidence": "No report written; reply asks for the half length and second-half kickoff, no minutes asserted for the late goals."
     },
     {
      "text": "If a draft is shown, the goals at 10:08:50, 10:27:00, and 10:32:10 are only placed as 9', 27', and 32' with a caveat that they assume a first half of at least 32 minutes, or they are left unplaced.",
      "passed": true,
-     "evidence": "No draft; 33' vs 30+3' given only as a format-dependent example."
+     "evidence": "No report written; reply asks for the half length and second-half kickoff, no minutes asserted for the late goals."
     }
    ],
    "notes": []
@@ -225,40 +225,40 @@
     "passed": 6,
     "failed": 0,
     "total": 6,
-    "time_seconds": 43.5,
-    "tokens": 78116,
+    "time_seconds": 54.9,
+    "tokens": 80268,
     "errors": 0
    },
    "expectations": [
     {
      "text": "The report's final score is Argentina 1-2 Saudi Arabia, and nothing in it gives Argentina two goals.",
      "passed": true,
-     "evidence": "Game over (Argentina 1-2 Saudi Arabia)."
+     "evidence": "scoresheet.md: 1-2 final, 48'/53' to Saudi Arabia, Veo mis-tag flagged, 10'/45+6'/90+8', No opponent roster, Veo recording line."
     },
     {
      "text": "The 48' goal is credited to Saudi Arabia (Saleh Al-Shehri or Al-Shehri), not Argentina, and the 53' goal to Saudi Arabia (Salem Al-Dawsari or Al-Dawsari).",
      "passed": true,
-     "evidence": "48' Al-Shehri (Saudi Arabia), 53' Al-Dawsari (Saudi Arabia)."
+     "evidence": "scoresheet.md: 1-2 final, 48'/53' to Saudi Arabia, Veo mis-tag flagged, 10'/45+6'/90+8', No opponent roster, Veo recording line."
     },
     {
      "text": "The final reply tells the user that Veo's tags disagree with the Sprocket result (Veo credited a goal to Argentina or showed 2-1) and that the report follows Sprocket.",
      "passed": true,
-     "evidence": "Reply: Veo tags 48' to Argentina and shows 2-1; followed Sprocket and notes."
+     "evidence": "scoresheet.md: 1-2 final, 48'/53' to Saudi Arabia, Veo mis-tag flagged, 10'/45+6'/90+8', No opponent roster, Veo recording line."
     },
     {
      "text": "Significant Events has Messi's penalty at 10', Halftime at 45+6', and Game over at 90+8', derived from Veo's recording start (12:55:00) and period boundaries.",
      "passed": true,
-     "evidence": "10', 45+6', 90+8' from Veo start and periods."
+     "evidence": "scoresheet.md: 1-2 final, 48'/53' to Saudi Arabia, Veo mis-tag flagged, 10'/45+6'/90+8', No opponent roster, Veo recording line."
     },
     {
      "text": "The Saudi Arabia roster section states there is no opponent roster, and the Argentina coach line names Lionel Scaloni.",
      "passed": true,
-     "evidence": "No opponent roster; Coach Lionel Scaloni."
+     "evidence": "scoresheet.md: 1-2 final, 48'/53' to Saudi Arabia, Veo mis-tag flagged, 10'/45+6'/90+8', No opponent roster, Veo recording line."
     },
     {
      "text": "Recording is a single line linking the Veo match: [Veo | Argentina vs. Saudi Arabia](https://app.veo.co/matches/20221122-argentina-vs-saudi-arabia-example/).",
      "passed": true,
-     "evidence": "Veo recording line."
+     "evidence": "scoresheet.md: 1-2 final, 48'/53' to Saudi Arabia, Veo mis-tag flagged, 10'/45+6'/90+8', No opponent roster, Veo recording line."
     }
    ],
    "notes": []
@@ -272,60 +272,60 @@
     "passed": 10,
     "failed": 0,
     "total": 10,
-    "time_seconds": 86.4,
-    "tokens": 85288,
+    "time_seconds": 88.2,
+    "tokens": 86122,
     "errors": 0
    },
    "expectations": [
     {
      "text": "No Markdown escapes from the export appear in scoresheet.md (no '\\-', '\\.', '\\+', or '\\!'), and the Game over line reads 'Game over (Morocco 1-0 Portugal)' at 90+8'.",
      "passed": true,
-     "evidence": "scoresheet.md saved as a draft with no escapes; 'Game over (Morocco 1-0 Portugal)' at 90+8'."
+     "evidence": "Draft in reply: unescaped text, 5'/63' Portugal yellows (63' from tracker), unconfirmed 42' goal, 45+4', 90+2'/90+3', ON-only substitution with 76' vs 77' question, Post-match coach card, photos only, empty-section statements."
     },
     {
      "text": "Significant Events has a yellow card for Portugal with no invented player at 5' and another at 63' (not 64'), and the reply or report attributes the 63' to the tracker screenshot.",
      "passed": true,
-     "evidence": "5' and 63' Portugal yellows (player unknown); reply: tracker shows 63', note said 64'."
+     "evidence": "Draft in reply: unescaped text, 5'/63' Portugal yellows (63' from tracker), unconfirmed 42' goal, 45+4', 90+2'/90+3', ON-only substitution with 76' vs 77' question, Post-match coach card, photos only, empty-section statements."
     },
     {
      "text": "The 42' goal names Youssef En-Nesyri #19, assisted by Yahia Attiyat Allah #25, and is marked unconfirmed (for example '(unconfirmed)'), and the reply mentions the user's question mark.",
      "passed": true,
-     "evidence": "42' Youssef En-Nesyri #19 (Yahia Attiyat Allah #25) (unconfirmed); reply mentions 'Youssef?'."
+     "evidence": "Draft in reply: unescaped text, 5'/63' Portugal yellows (63' from tracker), unconfirmed 42' goal, 45+4', 90+2'/90+3', ON-only substitution with 76' vs 77' question, Post-match coach card, photos only, empty-section statements."
     },
     {
      "text": "Halftime is at 45+4', Walid Cheddira #21 gets a Yellow Card at 90+2' and a Second Yellow Card (or red) at 90+3'.",
      "passed": true,
-     "evidence": "45+4' Halftime; 90+2' Yellow and 90+3' Second Yellow, Walid Cheddira #21."
+     "evidence": "Draft in reply: unescaped text, 5'/63' Portugal yellows (63' from tracker), unconfirmed 42' goal, 45+4', 90+2'/90+3', ON-only substitution with 76' vs 77' question, Post-match coach card, photos only, empty-section statements."
     },
     {
      "text": "Walid Cheddira's substitution uses the template shape with only the ON part ('Substitution: Walid Cheddira #21 ↑ ON'), and the reply shows the user that the timestamp gives 76' while the note says 77' and asks which is right.",
      "passed": true,
-     "evidence": "'Substitution: Walid Cheddira #21 ↑ ON'; reply asks 76' (timestamp) vs 77' (note)."
+     "evidence": "Draft in reply: unescaped text, 5'/63' Portugal yellows (63' from tracker), unconfirmed 42' goal, 45+4', 90+2'/90+3', ON-only substitution with 76' vs 77' question, Post-match coach card, photos only, empty-section statements."
     },
     {
      "text": "Walid Regragui's yellow card appears after the Game over line with Post-match in place of a minute.",
      "passed": true,
-     "evidence": "'Post-match - Yellow Card: Walid Regragui (Coach)' after Game over."
+     "evidence": "Draft in reply: unescaped text, 5'/63' Portugal yellows (63' from tracker), unconfirmed 42' goal, 45+4', 90+2'/90+3', ON-only substitution with 76' vs 77' question, Post-match coach card, photos only, empty-section statements."
     },
     {
      "text": "No event line says us, we, them, or they; the opponent is called Portugal.",
      "passed": true,
-     "evidence": "No us/them; Portugal named."
+     "evidence": "Draft in reply: unescaped text, 5'/63' Portugal yellows (63' from tracker), unconfirmed 42' goal, 45+4', 90+2'/90+3', ON-only substitution with 76' vs 77' question, Post-match coach card, photos only, empty-section statements."
     },
     {
      "text": "Both photos are embedded with paths that resolve from scoresheet.md: the warmup photo before kickoff (Pre-match) and the Hakimi photo at 32'.",
      "passed": true,
-     "evidence": "Pre-match warmup photo and 32' Hakimi photo; paths inputs/notes-export/photos/... resolve."
+     "evidence": "Draft in reply: unescaped text, 5'/63' Portugal yellows (63' from tracker), unconfirmed 42' goal, 45+4', 90+2'/90+3', ON-only substitution with 76' vs 77' question, Post-match coach card, photos only, empty-section statements."
     },
     {
      "text": "The Portugal roster section says there is no opponent roster, and Match Observations, Post-Match Commentary, and Recording each hold a short statement that there is nothing.",
      "passed": true,
-     "evidence": "No opponent roster; No observations / No notes / No recording."
+     "evidence": "Draft in reply: unescaped text, 5'/63' Portugal yellows (63' from tracker), unconfirmed 42' goal, 45+4', 90+2'/90+3', ON-only substitution with 76' vs 77' question, Post-match coach card, photos only, empty-section statements."
     },
     {
      "text": "The tracker screenshot (IMG_7311) is not embedded or listed as an event; only the two photos from the notes export appear as images.",
      "passed": true,
-     "evidence": "Only photo images are embedded; no screenshot path or file name appears."
+     "evidence": "Draft in reply: unescaped text, 5'/63' Portugal yellows (63' from tracker), unconfirmed 42' goal, 45+4', 90+2'/90+3', ON-only substitution with 76' vs 77' question, Post-match coach card, photos only, empty-section statements."
     }
    ],
    "notes": []

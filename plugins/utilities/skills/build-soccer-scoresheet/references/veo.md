@@ -62,8 +62,20 @@ goals the running score. Section headers mark `1ST PERIOD`, `2ND PERIOD`, and
 so on. The list is virtualized, so scroll it to read every card.
 
 The minute on a card is continuous and has no stoppage notation (in 2×30, the
-second half starts at `31'` and stoppage shows as `61'`, `62'`). Recompute
-minutes from the period boundaries.
+second half starts at `31'` and stoppage shows as `61'`, `62'`). It can also
+carry first-half stoppage into the second half: a goal 5:01 into the second
+half of a 2×30 game showed as `37'` where the report needs `36'`. Recompute
+every minute from the period kickoffs.
+
+**Period kickoffs.** The `Kickoff` cards are better kickoff anchors than the
+`periods` timeframes, which are AI-detected and were a few seconds late in
+one match. Click the first Kickoff card under each period header and read
+the video's `currentTime`; later Kickoff cards in a period are restarts after
+goals.
+
+**Goals.** The `Goals` quick filter lists only goals. Clicking each goal
+card gives its exact time (`currentTime`), its team, the running score, and
+its `?event=` link in one pass.
 
 Clicking a card seeks the video to that event and changes the page URL to
 `https://app.veo.co/matches/<slug>/?event=<event id>`. The video's

@@ -2,7 +2,7 @@
 
 **Executor**: claude-opus-5-5 (Agent-tool subagents)
 **Grader**: claude-opus-5-5
-**Date**: 2026-10-15
+**Date**: 2026-10-16
 **Evals**: 1-6 (1 run each, with and without the skill)
 **Fixtures**: `python3 evals/build_fixtures.py` (needs Pillow)
 
@@ -12,8 +12,8 @@
 |--------|------------|---------------|-------|
 | Expectations passed | 42/42 (100%) | 17/42 (40%) | +25 |
 | Evals fully passing | 6/6 | 1/6 | +5 |
-| Time | 54.0s ± 35.0s | 42.7s ± 25.2s | +11.4s |
-| Tokens | 79,561 ± 8,357 | 70,364 ± 6,742 | +9,197 |
+| Time | 63.1s ± 30.9s | 42.7s ± 25.2s | +20.4s |
+| Tokens | 81,972 ± 7,745 | 70,364 ± 6,742 | +11,608 |
 
 `benchmark-baseline.json` holds the with-skill runs only. The without-skill
 runs for evals 1-4 come from the first iteration, whose inputs were the same;
@@ -58,5 +58,11 @@ fixtures sit mid-minute so each expected minute is unambiguous.
 - **Screenshots stay out of the report.** They are read for the clock, the
   score, and who scored, and only game photos are embedded; evals 1 and 6
   check this.
+- **A real game refined the timing rules.** Hand-started tracker clocks ran
+  7 to 16 seconds behind the recording's kickoff, by a different amount each
+  half, and two events landed within seconds of a minute boundary. The skill
+  now ranks recording times above tracker clocks, uses Veo's Kickoff events
+  as period anchors, and asks when sources split at a boundary. All six
+  with-skill evals were rerun after those changes.
 - **Not exercised**: reading jersey numbers from a recording to fill a gap.
   Trials have no recording access.

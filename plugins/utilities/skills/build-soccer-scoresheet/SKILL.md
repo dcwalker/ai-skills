@@ -43,7 +43,9 @@ Open every file the user provided and list what each one contributes. Look
 at images yourself; do not rely on file names. Tell screenshots from photos:
 a screenshot (a status bar, an app or watch screen) is only a source to read
 data from, such as the time, the game clock, the score, or who scored and
-assisted, and it never appears in the report. Photos of the game do.
+assisted, and it never appears in the report. Photos of the game do. A notes
+export can hold both: an image at a phone's screen size with a status bar is
+a screenshot, even when it is attached to a journal entry like a photo.
 
 - **Team app screenshots** (Sprocket, TeamSnap, Demosphere game trackers):
   the status-bar time (wall clock, minutes only), the game clock (with
@@ -170,8 +172,13 @@ platform's number.
 **When sources disagree on a minute** (the minute the user wrote, the
 minute computed from the timestamp, a team app or tracker screenshot, the
 video platform's event time), compare every source that covers the event
-and use the minute they support. A tracker screenshot or a recording time
-outranks a written minute, which is read off a watch by eye. If the sources
+and use the minute they support. A recording time outranks a tracker
+screenshot, which outranks a written minute read off a watch by eye. Game
+tracker clocks are started and paused by hand (Sprocket labels its clock
+"unofficial"), so they often run several seconds behind the real kickoff,
+by a different amount each half; trust a tracker for which team scored and
+the order of goals more than for the exact second. Events within a few
+seconds of a minute boundary are where sources split. If the sources
 still disagree, or the only two disagree, show the user the candidates and
 the evidence for each and ask which is right; do not pick one silently.
 
@@ -337,6 +344,12 @@ everything else stays as written.
   links are described in [references/veo.md](references/veo.md). Never guess
   a timestamp link format; without a documented or verified one, leave the
   link off.
+
+**Match Observations** carries the user's own words from notes that are
+observations rather than events (how a player is doing, how the game
+feels). Quote them as written, one bullet each, prefixed with the minute or
+the moment they were written (`- 12': "..."`, `- Halftime: "..."`); do not
+rewrite or summarize them.
 
 **Empty sections.** Every section stays in the report. When there is nothing
 for it, write a short plain statement instead: `No observations`, `No notes`,
