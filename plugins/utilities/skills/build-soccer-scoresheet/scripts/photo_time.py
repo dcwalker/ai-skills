@@ -83,6 +83,26 @@ def contained_path(path):
     return None
 
 
+def read_capture_fields(data, result):
+    """Fill result's EXIF time fields from JPEG bytes; return an error or None."""
+    tiff = read_exif_segment(data)
+    if tiff is None:
+        return "no JPEG EXIF segment"
+    endian = "<" if tiff[:2] == b"II" else ">"
+    ifd0 = read_ifd(tiff, struct.unpack(endian + "I", tiff[4:8])[0], endian)
+    if EXIF_IFD_POINTER not in ifd0:
+        return "no EXIF sub-IFD"
+    exif_offset = struct.unpack(endian + "I", ifd0[EXIF_IFD_POINTER][2])[0]
+    exif = read_ifd(tiff, exif_offset, endian)
+    if DATE_TIME_ORIGINAL in exif:
+        result["date_time_original"] = ascii_value(tiff, exif[DATE_TIME_ORIGINAL], endian)
+    if OFFSET_TIME_ORIGINAL in exif:
+        result["offset_time_original"] = ascii_value(tiff, exif[OFFSET_TIME_ORIGINAL], endian)
+    if result["date_time_original"] is None:
+        return "no DateTimeOriginal in EXIF data"
+    return None
+
+
 def capture_time(path):
     result = {"path": path, "date_time_original": None,
               "offset_time_original": None, "iso": None}
@@ -97,25 +117,21 @@ def capture_time(path):
     except OSError as error:
         result["error"] = str(error)
         return result
-    tiff = read_exif_segment(data)
-    if tiff is None:
-        result["error"] = "no JPEG EXIF segment"
+    # A truncated or corrupt file can point an offset past the end of the
+    # data; report it for this photo and keep going with the rest.
+    try:
+        error = read_capture_fields(data, result)
+    except (struct.error, IndexError):
+        error = "malformed or truncated EXIF data"
+    if error:
+        result["error"] = error
         return result
-    endian = "<" if tiff[:2] == b"II" else ">"
-    ifd0 = read_ifd(tiff, struct.unpack(endian + "I", tiff[4:8])[0], endian)
-    if EXIF_IFD_POINTER not in ifd0:
-        result["error"] = "no EXIF sub-IFD"
-        return result
-    exif_offset = struct.unpack(endian + "I", ifd0[EXIF_IFD_POINTER][2])[0]
-    exif = read_ifd(tiff, exif_offset, endian)
-    if DATE_TIME_ORIGINAL in exif:
-        result["date_time_original"] = ascii_value(tiff, exif[DATE_TIME_ORIGINAL], endian)
-    if OFFSET_TIME_ORIGINAL in exif:
-        result["offset_time_original"] = ascii_value(tiff, exif[OFFSET_TIME_ORIGINAL], endian)
     local = result["date_time_original"]
-    if local and len(local) >= 19:
-        iso = local[:10].replace(":", "-") + "T" + local[11:19]
-        result["iso"] = iso + (result["offset_time_original"] or "")
+    if len(local) < 19:
+        result["error"] = f"incomplete DateTimeOriginal {local!r}"
+        return result
+    iso = local[:10].replace(":", "-") + "T" + local[11:19]
+    result["iso"] = iso + (result["offset_time_original"] or "")
     return result
 
 
