@@ -29,9 +29,12 @@ Every time is either an ISO 8601 timestamp with a UTC offset, or
 in playing order; each one's minutes continue from the lengths before it, so
 the second half of 2x30 starts at 31' and extra time after 2x45 at 91'.
 
-Output: for each period, its kickoff and, when an end is given, the minute of
-the whistle that ended it. For each event, the period it falls in, the
-elapsed time in that period, the minute, and seconds_to_boundary: how close
+Output: for each period, its kickoff, kickoff_minute (the minutes already
+played, which the kickoff line uses: 0' for the first half, 30' for the second
+half of 2x30), starts_at (the first minute of play after the kickoff), and,
+when an end is given, the minute of the whistle that ended it. For each event,
+the period it falls in, the elapsed time in that period, the minute, and
+seconds_to_boundary: how close
 the elapsed time is to the next or previous whole minute. Events within a few
 seconds of a boundary are where sources disagree; check them against other
 sources before trusting the minute. An event before the first kickoff is
@@ -91,6 +94,7 @@ def build_periods(timeline, recording_start):
 
 def describe_period(period):
     row = {"name": period["name"], "kickoff": period["kickoff"].isoformat(),
+           "kickoff_minute": f"{period['before'] // 60}'",
            "starts_at": f"{period['before'] // 60 + 1}'"}
     if period["end"]:
         elapsed = (period["end"] - period["kickoff"]).total_seconds()
