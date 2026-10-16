@@ -4,7 +4,7 @@
   "skill_path": "plugins/utilities/skills/build-soccer-scoresheet",
   "executor_model": "claude-opus-5-5",
   "analyzer_model": "claude-opus-5-5",
-  "timestamp": "2026-10-16T14:49:23Z",
+  "timestamp": "2026-10-16T14:59:06Z",
   "evals_run": [
    1,
    2,
@@ -15,7 +15,7 @@
   ],
   "runs_per_configuration": 1,
   "executor": "Agent-tool subagents, one per eval, each pointed at a copy of fixtures/<id>/inputs as its working directory, with SKILL.md loaded and no browser, web, calendar, email, or connector access",
-  "notes": "Graded against each trial's written report and its final reply. Eval 2, 4, and 6 trials stop to ask the user, as the skill directs, so their expectations are checked against the draft and question in the reply. All six with-skill evals were rerun after event emojis and scripts/game_minutes.py were added; every minute in these runs comes from the script. Eval 6 was rerun after Step 2 stopped asking for a missing opponent roster; it now writes 'No opponent roster' and says so in the reply. Evals 1, 3, and 6 were rerun after photos gained captions and a note's written minute was ranked above its own timestamp; evals 2, 4, and 5 carry over, since neither rule reaches them. Eval 6 now expects the written 77' for the substitution. The recording check (reading jersey numbers from video) is not exercised: trials have no recording access."
+  "notes": "Graded against each trial's written report and its final reply. Eval 2, 4, and 6 trials stop to ask the user, as the skill directs, so their expectations are checked against the draft and question in the reply. All six with-skill evals were rerun after event emojis and scripts/game_minutes.py were added; every minute in these runs comes from the script. Eval 6 was rerun after Step 2 stopped asking for a missing opponent roster; it now writes 'No opponent roster' and says so in the reply. Evals 1, 3, and 6 were rerun after photos gained italic captions below the image and a note's written minute was ranked above its own timestamp; evals 2, 4, and 5 carry over, since neither rule reaches them. Eval 6 now expects the written 77' for the substitution. The recording check (reading jersey numbers from video) is not exercised: trials have no recording access."
  },
  "runs": [
   {
@@ -27,75 +27,75 @@
     "passed": 13,
     "failed": 0,
     "total": 13,
-    "time_seconds": 104.3,
-    "tokens": 97930,
+    "time_seconds": 122.4,
+    "tokens": 99237,
     "errors": 0
    },
    "expectations": [
     {
      "text": "scoresheet.md exists and its sections appear in this order: '# Match Report: Argentina vs. France', '## Match Details', '## Rosters', '## Significant Events', '## Match Observations', '## Post-Match Commentary', '## Recording'.",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording, emojis; each photo on its own '📷 Photo' line, image ending in a backslash, italic caption directly below, no blank lines, caption repeated as alt text (Teams walking out, Messi celebrating his goal, Trophy lift)."
     },
     {
      "text": "Match Details give Date 2022-12-18, a Start Time of 18:00 with the time zone (AST or UTC+3), Venue Lusail Stadium with its location, and Competition as a Markdown link to the fifa.com Qatar 2022 page.",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording, emojis; each photo on its own '📷 Photo' line, image ending in a backslash, italic caption directly below, no blank lines, caption repeated as alt text (Teams walking out, Messi celebrating his goal, Trophy lift)."
     },
     {
      "text": "Both rosters are sorted by jersey number with Starter entries before Substitute entries; the Argentina starters are exactly #3, #7, #9, #10, #11, #13, #19, #20, #23, #24, #26 and the France starters are exactly #1, #4, #5, #7, #8, #9, #10, #11, #14, #18, #22.",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording, emojis; each photo on its own '📷 Photo' line, image ending in a backslash, italic caption directly below, no blank lines, caption repeated as alt text (Teams walking out, Messi celebrating his goal, Trophy lift)."
     },
     {
      "text": "Roster lines use the template shape '**#10 Lionel Messi** (FWD) - Starter', and each team ends with a Coach line: Lionel Scaloni for Argentina, Didier Deschamps for France.",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording, emojis; each photo on its own '📷 Photo' line, image ending in a backslash, italic caption directly below, no blank lines, caption repeated as alt text (Teams walking out, Messi celebrating his goal, Trophy lift)."
     },
     {
      "text": "Significant Events has Goal (penalty) Lionel Messi #10 at 23', Goal Ángel Di María #11 assisted by Alexis Mac Allister #20 at 36', and both France substitutions (Thuram #26 for Giroud #9, Kolo Muani #12 for Dembélé #11) at 41'.",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording, emojis; each photo on its own '📷 Photo' line, image ending in a backslash, italic caption directly below, no blank lines, caption repeated as alt text (Teams walking out, Messi celebrating his goal, Trophy lift)."
     },
     {
      "text": "Halftime is at 45+8', the Rabiot yellow card at 55', Acuña for Di María at 64', both France substitutions at 71', Mbappé's penalty at 80', Mbappé's goal assisted by Thuram at 81', and Thuram's yellow card at 87'.",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording, emojis; each photo on its own '📷 Photo' line, image ending in a backslash, italic caption directly below, no blank lines, caption repeated as alt text (Teams walking out, Messi celebrating his goal, Trophy lift)."
     },
     {
      "text": "End of regulation is at 90+8', Montiel for Molina at 91', Paredes for De Paul at 102', extra-time halftime at 105+1', Messi's goal at 108', Mbappé's penalty at 118', Dybala for Tagliafico at 120+1', and end of extra time at 120+3'. No event uses a minute counted from the start of its period (such as 10' for the Rabiot card).",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording, emojis; each photo on its own '📷 Photo' line, image ending in a backslash, italic caption directly below, no blank lines, caption repeated as alt text (Teams walking out, Messi celebrating his goal, Trophy lift)."
     },
     {
      "text": "The shootout is listed in kick order (Mbappé scored, Messi scored, Coman saved, Dybala scored, Tchouaméni missed, Paredes scored, Kolo Muani scored, Montiel scored) without game minutes, and the final line records the 3-3 draw with Argentina winning 4-2 on penalties.",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording, emojis; each photo on its own '📷 Photo' line, image ending in a backslash, italic caption directly below, no blank lines, caption repeated as alt text (Teams walking out, Messi celebrating his goal, Trophy lift)."
     },
     {
-     "text": "All three photos are embedded as Markdown images whose paths resolve from scoresheet.md, in chronological order: IMG_4101 before kickoff, IMG_4133 directly after the 108' Messi goal, IMG_4170 after the game. Each has its own '📷 Photo: <caption>' line whose caption describes what the photo shows (teams walking out, Messi celebrating, the trophy lift), repeated as the image's alt text.",
+     "text": "All three photos are embedded as Markdown images whose paths resolve from scoresheet.md, in chronological order: IMG_4101 before kickoff, IMG_4133 directly after the 108' Messi goal, IMG_4170 after the game. Each sits on its own '📷 Photo' line, with the image on the next line (ending in a backslash) and its caption in italics directly below, no blank lines around the photo, and the caption repeated as the image's alt text; captions describe what the photo shows (teams walking out, Messi celebrating, the trophy lift).",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording, emojis; each photo on its own '📷 Photo' line, image ending in a backslash, italic caption directly below, no blank lines, caption repeated as alt text (Teams walking out, Messi celebrating his goal, Trophy lift)."
     },
     {
      "text": "The 108' goal line links to the YouTube video with a t value of 8850 seconds (8820 to 8880 accepted), computed from the 17:58:00 stream start.",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording, emojis; each photo on its own '📷 Photo' line, image ending in a backslash, italic caption directly below, no blank lines, caption repeated as alt text (Teams walking out, Messi celebrating his goal, Trophy lift)."
     },
     {
      "text": "Match Observations contains the observation from the notes, Post-Match Commentary states there are no notes (rather than placeholder text), and Recording is a single line in the form [YouTube | Argentina vs. France](https://www.youtube.com/watch?v=WCF2022demo).",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording, emojis; each photo on its own '📷 Photo' line, image ending in a backslash, italic caption directly below, no blank lines, caption repeated as alt text (Teams walking out, Messi celebrating his goal, Trophy lift)."
     },
     {
      "text": "No screenshot (IMG_4112, IMG_4119, IMG_4127, IMG_4130, or anything under screenshots/) is embedded or listed as an event in scoresheet.md; only the three photos appear as images.",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording, emojis; each photo on its own '📷 Photo' line, image ending in a backslash, italic caption directly below, no blank lines, caption repeated as alt text (Teams walking out, Messi celebrating his goal, Trophy lift)."
     },
     {
      "text": "Every Significant Events line starts its wording with the event's emoji: ⚽ on all six goals, 🟨 on both yellow cards, 🔄 on every substitution, ⏱️ on kickoffs, halftimes, and the ends of regulation and extra time, ✅ or ❌ on each shootout kick, 📷 on photo-only lines, and 🏁 on Game over.",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording, emojis; each photo on its own '📷 Photo' line, image ending in a backslash, italic caption directly below, no blank lines, caption repeated as alt text (Teams walking out, Messi celebrating his goal, Trophy lift)."
     }
    ]
   },
@@ -145,8 +145,8 @@
     "passed": 8,
     "failed": 0,
     "total": 8,
-    "time_seconds": 51.6,
-    "tokens": 81602,
+    "time_seconds": 51.2,
+    "tokens": 80314,
     "errors": 0
    },
    "expectations": [
@@ -176,9 +176,9 @@
      "evidence": "39', 45+6', 46', 67', 90+6'."
     },
     {
-     "text": "The photo IMG_5001.jpg is embedded with a path that resolves from scoresheet.md, at the halftime break (after the Halftime line and before the second-half events), on a '📷 Photo: <caption>' line whose caption describes the halftime huddle, repeated as the image's alt text.",
+     "text": "The photo IMG_5001.jpg is embedded with a path that resolves from scoresheet.md, at the halftime break (after the Halftime line and before the second-half events), on its own '📷 Photo' line, with the image on the next line (ending in a backslash) and its caption in italics directly below, no blank lines around the photo, and the caption repeated as the image's alt text; the caption describes the halftime huddle.",
      "passed": true,
-     "evidence": "'45+6' - 📷 Photo: Halftime huddle' with matching alt text, before 46'."
+     "evidence": "Halftime huddle at 45+6', before 46'; photo on its own '📷 Photo' line, image ending in a backslash, italic caption directly below, no blank lines, caption repeated as alt text."
     },
     {
      "text": "Match Observations, Post-Match Commentary, and Recording each contain a short statement that there is nothing (such as 'No observations', 'No notes', 'No recording') rather than template placeholder text.",
@@ -280,8 +280,8 @@
     "passed": 10,
     "failed": 0,
     "total": 10,
-    "time_seconds": 84.4,
-    "tokens": 90024,
+    "time_seconds": 86.0,
+    "tokens": 89225,
     "errors": 0
    },
    "expectations": [
@@ -293,7 +293,7 @@
     {
      "text": "Significant Events has a yellow card for Portugal with no invented player at 5' and another at 63' (not 64'), and the reply or report attributes the 63' to the tracker screenshot.",
      "passed": true,
-     "evidence": "5' and 63' Portugal yellows; 63' from tracker over the written 64'."
+     "evidence": "5' and 63' Portugal yellows; 63' from tracker."
     },
     {
      "text": "The 42' goal names Youssef En-Nesyri #19, assisted by Yahia Attiyat Allah #25, and is marked unconfirmed (for example '(unconfirmed)'), and the reply mentions the user's question mark.",
@@ -308,7 +308,7 @@
     {
      "text": "Walid Cheddira's substitution is at 77', the minute the user wrote, rather than the 76' its note's timestamp gives, uses the template shape with only the ON part ('Substitution: Walid Cheddira #21 ↑ ON'), and the reply mentions the 76'/77' difference without stopping to ask about it.",
      "passed": true,
-     "evidence": "77' ON-only substitution; reply explains the 76' timestamp and that the written minute wins, without asking."
+     "evidence": "77' ON-only substitution; reply explains the 76' timestamp, no question."
     },
     {
      "text": "Walid Regragui's yellow card appears after the Game over line with Post-match in place of a minute.",
@@ -321,9 +321,9 @@
      "evidence": "No us/them."
     },
     {
-     "text": "Both photos are embedded with paths that resolve from scoresheet.md: the warmup photo before kickoff (Pre-match) and the Hakimi photo at 32', each on a '📷 Photo: <caption>' line whose caption describes it (warm-ups; Hakimi on the ball), repeated as the image's alt text.",
+     "text": "Both photos are embedded with paths that resolve from scoresheet.md: the warmup photo before kickoff (Pre-match) and the Hakimi photo at 32', each on its own '📷 Photo' line, with the image on the next line (ending in a backslash) and its caption in italics directly below, no blank lines around the photo, and the caption repeated as the image's alt text; captions describe them (warm-ups; Hakimi on the ball).",
      "passed": true,
-     "evidence": "'Pre-match - 📷 Photo: Teams warming up at Al Thumama Stadium' and '32' - 📷 Photo: Hakimi (#2) on the ball' with matching alt text."
+     "evidence": "Warm-ups (Pre-match) and Hakimi (#2) on the ball (32'); photo on its own '📷 Photo' line, image ending in a backslash, italic caption directly below, no blank lines, caption repeated as alt text."
     },
     {
      "text": "The Portugal roster section says there is no opponent roster, and Match Observations, Post-Match Commentary, and Recording each hold a short statement that there is nothing.",

@@ -370,13 +370,17 @@ everything else stays as written.
   line is `- **Pens** - 🏁 Game over ([Home Team] [score]-[score] [Away Team],
   [Winner] win [x]-[y] on penalties)`.
 - **Photos** go inline, in chronological order with the events. Each photo
-  gets its own line with a caption, at its minute (or `**Pre-match**` and
-  `**Post-match**` in place of the minute), with the image indented below
-  and the same caption as its alt text:
+  gets its own `📷 Photo` line at its minute (or `**Pre-match**` and
+  `**Post-match**` in place of the minute), with the image indented on the
+  next line and its caption in italics directly below the image, as photo
+  captions traditionally sit. The caption is also the image's alt text. End
+  the image line with a backslash so the caption starts on its own line,
+  and leave no blank lines around the photo:
 
   ```markdown
-  - **3'** - 📷 Photo: Firstname (#32) in the action
-    ![Firstname (#32) in the action](path/to/photo.jpg)
+  - **3'** - 📷 Photo
+    ![Firstname (#32) in the action](path/to/photo.jpg)\
+    *Firstname (#32) in the action*
   ```
 
   A photo that shows an event goes on the line right after that event.
