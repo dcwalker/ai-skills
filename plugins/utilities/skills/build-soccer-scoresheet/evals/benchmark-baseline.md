@@ -10,10 +10,10 @@
 
 | Metric | With Skill | Without Skill | Delta |
 |--------|------------|---------------|-------|
-| Expectations passed | 44/44 (100%) | 17/44 (39%) | +27 |
+| Expectations passed | 45/45 (100%) | 17/45 (38%) | +28 |
 | Evals fully passing | 6/6 | 1/6 | +5 |
-| Time | 61.1s ± 36.8s | 41.4s ± 25.4s | +19.7s |
-| Tokens | 83,516 ± 9,337 | 70,184 ± 6,768 | +13,332 |
+| Time | 62.2s ± 35.4s | 41.4s ± 25.4s | +20.8s |
+| Tokens | 83,826 ± 8,902 | 70,184 ± 6,768 | +13,642 |
 
 `benchmark-baseline.json` holds the with-skill runs only. The without-skill
 runs for evals 1-4 come from the first iteration, whose inputs were the same;
@@ -35,7 +35,7 @@ fixtures sit mid-minute so each expected minute is unambiguous.
 | 2 | No second-half anchor: estimate and ask | 4/4 | 2/4 |
 | 3 | Substitute coach, absent player, no opponent roster, saved penalty | 8/8 | 1/8 |
 | 4 | Club tournament with unknown period length: ask | 3/3 | 3/3 |
-| 5 | Team app result vs Veo AI tags | 6/6 | 3/6 |
+| 5 | Team app result vs Veo AI tags | 7/7 | 3/7 |
 | 6 | Journal export with written minutes and shorthand | 10/10 | 4/10 |
 
 ## What the evals found
@@ -71,9 +71,9 @@ fixtures sit mid-minute so each expected minute is unambiguous.
 - **A missing opponent roster is stated, not asked about.** Parents
   rarely have one, so the skill writes `No opponent roster` and says so in
   the reply; an earlier run of eval 6 asked instead.
-- **Photos carry captions, and written minutes beat note timestamps.** Each
-  photo has its own `📷 Photo` line with an italic caption directly below
-  the image, and when a note's written
+- **Photos have their own section, and written minutes beat note
+  timestamps.** Photos sit in a `## Photos` section after Significant Events,
+  each image followed by `📷 **minute** - *caption*`, and when a note's written
   minute and its own timestamp disagree, the written minute is used without
   asking (a tracker screenshot or recording still outranks it).
 - **Not exercised**: reading jersey numbers from a recording to fill a gap.

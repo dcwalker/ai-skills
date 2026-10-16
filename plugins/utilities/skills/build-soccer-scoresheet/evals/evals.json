@@ -10,15 +10,15 @@
         "fixtures/1/inputs"
       ],
       "expectations": [
-        "scoresheet.md exists and its sections appear in this order: '# Match Report: Argentina vs. France', '## Match Details', '## Rosters', '## Significant Events', '## Match Observations', '## Post-Match Commentary', '## Recording'.",
+        "scoresheet.md exists, has no '## Rosters' heading, and its sections appear in this order: '# Match Report: Argentina vs. France', '## Match Details', '### Argentina', '### France', '## Significant Events', '## Photos', '## Match Observations', '## Post-Match Commentary', '## Recording'.",
         "Match Details give Date 2022-12-18, a Start Time of 18:00 with the time zone (AST or UTC+3), Venue Lusail Stadium with its location, and Competition as a Markdown link to the fifa.com Qatar 2022 page.",
         "Both rosters are sorted by jersey number with Starter entries before Substitute entries; the Argentina starters are exactly #3, #7, #9, #10, #11, #13, #19, #20, #23, #24, #26 and the France starters are exactly #1, #4, #5, #7, #8, #9, #10, #11, #14, #18, #22.",
-        "Roster lines use the template shape '**#10 Lionel Messi** (FWD) - Starter', and each team ends with a Coach line: Lionel Scaloni for Argentina, Didier Deschamps for France.",
+        "Roster lines bold only the jersey number, as in '- **#10** Lionel Messi (FWD) - Starter', and each team ends with a Coach line: Lionel Scaloni for Argentina, Didier Deschamps for France.",
         "Significant Events has Goal (penalty) Lionel Messi #10 at 23', Goal Ángel Di María #11 assisted by Alexis Mac Allister #20 at 36', and both France substitutions (Thuram #26 for Giroud #9, Kolo Muani #12 for Dembélé #11) at 41'.",
         "Halftime is at 45+8', the Rabiot yellow card at 55', Acuña for Di María at 64', both France substitutions at 71', Mbappé's penalty at 80', Mbappé's goal assisted by Thuram at 81', and Thuram's yellow card at 87'.",
         "End of regulation is at 90+8', Montiel for Molina at 91', Paredes for De Paul at 102', extra-time halftime at 105+1', Messi's goal at 108', Mbappé's penalty at 118', Dybala for Tagliafico at 120+1', and end of extra time at 120+3'. No event uses a minute counted from the start of its period (such as 10' for the Rabiot card).",
         "The shootout is listed in kick order (Mbappé scored, Messi scored, Coman saved, Dybala scored, Tchouaméni missed, Paredes scored, Kolo Muani scored, Montiel scored) without game minutes, and the final line records the 3-3 draw with Argentina winning 4-2 on penalties.",
-        "All three photos are embedded as Markdown images whose paths resolve from scoresheet.md, in chronological order: IMG_4101 before kickoff, IMG_4133 directly after the 108' Messi goal, IMG_4170 after the game. Each sits on its own '📷 Photo' line, with the image on the next line (ending in a backslash) and its caption in italics directly below, no blank lines around the photo, and the caption repeated as the image's alt text; captions describe what the photo shows (teams walking out, Messi celebrating, the trophy lift).",
+        "All three photos appear in the '## Photos' section after Significant Events, not as list items and not in Significant Events: each is the image (line ending in a backslash, caption as alt text) followed by '📷 **<minute>** - *<caption>*', with one blank line between photos, with paths that resolve from scoresheet.md, in chronological order: IMG_4101 (Pre-match), IMG_4133 (108'), IMG_4170 (Post-match); captions describe what each shows (teams walking out, Messi celebrating, the trophy lift).",
         "The 108' goal line links to the YouTube video with a t value of 8850 seconds (8820 to 8880 accepted), computed from the 17:58:00 stream start.",
         "Match Observations contains the observation from the notes, Post-Match Commentary states there are no notes (rather than placeholder text), and Recording is a single line in the form [YouTube | Argentina vs. France](https://www.youtube.com/watch?v=WCF2022demo).",
         "No screenshot (IMG_4112, IMG_4119, IMG_4127, IMG_4130, or anything under screenshots/) is embedded or listed as an event in scoresheet.md; only the three photos appear as images.",
@@ -48,11 +48,11 @@
       ],
       "expectations": [
         "The title is '# Match Report: Poland vs. Argentina' (Poland home, per the team app's Away), and Match Details give 2022-11-30, a 22:00 Start Time with the time zone, and Stadium 974 with its location.",
-        "The Argentina roster lists all 26 players sorted by jersey number with positions, no line carries a Starter or Substitute label, and #21 Paulo Dybala's line strikes through his name and ends with ' - Absent' ('**#21 ~~Paulo Dybala~~** (FWD) - Absent') because the notes say he is away.",
+        "The Argentina roster lists all 26 players sorted by jersey number with positions, bolds only the jersey number, no line carries a Starter or Substitute label, and #21 Paulo Dybala's line is '- **#21** ~~Paulo Dybala~~ (FWD) - Absent' because the notes say he is away.",
         "The Argentina coach line shows Lionel Scaloni struck through followed by Pablo Aimar, as '~~Lionel Scaloni~~ Pablo Aimar'.",
         "The Poland roster section contains a plain statement that there is no opponent roster and lists no invented players.",
         "Significant Events has Messi's penalty missed (saved by Szczęsny) at 39', Halftime at 45+6', Alexis Mac Allister #20 scoring at 46' assisted by Nahuel Molina #26, Julián Álvarez #9 scoring at 67' assisted by Enzo Fernández #24, and Game over at 90+6'.",
-        "The photo IMG_5001.jpg is embedded with a path that resolves from scoresheet.md, at the halftime break (after the Halftime line and before the second-half events), on its own '📷 Photo' line, with the image on the next line (ending in a backslash) and its caption in italics directly below, no blank lines around the photo, and the caption repeated as the image's alt text; the caption describes the halftime huddle.",
+        "The photo IMG_5001.jpg appears in the '## Photos' section after Significant Events, not as list items and not in Significant Events: each is the image (line ending in a backslash, caption as alt text) followed by '📷 **<minute>** - *<caption>*', with one blank line between photos, with a path that resolves from scoresheet.md, at minute 45+6'; the caption describes the halftime huddle.",
         "Match Observations, Post-Match Commentary, and Recording each contain a short statement that there is nothing (such as 'No observations', 'No notes', 'No recording') rather than template placeholder text.",
         "Significant Events lines carry their emoji: ❌ on Messi's missed penalty, ⚽ on both goals, ⏱️ on kickoff, halftime, and second-half kickoff, and 🏁 on Game over."
       ]
@@ -83,7 +83,8 @@
         "The final reply tells the user that Veo's tags disagree with the Sprocket result (Veo credited a goal to Argentina or showed 2-1) and that the report follows Sprocket.",
         "Significant Events has Messi's penalty at 10', Halftime at 45+6', and Game over at 90+8', derived from Veo's recording start (12:55:00) and period boundaries.",
         "The Saudi Arabia roster section states there is no opponent roster, and the Argentina coach line names Lionel Scaloni.",
-        "Recording is a single line linking the Veo match: [Veo | Argentina vs. Saudi Arabia](https://app.veo.co/matches/20221122-argentina-vs-saudi-arabia-example/)."
+        "Recording is a single line linking the Veo match: [Veo | Argentina vs. Saudi Arabia](https://app.veo.co/matches/20221122-argentina-vs-saudi-arabia-example/).",
+        "The report has a '## Photos' section after Significant Events that says 'No photos', and the Argentina roster bolds only the jersey numbers."
       ]
     },
     {
@@ -101,7 +102,7 @@
         "Walid Cheddira's substitution is at 77', the minute the user wrote, rather than the 76' its note's timestamp gives, uses the template shape with only the ON part ('Substitution: Walid Cheddira #21 ↑ ON'), and the reply mentions the 76'/77' difference without stopping to ask about it.",
         "Walid Regragui's yellow card appears after the Game over line with Post-match in place of a minute.",
         "No event line says us, we, them, or they; the opponent is called Portugal.",
-        "Both photos are embedded with paths that resolve from scoresheet.md: the warmup photo before kickoff (Pre-match) and the Hakimi photo at 32', each on its own '📷 Photo' line, with the image on the next line (ending in a backslash) and its caption in italics directly below, no blank lines around the photo, and the caption repeated as the image's alt text; captions describe them (warm-ups; Hakimi on the ball).",
+        "Both photos appear in the '## Photos' section after Significant Events, not as list items and not in Significant Events: each is the image (line ending in a backslash, caption as alt text) followed by '📷 **<minute>** - *<caption>*', with one blank line between photos, with paths that resolve from scoresheet.md: the warmup photo (Pre-match) then the Hakimi photo (32'); captions describe them (warm-ups; Hakimi on the ball).",
         "The Portugal roster section says there is no opponent roster, and Match Observations, Post-Match Commentary, and Recording each hold a short statement that there is nothing.",
         "The tracker screenshot (IMG_7311) is not embedded or listed as an event; only the two photos from the notes export appear as images."
       ]

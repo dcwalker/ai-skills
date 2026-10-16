@@ -285,18 +285,16 @@ everything else stays as written.
 - **Venue:** [Stadium or park name, field if known, address]
 - **Competition:** [Competition name](link)
 
-## Rosters
-
 ### [Home Team]
 
-- **#1 Firstname Lastname** (GK) - Starter
-- **#4 Firstname Lastname** (DEF) - Starter
-- **#12 Firstname Lastname** (GK) - Substitute
+- **#1** Firstname Lastname (GK) - Starter
+- **#4** Firstname Lastname (DEF) - Starter
+- **#12** Firstname Lastname (GK) - Substitute
 - **Coach:** Firstname Lastname
 
 ### [Away Team]
 
-- **#1 Firstname Lastname** (GK) - Starter
+- **#1** Firstname Lastname (GK) - Starter
 - **Coach:** Firstname Lastname
 
 ## Significant Events
@@ -306,6 +304,11 @@ everything else stays as written.
 - **45+2'** - 🟨 Yellow Card: [Player Name] #[Number] (Tactical foul)
 - **68'** - 🔄 Substitution: [Player Name] #[Number] ↑ ON, [Player Name] #[Number] ↓ OFF
 - **90+2'** - 🏁 Game over ([Home Team] [score]-[score] [Away Team])
+
+## Photos
+
+![Caption](path/to/photo.jpg)\
+📷 **3'** - *Caption*
 
 ## Match Observations
 
@@ -328,21 +331,24 @@ everything else stays as written.
 - Competition links to the league, tournament, or event page. Without a link,
   write the name alone and say in your reply that no link was found.
 
-**Rosters**
+**Rosters** sit directly under Match Details, one `###` heading per team,
+with no `## Rosters` heading above them.
 
-- One line per player, sorted by jersey number. Starters come before
+- One line per player, sorted by jersey number. Only the number is bold
+  (`- **#10** Firstname Lastname`); the name is plain. Starters come before
   substitutes when starters are known; each group is sorted by number.
 - Add the position (GK, DEF, MID, FWD) only when a source records it, mapping
   detailed positions (center back is DEF, winger is FWD). Omit the
   parentheses otherwise.
 - Add ` - Starter` or ` - Substitute` only when the starting lineup is known.
-- A player without a known number is written without the `#`.
+- A player without a known number is written as the plain name, with no `#`
+  and nothing bold.
 - The coach line comes last. A substitute coach is written
   `- **Coach:** ~~Regular Coach~~ Substitute Coach`. List other staff
   (assistant coach, team manager) on their own lines with their role.
 - A player who missed the game keeps their line, with their name struck
   through and ` - Absent` at the end in place of any Starter or Substitute
-  label: `- **#25 ~~Firstname Lastname~~** (GK) - Absent`.
+  label: `- **#25** ~~Firstname Lastname~~ (GK) - Absent`.
 - With no roster for a team, the section holds the line `No opponent roster`
   (or `No roster` for the user's own team).
 
@@ -361,7 +367,7 @@ everything else stays as written.
   glance: ⚽ any goal (`Goal`, `Goal (penalty)`, `Own goal`), ❌
   `Penalty missed`, 🟨 `Yellow Card`, 🟨🟥 `Second Yellow Card`, 🟥
   `Red Card`, 🔄 `Substitution`, ⏱️ kickoffs, halftimes, and the ends of
-  regulation and extra time, 🏁 `Game over`, ⚠️ `Incident`, 📷 `Photo`.
+  regulation and extra time, 🏁 `Game over`, ⚠️ `Incident`.
 - Estimated minutes, only in a draft the user has not yet confirmed, end in
   `(est.)`.
 - Shootout kicks use **Pens** in place of a minute, one line per kick in
@@ -369,30 +375,6 @@ everything else stays as written.
   `- **Pens** - ✅ Kick 1: Kylian Mbappé #10 (France) scored`. The final
   line is `- **Pens** - 🏁 Game over ([Home Team] [score]-[score] [Away Team],
   [Winner] win [x]-[y] on penalties)`.
-- **Photos** go inline, in chronological order with the events. Each photo
-  gets its own `📷 Photo` line at its minute (or `**Pre-match**` and
-  `**Post-match**` in place of the minute), with the image indented on the
-  next line and its caption in italics directly below the image, as photo
-  captions traditionally sit. The caption is also the image's alt text. End
-  the image line with a backslash so the caption starts on its own line,
-  and leave no blank lines around the photo:
-
-  ```markdown
-  - **3'** - 📷 Photo
-    ![Firstname (#32) in the action](path/to/photo.jpg)\
-    *Firstname (#32) in the action*
-  ```
-
-  A photo that shows an event goes on the line right after that event.
-  Write the caption from what the photo shows, in a few plain words:
-  `Teams warming up at <venue>`, `Warm-ups with the coach and referee`,
-  `Firstname (#N) in the action`, `Celebrating the equalizer`. Name a player
-  only when the photo shows a jersey number that matches the roster (or the
-  user names them), and use the name the user uses for that player. Do not
-  guess at what a photo cannot show, such as the score or who scored.
-  Use paths relative to where the report will be saved. Screenshots (app,
-  tracker, watch, or video frames) are sources only; never embed them or
-  give them a line.
 - **Video links**: when an event's moment in the recording can be linked,
   append ` ([video](link))` to its line. YouTube supports a `t=<seconds>`
   parameter (`?t=` on a bare URL, `&t=` when the URL already has `?v=`),
@@ -400,6 +382,28 @@ everything else stays as written.
   links are described in [references/veo.md](references/veo.md). Never guess
   a timestamp link format; without a documented or verified one, leave the
   link off.
+
+**Photos** have their own section after Significant Events, so the event
+list stays easy to follow. Show every photo there in chronological order,
+not as list items: the image, then on the next line 📷, its minute in bold
+(`**Pre-match**` and `**Post-match**` for photos before kickoff or after
+the final whistle), and its caption in italics. End the image line with a
+backslash so the caption line starts on its own line, and separate photos
+with one blank line. The caption is also the image's alt text:
+
+```markdown
+![Firstname (#32) in the action](path/to/photo.jpg)\
+📷 **3'** - *Firstname (#32) in the action*
+```
+
+Write the caption from what the photo shows, in a few plain words:
+`Teams warming up at <venue>`, `Warm-ups with the coach and referee`,
+`Firstname (#N) in the action`, `Celebrating the equalizer`. Name a player
+only when the photo shows a jersey number that matches the roster (or the
+user names them), and use the name the user uses for that player. Do not
+guess at what a photo cannot show, such as the score or who scored. Use
+paths relative to where the report will be saved. Screenshots (app,
+tracker, watch, or video frames) are sources only; never embed them.
 
 **Match Observations** carries the user's own words from notes that are
 observations rather than events (how a player is doing, how the game
@@ -409,7 +413,7 @@ rewrite or summarize them.
 
 **Empty sections.** Every section stays in the report. When there is nothing
 for it, write a short plain statement instead: `No observations`, `No notes`,
-`No opponent roster`, `No recording`.
+`No opponent roster`, `No photos`, `No recording`.
 
 **Recording.** One line per recording: `[Platform | Recording title](link)`,
 for example `[Veo | Home Team vs. Away Team](https://app.veo.co/matches/...)`.
