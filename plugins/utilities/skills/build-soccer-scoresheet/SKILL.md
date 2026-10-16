@@ -63,7 +63,8 @@ a screenshot, even when it is attached to a journal entry like a photo.
   unless they carry their own.
 - **Minutes the user wrote**: many notes start with a minute read off a
   watch (`50' 2-0`). Keep it next to the note's timestamp. It is an anchor
-  (Step 3) and a cross-check (Step 4), good to about a minute.
+  (Step 3), and for that note's event it outranks the minute computed from
+  the note's own timestamp (Step 4).
 - **Photos**: the capture time from EXIF `DateTimeOriginal` plus
   `OffsetTimeOriginal`. Run `python3 scripts/photo_time.py <photo>...`
   (standard library only, resolved relative to this `SKILL.md`), or use
@@ -199,15 +200,18 @@ than copying the platform's number.
 **When sources disagree on a minute** (the minute the user wrote, the
 minute computed from the timestamp, a team app or tracker screenshot, the
 video platform's event time), compare every source that covers the event
-and use the minute they support. A recording time outranks a tracker
-screenshot, which outranks a written minute read off a watch by eye. Game
-tracker clocks are started and paused by hand, so they often run several
-seconds behind the real kickoff,
+and use the minute they support. Rank them: a recording time, then a
+tracker screenshot, then the minute the user wrote in the note, then the
+minute computed from the note's timestamp. A note is often typed a little
+after the event, so when the only disagreement is between a note's written
+minute and its own timestamp, use the written minute without asking, and
+mention the difference in the reply. Game tracker clocks are started and
+paused by hand, so they often run several seconds behind the real kickoff,
 by a different amount each half; trust a tracker for which team scored and
 the order of goals more than for the exact second. Events within a few
-seconds of a minute boundary are where sources split. If the sources
-still disagree, or the only two disagree, show the user the candidates and
-the evidence for each and ask which is right; do not pick one silently.
+seconds of a minute boundary are where sources split. If the sources still
+disagree after ranking them, show the user the candidates and the evidence
+for each and ask which is right; do not pick one silently.
 
 Choose the period by comparing T with each period's kickoff and end. An
 event between periods (a halftime substitution, a card after the whistle)
@@ -365,11 +369,23 @@ everything else stays as written.
   `- **Pens** - ✅ Kick 1: Kylian Mbappé #10 (France) scored`. The final
   line is `- **Pens** - 🏁 Game over ([Home Team] [score]-[score] [Away Team],
   [Winner] win [x]-[y] on penalties)`.
-- **Photos** go inline, in chronological order with the events. A photo that
-  shows an event goes on the line after that event, indented two spaces:
-  `  ![Short description](path/to/photo.jpg)`. Other photos get their own
-  line at their minute (`- **52'** - 📷 Photo`), or `**Pre-match**` and
-  `**Post-match**` in place of the minute, with the image indented below.
+- **Photos** go inline, in chronological order with the events. Each photo
+  gets its own line with a caption, at its minute (or `**Pre-match**` and
+  `**Post-match**` in place of the minute), with the image indented below
+  and the same caption as its alt text:
+
+  ```markdown
+  - **3'** - 📷 Photo: Firstname (#32) in the action
+    ![Firstname (#32) in the action](path/to/photo.jpg)
+  ```
+
+  A photo that shows an event goes on the line right after that event.
+  Write the caption from what the photo shows, in a few plain words:
+  `Teams warming up at <venue>`, `Warm-ups with the coach and referee`,
+  `Firstname (#N) in the action`, `Celebrating the equalizer`. Name a player
+  only when the photo shows a jersey number that matches the roster (or the
+  user names them), and use the name the user uses for that player. Do not
+  guess at what a photo cannot show, such as the score or who scored.
   Use paths relative to where the report will be saved. Screenshots (app,
   tracker, watch, or video frames) are sources only; never embed them or
   give them a line.

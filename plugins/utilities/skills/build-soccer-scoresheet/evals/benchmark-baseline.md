@@ -12,8 +12,8 @@
 |--------|------------|---------------|-------|
 | Expectations passed | 44/44 (100%) | 17/44 (39%) | +27 |
 | Evals fully passing | 6/6 | 1/6 | +5 |
-| Time | 62.2s ± 38.0s | 41.4s ± 25.4s | +20.8s |
-| Tokens | 83,249 ± 8,817 | 70,184 ± 6,768 | +13,065 |
+| Time | 57.9s ± 30.8s | 41.4s ± 25.4s | +16.5s |
+| Tokens | 83,646 ± 8,939 | 70,184 ± 6,768 | +13,462 |
 
 `benchmark-baseline.json` holds the with-skill runs only. The without-skill
 runs for evals 1-4 come from the first iteration, whose inputs were the same;
@@ -71,5 +71,9 @@ fixtures sit mid-minute so each expected minute is unambiguous.
 - **A missing opponent roster is stated, not asked about.** Parents
   rarely have one, so the skill writes `No opponent roster` and says so in
   the reply; an earlier run of eval 6 asked instead.
+- **Photos carry captions, and written minutes beat note timestamps.** Each
+  photo has its own `📷 Photo: <caption>` line, and when a note's written
+  minute and its own timestamp disagree, the written minute is used without
+  asking (a tracker screenshot or recording still outranks it).
 - **Not exercised**: reading jersey numbers from a recording to fill a gap.
   Trials have no recording access.

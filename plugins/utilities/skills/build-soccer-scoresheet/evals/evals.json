@@ -18,7 +18,7 @@
         "Halftime is at 45+8', the Rabiot yellow card at 55', Acuña for Di María at 64', both France substitutions at 71', Mbappé's penalty at 80', Mbappé's goal assisted by Thuram at 81', and Thuram's yellow card at 87'.",
         "End of regulation is at 90+8', Montiel for Molina at 91', Paredes for De Paul at 102', extra-time halftime at 105+1', Messi's goal at 108', Mbappé's penalty at 118', Dybala for Tagliafico at 120+1', and end of extra time at 120+3'. No event uses a minute counted from the start of its period (such as 10' for the Rabiot card).",
         "The shootout is listed in kick order (Mbappé scored, Messi scored, Coman saved, Dybala scored, Tchouaméni missed, Paredes scored, Kolo Muani scored, Montiel scored) without game minutes, and the final line records the 3-3 draw with Argentina winning 4-2 on penalties.",
-        "All three photos are embedded as Markdown images whose paths resolve from scoresheet.md, in chronological order: IMG_4101 before kickoff, IMG_4133 directly with the 108' Messi goal, IMG_4170 after the game.",
+        "All three photos are embedded as Markdown images whose paths resolve from scoresheet.md, in chronological order: IMG_4101 before kickoff, IMG_4133 directly after the 108' Messi goal, IMG_4170 after the game. Each has its own '📷 Photo: <caption>' line whose caption describes what the photo shows (teams walking out, Messi celebrating, the trophy lift), repeated as the image's alt text.",
         "The 108' goal line links to the YouTube video with a t value of 8850 seconds (8820 to 8880 accepted), computed from the 17:58:00 stream start.",
         "Match Observations contains the observation from the notes, Post-Match Commentary states there are no notes (rather than placeholder text), and Recording is a single line in the form [YouTube | Argentina vs. France](https://www.youtube.com/watch?v=WCF2022demo).",
         "No screenshot (IMG_4112, IMG_4119, IMG_4127, IMG_4130, or anything under screenshots/) is embedded or listed as an event in scoresheet.md; only the three photos appear as images.",
@@ -52,7 +52,7 @@
         "The Argentina coach line shows Lionel Scaloni struck through followed by Pablo Aimar, as '~~Lionel Scaloni~~ Pablo Aimar'.",
         "The Poland roster section contains a plain statement that there is no opponent roster and lists no invented players.",
         "Significant Events has Messi's penalty missed (saved by Szczęsny) at 39', Halftime at 45+6', Alexis Mac Allister #20 scoring at 46' assisted by Nahuel Molina #26, Julián Álvarez #9 scoring at 67' assisted by Enzo Fernández #24, and Game over at 90+6'.",
-        "The photo IMG_5001.jpg is embedded with a path that resolves from scoresheet.md, at the halftime break (after the Halftime line and before the second-half events).",
+        "The photo IMG_5001.jpg is embedded with a path that resolves from scoresheet.md, at the halftime break (after the Halftime line and before the second-half events), on a '📷 Photo: <caption>' line whose caption describes the halftime huddle, repeated as the image's alt text.",
         "Match Observations, Post-Match Commentary, and Recording each contain a short statement that there is nothing (such as 'No observations', 'No notes', 'No recording') rather than template placeholder text.",
         "Significant Events lines carry their emoji: ❌ on Messi's missed penalty, ⚽ on both goals, ⏱️ on kickoff, halftime, and second-half kickoff, and 🏁 on Game over."
       ]
@@ -89,7 +89,7 @@
     {
       "id": 6,
       "prompt": "Here's the export of my notes from the Morocco vs Portugal quarterfinal (inputs/notes-export/), plus the team app page and a screenshot from the game tracker. Can you make the scoresheet? Save it to scoresheet.md.",
-      "expected_output": "The skill reads the journal export (UTC times, Asia/Qatar zone, escaped Markdown), derives the first-half kickoff from the written minutes, and writes the report with team names instead of us and them. The 64' note is corrected to 63' by the tracker screenshot. Youssef's goal is kept but marked unconfirmed. Walid's entry is a one-sided substitution, and the reply asks whether it was 76' (computed) or 77' (written). Cheddira's two yellows come at 90+2' and 90+3', Game over at 90+8', and the coach's yellow after the game is a Post-match line. Photos are pre-match and at 32'.",
+      "expected_output": "The skill reads the journal export (UTC times, Asia/Qatar zone, escaped Markdown), derives the first-half kickoff from the written minutes, and writes the report with team names instead of us and them. The 64' note is corrected to 63' by the tracker screenshot. Youssef's goal is kept but marked unconfirmed. Walid's entry is a one-sided substitution at 77', the written minute, which outranks the 76' from the note's timestamp; the reply mentions the difference. Cheddira's two yellows come at 90+2' and 90+3', Game over at 90+8', and the coach's yellow after the game is a Post-match line. Photos are pre-match and at 32'.",
       "files": [
         "fixtures/6/inputs"
       ],
@@ -98,10 +98,10 @@
         "Significant Events has a yellow card for Portugal with no invented player at 5' and another at 63' (not 64'), and the reply or report attributes the 63' to the tracker screenshot.",
         "The 42' goal names Youssef En-Nesyri #19, assisted by Yahia Attiyat Allah #25, and is marked unconfirmed (for example '(unconfirmed)'), and the reply mentions the user's question mark.",
         "Halftime is at 45+4', Walid Cheddira #21 gets a Yellow Card at 90+2' and a Second Yellow Card (or red) at 90+3'.",
-        "Walid Cheddira's substitution uses the template shape with only the ON part ('Substitution: Walid Cheddira #21 ↑ ON'), and the reply shows the user that the timestamp gives 76' while the note says 77' and asks which is right.",
+        "Walid Cheddira's substitution is at 77', the minute the user wrote, rather than the 76' its note's timestamp gives, uses the template shape with only the ON part ('Substitution: Walid Cheddira #21 ↑ ON'), and the reply mentions the 76'/77' difference without stopping to ask about it.",
         "Walid Regragui's yellow card appears after the Game over line with Post-match in place of a minute.",
         "No event line says us, we, them, or they; the opponent is called Portugal.",
-        "Both photos are embedded with paths that resolve from scoresheet.md: the warmup photo before kickoff (Pre-match) and the Hakimi photo at 32'.",
+        "Both photos are embedded with paths that resolve from scoresheet.md: the warmup photo before kickoff (Pre-match) and the Hakimi photo at 32', each on a '📷 Photo: <caption>' line whose caption describes it (warm-ups; Hakimi on the ball), repeated as the image's alt text.",
         "The Portugal roster section says there is no opponent roster, and Match Observations, Post-Match Commentary, and Recording each hold a short statement that there is nothing.",
         "The tracker screenshot (IMG_7311) is not embedded or listed as an event; only the two photos from the notes export appear as images."
       ]

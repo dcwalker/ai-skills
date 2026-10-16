@@ -4,7 +4,7 @@
   "skill_path": "plugins/utilities/skills/build-soccer-scoresheet",
   "executor_model": "claude-opus-5-5",
   "analyzer_model": "claude-opus-5-5",
-  "timestamp": "2026-10-16T01:42:11Z",
+  "timestamp": "2026-10-16T14:49:23Z",
   "evals_run": [
    1,
    2,
@@ -15,7 +15,7 @@
   ],
   "runs_per_configuration": 1,
   "executor": "Agent-tool subagents, one per eval, each pointed at a copy of fixtures/<id>/inputs as its working directory, with SKILL.md loaded and no browser, web, calendar, email, or connector access",
-  "notes": "Graded against each trial's written report and its final reply. Eval 2, 4, and 6 trials stop to ask the user, as the skill directs, so their expectations are checked against the draft and question in the reply. All six with-skill evals were rerun after event emojis and scripts/game_minutes.py were added; every minute in these runs comes from the script. Eval 6 was rerun after Step 2 stopped asking for a missing opponent roster; it now writes 'No opponent roster' and says so in the reply. The recording check (reading jersey numbers from video) is not exercised: trials have no recording access."
+  "notes": "Graded against each trial's written report and its final reply. Eval 2, 4, and 6 trials stop to ask the user, as the skill directs, so their expectations are checked against the draft and question in the reply. All six with-skill evals were rerun after event emojis and scripts/game_minutes.py were added; every minute in these runs comes from the script. Eval 6 was rerun after Step 2 stopped asking for a missing opponent roster; it now writes 'No opponent roster' and says so in the reply. Evals 1, 3, and 6 were rerun after photos gained captions and a note's written minute was ranked above its own timestamp; evals 2, 4, and 5 carry over, since neither rule reaches them. Eval 6 now expects the written 77' for the substitution. The recording check (reading jersey numbers from video) is not exercised: trials have no recording access."
  },
  "runs": [
   {
@@ -27,78 +27,77 @@
     "passed": 13,
     "failed": 0,
     "total": 13,
-    "time_seconds": 125.9,
-    "tokens": 98061,
+    "time_seconds": 104.3,
+    "tokens": 97930,
     "errors": 0
    },
    "expectations": [
     {
      "text": "scoresheet.md exists and its sections appear in this order: '# Match Report: Argentina vs. France', '## Match Details', '## Rosters', '## Significant Events', '## Match Observations', '## Post-Match Commentary', '## Recording'.",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3' (computed with game_minutes.py), 8 Pens plus Game over, three photos, t=8850, observation quoted, recording line, emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
     },
     {
      "text": "Match Details give Date 2022-12-18, a Start Time of 18:00 with the time zone (AST or UTC+3), Venue Lusail Stadium with its location, and Competition as a Markdown link to the fifa.com Qatar 2022 page.",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3' (computed with game_minutes.py), 8 Pens plus Game over, three photos, t=8850, observation quoted, recording line, emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
     },
     {
      "text": "Both rosters are sorted by jersey number with Starter entries before Substitute entries; the Argentina starters are exactly #3, #7, #9, #10, #11, #13, #19, #20, #23, #24, #26 and the France starters are exactly #1, #4, #5, #7, #8, #9, #10, #11, #14, #18, #22.",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3' (computed with game_minutes.py), 8 Pens plus Game over, three photos, t=8850, observation quoted, recording line, emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
     },
     {
      "text": "Roster lines use the template shape '**#10 Lionel Messi** (FWD) - Starter', and each team ends with a Coach line: Lionel Scaloni for Argentina, Didier Deschamps for France.",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3' (computed with game_minutes.py), 8 Pens plus Game over, three photos, t=8850, observation quoted, recording line, emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
     },
     {
      "text": "Significant Events has Goal (penalty) Lionel Messi #10 at 23', Goal Ángel Di María #11 assisted by Alexis Mac Allister #20 at 36', and both France substitutions (Thuram #26 for Giroud #9, Kolo Muani #12 for Dembélé #11) at 41'.",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3' (computed with game_minutes.py), 8 Pens plus Game over, three photos, t=8850, observation quoted, recording line, emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
     },
     {
      "text": "Halftime is at 45+8', the Rabiot yellow card at 55', Acuña for Di María at 64', both France substitutions at 71', Mbappé's penalty at 80', Mbappé's goal assisted by Thuram at 81', and Thuram's yellow card at 87'.",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3' (computed with game_minutes.py), 8 Pens plus Game over, three photos, t=8850, observation quoted, recording line, emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
     },
     {
      "text": "End of regulation is at 90+8', Montiel for Molina at 91', Paredes for De Paul at 102', extra-time halftime at 105+1', Messi's goal at 108', Mbappé's penalty at 118', Dybala for Tagliafico at 120+1', and end of extra time at 120+3'. No event uses a minute counted from the start of its period (such as 10' for the Rabiot card).",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3' (computed with game_minutes.py), 8 Pens plus Game over, three photos, t=8850, observation quoted, recording line, emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
     },
     {
      "text": "The shootout is listed in kick order (Mbappé scored, Messi scored, Coman saved, Dybala scored, Tchouaméni missed, Paredes scored, Kolo Muani scored, Montiel scored) without game minutes, and the final line records the 3-3 draw with Argentina winning 4-2 on penalties.",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3' (computed with game_minutes.py), 8 Pens plus Game over, three photos, t=8850, observation quoted, recording line, emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
     },
     {
-     "text": "All three photos are embedded as Markdown images whose paths resolve from scoresheet.md, in chronological order: IMG_4101 before kickoff, IMG_4133 directly with the 108' Messi goal, IMG_4170 after the game.",
+     "text": "All three photos are embedded as Markdown images whose paths resolve from scoresheet.md, in chronological order: IMG_4101 before kickoff, IMG_4133 directly after the 108' Messi goal, IMG_4170 after the game. Each has its own '📷 Photo: <caption>' line whose caption describes what the photo shows (teams walking out, Messi celebrating, the trophy lift), repeated as the image's alt text.",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3' (computed with game_minutes.py), 8 Pens plus Game over, three photos, t=8850, observation quoted, recording line, emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
     },
     {
      "text": "The 108' goal line links to the YouTube video with a t value of 8850 seconds (8820 to 8880 accepted), computed from the 17:58:00 stream start.",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3' (computed with game_minutes.py), 8 Pens plus Game over, three photos, t=8850, observation quoted, recording line, emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
     },
     {
      "text": "Match Observations contains the observation from the notes, Post-Match Commentary states there are no notes (rather than placeholder text), and Recording is a single line in the form [YouTube | Argentina vs. France](https://www.youtube.com/watch?v=WCF2022demo).",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3' (computed with game_minutes.py), 8 Pens plus Game over, three photos, t=8850, observation quoted, recording line, emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
     },
     {
      "text": "No screenshot (IMG_4112, IMG_4119, IMG_4127, IMG_4130, or anything under screenshots/) is embedded or listed as an event in scoresheet.md; only the three photos appear as images.",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3' (computed with game_minutes.py), 8 Pens plus Game over, three photos, t=8850, observation quoted, recording line, emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
     },
     {
      "text": "Every Significant Events line starts its wording with the event's emoji: ⚽ on all six goals, 🟨 on both yellow cards, 🔄 on every substitution, ⏱️ on kickoffs, halftimes, and the ends of regulation and extra time, ✅ or ❌ on each shootout kick, 📷 on photo-only lines, and 🏁 on Game over.",
      "passed": true,
-     "evidence": "Verified: template, details, starters, minutes 1' to 120+3' (computed with game_minutes.py), 8 Pens plus Game over, three photos, t=8850, observation quoted, recording line, emojis on every event."
+     "evidence": "Verified: template, details, starters, minutes 1' to 120+3', shootout, t=8850, observation, recording; photos on captioned lines (Teams walking out, Messi celebrating his goal, Trophy lift) with matching alt text; emojis on every event."
     }
-   ],
-   "notes": []
+   ]
   },
   {
    "eval_id": 2,
@@ -146,8 +145,8 @@
     "passed": 8,
     "failed": 0,
     "total": 8,
-    "time_seconds": 53.4,
-    "tokens": 80711,
+    "time_seconds": 51.6,
+    "tokens": 81602,
     "errors": 0
    },
    "expectations": [
@@ -159,7 +158,7 @@
     {
      "text": "The Argentina roster lists all 26 players sorted by jersey number with positions, no line carries a Starter or Substitute label, and #21 Paulo Dybala's line strikes through his name and ends with ' - Absent' ('**#21 ~~Paulo Dybala~~** (FWD) - Absent') because the notes say he is away.",
      "passed": true,
-     "evidence": "26 by number, positions, '**#21 ~~Paulo Dybala~~** (FWD) - Absent'."
+     "evidence": "26 by number, Dybala struck through and Absent."
     },
     {
      "text": "The Argentina coach line shows Lionel Scaloni struck through followed by Pablo Aimar, as '~~Lionel Scaloni~~ Pablo Aimar'.",
@@ -177,9 +176,9 @@
      "evidence": "39', 45+6', 46', 67', 90+6'."
     },
     {
-     "text": "The photo IMG_5001.jpg is embedded with a path that resolves from scoresheet.md, at the halftime break (after the Halftime line and before the second-half events).",
+     "text": "The photo IMG_5001.jpg is embedded with a path that resolves from scoresheet.md, at the halftime break (after the Halftime line and before the second-half events), on a '📷 Photo: <caption>' line whose caption describes the halftime huddle, repeated as the image's alt text.",
      "passed": true,
-     "evidence": "Photo under Halftime."
+     "evidence": "'45+6' - 📷 Photo: Halftime huddle' with matching alt text, before 46'."
     },
     {
      "text": "Match Observations, Post-Match Commentary, and Recording each contain a short statement that there is nothing (such as 'No observations', 'No notes', 'No recording') rather than template placeholder text.",
@@ -189,10 +188,9 @@
     {
      "text": "Significant Events lines carry their emoji: ❌ on Messi's missed penalty, ⚽ on both goals, ⏱️ on kickoff, halftime, and second-half kickoff, and 🏁 on Game over.",
      "passed": true,
-     "evidence": "❌ 39', ⚽ goals, ⏱️ markers, 🏁 Game over."
+     "evidence": "Emojis on each event."
     }
-   ],
-   "notes": []
+   ]
   },
   {
    "eval_id": 4,
@@ -282,25 +280,25 @@
     "passed": 10,
     "failed": 0,
     "total": 10,
-    "time_seconds": 87.4,
-    "tokens": 88403,
+    "time_seconds": 84.4,
+    "tokens": 90024,
     "errors": 0
    },
    "expectations": [
     {
      "text": "No Markdown escapes from the export appear in scoresheet.md (no '\\-', '\\.', '\\+', or '\\!'), and the Game over line reads 'Game over (Morocco 1-0 Portugal)' at 90+8'.",
      "passed": true,
-     "evidence": "Draft: no escapes, 'Game over (Morocco 1-0 Portugal)' at 90+8'."
+     "evidence": "No escapes; Game over 90+8'."
     },
     {
      "text": "Significant Events has a yellow card for Portugal with no invented player at 5' and another at 63' (not 64'), and the reply or report attributes the 63' to the tracker screenshot.",
      "passed": true,
-     "evidence": "5' and 63' Portugal yellows (player unknown); 63' from tracker and timestamp."
+     "evidence": "5' and 63' Portugal yellows; 63' from tracker over the written 64'."
     },
     {
      "text": "The 42' goal names Youssef En-Nesyri #19, assisted by Yahia Attiyat Allah #25, and is marked unconfirmed (for example '(unconfirmed)'), and the reply mentions the user's question mark.",
      "passed": true,
-     "evidence": "42' En-Nesyri (unconfirmed), Attiyat Allah assist; question mark mentioned."
+     "evidence": "42' En-Nesyri (unconfirmed), Attiyat Allah."
     },
     {
      "text": "Halftime is at 45+4', Walid Cheddira #21 gets a Yellow Card at 90+2' and a Second Yellow Card (or red) at 90+3'.",
@@ -308,9 +306,9 @@
      "evidence": "45+4', 90+2', 90+3'."
     },
     {
-     "text": "Walid Cheddira's substitution uses the template shape with only the ON part ('Substitution: Walid Cheddira #21 ↑ ON'), and the reply shows the user that the timestamp gives 76' while the note says 77' and asks which is right.",
+     "text": "Walid Cheddira's substitution is at 77', the minute the user wrote, rather than the 76' its note's timestamp gives, uses the template shape with only the ON part ('Substitution: Walid Cheddira #21 ↑ ON'), and the reply mentions the 76'/77' difference without stopping to ask about it.",
      "passed": true,
-     "evidence": "ON-only substitution; asks 76' vs 77'."
+     "evidence": "77' ON-only substitution; reply explains the 76' timestamp and that the written minute wins, without asking."
     },
     {
      "text": "Walid Regragui's yellow card appears after the Game over line with Post-match in place of a minute.",
@@ -320,25 +318,24 @@
     {
      "text": "No event line says us, we, them, or they; the opponent is called Portugal.",
      "passed": true,
-     "evidence": "Portugal named; no us/them."
+     "evidence": "No us/them."
     },
     {
-     "text": "Both photos are embedded with paths that resolve from scoresheet.md: the warmup photo before kickoff (Pre-match) and the Hakimi photo at 32'.",
+     "text": "Both photos are embedded with paths that resolve from scoresheet.md: the warmup photo before kickoff (Pre-match) and the Hakimi photo at 32', each on a '📷 Photo: <caption>' line whose caption describes it (warm-ups; Hakimi on the ball), repeated as the image's alt text.",
      "passed": true,
-     "evidence": "Pre-match and 32' photos."
+     "evidence": "'Pre-match - 📷 Photo: Teams warming up at Al Thumama Stadium' and '32' - 📷 Photo: Hakimi (#2) on the ball' with matching alt text."
     },
     {
      "text": "The Portugal roster section says there is no opponent roster, and Match Observations, Post-Match Commentary, and Recording each hold a short statement that there is nothing.",
      "passed": true,
-     "evidence": "'No opponent roster' under Portugal, mentioned in the reply's 'Left out'; empty-section statements."
+     "evidence": "No opponent roster; empty-section statements."
     },
     {
      "text": "The tracker screenshot (IMG_7311) is not embedded or listed as an event; only the two photos from the notes export appear as images.",
      "passed": true,
-     "evidence": "Tracker screenshot used only as a source."
+     "evidence": "Tracker screenshot not embedded."
     }
-   ],
-   "notes": []
+   ]
   }
  ]
 }
