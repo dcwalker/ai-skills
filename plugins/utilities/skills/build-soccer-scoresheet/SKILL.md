@@ -158,6 +158,19 @@ minutes with the question so the user can judge them.
 
 ## Step 4: Convert each event to a game minute
 
+Do not do this arithmetic by hand; time zones, recording offsets, and
+stoppage time make slips easy. Write the periods (name, length, kickoff,
+and end when known) and every timed event as JSON and pipe it in:
+`python3 scripts/game_minutes.py <<'EOF' ... EOF` (standard library only;
+the docstring shows the input format). Keep the JSON out of the user's
+folder; only the report belongs there. Times can be ISO timestamps with a
+UTC offset or `{"recording_offset": seconds}` from a recording's start. It
+returns each period's final-whistle minute and each event's minute, plus
+`seconds_to_boundary`: under about 10 seconds, the minute depends on which
+source is right, so check it against the others (see below). Use its
+minutes in the report. The rules it applies are below, for reading its
+output and for anything it cannot place.
+
 For an event at wall-clock time T in a period that kicked off at K, with
 elapsed time e = T − K, regular period length D, and S the minutes played
 before the period (0 for the first half, D for the second, 2D for the first
@@ -247,7 +260,7 @@ event and tell the user which frames you used. If nothing is legible, leave
 the gap and say you checked. Never download the video to do this without
 asking the user first.
 - Incidents the user thought worth noting (a hard foul with no call, an
-  injury) are events too: `- **74'** - Incident: ...`, in the user's terms.
+  injury) are events too: `- **74'** - ⚠️ Incident: ...`, in the user's terms.
 - Events after the final whistle (a card shown to a coach after the game)
   go after the Game over line, with **Post-match** in place of a minute.
 
@@ -282,11 +295,11 @@ everything else stays as written.
 
 ## Significant Events
 
-- **1'** - Kickoff
-- **32'** - Goal: [Player Name] #[Number] (Assisted by [Player Name] #[Number])
-- **45+2'** - Yellow Card: [Player Name] #[Number] (Tactical foul)
-- **68'** - Substitution: [Player Name] #[Number] ↑ ON, [Player Name] #[Number] ↓ OFF
-- **90+2'** - Game over ([Home Team] [score]-[score] [Away Team])
+- **1'** - ⏱️ Kickoff
+- **32'** - ⚽ Goal: [Player Name] #[Number] (Assisted by [Player Name] #[Number])
+- **45+2'** - 🟨 Yellow Card: [Player Name] #[Number] (Tactical foul)
+- **68'** - 🔄 Substitution: [Player Name] #[Number] ↑ ON, [Player Name] #[Number] ↓ OFF
+- **90+2'** - 🏁 Game over ([Home Team] [score]-[score] [Away Team])
 
 ## Match Observations
 
@@ -338,16 +351,22 @@ everything else stays as written.
   `End of extra time`, `Game over`, `Incident`. Put a card's reason in
   parentheses when known. Cards and incidents after the final whistle use
   **Post-match** in place of a minute, after the Game over line.
+- Each event's wording starts with its emoji, so the timeline scans at a
+  glance: ⚽ any goal (`Goal`, `Goal (penalty)`, `Own goal`), ❌
+  `Penalty missed`, 🟨 `Yellow Card`, 🟨🟥 `Second Yellow Card`, 🟥
+  `Red Card`, 🔄 `Substitution`, ⏱️ kickoffs, halftimes, and the ends of
+  regulation and extra time, 🏁 `Game over`, ⚠️ `Incident`, 📷 `Photo`.
 - Estimated minutes, only in a draft the user has not yet confirmed, end in
   `(est.)`.
 - Shootout kicks use **Pens** in place of a minute, one line per kick in
-  order: `- **Pens** - Kick 1: Kylian Mbappé #10 (France) scored`. The final
-  line is `- **Pens** - Game over ([Home Team] [score]-[score] [Away Team],
+  order, ✅ for a kick scored and ❌ for one missed or saved:
+  `- **Pens** - ✅ Kick 1: Kylian Mbappé #10 (France) scored`. The final
+  line is `- **Pens** - 🏁 Game over ([Home Team] [score]-[score] [Away Team],
   [Winner] win [x]-[y] on penalties)`.
 - **Photos** go inline, in chronological order with the events. A photo that
   shows an event goes on the line after that event, indented two spaces:
   `  ![Short description](path/to/photo.jpg)`. Other photos get their own
-  line at their minute (`- **52'** - Photo`), or `**Pre-match**` and
+  line at their minute (`- **52'** - 📷 Photo`), or `**Pre-match**` and
   `**Post-match**` in place of the minute, with the image indented below.
   Use paths relative to where the report will be saved. Screenshots (app,
   tracker, watch, or video frames) are sources only; never embed them or

@@ -10,10 +10,10 @@
 
 | Metric | With Skill | Without Skill | Delta |
 |--------|------------|---------------|-------|
-| Expectations passed | 42/42 (100%) | 17/42 (40%) | +25 |
-| Evals fully passing | 6/6 | 1/6 | +5 |
-| Time | 58.0s ± 28.5s | 41.4s ± 25.4s | +16.6s |
-| Tokens | 81,393 ± 6,856 | 70,184 ± 6,768 | +11,209 |
+| Expectations passed | 43/44 (98%) | 17/44 (39%) | +26 |
+| Evals fully passing | 5/6 | 1/6 | +4 |
+| Time | 62.3s ± 38.1s | 41.4s ± 25.4s | +20.9s |
+| Tokens | 83,598 ± 9,100 | 70,184 ± 6,768 | +13,414 |
 
 `benchmark-baseline.json` holds the with-skill runs only. The without-skill
 runs for evals 1-4 come from the first iteration, whose inputs were the same;
@@ -31,12 +31,12 @@ fixtures sit mid-minute so each expected minute is unambiguous.
 
 | Eval | Case | With | Without |
 |------|------|------|---------|
-| 1 | World Cup final: screenshots, watch, notes, photos, extra time, shootout | 12/12 | 4/12 |
+| 1 | World Cup final: screenshots, watch, notes, photos, extra time, shootout | 13/13 | 4/13 |
 | 2 | No second-half anchor: estimate and ask | 4/4 | 2/4 |
-| 3 | Substitute coach, absent player, no opponent roster, saved penalty | 7/7 | 1/7 |
+| 3 | Substitute coach, absent player, no opponent roster, saved penalty | 8/8 | 1/8 |
 | 4 | Club tournament with unknown period length: ask | 3/3 | 3/3 |
 | 5 | Team app result vs Veo AI tags | 6/6 | 3/6 |
-| 6 | Journal export with written minutes and shorthand | 10/10 | 4/10 |
+| 6 | Journal export with written minutes and shorthand | 9/10 | 4/10 |
 
 ## What the evals found
 
@@ -64,5 +64,13 @@ fixtures sit mid-minute so each expected minute is unambiguous.
   now ranks recording times above tracker clocks, uses Veo's Kickoff events
   as period anchors, and asks when sources split at a boundary. All six
   with-skill evals were rerun after those changes.
+- **Minutes come from a script.** One run put a halftime at `45+11'` instead
+  of `45+6'` by adding a recording's lead time twice. The skill now converts
+  every time with `scripts/game_minutes.py`, which also flags events within
+  seconds of a minute boundary.
+- **Eval 6 asks instead of stating.** With no opponent roster and nothing
+  saying none exists, the draft asked for it and left the section pending
+  rather than writing `No opponent roster`. That follows the skill's
+  ask-first rule; the expectation wants the statement.
 - **Not exercised**: reading jersey numbers from a recording to fill a gap.
   Trials have no recording access.

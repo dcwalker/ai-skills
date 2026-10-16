@@ -21,7 +21,8 @@
         "All three photos are embedded as Markdown images whose paths resolve from scoresheet.md, in chronological order: IMG_4101 before kickoff, IMG_4133 directly with the 108' Messi goal, IMG_4170 after the game.",
         "The 108' goal line links to the YouTube video with a t value of 8850 seconds (8820 to 8880 accepted), computed from the 17:58:00 stream start.",
         "Match Observations contains the observation from the notes, Post-Match Commentary states there are no notes (rather than placeholder text), and Recording is a single line in the form [YouTube | Argentina vs. France](https://www.youtube.com/watch?v=WCF2022demo).",
-        "No screenshot (IMG_4112, IMG_4119, IMG_4127, IMG_4130, or anything under screenshots/) is embedded or listed as an event in scoresheet.md; only the three photos appear as images."
+        "No screenshot (IMG_4112, IMG_4119, IMG_4127, IMG_4130, or anything under screenshots/) is embedded or listed as an event in scoresheet.md; only the three photos appear as images.",
+        "Every Significant Events line starts its wording with the event's emoji: ⚽ on all six goals, 🟨 on both yellow cards, 🔄 on every substitution, ⏱️ on kickoffs, halftimes, and the ends of regulation and extra time, ✅ or ❌ on each shootout kick, 📷 on photo-only lines, and 🏁 on Game over."
       ]
     },
     {
@@ -52,7 +53,8 @@
         "The Poland roster section contains a plain statement that there is no opponent roster and lists no invented players.",
         "Significant Events has Messi's penalty missed (saved by Szczęsny) at 39', Halftime at 45+6', Alexis Mac Allister #20 scoring at 46' assisted by Nahuel Molina #26, Julián Álvarez #9 scoring at 67' assisted by Enzo Fernández #24, and Game over at 90+6'.",
         "The photo IMG_5001.jpg is embedded with a path that resolves from scoresheet.md, at the halftime break (after the Halftime line and before the second-half events).",
-        "Match Observations, Post-Match Commentary, and Recording each contain a short statement that there is nothing (such as 'No observations', 'No notes', 'No recording') rather than template placeholder text."
+        "Match Observations, Post-Match Commentary, and Recording each contain a short statement that there is nothing (such as 'No observations', 'No notes', 'No recording') rather than template placeholder text.",
+        "Significant Events lines carry their emoji: ❌ on Messi's missed penalty, ⚽ on both goals, ⏱️ on kickoff, halftime, and second-half kickoff, and 🏁 on Game over."
       ]
     },
     {
