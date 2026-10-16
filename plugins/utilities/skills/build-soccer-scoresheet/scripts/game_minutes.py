@@ -72,9 +72,8 @@ def clock(seconds):
     return f"{sign}{seconds // 60}:{seconds % 60:02d}"
 
 
-def convert(timeline):
-    start = timeline.get("recording_start")
-    recording_start = parse_time(start, None, "recording_start") if start else None
+def build_periods(timeline, recording_start):
+    """Parse the periods in playing order, with the seconds played before each."""
     periods = []
     before = 0
     for index, period in enumerate(timeline["periods"]):
@@ -87,18 +86,42 @@ def convert(timeline):
         before += length
     if not periods:
         raise ValueError("periods: at least one period with a kickoff is required")
+    return periods
 
-    out_periods = []
-    for period in periods:
-        row = {"name": period["name"], "kickoff": period["kickoff"].isoformat(),
-               "starts_at": f"{period['before'] // 60 + 1}'"}
-        if period["end"]:
-            elapsed = (period["end"] - period["kickoff"]).total_seconds()
-            row["end"] = period["end"].isoformat()
-            row["elapsed"] = clock(elapsed)
-            row["end_minute"] = minute(elapsed, period["before"], period["length"])
-        out_periods.append(row)
 
+def describe_period(period):
+    row = {"name": period["name"], "kickoff": period["kickoff"].isoformat(),
+           "starts_at": f"{period['before'] // 60 + 1}'"}
+    if period["end"]:
+        elapsed = (period["end"] - period["kickoff"]).total_seconds()
+        row["end"] = period["end"].isoformat()
+        row["elapsed"] = clock(elapsed)
+        row["end_minute"] = minute(elapsed, period["before"], period["length"])
+    return row
+
+
+def place_event(moment, periods):
+    """The minute fields for an event at moment, given the parsed periods."""
+    if moment < periods[0]["kickoff"]:
+        return {"minute": "Pre-match"}
+    current = [p for p in periods if p["kickoff"] <= moment][-1]
+    if current["end"] and moment > current["end"]:
+        if current is periods[-1]:
+            return {"minute": "Post-match"}
+        ended = (current["end"] - current["kickoff"]).total_seconds()
+        return {"minute": minute(ended, current["before"], current["length"]),
+                "between_periods": f"after {current['name']}"}
+    elapsed = (moment - current["kickoff"]).total_seconds()
+    within = elapsed % 60
+    return {"period": current["name"], "elapsed": clock(elapsed),
+            "minute": minute(elapsed, current["before"], current["length"]),
+            "seconds_to_boundary": round(min(within, 60 - within))}
+
+
+def convert(timeline):
+    start = timeline.get("recording_start")
+    recording_start = parse_time(start, None, "recording_start") if start else None
+    periods = build_periods(timeline, recording_start)
     events = []
     for index, event in enumerate(timeline.get("events", [])):
         label = event.get("label", f"event {index + 1}")
@@ -109,27 +132,9 @@ def convert(timeline):
             events.append({"label": label, "error": str(error)})
             continue
         row = {"label": label, "time": moment.isoformat()}
-        if moment < periods[0]["kickoff"]:
-            row["minute"] = "Pre-match"
-            events.append(row)
-            continue
-        current = [p for p in periods if p["kickoff"] <= moment][-1]
-        elapsed = (moment - current["kickoff"]).total_seconds()
-        if current["end"] and moment > current["end"]:
-            ended = (current["end"] - current["kickoff"]).total_seconds()
-            if current is periods[-1]:
-                row["minute"] = "Post-match"
-            else:
-                row["minute"] = minute(ended, current["before"], current["length"])
-                row["between_periods"] = f"after {current['name']}"
-            events.append(row)
-            continue
-        within = elapsed % 60
-        row.update({"period": current["name"], "elapsed": clock(elapsed),
-                    "minute": minute(elapsed, current["before"], current["length"]),
-                    "seconds_to_boundary": round(min(within, 60 - within))})
+        row.update(place_event(moment, periods))
         events.append(row)
-    return {"periods": out_periods, "events": events}
+    return {"periods": [describe_period(p) for p in periods], "events": events}
 
 
 def main():
