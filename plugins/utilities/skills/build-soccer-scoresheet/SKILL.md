@@ -114,7 +114,9 @@ only when the notes (or another input) name the starting lineup.
 
 If something the template needs is still missing after the lookups, ask for
 it. If the user says it is unavailable, the report says so (see the
-template); never guess.
+template); never guess. The opponent's roster is the exception: parents
+rarely have it, so do not ask. Write `No opponent roster` and mention in
+the reply that none was found.
 
 ## Step 3: Anchor wall-clock time to the game clock
 

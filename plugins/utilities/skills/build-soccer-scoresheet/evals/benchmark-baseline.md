@@ -10,10 +10,10 @@
 
 | Metric | With Skill | Without Skill | Delta |
 |--------|------------|---------------|-------|
-| Expectations passed | 43/44 (98%) | 17/44 (39%) | +26 |
-| Evals fully passing | 5/6 | 1/6 | +4 |
-| Time | 62.3s ± 38.1s | 41.4s ± 25.4s | +20.9s |
-| Tokens | 83,598 ± 9,100 | 70,184 ± 6,768 | +13,414 |
+| Expectations passed | 44/44 (100%) | 17/44 (39%) | +27 |
+| Evals fully passing | 6/6 | 1/6 | +5 |
+| Time | 62.2s ± 38.0s | 41.4s ± 25.4s | +20.8s |
+| Tokens | 83,249 ± 8,817 | 70,184 ± 6,768 | +13,065 |
 
 `benchmark-baseline.json` holds the with-skill runs only. The without-skill
 runs for evals 1-4 come from the first iteration, whose inputs were the same;
@@ -36,7 +36,7 @@ fixtures sit mid-minute so each expected minute is unambiguous.
 | 3 | Substitute coach, absent player, no opponent roster, saved penalty | 8/8 | 1/8 |
 | 4 | Club tournament with unknown period length: ask | 3/3 | 3/3 |
 | 5 | Team app result vs Veo AI tags | 6/6 | 3/6 |
-| 6 | Journal export with written minutes and shorthand | 9/10 | 4/10 |
+| 6 | Journal export with written minutes and shorthand | 10/10 | 4/10 |
 
 ## What the evals found
 
@@ -68,9 +68,8 @@ fixtures sit mid-minute so each expected minute is unambiguous.
   of `45+6'` by adding a recording's lead time twice. The skill now converts
   every time with `scripts/game_minutes.py`, which also flags events within
   seconds of a minute boundary.
-- **Eval 6 asks instead of stating.** With no opponent roster and nothing
-  saying none exists, the draft asked for it and left the section pending
-  rather than writing `No opponent roster`. That follows the skill's
-  ask-first rule; the expectation wants the statement.
+- **A missing opponent roster is stated, not asked about.** Parents
+  rarely have one, so the skill writes `No opponent roster` and says so in
+  the reply; an earlier run of eval 6 asked instead.
 - **Not exercised**: reading jersey numbers from a recording to fill a gap.
   Trials have no recording access.

@@ -4,7 +4,7 @@
   "skill_path": "plugins/utilities/skills/build-soccer-scoresheet",
   "executor_model": "claude-opus-5-5",
   "analyzer_model": "claude-opus-5-5",
-  "timestamp": "2026-10-16T01:26:28Z",
+  "timestamp": "2026-10-16T01:42:11Z",
   "evals_run": [
    1,
    2,
@@ -15,7 +15,7 @@
   ],
   "runs_per_configuration": 1,
   "executor": "Agent-tool subagents, one per eval, each pointed at a copy of fixtures/<id>/inputs as its working directory, with SKILL.md loaded and no browser, web, calendar, email, or connector access",
-  "notes": "Graded against each trial's written report and its final reply. Eval 2, 4, and 6 trials stop to ask the user, as the skill directs, so their expectations are checked against the draft and question in the reply. All six with-skill evals were rerun after event emojis and scripts/game_minutes.py were added; every minute in these runs comes from the script. Eval 6 missed one expectation: with no Portugal roster and no word from the user that none exists, the draft left that section pending and asked for the roster rather than writing 'No opponent roster'. Asking is what Step 2 directs for missing details, so this is a disagreement between the expectation and the skill's ask-first rule, not a wrong fact. The recording check (reading jersey numbers from video) is not exercised: trials have no recording access."
+  "notes": "Graded against each trial's written report and its final reply. Eval 2, 4, and 6 trials stop to ask the user, as the skill directs, so their expectations are checked against the draft and question in the reply. All six with-skill evals were rerun after event emojis and scripts/game_minutes.py were added; every minute in these runs comes from the script. Eval 6 was rerun after Step 2 stopped asking for a missing opponent roster; it now writes 'No opponent roster' and says so in the reply. The recording check (reading jersey numbers from video) is not exercised: trials have no recording access."
  },
  "runs": [
   {
@@ -278,29 +278,29 @@
    "configuration": "with_skill",
    "run_number": 1,
    "result": {
-    "pass_rate": 0.9,
-    "passed": 9,
-    "failed": 1,
+    "pass_rate": 1.0,
+    "passed": 10,
+    "failed": 0,
     "total": 10,
-    "time_seconds": 87.6,
-    "tokens": 90499,
+    "time_seconds": 87.4,
+    "tokens": 88403,
     "errors": 0
    },
    "expectations": [
     {
      "text": "No Markdown escapes from the export appear in scoresheet.md (no '\\-', '\\.', '\\+', or '\\!'), and the Game over line reads 'Game over (Morocco 1-0 Portugal)' at 90+8'.",
      "passed": true,
-     "evidence": "Draft: no escapes, Game over 90+8'."
+     "evidence": "Draft: no escapes, 'Game over (Morocco 1-0 Portugal)' at 90+8'."
     },
     {
      "text": "Significant Events has a yellow card for Portugal with no invented player at 5' and another at 63' (not 64'), and the reply or report attributes the 63' to the tracker screenshot.",
      "passed": true,
-     "evidence": "5' and 63' Portugal yellows, 63' from tracker."
+     "evidence": "5' and 63' Portugal yellows (player unknown); 63' from tracker and timestamp."
     },
     {
      "text": "The 42' goal names Youssef En-Nesyri #19, assisted by Yahia Attiyat Allah #25, and is marked unconfirmed (for example '(unconfirmed)'), and the reply mentions the user's question mark.",
      "passed": true,
-     "evidence": "42' En-Nesyri (unconfirmed), Attiyat Allah."
+     "evidence": "42' En-Nesyri (unconfirmed), Attiyat Allah assist; question mark mentioned."
     },
     {
      "text": "Halftime is at 45+4', Walid Cheddira #21 gets a Yellow Card at 90+2' and a Second Yellow Card (or red) at 90+3'.",
@@ -320,7 +320,7 @@
     {
      "text": "No event line says us, we, them, or they; the opponent is called Portugal.",
      "passed": true,
-     "evidence": "No us/them."
+     "evidence": "Portugal named; no us/them."
     },
     {
      "text": "Both photos are embedded with paths that resolve from scoresheet.md: the warmup photo before kickoff (Pre-match) and the Hakimi photo at 32'.",
@@ -329,13 +329,13 @@
     },
     {
      "text": "The Portugal roster section says there is no opponent roster, and Match Observations, Post-Match Commentary, and Recording each hold a short statement that there is nothing.",
-     "passed": false,
-     "evidence": "Portugal section left as '[Pending: roster and coach, or \"No opponent roster\"]' while asking the user for Portugal's roster, instead of the statement; observations, commentary, and recording sections are correct."
+     "passed": true,
+     "evidence": "'No opponent roster' under Portugal, mentioned in the reply's 'Left out'; empty-section statements."
     },
     {
      "text": "The tracker screenshot (IMG_7311) is not embedded or listed as an event; only the two photos from the notes export appear as images.",
      "passed": true,
-     "evidence": "Tracker screenshot not embedded."
+     "evidence": "Tracker screenshot used only as a source."
     }
    ],
    "notes": []
