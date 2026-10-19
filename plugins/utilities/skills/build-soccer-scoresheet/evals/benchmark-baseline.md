@@ -2,25 +2,26 @@
 
 **Executor**: claude-opus-5-5 (Agent-tool subagents)
 **Grader**: claude-opus-5-5
-**Date**: 2026-10-16
-**Evals**: 1-6 (1 run each, with and without the skill)
+**Date**: 2026-10-19
+**Evals**: 1-7 (1 run each, with and without the skill)
 **Fixtures**: `python3 evals/build_fixtures.py` (needs Pillow)
 
 ## Summary
 
 | Metric | With Skill | Without Skill | Delta |
 |--------|------------|---------------|-------|
-| Expectations passed | 48/48 (100%) | 17/48 (35%) | +31 |
-| Evals fully passing | 6/6 | 1/6 | +5 |
-| Time | 56.9s ± 33.3s | 41.4s ± 25.4s | +15.5s |
-| Tokens | 84,135 ± 9,832 | 70,184 ± 6,768 | +13,951 |
+| Expectations passed | 56/56 (100%) | 18/56 (32%) | +38 |
+| Evals fully passing | 7/7 | 1/7 | +6 |
+| Time | 59.6s ± 31.2s | 41.4s ± 25.4s | +18.2s |
+| Tokens | 84,427 ± 8,989 | 70,184 ± 6,768 | +14,243 |
 
 `benchmark-baseline.json` holds the with-skill runs only. The without-skill
 runs for evals 1-4 come from the first iteration, whose inputs were the same;
 evals 5 and 6 were rerun after their fixtures changed. With-skill evals 1
 and 6 were rerun after the rule that screenshots never appear in the report
 was added; the new expectation was graded on the existing without-skill
-outputs, which also left screenshots out.
+outputs, which also left screenshots out. Without-skill time and tokens
+cover evals 1-6; eval 7's run took 46.1s and 68,698 tokens.
 
 Each trial is one Agent-tool subagent working in a copy of
 `fixtures/<id>/inputs`, with no browser, web, calendar, email, or connector
@@ -37,6 +38,7 @@ fixtures sit mid-minute so each expected minute is unambiguous.
 | 4 | Club tournament with unknown period length: ask | 3/3 | 3/3 |
 | 5 | Team app result vs Veo AI tags | 7/7 | 3/7 |
 | 6 | Journal export with written minutes and shorthand | 12/12 | 4/12 |
+| 7 | Journal export with second-half minutes from the restart, a duplicate screenshot, a Not Going player, and relayed coach words | 8/8 | 1/8 |
 
 ## What the evals found
 
@@ -90,5 +92,12 @@ fixtures sit mid-minute so each expected minute is unambiguous.
   evals 1 and 6 were rerun (both pass every check, including the Match
   Observations miss above). The without-skill run of eval 6 is counted as
   a miss on the new check.
+- **A second real game added eval 7.** The parent's stopwatch restarted at
+  halftime, so second-half notes read `17'` for the 47th minute; the skill
+  now reads a written minute as time into the half when only that fits its
+  timestamp. The export attached one tracker screenshot twice, the team app
+  marked a player Not Going, and the coach's view arrived relayed in a
+  note. Without the skill, the run converted the minutes but embedded the
+  screenshot, credited no rebound assist, and dropped the template.
 - **Not exercised**: reading jersey numbers, assists, or the finish from a
   recording. Trials have no recording access.

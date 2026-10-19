@@ -4,18 +4,19 @@
   "skill_path": "plugins/utilities/skills/build-soccer-scoresheet",
   "executor_model": "claude-opus-5-5",
   "analyzer_model": "claude-opus-5-5",
-  "timestamp": "2026-10-16T16:00:00Z",
+  "timestamp": "2026-10-19T17:00:00Z",
   "evals_run": [
    1,
    2,
    3,
    4,
    5,
-   6
+   6,
+   7
   ],
   "runs_per_configuration": 1,
   "executor": "Agent-tool subagents, one per eval, each pointed at a copy of fixtures/<id>/inputs as its working directory, with SKILL.md loaded and no browser, web, calendar, email, or connector access",
-  "notes": "Graded against each trial's written report and its final reply. Eval 2, 4, and 6 trials stop to ask the user, as the skill directs, so their expectations are checked against the draft and question in the reply. All six with-skill evals were rerun after event emojis and scripts/game_minutes.py were added; every minute in these runs comes from the script. Eval 6 was rerun after Step 2 stopped asking for a missing opponent roster; it now writes 'No opponent roster' and says so in the reply. Evals 1, 3, 5, and 6 were rerun after photos moved to their own Photos section with italic captions, the Rosters heading was dropped, player names were unbolded, and a note's written minute was ranked above its own timestamp; evals 2 and 4 write no report and carry over. Eval 6 expects the written 77'. The recording check (reading jersey numbers from video) is not exercised: trials have no recording access. Evals 1, 3, and 6 were rerun after kickoff lines moved to the minutes already played (0', 45', 90', 105'); eval 3 checks this. In that rerun, eval 6 quoted the 'FT!!! 1-0 semis' full-time note under Match Observations, which its expectation counts as a miss; the earlier run wrote 'No observations'. Evals 1 and 6 were rerun after goal lines gained assist rules and a description of the finish (references/goals.md); eval 6 checks that its header is described, and passes all 12."
+  "notes": "Graded against each trial's written report and its final reply. Eval 2, 4, and 6 trials stop to ask the user, as the skill directs, so their expectations are checked against the draft and question in the reply. All six with-skill evals were rerun after event emojis and scripts/game_minutes.py were added; every minute in these runs comes from the script. Eval 6 was rerun after Step 2 stopped asking for a missing opponent roster; it now writes 'No opponent roster' and says so in the reply. Evals 1, 3, 5, and 6 were rerun after photos moved to their own Photos section with italic captions, the Rosters heading was dropped, player names were unbolded, and a note's written minute was ranked above its own timestamp; evals 2 and 4 write no report and carry over. Eval 6 expects the written 77'. The recording check (reading jersey numbers from video) is not exercised: trials have no recording access. Evals 1, 3, and 6 were rerun after kickoff lines moved to the minutes already played (0', 45', 90', 105'); eval 3 checks this. In that rerun, eval 6 quoted the 'FT!!! 1-0 semis' full-time note under Match Observations, which its expectation counts as a miss; the earlier run wrote 'No observations'. Evals 1 and 6 were rerun after goal lines gained assist rules and a description of the finish (references/goals.md); eval 6 checks that its header is described, and passes all 12. Eval 7 was added after a second real game: second-half minutes written from the restart, a screenshot attached twice, a Not Going response, and a coach's words relayed in a note. Evals 6 and 7 ran with the current skill; eval 7's without-skill run passed 1 of 8."
  },
  "runs": [
   {
@@ -289,30 +290,30 @@
     "passed": 12,
     "failed": 0,
     "total": 12,
-    "time_seconds": 65.4,
-    "tokens": 89123,
+    "time_seconds": 74.9,
+    "tokens": 88711,
     "errors": 0
    },
    "expectations": [
     {
      "text": "No Markdown escapes from the export appear in scoresheet.md (no '\\-', '\\.', '\\+', or '\\!'), and the Game over line reads 'Game over (Morocco 1-0 Portugal)' at 90+8'.",
      "passed": true,
-     "evidence": "No escapes; '90+8'' - 🏁 Game over (Morocco 1-0 Portugal)'."
+     "evidence": "No escapes; 'Game over (Morocco 1-0 Portugal)' at 90+8'."
     },
     {
      "text": "Significant Events has a yellow card for Portugal with no invented player at 5' and another at 63' (not 64'), and the reply or report attributes the 63' to the tracker screenshot.",
      "passed": true,
-     "evidence": "5' and 63' Portugal (player unknown); reply: 'both the tracker and the note's timestamp say 63''."
+     "evidence": "5' and 63' Portugal (player unknown); reply: 'the tracker lists it at 63''."
     },
     {
      "text": "The 42' goal names Youssef En-Nesyri #19, assisted by Yahia Attiyat Allah #25, and is marked unconfirmed (for example '(unconfirmed)'), and the reply mentions the user's question mark.",
      "passed": true,
-     "evidence": "42' Youssef En-Nesyri #19 (Assisted by Yahia Attiyat Allah #25) ... (unconfirmed); reply cites the question mark."
+     "evidence": "42' En-Nesyri #19 assisted by Yahia Attiyat Allah #25, (unconfirmed); reply cites the question mark."
     },
     {
      "text": "Halftime is at 45+4', Walid Cheddira #21 gets a Yellow Card at 90+2' and a Second Yellow Card (or red) at 90+3'.",
      "passed": true,
-     "evidence": "45+4' Halftime; 90+2' Yellow, 90+3' Second Yellow, Walid Cheddira #21."
+     "evidence": "45+4' Halftime; Cheddira yellow 90+2', second yellow 90+3'."
     },
     {
      "text": "Walid Cheddira's substitution is at 77', the minute the user wrote, rather than the 76' its note's timestamp gives, uses the template shape with only the ON part ('Substitution: Walid Cheddira #21 ↑ ON'), and the reply mentions the 76'/77' difference without stopping to ask about it.",
@@ -322,7 +323,7 @@
     {
      "text": "Walid Regragui's yellow card appears after the Game over line with Post-match in place of a minute.",
      "passed": true,
-     "evidence": "'Post-match' yellow for Coach Walid Regragui after Game over."
+     "evidence": "Post-match yellow for Coach Walid Regragui after Game over."
     },
     {
      "text": "No event line says us, we, them, or they; the opponent is called Portugal.",
@@ -332,12 +333,12 @@
     {
      "text": "Both photos appear in the '## Photos' section after Significant Events, not as list items and not in Significant Events: each is the image (line ending in a backslash, caption as alt text) followed by '📷 **<minute>** - *<caption>*', with one blank line between photos, with paths that resolve from scoresheet.md: the warmup photo (Pre-match) then the Hakimi photo (32'); captions describe them (warm-ups; Hakimi on the ball).",
      "passed": true,
-     "evidence": "Photos section with Pre-match Warmups and 32' Hakimi on the ball, correct layout."
+     "evidence": "Photos section: Pre-match warmups, 32' Hakimi."
     },
     {
      "text": "The Portugal roster section says there is no opponent roster, and Match Observations, Post-Match Commentary, and Recording each hold a short statement that there is nothing.",
      "passed": true,
-     "evidence": "'No opponent roster' (Portugal section), 'No observations', 'No notes', 'No recording'."
+     "evidence": "'No opponent roster', 'No observations', 'No notes', 'No recording'."
     },
     {
      "text": "The tracker screenshot (IMG_7311) is not embedded or listed as an event; only the two photos from the notes export appear as images.",
@@ -352,7 +353,63 @@
     {
      "text": "The 42' goal line describes the finish as a header, from the user's notes, after the scorer and assist (for example '(Assisted by Yahia Attiyat Allah #25). Header ...').",
      "passed": true,
-     "evidence": "'(Assisted by Yahia Attiyat Allah #25). Header from Yahia's cross.'"
+     "evidence": "'(Assisted by Yahia Attiyat Allah #25). Header from a cross.'"
+    }
+   ]
+  },
+  {
+   "eval_id": 7,
+   "configuration": "with_skill",
+   "run_number": 1,
+   "result": {
+    "pass_rate": 1.0,
+    "passed": 8,
+    "failed": 0,
+    "total": 8,
+    "time_seconds": 66.3,
+    "tokens": 86591,
+    "errors": 0
+   },
+   "expectations": [
+    {
+     "text": "The title is '# Match Report: Germany vs. Japan' (Japan away, per the team app), and the Game over line reads 'Game over (Germany 1-2 Japan)' at 90+8'.",
+     "passed": true,
+     "evidence": "'# Match Report: Germany vs. Japan'; '- **90+8'' - 🏁 Game over (Germany 1-2 Japan)'."
+    },
+    {
+     "text": "Ritsu Doan #8 scores at 75', not 30', assisted by Takumi Minamino #10 (his saved shot led to the rebound), and the reply says the second-half written minutes were read as time into the half.",
+     "passed": true,
+     "evidence": "'75'' - ⚽ Goal: Ritsu Doan #8 (Assisted by Takumi Minamino #10)'; reply: 'I read them as minutes counted from the second-half kickoff'."
+    },
+    {
+     "text": "Takuma Asano #18 scores at 83', not 38', assisted by Ko Itakura #4.",
+     "passed": true,
+     "evidence": "'83'' - ⚽ Goal: Takuma Asano #18 (Assisted by Ko Itakura #4)'."
+    },
+    {
+     "text": "Significant Events has 'Goal (penalty): Germany (scorer unknown)' at 33' with no assist, and Halftime at 45+4'.",
+     "passed": true,
+     "evidence": "'33'' - ⚽ Goal (penalty): Germany (scorer unknown)' with no assist; '45+4'' - ⏱️ Halftime'."
+    },
+    {
+     "text": "The Japan roster shows '- **#23** ~~Daniel Schmidt~~ (GK) - Absent', and the reply says the team app's Not Going response is the source.",
+     "passed": true,
+     "evidence": "'- **#23** ~~Daniel Schmidt~~ (GK) - Absent'; reply cites 'Not Going'."
+    },
+    {
+     "text": "The tracker screenshot is not embedded and is not an event; the Photos section has exactly one image, the warmups photo, at Pre-match.",
+     "passed": true,
+     "evidence": "Photos has one image, the warmups photo at Pre-match; the screenshot is not embedded."
+    },
+    {
+     "text": "Post-Match Commentary quotes 'Moriyasu said the subs won it.' attributed to Hajime Moriyasu as relayed in the notes, and that sentence does not also appear in Match Observations.",
+     "passed": true,
+     "evidence": "'- Hajime Moriyasu, as relayed in your notes: \"Moriyasu said the subs won it.\"'; not in Match Observations."
+    },
+    {
+     "text": "Match Observations quotes 'Mitoma and Asano on, everything changed' with a minute or moment prefix.",
+     "passed": true,
+     "evidence": "'- 60': \"Mitoma and Asano on, everything changed\"'."
     }
    ]
   }

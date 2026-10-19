@@ -109,6 +109,24 @@
         "Significant Events lists Bounou's great save as a Moment at 88' with the ✨ emoji ('- **88'** - ✨ Moment: Yassine Bounou #1 ...'), not as an Incident.",
         "The 42' goal line describes the finish as a header, from the user's notes, after the scorer and assist (for example '(Assisted by Yahia Attiyat Allah #25). Header ...')."
       ]
+    },
+    {
+      "id": 7,
+      "prompt": "Here's my journal export from Japan's win over Germany (inputs/notes-export/) and the team app page. Can you make the scoresheet? Save it to scoresheet.md.",
+      "expected_output": "The skill reads the journal export (UTC times, Asia/Qatar zone) and treats the second-half written minutes as time into the half, so Doan's 30' is 75' and Asano's 38' is 83'. Doan's goal is assisted by Minamino (rebound from his saved shot) and Asano's by Itakura (his free kick was a pass). Germany's penalty is at 33' with no scorer or assist, halftime at 45+4', and Game over at 90+8' with Germany 1-2 Japan. Daniel Schmidt is struck through and Absent from the team app's Not Going. The tracker screenshot, attached twice, is used only as a source. Moriyasu's relayed words go in Post-Match Commentary, and the 'Mitoma and Asano on' note goes in Match Observations.",
+      "files": [
+        "fixtures/7/inputs"
+      ],
+      "expectations": [
+        "The title is '# Match Report: Germany vs. Japan' (Japan away, per the team app), and the Game over line reads 'Game over (Germany 1-2 Japan)' at 90+8'.",
+        "Ritsu Doan #8 scores at 75', not 30', assisted by Takumi Minamino #10 (his saved shot led to the rebound), and the reply says the second-half written minutes were read as time into the half.",
+        "Takuma Asano #18 scores at 83', not 38', assisted by Ko Itakura #4.",
+        "Significant Events has 'Goal (penalty): Germany (scorer unknown)' at 33' with no assist, and Halftime at 45+4'.",
+        "The Japan roster shows '- **#23** ~~Daniel Schmidt~~ (GK) - Absent', and the reply says the team app's Not Going response is the source.",
+        "The tracker screenshot is not embedded and is not an event; the Photos section has exactly one image, the warmups photo, at Pre-match.",
+        "Post-Match Commentary quotes 'Moriyasu said the subs won it.' attributed to Hajime Moriyasu as relayed in the notes, and that sentence does not also appear in Match Observations.",
+        "Match Observations quotes 'Mitoma and Asano on, everything changed' with a minute or moment prefix."
+      ]
     }
   ]
 }
