@@ -346,8 +346,9 @@ A fixture seeds them with three optional files, wired by
   CLI's Markdown parser does for the cases that matter: plain newlines join
   into a paragraph, trailing backslashes are line breaks, escapes are
   removed, and unescaped list markers, headings, and emphasis are consumed.
-  Rewriting an entry that has attachments keeps its old rich text, as the
-  real CLI 0.21.1 does.
+  Text in front of an attachment carries no trailing blank line, as in the
+  real CLI 0.22.0. Rewriting an entry that has attachments keeps its old rich
+  text, as observed on the real CLI 0.21.1.
 - `ocr-fixture.json`: the text "recognized" for each image, keyed by the
   image's SHA-256, including planted recognition errors for the skill to
   correct against the image.
