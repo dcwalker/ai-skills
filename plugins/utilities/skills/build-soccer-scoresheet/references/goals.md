@@ -52,6 +52,11 @@ Cover what the source shows, in a sentence or two:
   off the post is worth saying.
 - **The keeper**: whether the keeper got a touch on it.
 
+Follow the match ball from the strike to the net. Spare balls often sit
+behind or beside the goals at youth games and look like the shot in a
+single frame, so step through the frames between the strike and the goal
+rather than trusting one.
+
 Do not describe what you cannot see. From a distant camera the side and
 height of the finish are usually clear while the player's number is not;
 write what is clear and leave the rest out. A description from the user's

@@ -46,6 +46,8 @@ data from, such as the time, the game clock, the score, or who scored and
 assisted, and it never appears in the report. Photos of the game do. A notes
 export can hold both: an image at a phone's screen size with a status bar is
 a screenshot, even when it is attached to a journal entry like a photo.
+Exports can attach the same image more than once; treat images with the
+same checksum (an export's `md5`, or the file's hash) as one.
 
 - **Team app screenshots** (Sprocket, TeamSnap, Demosphere game trackers):
   the status-bar time (wall clock, minutes only), the game clock (with
@@ -64,7 +66,12 @@ a screenshot, even when it is attached to a journal entry like a photo.
 - **Minutes the user wrote**: many notes start with a minute read off a
   watch (`50' 2-0`). Keep it next to the note's timestamp. It is an anchor
   (Step 3), and for that note's event it outranks the minute computed from
-  the note's own timestamp (Step 4).
+  the note's own timestamp (Step 4). A stopwatch restarted at halftime gives
+  minutes counted from the start of the half: in the second half of 2×30,
+  `17' goal` written 16 or 17 minutes after the restart means `47'`. When a
+  written minute fits the note's timestamp only as time into the current
+  period, add the minutes already played (S, Step 4) and tell the user you
+  read it that way.
 - **Photos**: the capture time from EXIF `DateTimeOriginal` plus
   `OffsetTimeOriginal`. Run `python3 scripts/photo_time.py <photo>...`
   (standard library only, resolved relative to this `SKILL.md`), or use
@@ -89,7 +96,16 @@ result, both rosters, and the coaches.
 
 For anything the inputs lack, look it up, in this order: the team app, the
 video platform, the calendar, email, then the web. Read the matching
-reference file for how to reach a product's data.
+reference file for how to reach a product's data. A team app's schedule is
+often synced to the family calendar, with the venue, address, kickoff time,
+and home or away in the event; that event stands in for the team app when
+the app cannot be reached.
+
+Team apps and video platforms need the user's signed-in browser for most of
+their data (rosters, event lists, event links). When a step needs it and the
+browser tools cannot reach it, ask the user to connect it and wait; leave
+the step out only if the user declines, and say what is missing because of
+it.
 
 In email, search the days around the game for the opponent, the team name,
 the coach, and words like "recording" or "video". Coaches often message the
@@ -106,9 +122,11 @@ there. If the notes or a coach message say someone else coached this game,
 show the regular coach struck through, followed by the substitute (see the
 template).
 
-A player any source says missed the game (a coach message, the notes) stays
-on the roster, name struck through and marked Absent (see the template);
-tell the user which source said so.
+A player any source says missed the game (a coach message, the notes, a
+"Not going" response in the team app) stays on the roster, name struck
+through and marked Absent (see the template); tell the user which source
+said so. A "Going" response proves nothing, and a player another source
+shows playing (a scorer, a substitution) is not absent.
 
 Starters are rarely recorded anywhere. Label players Starter or Substitute
 only when the notes (or another input) name the starting lineup.
@@ -434,6 +452,12 @@ observations rather than events (how a player is doing, how the game
 feels). Quote them as written, one bullet each, prefixed with the minute or
 the moment they were written (`- 12': "..."`, `- Halftime: "..."`); do not
 rewrite or summarize them.
+
+**Post-Match Commentary** holds the coach's words: from a coach message,
+and also from the user's notes when they relay what the coach said. Quote
+a relayed sentence as written, attributed as relayed
+(`- Coach Name, as relayed in your notes: "..."`), and leave that sentence
+out of Match Observations so it appears once.
 
 **Empty sections.** Every section stays in the report. When there is nothing
 for it, write a short plain statement instead: `No observations`, `No notes`,

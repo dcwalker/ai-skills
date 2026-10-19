@@ -15,7 +15,9 @@ user, so read them directly in the user's browser.
   arrival time, location name and details, a map link, opponent, home or
   away, uniform, notes (which may carry a league game ID or other details),
   each player's availability with jersey number, and the result.
-  Availability is a response, not attendance; it does not say who played.
+  Availability is a response, not attendance: a player marked unavailable
+  is marked Absent in the report, but available does not prove the player
+  played.
 - **Roster** (`/<team id>/roster`): players with jersey number and position
   when recorded (`# / Position`), and staff with roles such as Coach and
   Team Manager.

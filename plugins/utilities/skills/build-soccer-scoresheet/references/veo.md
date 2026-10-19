@@ -34,8 +34,11 @@ Fetch these from a page on `app.veo.co` (for example with the browser's
 - `GET /api/app/matches/<slug>/`: `start` and `end` are the recording's
   wall-clock start and end with UTC offset; `duration` is in seconds;
   `opponent_team_name`, `own_team_home_or_away`; `info.stats.score_aggregated`
-  holds `{own, opponent}`. The aggregated score comes from AI tags; the team
-  app's result wins over it.
+  holds `{own, opponent}`. The aggregated score comes from AI tags and can
+  credit the opponent's goals to the user's team (one 1-3 loss showed as
+  3-1); the team app's result wins over it. `own_team_home_or_away` is set
+  with the upload and can be wrong too; take home or away from the team app
+  or its calendar event.
 - `GET /api/app/matches/<slug>/periods/`: a list of periods, each with
   `timeframe: [start, end]` in seconds from the recording start, `duration`,
   and `own_side`. `is_confirmed: false` means AI-detected; treat the
@@ -52,14 +55,19 @@ Fetch these from a page on `app.veo.co` (for example with the browser's
   return 401 or 403 to a plain request. Do not try to extract the token; use
   the Events panel instead.
 
-## Events panel (fallback, and the only source of team attribution)
+## Events panel (fallback, and the only source of event links)
 
 With the user signed in, open the match page and select the Events panel
 (the list icon in the right-hand toolbar). Each card shows a minute, the
 team's short name, an `AI` badge when the tag is automatic, the event type
 (Kickoff, Goal, Shot, Corner, Free kick, Foul, Throw-in, Goal kick), and for
 goals the running score. Section headers mark `1ST PERIOD`, `2ND PERIOD`, and
-so on. The list is virtualized, so scroll it to read every card.
+so on. The list is virtualized, so scroll it to read every card. The team on
+an AI card can be wrong (a penalty the opponent scored was tagged to the
+user's team); follow the team app and the notes for who scored. The
+player's timeline below the video also has one button per event, labeled
+with the event type (`Goal`, `Kickoff`) and all rendered at once; clicking
+one seeks to its event and sets the `?event=` link, as a card does.
 
 The minute on a card is continuous and has no stoppage notation (in 2×30, the
 second half starts at `31'` and stoppage shows as `61'`, `62'`). It can also
@@ -71,7 +79,9 @@ every minute from the period kickoffs.
 `periods` timeframes, which are AI-detected and were a few seconds late in
 one match. Click the first Kickoff card under each period header and read
 the video's `currentTime`; later Kickoff cards in a period are restarts after
-goals.
+goals. Pause the video before clicking and read `currentTime` on the video's
+`seeked` event: a playing video moves on, and a reading taken a few seconds
+after the click is a few seconds late.
 
 **Goals.** The `Goals` quick filter lists only goals. Clicking each goal
 card gives its exact time (`currentTime`), its team, the running score, and

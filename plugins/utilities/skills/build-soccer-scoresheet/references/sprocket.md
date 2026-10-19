@@ -24,6 +24,13 @@ holds and return 401 to a plain request. Read the rendered pages instead.
 - **Roster & Staff** (`.../roster`): staff cards (name and title) and a
   player table with name and jersey number. Positions and starters are not
   recorded.
+- **Game page** (in the app, from the calendar): opponent, notes, and each
+  player's RSVP as Going or Not Going. A Not Going player is marked Absent
+  in the report; Going does not prove the player played.
+- **Calendar sync**: the team's schedule syncs to the family calendar as
+  events titled `<team> @ <opponent>` (away) or `<team> vs <opponent>`,
+  with the start time, the venue and address as the location, and the game
+  type, arrival time, uniform, and opponent in the description.
 
 ## Scorekeeper screenshots
 

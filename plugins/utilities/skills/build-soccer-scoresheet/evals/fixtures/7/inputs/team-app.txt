@@ -1,0 +1,43 @@
+Game: Germany vs. Japan
+Date/Time: Wed, Nov 23, 2022 · 4:00 PM - 6:00 PM (AST, UTC+3)
+Location: Khalifa International Stadium
+Address: Khalifa International Stadium, Doha, Qatar
+Opponent: Germany
+Home or Away: Away
+Notes: FIFA World Cup Qatar 2022, Group E. Competition page: https://www.fifa.com/en/tournaments/mens/worldcup/qatar2022
+Result: W 2-1
+
+Roster (# / Position)
+#1 Eiji Kawashima / GK
+#2 Miki Yamane / DEF
+#3 Shogo Taniguchi / DEF
+#4 Ko Itakura / DEF
+#5 Yuto Nagatomo / DEF
+#6 Wataru Endo / MID
+#7 Gaku Shibasaki / MID
+#8 Ritsu Doan / MID
+#9 Kaoru Mitoma / FWD
+#10 Takumi Minamino / FWD
+#11 Takefusa Kubo / FWD
+#12 Shuichi Gonda / GK
+#13 Hidemasa Morita / MID
+#14 Junya Ito / FWD
+#15 Daichi Kamada / MID
+#16 Takehiro Tomiyasu / DEF
+#17 Ao Tanaka / MID
+#18 Takuma Asano / FWD
+#19 Hiroki Sakai / DEF
+#20 Shuto Machino / FWD
+#21 Ayase Ueda / FWD
+#22 Maya Yoshida / DEF
+#23 Daniel Schmidt / GK
+#24 Yuki Soma / FWD
+#25 Daizen Maeda / FWD
+#26 Hiroki Ito / DEF
+
+Staff
+Coach: Hajime Moriyasu
+
+Availability
+Going: 25
+Not Going: #23 Daniel Schmidt

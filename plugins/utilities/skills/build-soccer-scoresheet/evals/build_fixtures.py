@@ -395,7 +395,9 @@ def journal_export(base, zone, offset_hours, entries):
     Markdown-escaped text, and photos stored by MD5 with no EXIF offset.
 
     entries: list of (local "YYYY-MM-DD HH:MM:SS", text or None, photo caption
-    or None). An entry with a caption holds only that photo.
+    or None). An entry with a caption holds only that photo. A caption that is
+    a tuple holds a tracker screenshot instead: the app_screenshot arguments
+    after the path. Identical images share one file, as in a real export.
     """
     import datetime
     import hashlib
@@ -410,17 +412,21 @@ def journal_export(base, zone, offset_hours, entries):
         utc = moment.astimezone(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         entry = {"uuid": f"{index + 1:032X}", "creationDate": utc, "timeZone": zone}
         if caption:
-            temp = os.path.join(photos, "tmp.jpeg")
-            photo(temp, moment.strftime("%Y:%m:%d %H:%M:%S"), None, caption,
-                  "#2e8b57" if index % 2 else "#3a6ea5")
+            kind = "png" if isinstance(caption, tuple) else "jpeg"
+            temp = os.path.join(photos, f"tmp.{kind}")
+            if kind == "png":
+                app_screenshot(temp, *caption)
+            else:
+                photo(temp, moment.strftime("%Y:%m:%d %H:%M:%S"), None, caption,
+                      "#2e8b57" if index % 2 else "#3a6ea5")
             with open(temp, "rb") as handle:
                 # Journal exports name photos by MD5; this is a file name, not security.
                 digest = hashlib.md5(handle.read(), usedforsecurity=False).hexdigest()
-            os.rename(temp, os.path.join(photos, f"{digest}.jpeg"))
+            os.replace(temp, os.path.join(photos, f"{digest}.{kind}"))
             moment_id = f"{index + 101:032X}"
             entry["text"] = f"![](journal-moment://{moment_id})"
             entry["photos"] = [{"identifier": moment_id, "md5": digest,
-                                "type": "jpeg", "date": utc}]
+                                "type": kind, "date": utc}]
         else:
             entry["text"] = text
         out.append(entry)
@@ -473,6 +479,62 @@ def build_portugal(base):
                                      "42'  Goal - MAR"])
 
 
+JAPAN = [
+    (1, "Eiji Kawashima", "GK"), (2, "Miki Yamane", "DEF"),
+    (3, "Shogo Taniguchi", "DEF"), (4, "Ko Itakura", "DEF"),
+    (5, "Yuto Nagatomo", "DEF"), (6, "Wataru Endo", "MID"),
+    (7, "Gaku Shibasaki", "MID"), (8, "Ritsu Doan", "MID"),
+    (9, "Kaoru Mitoma", "FWD"), (10, "Takumi Minamino", "FWD"),
+    (11, "Takefusa Kubo", "FWD"), (12, "Shuichi Gonda", "GK"),
+    (13, "Hidemasa Morita", "MID"), (14, "Junya Ito", "FWD"),
+    (15, "Daichi Kamada", "MID"), (16, "Takehiro Tomiyasu", "DEF"),
+    (17, "Ao Tanaka", "MID"), (18, "Takuma Asano", "FWD"),
+    (19, "Hiroki Sakai", "DEF"), (20, "Shuto Machino", "FWD"),
+    (21, "Ayase Ueda", "FWD"), (22, "Maya Yoshida", "DEF"),
+    (23, "Daniel Schmidt", "GK"), (24, "Yuki Soma", "FWD"),
+    (25, "Daizen Maeda", "FWD"), (26, "Hiroki Ito", "DEF"),
+]
+
+
+def build_japan(base):
+    """Eval 7: a journal export whose second-half minutes are counted from
+    the restart, a tracker screenshot attached twice, a player who answered
+    Not Going in the team app, and a coach's words relayed in a note.
+    """
+    team_app(
+        os.path.join(base, TEAM_APP_FILE),
+        [
+            "Game: Germany vs. Japan",
+            "Date/Time: Wed, Nov 23, 2022 · 4:00 PM - 6:00 PM (AST, UTC+3)",
+            "Location: Khalifa International Stadium",
+            "Address: Khalifa International Stadium, Doha, Qatar",
+            "Opponent: Germany",
+            "Home or Away: Away",
+            ("Notes: FIFA World Cup Qatar 2022, Group E. Competition page: "
+             "https://www.fifa.com/en/tournaments/mens/worldcup/qatar2022"),
+            "Result: W 2-1",
+        ],
+        roster_lines(JAPAN),
+        ["Coach: Hajime Moriyasu"],
+        ["", "Availability", "Going: 25", "Not Going: #23 Daniel Schmidt"],
+    )
+    tracker = ("4:45", "44:55", "1st Half", "GER 1 - 0 JPN", ["33'  Goal (PEN) - GER"])
+    journal_export(base, "Asia/Qatar", 3, [
+        ("2022-11-23 15:45:00", None, "Warmups"),
+        ("2022-11-23 16:00:20", "Kick off\\!", None),
+        ("2022-11-23 16:32:50", "33’ pen to them, Gonda took down Raum\\. 0\\-1", None),
+        ("2022-11-23 16:45:30", None, tracker),
+        ("2022-11-23 16:46:00", None, tracker),
+        ("2022-11-23 16:48:50", "HT 0\\-1", None),
+        ("2022-11-23 17:05:10", "2nd half", None),
+        ("2022-11-23 17:20:00", "Mitoma and Asano on, everything changed", None),
+        ("2022-11-23 17:34:50",
+         "30’ DOAN\\!\\! 1\\-1 Minamino shot saved and Doan buried the rebound", None),
+        ("2022-11-23 17:42:40", "38’ ASANO 2\\-1 off Itakura long free kick", None),
+        ("2022-11-23 17:58:00", "FT\\!\\!\\! 2\\-1\\. Moriyasu said the subs won it\\.", None),
+    ])
+
+
 BUILDERS = {
     1: build_final,
     2: build_mexico,
@@ -480,6 +542,7 @@ BUILDERS = {
     4: build_australia,
     5: build_saudi,
     6: build_portugal,
+    7: build_japan,
 }
 
 
