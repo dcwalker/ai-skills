@@ -28,7 +28,10 @@ Notes. Notes are never edited or deleted.
   The Day One Mac app ships an older, unrelated `dayone` that can come first
   on `PATH`. If `which -a dayone` lists a path that resolves into
   `Day One.app/Contents/MacOS/` first, follow the `dayone-cli` skill's
-  legacy-CLI preflight before running anything else.
+  legacy-CLI preflight before running anything else. Without that skill,
+  call the new CLI by its full path from the same list for the session, or
+  ask the user before removing the `/usr/local/bin/dayone` symlink. Never
+  change anything inside the app bundle.
 - The first `dayone sync` on an account must have finished. Reads come from
   the CLI's local copy, which is incomplete until then.
 
@@ -180,9 +183,12 @@ attached, `line_breaks` is one less than the transcription's count of
 non-blank lines (`write` drops blank lines and escapes Markdown punctuation,
 so the text shows exactly as transcribed), and
 `outbox_pending` is 0 after the sync. In a shared journal that anyone can
-edit, sync holds back an entry another person or device is editing and
-reports the outbox as `deferred`; sync again once they are done rather than
-clearing or retrying it. Investigate anything else before moving on.
+edit, a nonzero `outbox_pending` can be an update held back because another
+person or device is editing that entry: `dayone sync` reports the outbox as
+`deferred`, and `dayone outbox list` shows the item still pending with an
+`entry_edit_locked` message. Sync again after about 30 seconds, and once
+they are done, rather than clearing or retrying it. Investigate any other
+pending item before moving on.
 
 ## Step 6: Move the notes and report
 
