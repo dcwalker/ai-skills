@@ -24,10 +24,12 @@ Fidelity points an eval can rely on:
   trailing backslash is a hard break (a "\\n" node), backslash escapes are
   removed, and unescaped list markers, headings, setext underlines, and
   emphasis are consumed as formatting, so text written without escaping comes
-  out altered. `![](dayone-moment://)` places the next attachment.
+  out altered. `![](dayone-moment://)` places the next attachment, and the
+  text in front of it carries no trailing blank line, as in the real CLI
+  0.22.0.
 - Rewriting an existing entry that has attachments keeps its old
   richTextJSON (only `body` changes), and --attach adds another moment, as
-  the real CLI 0.21.1 does.
+  observed on the real CLI 0.21.1.
 - When the fixture has "signed_in": false, whoami, writes, and sync fail with
   the real CLI's "no auth session" message; local reads still work.
 
@@ -144,8 +146,6 @@ def rich_text(body, new_moment_ids):
         if match:
             identifier = match.group(1).upper() or (pending.pop(0) if pending else None)
             if identifier:
-                if contents and "text" in contents[-1]:
-                    contents[-1]["text"] += "\n\n"
                 contents.append(
                     {"embeddedObjects": [{"identifier": identifier, "type": "photo"}]}
                 )
@@ -365,7 +365,7 @@ def run(state, argv, stdin_body):
     take(args, "--profile")
     take(args, "--api-host")
     if args in (["--version"], ["-V"]):
-        return "dayone 0.21.1"
+        return "dayone 0.22.0"
     head = args[:2]
     rest = args[2:]
     if head == ["auth", "whoami"]:

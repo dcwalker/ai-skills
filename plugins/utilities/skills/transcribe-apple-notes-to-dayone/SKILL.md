@@ -25,6 +25,10 @@ Notes. Notes are never edited or deleted.
   to an outside OCR service.
 - The `dayone` CLI, signed in (`dayone auth whoami` succeeds). If it is
   missing, stop and point the user to its setup; do not install it unasked.
+  The Day One Mac app ships an older, unrelated `dayone` that can come first
+  on `PATH`. If `which -a dayone` lists a path that resolves into
+  `Day One.app/Contents/MacOS/` first, follow the `dayone-cli` skill's
+  legacy-CLI preflight before running anything else.
 - The first `dayone sync` on an account must have finished. Reads come from
   the CLI's local copy, which is incomplete until then.
 
@@ -175,8 +179,10 @@ An entry is good when its date matches the note, `images` equals the images
 attached, `line_breaks` is one less than the transcription's count of
 non-blank lines (`write` drops blank lines and escapes Markdown punctuation,
 so the text shows exactly as transcribed), and
-`outbox_pending` is 0 after the sync. Investigate anything else before
-moving on.
+`outbox_pending` is 0 after the sync. In a shared journal that anyone can
+edit, sync holds back an entry another person or device is editing and
+reports the outbox as `deferred`; sync again once they are done rather than
+clearing or retrying it. Investigate anything else before moving on.
 
 ## Step 6: Move the notes and report
 
@@ -259,12 +265,13 @@ the wall time Day One shows, a
 date written for an entry recorded in another zone can display hours off the
 time intended, and the CLI cannot show that it happened. For an entry whose
 zone is not the local machine's, confirm the displayed time in the app or in
-an export before calling it fixed. The Day One app ships its own `dayone`
-binary with `-z, --time-zone`, but its only command is `new`, so it cannot
-set the zone of an entry that already exists.
+an export before calling it fixed. The Day One app's legacy `dayone`
+binary (see Requirements) has `-z, --time-zone`, but its only command is
+`new`, so it cannot set the zone of an entry that already exists.
 
 A write replaces the whole body and carries no version with it, so the last
-write wins. Several devices sync to one account, nothing is locked, and the
+write wins. Several devices sync to one account, nothing is locked outside
+shared journals (and there a lock only delays an upload), and the
 local store is a cache that changes between reads: both entry ids and bodies
 move. Re-read an entry in the same step that writes it, and compare its body,
 date, and moment ids against what the plan was built from. Report an entry
