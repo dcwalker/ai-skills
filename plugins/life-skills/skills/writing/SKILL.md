@@ -582,8 +582,8 @@ is false unless that file is now there. Do not report a save you did not
 perform, and do not report one you only intended: a user told the research was
 cached will not think to ask for it again, so the next session pays the full
 research cost with nobody aware of why. If the write fails, or none of the
-cache locations in Step 2 is reachable, say so plainly and offer the profile as a block the user
-can paste somewhere durable.
+cache locations in Step 2 is reachable, say so plainly and offer the profile
+as a block the user can paste somewhere durable.
 
 **This is not the rule about placing the artifact.** Step 7 forbids saving the
 *draft* into a mailbox, tracker, or channel without being asked, and being told
