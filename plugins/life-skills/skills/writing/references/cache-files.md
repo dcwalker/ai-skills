@@ -226,8 +226,9 @@ Rules for the corpus:
 - **Append; never rewrite.** Saving the same message again adds nothing. A
   message found while building one card can be saved to another card's file
   too; the vocabulary script counts it once.
-- **Corpus text stays on this machine.** It never goes into a draft, the
-  repository, a commit, or anywhere off the machine. Style is copied from it;
+- **Corpus text stays in the cache.** It never goes into a draft, the
+  repository, a commit, or anywhere outside the cache locations in SKILL.md
+  Step 2. Style is copied from it;
   facts never are (SKILL.md Step 7).
 
 ## vocabulary.md
@@ -260,7 +261,8 @@ relabel, or a copy under another card) is counted once, from its latest line,
 so re-saving a message corrects it. Use the same `--source` name for a service
 every time: ids from different sources are always different messages. Every `save` and rebuild
 removes group and other access from the cache, `corpus/`, and the files
-directly in them.
+directly in them. On a mounted Drive folder this may have no effect; there,
+the folder's Drive sharing settings are what keep it private.
 
 `vocabulary.md` is read by `check`, not before drafting: reading its
 never-used list led drafts to drop words the user had dictated. It says which
@@ -277,6 +279,40 @@ this repository, at its author's request. That first run needs network
 access to PyPI. Without wordfreq (offline, or during an eval) the script still
 builds the profile, but skips keyness and the rarity check, and says so; a
 failed install is removed, so the next run with network access tries again.
+
+## Using the cache through a Drive connector
+
+When the cache is reached through a Google Drive connector rather than as local
+files (SKILL.md Step 2, location 2):
+
+- **Find it at the root only.** Look for a folder titled `writing-style` whose
+  parent is My Drive itself, then list its files and its `corpus` subfolder. A
+  folder of that name anywhere else is not the cache.
+- **Read raw bytes.** Download each file's exact contents rather than a
+  text-extraction view, which may not support Markdown or JSON Lines and can
+  alter them. Fetch only what the request needs: `identity.md`, `index.md`, the
+  matching card, and `general.md` when falling back.
+- **Write plain files.** Upload Markdown as `text/markdown` and JSON Lines as
+  `text/plain`, with conversion to Google formats turned off. A converted file
+  is a Google Doc that the local tools and the script cannot read.
+- **Replace by writing first, then trashing.** A connector may not be able to
+  overwrite a file's contents. When it cannot, upload the new version as a new
+  file with the same name in the same folder, download it and compare it with
+  what was written, and only then move the old file to trash. Trashing may go
+  through without any confirmation, so never trash before that comparison
+  passes, never trash a file this run did not just replace, and never delete
+  anything permanently.
+- **Run the script on a temporary copy.** Create a directory with `mktemp -d`,
+  copy the files the command reads into it with the same layout, run the script
+  with `--cache <that directory>`, upload every file it changed using the
+  replace rule above, and delete the directory. `save` needs `identity.md` and
+  the target corpus file. `check` and `build` read every corpus file and
+  `vocabulary.md`.
+- **Where no code can run,** skip `save` and `check`, say so, and still use the
+  cards.
+- **Duplicate names.** If two files in the folder share a name, which can
+  happen when a mounted copy and a connector write at the same time, use the
+  newer one and tell the user both exist.
 
 ## index.md
 

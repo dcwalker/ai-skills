@@ -145,11 +145,32 @@ Research is expensive, and voice changes far more slowly than the requests
 that draw on it. Cache what is found, and reuse it until there is a reason
 not to.
 
-**Location.** Where a persistent local filesystem exists, the cache is
-`$HOME/writing-style/`, created `chmod 700` on first use -- in plain sight
-rather than buried in a cache path, because it is meant to be read and edited
-by hand, and deliberately not a shared temp path, since these files hold
-observations derived from private correspondence.
+**Location.** The cache is a folder named `writing-style`, kept in private
+storage the user controls, because these files hold observations derived from
+private correspondence. Look for it in this order and use the first one
+reachable:
+
+1. **Google Drive, mounted.** Where the Google Drive desktop app mounts My
+   Drive as a local folder (on macOS,
+   `$HOME/Library/CloudStorage/GoogleDrive-<account>/My Drive/`), the cache is
+   `writing-style/` at its root. Use it as local files.
+2. **Google Drive, through a connector.** Where a Google Drive connector is
+   available and no mount is, the cache is the `writing-style` folder at the
+   root of My Drive. How to read it, write it, and run the bundled script
+   against it is in [references/cache-files.md](references/cache-files.md),
+   under *Using the cache through a Drive connector*.
+3. **The home directory.** Otherwise, where a persistent local filesystem
+   exists, the cache is `$HOME/writing-style/`, created `chmod 700` on first
+   use -- in plain sight rather than buried in a cache path, because it is
+   meant to be read and edited by hand, and deliberately not a shared temp
+   path.
+
+When more than one Google account is mounted or connected, use the folder
+whose `identity.md` matches the accounts this session is connected to, and ask
+when that does not settle it. Create a Drive folder only when no cache exists
+in any of the three places and the user agrees, and say where it was created.
+A Drive folder stays private only while it is unshared: never share it, and
+never move the cache to any other service.
 
 `$HOME` means whatever the environment reports, read from it directly; a
 session can legitimately run with it set somewhere other than the account's
@@ -162,16 +183,18 @@ exact string `$HOME` expanded to, the one just printed**, and never a path
 assembled from a username, from a directory further up the working tree, or
 from any other absolute path that happens to be visible. If you are about to
 type `/Users/` or `/home/` into a file path, stop: that is the mistake, and it
-is invisible afterwards because the shell half was correct.
+is invisible afterwards because the shell half was correct. The same goes for
+the mounted Drive path, which contains a space: paste it exactly as printed,
+and quote it.
 
 Writing to the wrong home puts this user's private observations somewhere that
 is not theirs and leaves the profile unwritten, so the next session redoes the
 research and nobody knows why.
 
-Where nothing persists -- an ephemeral container included -- keep the profile
-in the session and offer it at the end as a block the user can paste somewhere
-durable, saying plainly that it was not saved. Never copy it to cloud storage
-or anywhere else off the machine.
+Where none of the three is reachable -- an ephemeral container with no Drive
+connector included -- keep the profile in the session and offer it at the end
+as a block the user can paste somewhere durable, saying plainly that it was not
+saved. Never copy it anywhere other than the locations above.
 
 Contents:
 
@@ -248,7 +271,7 @@ Cache rules:
   the messages written since, appends them to the card's ledger, and updates
   the counts.
 - The cache holds the raw corpus behind each card, labeled by author, so the
-  corpus is never fetched twice. It stays on this machine.
+  corpus is never fetched twice. It stays in the cache.
 
 ---
 
@@ -554,18 +577,18 @@ entire cost this cache exists to avoid.
 3. Rebuild `general.md` if this card is new or changed.
 
 **Say what you actually wrote, and nothing more.** "Cached at
-`~/writing-style/card-...md`" is a claim about the filesystem, and it is false
-unless that file is now there. Do not report a save you did not perform, and do
-not report one you only intended: a user told the research was cached will not
-think to ask for it again, so the next session pays the full research cost with
-nobody aware of why. If the write fails, or the environment has no persistent
-disk (Step 2, case 2), say so plainly and offer the profile as a block the user
-can paste somewhere durable.
+`~/writing-style/card-...md`" is a claim about the filesystem or Drive, and it
+is false unless that file is now there. Do not report a save you did not
+perform, and do not report one you only intended: a user told the research was
+cached will not think to ask for it again, so the next session pays the full
+research cost with nobody aware of why. If the write fails, or none of the
+cache locations in Step 2 is reachable, say so plainly and offer the profile
+as a block the user can paste somewhere durable.
 
 **This is not the rule about placing the artifact.** Step 7 forbids saving the
 *draft* into a mailbox, tracker, or channel without being asked, and being told
 the user is unavailable never authorizes that. The cache is this skill's own
-working memory, in the user's own home directory, and writing it is expected on
+working memory, in storage the user controls, and writing it is expected on
 every run that builds or changes a card. The two rules point in opposite
 directions on purpose: never place the artifact, always persist the profile.
 
@@ -696,8 +719,8 @@ it there; that offer costs one line and leaves the decision where it belongs.
 - Do not carry content from someone else's message into the deliverable, and do
   not quote a third party's writing as the user's own style.
 - Corpus material stays in the cache and out of the deliverable, the
-  repository, and any commit, and never leaves the machine. The cache is the
-  user's own directory, holds copies of their correspondence along with what
+  repository, and any commit, and never leaves the cache. The cache is the
+  user's own folder, holds copies of their correspondence along with what
   was derived from it, and is theirs to delete: say where it lives the first
   time this skill writes to it.
 
