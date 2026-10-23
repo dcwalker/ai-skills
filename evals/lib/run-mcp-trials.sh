@@ -606,7 +606,9 @@ print()
         echo "  WARNING: the simulated user returned nothing; stopping eval $ID here"
         break
       fi
-      [[ "$(echo "$REPLY" | tr -d '[:space:]')" == "DONE" ]] && break
+      # The instruction above ends "reply with exactly: DONE.", so the period
+      # often comes along.
+      [[ "$(echo "$REPLY" | tr -d '[:space:]')" =~ ^DONE\.?$ ]] && break
       printf 'USER:\n%s\n\n' "$REPLY" >> "$RUN_DIR/conversation.txt"
       SIM_TURNS=$((SIM_TURNS + 1))
       echo "  simulated user reply $SIM_TURNS"
