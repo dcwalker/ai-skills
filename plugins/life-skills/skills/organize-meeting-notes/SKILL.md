@@ -47,6 +47,14 @@ notes; no line is dropped for fitting none of them. When drafting from
 artifacts, they decide what the draft leads with, and talk that adds nothing
 to an outcome or how it was reached stays out.
 
+Capture the meeting as it happened, including what is uncomfortable.
+Feedback on a named person, conflict, performance, compensation, health, and
+personal matters are recorded like any other topic: never leave one out,
+soften it, or ask the user whether to skip it or tone it down. Explicit
+language is a sign of emotion and conviction, and often marks what mattered
+most; keep it, written out in full (see the explicit language rule in
+Step 5).
+
 ## Instructions
 
 ### Step 1: Gather Inputs
@@ -427,6 +435,15 @@ Paraphrase rule (always, with or without a transcript):
   rollout had slipped by about a week. This includes wording the user
   remembers only approximately.
 
+Explicit language rule (always):
+- Keep profanity and explicit language as it was spoken or written, in notes
+  and in quotes. Never swap it for a milder word, mask it, or drop it.
+- Where a transcript or the notes censor a word (`f***`, `s**t`,
+  `[expletive]`, a bleep marker), write the word out in full, restored from
+  its visible letters and the context, without asking. The masking came from
+  the transcription tool, not the speaker, so a restored word inside a quote
+  is still verbatim.
+
 Quote rule (only when a transcript was provided):
 - Quote only words that appear verbatim in the transcript. Never quote from
   the raw notes, from an interview answer, or from memory, and never
@@ -444,7 +461,8 @@ Quote rule (only when a transcript was provided):
   notes are not sectioned. Skip any quote that only restates its note in
   other words: the bar is that a reader would want the speaker's own words.
 - Trim with an ellipsis to cut filler or a false start. Never change,
-  reorder, or clean up the words themselves.
+  reorder, or clean up the words themselves. Restoring a censored word, per
+  the explicit language rule, is not a change.
 - Attribute using the attendee names from Step 3, applying the same
   full-name-then-first-name rule. If the transcript labels speakers
   generically (for example `Speaker 2`) or names someone the attendee list
@@ -507,35 +525,29 @@ After the interview and normalization, format the notes section as a bulleted li
      or a date. If the user does not know, leave it off; never guess.
 4. Present action items draft for review. Ask: "Are these action items correct?"
 5. It is valid for a meeting to have no action items. If none exist, explicitly confirm this with the user.
-6. Once action items are confirmed, ask whether to create Trello tasks (one per action item).
+6. Do not offer to create tasks for the action items. Create them only when
+   the user asks, in the tool the user names, using the skills and tools
+   available to you. If the user asks without naming a tool, ask which one.
    An action item already linked to an item captured in Step 1b keeps that
-   link and gets no new card.
-7. If user says yes, create one Trello card per remaining action item:
-   - Run: `create-trello-task.sh "<action item text>"`. The script ships with
-     this skill. If it is not on your PATH, run the bundled copy at
-     `scripts/create-trello-task.sh`, resolved relative to this `SKILL.md`.
-     Do not search the filesystem for it, and do not hard-code an absolute
-     install path: the install location contains a version identifier that
-     changes on every plugin update.
-   - If neither copy can be run, tell the user the cards could not be created
-     and why, and ask how to proceed. Never skip card creation silently or
-     finalize as if the question had not been asked.
-   - Never run the script with test or placeholder text to see whether it
-     works: every run creates a card.
-   - Include `--desc` for every Trello card with source context.
+   link and gets no new task.
+7. When the user has asked, create one task per remaining confirmed action item:
+   - If no available skill or tool can create tasks in the named tool, tell
+     the user the tasks could not be created and why, and ask how to proceed.
+     Never skip task creation silently.
+   - Never create a test or placeholder task to see whether the tool works.
+   - Give every task a description with source context.
    - Minimum required description context: meeting title plus meeting date/time.
    - Preferred additional context: meeting topic and a short reason the action item exists.
-   - After each card is created, capture the returned card URL and replace that checklist item's text with a Markdown link to the card.
-   - Use format: `- [ ] [Action item text](https://trello.com/c/...)`
-   - If a card fails to create, do not retry it. Report the error to the user, ask how to proceed, and leave that item unlinked unless the user says otherwise.
-8. If no action items are confirmed, skip Trello creation.
-9. After Trello creation (or skip), produce final Markdown document.
+   - After each task is created, capture the URL the tool returned and replace that checklist item's text with a Markdown link to the task.
+   - Use format: `- [ ] [Action item text](<task URL>)`
+   - If a task fails to create, do not retry it. Report the error to the user, ask how to proceed, and leave that item unlinked unless the user says otherwise.
+8. After task creation (or when none was requested), produce final Markdown document.
 
 When the user asks for the final document, or approves everything as
 proposed, treat that as approval of every pending stage. Do not re-ask a
 question the user already answered or passed over: leave out whatever is
 still unknown (an owner, a due date, a link) and produce the final document
-in that reply. Only Trello creation still needs its own yes.
+in that reply. Approving the document is not a request to create tasks.
 
 ### Step 8: Final Output Format
 
@@ -603,6 +615,8 @@ At the very end, append:
   notes only when the meeting genuinely had distinct topics. Neither is
   padding to apply by default.
 - Preserve factual accuracy; do not invent details.
+- Record every topic the meeting covered, sensitive or not, and keep
+  explicit language uncensored. Never offer to omit or soften either.
 - Never present an artifact as the user's notes. Notes drafted from artifacts
   trace to what the artifacts show and are reviewed with the user before
   finalizing.

@@ -21,7 +21,8 @@ treat an artifact as though it were the user's notes.
   [What Notes Should Capture](../SKILL.md#what-notes-should-capture)
   describes, and leave out talk that adds nothing to an outcome or how it was
   reached, including logistics such as reordering the agenda, sharing a
-  screen, or someone leaving.
+  screen, or someone leaving. A heated or explicit exchange is not filler: it
+  shows what the attendees cared about, so record it.
 - Write one note per decision, disagreement, commitment, or unresolved topic,
   not one per message. Combine a proposal, the pushback, and the outcome into
   a single note that says who held which position and why. Rather than three

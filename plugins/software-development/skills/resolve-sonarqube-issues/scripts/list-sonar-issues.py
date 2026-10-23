@@ -227,7 +227,7 @@ class SonarQubeClient:
         if fixture_file:
             return self._fixture_response(fixture_file, path)
 
-        # Fail closed inside an eval, mirroring create-trello-task.sh. Choosing
+        # Fail closed inside an eval, as gh-stub does. Choosing
         # real mode by the mere absence of a fixture var is what let an eval
         # trial write to a real Trello board; the harness now also pins
         # SONAR_HOST_URL to an unroutable name, but that is a second line of

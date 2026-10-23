@@ -34,8 +34,15 @@ State model (the fake Trello "database"):
                               "created": "<ISO datetime, optional>"}},
     "labels": {"<label_id>": {"id": "...", "name": "...", "color": "...",
                                "board_id": "..."}},
-    "stub_now": "<ISO datetime, optional: the stub's fixed 'now'>"
+    "stub_now": "<ISO datetime, optional: the stub's fixed 'now'>",
+    "create_card_errors": {"<name substring>": "<error message>"}
   }
+
+Failed creates: a fixture's optional "create_card_errors" makes create_card
+raise the given error for any card whose name contains the key, ignoring
+case, logging the refused call with an `error` result in place of `cards`.
+Nothing in that call is created, so a batch that names a failing card fails
+as a whole.
 
 Creation time: a Trello ID's first 8 hexadecimal characters are the Unix
 timestamp it was created at (Trello's "Getting the time a card or board was
@@ -429,29 +436,32 @@ def create_card(
     to create several cards in one call; desc/due/labels apply to every
     card. timezone is accepted for schema parity but ignored -- the stub
     stores due dates as given."""
+    args = {
+        "name": name,
+        "desc": desc,
+        "due": due,
+        "pos": pos,
+        "labels": labels,
+        "list_id": list_id,
+        "list_name": list_name,
+        "board_id": board_id,
+        "board_name": board_name,
+        "timezone": timezone,
+    }
+    titles = name if isinstance(name, list) else [name]
+    for title in titles:
+        for needle, message in state.data.get("create_card_errors", {}).items():
+            if needle.lower() in title.lower():
+                error = f"trello-stub: {message}"
+                state.log_call("create_card", args, {"error": error})
+                raise ValueError(error)
     list_ref = _resolve_list(list_id, list_name, board_id, board_name)
     board_ref = state.data["lists"][list_ref]["board_id"]
     label_ids = [_resolve_label(lbl, board_ref) for lbl in _as_list(labels)]
-    titles = name if isinstance(name, list) else [name]
     created = [_create_one_card(t, desc, due, list_ref, label_ids, pos) for t in titles]
     state.flush()
     result = {"cards": created, "succeeded": len(created), "failed": 0}
-    state.log_call(
-        "create_card",
-        {
-            "name": name,
-            "desc": desc,
-            "due": due,
-            "pos": pos,
-            "labels": labels,
-            "list_id": list_id,
-            "list_name": list_name,
-            "board_id": board_id,
-            "board_name": board_name,
-            "timezone": timezone,
-        },
-        result,
-    )
+    state.log_call("create_card", args, result)
     return result
 
 

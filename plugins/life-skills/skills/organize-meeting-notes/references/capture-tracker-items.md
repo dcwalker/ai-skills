@@ -94,5 +94,5 @@ Propose each item; the user decides what gets in.
   Ask for a due date the item does not carry, as Step 7 does for any action
   item.
 - **No duplicates**: when a confirmed action item matches a captured item,
-  link the captured item and do not create a Trello card for it. Ask the
+  link the captured item and do not create a task for it. Ask the
   user when it is unclear whether the two are the same work.

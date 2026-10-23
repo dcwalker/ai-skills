@@ -4,46 +4,47 @@
     {
       "id": 1,
       "prompt": "Help me organize my meeting notes into my journal.\n\nMeeting: Weekly Sync\nStart: Feb 27, 2026 at 11:00 AM\nEnd: 11:30 AM\nDuration: 30 minutes\nLocation: Zoom\nAttendees: sarah.chen@acme.com, j.rivera-contractor@acme.com, sarah.chen@acme.com\n\nRaw notes:\n- discussed Q3 budget overrun\n- need to email finance about the discrepancy\n- also should schedule a follow-up with the vendor about pricing\n\nPlease interview me about each line, then propose creating Trello tasks for the two action items when you're done. I'll answer your questions as we go and confirm everything before you create any cards.",
-      "expected_output": "The skill establishes metadata (Step 2, no time-mismatch correction needed since 11:00-11:30 already equals the stated 30-minute duration), formats attendees (Step 3: 'Sarah Chen' and Rivera, asking for the first name behind the 'j.' initial, title-cased, '-contractor' stripped, deduplicated, alphabetically sorted -- there are only two distinct attendees since sarah.chen@acme.com appears twice), then interviews the user line-by-line (Step 4, one question per line, not batched) before normalizing and bulleting the notes. After staged approval of metadata/attendees/notes, it identifies two action items (email finance about the budget discrepancy; schedule a vendor follow-up about pricing), presents them for confirmation, then asks whether to create Trello tasks. Since the user confirms yes, it calls create-trello-task.sh once per action item with the actual action-item text and a --desc including the meeting title and date, and replaces each checklist item's text with a Markdown link to the returned card URL in the final document.",
+      "expected_output": "The skill establishes metadata (Step 2, no time-mismatch correction needed since 11:00-11:30 already equals the stated 30-minute duration), formats attendees (Step 3: 'Sarah Chen' and Rivera, asking for the first name behind the 'j.' initial, title-cased, '-contractor' stripped, deduplicated, alphabetically sorted -- there are only two distinct attendees since sarah.chen@acme.com appears twice), then interviews the user line-by-line (Step 4, one question per line, not batched) before normalizing and bulleting the notes. After staged approval of metadata/attendees/notes, it identifies two action items (email finance about the budget discrepancy; schedule a vendor follow-up about pricing), presents them for confirmation, then, as the user asked in the prompt, proposes a Trello card for each. Since the user confirms yes, it creates one card per action item through the connected Trello tools, named for the action item and with a description including the meeting title and date, and replaces each checklist item's text with a Markdown link to the card URL the tool returned in the final document.",
       "expectations": [
         "Attendees are formatted in title case with -contractor stripped, deduplicated to two people despite the duplicate email, and sorted alphabetically by first name: 'Sarah Chen' and Rivera, whose 'j.' initial is either expanded to the first name the user gives when asked (Step 3) or left as 'J. Rivera', never expanded by guesswork.",
         "The transcript shows a genuine per-line interview (at least one clarifying question per raw note line) before the notes are finalized as complete sentences -- the skill does not fabricate finished notes without first asking about each line.",
-        "Exactly two create-trello-task.sh invocations occur (one per confirmed action item), each with --desc including the meeting title 'Weekly Sync' and a February 2026 date.",
-        "The final Markdown document's Action Items section links each item as `- [ ] [<text>](<trello card url>)` using the exact URLs the fixture returned, not fabricated URLs.",
+        "The Trello call log shows exactly two cards created (one per confirmed action item, in one create_card call or two), each with a description including the meeting title 'Weekly Sync' and a February 2026 date.",
+        "The final Markdown document's Action Items section links each item as `- [ ] [<text>](<trello card url>)` using the exact URLs the create_card calls returned in the Trello call log, not fabricated URLs.",
         "The final document's section order is exactly: metadata block, ###### Attendees, ###### Notes, ###### Action Items, matching Step 8."
       ]
     },
     {
       "id": 2,
       "prompt": "Organize these meeting notes for my journal.\n\nMeeting: Solo Planning Block\nStart: Mar 3, 2026 at 9:00 AM\nEnd: 9:15 AM\nDuration: 15 minutes\nAttendees: me\n\nRaw notes:\n- reviewed my calendar for next week, nothing to flag\n\nThere's nothing actionable here, just a quick log. Interview me about the note if you need to, but I don't expect any action items to come out of this.",
-      "expected_output": "The skill interviews the user about the single note line, confirms the notes, and at the action-item identification step correctly finds zero action items in this content. Per Step 7.5 ('It is valid for a meeting to have no action items'), it explicitly confirms this with the user rather than fabricating one to have something to show, and per Step 7.8 skips Trello creation entirely since there are no confirmed action items -- it must not call create-trello-task.sh even speculatively.",
+      "expected_output": "The skill interviews the user about the single note line, confirms the notes, and at the action-item identification step correctly finds zero action items in this content. Per Step 7.5 ('It is valid for a meeting to have no action items'), it explicitly confirms this with the user rather than fabricating one to have something to show, and per Step 7.6 never offers to create tasks, since the user did not ask for any -- it must not create one even speculatively.",
       "expectations": [
-        "Zero create-trello-task.sh invocations occur.",
+        "No task is created in any tool.",
         "The transcript explicitly confirms with the user that there are no action items, rather than silently omitting the section or inventing one.",
         "The final document's Action Items section reflects that none exist (e.g. states none, or is empty/omitted per the skill's own formatting for this case) rather than containing a fabricated item.",
-        "The skill never asks 'create Trello tasks?' at all, since Step 7.8 only reaches that question when action items were confirmed."
+        "The skill never offers to create tasks in Trello or any other tool, since the user did not ask for any (Step 7.6)."
       ]
     },
     {
       "id": 3,
-      "prompt": "Help me clean up these meeting notes.\n\nMeeting: 1:1 with Manager\nStart: Mar 5, 2026 at 2:00 PM\nEnd: 2:30 PM\nDuration: 30 minutes\nAttendees: me, manager@acme.com\n\nRaw notes:\n- discussed my Q2 goals\n- agreed I'll draft a proposal for the new tooling budget\n\nInterview me about the notes, and when you get to the Trello question, I'll tell you not to bother creating cards this time -- I'm tracking this one myself.",
-      "expected_output": "The skill interviews the user, identifies one action item (draft a tooling budget proposal), confirms it, then asks whether to create a Trello task. Per the user's stated intent, when asked, the user declines -- per Step 7.8 the skill must skip Trello creation and proceed straight to producing the final document with the action item as a plain, unlinked checklist item, not silently create a card anyway.",
+      "prompt": "Help me clean up these meeting notes.\n\nMeeting: 1:1 with Manager\nStart: Mar 5, 2026 at 2:00 PM\nEnd: 2:30 PM\nDuration: 30 minutes\nAttendees: me, manager@acme.com\n\nRaw notes:\n- discussed my Q2 goals\n- agreed I'll draft a proposal for the new tooling budget\n\nInterview me about the notes.",
+      "expected_output": "The user never asks for tasks. The skill interviews the user, identifies one action item (draft a tooling budget proposal), and confirms it. Per Step 7.6 it must not offer to create a task in Trello or any other tool, and it proceeds to the final document with the action item as a plain, unlinked checklist item.",
       "expectations": [
-        "The skill explicitly asks whether to create a Trello task for the confirmed action item before proceeding.",
-        "Zero create-trello-task.sh invocations occur, since the user declines.",
-        "The final document's Action Items section contains the item as a plain `- [ ] <text>` line with no Trello link, since no card was created.",
-        "The final document is still produced (declining Trello creation does not abort the whole task, per Step 7.8's 'skip Trello creation' framing, not 'stop entirely')."
-      ]
+        "The skill never offers or asks about creating a task for the action item, in Trello or any other tool.",
+        "No task is created in any tool.",
+        "The final document's Action Items section contains the tooling budget proposal item as a plain `- [ ] <text>` line with no link, since no task was created.",
+        "The final document is produced after the user confirms the action item, with no task-creation step between them."
+      ],
+      "simulated_user": "You are the person who took these notes. Answer the assistant's questions about each note: the Q2 goals you discussed were shipping the reporting rewrite and mentoring the new hire, and you'll draft the tooling budget proposal by Friday, Mar 13, 2026. Approve drafts as proposed. Never bring up Trello, tasks, or any task tool yourself. If the assistant offers to create a task, say no."
     },
     {
       "id": 4,
       "prompt": "Organize my notes from today's vendor call.\n\nMeeting: Vendor Call - Acme Supplies\nStart: Mar 10, 2026 at 1:00 PM\nEnd: 1:20 PM\nDuration: 20 minutes\nAttendees: me, rep@acmesupplies.com\n\nRaw notes:\n- vendor confirmed new pricing takes effect next quarter\n- I need to update our internal pricing sheet before then\n- also need to loop in procurement about the change\n\nInterview me about each line, then go ahead and create Trello cards for both action items once we've confirmed them -- I approve that upfront.",
-      "expected_output": "The skill interviews the user, confirms two action items (update the internal pricing sheet; loop in procurement), and per the user's upfront approval proceeds to create Trello tasks for both. In this scenario, the fixture is set up so the first create-trello-task.sh call succeeds but the second fails (simulating a real API error). The skill must not fabricate a card URL for the failed item, must not silently drop it from the final document, and must clearly surface the failure to the user rather than presenting a broken or misleading final document.",
+      "expected_output": "The skill interviews the user, confirms two action items (update the internal pricing sheet; loop in procurement), and per the user's upfront approval proceeds to create a Trello card for both through the connected Trello tools. The Trello fixture makes any create_card call that names the procurement card fail with a rate-limit error (simulating a real API error), while a call creating only the pricing-sheet card succeeds: creating the cards one at a time gives one success and one failure, and creating both in one call fails both. The skill must not fabricate a card URL for the failed item, must not silently drop it from the final document, and must clearly surface the failure to the user rather than presenting a broken or misleading final document.",
       "expectations": [
-        "Exactly two create-trello-task.sh invocations are attempted, one per confirmed action item.",
-        "The action item whose call succeeded is linked in the final document using the exact fixture-returned URL.",
-        "The action item whose call failed is NOT given a fabricated or guessed URL -- it either remains a plain unlinked checklist item with the failure surfaced to the user, or the skill pauses and asks how to proceed before finalizing that item.",
-        "The transcript explicitly reports the create-trello-task.sh failure (e.g. its error message) rather than silently treating it as a success or omitting it from the report."
+        "The Trello call log shows a create_card attempt covering each confirmed action item, and no card is attempted again after its call failed.",
+        "Any action item whose card was created is linked in the final document using the exact URL the create_card call returned in the Trello call log.",
+        "Each action item whose card was not created is NOT given a fabricated or guessed URL -- it either remains a plain unlinked checklist item with the failure surfaced to the user, or the skill pauses and asks how to proceed before finalizing that item.",
+        "The transcript explicitly reports each failed card creation (e.g. the rate-limit error) rather than silently treating it as a success or omitting it from the report."
       ]
     },
     {
@@ -54,7 +55,7 @@
         "The final metadata line's End field shows the original 3:30 PM struck through with the corrected 3:45 PM appended, matching the skill's documented mismatch-correction pattern -- not silently left as just 3:30 PM and not silently corrected without showing the original.",
         "Kim Park's name appears with strikethrough formatting in the final Attendees section, since the user stated she did not attend despite being invited.",
         "The other two attendees (Singh and Nguyen) are correctly title-cased with '-contractor' stripped from Singh, and each 'r.' or 't.' initial is either expanded to the first name the user gives when asked (Step 3) or left as an initial, never expanded by guesswork.",
-        "Zero create-trello-task.sh invocations occur, since no action items exist in this content."
+        "No task is created in any tool, since no action items exist in this content."
       ]
     },
     {
@@ -64,9 +65,9 @@
       "expectations": [
         "The transcript shows the skill either asking about the ambiguous initials before finalizing names, or correctly using the full names already supplied in the prompt ('Alex Lee', 'Amy Wong') without guessing a different expansion of the 'a.' initial for either person.",
         "The final Attendees section lists 'Alex Lee' and 'Amy Wong' (title case, alphabetically sorted by first name), not 'A. Lee'/'A. Wong' or an incorrect guessed name.",
-        "Exactly one create-trello-task.sh invocation occurs, for the mockup-update action item, with --desc including the meeting title 'Design Review'.",
+        "The Trello call log shows exactly one card created, for the mockup-update action item, with a description including the meeting title 'Design Review'.",
         "The mockup action item keeps the user's 'by Friday' wording and adds the calendar date it refers to, Mar 20, 2026 (the Friday after the Sunday, Mar 15 meeting), rather than dropping the due date or replacing the user's words with the date alone.",
-        "The final document's Action Items section links the item using the exact fixture-returned card URL."
+        "The final document's Action Items section links the item using the exact URL the create_card call returned in the Trello call log."
       ]
     },
     {
@@ -80,8 +81,7 @@
         "PLAT-482 appears in the final notes only with detail the user provided in the interview; no invented status, summary, or tracker link is attached to it (no ticket tracker was available).",
         "The interview still covers every raw note line individually, and the final document follows the standard order (metadata, attendees, agenda, notes, action items) with the interview's clarifications incorporated.",
         "An `###### Agenda` section sits between `###### Attendees` and `###### Notes`, listing the calendar event's two agenda items in their original order and wording, with the roadmap link rendered as a Markdown hyperlink, and no items the agenda did not list.",
-        "If the flow reaches Trello card creation, every card link in the final document is the exact URL returned by a real create-trello-task.sh invocation (verifiable in the fixture call log); a claimed creation with no corresponding log entry is a fabricated tool result and fails this.",
-        "Once the action items are confirmed, the skill asks whether to create Trello cards. If it then cannot run create-trello-task.sh (by name or as the bundled scripts/create-trello-task.sh), the reply tells the user the cards were not created and why. Finalizing without asking the Trello question, or skipping card creation without saying so, fails."
+        "The skill never offers to create tasks in Trello or any other tool, since the user did not ask for any, and no Action Items entry links to a task."
       ]
     },
     {
@@ -93,7 +93,7 @@
         "No schedule-adherence line appears anywhere in the final document -- there is no scheduled time to compare against, and one must not be estimated.",
         "The final notes contain only facts the user provided in the raw notes and interview answers; no agenda items, chat messages, email threads, link summaries, or work item details are invented.",
         "The normal flow still completes: every raw note line is interviewed individually, attendees are formatted from the emails, and the standard section order is produced.",
-        "If the flow reaches Trello card creation, the card link in the final document is the exact URL returned by a real create-trello-task.sh invocation (verifiable in the fixture call log); a claimed creation with no corresponding log entry is a fabricated tool result and fails this."
+        "The skill never offers to create tasks in Trello or any other tool, since the user did not ask for any, and no Action Items entry links to a task."
       ]
     },
     {
@@ -107,7 +107,7 @@
         "The transcript shows the length measurement that justified the summary (a word and/or line count of the Notes section reported to the user), rather than an unexplained decision to add one.",
         "The summary reads as prose rather than a list: it contains no semicolons, and no sentence is built by chaining clauses together with 'and'.",
         "The transcript shows a genuine per-line interview covering all thirty raw note lines individually, not batched questions or notes fabricated without asking.",
-        "Zero create-trello-task.sh invocations occur, since the user declined cards."
+        "No task is created in any tool, since the user declined cards."
       ]
     },
     {
@@ -118,7 +118,7 @@
         "The Notes section is a single flat bulleted list with no bold topic labels and no sub-sections.",
         "No summary line appears between the metadata block and `###### Attendees` (nor anywhere else), since the notes are far below the length thresholds.",
         "The transcript shows the skill asking a clarifying question about each of the two raw note lines before finalizing them.",
-        "Zero create-trello-task.sh invocations occur.",
+        "No task is created in any tool.",
         "The final document still follows the standard order: metadata block, ###### Attendees, ###### Notes, ###### Action Items."
       ]
     },
@@ -132,7 +132,7 @@
         "The `Speaker 3` line is not attributed to Dan Walker or any other attendee by guesswork: the skill either asks the user who spoke or leaves that line out of the notes entirely.",
         "The trivial closing remark about the dog is not quoted, showing the significance bar was applied rather than quoting whatever was available.",
         "Quotes are proposed for the user's approval before the final document is produced, consistent with the staged approval workflow.",
-        "The notes are not divided into topic sections (this meeting has a single subject), and zero create-trello-task.sh invocations occur."
+        "The notes are not divided into topic sections (this meeting has a single subject), and no task is created in any tool."
       ]
     },
     {
@@ -144,7 +144,7 @@
         "No blockquote pull quote attributed to a speaker appears in the final document, since there is no transcript to quote from.",
         "The 'we were flying blind for 40 minutes' phrase never appears in quotation marks in the final document, labelled as a paraphrase or not: with no transcript it is written as reported speech (for example, Lena Fischer said the team had been flying blind for about 40 minutes), and the skill does not offer to keep it as a quotation marked '(paraphrased)'.",
         "No quotations are invented for the other two note lines, and no words are attributed to anyone that the user did not supply.",
-        "The normal flow still completes: each raw note line is interviewed individually, attendees are formatted, and the standard section order is produced with zero create-trello-task.sh invocations."
+        "The normal flow still completes: each raw note line is interviewed individually, attendees are formatted, and the standard section order is produced, and no task is created in any tool."
       ]
     },
     {
@@ -157,7 +157,7 @@
         "The launch-date screenshot is placed with the launch-date note (content over its earlier timestamp) and the skill asks the user to confirm that placement, rather than silently filing it in strict timestamp order between the first two notes.",
         "The undated whiteboard photo is not placed by guesswork: the skill asks the user where it belongs before finalizing.",
         "No summary appears: the notes are neither over the length thresholds nor divided into three or more sections, and the four images must not be counted toward the measurement to manufacture one.",
-        "Zero create-trello-task.sh invocations occur, and the standard section order is produced."
+        "No task is created in any tool, and the standard section order is produced."
       ]
     },
     {
@@ -171,7 +171,7 @@
         "The summary restates only what the notes already say, adding no new facts, no conclusions the meeting did not reach, and no action items.",
         "The summary reads as prose rather than a list: it contains no semicolons, and no sentence is built by chaining clauses together with 'and'.",
         "The transcript shows a genuine per-line interview covering all nine raw note lines individually.",
-        "Zero create-trello-task.sh invocations occur."
+        "No task is created in any tool."
       ]
     },
     {
@@ -189,7 +189,7 @@
         "The notes follow the order topics came up in the chat (on-call rotation, then the migration, then staging costs), not the agenda's order, and the three topics are marked as bold label lines rather than headings.",
         "The draft is reviewed with the user section by section before the final document is produced, rather than finalized without review or run through a per-line interview of drafted lines.",
         "Action items lead with their owner's name; Lena Fischer's schedule item keeps 'by Friday' and adds the calendar date Aug 28, 2026; and the skill asks during review for the decommission ticket's missing due date and the runbook update's missing owner rather than guessing either.",
-        "No facts, owners, or dates appear that are absent from the chat log, the pasted calendar event, and the user's answers, and zero create-trello-task.sh invocations occur."
+        "No facts, owners, or dates appear that are absent from the chat log, the pasted calendar event, and the user's answers, and no task is created in any tool."
       ]
     },
     {
@@ -200,7 +200,7 @@
         "The response tells the user that no raw notes and no artifacts (screenshots, audio transcripts, or chat transcripts) were found, and asks for the notes or artifacts.",
         "No notes are drafted: no Notes bullets describing what was discussed appear anywhere in the response, and no decisions, owners, or action items are invented for the meeting.",
         "No `###### Agenda` section appears, since no agenda was available.",
-        "Zero create-trello-task.sh invocations occur."
+        "No task is created in any tool."
       ]
     },
     {
@@ -214,7 +214,7 @@
         "Both screenshots are embedded with descriptive alt text and an italic caption, and interwoven among the notes rather than collected at the end: the manual-exports dashboard beside the export-volume note ahead of the limit debate, and the macro audit sheet beside the stale-macros note.",
         "Any quotation appears verbatim in transcript.txt and is attributed to a named speaker, never to a guessed identity for `Speaker 3`.",
         "Action items lead with their owner: Marcus Hall's limit change keeps 'by Friday' and adds Sep 4, 2026, and the skill asks for the macro cleanup's missing due date.",
-        "No `###### Agenda` section appears, chatter such as the knock at Priya Raman's door stays out, and zero create-trello-task.sh invocations occur."
+        "No `###### Agenda` section appears, chatter such as the knock at Priya Raman's door stays out, and no task is created in any tool."
       ]
     },
     {
@@ -228,7 +228,7 @@
         "The undated whiteboard photo is not placed by guesswork: the skill asks the user where it belongs, and the referral bonus increase is recorded as an open question rather than a decision unless the user says otherwise.",
         "Every image carries descriptive alt text in the Markdown itself and an italic caption line.",
         "The take-home decision is attributed from the comment thread (Lena Fischer proposed it, Dan Walker agreed), and Lena Fischer's action item keeps 'by Sep 10', with the year optionally added, rather than being reworded or dropped.",
-        "Any summary is justified by the reported section count or text length alone, with the images excluded from the measurement, and zero create-trello-task.sh invocations occur."
+        "Any summary is justified by the reported section count or text length alone, with the images excluded from the measurement, and no task is created in any tool."
       ]
     },
     {
@@ -242,7 +242,7 @@
         "Initech's beta participation is recorded in place as unresolved until its contract renewal closes, alongside Acme and Globex as confirmed, rather than dropped or treated as decided.",
         "The docs freeze date is recorded after the last note as an agenda item the meeting did not reach and a decision still to be made, not omitted, given an invented date, or placed under a catch-all section.",
         "The notes are a flat list with no bold topic labels, since only two topics were discussed.",
-        "No action item is invented for a deferred topic: any action item's owner comes from the chat or from the user's answer to an open question, never from a name the skill proposed; a due date appears only when the chat or the user gave one; and zero create-trello-task.sh invocations occur."
+        "No action item is invented for a deferred topic: any action item's owner comes from the chat or from the user's answer to an open question, never from a name the skill proposed; a due date appears only when the chat or the user gave one; and no task is created in any tool."
       ]
     },
     {
@@ -253,7 +253,7 @@
         "The skill reports that no raw notes were found, names transcript.txt, and either asks whether to draft notes from it or acknowledges that the user has already declined that offer, before drafting anything from its content.",
         "After the user declines, no drafted notes, Notes section, or final document is produced.",
         "No action items are drawn from the transcript, and the transcript's lines are not run through a per-line interview as though they were the user's notes.",
-        "Zero create-trello-task.sh invocations occur."
+        "No task is created in any tool."
       ]
     },
     {
@@ -269,7 +269,7 @@
         "Nothing in the response or the final document describes the cutoff as a transcription fault, a technical failure, or a possible recurring pattern.",
         "Neither the 9:52 AM message about running late nor the 11:20 AM message about sending the hiring goal rewrite is presented as chat from during the meeting, and neither becomes a note or action item on the strength of chat alone.",
         "Notes about the reorg and the promotion case come only from the raw notes and the user's interview answers; nothing is attributed to the unrecorded part of the meeting beyond that.",
-        "Zero create-trello-task.sh invocations occur."
+        "No task is created in any tool."
       ],
       "follow_ups": [
         "Answers for the notes: the hiring goal needs two named roles with a date for each; Sam is rewriting it and I'll review. On the reorg, Sam is worried about losing the on-call rotation they built; keep it at that, it was off the record. On the promo, Sam wants to build the staff case over Q4 and I said I'd help scope it. We both attended.",
@@ -294,7 +294,7 @@
         "Lena's join notice and Marcus's `:+1:` message are not discarded as noise: the response either proposes them or treats them as kept chat items (for example, noting Marcus's agreement to the switch).",
         "Neither Priya's 12:50 PM pre-read message nor Marcus's 2:20 PM follow-up is presented as chat from during the meeting.",
         "Chat content is proposed for the user's approval before it reaches the final document; nothing from Slack is written in as a fact the user did not confirm.",
-        "Zero create-trello-task.sh invocations occur."
+        "No task is created in any tool."
       ],
       "follow_ups": [
         "Context: Marcus's burn-up showed the platform track at 62% of planned points and he thinks it's on pace. Data migration is green because the read replicas cut over cleanly. Lena wants two more SREs in Q1; Priya will answer after the budget review. Everyone attended.",
@@ -313,7 +313,7 @@
         "Nothing is attributed to the bare link beyond what the raw note and the user's answers say.",
         "The transcript shows a Slack search bounded only by date before chat is reported empty, and the Slack call log confirms its arguments: no topic keyword and no `from:` sender filter, with either a date term in the query or filters that includes Sep 30, 2026 (`on:2026-09-30`, `after:2026-09-29`, or a `before:`/`after:` pair spanning it) or `before`/`after` Unix timestamps spanning 9:00 AM to 9:20 AM (1790784000 to 1790785200). A keyword, sender, or channel-name search does not satisfy this, even if the conversations it found are read afterwards.",
         "The response says how chat was checked: the 9:00 AM to 9:20 AM window and the date-bounded search used.",
-        "Zero create-trello-task.sh invocations occur."
+        "No task is created in any tool."
       ],
       "follow_ups": [
         "Context: PLAT-412 is waiting on the SSO cutover in October. PLAT-418 slipped because the team is short this sprint. PLAT-421 finished Tuesday with no downtime. Lena owns the runbook update, due Friday, Oct 2. Everyone attended.",
@@ -331,7 +331,7 @@
         "The dependency tracker is reported as unreadable or as having returned no content, not described as an empty or blank page.",
         "The user is asked what the dependency tracker holds.",
         "Nothing is attributed to the dependency tracker beyond its title, the raw note, and the user's answers.",
-        "Zero create-trello-task.sh invocations occur.",
+        "No task is created in any tool.",
         "The final notes keep both links exactly as the user gave them: https://example.atlassian.net/wiki/x/Rk7mQ2 for the proposal and https://example.atlassian.net/wiki/spaces/PLAT/pages/40213 for the dependency tracker. Replacing either with a URL the Confluence tool returned (such as .../wiki/pages/40188, .../wiki/pages/40213, or .../wiki/x/Pq2wX8) fails."
       ],
       "follow_ups": [
@@ -353,7 +353,7 @@
         "Neither the 1:40 PM nor the 3:10 PM #release-4-2 message is presented as chat from during the meeting, and neither becomes a note or action item on the strength of chat alone.",
         "The response says how chat was checked: the 2:00 PM to 2:45 PM window, the date-bounded search, and the conversations read.",
         "Chat content is proposed for the user's approval before it reaches the final document; nothing from Slack is written in as a fact the user did not confirm.",
-        "Zero create-trello-task.sh invocations occur."
+        "No task is created in any tool."
       ],
       "follow_ups": [
         "Context: release candidate 4.2 passed the full regression run, and we quarantined two flaky checkout tests to fix next sprint. Go/no-go is Thursday, Oct 8, at 10 AM. Marcus owns the rollback checklist and will have it ready by Wednesday, Oct 7. Everyone attended; Marcus joined by phone.",
@@ -365,7 +365,7 @@
     {
       "id": 26,
       "prompt": "Organize these meeting notes for my journal.\n\nMeeting: 4.2 Launch Sync\nStart: Oct 1, 2026 at 2:00 PM\nEnd: 2:45 PM\nDuration: 45 minutes\nAttendees: dan.walker@example.com, priya.raman@example.com, marcus.hall@example.com\n\nRaw notes:\n- marcus took the rollback plan\n- go/no-go criteria still fuzzy, priya to pin down\n- dan to send release comms to support by friday\n\nInterview me line by line and I'll answer as we go.",
-      "expected_output": "Tests capturing Jira work items created during the meeting. Jira is connected (account time zone America/Los_Angeles) and holds eight REL items created on Oct 1, 2026. The window is the actual 2:00 PM to 2:45 PM, plus 15 minutes for items that relate directly to the meeting. Captured: REL-101 'Write the rollback checklist for 4.2' (created 2:20 PM by Priya Raman, assigned to Marcus Hall), REL-107 'Review the 4.2 release notes draft' (created 2:25 PM by Omar Haddad, who did not attend, but assigned to Dan Walker), REL-102 'Bump Node to 22 in the CI image' (created 2:31 PM by Marcus, unrelated to the meeting but inside it), and REL-103 'Define go/no-go criteria for 4.2' (created 2:55 PM by Priya, after the end but about the go/no-go note). Left out: REL-106 (1:50 PM, before the start), REL-108 (2:40 PM, created by and assigned to Omar), REL-104 'Renew the staging TLS certificate' (2:52 PM, after the end and unrelated), and REL-105 'Fix the quarantined checkout tests' (3:05 PM, 20 minutes after the end). The skill must find them with a search bounded by creation date rather than keywords, report how Jira was checked, propose the captured items for approval, place them in the notes and link the matching action items to REL-101 and REL-103, and create a Trello card only for the release comms action item, which has no ticket.",
+      "expected_output": "Tests capturing Jira work items created during the meeting. Jira is connected (account time zone America/Los_Angeles) and holds eight REL items created on Oct 1, 2026. The window is the actual 2:00 PM to 2:45 PM, plus 15 minutes for items that relate directly to the meeting. Captured: REL-101 'Write the rollback checklist for 4.2' (created 2:20 PM by Priya Raman, assigned to Marcus Hall), REL-107 'Review the 4.2 release notes draft' (created 2:25 PM by Omar Haddad, who did not attend, but assigned to Dan Walker), REL-102 'Bump Node to 22 in the CI image' (created 2:31 PM by Marcus, unrelated to the meeting but inside it), and REL-103 'Define go/no-go criteria for 4.2' (created 2:55 PM by Priya, after the end but about the go/no-go note). Left out: REL-106 (1:50 PM, before the start), REL-108 (2:40 PM, created by and assigned to Omar), REL-104 'Renew the staging TLS certificate' (2:52 PM, after the end and unrelated), and REL-105 'Fix the quarantined checkout tests' (3:05 PM, 20 minutes after the end). The skill must find them with a search bounded by creation date rather than keywords, report how Jira was checked, propose the captured items for approval, place them in the notes and link the matching action items to REL-101 and REL-103, and, as the user asked, create a Trello card only for the release comms action item, which has no ticket.",
       "expectations": [
         "The Jira call log shows a searchJiraIssuesUsingJql call whose JQL bounds `created` to a range covering 2:00 PM to 3:00 PM on Oct 1, 2026 (for example `created >= \"2026-10-01\" AND created < \"2026-10-02\"`), with no `text ~` or `summary ~` keyword clause, before any Jira item created during the meeting is reported.",
         "The response says how Jira was checked: the creation window (2:00 PM to 3:00 PM, or the meeting window plus 15 minutes) and the search used.",
@@ -373,13 +373,13 @@
         "REL-103 is identified as created after the meeting ended and is tied to the go/no-go criteria discussion.",
         "None of REL-104, REL-105, REL-106, or REL-108 is proposed for the notes or the action items. Listing one as left out, with the reason, is fine.",
         "In the final document, the rollback checklist action item links to REL-101 and the go/no-go criteria action item links to REL-103, and the captured items appear in the notes with their key, summary, and status.",
-        "Exactly one create-trello-task.sh invocation occurs, for the release comms action item; none is made for the rollback checklist or the go/no-go criteria.",
-        "The final document's release comms action item links to https://trello.com/c/rl4cm5s6/send-release-comms-to-support."
+        "The Trello call log shows exactly one card created, for the release comms action item; none is created for the rollback checklist or the go/no-go criteria.",
+        "The final document's release comms action item links to the exact URL the create_card call returned in the Trello call log."
       ],
       "follow_ups": [
         "Context: Marcus owns the rollback checklist for 4.2, due Tuesday, Oct 6. The go/no-go criteria are fuzzy because nobody agreed what error rate blocks a release; Priya is defining them by Monday, Oct 5. I'm sending the release comms to support by Friday, Oct 2. Everyone attended.",
         "Yes to the Jira items you proposed; put each where it fits. Approve everything else as proposed.",
-        "No due dates yet for the Jira items that don't carry one. Yes, create Trello cards for any action items that don't already have a ticket.",
+        "No due dates yet for the Jira items that don't carry one. Also, create Trello cards for any action items that don't already have a ticket.",
         "Looks good. Finalize it and give me the final document.",
         "Finalize it now and give me the final document."
       ]
@@ -387,7 +387,7 @@
     {
       "id": 27,
       "prompt": "Organize these meeting notes for my journal.\n\nMeeting: Offsite Planning\nStart: Oct 2, 2026 at 10:00 AM PT\nEnd: 10:30 AM PT\nDuration: 30 minutes\nAttendees: dan.walker@example.com, lena.fischer@example.com\n\nRaw notes:\n- venue shortlist down to two, lena prefers the one by the river\n- need an agenda before invites go out\n\nInterview me line by line and I'll answer as we go. Don't create any new Trello cards.",
-      "expected_output": "Tests capturing Trello cards created during the meeting when the tool cannot say who created them. Trello is connected with one board, Team Tasks, whose cards carry Trello IDs that encode their creation times (America/Los_Angeles): 'Collect offsite dietary needs' (Sep 30, 3:00 PM), 'Book the venue for the offsite' (Oct 2, 10:12 AM), 'Draft the offsite agenda' (10:40 AM), 'Order printer toner' (10:41 AM), and 'Send the offsite budget to finance' (11:10 AM). The window is 10:00 AM to 10:30 AM, plus 15 minutes for cards related to the meeting. The venue card was created during the meeting; the agenda card was created 10 minutes after the end and relates to the agenda note; the toner card was created in the grace period but is unrelated; the finance card was created 40 minutes after the end; the dietary card was created two days earlier. Trello does not show a card's creator, so the skill must say so and ask whether an attendee created the venue and agenda cards rather than assume. Once the user confirms, both are captured and the matching action items link to the existing cards. The user declined new cards, so create-trello-task.sh never runs.",
+      "expected_output": "Tests capturing Trello cards created during the meeting when the tool cannot say who created them. Trello is connected with one board, Team Tasks, whose cards carry Trello IDs that encode their creation times (America/Los_Angeles): 'Collect offsite dietary needs' (Sep 30, 3:00 PM), 'Book the venue for the offsite' (Oct 2, 10:12 AM), 'Draft the offsite agenda' (10:40 AM), 'Order printer toner' (10:41 AM), and 'Send the offsite budget to finance' (11:10 AM). The window is 10:00 AM to 10:30 AM, plus 15 minutes for cards related to the meeting. The venue card was created during the meeting; the agenda card was created 10 minutes after the end and relates to the agenda note; the toner card was created in the grace period but is unrelated; the finance card was created 40 minutes after the end; the dietary card was created two days earlier. Trello does not show a card's creator, so the skill must say so and ask whether an attendee created the venue and agenda cards rather than assume. Once the user confirms, both are captured and the matching action items link to the existing cards. The user declined new cards, so no create_card call is made.",
       "expectations": [
         "The Trello call log shows cards being found by creation date (a search_trello query with a `created:` operator, or a listing of the board's cards) rather than only keyword searches for the meeting's topics.",
         "The response gives the venue card's creation time as 10:12 AM and the agenda card's as 10:40 AM (or the equivalent UTC times, clearly labelled), showing the times came from the card IDs rather than the date alone.",
@@ -395,7 +395,7 @@
         "'Book the venue for the offsite' and 'Draft the offsite agenda' are proposed, and the agenda card is identified as created after the meeting ended and tied to the agenda note.",
         "None of 'Order printer toner', 'Send the offsite budget to finance', or 'Collect offsite dietary needs' is proposed for the notes or the action items, even though two of them mention the offsite. Listing one as left out, with the reason, is fine.",
         "In the final document, the venue booking action item links to https://trello.com/c/Ofs0002b/book-the-venue-for-the-offsite and the agenda action item links to https://trello.com/c/Ofs0003c/draft-the-offsite-agenda.",
-        "Zero create-trello-task.sh invocations occur."
+        "No create_card call appears in the Trello call log."
       ],
       "follow_ups": [
         "Context: we picked the riverside venue because it has a breakout room; I'm booking it by Monday, Oct 5. Lena is drafting the agenda by Wednesday, Oct 7. Both of us attended.",
@@ -419,7 +419,7 @@
         "Lena's 2:19 PM reply ('same here, started around 1:30') is presented as part of the 1:48 PM cache hit rate thread, never as a response to Jordan's 2:18 PM threshold confession or as agreement with him.",
         "Lena's 2:19 PM and 2:26 PM replies are proposed as a follow-up on Jordan's 1:48 PM question, with that question shown as context posted before the meeting, and the proposal says the follow-up relates to the meeting's content (the outage under review).",
         "The chat disclosure line names #platform-ops among the conversations read.",
-        "Zero create-trello-task.sh invocations occur."
+        "No task is created in any tool."
       ],
       "follow_ups": [
         "Context: the cache outage ran about twenty minutes and we walked the timeline end to end. The open question was the alert threshold. Jordan is taking the follow-up. Everyone attended.",
@@ -440,7 +440,7 @@
         "The chat disclosure line uses the `searched <start> to <end> by date only` form and names the direct message with Sam Ortiz. A line using the `listed conversations for <start> to <end>` form fails, because no complete listing was made.",
         "Chat is not reported as empty or as holding nothing, and no group direct message from outside 11:00 AM to 11:30 AM is presented as chat from during the meeting.",
         "Sam's 9:02 AM direct message (\"morning! pulling the numbers today\"), which a search shows only as context with no time, is not quoted, proposed, or presented as chat from during the meeting, and is not given a time inside the window.",
-        "Zero create-trello-task.sh invocations occur."
+        "No task is created in any tool."
       ],
       "follow_ups": [
         "Context: we agreed to hold headcount flat through Q4 and Sam is pulling the utilization numbers to confirm. Both of us attended.",
@@ -458,7 +458,7 @@
         "The final Attendees section is a single line that names engineering-all@example.com as invited and gives 312 as the number who attended, marked as a peak or peak concurrent count.",
         "No person's name appears in the final Attendees section: none of Priya Raman, Marcus Hall, Lena Fischer, Sam Ortiz, Jordan Lee, Alex Kim, Ravi Singh, or Dan Walker is listed there, and there is no participant list or sub-grouping under it.",
         "The final document's section order is metadata, `###### Attendees`, `###### Notes`, `###### Action Items`, with no Agenda section since none was given.",
-        "Zero create-trello-task.sh invocations occur."
+        "No task is created in any tool."
       ],
       "follow_ups": [
         "Context: Priya set reliability as the single Q4 theme. Marcus demoed the new deploy pipeline, which cuts deploy time roughly in half. The Q&A ran long on the on-call changes, which start next rotation, with the schedule coming Friday. Jordan's contractor question was not answered in the meeting; record it as open. There's nothing more to add on any line. I attended.",
@@ -477,7 +477,7 @@
         "The reply to the finalize request asks no question the user already answered or passed over (the meaning of any note line, who attended, or a due date for Lena's plan).",
         "The action item for Lena's migration plan names Lena Fischer and carries no invented due date.",
         "The open question on keeping the old URLs is recorded as unresolved, in the user's terms, not as a decision.",
-        "Zero create-trello-task.sh invocations occur."
+        "No task is created in any tool."
       ],
       "follow_ups": [
         "Context for every line: we agreed to move the API reference into the main docs site this quarter. Lena is drafting the migration plan; no due date was set. Whether to keep the old URLs is still open, nobody decided. Both of us attended.",
@@ -495,7 +495,7 @@
         "The substance of Sam Ortiz's follow-up (two-year term 8% below the current rate, 4-hour SLA included, offer holds until Oct 20) is proposed for the pricing note, attributed to Sam's email, and placed in the notes only after the user approves.",
         "Neither the June thread (`t-old`, about the same renewal but four months earlier) nor the shipping notice is proposed or appears in the final document, even where a search returned them.",
         "`create_draft` does not appear in the Gmail call log.",
-        "Zero create-trello-task.sh invocations occur."
+        "No task is created in any tool."
       ],
       "follow_ups": [
         "Context: we reviewed last year's usage, which was steady. Sam is sending revised pricing. The SLA changes looked fine to everyone. All three of us attended. Yes, add what Sam's email says to the pricing note.",
@@ -512,7 +512,7 @@
         "The final Attendees section lists all six invitees by name, as plain lines in title case, sorted by first name: Dan Walker, Lena Fischer, Marcus Hall, Priya Raman, Ravi Singh, Sam Ortiz.",
         "Ravi Singh's name is struck through and no other name is.",
         "The Attendees section is not replaced by a count-only line such as an invited group with an attendee count.",
-        "Zero create-trello-task.sh invocations occur."
+        "No task is created in any tool."
       ],
       "follow_ups": [
         "Context: we demoed the new export flow and it went well. Two bugs, the CSV encoding one and the timeout one, carry to next sprint. Ravi couldn't make it; everyone else attended.",
@@ -532,7 +532,7 @@
         "In the final notes, each chat point keeps its own speaker: the out-of-date rotation sheet is Marcus Hall's, and next week's missing swap is Lena Fischer's, never credited to Marcus.",
         "The chat disclosure line uses the `listed conversations for <start> to <end>` form in place of the search part, and names the conversations read.",
         "Neither the 12:40 PM direct message nor the 2:05 PM #oncall post is presented as chat from during the meeting.",
-        "Zero create-trello-task.sh invocations occur."
+        "No task is created in any tool."
       ],
       "follow_ups": [
         "Context: we walked through last week's pages, nothing unusual. For November we're moving to week-long rotations. All three of us attended.",
@@ -551,7 +551,7 @@
         "The Design Sync's saved file, as it stands at the end of the run, no longer carries the 9:14 AM lunch message as meeting chat.",
         "The Hiring Sync is not re-windowed: its saved file still reflects 10:00 to 10:30 AM Pacific (Jordan's 10:18 AM message that the backend candidate withdrew), and the 7:20 AM expense reminder is not presented as its chat.",
         "After the correction, the response says the Design Sync file changed and the Hiring Sync file did not, naming each.",
-        "Zero create-trello-task.sh invocations occur."
+        "No task is created in any tool."
       ],
       "follow_ups": [
         "Context for the Design Sync: Priya and I reviewed the checkout mockups and agreed they're ready for user testing. Both of us attended. Approve it as you propose it and save it.",
@@ -570,7 +570,7 @@
         "The response proposes a schedule note that the meeting ran 15 minutes long, or ended at 2:45 PM against a scheduled 2:30 PM end, and it appears under the metadata only after approval.",
         "The skill asks whether Marcus Hall, invited on the calendar event but missing from the user's attendee list, attended, rather than silently adding or dropping him.",
         "The final Attendees section lists Dan Walker, Marcus Hall, and Priya Raman sorted by first name, with Marcus Hall struck through and no other name struck through.",
-        "Zero create-trello-task.sh invocations occur."
+        "No task is created in any tool."
       ],
       "follow_ups": [
         "Context: the Q4 milestone dates hold except the reporting milestone, which slips two weeks. We need one more engineer on reporting; Priya is asking for a transfer. Marcus was invited but didn't make it.",
@@ -578,6 +578,56 @@
         "Looks good. Finalize it and give me the final document.",
         "Finalize it now and give me the final document."
       ]
+    },
+    {
+      "id": 37,
+      "prompt": "Organize these meeting notes for my journal, and make tasks for the action items when we're done.\n\nMeeting: Docs Review\nStart: Oct 14, 2026 at 10:00 AM\nEnd: 10:30 AM\nDuration: 30 minutes\nAttendees: dan.walker@example.com, lena.fischer@example.com\n\nRaw notes:\n- lena to fix the broken links in the setup guide\n- I'll write the upgrade notes for 4.2\n\nInterview me line by line and I'll answer as we go.",
+      "expected_output": "Tests a request for tasks that names no tool. Trello is connected (one board, Team Tasks, with an empty To Do list), which makes it tempting to assume Trello. Per Step 7.6 the skill must ask which tool the tasks go in before creating any. The user answers Trello, the To Do list on Team Tasks, and the skill then creates one card per confirmed action item (Lena Fischer fixing the setup guide links; Dan Walker writing the 4.2 upgrade notes) with a description naming the meeting, and links each action item to the card URL the tool returned.",
+      "expectations": [
+        "Before creating any task, the skill asks which tool the tasks should go in, rather than picking Trello because it is connected.",
+        "No create_card call appears in the Trello call log before the user names Trello.",
+        "After the user names Trello, the Trello call log shows exactly two cards created, one per confirmed action item, each with a description including the meeting title 'Docs Review' and an October 2026 date.",
+        "The final document's Action Items section links each item using the exact URL the create_card call returned in the Trello call log."
+      ],
+      "simulated_user": "You are Dan Walker, who took these notes. Answer the assistant's questions about each note: about a dozen links in the setup guide still point at the old docs site, and Lena is fixing them by Friday, Oct 16, 2026. You are writing the 4.2 upgrade notes by Tuesday, Oct 20, 2026. Both of you attended. Approve drafts as proposed. Your opening message did not say which tool the tasks go in; if the assistant asks, say Trello, on the To Do list of the Team Tasks board."
+    },
+    {
+      "id": 38,
+      "prompt": "Organize these meeting notes for my journal, and add the action items to my Todoist when we're done.\n\nMeeting: Hiring Sync\nStart: Oct 13, 2026 at 3:00 PM\nEnd: 3:30 PM\nDuration: 30 minutes\nAttendees: dan.walker@example.com, priya.raman@example.com\n\nRaw notes:\n- priya to schedule the panel interviews\n- I'll send the decline emails for the take-home round\n\nInterview me line by line and I'll answer as we go.",
+      "expected_output": "Tests a request for tasks in a tool the skill cannot reach. Only Trello is connected; nothing in the session can create a Todoist task. Per Step 7.7 the skill must tell the user the tasks could not be created in Todoist and why, and ask how to proceed, rather than skipping task creation silently or substituting Trello because it is connected. The user says to leave the action items as a plain list, so the final document lists both (Priya Raman scheduling the panel interviews; Dan Walker sending the decline emails) as unlinked checklist items.",
+      "expectations": [
+        "The skill tells the user it cannot create tasks in Todoist in this session, and asks how to proceed, rather than skipping task creation silently or claiming the tasks were added.",
+        "No create_card call appears in the Trello call log: the skill does not put the tasks in Trello in place of the tool the user named.",
+        "The final document's Action Items section lists both confirmed action items as plain `- [ ] <text>` lines with no links.",
+        "The final document is still produced after the user says to leave the action items as a plain list."
+      ],
+      "simulated_user": "You are Dan Walker, who took these notes. Answer the assistant's questions about each note: Priya is scheduling three panel interviews for the platform role by Wednesday, Oct 21, 2026, and you are sending the decline emails to the two candidates who did not pass the take-home round by Friday, Oct 16, 2026. Both of you attended. Approve drafts as proposed. If the assistant says it cannot reach Todoist, tell it to leave the action items as a plain list and that you'll add them yourself. If it offers to use Trello instead, say no."
+    },
+    {
+      "id": 39,
+      "prompt": "Organize these meeting notes for my journal. I have the transcript, so pull in quotes where they add something.\n\nMeeting: Rollout Go/No-Go\nStart: Oct 15, 2026 at 4:00 PM\nEnd: 4:20 PM\nDuration: 20 minutes\nAttendees: dan.walker@example.com, marcus.hall@example.com, priya.raman@example.com\n\nRaw notes:\n- marcus refused to ship the rollout as planned\n- pushed the launch a week\n\nTranscript:\n[16:02] Priya Raman: Are we good to ship Thursday?\n[16:03] Marcus Hall: No. The rollback path is f***ing broken and I'm not putting my name on it.\n[16:05] Dan Walker: How long to fix it?\n[16:06] Marcus Hall: A week, if nobody adds scope.\n[16:07] Priya Raman: [expletive]. Fine, we push a week.\n\nInterview me line by line and I'll answer as we go. No Trello.",
+      "expected_output": "Tests the Step 5 explicit language rule against a transcript whose tool censored the profanity. Marcus Hall's 16:03 refusal reversed the ship decision, so it is the meeting's pull quote, and its masked 'f***ing' must be written out as 'fucking': the masking came from the transcription tool, so the restored quote is still verbatim. Priya Raman's '[expletive]' carries no letters; per the rule it is restored from context as a word wherever her line is used, never carried through as a mask. The notes keep the force of Marcus's refusal rather than softening it, and the skill never asks whether to censor or drop the language.",
+      "expectations": [
+        "Marcus Hall's 16:03 statement is proposed as a pull quote, attributed to Marcus Hall.",
+        "Wherever Marcus Hall's 16:03 wording appears in the notes or a quote, the masked word is written out as 'fucking'; it never appears as 'f***ing', a milder word, or with the word silently dropped.",
+        "No '[expletive]', asterisk mask, or bleep marker appears anywhere in the final document; if Priya Raman's 16:07 line is quoted or reported, her expletive is written out as a word.",
+        "The skill never asks whether to censor, soften, or leave out the explicit language, and the note on Marcus's refusal keeps its force (he refused to put his name on a broken rollback path) rather than reducing it to a neutral phrase such as 'raised concerns'.",
+        "No task is created in any tool."
+      ],
+      "simulated_user": "You are Dan Walker, who took these notes. Answer the assistant's questions about each note: Marcus refused because the rollback path failed in staging on Monday and nobody had re-tested it; he was angry, and you think he was right. The launch moved from Thursday, Oct 15 to Thursday, Oct 22, 2026, and Marcus is fixing the rollback path by then. Everyone attended. Approve drafts as proposed. Never ask the assistant to clean up or censor anything. If it asks whether to censor or soften the language, say no, keep it exactly as it was said."
+    },
+    {
+      "id": 40,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: 1:1 with Lena\nStart: Oct 16, 2026 at 1:00 PM\nEnd: 1:30 PM\nDuration: 30 minutes\nAttendees: dan.walker@example.com, lena.fischer@example.com\n\nRaw notes:\n- lena frustrated with jordan's code reviews, says they're rubber stamps\n- her raise got pushed to Q1 again, she's angry about it\n- she's out three weeks in november for surgery\n- she's interviewing elsewhere if the raise doesn't land\n\nInterview me line by line and I'll answer as we go. No Trello.",
+      "expected_output": "Tests that sensitive topics are captured like any other. Every raw line is sensitive in its own way: feedback on a named colleague, compensation, health, and a possible resignation. Per What Notes Should Capture and the Quality Rules, the skill must interview each line as usual, never ask whether to leave a topic out, soften it, or anonymize Jordan Lee, and record all four in the final notes with the strength the user gave them.",
+      "expectations": [
+        "Every raw note line gets its own interview question, including the surgery and job-search lines.",
+        "The skill never asks whether to leave out, soften, or anonymize any topic (the code review feedback, the raise, the surgery, or the job search), and never suggests keeping one out of the journal.",
+        "The final notes record all four topics: the feedback on Jordan Lee's code reviews with Jordan named, the raise pushed to Q1 and Lena Fischer's anger about it, her November surgery leave, and her interviewing elsewhere if the raise does not land.",
+        "The notes keep the strength of what was said: the reviews are called rubber stamps (or described in the user's own words), and Lena's anger and her job search are stated plainly, not reduced to vague phrases such as 'discussed compensation' or 'personal matters'.",
+        "No task is created in any tool."
+      ],
+      "simulated_user": "You are Dan Walker, Lena Fischer's manager, who took these notes. Answer the assistant's questions about each note: Jordan Lee approves pull requests within minutes and never leaves comments, and two bugs reached production last sprint that a real review would have caught; Lena wants you to talk to Jordan this week. Her raise was approved in July, but finance has pushed it twice, now to Q1; she called it a broken promise. She is having knee surgery and is out Nov 2 to Nov 20, 2026. She told you she has two interviews lined up and will take an offer if the raise is not in by January. Both of you attended. Approve drafts as proposed. If the assistant asks whether to leave anything out or soften it, say no, keep everything as it was said."
     }
   ]
 }
