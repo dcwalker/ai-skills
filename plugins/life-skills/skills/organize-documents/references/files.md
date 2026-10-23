@@ -77,10 +77,12 @@ python3 scripts/apply_moves.py --root <collection> --plan plan.tsv --log <durabl
 python3 scripts/apply_moves.py --root <collection> --plan plan.tsv --log <durable-dir>/moves.log
 ```
 
-The dry run checks every row: source exists, destination is inside the root and not taken, and no
-two rows share a destination. Without `--dry-run` it applies the rows, appends each completed move to
-the log as it happens (so a stopped run still leaves an accurate log), and verifies inode and size
-afterward. To undo a run, pass its log as the plan with `--undo`, which reverses it last move first:
+The dry run checks every row: source exists, source and destination both resolve inside the root
+(following symlinks), the destination is not taken, and no two rows share a destination. Without
+`--dry-run` it applies the rows, writing each one to the log just before its rename and removing it
+if the rename fails (so a stopped run never leaves a moved file without a log row), and verifies
+inode and size afterward. To undo a run, pass its log as the plan with `--undo`, which reverses it
+last move first and skips any row whose move never happened:
 
 ```bash
 python3 scripts/apply_moves.py --root <collection> --plan <durable-dir>/moves.log --undo --log <durable-dir>/undo.log

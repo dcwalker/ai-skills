@@ -6,12 +6,16 @@ relative to --root. Every row is checked before anything changes (preflight): th
 the destination stays inside the root, no destination is already taken, and no two rows share a
 destination (compared case-insensitively, since macOS and Windows filesystems usually are).
 
+Both the source and the destination must resolve inside the root, with symlinked directories
+resolved, so a plan can't reach outside it.
+
 Each rename refuses to replace an existing item, atomically where the OS supports it
-(renamex_np RENAME_EXCL on macOS, renameat2 RENAME_NOREPLACE on Linux). Each completed move is
-appended to --log immediately, in the same format as the plan, so the log stays accurate even if
-the run stops partway. Passing a log as --plan with --undo reverses it, last move first. Afterward every
-moved item is checked to still have the same inode and size, which proves its bytes are untouched
-without reading them (safe for cloud placeholder files).
+(renamex_np RENAME_EXCL on macOS, renameat2 RENAME_NOREPLACE on Linux). Each move is written to
+--log, in the same format as the plan, before the rename happens, and removed again if the rename
+fails, so a run that stops partway never leaves a moved item without a log row. Passing a log as
+--plan with --undo reverses it, last move first, skipping any row whose move never happened.
+Afterward every moved item is checked to still have the same inode and size, which proves its
+bytes are untouched without reading them (safe for cloud placeholder files).
 
 Usage:
   apply_moves.py --root DIR --plan plan.tsv --log moves.log [--dry-run]
@@ -45,7 +49,20 @@ def no_clobber_rename(old, new):
 
 
 def is_case_only_change(old, new):
-    return old != new and old.lower() == new.lower()
+    """True when old and new are the same item spelled with different case, which only happens on
+    a case-insensitive filesystem. On a case-sensitive one they are different items."""
+    return (
+        old != new
+        and old.lower() == new.lower()
+        and os.path.lexists(new)
+        and os.path.samefile(old, new)
+    )
+
+
+def inside_root(root, path):
+    """True when path's parent directory resolves (following symlinks) to root or below it."""
+    parent = os.path.realpath(os.path.dirname(path))
+    return (parent == root or parent.startswith(root + os.sep)) and os.path.basename(path) not in ("", ".", "..")
 
 
 def load_plan(path, undo=False):
@@ -63,23 +80,32 @@ def load_plan(path, undo=False):
     return [(old, new) for old, new in rows if old != new]
 
 
-def preflight(root, plan):
-    errors, seen, checked = [], set(), []
+def preflight(root, plan, undo=False):
+    errors, seen, checked, skipped = [], set(), [], []
     for old_rel, new_rel in plan:
-        old, new = os.path.join(root, old_rel), os.path.normpath(os.path.join(root, new_rel))
-        if not os.path.lexists(old):
-            errors.append(f"source missing: {old_rel}")
+        old = os.path.normpath(os.path.join(root, old_rel))
+        new = os.path.normpath(os.path.join(root, new_rel))
+        if not inside_root(root, old):
+            errors.append(f"source outside root: {old_rel}")
             continue
-        if not new.startswith(root + os.sep):
+        if not inside_root(root, new):
             errors.append(f"destination outside root: {new_rel}")
+            continue
+        if not os.path.lexists(old):
+            if undo and os.path.lexists(new):
+                skipped.append(old_rel)  # logged, but the move never happened
+            else:
+                errors.append(f"source missing: {old_rel}")
+            continue
         if new.lower() in seen:
             errors.append(f"two rows share destination: {new_rel}")
         seen.add(new.lower())
-        if os.path.lexists(new) and not is_case_only_change(old, new):
+        case_only = is_case_only_change(old, new)
+        if os.path.lexists(new) and not case_only:
             errors.append(f"destination exists: {new_rel}")
         stat = os.lstat(old)
-        checked.append((old, new, stat.st_ino, stat.st_size))
-    return checked, errors
+        checked.append((old, new, stat.st_ino, stat.st_size, case_only))
+    return checked, errors, skipped
 
 
 def main():
@@ -92,8 +118,10 @@ def main():
     args = parser.parse_args()
 
     root = os.path.realpath(args.root)
-    moves, errors = preflight(root, load_plan(args.plan, args.undo))
+    moves, errors, skipped = preflight(root, load_plan(args.plan, args.undo), args.undo)
     print(f"preflight: {len(moves)} moves, {len(errors)} problems")
+    for path in skipped:
+        print("  skipped, never moved: " + path)
     for e in errors:
         print("  " + e)
     if errors:
@@ -106,22 +134,27 @@ def main():
         writer = csv.writer(log, delimiter="\t")
         if new_log:
             writer.writerow(["old_path", "new_path"])
-        for done, (old, new, _, _) in enumerate(moves):
+        log.flush()
+        for done, (old, new, _, _, case_only) in enumerate(moves):
             os.makedirs(os.path.dirname(new), exist_ok=True)
+            before = log.tell()
+            writer.writerow([os.path.relpath(old, root), os.path.relpath(new, root)])
+            log.flush()
+            os.fsync(log.fileno())
             try:
-                if is_case_only_change(old, new):
+                if case_only:
                     os.rename(old, new)  # same item on a case-insensitive filesystem
                 else:
                     no_clobber_rename(old, new)
             except OSError as e:
+                log.truncate(before)  # the move didn't happen, so drop its row
+                log.flush()
+                os.fsync(log.fileno())
                 sys.exit(f"stopped after {done} moves at {os.path.relpath(old, root)}: {e}")
-            writer.writerow([os.path.relpath(old, root), os.path.relpath(new, root)])
-            log.flush()
-            os.fsync(log.fileno())
 
-    mismatched = [new for old, new, ino, size in moves
+    mismatched = [new for old, new, ino, size, _ in moves
                   if not os.path.lexists(new) or os.lstat(new).st_ino != ino or os.lstat(new).st_size != size]
-    remaining = [old for old, new, _, _ in moves if os.path.lexists(old) and not is_case_only_change(old, new)]
+    remaining = [old for old, new, _, _, case_only in moves if os.path.lexists(old) and not case_only]
     print(f"moved {len(moves)}; inode or size mismatches: {len(mismatched)}; sources still present: {len(remaining)}")
     for path in mismatched:
         print("  mismatch: " + os.path.relpath(path, root))
