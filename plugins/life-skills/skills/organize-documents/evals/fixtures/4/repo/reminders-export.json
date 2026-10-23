@@ -1,0 +1,11 @@
+{
+  "exported": "2026-10-20",
+  "lists": [
+    {"name": "Groceries", "reminders": ["Milk", "Coffee beans", "Eggs"]},
+    {"name": "grocery list", "reminders": ["Olive oil", "Bananas"]},
+    {"name": "Home Repairs", "reminders": ["Fix the leaking kitchen faucet", "Replace furnace filter"]},
+    {"name": "house stuff", "reminders": ["Call gutter cleaner", "Touch up hallway paint"]},
+    {"name": "Untitled", "reminders": ["Renew passport", "Book dentist appointment", "Buy paper towels"]},
+    {"name": "Work - Q3 Launch", "reminders": ["Draft launch announcement", "Review pricing page copy"]}
+  ]
+}
