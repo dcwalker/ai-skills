@@ -11,9 +11,11 @@ applies.
   or a chat transcript (for example a meeting's chat log, or a thread held
   during the meeting).
 
-Tell the user that no notes were found, list each artifact you found by file
-name, and say the notes are drafted from them. When the user has said not to
-draft notes from artifacts, stop there instead. Never treat an artifact as
+Before drafting, in your first reply, tell the user that no notes were found
+and list each artifact you found by its file name (`transcript.txt`, not "a
+transcript"), and say the notes are drafted from them. When the user has said
+not to draft notes from artifacts, still look and report what you found, by
+file name, then stop there. Never treat an artifact as
 though it were the user's notes.
 
 ## Drafting

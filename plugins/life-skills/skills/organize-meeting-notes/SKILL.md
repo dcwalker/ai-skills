@@ -461,6 +461,9 @@ Explicit language rule (always):
   its visible letters and the context, without asking. The masking came from
   the transcription tool, not the speaker, so a restored word inside a quote
   is still verbatim.
+- Never ask, or offer, to mask, soften, or remove explicit language, before
+  or after the document. The report may say a word was restored; it does
+  not ask whether to undo that.
 
 Quote rule (only when a transcript was provided):
 - Quote only words that appear verbatim in the transcript. Never quote from
@@ -541,8 +544,13 @@ After Steps 4 and 5, format the notes section as a bulleted list:
      notes). When no source gives it, ask an open question about whichever
      is missing (who owns this? by when?) without proposing a name or a
      date. If the user does not know, leave it off; never guess.
-2. It is valid for a meeting to have no action items. Do not ask the user to
-   confirm the action items, or that there are none.
+   - Ask that question before producing the document, for every item still
+     missing an owner or a due date, even when nothing else needs asking.
+     Never fill the gap with a date the meeting did not state, such as one
+     inferred from a dependency ("after the migration").
+2. It is valid for a meeting to have no action items. Keep the
+   `###### Action Items` section and write `None.` under it. Do not ask the
+   user to confirm the action items, or that there are none.
 3. Do not offer to create tasks for the action items. Create them only when
    the user asks, in the tool the user names, using the skills and tools
    available to you. If the user asks without naming a tool, ask which one.
@@ -575,7 +583,7 @@ Return final Markdown with:
 - Then `###### Attendees`
 - Then `###### Agenda`, only when Step 3b captured an agenda
 - Then `###### Notes`
-- Then `###### Action Items`
+- Then `###### Action Items`, always, with `None.` when there are none
 
 Summary rule (based on read length):
 - Measure the finished Notes section by its text alone: count the words and
@@ -643,7 +651,8 @@ nothing in it:
   padding to apply by default.
 - Preserve factual accuracy; do not invent details.
 - Record every topic the meeting covered, sensitive or not, and keep
-  explicit language uncensored. Never offer to omit or soften either.
+  explicit language uncensored. Never offer to omit or soften either, before
+  or after the document.
 - Never present an artifact as the user's notes. Notes drafted from artifacts
   trace to what the artifacts show, and the reply says they were drafted
   from artifacts.
