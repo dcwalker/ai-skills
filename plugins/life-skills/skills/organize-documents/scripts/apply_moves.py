@@ -93,22 +93,28 @@ def load_plan(path, undo=False):
     return [(old, new) for old, new in rows if old != new]
 
 
+def row_problem(root, old, new, old_rel, new_rel):
+    """Return why a row can't be applied as written, or None if its paths are usable."""
+    if not inside_root(root, old):
+        return f"source outside root: {old_rel}"
+    if not inside_root(root, new):
+        return f"destination outside root: {new_rel}"
+    if not os.path.lexists(old):
+        return f"source missing: {old_rel}"
+    return None
+
+
 def preflight(root, plan, undo=False):
     errors, seen, checked, skipped = [], set(), [], []
     for old_rel, new_rel in plan:
         old = os.path.normpath(os.path.join(root, old_rel))
         new = os.path.normpath(os.path.join(root, new_rel))
-        if not inside_root(root, old):
-            errors.append(f"source outside root: {old_rel}")
+        problem = row_problem(root, old, new, old_rel, new_rel)
+        if problem and undo and problem.startswith("source missing") and os.path.lexists(new):
+            skipped.append(old_rel)  # logged, but the move never happened
             continue
-        if not inside_root(root, new):
-            errors.append(f"destination outside root: {new_rel}")
-            continue
-        if not os.path.lexists(old):
-            if undo and os.path.lexists(new):
-                skipped.append(old_rel)  # logged, but the move never happened
-            else:
-                errors.append(f"source missing: {old_rel}")
+        if problem:
+            errors.append(problem)
             continue
         if new.lower() in seen:
             errors.append(f"two rows share destination: {new_rel}")
@@ -119,6 +125,47 @@ def preflight(root, plan, undo=False):
         stat = os.lstat(old)
         checked.append((old, new, stat.st_ino, stat.st_size, case_only))
     return checked, errors, skipped
+
+
+def sync(log):
+    log.flush()
+    os.fsync(log.fileno())
+
+
+def apply(root, moves, log_path):
+    """Rename each item, logging its row first and dropping the row if the rename fails."""
+    new_log = not os.path.exists(log_path)
+    with open(log_path, "a", newline="", encoding="utf-8") as log:
+        writer = csv.writer(log, delimiter="\t")
+        if new_log:
+            writer.writerow(["old_path", "new_path"])
+        sync(log)
+        for done, (old, new, _, _, case_only) in enumerate(moves):
+            os.makedirs(os.path.dirname(new), exist_ok=True)
+            before = log.tell()
+            writer.writerow([os.path.relpath(old, root), os.path.relpath(new, root)])
+            sync(log)
+            try:
+                if case_only:
+                    os.rename(old, new)  # same item on a case-insensitive filesystem
+                else:
+                    no_clobber_rename(old, new)
+            except OSError as e:
+                log.truncate(before)  # the move didn't happen, so drop its row
+                sync(log)
+                sys.exit(f"stopped after {done} moves at {os.path.relpath(old, root)}: {e}")
+
+
+def verify(root, moves):
+    """Exit non-zero unless every item arrived intact and left its old location."""
+    mismatched = [new for old, new, ino, size, _ in moves
+                  if not os.path.lexists(new) or os.lstat(new).st_ino != ino or os.lstat(new).st_size != size]
+    remaining = [old for old, new, _, _, case_only in moves if os.path.lexists(old) and not case_only]
+    print(f"moved {len(moves)}; inode or size mismatches: {len(mismatched)}; sources still present: {len(remaining)}")
+    for path in mismatched:
+        print("  mismatch: " + os.path.relpath(path, root))
+    if mismatched or remaining:
+        sys.exit(2)
 
 
 def main():
@@ -143,38 +190,8 @@ def main():
         sys.exit(1)
     if args.dry_run:
         return
-
-    new_log = not os.path.exists(log_path)
-    with open(log_path, "a", newline="", encoding="utf-8") as log:
-        writer = csv.writer(log, delimiter="\t")
-        if new_log:
-            writer.writerow(["old_path", "new_path"])
-        log.flush()
-        for done, (old, new, _, _, case_only) in enumerate(moves):
-            os.makedirs(os.path.dirname(new), exist_ok=True)
-            before = log.tell()
-            writer.writerow([os.path.relpath(old, root), os.path.relpath(new, root)])
-            log.flush()
-            os.fsync(log.fileno())
-            try:
-                if case_only:
-                    os.rename(old, new)  # same item on a case-insensitive filesystem
-                else:
-                    no_clobber_rename(old, new)
-            except OSError as e:
-                log.truncate(before)  # the move didn't happen, so drop its row
-                log.flush()
-                os.fsync(log.fileno())
-                sys.exit(f"stopped after {done} moves at {os.path.relpath(old, root)}: {e}")
-
-    mismatched = [new for old, new, ino, size, _ in moves
-                  if not os.path.lexists(new) or os.lstat(new).st_ino != ino or os.lstat(new).st_size != size]
-    remaining = [old for old, new, _, _, case_only in moves if os.path.lexists(old) and not case_only]
-    print(f"moved {len(moves)}; inode or size mismatches: {len(mismatched)}; sources still present: {len(remaining)}")
-    for path in mismatched:
-        print("  mismatch: " + os.path.relpath(path, root))
-    if mismatched or remaining:
-        sys.exit(2)
+    apply(root, moves, log_path)
+    verify(root, moves)
 
 
 if __name__ == "__main__":
