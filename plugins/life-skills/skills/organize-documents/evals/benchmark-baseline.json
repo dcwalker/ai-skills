@@ -1,0 +1,751 @@
+{
+  "metadata": {
+    "skill_name": "organize-documents",
+    "skill_path": "plugins/life-skills/skills/organize-documents",
+    "executor_model": "claude-opus-5-5",
+    "analyzer_model": "claude-opus-5-5",
+    "timestamp": "2026-10-22T22:03:26Z",
+    "evals_run": [
+      "ambiguous-category",
+      "collision-autonomy",
+      "delete-duplicates",
+      "existing-pattern",
+      "meeting-notes-negative",
+      "partial-dates",
+      "reminders-lists"
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": "ambiguous-category",
+      "eval_name": "ambiguous-category",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 49.8,
+        "tokens": 75523,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "scan_17.txt ends up in the 'Proseware Pediatrics' folder with a name starting '2023-03-03 - Proseware Pediatrics - ' and containing '(Alex)'",
+          "passed": true,
+          "evidence": "Proseware Pediatrics/2023-03-03 - Proseware Pediatrics - Ear Infection Visit (Alex).txt"
+        },
+        {
+          "text": "The sports physical ends up in the 'Proseware Pediatrics' folder with '(Alex)' in its name",
+          "passed": true,
+          "evidence": "Proseware Pediatrics/2022-09-01 - ... - Sports Physical (Alex).txt"
+        },
+        {
+          "text": "The 'Alex' folder no longer exists, or exists but is empty",
+          "passed": true,
+          "evidence": "Alex/ removed (logged in removed-folders.log)"
+        },
+        {
+          "text": "The response explains that company folders are the established pattern in the collection",
+          "passed": true,
+          "evidence": "Explains 3 of 4 folders are company folders"
+        },
+        {
+          "text": "The run applied the changes instead of stopping to ask which folder to use",
+          "passed": true,
+          "evidence": "Applied; question left only as an optional follow-up"
+        },
+        {
+          "text": "The workspace still contains exactly 5 files",
+          "passed": true,
+          "evidence": "5 files"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "collision-autonomy",
+      "eval_name": "collision-autonomy",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 37.2,
+        "tokens": 75553,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The two receipts are filed under a Fourth Coffee Roasters folder with names that start '2024-05-03 - Fourth Coffee Roasters - ' and that include A-1041 and A-1057 respectively",
+          "passed": true,
+          "evidence": "Receipt A-1041 / Receipt A-1057 in Fourth Coffee Roasters/"
+        },
+        {
+          "text": "Neither receipt name uses a bare number suffix such as ' 2' to avoid the collision",
+          "passed": true,
+          "evidence": "No number suffix"
+        },
+        {
+          "text": "statement.txt is renamed to start '2024-04-30 - Woodgrove Bank - '",
+          "passed": true,
+          "evidence": "Woodgrove Bank/2024-04-30 - Woodgrove Bank - Savings Statement.txt"
+        },
+        {
+          "text": "The changes were applied in this run rather than left as a proposal awaiting approval",
+          "passed": true,
+          "evidence": "Applied in the run"
+        },
+        {
+          "text": "A record of the moves was written to a file not under /tmp or another temporary directory",
+          "passed": true,
+          "evidence": "moves.log in trial home organize-documents-logs/"
+        },
+        {
+          "text": "The response states that no file was overwritten or deleted",
+          "passed": true,
+          "evidence": "States nothing was overwritten or deleted"
+        },
+        {
+          "text": "The workspace still contains exactly 3 files",
+          "passed": true,
+          "evidence": "3 files"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "delete-duplicates",
+      "eval_name": "delete-duplicates",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 42.4,
+        "tokens": 77306,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The two distinct invoices are named '2021-08-12 - Adatum Auto Service - Invoice 8812' and '2021-11-03 - Adatum Auto Service - Invoice 9034' (with the original extension)",
+          "passed": true,
+          "evidence": "Adatum Auto Service/2021-08-12 - ... - Invoice 8812.txt and 2021-11-03 - ... - Invoice 9034.txt"
+        },
+        {
+          "text": "The response identifies scan_a.txt and scan_a_copy.txt as identical before acting on the duplicate",
+          "passed": true,
+          "evidence": "cmp confirmed"
+        },
+        {
+          "text": "The duplicate is in the trial's Trash ($HOME/.Trash) or in a folder named 'Trash' at the top of the workspace, and was not removed with rm or another permanent delete",
+          "passed": true,
+          "evidence": "Trash/scan_a_copy.txt at workspace top after trash stub refused"
+        },
+        {
+          "text": "The response tells the user where the duplicate went and does not ask permission before moving it",
+          "passed": true,
+          "evidence": "Told the user where it went; no permission question"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "existing-pattern",
+      "eval_name": "existing-pattern",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 46.9,
+        "tokens": 79658,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "scan_0001.txt ends up in the existing 'Acme Power' folder named '2023-03-14 - Acme Power - Statement.txt'",
+          "passed": true,
+          "evidence": "Acme Power/2023-03-14 - Acme Power - Statement.txt"
+        },
+        {
+          "text": "scan_0002.txt ends up in the existing 'Northwind Bank' folder with a name starting '2023-02-28 - Northwind Bank - ', using the statement period end date like the existing Northwind file",
+          "passed": true,
+          "evidence": "Northwind Bank/2023-02-28 - Northwind Bank - Checking Statement.txt"
+        },
+        {
+          "text": "scan_0003.txt is named with the date 2023-04-02 and a Contoso Dental category, and is filed in a folder named for Contoso Dental",
+          "passed": true,
+          "evidence": "Contoso Dental Group/2023-04-02 - ... - Invoice 60219 (Alex).txt"
+        },
+        {
+          "text": "20240105093012.pdf is named with the date 2023-06-09 from its printed invoice date, not a 2024 date from the scanner filename",
+          "passed": true,
+          "evidence": "2023-06-09 - ... - Invoice 60412 (Alex).pdf"
+        },
+        {
+          "text": "Both Contoso files are filed in the same folder, with the same category spelling in their names",
+          "passed": true,
+          "evidence": "Both in Contoso Dental Group/"
+        },
+        {
+          "text": "The workspace still contains exactly 6 files after the run, and the two pre-existing files are unchanged and in place",
+          "passed": true,
+          "evidence": "6 files, originals untouched"
+        },
+        {
+          "text": "A plan listing each old and new name was shown before any file was moved",
+          "passed": true,
+          "evidence": "plan.tsv written and preflight run before moves"
+        },
+        {
+          "text": "A record of the moves (old and new paths) was written to a file that is not under /tmp or another temporary directory",
+          "passed": true,
+          "evidence": "Log at trial home 'Archive Logs/2026-10-22-moves.log'"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "meeting-notes-negative",
+      "eval_name": "meeting-notes-negative",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 18.7,
+        "tokens": 66213,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The response does not propose a folder structure, a renaming plan, or a 'Date - Category - Description' file name for the notes",
+          "passed": true,
+          "evidence": "No filing plan"
+        },
+        {
+          "text": "The response either recommends the organize-meeting-notes skill or works on the notes text itself",
+          "passed": true,
+          "evidence": "Cleaned the text itself, citing organize-meeting-notes scope"
+        },
+        {
+          "text": "No files were created, moved, or renamed in the workspace",
+          "passed": true,
+          "evidence": "Nothing created"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "partial-dates",
+      "eval_name": "partial-dates",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 39.8,
+        "tokens": 78261,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "doc1.txt is proposed with the date '2019-03' (month precision, no day)",
+          "passed": true,
+          "evidence": "2019-03"
+        },
+        {
+          "text": "doc2.txt is proposed with the date '2018', the tax year the form covers",
+          "passed": true,
+          "evidence": "2018 - Woodgrove Brokerage - Form 1099-DIV"
+        },
+        {
+          "text": "IMG_20240611_101500.txt is proposed with the date 2019-07-02, not a 2024 date from the filename",
+          "passed": true,
+          "evidence": "2019-07-02"
+        },
+        {
+          "text": "The response does not ask the user whether 07/02/2019 means July 2 or February 7",
+          "passed": true,
+          "evidence": "States the US reading as an assumption; no question about it"
+        },
+        {
+          "text": "notes-from-scan.txt is proposed with a date taken from the file's creation date, and the response says that date is the creation date because the document has none",
+          "passed": true,
+          "evidence": "2026-10-22 from creation date, labelled as last resort"
+        },
+        {
+          "text": "Each proposed name follows 'date - category - description' with ' - ' separators and a category naming the issuing company",
+          "passed": true,
+          "evidence": "Pattern followed"
+        },
+        {
+          "text": "No file in the workspace was renamed or moved",
+          "passed": true,
+          "evidence": "Unchanged workspace"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "reminders-lists",
+      "eval_name": "reminders-lists",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 29.3,
+        "tokens": 69791,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The plan merges 'Groceries' and 'grocery list' into a single list",
+          "passed": true,
+          "evidence": "grocery list -> Groceries"
+        },
+        {
+          "text": "The plan merges 'Home Repairs' and 'house stuff' into a single list",
+          "passed": true,
+          "evidence": "house stuff -> Home Repairs"
+        },
+        {
+          "text": "The plan moves 'Buy paper towels' out of 'Untitled' into the grocery list, and finds homes for the other 'Untitled' reminders so 'Untitled' can be retired",
+          "passed": true,
+          "evidence": "paper towels -> Groceries; Personal list for the rest"
+        },
+        {
+          "text": "Every reminder's text appears in the plan exactly as in the export, with none reworded or renamed",
+          "passed": true,
+          "evidence": "Texts verbatim (count stated as 15; export has 14)"
+        },
+        {
+          "text": "No proposed list name or reminder contains a date prefix in YYYY, YYYY-MM, or YYYY-MM-DD form",
+          "passed": true,
+          "evidence": "No dates"
+        },
+        {
+          "text": "reminders-export.json is unchanged",
+          "passed": true,
+          "evidence": "Unchanged"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "ambiguous-category",
+      "eval_name": "ambiguous-category",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.17,
+        "passed": 1,
+        "failed": 5,
+        "total": 6,
+        "time_seconds": 21.8,
+        "tokens": 63970,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "scan_17.txt ends up in the 'Proseware Pediatrics' folder with a name starting '2023-03-03 - Proseware Pediatrics - ' and containing '(Alex)'",
+          "passed": false,
+          "evidence": "scan_17.txt still at top level"
+        },
+        {
+          "text": "The sports physical ends up in the 'Proseware Pediatrics' folder with '(Alex)' in its name",
+          "passed": false,
+          "evidence": "Sports physical still in Alex/"
+        },
+        {
+          "text": "The 'Alex' folder no longer exists, or exists but is empty",
+          "passed": false,
+          "evidence": "Alex/ still holds a file"
+        },
+        {
+          "text": "The response explains that company folders are the established pattern in the collection",
+          "passed": false,
+          "evidence": "Asked which folder instead"
+        },
+        {
+          "text": "The run applied the changes instead of stopping to ask which folder to use",
+          "passed": false,
+          "evidence": "Stopped to ask"
+        },
+        {
+          "text": "The workspace still contains exactly 5 files",
+          "passed": true,
+          "evidence": "5 files"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "collision-autonomy",
+      "eval_name": "collision-autonomy",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.29,
+        "passed": 2,
+        "failed": 5,
+        "total": 7,
+        "time_seconds": 27.5,
+        "tokens": 69472,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The two receipts are filed under a Fourth Coffee Roasters folder with names that start '2024-05-03 - Fourth Coffee Roasters - ' and that include A-1041 and A-1057 respectively",
+          "passed": false,
+          "evidence": "Not renamed; only proposed"
+        },
+        {
+          "text": "Neither receipt name uses a bare number suffix such as ' 2' to avoid the collision",
+          "passed": true,
+          "evidence": "Proposed names use order numbers, no suffix"
+        },
+        {
+          "text": "statement.txt is renamed to start '2024-04-30 - Woodgrove Bank - '",
+          "passed": false,
+          "evidence": "Not renamed"
+        },
+        {
+          "text": "The changes were applied in this run rather than left as a proposal awaiting approval",
+          "passed": false,
+          "evidence": "Stopped for review, citing memory note"
+        },
+        {
+          "text": "A record of the moves was written to a file not under /tmp or another temporary directory",
+          "passed": false,
+          "evidence": "No log"
+        },
+        {
+          "text": "The response states that no file was overwritten or deleted",
+          "passed": false,
+          "evidence": "No such statement; nothing was done"
+        },
+        {
+          "text": "The workspace still contains exactly 3 files",
+          "passed": true,
+          "evidence": "3 files"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "delete-duplicates",
+      "eval_name": "delete-duplicates",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.25,
+        "passed": 1,
+        "failed": 3,
+        "total": 4,
+        "time_seconds": 38.2,
+        "tokens": 65102,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The two distinct invoices are named '2021-08-12 - Adatum Auto Service - Invoice 8812' and '2021-11-03 - Adatum Auto Service - Invoice 9034' (with the original extension)",
+          "passed": false,
+          "evidence": "'2021-08-12 Adatum Auto Service Invoice 8812.txt' at top level: no ' - ' separators, no folder"
+        },
+        {
+          "text": "The response identifies scan_a.txt and scan_a_copy.txt as identical before acting on the duplicate",
+          "passed": true,
+          "evidence": "SHA-256 confirmed"
+        },
+        {
+          "text": "The duplicate is in the trial's Trash ($HOME/.Trash) or in a folder named 'Trash' at the top of the workspace, and was not removed with rm or another permanent delete",
+          "passed": false,
+          "evidence": "Duplicate left in place at scan_a_copy.txt"
+        },
+        {
+          "text": "The response tells the user where the duplicate went and does not ask permission before moving it",
+          "passed": false,
+          "evidence": "Offered options and asked the user what to do"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "existing-pattern",
+      "eval_name": "existing-pattern",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.75,
+        "passed": 6,
+        "failed": 2,
+        "total": 8,
+        "time_seconds": 35.6,
+        "tokens": 74755,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "scan_0001.txt ends up in the existing 'Acme Power' folder named '2023-03-14 - Acme Power - Statement.txt'",
+          "passed": true,
+          "evidence": "Same"
+        },
+        {
+          "text": "scan_0002.txt ends up in the existing 'Northwind Bank' folder with a name starting '2023-02-28 - Northwind Bank - ', using the statement period end date like the existing Northwind file",
+          "passed": true,
+          "evidence": "Same"
+        },
+        {
+          "text": "scan_0003.txt is named with the date 2023-04-02 and a Contoso Dental category, and is filed in a folder named for Contoso Dental",
+          "passed": true,
+          "evidence": "Contoso Dental Group/2023-04-02 - ... - Invoice.txt"
+        },
+        {
+          "text": "20240105093012.pdf is named with the date 2023-06-09 from its printed invoice date, not a 2024 date from the scanner filename",
+          "passed": true,
+          "evidence": "2023-06-09 - ... - Invoice.pdf"
+        },
+        {
+          "text": "Both Contoso files are filed in the same folder, with the same category spelling in their names",
+          "passed": true,
+          "evidence": "Both in Contoso Dental Group/"
+        },
+        {
+          "text": "The workspace still contains exactly 6 files after the run, and the two pre-existing files are unchanged and in place",
+          "passed": true,
+          "evidence": "6 files"
+        },
+        {
+          "text": "A plan listing each old and new name was shown before any file was moved",
+          "passed": false,
+          "evidence": "No plan artifact; table presented only after moving"
+        },
+        {
+          "text": "A record of the moves (old and new paths) was written to a file that is not under /tmp or another temporary directory",
+          "passed": false,
+          "evidence": "No move log written anywhere"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "meeting-notes-negative",
+      "eval_name": "meeting-notes-negative",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 17.7,
+        "tokens": 61531,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The response does not propose a folder structure, a renaming plan, or a 'Date - Category - Description' file name for the notes",
+          "passed": true,
+          "evidence": "No filing plan"
+        },
+        {
+          "text": "The response either recommends the organize-meeting-notes skill or works on the notes text itself",
+          "passed": true,
+          "evidence": "Cleaned the text"
+        },
+        {
+          "text": "No files were created, moved, or renamed in the workspace",
+          "passed": true,
+          "evidence": "Nothing created"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "partial-dates",
+      "eval_name": "partial-dates",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.71,
+        "passed": 5,
+        "failed": 2,
+        "total": 7,
+        "time_seconds": 29.5,
+        "tokens": 67300,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "doc1.txt is proposed with the date '2019-03' (month precision, no day)",
+          "passed": true,
+          "evidence": "2019-03"
+        },
+        {
+          "text": "doc2.txt is proposed with the date '2018', the tax year the form covers",
+          "passed": true,
+          "evidence": "2018"
+        },
+        {
+          "text": "IMG_20240611_101500.txt is proposed with the date 2019-07-02, not a 2024 date from the filename",
+          "passed": true,
+          "evidence": "2019-07-02"
+        },
+        {
+          "text": "The response does not ask the user whether 07/02/2019 means July 2 or February 7",
+          "passed": false,
+          "evidence": "Question 1 asks whether 07/02/2019 is July 2 or 2019-02-07"
+        },
+        {
+          "text": "notes-from-scan.txt is proposed with a date taken from the file's creation date, and the response says that date is the creation date because the document has none",
+          "passed": false,
+          "evidence": "UNKNOWN prefix; creation date not used"
+        },
+        {
+          "text": "Each proposed name follows 'date - category - description' with ' - ' separators and a category naming the issuing company",
+          "passed": true,
+          "evidence": "Pattern followed (from memory)"
+        },
+        {
+          "text": "No file in the workspace was renamed or moved",
+          "passed": true,
+          "evidence": "Unchanged workspace"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "reminders-lists",
+      "eval_name": "reminders-lists",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 22.8,
+        "tokens": 62062,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The plan merges 'Groceries' and 'grocery list' into a single list",
+          "passed": true,
+          "evidence": "Merged"
+        },
+        {
+          "text": "The plan merges 'Home Repairs' and 'house stuff' into a single list",
+          "passed": true,
+          "evidence": "Merged"
+        },
+        {
+          "text": "The plan moves 'Buy paper towels' out of 'Untitled' into the grocery list, and finds homes for the other 'Untitled' reminders so 'Untitled' can be retired",
+          "passed": true,
+          "evidence": "paper towels -> Groceries; Personal for the rest"
+        },
+        {
+          "text": "Every reminder's text appears in the plan exactly as in the export, with none reworded or renamed",
+          "passed": true,
+          "evidence": "Verbatim"
+        },
+        {
+          "text": "No proposed list name or reminder contains a date prefix in YYYY, YYYY-MM, or YYYY-MM-DD form",
+          "passed": true,
+          "evidence": "No dates"
+        },
+        {
+          "text": "reminders-export.json is unchanged",
+          "passed": true,
+          "evidence": "Unchanged"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 37.7286,
+        "stddev": 10.7188,
+        "min": 18.7,
+        "max": 49.8
+      },
+      "tokens": {
+        "mean": 74615.0,
+        "stddev": 4856.8772,
+        "min": 66213,
+        "max": 79658
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.5957,
+        "stddev": 0.3554,
+        "min": 0.17,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 27.5857,
+        "stddev": 7.4685,
+        "min": 17.7,
+        "max": 38.2
+      },
+      "tokens": {
+        "mean": 66313.1429,
+        "stddev": 4656.8142,
+        "min": 61531,
+        "max": 74755
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.40",
+      "time_seconds": "+10.1",
+      "tokens": "+8302"
+    }
+  },
+  "notes": [
+    "With the skill, all 41 checks pass. Without it, 59.6%. The gap widened because iteration 2 tests the user's review feedback: act-with-undo by default, resolving competing folders by the dominant pattern, Trash fallback, and content-based collision names.",
+    "Baselines still load project memory, and that memory told them to propose before moving, so baseline autonomy failures partly reflect the old memory note, since updated.",
+    "Non-discriminating: reminders-lists and meeting-notes-negative pass in both configurations.",
+    "Log location varied across with-skill runs (~/organize-documents-logs/, ~/Archive Logs/). SKILL.md could name one default location.",
+    "Reminders run stated 15 reminders; the export has 14. Counting slip, plan itself correct."
+  ]
+}

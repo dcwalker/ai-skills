@@ -12,7 +12,7 @@ Personal Claude Code plugins and skills, distributed as a plugin marketplace.
 
 ## Plugins
 
-- **life-skills** — Personal life-organization skills: `conduct-interview`, `organize-meeting-notes`, `sift-email`, `triage`, `writing`.
+- **life-skills** — Personal life-organization skills: `conduct-interview`, `organize-documents`, `organize-meeting-notes`, `sift-email`, `triage`, `writing`.
 - **software-development** — Software development workflow skills: `analyze-logs`, `commit`, `create-branch`, `create-github-issue`, `fix-pr-checks`, `implement-feature`, `land-pr`, `pr`, `resolve-pr-comments`, `resolve-sonarqube-issues`, `review-code`, `review-readme`, `tidy-workspace`, `update-dependabot-bulk`.
 - **utilities** — General-purpose utility skills: `build-soccer-scoresheet`, `transcribe-apple-notes-to-dayone` (macOS only).
 
@@ -196,6 +196,7 @@ underlying data.
 
 **life-skills:**
 [conduct-interview](plugins/life-skills/skills/conduct-interview/evals/benchmark-baseline.md) ·
+[organize-documents](plugins/life-skills/skills/organize-documents/evals/benchmark-baseline.md) ·
 [organize-meeting-notes](plugins/life-skills/skills/organize-meeting-notes/evals/benchmark-baseline.md) ·
 [sift-email](plugins/life-skills/skills/sift-email/evals/benchmark-baseline.md) ·
 [triage](plugins/life-skills/skills/triage/evals/benchmark-baseline.md) ·

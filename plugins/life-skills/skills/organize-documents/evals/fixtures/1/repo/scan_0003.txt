@@ -1,0 +1,7 @@
+Contoso Dental Group
+INVOICE #60219
+Date of service: 04/02/2023
+Patient: Alex Rivera
+Cleaning and exam ........ $185.00
+Insurance adjustment ..... -$148.00
+Balance due .............. $37.00

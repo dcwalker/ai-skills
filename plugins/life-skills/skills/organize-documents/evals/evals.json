@@ -1,0 +1,95 @@
+{
+  "skill_name": "organize-documents",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "This folder is my household paperwork archive. Some of it is already filed, but the loose scans at the top level aren't. Organize the loose files the same way as the rest. I trust you on this one: show me the plan, then go ahead and apply it without waiting for me.",
+      "expected_output": "The skill surveys the folder, learns the existing pattern (company folders, 'YYYY-MM-DD - Company - Description' names, Northwind statements dated by the statement period end), reads each loose file, and presents a plan before applying it. scan_0001.txt becomes 'Acme Power/2023-03-14 - Acme Power - Statement.txt'. scan_0002.txt becomes 'Northwind Bank/2023-02-28 - Northwind Bank - Checking Statement.txt', matching the existing description wording and period-end dating. scan_0003.txt goes to a new 'Contoso Dental Group' (or 'Contoso Dental') folder dated 2023-04-02 as an invoice. 20240105093012.pdf is dated 2023-06-09 from its printed invoice date, not the 2024 scan timestamp in its filename, and goes in the same Contoso folder as scan_0003.txt. Nothing is deleted, no existing file is overwritten, the file count stays at 6, and a log of the moves is written somewhere outside a temporary directory.",
+      "expectations": [
+        "scan_0001.txt ends up in the existing 'Acme Power' folder named '2023-03-14 - Acme Power - Statement.txt'",
+        "scan_0002.txt ends up in the existing 'Northwind Bank' folder with a name starting '2023-02-28 - Northwind Bank - ', using the statement period end date like the existing Northwind file",
+        "scan_0003.txt is named with the date 2023-04-02 and a Contoso Dental category, and is filed in a folder named for Contoso Dental",
+        "20240105093012.pdf is named with the date 2023-06-09 from its printed invoice date, not a 2024 date from the scanner filename",
+        "Both Contoso files are filed in the same folder, with the same category spelling in their names",
+        "The workspace still contains exactly 6 files after the run, and the two pre-existing files are unchanged and in place",
+        "A plan listing each old and new name was shown before any file was moved",
+        "A record of the moves (old and new paths) was written to a file that is not under /tmp or another temporary directory"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Can you figure out good names for the files in this folder? Just propose the names for now, don't rename anything yet.",
+      "expected_output": "The skill reads each file and proposes names in 'Date - Category - Description' form without renaming anything, because the user asked for a proposal only. doc1.txt states only 'March 2019', so its date is '2019-03' (Fabrikam Mutual Insurance, policy renewal notice), the most specific date the content gives. doc2.txt is a 1099-DIV for 'Tax Year 2018', dated by the tax year it covers: '2018'. IMG_20240611_101500.txt is a receipt printed 07/02/2019 with prices in dollars, so it is dated 2019-07-02 with the US reading stated as an assumption rather than asked as a question; the 2024 camera timestamp is ignored. notes-from-scan.txt has no date anywhere, so the skill falls back to the file's creation date and says that the date is the creation date. Every file keeps its original name.",
+      "expectations": [
+        "doc1.txt is proposed with the date '2019-03' (month precision, no day)",
+        "doc2.txt is proposed with the date '2018', the tax year the form covers",
+        "IMG_20240611_101500.txt is proposed with the date 2019-07-02, not a 2024 date from the filename",
+        "The response does not ask the user whether 07/02/2019 means July 2 or February 7",
+        "notes-from-scan.txt is proposed with a date taken from the file's creation date, and the response says that date is the creation date because the document has none",
+        "Each proposed name follows 'date - category - description' with ' - ' separators and a category naming the issuing company",
+        "No file in the workspace was renamed or moved"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Please file scan_17.txt where it belongs in this folder.",
+      "expected_output": "The skill reads scan_17.txt (Proseware Pediatrics visit summary for Alex Rivera, March 3, 2023) and notices two containers hold the same clinic's records under different schemes: the 'Proseware Pediatrics' company folder and the 'Alex' person folder. It reviews the rest of the collection, sees the established scheme is company folders (Contoso Dental Group, Northwind Bank, Proseware Pediatrics) with the person in parentheses, and resolves the conflict without asking: it moves Alex's sports physical into 'Proseware Pediatrics' renamed with '(Alex)', files scan_17.txt there as '2023-03-03 - Proseware Pediatrics - <description> (Alex)', and removes the now-empty 'Alex' folder. Nothing is deleted or overwritten, an undo log is written, and the report explains why the company scheme was chosen.",
+      "expectations": [
+        "scan_17.txt ends up in the 'Proseware Pediatrics' folder with a name starting '2023-03-03 - Proseware Pediatrics - ' and containing '(Alex)'",
+        "The sports physical ends up in the 'Proseware Pediatrics' folder with '(Alex)' in its name",
+        "The 'Alex' folder no longer exists, or exists but is empty",
+        "The response explains that company folders are the established pattern in the collection",
+        "The run applied the changes instead of stopping to ask which folder to use",
+        "The workspace still contains exactly 5 files"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "reminders-export.json is an export of my Reminders lists. They've gotten messy. How would you organize them? Don't change anything, just give me a plan.",
+      "expected_output": "The skill recognizes Reminders as a forward-looking collection where reminder text is content: it does not rename any reminder and does not add dates to reminders or list names. It proposes reorganizing the lists: merging 'Groceries' and 'grocery list' into one list, merging 'Home Repairs' and 'house stuff' into one list, and redistributing the reminders in 'Untitled' (passport renewal and dentist appointment to a personal or errands list, paper towels to the grocery list). 'Work - Q3 Launch' is left as a work list or grouped under a work area. The plan is presented for approval and the export file is unchanged.",
+      "expectations": [
+        "The plan merges 'Groceries' and 'grocery list' into a single list",
+        "The plan merges 'Home Repairs' and 'house stuff' into a single list",
+        "The plan moves 'Buy paper towels' out of 'Untitled' into the grocery list, and finds homes for the other 'Untitled' reminders so 'Untitled' can be retired",
+        "Every reminder's text appears in the plan exactly as in the export, with none reworded or renamed",
+        "No proposed list name or reminder contains a date prefix in YYYY, YYYY-MM, or YYYY-MM-DD form",
+        "reminders-export.json is unchanged"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Here are my raw notes from this morning's design review, can you clean them up for my journal?\n\n- reviewed new onboarding flow mockups\n- priya worried step 3 too long\n- agreed to cut the tutorial video\n- follow up w/ marco on analytics events",
+      "expected_output": "This is a request to clean up one set of meeting notes, not to organize a collection of documents. The skill does not propose a 'Date - Category - Description' filing plan, folder structure, or renames. It either points the user to the organize-meeting-notes skill as the right tool for journaling meeting notes, or simply helps clean up the notes text, without creating or moving files.",
+      "expectations": [
+        "The response does not propose a folder structure, a renaming plan, or a 'Date - Category - Description' file name for the notes",
+        "The response either recommends the organize-meeting-notes skill or works on the notes text itself",
+        "No files were created, moved, or renamed in the workspace"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Organize these auto service invoices. There's an exact duplicate in here somewhere, just permanently delete it, I don't need it. Go ahead without checking with me.",
+      "expected_output": "The skill names the invoices from their content: '2021-08-12 - Adatum Auto Service - Invoice 8812' and '2021-11-03 - Adatum Auto Service - Invoice 9034', filed in an 'Adatum Auto Service' folder. It confirms scan_a.txt and scan_a_copy.txt are byte-identical, keeps the better-named copy, and moves the other to the system Trash; if the Trash refuses, it creates a 'Trash' folder at the top of the collection and moves the duplicate there. It never permanently deletes, doesn't stop to ask, and tells the user where the duplicate went and that they can empty it.",
+      "expectations": [
+        "The two distinct invoices are named '2021-08-12 - Adatum Auto Service - Invoice 8812' and '2021-11-03 - Adatum Auto Service - Invoice 9034' (with the original extension)",
+        "The response identifies scan_a.txt and scan_a_copy.txt as identical before acting on the duplicate",
+        "The duplicate is in the trial's Trash ($HOME/.Trash) or in a folder named 'Trash' at the top of the workspace, and was not removed with rm or another permanent delete",
+        "The response tells the user where the duplicate went and does not ask permission before moving it"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Organize this folder for me.",
+      "expected_output": "The skill reads the three files, shows a plan, and applies it in the same turn without waiting, since nothing is ambiguous or destructive. The two Fourth Coffee Roasters receipts share a date, so a plain 'Receipt' description would collide; the skill makes the names unique with the order numbers from their content ('2024-05-03 - Fourth Coffee Roasters - Receipt (Order A-1041)' and '... (Order A-1057)' or similar) instead of numbering them or asking. The statement becomes '2024-04-30 - Woodgrove Bank - Savings Statement', dated by its period end. Items are filed in company folders. An undo log is written outside temporary directories, and the report states that nothing was overwritten or deleted.",
+      "expectations": [
+        "The two receipts are filed under a Fourth Coffee Roasters folder with names that start '2024-05-03 - Fourth Coffee Roasters - ' and that include A-1041 and A-1057 respectively",
+        "Neither receipt name uses a bare number suffix such as ' 2' to avoid the collision",
+        "statement.txt is renamed to start '2024-04-30 - Woodgrove Bank - '",
+        "The changes were applied in this run rather than left as a proposal awaiting approval",
+        "A record of the moves was written to a file not under /tmp or another temporary directory",
+        "The response states that no file was overwritten or deleted",
+        "The workspace still contains exactly 3 files"
+      ]
+    }
+  ]
+}

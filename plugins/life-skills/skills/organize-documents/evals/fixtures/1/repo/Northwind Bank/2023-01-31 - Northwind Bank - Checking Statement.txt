@@ -1,0 +1,4 @@
+NORTHWIND BANK
+Checking Account Statement
+Statement period: January 1, 2023 - January 31, 2023
+Ending balance: $3,204.55
