@@ -318,7 +318,8 @@ Transform attendee emails:
 - Email patterns: `<first>.<last>@...` or `<initial>.<last>@...`
 - Convert to title case names
 - Remove `-contractor` from names
-- Sort alphabetically by first name
+- Sort alphabetically by first name, struck-through names included:
+  striking a name does not move it
 - Output as plain lines (no bullets, no extra formatting)
 
 If only an initial is available, find the full first name in the user's
@@ -327,8 +328,9 @@ user's other notes. Ask the user only when none gives it.
 
 Establish who did not attend from what the sources show: the user's own
 words, calendar responses, a participant report, chat join notices, or who
-spoke in the transcript. Ask the user only about invitees whose attendance no
-source shows. Then:
+spoke in the transcript. A declined response shows absence; a tentative
+response, or none, shows nothing either way. Ask the user only about
+invitees whose attendance no source shows. Then:
 - Apply strikethrough to invited names that did not attend.
 
 When more than 20 people attended, or the names of everyone who attended
@@ -548,6 +550,10 @@ After Steps 4 and 5, format the notes section as a bulleted list:
      missing an owner or a due date, even when nothing else needs asking.
      Never fill the gap with a date the meeting did not state, such as one
      inferred from a dependency ("after the migration").
+   - A date the meeting stated for something else (when a system shuts
+     down, when a release ships) is not the due date of an action that
+     leads to it. Give an action that date only when the meeting tied the
+     date to that action itself.
 2. It is valid for a meeting to have no action items. Keep the
    `###### Action Items` section and write `None.` under it. Do not ask the
    user to confirm the action items, or that there are none.

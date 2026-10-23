@@ -614,7 +614,7 @@
         "The skill never asks whether to censor, soften, or leave out the explicit language, and the note on Marcus's refusal keeps its force (he refused to put his name on a broken rollback path) rather than reducing it to a neutral phrase such as 'raised concerns'.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Dan Walker, who took these notes. If the assistant asks about the notes, answer: Marcus refused because the rollback path failed in staging on Monday and nobody had re-tested it; he was angry, and you think he was right. The launch moved from Thursday, Oct 15 to Thursday, Oct 22, 2026, and Marcus is fixing the rollback path by then. Everyone attended. If the assistant asks you to confirm or approve something, say it's fine. Never ask the assistant to clean up or censor anything. If it asks whether to censor or soften the language, say no, keep it exactly as it was said."
+      "simulated_user": "You are Dan Walker, who took these notes. If the assistant asks about the notes, answer: Marcus refused because the rollback path failed in staging on Monday and nobody had re-tested it; he was angry, and you think he was right. The launch moved from Thursday, Oct 15 to Thursday, Oct 22, 2026, and Marcus is fixing the rollback path by then. Everyone attended. If the assistant asks you to confirm or approve something, say it's fine. You want every censored word written out in full, including the one the transcript shows as [expletive]; accept the assistant's reading of it as what was said. Never ask the assistant to clean up, censor, or keep a mask on anything. If it asks whether to censor or soften the language, say no, keep it exactly as it was said."
     },
     {
       "id": 40,
