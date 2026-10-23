@@ -11,9 +11,10 @@ applies.
   or a chat transcript (for example a meeting's chat log, or a thread held
   during the meeting).
 
-Before drafting, tell the user that no notes were found, list each artifact
-you found by file name, and confirm they want notes drafted from them. Never
-treat an artifact as though it were the user's notes.
+Tell the user that no notes were found, list each artifact you found by file
+name, and say the notes are drafted from them. When the user has said not to
+draft notes from artifacts, stop there instead. Never treat an artifact as
+though it were the user's notes.
 
 ## Drafting
 
@@ -40,42 +41,33 @@ treat an artifact as though it were the user's notes.
   Step 3 attendee names and the Step 5 full-name-then-first-name rule.
 - Attribute only from what an artifact identifies: the sender of a chat
   message, or a named speaker in a transcript. When a speaker is labeled
-  generically (for example `Speaker 2`) or cannot be identified, ask the user
-  who spoke, without proposing a name, rather than guessing.
-- Every note must trace to something an artifact shows. Do not infer
-  outcomes, owners, or reasons the artifacts do not state; hold each gap as a
-  question for the review.
+  generically (for example `Speaker 2`) or cannot be identified, identify
+  them as the Step 5 quote rule does, and ask the user who spoke, without
+  proposing a name, only when no source settles it.
+- Every note must trace to something an artifact or a source shows. Do not
+  infer outcomes, owners, or reasons none of them state.
 - Read a screenshot's content only as far as it is legible, and still apply
   the Step 5 image rule (caption, alt text, and placement). When a transcript
   or chat log carries times, match each image's timestamp against those times
   to find the point in the discussion it was taken, and interweave it with the
   note drafted from that point.
 - When the user has not supplied attendees or times, the artifacts' senders,
-  speakers, and timestamps can suggest them. Propose them for confirmation
-  rather than filling the Step 1 gaps silently.
+  speakers, and timestamps can supply them. Use them, and say in the Step 8
+  report which came from the artifacts.
 - An audio transcript or a chat transcript counts as a transcript for the
   Step 5 quote rule, so every quote must still appear verbatim in it.
 
-## Reviewing the Draft
+## Gaps and Conflicts
 
-Present the draft labeled as a draft, then review it with the user section by
-section (each topic section, or the whole list when the draft is not
-sectioned). For each section:
-
-- Confirm the takeaways are the right ones, and ask what is missing or
-  overstated.
-- Confirm each attribution.
-- Ask for any owner or due date the artifacts leave out of an action item,
-  without proposing one.
-- Ask about anything else the artifacts left unclear.
-
-Wait for the user's response before moving to the next section. Revise in the
-user's words, not generic ones. The user's answers override the artifacts; a
-conflict between them is a question to ask, not a correction to apply
-silently. After the last section, continue with Step 5.
+Do not review the draft with the user or ask them to confirm its takeaways
+or attributions. Fill each gap the artifacts leave (an owner, a due date, a
+speaker, anything unclear) as Step 4 does: from the sources first, asking
+only when none settles it, without proposing a name or a date. The user's
+word overrides the artifacts; a conflict between them is a question to ask,
+not a correction to apply silently. Then continue with Step 5.
 
 ## Action Items
 
-Identify action items from the reviewed draft in Step 7 as usual. Owners and
-due dates come only from what the artifacts show or what the user said in the
-review.
+Identify action items from the draft in Step 7 as usual. Owners and due
+dates come only from what the artifacts, the sources, or the user's answers
+show.

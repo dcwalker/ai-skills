@@ -1,6 +1,6 @@
 ---
 name: organize-meeting-notes
-description: Clean up and structure meeting notes for a personal journal with strict formatting, guided questioning, and staged approval, drafting the notes from screenshots, audio transcripts, or chat transcripts when none were taken. Use when the user asks to organize, polish, or journalize meeting notes.
+description: Clean up and structure meeting notes for a personal journal with strict formatting, filling gaps from the user's calendar, contacts, chat, trackers, and other notes and asking only about what no source settles, drafting the notes from screenshots, audio transcripts, or chat transcripts when none were taken. Use when the user asks to organize, polish, or journalize meeting notes.
 metadata:
   category: life-skills
 ---
@@ -19,7 +19,8 @@ Clean and organize raw meeting notes into a journal-ready Markdown format with t
 Use this skill when:
 - The user asks to clean up, organize, or rewrite meeting notes
 - The user wants notes converted into a personal journal format
-- The user wants guided clarification of note significance before finalizing
+- The user wants the notes filled out from their calendar, chat, trackers,
+  and other notes
 - No notes were taken, but the meeting left screenshots, an audio transcript,
   or a chat transcript to draft notes from
 
@@ -42,8 +43,8 @@ made, so capture the path to each one. Examples of what is worth recording:
   be revisited, if known. An unreached agenda item does not count as a topic
   for the Step 5 topic rule.
 
-In the Step 4 interview, these aim the question for each line of the user's
-notes; no line is dropped for fitting none of them. When drafting from
+In Step 4, these decide what each line of the user's notes is expanded to
+say; no line is dropped for fitting none of them. When drafting from
 artifacts, they decide what the draft leads with, and talk that adds nothing
 to an outcome or how it was reached stays out.
 
@@ -70,23 +71,24 @@ Collect:
 - Meeting transcript, if one exists (optional)
 - Any screenshots/photos and URLs
 
-If required information is missing, ask for clarification. Do not guess.
+If required information is missing, look for it in the sources Steps 1b and
+4 use (a calendar event gives the title, times, and invitees), and ask only
+when none has it. Do not guess.
 
 A transcript provided alongside raw notes is source material for quotes and
-for clarifying what was said. It does not replace the raw notes, and it does
-not replace the Step 4 interview.
+for filling in what was said. It does not replace the raw notes.
 
 When no raw notes exist but the meeting left artifacts (screenshots or
 photos, an audio transcript, or a chat transcript), do not treat an artifact
 as the notes. Follow
 [references/draft-notes-from-artifacts.md](references/draft-notes-from-artifacts.md)
-to draft notes from the artifacts and review them with the user. When there
+to draft notes from the artifacts. When there
 are neither notes nor artifacts, tell the user and ask for them; never draft
 notes from nothing.
 
 ### Step 1b: Enrich from Available Sources
 
-Before the interview, check which context sources the current session can
+Before Step 4, check which context sources the current session can
 actually reach (a calendar, email, team chat, a ticket tracker, web
 fetching). Use only what is genuinely available: skip anything that is not
 connected without comment, and never present content as coming from a source
@@ -148,7 +150,7 @@ For each available source:
      so they are not a read. Never say a conversation was read unless that
      read was made. Search results also list neighbouring messages as
      context, without their times. Context is not a finding: never quote,
-     report, or propose a context message, and never give it a time. Only
+     report, or include a context message, and never give it a time. Only
      what the bounded read returns is in the window, at the time that read
      shows.
 
@@ -171,7 +173,7 @@ For each available source:
     Never present it as a result of, or a comment on, another thread.
   - A reply in the window that continues a thread started before it is a
     follow-up, and its parent is the context that makes it readable.
-    Propose the parent with the reply, marked as posted before the
+    Include the parent with the reply, marked as posted before the
     meeting (its time and author), never as chat from during it. Say
     whether the follow-up relates to the meeting's content: one that does
     belongs beside the discussion it continues; one that does not shows
@@ -238,13 +240,12 @@ For each available source:
   join and leave notices, reactions, and messages from people outside the
   meeting; exclude only bot and integration posts. Side conversations count
   even when they are off the meeting topic, because they show what the
-  attendees were engaged with: propose them in time order, or beside the
+  attendees were engaged with: include them in time order, or beside the
   part of the discussion they ran alongside. Time order applies between
   conversations and threads, never across them: each thread stays one
   block, as in the example above, even when its replies interleave with
-  another thread's. Keep
-  each one unless the user declines it, and never suggest dropping one
-  because it is off topic or a participant called it unrelated. A
+  another thread's. Keep each one, and never drop one because it is off
+  topic or a participant called it unrelated. A
   message about the recording rather than the meeting (a request to stop
   recording, someone leaving) is not meeting content; it explains why the
   transcript is partial, and it goes in the Step 2 schedule note.
@@ -260,8 +261,8 @@ For each available source:
   read even when reachable: pages built from macros or embedded content can
   return an empty body, and some planning or timeline views cannot be read
   at all. Treat an empty result as unreadable, not as an empty page. When a
-  link cannot be read, say so, and ask the user what it holds rather than
-  guessing.
+  link cannot be read and no other source describes it, say so, and ask the
+  user what it holds rather than guessing.
 - **Ticket tracker**: if the notes or discussion reference tracked work
   items (an item key, or a topic recognizable as a tracked item), look them
   up and capture the item's current summary and status so the note can name
@@ -271,8 +272,9 @@ For each available source:
   the items attendees created or were assigned during the meeting, following
   [references/capture-tracker-items.md](references/capture-tracker-items.md).
 
-Present what was found as proposals, source by source, before or during the
-Step 4 interview; the user decides what gets in. Enrichment supplements the
+Include in the document what clearly belongs to this meeting, without asking,
+and list in the Step 8 report what each source added and what was left out
+and why. Enrichment supplements the
 user's notes; it never overrides what the user said, and a conflict between
 a source and the user's notes is a question to ask, not a correction to
 apply silently.
@@ -297,7 +299,7 @@ Time correction rule:
 Schedule note (only when Step 1b found calendar data, or chat explaining a
 partial transcript):
 - Compare the actual start/end against the calendar event's scheduled times
-  and propose one italic line directly under the metadata line stating how
+  and add one italic line directly under the metadata line stating how
   the meeting tracked its schedule, with the difference in minutes.
 - Example: `*Scheduled for 30 minutes; ran 12 minutes long.*`
 - Example: `*Started 5 minutes late; ended on time.*`
@@ -307,8 +309,7 @@ partial transcript):
   that reason.
 - Example: `*Scheduled for 60 minutes; ran 8 minutes long. Recording stopped at 07:44 at Sam's request.*`
 - Example (no calendar data): `*Recording stopped at 07:44 at Sam's request.*`
-- Include it only with the user's approval. Omit the schedule comparison
-  when no calendar data exists, and omit the line entirely when neither
+- Omit the schedule comparison when no calendar data exists, and omit the line entirely when neither
   applies; never estimate schedule adherence without the scheduled times.
 
 ### Step 3: Format Attendees
@@ -320,14 +321,19 @@ Transform attendee emails:
 - Sort alphabetically by first name
 - Output as plain lines (no bullets, no extra formatting)
 
-If only an initial is available and the full first name is unknown, ask the user before finalizing.
+If only an initial is available, find the full first name in the user's
+contacts or a people directory, the calendar invite, chat profiles, or the
+user's other notes. Ask the user only when none gives it.
 
-Ask the user who did not attend. After response:
+Establish who did not attend from what the sources show: the user's own
+words, calendar responses, a participant report, chat join notices, or who
+spoke in the transcript. Ask the user only about invitees whose attendance no
+source shows. Then:
 - Apply strikethrough to invited names that did not attend.
 
 When more than 20 people attended, or the names of everyone who attended
-cannot be established (as when the invite hides its guest list), skip that
-question and follow
+cannot be established (as when the invite hides its guest list), skip
+establishing attendance by name and follow
 [references/summarize-attendees.md](references/summarize-attendees.md)
 instead: the section names who was invited and how many attended, with no
 names.
@@ -345,38 +351,52 @@ the user pasted), capture it in its own section:
   agenda belong in the notes, not here.
 - Omit the section when no agenda exists; never reconstruct one from the
   notes or the discussion.
-- Propose the section for approval in Step 7.
 
-### Step 4: Interview for Significance (Notes)
+### Step 4: Resolve Gaps in the Notes
 
-When the notes were drafted from artifacts, the section-by-section review in
+When the notes were drafted from artifacts,
 [references/draft-notes-from-artifacts.md](references/draft-notes-from-artifacts.md)
-replaces this interview; continue with Step 5.
+covers this step; continue with Step 5.
 
-This is the most important step. **Every line** of the raw notes must be reviewed in a back-and-forth interview process with the user. Do not skip any line, even if it seems self-explanatory.
+Go through every line of the raw notes, in order, and turn each into a
+complete sentence that stands on its own, aimed by
+[What Notes Should Capture](#what-notes-should-capture): what was decided and
+why, who disagreed and why, who owns an action and when it is due, and what
+is still unresolved. Never ask the user to confirm the notes, a paraphrase,
+or anything a source already settles.
 
-If the raw notes contain N lines, you must ask at least N clarifying questions (one per line). Do not batch multiple lines into a single question.
+For each gap a line leaves (an unclear or misspelled word, a name or initial,
+a missing owner or due date, a project or term the line assumes), look for
+the answer before asking:
+- The notes themselves, and the transcript when there is one.
+- The Step 1b sources: the calendar event, chat, email, links, and trackers.
+- The user's contacts or a people directory, for full names and for how
+  people relate to the user and to each other (a manager, a teammate, a
+  partner).
+- The user's other notes in connected tools (a journal, a notes app, shared
+  documents, earlier meetings in the same series), for names, project terms,
+  and recurring context.
 
-Process:
-- Go through each note line one at a time, in order.
-- For each line, ask a single clarifying question about its meaning, significance, or context, aimed by [What Notes Should Capture](#what-notes-should-capture): why a decision was made, who disagreed and why, who owns an action and when it is due, or what is still unresolved.
-- Wait for the user's response before moving to the next line.
-- Use the user's response to expand, clarify, or refine that note into a complete, clear sentence.
-- Ask for clarification when details are missing. Do not infer missing facts.
-- When paraphrasing, always ask for confirmation before moving on.
-- The goal is to capture not just facts but also: action items, events/experiences, and information that is important to not forget.
-- Each note should become a complete sentence that stands on its own.
+A value a source states is a finding, not a guess; record it and its source
+for the Step 8 report. Ask the user only about a transcription problem no
+source settles (a garbled or illegible word, a name that matches no one) or
+a fact the document needs that no source confirms. Ask about each as you
+reach it, one question at a time, without proposing a name or a date. A line
+that leaves no gap needs no question, and nothing is inferred that no source
+says.
+
+- Capture not just facts but also action items, events and experiences, and
+  information that is important not to forget.
 - Preserve the user's original tone, word choice, and writing style. Do not sanitize or make the language generic.
 - Avoid repetition and filler language.
 
-When a transcript was provided, use it to inform the interview: ground each
-question in what the transcript shows was said about that line, and note the
-statements worth quoting as you go (see the quote rule in Step 5). The
-transcript sharpens the questions; it does not answer them for the user.
+When a transcript was provided, use it to fill in what each line leaves out,
+and note the statements worth quoting as you go (see the quote rule in
+Step 5).
 
 ### Step 5: Clean and Normalize Notes
 
-After the interview is complete, apply these normalization rules:
+After Step 4, apply these normalization rules:
 
 Name rules in notes:
 - Use attendee names as source of truth for spelling.
@@ -394,7 +414,7 @@ URL rule:
   gave, such as one found in chat or email.
 - For each link summarized in Step 1b, append its one-to-two-sentence
   summary (what it contains and why it mattered to the meeting) to the note
-  that carries the link, subject to the user's approval.
+  that carries the link.
 
 Tracked work item rule:
 - Where Step 1b resolved a referenced work item, name it in the relevant
@@ -405,9 +425,8 @@ Tracked work item rule:
 Unanchored enrichment rule:
 - A link or work item surfaced by Step 1b may have no matching note to
   attach to (it came from chat, email, or discussion the raw notes never
-  mentioned). Propose a new note bullet for it, placed where it fits the
-  flow of the meeting, subject to the user's approval; if the user declines,
-  drop it rather than forcing it into an unrelated note.
+  mentioned). Add a new note bullet for it, placed where it fits the flow of
+  the meeting, rather than forcing it into an unrelated note.
 
 Topic rule:
 - Judge whether the meeting covered clear topics. A topic is clear when
@@ -423,10 +442,9 @@ Topic rule:
   words the attendees used), and keep the name to a few words.
 - Order sections by when each topic came up, and keep the notes within a
   section in their original order.
-- Every note belongs to exactly one section. If a note fits none of them, ask
-  the user where it belongs rather than inventing a catch-all section.
-- Propose the section names and the note-to-section assignment for approval
-  in Step 7. The user decides whether the meeting is sectioned at all.
+- Every note belongs to at most one section. A note that fits none of them
+  follows the last section, outside any section, rather than going in an
+  invented catch-all section.
 
 Paraphrase rule (always, with or without a transcript):
 - A paraphrase or approximation of what someone said never goes in quotation
@@ -446,7 +464,7 @@ Explicit language rule (always):
 
 Quote rule (only when a transcript was provided):
 - Quote only words that appear verbatim in the transcript. Never quote from
-  the raw notes, from an interview answer, or from memory, and never
+  the raw notes, from the user's answers, or from memory, and never
   reconstruct what someone probably said.
 - Use two forms, chosen by significance:
   - Inline quote: a short quoted fragment inside the note's own sentence, in
@@ -466,14 +484,19 @@ Quote rule (only when a transcript was provided):
 - Attribute using the attendee names from Step 3, applying the same
   full-name-then-first-name rule. If the transcript labels speakers
   generically (for example `Speaker 2`) or names someone the attendee list
-  does not include, ask the user who spoke, without proposing a name, rather
-  than guessing.
-- Propose every quote for approval in Step 7 alongside the note it attaches
-  to. Where the transcript conflicts with the user's notes, ask; the user's
+  does not include, identify the speaker from what a source states: the
+  transcript itself (someone addressed by name, a self-introduction), the
+  meeting platform's participant data, or the calendar. Being the one
+  attendee who has not spoken yet is not identification. When no source
+  settles it, ask the user who spoke, without proposing a name, rather than
+  guessing.
+- Where the transcript conflicts with the user's notes, ask; the user's
   notes stand unless the user says otherwise.
 
 Image rule:
-- For each screenshot/photo, ask the user for a caption describing its significance.
+- For each screenshot/photo, write a caption describing its significance,
+  from what it shows and the note it supports. Ask the user only when its
+  significance cannot be told from the image, the notes, or the sources.
 - Add the caption under each image using italic text (e.g., `*Caption describing the image*`).
 - Give every image descriptive alt text in the Markdown itself
   (`![<alt text>](<path>)`), stating what the image shows.
@@ -481,15 +504,16 @@ Image rule:
   (what it shows, and which note that matches) and its timestamp (from the
   file name or EXIF data), which fixes where in the meeting it belongs.
 - Keep images in chronological order by timestamp. When content and timestamp
-  disagree about placement, follow the content and ask the user to confirm.
+  disagree about placement, follow the content and say so in the report.
 - When the notes are sectioned, place each image in the section its content
   belongs to, keeping chronological order within that section.
-- If an image has no recoverable timestamp, ask the user where it belongs
+- If an image has no recoverable timestamp, place it by its content. When
+  the content does not settle it either, ask the user where it belongs
   rather than guessing a position.
 
 ### Step 6: Format Notes as Bulleted List
 
-After the interview and normalization, format the notes section as a bulleted list:
+After Steps 4 and 5, format the notes section as a bulleted list:
 - Each note is a bullet point (`- `) containing a complete sentence.
 - When the Step 5 topic rule produced sections, precede each section's
   bullets with its topic name as a bold line (`**Topic Name**`), separated
@@ -501,17 +525,9 @@ After the interview and normalization, format the notes section as a bulleted li
 - Pull quotes sit directly under the note they support, inside that note's
   section.
 
-### Step 7: Staged Approval Workflow
+### Step 7: Action Items
 
-1. Propose updates to:
-   - Meeting Metadata
-   - Attendees
-   - Agenda, when one is available
-   - Notes, including any topic sections, transcript quotes, and image
-     placement
-   - The summary, when the Step 8 length rule applies
-2. Wait for user approval that these are good.
-3. Then identify action items from notes and format as a simple checklist bullet list:
+1. Identify action items from the notes and format them as a simple checklist bullet list:
    - Markdown format: `- [ ] ...`
    - No sub-sections
    - Lead each item with its owner's name, and include its due date:
@@ -520,17 +536,19 @@ After the interview and normalization, format the notes section as a bulleted li
      otherwise specific date (`by Sep 10, 2026`) is fine. When those words
      could mean more than one date (a weekday such as "Friday"), add the
      calendar date they refer to, counted from the meeting date.
-   - When an item's owner or due date is unknown, ask an open question about
-     whichever is missing (who owns this? by when?) without proposing a name
-     or a date. If the user does not know, leave it off; never guess.
-4. Present action items draft for review. Ask: "Are these action items correct?"
-5. It is valid for a meeting to have no action items. If none exist, explicitly confirm this with the user.
-6. Do not offer to create tasks for the action items. Create them only when
+   - When an item's owner or due date is unknown, look for it as Step 4
+     does (the tracker, the chat thread, the calendar, the user's other
+     notes). When no source gives it, ask an open question about whichever
+     is missing (who owns this? by when?) without proposing a name or a
+     date. If the user does not know, leave it off; never guess.
+2. It is valid for a meeting to have no action items. Do not ask the user to
+   confirm the action items, or that there are none.
+3. Do not offer to create tasks for the action items. Create them only when
    the user asks, in the tool the user names, using the skills and tools
    available to you. If the user asks without naming a tool, ask which one.
    An action item already linked to an item captured in Step 1b keeps that
    link and gets no new task.
-7. When the user has asked, create one task per remaining confirmed action item:
+4. When the user has asked, create one task per remaining action item:
    - If no available skill or tool can create tasks in the named tool, tell
      the user the tasks could not be created and why, and ask how to proceed.
      Never skip task creation silently.
@@ -541,17 +559,17 @@ After the interview and normalization, format the notes section as a bulleted li
    - After each task is created, capture the URL the tool returned and replace that checklist item's text with a Markdown link to the task.
    - Use format: `- [ ] [Action item text](<task URL>)`
    - If a task fails to create, do not retry it. Report the error to the user, ask how to proceed, and leave that item unlinked unless the user says otherwise.
-8. After task creation (or when none was requested), produce final Markdown document.
+5. After task creation (or when none was requested), produce the final
+   Markdown document.
 
-When the user asks for the final document, or approves everything as
-proposed, treat that as approval of every pending stage. Do not re-ask a
-question the user already answered or passed over: leave out whatever is
-still unknown (an owner, a due date, a link) and produce the final document
-in that reply. Approving the document is not a request to create tasks.
+Do not re-ask a question the user already answered or passed over: leave out
+whatever is still unknown (an owner, a due date, a link), list it in the
+report, and produce the final document. When the user asks for the final
+document, produce it in that reply.
 
 ### Step 8: Final Output Format
 
-When approved, return final Markdown with:
+Return final Markdown with:
 - Metadata block first (title + metadata line)
 - Then the summary, when the length rule below applies
 - Then `###### Attendees`
@@ -560,7 +578,7 @@ When approved, return final Markdown with:
 - Then `###### Action Items`
 
 Summary rule (based on read length):
-- Measure the approved Notes section by its text alone: count the words and
+- Measure the finished Notes section by its text alone: count the words and
   lines of the notes, captions, and quotes. Images do not count toward the
   measurement, so a short meeting does not earn a summary by carrying
   screenshots.
@@ -581,7 +599,7 @@ Summary rule (based on read length):
   - Over ~1000 words or ~80 lines: up to five sentences, or one short bullet
     per topic section.
 - Write the summary as short prose that represents the notes, built from the
-  approved notes rather than from a recollection of the meeting:
+  finished notes rather than from a recollection of the meeting:
   1. Choose the outcomes it will carry, within the sentence limit above: the
      most consequential decisions, disagreements, and unresolved topics,
      favoring one per topic section. Leave out action items and logistics,
@@ -593,16 +611,25 @@ Summary rule (based on read length):
      when the same note states it.
   3. Write it as prose, not a list. Vary how the sentences open and build, use
      no semicolons, and never build a sentence by chaining clauses with "and".
-  4. Before proposing it in Step 7, check each sentence against its note, name
-     the note each sentence came from, and rewrite any sentence whose subject,
-     verb, or claim that note does not support.
-- Report the measurement (the word and line count, and the section count when
-  the notes are sectioned) when proposing the document in Step 7, so the user
-  can see why a summary was or was not added.
+  4. Before adding it, check each sentence against its note, and rewrite any
+     sentence whose subject, verb, or claim that note does not support.
 
 At the very end, append:
 - `#### YYYY-MM-DD HH:MM: <Meeting Title>`
 - Use 24-hour time.
+
+After the document, outside it, add a short report so the user can see what
+was done without having been asked along the way. Leave out any part with
+nothing in it:
+- **Resolved from sources**: each gap filled from a source, with the value
+  and where it came from (for example, `J. Rivera: Jose, from contacts`).
+- **Added from sources**: what Step 1b put in the document, by source, and
+  what it left out and why. Open chat findings with the Step 1b disclosure
+  line.
+- **Summary measurement**: the word and line count, and the section count
+  when the notes are sectioned, so the user can see why a summary was or was
+  not added, and the note each summary sentence came from.
+- **Still unknown**: anything left out because no source or answer gave it.
 
 ## Quality Rules
 
@@ -618,9 +645,11 @@ At the very end, append:
 - Record every topic the meeting covered, sensitive or not, and keep
   explicit language uncensored. Never offer to omit or soften either.
 - Never present an artifact as the user's notes. Notes drafted from artifacts
-  trace to what the artifacts show and are reviewed with the user before
-  finalizing.
-- Ask clarifying questions when uncertain.
+  trace to what the artifacts show, and the reply says they were drafted
+  from artifacts.
+- Look for an answer in the available sources before asking. Ask only about
+  transcription problems and facts no source settles, and never ask the
+  user to confirm or approve what is already settled.
 - When a method error is found partway through a run, re-check everything
   already produced in that run against the corrected method, and report
   which files changed and which did not. A correction applied only to work

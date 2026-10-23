@@ -8,7 +8,7 @@ misleads.
 
 ## What Replaces the Roster
 
-Skip the question about who did not attend, apply no strikethrough, and
+Skip establishing who did not attend, apply no strikethrough, and
 list no names. The Attendees section is one line naming who was invited and
 how many attended:
 
