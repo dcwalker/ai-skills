@@ -6,7 +6,9 @@ relative to --root. Every row is checked before anything changes (preflight): th
 the destination stays inside the root, no destination is already taken, and no two rows share a
 destination (compared case-insensitively, since macOS and Windows filesystems usually are).
 
-Both the source and the destination must resolve inside the root, with symlinked directories
+--root, --plan, and --log must be inside the user's home directory or the system temp directory,
+so a mistyped or hostile argument can't read or write elsewhere. Every row's source and
+destination must resolve inside the root, with symlinked directories
 resolved, so a plan can't reach outside it.
 
 Each rename refuses to replace an existing item, atomically where the OS supports it
@@ -28,6 +30,17 @@ import ctypes
 import ctypes.util
 import os
 import sys
+import tempfile
+
+
+def checked_arg_path(path, option):
+    """Resolve a command-line path, exiting unless it is under the home or temp directory."""
+    resolved = os.path.realpath(os.path.expanduser(path))
+    for base in (os.path.expanduser("~"), tempfile.gettempdir()):
+        base = os.path.realpath(base)
+        if resolved == base or resolved.startswith(base + os.sep):
+            return resolved
+    sys.exit(f"{option} must be inside your home directory or {tempfile.gettempdir()}: {path}")
 
 
 def no_clobber_rename(old, new):
@@ -117,8 +130,10 @@ def main():
     parser.add_argument("--dry-run", action="store_true", help="run the preflight only")
     args = parser.parse_args()
 
-    root = os.path.realpath(args.root)
-    moves, errors, skipped = preflight(root, load_plan(args.plan, args.undo), args.undo)
+    root = checked_arg_path(args.root, "--root")
+    plan_path = checked_arg_path(args.plan, "--plan")
+    log_path = checked_arg_path(args.log, "--log")
+    moves, errors, skipped = preflight(root, load_plan(plan_path, args.undo), args.undo)
     print(f"preflight: {len(moves)} moves, {len(errors)} problems")
     for path in skipped:
         print("  skipped, never moved: " + path)
@@ -129,8 +144,8 @@ def main():
     if args.dry_run:
         return
 
-    new_log = not os.path.exists(args.log)
-    with open(args.log, "a", newline="", encoding="utf-8") as log:
+    new_log = not os.path.exists(log_path)
+    with open(log_path, "a", newline="", encoding="utf-8") as log:
         writer = csv.writer(log, delimiter="\t")
         if new_log:
             writer.writerow(["old_path", "new_path"])

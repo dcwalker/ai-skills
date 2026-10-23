@@ -77,7 +77,8 @@ python3 scripts/apply_moves.py --root <collection> --plan plan.tsv --log <durabl
 python3 scripts/apply_moves.py --root <collection> --plan plan.tsv --log <durable-dir>/moves.log
 ```
 
-The dry run checks every row: source exists, source and destination both resolve inside the root
+`--root`, `--plan`, and `--log` must be inside the user's home directory or the system temp
+directory (`$TMPDIR`; create scratch folders with `mktemp -d`). The dry run checks every row: source exists, source and destination both resolve inside the root
 (following symlinks), the destination is not taken, and no two rows share a destination. Without
 `--dry-run` it applies the rows, writing each one to the log just before its rename and removing it
 if the rename fails (so a stopped run never leaves a moved file without a log row), and verifies
