@@ -339,7 +339,8 @@ a no-reply sender.
 A newsletter is decided by the rubric's Newsletters section, not by its
 signals, since every newsletter carries them. One on the Valued list is
 `AI/Low priority`, never Bulk. One on the Not valued list, or on neither list,
-is `AI/Bulk`. Either way it also gets `AI/Newsletter`.
+is `AI/Bulk`. Either way it also gets the rubric's newsletter category label,
+such as `AI/Newsletter`, when its Category labels section has one.
 
 Choose exactly one priority label. `AI/Needs reply` can accompany any of them,
 and depends on the message, not the sender: add it when the message itself asks
@@ -356,8 +357,7 @@ only one remains. When torn, choose the less severe call:
   the user would not miss; mail meant for the user belongs in low priority.
 - Between bulk and junk, choose bulk. Junk is for mail the user never wants;
   mass mail the user signed up for but would not miss belongs in bulk.
-- Between low priority and junk, choose low priority. Legitimate mail that is
-  merely dull is never junk.
+- Between low priority and junk, choose low priority; dull legitimate mail is never junk.
 
 Add `AI/Sifted` to every thread evaluated. Apply labels at the thread level.
 Batch the calls where the tools allow.
@@ -470,20 +470,18 @@ at the start of every run.
 
 ## Newsletters
 
-The rubric's Newsletters section lists the newsletters the user wants to read
-under Valued and the ones the user doesn't under Not valued, one per line, by
-name and sender. Read it on every run, so a change the user makes there takes
-effect on the next run. Match a newsletter by its sender or its name; a
-newsletter on neither list is Not valued.
+The rubric's Newsletters section lists, by name and sender, the newsletters
+the user wants to read under Valued and the rest under Not valued. Read it on
+every run, so the user's edits take effect on the next run. Match by sender or
+name; a newsletter on neither list is Not valued.
 
 Lines the user writes are the user's. Sift adds a line only from a correction
-(Step 4), in this form:
-`(learned) <newsletter name> | <sender> | corrected <date>`, the date being
-the run's date from Step 2. When a later correction points the other way, move
-the `(learned)` line to the other list and update its date. When the
-correction conflicts with a line the user wrote, leave that line alone, keep
-the thread's labels, and open a question (see [Never block](#never-block)).
-Note each line added or moved in the changelog.
+(Step 4): `(learned) <newsletter name> | <sender> | corrected <date>`, with the
+run's date from Step 2. A later correction the other way moves the line to the
+other list and updates its date. A correction that conflicts with a line the
+user wrote leaves that line and the thread's labels as they are, and opens a
+question (see [Never block](#never-block)). Note each line added or moved in
+the changelog.
 
 ## Keeping the rubric healthy
 
