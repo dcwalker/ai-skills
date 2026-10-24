@@ -58,7 +58,7 @@
         {
           "id": "rubric-body.4",
           "kind": "list",
-          "markdown": "- **Change a rule:** edit any section above \"Added by sift\". Sift never changes those.\n- **Correct a label:** in Gmail, swap the AI label for the right one, or add AI/Wrong. Sift learns from it on its next run and records the change in the Changelog.\n- **Answer a question:** sift asks in comments that start with \"Sift:\". Reply in the thread, and the next run applies your answer.\n- **Allow more than labels:** add it under Permissions, for example \"Archive threads labeled AI/Junk\".\n- **Tell sift about yourself:** add notes under About me, grouped by topic. Sift adds its own notes there too, each starting with \"(inferred)\". Edit one to correct it, or remove \"(inferred)\" to make it yours.",
+          "markdown": "- **Change a rule:** edit any section above \"Added by sift\". Sift never changes those.\n- **Correct a label:** in Gmail, swap the AI label for the right one, or add AI/Wrong. Sift learns from it on its next run and records the change in the Changelog.\n- **Answer a question:** sift asks in comments that start with \"Sift:\". Reply in the thread, and the next run applies your answer.\n- **Choose newsletters:** list the ones I want to read under Newsletters, Valued. Every other newsletter gets AI/Bulk. Sift adds lines there too, each starting with \"(learned)\", when I correct a newsletter's label.\n- **Allow more than labels:** add it under Permissions, for example \"Archive threads labeled AI/Junk\".\n- **Tell sift about yourself:** add notes under About me, grouped by topic. Sift adds its own notes there too, each starting with \"(inferred)\". Edit one to correct it, or remove \"(inferred)\" to make it yours.",
           "rev": 1
         },
         {
@@ -70,7 +70,7 @@
         {
           "id": "rubric-body.6",
           "kind": "table",
-          "markdown": "| Label | Meaning |\n|---|---|\n| AI/Important | I'd want to see it today |\n| AI/Low priority | Legitimate, nothing urgent |\n| AI/Junk | Mail I never want |\n| AI/Needs reply | Someone is waiting on me |\n| AI/Sifted | Sift has evaluated it |\n| AI/Wrong | I add this to flag a bad call |",
+          "markdown": "| Label | Meaning |\n|---|---|\n| AI/Important | I'd want to see it today |\n| AI/Low priority | Meant for me, nothing urgent |\n| AI/Bulk | Mass mail I wouldn't miss if it were archived unread |\n| AI/Junk | Mail I never want |\n| AI/Needs reply | Someone is waiting on me |\n| AI/Sifted | Sift has evaluated it |\n| AI/Wrong | I add this to flag a bad call |",
           "rev": 1
         },
         {
@@ -154,13 +154,67 @@
         {
           "id": "rubric-body.20",
           "kind": "paragraph",
-          "markdown": "Legitimate mail that doesn't meet the rules above, including:",
+          "markdown": "Mail meant for me that doesn't meet the rules above, including:",
           "rev": 1
         },
         {
           "id": "rubric-body.21",
           "kind": "list",
-          "markdown": "- Automated notifications that only confirm something already done\n- Group threads where I am Cc'd and nothing is asked of me\n- Newsletters I signed up for\n- Receipts and statements\n- Social network notifications",
+          "markdown": "- Automated notifications that only confirm something already done\n- Group threads where I am Cc'd and nothing is asked of me\n- Newsletters on my Valued list\n- Receipts and statements\n- FYIs from people I know",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.bulk1",
+          "kind": "heading",
+          "markdown": "## Bulk",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.bulk2",
+          "kind": "paragraph",
+          "markdown": "Mass mail I wouldn't miss if it were archived unread, including:",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.bulk3",
+          "kind": "list",
+          "markdown": "- Newsletters not on my Valued list\n- Promotions from companies I've signed up with or bought from\n- Social network notifications",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.bulk4",
+          "kind": "heading",
+          "markdown": "## Newsletters",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.bulk5",
+          "kind": "paragraph",
+          "markdown": "Valued newsletters get AI/Low priority. Every other newsletter, listed under Not valued or not listed at all, gets AI/Bulk. One per line: name | sender.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.bulk6",
+          "kind": "heading",
+          "markdown": "### Valued",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.bulk7",
+          "kind": "list",
+          "markdown": "- Maple Grove Weekly | news@maplegrove-elementary.example",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.bulk8",
+          "kind": "heading",
+          "markdown": "### Not valued",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.bulk9",
+          "kind": "list",
+          "markdown": "- (I add these)",
           "rev": 1
         },
         {
