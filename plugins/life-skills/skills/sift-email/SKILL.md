@@ -415,10 +415,10 @@ question: anything that needs the user's answer is a comment on the rubric
 (see [Never block](#never-block)). When the request asked for an action the
 rubric does not grant, such as archiving, say it was not done and that the
 grant belongs in the rubric's Permissions section. Do not offer to do it, or
-to add the grant yourself: Permissions is the user's to write. Send no push
-notification or message about a run, even when a tool for one is available,
-except for a thread the rubric's Notify section describes: one short
-notification each, naming its sender and subject. An empty Notify means none.
+to add the grant yourself: Permissions is the user's to write. Beyond the log
+and this reply, send no push notification or message about a run, whatever
+tools exist, except one per thread the rubric's Notify section describes,
+naming its sender and subject. A missing or empty Notify means none.
 
 ## Never block
 

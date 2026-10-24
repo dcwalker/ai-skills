@@ -17,8 +17,8 @@ Sift is meant to run as a scheduled cloud routine. The routine needs:
 
 A routine run can have a push notification tool even when the routine's
 allowed tools don't list it, and may use it to report a run. Sift sends one
-only for mail the rubric's Notify section describes, so an empty Notify keeps
-every run silent apart from the log.
+only for mail the rubric's Notify section describes, so a missing or empty
+Notify keeps every run silent apart from the log.
 
 ## Why the checkout, not the plugin
 
