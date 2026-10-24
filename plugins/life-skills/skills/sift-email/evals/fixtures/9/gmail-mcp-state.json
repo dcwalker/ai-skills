@@ -92,6 +92,11 @@
       "id": "Label_26",
       "name": "AI/Wrong",
       "type": "user"
+    },
+    "Label_27": {
+      "id": "Label_27",
+      "name": "AI/Bulk",
+      "type": "user"
     }
   },
   "threads": {

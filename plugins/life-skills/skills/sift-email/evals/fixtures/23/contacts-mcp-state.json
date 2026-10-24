@@ -1,0 +1,20 @@
+{
+  "anchor_date": "2026-10-10",
+  "contacts": {
+    "people/c201": {
+      "names": [
+        "Riley Park"
+      ],
+      "emails": [
+        "riley.park@example.com"
+      ],
+      "organizations": [],
+      "groups": [
+        {
+          "id": "contactGroups/friends",
+          "name": "Friends"
+        }
+      ]
+    }
+  }
+}

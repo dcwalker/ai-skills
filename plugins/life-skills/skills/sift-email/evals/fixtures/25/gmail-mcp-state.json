@@ -1,0 +1,163 @@
+{
+  "anchor_date": "2026-10-10",
+  "stub_now": "2026-10-10T15:00:00Z",
+  "me": "pat@example.com",
+  "labels": {
+    "INBOX": {
+      "id": "INBOX",
+      "name": "INBOX",
+      "type": "system"
+    },
+    "SENT": {
+      "id": "SENT",
+      "name": "SENT",
+      "type": "system"
+    },
+    "TRASH": {
+      "id": "TRASH",
+      "name": "TRASH",
+      "type": "system"
+    },
+    "SPAM": {
+      "id": "SPAM",
+      "name": "SPAM",
+      "type": "system"
+    },
+    "STARRED": {
+      "id": "STARRED",
+      "name": "STARRED",
+      "type": "system"
+    },
+    "IMPORTANT": {
+      "id": "IMPORTANT",
+      "name": "IMPORTANT",
+      "type": "system"
+    },
+    "UNREAD": {
+      "id": "UNREAD",
+      "name": "UNREAD",
+      "type": "system"
+    },
+    "Label_1": {
+      "id": "Label_1",
+      "name": "Soccer",
+      "type": "user"
+    },
+    "Label_2": {
+      "id": "Label_2",
+      "name": "Receipts",
+      "type": "user"
+    },
+    "Label_3": {
+      "id": "Label_3",
+      "name": "Newsletter",
+      "type": "user"
+    },
+    "Label_4": {
+      "id": "Label_4",
+      "name": "School",
+      "type": "user"
+    },
+    "Label_20": {
+      "id": "Label_20",
+      "name": "AI",
+      "type": "user"
+    },
+    "Label_21": {
+      "id": "Label_21",
+      "name": "AI/Important",
+      "type": "user"
+    },
+    "Label_22": {
+      "id": "Label_22",
+      "name": "AI/Low priority",
+      "type": "user"
+    },
+    "Label_23": {
+      "id": "Label_23",
+      "name": "AI/Junk",
+      "type": "user"
+    },
+    "Label_24": {
+      "id": "Label_24",
+      "name": "AI/Needs reply",
+      "type": "user"
+    },
+    "Label_25": {
+      "id": "Label_25",
+      "name": "AI/Sifted",
+      "type": "user"
+    },
+    "Label_26": {
+      "id": "Label_26",
+      "name": "AI/Wrong",
+      "type": "user"
+    },
+    "Label_27": {
+      "id": "Label_27",
+      "name": "AI/Bulk",
+      "type": "user"
+    },
+    "Label_28": {
+      "id": "Label_28",
+      "name": "AI/Newsletter",
+      "type": "user"
+    }
+  },
+  "threads": {
+    "t-gazette": {
+      "id": "t-gazette",
+      "subject": "Riverside Gazette: October 3 edition",
+      "from": "editor@riversidegazette.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-08T12:00:00Z",
+      "snippet": "This week: school board candidates, the fall festival, and a new bike lane on Oak Ave.",
+      "labelIds": [
+        "INBOX",
+        "Label_25",
+        "Label_27",
+        "Label_28"
+      ],
+      "messages": [
+        {
+          "id": "t-gazette-m1",
+          "from": "editor@riversidegazette.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-08T12:00:00Z",
+          "snippet": "This week: school board candidates, the fall festival, and a new bike lane on Oak Ave.",
+          "body": "This week: school board candidates, the fall festival, and a new bike lane on Oak Ave.\n\nYou are receiving this because you subscribed. Unsubscribe: https://riversidegazette.example/unsubscribe"
+        }
+      ]
+    },
+    "t-statement": {
+      "id": "t-statement",
+      "subject": "Your September statement is ready",
+      "from": "statements@cedarbank.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-10T09:00:00Z",
+      "snippet": "Your September statement for checking account ending 2231 is ready to view.",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "t-statement-m1",
+          "from": "statements@cedarbank.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T09:00:00Z",
+          "snippet": "Your September statement for checking account ending 2231 is ready to view.",
+          "body": "Your September statement for checking account ending 2231 is ready to view."
+        }
+      ]
+    }
+  },
+  "drafts": {}
+}

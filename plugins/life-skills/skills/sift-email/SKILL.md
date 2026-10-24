@@ -43,14 +43,15 @@ All AI labels are nested under `AI/` so they never mix with the user's own.
 | Label | Meaning |
 |---|---|
 | `AI/Important` | The user would want to see this today |
-| `AI/Low priority` | Legitimate mail with nothing urgent; fine to read later or never |
+| `AI/Low priority` | Mail meant for the user with nothing urgent, such as an FYI or a receipt they may need later |
+| `AI/Bulk` | Mass mail the user would not miss if it were archived unread |
 | `AI/Junk` | Unsolicited marketing, spam-like, or mail the user never wants |
 | `AI/Needs reply` | Someone is waiting on the user specifically |
 | `AI/Sifted` | Sift has evaluated this thread |
 | `AI/Wrong` | Applied by the user to flag a bad call |
 
 Every thread sift evaluates gets `AI/Sifted` and exactly one priority label:
-`AI/Important`, `AI/Low priority`, or `AI/Junk`. `AI/Needs reply` is added on
+`AI/Important`, `AI/Low priority`, `AI/Bulk`, or `AI/Junk`. `AI/Needs reply` is added on
 top of any of them when it applies. `AI/Sifted` is the record of what sift has
 seen, so a thread that carries it but no priority label is one the user
 removed a label from (Step 4).
@@ -108,8 +109,10 @@ date and time in that timezone (Step 2 says how to read it).
 
 Everything above the rubric's **Added by sift** section is the user's: the
 how-to, the label key, the About me notes, and the user's rules. Sift never
-rewords, moves, or removes any of it, with three exceptions: lines under
+rewords, moves, or removes any of it, with four exceptions: lines under
 About me that start with `(inferred)` are sift's own (see [About me](#about-me));
+lines under Newsletters that start with `(learned)` are sift's own (see
+[Newsletters](#newsletters));
 sift may move the user's About me lines, never changing their words, to keep
 related notes together; and a template placeholder, a line wholly in parentheses such as `- (I add these)`
 or `### (topic, such as Kids' soccer, Home, or Work)`, may be replaced by the
@@ -145,7 +148,7 @@ single search or query, and the first result answers it:
   message is later than the last run.
 - A thread the user marked wrong: `label:<AI/Wrong id>`.
 - A sifted thread with no priority label:
-  `label:<AI/Sifted id> -label:<AI/Important id> -label:<AI/Low priority id> -label:<AI/Junk id>`.
+  `label:<AI/Sifted id> -label:<AI/Important id> -label:<AI/Low priority id> -label:<AI/Bulk id> -label:<AI/Junk id>`.
 - A thread carrying two priority labels, one search for each pair.
 - A comment thread on the rubric whose latest comment is the user's (see
   [Never block](#never-block)).
@@ -220,8 +223,9 @@ applied, which the log records:
 | Sift applied | Correct label |
 |---|---|
 | `AI/Important` | `AI/Low priority` |
+| `AI/Bulk` | `AI/Low priority` |
 | `AI/Junk` | `AI/Low priority` |
-| `AI/Low priority` | Unclear: could be Important or Junk |
+| `AI/Low priority` | Unclear: could be Important, Bulk, or Junk |
 
 When the direction is unclear, leave the thread's labels as they are and open
 a question (see [Never block](#never-block)). Relabel every other correction now,
@@ -236,6 +240,11 @@ generalizing over memorizing one email, but name the senders the corrections
 show, or the narrowest category that covers them ("automated deadline notices
 from the club registrar"), never a wider class the evidence doesn't show, such
 as all vendors or all community organizations.
+
+When the corrected thread is a newsletter, record the newsletter in the
+rubric's Newsletters section instead of adding a rule: under Valued when the
+correct label is Important or Low priority, under Not valued when it is Bulk
+or Junk (see [Newsletters](#newsletters)).
 
 If a correction is genuinely ambiguous, don't guess and don't stop. Open it
 as a question, and leave the rubric alone for that item.
@@ -262,7 +271,9 @@ first page.
 
 Fetch metadata only (sender, recipients, subject, date, snippet, existing
 labels). Read a full body only when the metadata can't settle the call, such as
-a snippet that points to "see attached" or a portal.
+a snippet that points to "see attached" or a portal. Read a message's raw form,
+for its `List-Unsubscribe` and `List-Id` headers, only when Step 6 can't tell
+from everything else whether it is mass mail.
 
 If nothing matches, write a run summary reporting zero (Step 8) and stop.
 The summary still matters: the next run's new-reply search starts from its
@@ -314,6 +325,22 @@ The lookups:
 These often separate "important" from "urgent-sounding" better than the text
 itself. Marketing copy says "action required"; a coach's two-line note doesn't.
 
+**Mass mail or mail meant for the user.** Mass mail is sent to a list rather
+than to the user personally. The signs are a no-reply sender, an unsubscribe
+link, the user missing from To or a list address in To, and Gmail's
+`CATEGORY_PROMOTIONS` or `CATEGORY_UPDATES` label. When those leave it unclear,
+read the raw message for `List-Unsubscribe` or `List-Id` headers. For mass
+mail, ask: would the user miss it if it were archived unread? If not, it is
+`AI/Bulk`, unless it is unsolicited or spam-like, which is `AI/Junk`. Mail
+meant for the user that they may need later, such as a receipt or an FYI from
+someone they know, is `AI/Low priority`, never Bulk, even when it comes from
+a no-reply sender.
+
+A newsletter is decided by the rubric's Newsletters section, not by its
+signals, since every newsletter carries them. One on the Valued list is
+`AI/Low priority`, never Bulk. One on the Not valued list, or on neither list,
+is `AI/Bulk`. Either way it also gets `AI/Newsletter`.
+
 Choose exactly one priority label. `AI/Needs reply` can accompany any of them,
 and depends on the message, not the sender: add it when the message itself asks
 the user something or needs their acknowledgment, as the rubric's Needs reply
@@ -325,8 +352,12 @@ only one remains. When torn, choose the less severe call:
 - Between important and low priority, choose important. A false alarm is
   visible and costs a glance, while a miss blends into the inbox and may never
   be noticed.
-- Between low priority and junk, choose low priority. Junk is for mail the user
-  never wants; legitimate mail that is merely dull belongs in low priority.
+- Between low priority and bulk, choose low priority. Bulk is for mass mail
+  the user would not miss; mail meant for the user belongs in low priority.
+- Between bulk and junk, choose bulk. Junk is for mail the user never wants;
+  mass mail the user signed up for but would not miss belongs in bulk.
+- Between low priority and junk, choose low priority. Legitimate mail that is
+  merely dull is never junk.
 
 Add `AI/Sifted` to every thread evaluated. Apply labels at the thread level.
 Batch the calls where the tools allow.
@@ -370,7 +401,7 @@ each item this run has not done, do it now, then continue.
 Write the run summary directly under this run's heading in the log, above its
 thread lines, then repeat it in chat:
 
-- Counts: processed, important, low priority, junk, needs reply, taken from
+- Counts: processed, important, low priority, bulk, junk, needs reply, taken from
   the labels actually applied this run.
 - The important and needs-reply threads, one line each with the reason.
 - Corrections learned and the rubric changes they produced.
@@ -436,6 +467,23 @@ at the start of every run.
   or once its sender has not written in 180 days. Re-check a sourced fact
   older than 90 days before relying on it, and update its date. Past about
   200 inferred lines, remove the ones unused the longest.
+
+## Newsletters
+
+The rubric's Newsletters section lists the newsletters the user wants to read
+under Valued and the ones the user doesn't under Not valued, one per line, by
+name and sender. Read it on every run, so a change the user makes there takes
+effect on the next run. Match a newsletter by its sender or its name; a
+newsletter on neither list is Not valued.
+
+Lines the user writes are the user's. Sift adds a line only from a correction
+(Step 4), in this form:
+`(learned) <newsletter name> | <sender> | corrected <date>`, the date being
+the run's date from Step 2. When a later correction points the other way, move
+the `(learned)` line to the other list and update its date. When the
+correction conflicts with a line the user wrote, leave that line alone, keep
+the thread's labels, and open a question (see [Never block](#never-block)).
+Note each line added or moved in the changelog.
 
 ## Keeping the rubric healthy
 

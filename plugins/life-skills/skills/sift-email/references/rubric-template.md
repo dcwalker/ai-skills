@@ -14,6 +14,9 @@ Timezone: UTC (change to yours, such as Europe/Berlin)
   Changelog.
 - **Answer a question:** sift asks in comments that start with "Sift:". Reply
   in the thread, and the next run applies your answer.
+- **Choose newsletters:** list the ones I want to read under Newsletters,
+  Valued. Every other newsletter gets AI/Bulk. Sift adds lines there too, each
+  starting with "(learned)", when I correct a newsletter's label.
 - **Allow more than labels:** add it under Permissions, for example
   "Archive threads labeled AI/Junk".
 - **Tell sift about yourself:** add notes under About me, grouped by topic.
@@ -25,7 +28,8 @@ Timezone: UTC (change to yours, such as Europe/Berlin)
 | Label | Meaning |
 |---|---|
 | AI/Important | I'd want to see it today |
-| AI/Low priority | Legitimate, nothing urgent |
+| AI/Low priority | Meant for me, nothing urgent |
+| AI/Bulk | Mass mail I wouldn't miss if it were archived unread |
 | AI/Junk | Mail I never want |
 | AI/Needs reply | Someone is waiting on me |
 | AI/Sifted | Sift has evaluated it |
@@ -69,13 +73,34 @@ Not a reply, even from someone I know:
 
 ## Low priority
 
-Legitimate mail that doesn't meet the rules above, including:
+Mail meant for me that doesn't meet the rules above, including:
 
 - Automated notifications that only confirm something already done
 - Group threads where I am Cc'd and nothing is asked of me
-- Newsletters I signed up for
+- Newsletters on my Valued list
 - Receipts and statements
+- FYIs from people I know
+
+## Bulk
+
+Mass mail I wouldn't miss if it were archived unread, including:
+
+- Newsletters not on my Valued list
+- Promotions from companies I've signed up with or bought from
 - Social network notifications
+
+## Newsletters
+
+Valued newsletters get AI/Low priority. Every other newsletter, listed under
+Not valued or not listed at all, gets AI/Bulk. One per line: name | sender.
+
+### Valued
+
+- (I add these)
+
+### Not valued
+
+- (I add these)
 
 ## Junk
 
