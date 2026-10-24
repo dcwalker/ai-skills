@@ -17,7 +17,7 @@
 # a CLI with its own stored auth (gh) ignores these entirely, which is why the
 # gh stub goes on PATH as well.
 EVAL_SCRUBBED_CREDENTIALS=(
-  # Trello -- create-trello-task.sh real mode.
+  # Trello -- REST API credentials, which a script or curl call would read.
   TRELLO_API_KEY
   TRELLO_TOKEN
   TRELLO_LIST_ID

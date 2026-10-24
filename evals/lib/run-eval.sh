@@ -240,11 +240,6 @@ ENV_FILE="$RUN_DIR/env.sh"
   fi
 
   emit_notes_dayone_fixture_env "$FIXTURE_DIR" "$RUN_DIR"
-  if [[ -f "$FIXTURE_DIR/trello-fixture.json" ]]; then
-    echo "export TRELLO_FIXTURE_FILE=\"$FIXTURE_DIR/trello-fixture.json\""
-    echo "export TRELLO_FIXTURE_COUNTS_DIR=\"$RUN_DIR\""
-    echo "export TRELLO_FIXTURE_LOG=\"$RUN_DIR/trello-calls.log\""
-  fi
 } > "$ENV_FILE"
 
 # Everything that makes a trial safe lives in env.sh: the credential unsets, the

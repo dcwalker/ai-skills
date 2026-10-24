@@ -19,7 +19,7 @@ actual end:
 - **Created in the 15 minutes after the end**: include it only when it
   relates directly to something discussed in the meeting (a topic in the
   notes, an agenda item, a decision, or an action item). Name the content it
-  relates to when proposing it. An item that shares no subject with the
+  relates to when including it. An item that shares no subject with the
   meeting is left out, not offered as a question. Ask the user only when the
   item plausibly connects to the meeting but the connection is uncertain;
   never include it on a guess.
@@ -61,15 +61,16 @@ search by creation time, say so and ask the user how to proceed rather than
 falling back to keywords.
 
 When the tool does not show who created an item, or who it is assigned to,
-present it with that gap stated and ask the user whether an attendee created
-it. Never assume a creator from the item's content or from who owns the
+look for it in another source (a chat message announcing the item, the
+item's activity, the user's other notes). When none shows it, state that gap
+and ask the user whether an attendee created it. Never assume a creator from the item's content or from who owns the
 board. Leave out items an integration or automation created when the tool
 identifies them as such.
 
 ## Reporting
 
-When presenting tracker items, found or empty, open with one line per
-tracker in this shape, before any finding:
+In the Step 8 report, found or empty, open the tracker findings with one
+line per tracker in this shape, before any finding:
 
 `<Tracker>: searched items created <start> to <end + 15 minutes> (<search used>); found <count> by or assigned to attendees.`
 
@@ -83,7 +84,7 @@ that call.
 
 ## Where They Go
 
-Propose each item; the user decides what gets in.
+Include each item that counts, without asking; the report lists them all.
 
 - **Notes**: place the item beside the discussion it came from, using the
   Step 5 tracked work item format (`[KEY-123](...): <summary> (<status>)`).
@@ -91,8 +92,8 @@ Propose each item; the user decides what gets in.
   rule.
 - **Action items**: when the item is a task, it also becomes a Step 7 action
   item linked to it, led by its assignee, or its creator when unassigned.
-  Ask for a due date the item does not carry, as Step 7 does for any action
+  Find a due date the item does not carry as Step 7 does for any action
   item.
-- **No duplicates**: when a confirmed action item matches a captured item,
-  link the captured item and do not create a Trello card for it. Ask the
+- **No duplicates**: when an action item matches a captured item,
+  link the captured item and do not create a task for it. Ask the
   user when it is unclear whether the two are the same work.

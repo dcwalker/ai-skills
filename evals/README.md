@@ -55,8 +55,6 @@ plugins/<plugin>/skills/<skill>/evals/
         │                      SONAR_PROJECT_KEY when sonar-fixture.json is
         │                      present -- lets a fixture skip shipping a
         │                      sonar-project.properties file in repo/.
-        ├── trello-fixture.json Optional: canned create-trello-task.sh
-        │                      responses (organize-meeting-notes).
         ├── notes-fixture.json  Optional: Apple Notes state for the
         │                      osascript stub (transcribe-apple-notes-to-dayone).
         ├── dayone-fixture.json Optional: Day One state for the dayone stub.
@@ -360,19 +358,6 @@ grader reads, and log each call to `notes-calls.log`, `dayone-calls.log`, and
 `TZ=America/Chicago`. The skill's `evals/build_fixtures.py` regenerates its
 fixtures, rendering the invented notes in a handwriting-style font.
 
-## The Trello fixture hook
-
-`organize-meeting-notes`'s bundled `create-trello-task.sh` reads
-`TRELLO_FIXTURE_FILE` (an opt-in env var; unset in normal use) and serves a
-canned response instead of calling the real Trello API. `run-eval.sh` sets it
-automatically when `fixtures/<eval-id>/trello-fixture.json` exists, along
-with `TRELLO_FIXTURE_COUNTS_DIR` (each script call is a fresh process, so a
-list-valued fixture entry's call-order index has to persist across
-invocations via a counts file, the same reason `SONAR_FIXTURE_COUNTS_DIR`
-exists) and `TRELLO_FIXTURE_LOG` (one JSON line per call -- `{"text", "desc",
-"url"}` or `{"text", "desc", "error"}` -- for graders, mirroring `GH_STUB_LOG`).
-See the script's own header comment for the exact fixture JSON format.
-
 ## Trials must not be able to reach a real service
 
 Every trial environment is a fail-closed one. This is the invariant to
@@ -387,8 +372,7 @@ preserve when adding a stub, a fixture hook, or a bundled script:
   to `PATH`.
 - A bundled script that can reach a real service checks `AI_SKILLS_EVAL` and
   **refuses** when its fixture is absent. It must never treat a missing
-  fixture as "use the real API." Both `create-trello-task.sh` and
-  `list-sonar-issues.py` do this.
+  fixture as "use the real API." `list-sonar-issues.py` does this.
 - `gh-stub` is the reference: it refuses when `GH_STUB_CASSETTE` is unset and
   never execs the real `gh`.
 - `sonar-scanner-stub` holds the same contract for `sonar-scanner`, and is
@@ -422,8 +406,8 @@ bypasses it completely. Assume every trial can shell out.
 
 A missing fixture file is an authoring oversight, and an oversight must fail
 loudly rather than quietly reach a live account. Before this was enforced,
-`create-trello-task.sh` selected its mode by the mere absence of
-`TRELLO_FIXTURE_FILE`; three evals had no `trello-fixture.json`, the
+a Trello script that `organize-meeting-notes` once bundled selected its
+mode by the mere absence of its fixture file; three evals had no fixture, the
 developer's real Trello credentials were exported by their shell profile, and
 a trial created three real cards on a real personal board.
 
@@ -896,8 +880,8 @@ half ("don't invent a link when none can be derived").
 1. Add an entry to the skill's `evals.json` (id, prompt, expected_output,
    expectations).
 2. Create `fixtures/<eval-id>/` with whatever the scenario needs: a `repo/`
-   tree, a `gh-cassette.json`, a `sonar-fixture.json`, a `trello-fixture.json`,
-   or (for `triage`) a `trello-mcp-state.json`. Not every eval needs every
+   tree, a `gh-cassette.json`, a `sonar-fixture.json`, or a
+   `<service>-mcp-state.json` for each MCP stub it uses. Not every eval needs every
    fixture type.
 3. Include both positive cases (clean scenario, skill should act) and
    negative cases (ambiguous or invalid scenario, skill should ask or

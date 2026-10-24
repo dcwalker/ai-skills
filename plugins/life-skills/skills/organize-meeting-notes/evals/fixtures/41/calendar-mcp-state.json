@@ -1,0 +1,61 @@
+{
+  "calendar": {
+    "id": "dan.walker@example.com",
+    "summary": "Dan Walker",
+    "timeZone": "America/Los_Angeles"
+  },
+  "updated": "2026-10-20T19:00:00Z",
+  "events": [
+    {
+      "conferenceData": {},
+      "created": "2026-10-12T17:00:00Z",
+      "creator": {
+        "email": "dan.walker@example.com"
+      },
+      "description": "Agenda:\n1. Launch checklist (owner: Maya Okafor, due Oct 23)\n2. Press kit\n3. Docs freeze date",
+      "end": {
+        "dateTime": "2026-10-20T11:30:00-07:00",
+        "timeZone": "America/Los_Angeles"
+      },
+      "eventType": "DEFAULT",
+      "htmlLink": "https://www.google.com/calendar/event?eid=evt-launch-1020",
+      "id": "evt-launch-1020",
+      "location": "Zoom",
+      "organizer": {
+        "email": "dan.walker@example.com",
+        "self": true
+      },
+      "start": {
+        "dateTime": "2026-10-20T11:00:00-07:00",
+        "timeZone": "America/Los_Angeles"
+      },
+      "status": "confirmed",
+      "summary": "Launch Prep",
+      "updated": "2026-10-12T17:00:00Z",
+      "useDefaultReminders": true,
+      "attendees": [
+        {
+          "email": "dan.walker@example.com",
+          "displayName": "Dan Walker",
+          "responseStatus": "accepted",
+          "organizer": true,
+          "self": true
+        },
+        {
+          "email": "m.okafor@example.com",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "priya.raman@example.com",
+          "displayName": "Priya Raman",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "sam.ortiz@example.com",
+          "displayName": "Sam Ortiz",
+          "responseStatus": "declined"
+        }
+      ]
+    }
+  ]
+}

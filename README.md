@@ -172,8 +172,8 @@ against ground truth instead of trusting the executor's self-report.
   under `evals/fixtures/<id>/`.
 - Every trial runs in an isolated scratch environment. External systems are
   mocked at their natural seam: a fixture-driven fake `gh` CLI on `PATH` for
-  GitHub-touching skills, opt-in fixture hooks for SonarQube and the Trello
-  CLI script, and real protocol-compliant MCP stub servers (Trello, Gmail,
+  GitHub-touching skills, an opt-in fixture hook for SonarQube, and real
+  protocol-compliant MCP stub servers (Trello, Gmail,
   Jira, Slack) for MCP-dependent skills, swapped in via
   `claude --strict-mcp-config`.
 - An executor runs the skill against the trial's prompt; grading then checks

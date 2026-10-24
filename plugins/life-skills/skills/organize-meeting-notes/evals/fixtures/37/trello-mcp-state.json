@@ -1,0 +1,17 @@
+{
+  "boards": {
+    "board-team": {
+      "id": "board-team",
+      "name": "Team Tasks"
+    }
+  },
+  "lists": {
+    "list-todo": {
+      "id": "list-todo",
+      "name": "To Do",
+      "board_id": "board-team"
+    }
+  },
+  "cards": {},
+  "labels": {}
+}

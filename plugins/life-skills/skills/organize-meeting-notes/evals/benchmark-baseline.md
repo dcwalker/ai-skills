@@ -1,67 +1,79 @@
 # Skill Benchmark: organize-meeting-notes
 
 **Model**: claude-sonnet-5 (executor) / claude-opus-5-5 (analyzer)
-**Date**: 2026-10-08T00:00:00Z
-**Evals**: 1-36 (1 recorded run each, with_skill only)
+**Date**: 2026-10-24T00:00:00Z
+**Evals**: 1-41 (1 recorded run each, with_skill only)
 
 ## Summary
 
 | Metric | With Skill |
 |--------|------------|
 | Pass Rate | 94% ± 11% |
-| Time | 124.7s ± 71.0s (n=36) |
-| Tokens | 47998 ± 12518 (n=36) |
+| Time | 105.5s ± 50.1s (n=41) |
+| Tokens | 43314 ± 11243 (n=41) |
 
 ## Per-eval results
 
 | Eval | Pass Rate | Time (s) | Tokens |
 |------|-----------|----------|--------|
-| 1 | 5/5 | 92.2 | 45037 |
-| 2 | 4/4 | 60.3 | 35790 |
-| 3 | 3/4 | 85.8 | 40741 |
-| 4 | 3/4 | 178.5 | 49299 |
-| 5 | 3/4 | 84.8 | 38302 |
-| 6 | 5/5 | 78.8 | 39818 |
-| 7 | 5/8 | 84.2 | 40993 |
-| 8 | 5/5 | 95.3 | 38328 |
-| 9 | 7/7 | 353.2 | 78369 |
-| 10 | 5/5 | 102.0 | 43989 |
-| 11 | 6/6 | 87.1 | 40069 |
-| 12 | 5/5 | 82.3 | 38592 |
-| 13 | 6/6 | 127.1 | 53857 |
-| 14 | 5/7 | 151.0 | 49727 |
-| 15 | 10/11 | 320.7 | 76648 |
-| 16 | 4/4 | 15.0 | 27621 |
-| 17 | 5/7 | 118.5 | 52692 |
-| 18 | 7/7 | 248.1 | 84601 |
-| 19 | 6/7 | 128.1 | 49422 |
-| 20 | 3/4 | 19.7 | 28064 |
-| 21 | 9/9 | 107.2 | 45710 |
-| 22 | 11/12 | 175.8 | 63498 |
-| 23 | 7/7 | 112.1 | 50045 |
-| 24 | 7/7 | 113.7 | 46660 |
-| 25 | 8/8 | 139.9 | 46883 |
-| 26 | 8/8 | 240.0 | 61790 |
-| 27 | 7/7 | 133.2 | 49079 |
-| 28 | 11/11 | 117.0 | 52760 |
-| 29 | 8/8 | 72.4 | 43250 |
-| 30 | 5/5 | 153.2 | 56939 |
-| 31 | 5/5 | 137.2 | 41026 |
-| 32 | 7/7 | 68.9 | 37240 |
-| 33 | 5/5 | 71.1 | 40393 |
-| 34 | 7/7 | 113.2 | 45790 |
-| 35 | 6/6 | 117.7 | 52344 |
-| 36 | 6/6 | 105.3 | 42565 |
+| 1 | 4/5 | 93.6 | 57426 |
+| 2 | 4/4 | 53.9 | 31338 |
+| 3 | 4/4 | 54.3 | 30238 |
+| 4 | 3/4 | 122.5 | 41121 |
+| 5 | 3/4 | 73.8 | 35153 |
+| 6 | 5/5 | 74.4 | 38662 |
+| 7 | 6/7 | 97.7 | 42363 |
+| 8 | 5/5 | 60.9 | 33083 |
+| 9 | 4/7 | 188.9 | 61198 |
+| 10 | 5/5 | 59.2 | 33279 |
+| 11 | 6/6 | 118.3 | 44719 |
+| 12 | 5/5 | 60.1 | 31952 |
+| 13 | 6/6 | 86.0 | 41214 |
+| 14 | 6/7 | 80.4 | 38981 |
+| 15 | 8/11 | 195.0 | 61845 |
+| 16 | 4/4 | 13.9 | 22102 |
+| 17 | 6/7 | 120.8 | 50001 |
+| 18 | 6/7 | 135.2 | 54910 |
+| 19 | 7/7 | 145.0 | 48812 |
+| 20 | 3/4 | 12.6 | 23043 |
+| 21 | 9/9 | 198.9 | 64782 |
+| 22 | 11/12 | 192.6 | 63947 |
+| 23 | 7/7 | 134.9 | 47787 |
+| 24 | 7/7 | 137.8 | 48287 |
+| 25 | 8/8 | 107.4 | 42655 |
+| 26 | 8/8 | 210.9 | 65742 |
+| 27 | 7/7 | 124.8 | 44533 |
+| 28 | 11/11 | 127.1 | 48812 |
+| 29 | 8/8 | 78.7 | 35124 |
+| 30 | 5/5 | 196.8 | 58676 |
+| 31 | 5/5 | 48.8 | 30457 |
+| 32 | 7/7 | 123.5 | 43733 |
+| 33 | 5/5 | 87.1 | 38015 |
+| 34 | 7/7 | 91.8 | 37945 |
+| 35 | 6/6 | 149.5 | 54055 |
+| 36 | 6/6 | 64.1 | 33294 |
+| 37 | 4/4 | 74.0 | 40291 |
+| 38 | 4/4 | 92.9 | 45665 |
+| 39 | 4/5 | 91.5 | 38221 |
+| 40 | 5/5 | 84.5 | 37929 |
+| 41 | 7/7 | 61.3 | 34476 |
 
 ## Notes
 
-- 36 evals and 36 recorded runs pass 219/233 expectations, with 26 evals passing every expectation. Graders checked every claimed search, read, and card against the stub call logs, `events.jsonl`, `tools.log`, and saved workspace files rather than the executor's own report.
-- This baseline accompanies issue #96. Step 1b gains a source list, thread replies (each kept in its own block, a short reply read against its own parent, and a reply that continues a pre-meeting thread proposed as a follow-up with that parent as context), the timestamp-plus-date retry, a rule against reporting search-result context, and a timestamp search in place of a partial conversation listing. Step 3 replaces the roster with one line (who was invited, how many attended) when more than 20 attended or the names cannot all be established. Step 7 treats a request for the final document as approval of every pending stage. A Quality Rule covers re-checking work already produced.
-- This run is the first without the identity leak: trials started from a Claude Code session had inherited the developer's account email through `CLAUDE_CODE_*` variables, which `evals/lib/isolation-env.sh` now unsets. An earlier full run on this branch with the leak scored 223/231; this one scores 219/233. On the 173 expectations shared with the 2026-10-07 baseline, it scores 159 against 161.
-- New evals: 28 (thread replies, with a short reply that lands beside another thread's reply in time, and a follow-up on a pre-meeting thread), 29 (large account), 30 (attendee summary line), 31 (finalize on request), 32 (email), 33 (the 20-attendee boundary), 34 (listing fallback), 35 (re-checking a saved file), and 36 (connected calendar).
-- Eval 28 was strengthened after the rest of this run, and the thread rules in Step 1b changed with it, so its row is the first of three runs on the final text (11/11, 11/11, 9/11). The final text adds a worked two-thread example and says time order applies between threads, never across them; on the previous wording, one run in three flattened the threads into a single time-ordered list (9/11, 11/11, 10/11), and on this text none did. The 9/11 run laid the threads out correctly but left the pre-meeting thread out of the notes, against the rule to keep every in-window message unless the user declines it. No other eval's fixture has thread replies, so the rest of the run is unaffected by these changes.
-- Failures elsewhere include runs that ended before a final document (7), a missing agenda-item link (7), the summary rule (14), drafting without asking for every due date (15), and an unconfirmed action item (22). Eval 27's Trello fixture now pins `stub_now`; without it, the case passed or failed by run date, and it failed on main as well.
-- Harness changes this run used: the Slack stub returns thread replies from search, pages, lists conversations, and can refuse search; the Gmail stub supports `OR`, phrases, and parentheses; a calendar stub is new; trials get an explicit `--tools` set, the driver stops on a login failure, and the host account's identity variables are unset.
+- 41 evals and 41 recorded runs pass 241/257 expectations, with 29 evals passing every expectation. Graders checked every claimed search, read, lookup, and card against the stub call logs, `events.jsonl`, `tools.log`, and saved workspace files rather than the executor's own report.
+- This baseline accompanies [dcwalker/ai-skills#124](https://github.com/dcwalker/ai-skills/pull/124). The skill no longer bundles a Trello script: it creates tasks only when the user asks, in the tool the user names. It records sensitive topics and explicit language uncensored. It replaces the per-line interview and staged approval with filling gaps from the user's calendar, contacts, chat, trackers, and other notes, asking only about what no source settles, and it reports after the document what each source resolved.
+- The previous baseline (2026-10-08) scored 219/233. Most of its expectations about the interview and approval flow were rewritten for this behavior (for example, "a per-line interview" became "no per-line interview"), so the two rates measure different things and are not directly comparable.
+- New evals: 37 (a task request that names no tool), 38 (a task tool the skill cannot reach), 39 (censored profanity in a transcript), 40 (sensitive topics in a 1:1), and 41 (an initial, an attendance question, and a due date resolved from contacts and the calendar without asking).
+- Evals 1, 4, 6, and 26 moved from the script's fixture hook to the Trello MCP stub. Eval 4's card failure uses the stub's new opt-in `create_card_errors` key.
+- Eval 39 was regraded on review. Its grader passed the "no mask" expectation on a turn-2 edit, but the turn-1 document wrote "Priya reacted with an expletive" and said the word could not be restored. The word appeared only after the simulated user supplied it, so the row counts it as a failure.
+- Known gaps accepted for this baseline:
+  - Missing due dates still go unasked in 15 and 17. Eval 15 again ties a stated cutover timing to the ticket-filing action.
+  - Eval 4 retried a failed card four times in one turn, against the no-retry rule.
+  - Eval 20 did not look at the working directory or name `transcript.txt` before stopping.
+  - Evals 9 and 15 add small connective facts and restate the chat message by message.
+  - Eval 22 left out a join notice, and eval 1 reissued only the Action Items section after linking cards.
+  - Eval 36's tentative-attendance default and eval 39's reported-speech wording passed in this run, after failing in earlier runs on this branch.
+- Eval 15 attempted one write to `/tmp` for a word count, and the sandbox refused it; nothing reached outside the run directory.
+- Harness changes this run used: the trial driver stops the simulated user on `DONE.` as well as `DONE` (before, a finished trial could run to the 40-turn cap), and the Trello script's fixture hook is gone.
 - Run method: `evals/lib/run-mcp-trials.sh` with `SIMULATED_USER=1` (evals without `follow_ups` get a simulated user; the rest use their scripted follow-ups).
 - Tokens are input, output, and cache-creation tokens summed across every turn of the `claude -p` session, excluding cache reads, the same measure as the previous baseline.
-- Gmail stub re-check (2026-10-10, issue #109): the stub's `list_labels` and `create_label` now return the live connector's shapes, and it offers `label_thread` and `unlabel_thread`. Eval 32, the only one with a Gmail fixture, was re-run twice with `SIMULATED_USER=1` and passed 7/7 both times, matching its row above. Neither run called a label tool, so the change could not reach it; the rows above stay the baseline of record.
