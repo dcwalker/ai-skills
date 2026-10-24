@@ -151,6 +151,13 @@ under AI/ in title case (AI/Invitation).
 
 - (none yet)
 
+## Notify
+
+Mail that should send me a push notification when sift labels it. Empty means
+sift never notifies me; its runs report only in the log.
+
+- (none yet)
+
 ## Examples
 
 Real cases that teach the rules. Format: sender | subject | correct label | why.

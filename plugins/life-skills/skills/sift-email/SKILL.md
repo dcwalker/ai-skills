@@ -271,9 +271,7 @@ first page.
 
 Fetch metadata only (sender, recipients, subject, date, snippet, existing
 labels). Read a full body only when the metadata can't settle the call, such as
-a snippet that points to "see attached" or a portal. Read a message's raw form,
-for its `List-Unsubscribe` and `List-Id` headers, only when Step 6 can't tell
-from everything else whether it is mass mail.
+a snippet that points to "see attached" or a portal.
 
 If nothing matches, write a run summary reporting zero (Step 8) and stop.
 The summary still matters: the next run's new-reply search starts from its
@@ -328,13 +326,12 @@ itself. Marketing copy says "action required"; a coach's two-line note doesn't.
 **Mass mail or mail meant for the user.** Mass mail is sent to a list rather
 than to the user personally. The signs are a no-reply sender, an unsubscribe
 link, the user missing from To or a list address in To, and Gmail's
-`CATEGORY_PROMOTIONS` or `CATEGORY_UPDATES` label. When those leave it unclear,
-read the raw message for `List-Unsubscribe` or `List-Id` headers. For mass
-mail, ask: would the user miss it if it were archived unread? If not, it is
-`AI/Bulk`, unless it is unsolicited or spam-like, which is `AI/Junk`. Mail
+`CATEGORY_PROMOTIONS` or `CATEGORY_UPDATES` label. Only when those leave it
+unclear, read the raw message for `List-Unsubscribe` or `List-Id` headers. Of
+mass mail, ask: would the user miss it if it were archived unread? If not, it
+is `AI/Bulk`, unless it is unsolicited or spam-like, which is `AI/Junk`. Mail
 meant for the user that they may need later, such as a receipt or an FYI from
-someone they know, is `AI/Low priority`, never Bulk, even when it comes from
-a no-reply sender.
+someone they know, is `AI/Low priority`, never Bulk, even from a no-reply sender.
 
 A newsletter is decided by the rubric's Newsletters section, not by its
 signals, since every newsletter carries them. One on the Valued list is
@@ -418,7 +415,10 @@ question: anything that needs the user's answer is a comment on the rubric
 (see [Never block](#never-block)). When the request asked for an action the
 rubric does not grant, such as archiving, say it was not done and that the
 grant belongs in the rubric's Permissions section. Do not offer to do it, or
-to add the grant yourself: Permissions is the user's to write.
+to add the grant yourself: Permissions is the user's to write. Beyond the log
+and this reply, send no push notification or message about a run, whatever
+tools exist, except one per thread the rubric's Notify section describes,
+naming its sender and subject. A missing or empty Notify means none.
 
 ## Never block
 

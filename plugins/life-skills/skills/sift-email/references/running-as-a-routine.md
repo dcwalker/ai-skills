@@ -15,6 +15,11 @@ Sift is meant to run as a scheduled cloud routine. The routine needs:
   allows. Most runs find nothing new and stop early, so a few runs a day cost
   far less than hourly ones.
 
+A routine run can have a push notification tool even when the routine's
+allowed tools don't list it, and may use it to report a run. Sift sends one
+only for mail the rubric's Notify section describes, so a missing or empty
+Notify keeps every run silent apart from the log.
+
 ## Why the checkout, not the plugin
 
 Two things get in the way of invoking the installed skill from a routine:
