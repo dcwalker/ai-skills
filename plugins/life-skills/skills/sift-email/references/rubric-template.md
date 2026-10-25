@@ -9,14 +9,18 @@ Timezone: UTC (change to yours, such as Europe/Berlin)
 ## How to use this doc
 
 - **Change a rule:** edit any section above "Added by sift". Sift never changes those.
-- **Correct a label:** in Gmail, swap the AI label for the right one, or add
-  AI/Wrong. Sift learns from it on its next run and records the change in the
-  Changelog.
+- **Correct sift:** add or edit a rule here; the next run follows it. Fixing
+  one thread's label or Important mark in Gmail fixes that thread only, and
+  sift won't undo it.
+- **Let sift learn on its own:** once a day, sift checks how I handled the
+  mail it labeled. When I reply to or star several threads from one sender
+  that it ranked low, or archive its Important mail unread, it adds a rule
+  starting with "(observed)" under Added by sift.
 - **Answer a question:** sift asks in comments that start with "Sift:". Reply
   in the thread, and the next run applies your answer.
 - **Choose newsletters:** list the ones I want to read under Newsletters,
   Valued. Every other newsletter gets AI/Bulk. Sift adds lines there too, each
-  starting with "(learned)", when I correct a newsletter's label.
+  starting with "(learned)", from its daily check.
 - **Allow more than labels:** add it under Permissions, for example
   "Archive threads labeled AI/Junk".
 - **Tell sift about yourself:** add notes under About me, grouped by topic.
@@ -27,13 +31,11 @@ Timezone: UTC (change to yours, such as Europe/Berlin)
 
 | Label | Meaning |
 |---|---|
-| AI/Important | I'd want to see it today |
+| Important (Gmail's mark) | I'd want to see it today |
 | AI/Low priority | Meant for me, nothing urgent |
 | AI/Bulk | Mass mail I wouldn't miss if it were archived unread |
 | AI/Junk | Mail I never want |
-| AI/Needs reply | Someone is waiting on me |
-| AI/Sifted | Sift has evaluated it |
-| AI/Wrong | I add this to flag a bad call |
+| Star | Someone is waiting on me |
 
 ## About me
 
@@ -50,15 +52,15 @@ words.
 
 ## Always important
 
-Senders, topics, or situations that should always get AI/Important.
+Senders, topics, or situations that should always be marked Important.
 
 - Anything from a person I have written to in the last 90 days, unless it is clearly bulk mail
 - Deadlines, payments, or schedule changes affecting the next 7 days
 
 ## Needs reply
 
-What counts as someone waiting on me specifically. It depends on the message,
-not on who sent it.
+What counts as someone waiting on me specifically, which sift stars. It
+depends on the message, not on who sent it.
 
 - A direct question addressed to me by name or as the only recipient
 - Requests for a decision, approval, or volunteer sign-up
@@ -137,8 +139,10 @@ not on the words it happens to use. Sift creates each one under AI/.
 
 ## Added by sift
 
-Rules sift learned from my corrections. Sift adds, sharpens, and consolidates
-rules only here. A rule here can narrow one of mine for the cases it names.
+Rules sift learned from my answers to its questions, and "(observed)" rules
+from its daily check of how I handle mail. Sift adds, sharpens, and
+consolidates rules only here. A rule here can narrow one of mine for the
+cases it names.
 
 - (sift adds these)
 
@@ -162,7 +166,7 @@ sift never notifies me; its runs report only in the log.
 
 Real cases that teach the rules. Format: sender | subject | correct label | why.
 
-- (sift adds these from corrections)
+- (sift adds these)
 
 ## Changelog
 

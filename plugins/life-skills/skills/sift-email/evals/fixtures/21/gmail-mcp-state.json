@@ -63,11 +63,6 @@
       "name": "AI",
       "type": "user"
     },
-    "Label_21": {
-      "id": "Label_21",
-      "name": "AI/Important",
-      "type": "user"
-    },
     "Label_22": {
       "id": "Label_22",
       "name": "AI/Low priority",
@@ -76,21 +71,6 @@
     "Label_23": {
       "id": "Label_23",
       "name": "AI/Junk",
-      "type": "user"
-    },
-    "Label_24": {
-      "id": "Label_24",
-      "name": "AI/Needs reply",
-      "type": "user"
-    },
-    "Label_25": {
-      "id": "Label_25",
-      "name": "AI/Sifted",
-      "type": "user"
-    },
-    "Label_26": {
-      "id": "Label_26",
-      "name": "AI/Wrong",
       "type": "user"
     },
     "Label_27": {
@@ -169,7 +149,7 @@
       "to": [
         "pat@example.com"
       ],
-      "date": "2026-10-09T12:00:00Z",
+      "date": "2026-10-09T12:30:00Z",
       "snippet": "Statement for account ending 4410: opening balance $2,140.18, 23 transactions, closing balance $1,876.42.",
       "labelIds": [
         "INBOX"
@@ -181,7 +161,7 @@
           "to": [
             "pat@example.com"
           ],
-          "date": "2026-10-09T12:00:00Z",
+          "date": "2026-10-09T12:30:00Z",
           "snippet": "Statement for account ending 4410: opening balance $2,140.18, 23 transactions, closing balance $1,876.42.",
           "body": "Statement for account ending 4410: opening balance $2,140.18, 23 transactions, closing balance $1,876.42."
         }

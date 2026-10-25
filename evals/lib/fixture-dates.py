@@ -29,6 +29,13 @@ What moves:
     {{slackts:1790525640.000100}}  ->  the moved Slack timestamp
     {{slackp:1790525640.000100}}   ->  the moved timestamp as a permalink's
                                        p-segment: "p", then its digits
+    {{epoch:1791640800}}           ->  the moved Unix time in whole seconds
+    {{today:America/Chicago}}      ->  the run date itself in that zone,
+                                       unshifted, for state that must match
+                                       a trial's own clock (such as "already
+                                       ran today"); EVAL_RUN_DATE overrides
+    {{todayepoch:America/Chicago|00:00}}
+                                   ->  Unix seconds for that time on that date
   Formats are Python strftime, plus %Q for the northern-hemisphere season
   ("autumn") and %q for the same with "fall" for autumn. A format starting
   with "^" capitalizes the result's first letter: {{date:2026-10-01|^%q}}
@@ -57,6 +64,7 @@ import os
 import re
 import sys
 import tempfile
+import zoneinfo
 
 # A dated value is a YYYY-MM-DD prefix and an optional time part. The time
 # part is checked separately, which keeps each pattern simple.
@@ -69,7 +77,7 @@ TIME_PARTS = (
 )
 SLACK_TS = re.compile(r"^(\d{9,10})\.(\d{6})$")
 SLACK_TS_KEYS = {"ts", "thread_ts"}
-TOKEN = re.compile(r"\{\{(date|slackts|slackp):([^}|]+)(?:\|([^}]*))?\}\}")
+TOKEN = re.compile(r"\{\{(date|slackts|slackp|epoch|today|todayepoch):([^}|]+)(?:\|([^}]*))?\}\}")
 
 
 def fail(message: str) -> None:
@@ -104,6 +112,16 @@ def fixture_anchor(fixture_dir: str) -> datetime.date | None:
         fail(f"anchor_date in {fixture_dir} must be YYYY-MM-DD")
 
 
+def zone_today(zone: str) -> datetime.date:
+    """Today in the named zone, or EVAL_RUN_DATE when set."""
+    if os.environ.get("EVAL_RUN_DATE"):
+        return run_date()
+    try:
+        return datetime.datetime.now(zoneinfo.ZoneInfo(zone)).date()
+    except zoneinfo.ZoneInfoNotFoundError:
+        fail(f"unknown time zone {zone!r}")
+
+
 def shift_days(anchor: datetime.date | None) -> int:
     if anchor is None:
         return 0
@@ -127,19 +145,55 @@ def format_date(date: datetime.date, fmt: str) -> str:
     return text[:1].upper() + text[1:] if capitalize else text
 
 
+def date_token(token: str, value: str, fmt: str | None, days: int) -> str:
+    date = moved(value, days)
+    return format_date(date, fmt) if fmt else date.isoformat()
+
+
+def today_token(token: str, value: str, fmt: str | None, days: int) -> str:
+    return zone_today(value).isoformat()
+
+
+def todayepoch_token(token: str, value: str, fmt: str | None, days: int) -> str:
+    try:
+        hour, minute = (int(p) for p in (fmt or "00:00").split(":"))
+    except ValueError:
+        fail(f"{token!r} needs a time like 00:00")
+    moment = datetime.datetime.combine(zone_today(value), datetime.time(hour, minute),
+                                       zoneinfo.ZoneInfo(value))
+    return str(int(moment.timestamp()))
+
+
+def epoch_token(token: str, value: str, fmt: str | None, days: int) -> str:
+    if not value.isdigit():
+        fail(f"{token!r} needs whole Unix seconds like 1791640800")
+    return str(int(value) + days * 86400)
+
+
+def slack_token(token: str, value: str, permalink: bool, days: int) -> str:
+    ts = SLACK_TS.match(value)
+    if not ts:
+        fail(f"{token!r} needs a Slack timestamp like 1790525640.000100")
+    seconds = int(ts.group(1)) + days * 86400
+    return f"p{seconds}{ts.group(2)}" if permalink else f"{seconds}.{ts.group(2)}"
+
+
+TOKEN_KINDS = {
+    "date": date_token,
+    "today": today_token,
+    "todayepoch": todayepoch_token,
+    "epoch": epoch_token,
+    "slackts": lambda token, value, fmt, days: slack_token(token, value, False, days),
+    "slackp": lambda token, value, fmt, days: slack_token(token, value, True, days),
+}
+
+
 def resolve_tokens(text: str, days: int, anchored: bool) -> str:
     def replace(match: re.Match) -> str:
         if not anchored:
             fail(f"token {match.group(0)!r} in a fixture with no anchor_date")
         kind, value, fmt = match.group(1), match.group(2).strip(), match.group(3)
-        if kind == "date":
-            date = moved(value, days)
-            return format_date(date, fmt) if fmt else date.isoformat()
-        ts = SLACK_TS.match(value)
-        if not ts:
-            fail(f"{match.group(0)!r} needs a Slack timestamp like 1790525640.000100")
-        seconds = int(ts.group(1)) + days * 86400
-        return f"{seconds}.{ts.group(2)}" if kind == "slackts" else f"p{seconds}{ts.group(2)}"
+        return TOKEN_KINDS[kind](match.group(0), value, fmt, days)
     return TOKEN.sub(replace, text)
 
 

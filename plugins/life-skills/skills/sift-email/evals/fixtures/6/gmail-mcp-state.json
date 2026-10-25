@@ -63,11 +63,6 @@
       "name": "AI",
       "type": "user"
     },
-    "Label_21": {
-      "id": "Label_21",
-      "name": "AI/Important",
-      "type": "user"
-    },
     "Label_22": {
       "id": "Label_22",
       "name": "AI/Low priority",
@@ -78,21 +73,6 @@
       "name": "AI/Junk",
       "type": "user"
     },
-    "Label_24": {
-      "id": "Label_24",
-      "name": "AI/Needs reply",
-      "type": "user"
-    },
-    "Label_25": {
-      "id": "Label_25",
-      "name": "AI/Sifted",
-      "type": "user"
-    },
-    "Label_26": {
-      "id": "Label_26",
-      "name": "AI/Wrong",
-      "type": "user"
-    },
     "Label_27": {
       "id": "Label_27",
       "name": "AI/Bulk",
@@ -100,6 +80,84 @@
     }
   },
   "threads": {
+    "t-news": {
+      "id": "t-news",
+      "subject": "Morning Brief",
+      "from": "editor@morningbrief.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-07T12:00:00Z",
+      "snippet": "Today: city news, a new trail, and the weekend weather.\n\nUnsubscribe: https://morningbrief.example/unsubscribe",
+      "labelIds": [
+        "Label_27",
+        "CATEGORY_UPDATES"
+      ],
+      "messages": [
+        {
+          "id": "t-news-m1",
+          "from": "editor@morningbrief.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-07T12:00:00Z",
+          "snippet": "Today: city news, a new trail, and the weekend weather.\n\nUnsubscribe: https://morningbrief.example/unsubscribe",
+          "body": "Today: city news, a new trail, and the weekend weather.\n\nUnsubscribe: https://morningbrief.example/unsubscribe"
+        }
+      ]
+    },
+    "t-alert": {
+      "id": "t-alert",
+      "subject": "Large purchase on your card",
+      "from": "alerts@cedarbank.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-07T21:00:00Z",
+      "snippet": "A purchase of $642.10 at Hardware Depot was made on your card ending 4410. If this was you, no action is needed.",
+      "labelIds": [
+        "IMPORTANT"
+      ],
+      "messages": [
+        {
+          "id": "t-alert-m1",
+          "from": "alerts@cedarbank.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-07T21:00:00Z",
+          "snippet": "A purchase of $642.10 at Hardware Depot was made on your card ending 4410. If this was you, no action is needed.",
+          "body": "A purchase of $642.10 at Hardware Depot was made on your card ending 4410. If this was you, no action is needed."
+        }
+      ]
+    },
+    "t-receipt": {
+      "id": "t-receipt",
+      "subject": "Your receipt from Bookshop",
+      "from": "orders@bookshop.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-08T14:00:00Z",
+      "snippet": "Thanks for your order #4471. Total: $23.50.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD",
+        "Label_22"
+      ],
+      "messages": [
+        {
+          "id": "t-receipt-m1",
+          "from": "orders@bookshop.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-08T14:00:00Z",
+          "snippet": "Thanks for your order #4471. Total: $23.50.",
+          "body": "Thanks for your order #4471. Total: $23.50."
+        }
+      ]
+    },
     "t-survey": {
       "id": "t-survey",
       "subject": "Quick survey about city parks",
@@ -111,9 +169,7 @@
       "snippet": "Help shape the future of city parks. This 5-minute survey closes Oct 31.",
       "labelIds": [
         "INBOX",
-        "Label_22",
-        "Label_25",
-        "Label_26"
+        "Label_23"
       ],
       "messages": [
         {
@@ -125,6 +181,43 @@
           "date": "2026-10-08T16:00:00Z",
           "snippet": "Help shape the future of city parks. This 5-minute survey closes Oct 31.",
           "body": "Help shape the future of city parks. This 5-minute survey closes Oct 31."
+        }
+      ]
+    },
+    "t-asked": {
+      "id": "t-asked",
+      "subject": "Bake sale on Friday",
+      "from": "sam@maplegrovepta.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-09T20:00:00Z",
+      "snippet": "Happy to. Chocolate chip okay?",
+      "labelIds": [
+        "INBOX",
+        "Label_22",
+        "STARRED"
+      ],
+      "messages": [
+        {
+          "id": "t-asked-m1",
+          "from": "sam@maplegrovepta.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-08T19:00:00Z",
+          "snippet": "Pat, could you bring a dozen cookies to the bake sale Friday? Let me know either way.",
+          "body": "Pat, could you bring a dozen cookies to the bake sale Friday? Let me know either way."
+        },
+        {
+          "id": "t-asked-m2",
+          "from": "pat@example.com",
+          "to": [
+            "sam@maplegrovepta.example"
+          ],
+          "date": "2026-10-09T20:00:00Z",
+          "snippet": "Happy to. Chocolate chip okay?",
+          "body": "Happy to. Chocolate chip okay?"
         }
       ]
     },

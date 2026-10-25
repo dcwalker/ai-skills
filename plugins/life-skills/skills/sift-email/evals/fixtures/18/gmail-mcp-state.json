@@ -63,11 +63,6 @@
       "name": "AI",
       "type": "user"
     },
-    "Label_21": {
-      "id": "Label_21",
-      "name": "AI/Important",
-      "type": "user"
-    },
     "Label_22": {
       "id": "Label_22",
       "name": "AI/Low priority",
@@ -76,21 +71,6 @@
     "Label_23": {
       "id": "Label_23",
       "name": "AI/Junk",
-      "type": "user"
-    },
-    "Label_24": {
-      "id": "Label_24",
-      "name": "AI/Needs reply",
-      "type": "user"
-    },
-    "Label_25": {
-      "id": "Label_25",
-      "name": "AI/Sifted",
-      "type": "user"
-    },
-    "Label_26": {
-      "id": "Label_26",
-      "name": "AI/Wrong",
       "type": "user"
     },
     "Label_27": {
@@ -1477,13 +1457,13 @@
     },
     "t-lease": {
       "id": "t-lease",
-      "subject": "Lease renewal: please sign by Oct 15",
+      "subject": "Lease renewal: please sign by {{date:2026-10-15|%b %-d}}",
       "from": "morgan@harborprops.example",
       "to": [
         "pat@example.com"
       ],
       "date": "2026-08-20T16:00:00Z",
-      "snippet": "Hi Pat, your renewal is attached. Please sign and return it by October 15 so we can lock in the rate.",
+      "snippet": "Hi Pat, your renewal is attached. Please sign and return it by {{date:2026-10-15|%B %-d}} so we can lock in the rate.",
       "labelIds": [
         "INBOX"
       ],
@@ -1495,8 +1475,8 @@
             "pat@example.com"
           ],
           "date": "2026-08-20T16:00:00Z",
-          "snippet": "Hi Pat, your renewal is attached. Please sign and return it by October 15 so we can lock in the rate.",
-          "body": "Hi Pat, your renewal is attached. Please sign and return it by October 15 so we can lock in the rate."
+          "snippet": "Hi Pat, your renewal is attached. Please sign and return it by {{date:2026-10-15|%B %-d}} so we can lock in the rate.",
+          "body": "Hi Pat, your renewal is attached. Please sign and return it by {{date:2026-10-15|%B %-d}} so we can lock in the rate."
         }
       ]
     },
