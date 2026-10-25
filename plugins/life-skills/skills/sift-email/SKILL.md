@@ -211,9 +211,11 @@ headings and lines.
    move each of its rules into the section it belongs to, remove the section,
    and rewrite the intro and How to use text that describe the old split, as
    `references/rubric-template.md` words them.
-5. **Tables current.** The Labels table lists every label and mark sift
-   applies, as it applies them, including each category label it has created,
-   and no label sift no longer uses. The Tabs table has one row per inbox
+5. **Tables current.** Compare the Labels table with the label list fetched
+   at the start of the run: every `AI/` label in the account has a row saying
+   when sift applies it, category labels included, and a label sift no longer
+   applies says so in its row rather than disappearing. Gmail's Important mark
+   and the star have rows too. The Tabs table has one row per inbox
    tab Gmail offers: list the labels once, and add a row for any `CATEGORY_*`
    tab the table lacks, saying it holds nothing until the user says what
    goes there.
@@ -226,7 +228,9 @@ headings and lines.
 Record what this step changed in one changelog entry dated the run's date,
 such as "Reorganized About me: merged Soccer into Kids' soccer, moved two
 notes". When all six checks pass, the step changes nothing and adds no
-entry.
+entry. About me notes the rest of the run adds or removes go in one changelog
+entry for the run, such as "Added About me notes on the U12 assistant coach
+and the landlord".
 
 ## Step 4: Learn
 
@@ -393,7 +397,9 @@ asking.
 Under the log's Runs section, after its intro and above the newest run, add
 this run's heading as exactly `### <date> <time> (<epoch seconds>)`, from the
 clock in Step 2: a `###` heading, never bold text or another level, since the
-next run searches from it. Then add one line per thread evaluated. On a run
+next run searches from it. Write the heading first, directly above the
+previous newest run's heading, so the Runs section stays newest first; every
+run that has work writes one. Then add one line per thread evaluated. On a run
 that created the docs, the summary under that heading (Step 8) starts with both
 docs' links.
 
@@ -407,6 +413,13 @@ category label; where the user's edit stood, say so. The log is
 the only record of what sift has seen and applied. The reason is how the user
 audits a call later, so make it specific: "Coach asking for carpool
 volunteers by Friday" beats "Seems important."
+
+**Log lines report, so they name the user.** Every line sift writes in the log
+(reasons, the summary, `observed` and Daily review lines) and every changelog
+entry names the user or says "you", even when it restates a rubric rule
+written as "I": "nothing asked of Pat", not "nothing asked of me"; "not on
+Pat's Valued list", not "not on my Valued list". No log line holds an
+account, card, order, or ID number, or any part of one.
 
 Keep the log to the last 30 days. When older entries exist, replace them with a
 one-line summary per week (counts by priority, stars added, rules learned).
@@ -492,7 +505,7 @@ at the start of every run.
   and related notes sit next to each other within it. When a note sits under
   the wrong topic or apart from its related notes, move it; when two headings
   cover the same subject, merge them. Nothing is dropped. Note a
-  reorganization in the changelog.
+  reorganization, and every note added or removed, in the changelog.
 - **Keep it current.** Remove an inferred line once its end date has passed,
   or once its sender has not written in 180 days. Re-check a sourced fact
   older than 90 days before relying on it, and update its date. Past about
