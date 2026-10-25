@@ -376,13 +376,13 @@
         {
           "id": "log-body.r0h",
           "kind": "heading",
-          "markdown": "### {{date:2026-10-10}} 07:00 ({{epoch:1791633600}})",
+          "markdown": "### {{today:America/Chicago}} 00:00 ({{todayepoch:America/Chicago|00:00}})",
           "rev": 1
         },
         {
           "id": "log-body.r0s",
           "kind": "paragraph",
-          "markdown": "Run {{date:2026-10-10}} 07:00: processed 0. Daily review: {{date:2026-10-10}}, 2 threads checked, 0 signals.",
+          "markdown": "Run {{today:America/Chicago}} 00:00: processed 0. Daily review: {{today:America/Chicago}}, 2 threads checked, 0 signals.",
           "rev": 1
         },
         {

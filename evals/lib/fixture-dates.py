@@ -30,6 +30,12 @@ What moves:
     {{slackp:1790525640.000100}}   ->  the moved timestamp as a permalink's
                                        p-segment: "p", then its digits
     {{epoch:1791640800}}           ->  the moved Unix time in whole seconds
+    {{today:America/Chicago}}      ->  the run date itself in that zone,
+                                       unshifted, for state that must match
+                                       a trial's own clock (such as "already
+                                       ran today"); EVAL_RUN_DATE overrides
+    {{todayepoch:America/Chicago|00:00}}
+                                   ->  Unix seconds for that time on that date
   Formats are Python strftime, plus %Q for the northern-hemisphere season
   ("autumn") and %q for the same with "fall" for autumn. A format starting
   with "^" capitalizes the result's first letter: {{date:2026-10-01|^%q}}
@@ -58,6 +64,7 @@ import os
 import re
 import sys
 import tempfile
+import zoneinfo
 
 # A dated value is a YYYY-MM-DD prefix and an optional time part. The time
 # part is checked separately, which keeps each pattern simple.
@@ -70,7 +77,7 @@ TIME_PARTS = (
 )
 SLACK_TS = re.compile(r"^(\d{9,10})\.(\d{6})$")
 SLACK_TS_KEYS = {"ts", "thread_ts"}
-TOKEN = re.compile(r"\{\{(date|slackts|slackp|epoch):([^}|]+)(?:\|([^}]*))?\}\}")
+TOKEN = re.compile(r"\{\{(date|slackts|slackp|epoch|today|todayepoch):([^}|]+)(?:\|([^}]*))?\}\}")
 
 
 def fail(message: str) -> None:
@@ -105,6 +112,16 @@ def fixture_anchor(fixture_dir: str) -> datetime.date | None:
         fail(f"anchor_date in {fixture_dir} must be YYYY-MM-DD")
 
 
+def zone_today(zone: str) -> datetime.date:
+    """Today in the named zone, or EVAL_RUN_DATE when set."""
+    if os.environ.get("EVAL_RUN_DATE"):
+        return run_date()
+    try:
+        return datetime.datetime.now(zoneinfo.ZoneInfo(zone)).date()
+    except zoneinfo.ZoneInfoNotFoundError:
+        fail(f"unknown time zone {zone!r}")
+
+
 def shift_days(anchor: datetime.date | None) -> int:
     if anchor is None:
         return 0
@@ -136,6 +153,16 @@ def resolve_tokens(text: str, days: int, anchored: bool) -> str:
         if kind == "date":
             date = moved(value, days)
             return format_date(date, fmt) if fmt else date.isoformat()
+        if kind == "today":
+            return zone_today(value).isoformat()
+        if kind == "todayepoch":
+            try:
+                hour, minute = (int(p) for p in (fmt or "00:00").split(":"))
+            except ValueError:
+                fail(f"{match.group(0)!r} needs a time like 00:00")
+            moment = datetime.datetime.combine(zone_today(value), datetime.time(hour, minute),
+                                               zoneinfo.ZoneInfo(value))
+            return str(int(moment.timestamp()))
         if kind == "epoch":
             if not value.isdigit():
                 fail(f"{match.group(0)!r} needs whole Unix seconds like 1791640800")

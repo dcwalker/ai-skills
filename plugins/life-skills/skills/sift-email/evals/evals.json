@@ -32,6 +32,7 @@
         "t-ack (Riley's 'Got it, thanks!' reply to the user's own message) does not end with STARRED.",
         "The calls show the run looked up who the senders are: a search_contacts call for the coach's address or name, and a Gmail search for mail the user sent to the landlord (from:me or in:sent with the landlord's address) or a contacts search for the landlord.",
         "The log body gains one line per labeled thread naming its thread id, what was applied, and a specific reason.",
+        "The log gains this run's heading as a '###' heading (not bold text or another level) reading '<date> <time> (<epoch seconds>)', placed after the Runs section's intro and above any earlier run's heading.",
         "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -78,6 +79,7 @@
         "t-cc1, t-cc2, t-cc3, t-webinar1, t-webinar2, t-shop, and t-asked end with exactly their seed labels.",
         "No line above the rubric's Added by sift section is removed, reworded, or moved.",
         "No question comment is opened on the rubric.",
+        "The log gains this run's heading as a '###' heading (not bold text or another level) reading '<date> <time> (<epoch seconds>)', placed after the Runs section's intro and above any earlier run's heading.",
         "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, CATEGORY_* labels, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -138,6 +140,7 @@
         "t-quiet ends with exactly its seed labels.",
         "The Gmail call log shows a search that can return t-reply by time, such as in:inbox with after: in epoch seconds or the last run's date.",
         "The log body gains a line for t-reply whose reason mentions the new request or deadline.",
+        "The log gains this run's heading as a '###' heading (not bold text or another level) reading '<date> <time> (<epoch seconds>)', placed after the Runs section's intro and above any earlier run's heading.",
         "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -159,7 +162,7 @@
     {
       "id": 11,
       "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
-      "expected_output": "Everything in the inbox was sifted on an earlier run, today's daily review already ran, no question is open, and no thread has a new message. Step 2's cheap checks all come back empty, so sift stops without reading the rubric: it changes no labels and no rubric text, adds one 'nothing new' line to the log's Runs section, and says there was nothing new.",
+      "expected_output": "Everything in the inbox was sifted on an earlier run, today's daily review already ran (the fixture dates that entry by the run's own clock in America/Chicago), no question is open, and no thread has a new message. Step 2's cheap checks all come back empty, so sift stops without reading the rubric: it changes no labels and no rubric text, adds one 'nothing new' line to the log's Runs section, and says there was nothing new.",
       "expectations": [
         "No label_thread, unlabel_thread, modify_thread_labels, create_label, archive_thread, or trash_thread call appears in the Gmail call log.",
         "The Gmail final state is identical to the seed.",
@@ -268,6 +271,7 @@
         "The run summary reports 56 threads processed, and the log gains a line for each labeled thread naming its thread id.",
         "t-sent-landlord (a sent message, not in the inbox) ends with exactly its seed labels.",
         "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410).",
+        "The log gains this run's heading as a '###' heading (not bold text or another level) reading '<date> <time> (<epoch seconds>)', placed after the Runs section's intro and above any earlier run's heading.",
         "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -363,6 +367,7 @@
         "t-running-new ends with AI/Low priority (Label_22) and AI/Newsletter (Label_28), and without AI/Bulk (Label_27).",
         "t-run1, t-run2, t-run3, and t-deals end with exactly their seed labels.",
         "No question comment is opened on the rubric.",
+        "The log gains this run's heading as a '###' heading (not bold text or another level) reading '<date> <time> (<epoch seconds>)', placed after the Runs section's intro and above any earlier run's heading.",
         "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, CATEGORY_* labels, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]

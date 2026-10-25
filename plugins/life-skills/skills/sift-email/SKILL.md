@@ -74,12 +74,12 @@ is does not get `AI/Receipt`.
 Searches and label changes take label IDs, not names. List the labels once at
 the start of a run and use the IDs from then on.
 
-## Step 1: Load the rubric and log
+## Step 1: Find the rubric and log
 
 Claude Docs has no search by title, so the docs are found by link. The routine
 prompt (or the user's request) gives the links to the `Email Sift Rubric` and
-`Email Sift Log` docs. Open each by its link with the docs connector, and only
-that way: never fetch a doc link on the web.
+`Email Sift Log` docs. Reach each by its link with the docs connector, and only
+that way: never fetch a doc link on the web. Don't read either doc whole yet.
 
 If no links were given, create the rubric from `references/rubric-template.md`
 and the log from `references/log-template.md`, exactly as the templates read:
@@ -126,8 +126,9 @@ Most scheduled runs find nothing new, so check that cheaply before reading the
 rubric. A first run, with no doc links given, always has work: skip to Step 3.
 
 From the log, read only the newest run heading, for the last run's start
-time, whether a "Daily review: <date>" line carries the run's date, and from the rubric only its
-Timezone line (search the doc for these rather than reading either whole).
+time, and whether a "Daily review: <date>" line carries the run's date; from
+the rubric, only its Timezone line. Get each with a search of the doc, never
+a whole-doc read: reading the rubric whole comes after these checks find work.
 
 Then read the system clock once, in that timezone (for example,
 `TZ=<the Timezone line's zone> date '+%Y-%m-%d %H:%M %s'`), for the run's
@@ -139,11 +140,9 @@ or a message's date: near midnight they fall on a different day than the
 user's. A first run, which skips this step, reads the clock the same way in
 the starter rubric's timezone.
 
-A run heading reads `<date> <time> (<epoch seconds>)`, the run's start, and
-the next run searches from it, so mail that arrives during a run, or after a
-run that failed before writing its heading, is still found. When the newest
-heading has no epoch seconds, search from its date (`after:<YYYY/MM/DD>`);
-the log keeps a thread from being processed twice.
+Each run heading (Step 7) holds that run's start, so mail arriving during a
+run, or after one that failed before its heading, is still found. A heading
+without epoch seconds is searched from its date (`after:<YYYY/MM/DD>`).
 
 Then run each of these checks once. Each needs only a single search or query,
 and the first result answers it:
@@ -364,9 +363,10 @@ asking.
 
 ## Step 7: Log
 
-Under the log's Runs section, add a heading for this run,
-`<date> <time> (<epoch seconds>)` from the clock in Step 2, newest run first,
-then one line per thread evaluated. On a run that created the docs, the
+Under the log's Runs section, after its intro and above the newest run, add
+this run's heading as exactly `### <date> <time> (<epoch seconds>)`, from the
+clock in Step 2: a `###` heading, never bold text or another level, since the
+next run searches from it. Then add one line per thread evaluated. On a run that created the docs, the
 summary under that heading (Step 8) starts with both docs' links.
 
 `<time> | <thread id> | <sender> | <subject> | <applied> | <one-sentence reason>`
