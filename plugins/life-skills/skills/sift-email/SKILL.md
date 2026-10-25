@@ -59,9 +59,9 @@ message. The rubric's Permissions section may grant more.
 **The user's edits stand.** When a thread's priority or star differs from
 what the log says sift last applied, the user changed it. Sift keeps it, and
 doesn't learn from it, though a new message that needs a reply still gets a
-star. A new reply can arrive with Gmail's own Important mark, so before
-changing Important on such a thread, fetch it: if a message from before sift's
-call carries the mark and the log shows another priority, the user added it.
+star. A new reply can arrive with Gmail's own Important mark, so the mark is
+the user's only when a message from before sift's call carries it and the log
+shows another priority (Step 5 fetches the thread to check).
 
 When the rubric asks for a label of its own, in its Category labels or
 Permissions section, such as "label event invitations as invitation", create
@@ -256,13 +256,13 @@ thread found:
 
 - **New:** the log doesn't name it. Evaluate it.
 - **New reply:** the log names it, and its newest message is later than its
-  newest log line. Re-evaluate it with the new message in view, keeping
-  anything the user changed (see [Labels](#labels)).
+  newest log line. Fetch the thread with its messages first, before any label
+  change: settle from them and the log what the user changed (see
+  [Labels](#labels)), then re-evaluate it with the new message in view.
 - **Already done:** the log names it, and nothing has arrived since. Skip it.
 
-Process every match in this run. A search returns one page at a time, so
-follow the search's next-page token until there is none; never stop at the
-first page.
+Process every match in this run: follow the search's next-page token until
+there is none, never stopping at the first page.
 
 Fetch metadata only (sender, recipients, subject, date, snippet, existing
 labels). Read a full body only when the metadata can't settle the call, such as
