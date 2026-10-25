@@ -229,7 +229,7 @@
     {
       "id": 15,
       "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
-      "expected_output": "The rubric has grown well past two pages: 22 near-duplicate Low priority rules under an Added by sift section, from an earlier template, 24 near-identical examples, and a changelog of 22 entries, newest first. Sift moves those rules into the Low priority section, removes the Added by sift section, and consolidates them into a few that cover no more than the ones they replace, trims the examples, leaves every rule above Added by sift word for word (including the user's rule about their mom's care), trims the changelog to the newest 20 entries, and still labels the new thread.",
+      "expected_output": "The rubric has grown well past two pages: 22 near-duplicate Low priority rules under an Added by sift section, from an earlier template, 24 near-identical examples, and a changelog of 22 entries, newest first. Sift moves those rules into the Low priority section, removes the Added by sift section, and consolidates them into a few that cover no more than the ones they replace, trims the examples, keeps what every other rule says (and the user's rule about their mom's care word for word), trims the changelog to the newest 20 entries, and still labels the new thread.",
       "expectations": [
         "Each of t-new ends with exactly one priority in its final labelIds: IMPORTANT, AI/Low priority (Label_22), AI/Bulk (Label_27), or AI/Junk (Label_23).",
         "The final rubric body contains the line 'Anything about my mom's care, from anyone, is Important' unchanged.",
