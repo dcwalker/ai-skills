@@ -10,11 +10,11 @@
 
 | Metric | With Skill |
 |--------|------------|
-| Expectations passed | 419/422 (99.3%): 209/211 run 1, 210/211 run 2 |
-| Evals passing both runs | 22/25 |
-| Time | 148.1s ± 59.7s |
-| Tokens | 848,190 ± 362,123 (total processed, dominated by cache reads) |
-| Tool calls | 30.2 ± 16.2 |
+| Expectations passed | 422/422 (100.0%): 211/211 run 1, 211/211 run 2 |
+| Evals passing both runs | 25/25 |
+| Time | 139.7s ± 54.4s |
+| Tokens | 780,215 ± 326,886 (total processed, dominated by cache reads) |
+| Tool calls | 29.5 ± 15.2 |
 
 Spreads are population standard deviations. Tokens are total processed per
 trial (input + output + cache creation + cache read), rounded to whole tokens.
@@ -28,51 +28,40 @@ This baseline covers Gmail's Important mark and star in place of
 `AI/Important`, `AI/Needs reply`, `AI/Sifted`, and `AI/Wrong`; the search
 for new mail by the last run's epoch seconds; the user's own edits standing;
 and the daily review of how the user handled mail (PR #129). Both runs were
-on SKILL.md as of commit ed3df62.
-
-Eval 11 in both runs comes from a rerun on that same SKILL.md. The first pair
-ran just after midnight in the rubric's timezone, so the fixture's "daily
-review already ran" entry, dated by the shifted fixture, was a day old: the
-review was due, and the eval never reached its cheap exit. The fixture now
-dates that entry by the trial's own clock (`{{today:America/Chicago}}`).
+on SKILL.md as of commit 323be7f.
 
 Runs were on 2026-10-25 in the fixtures' rubric timezone. The fixtures are
-anchored to 2026-10-10 and were shifted two weeks. Graders held "the run
-date" to the date the run's clock gave in that timezone.
+anchored to 2026-10-10 and were shifted two weeks; eval 11's "daily review
+already ran" entry follows the trial's own clock. Graders held "the run date"
+to the date the run's clock gave in that timezone.
 
 ## What the evals found
 
-Every eval passed in at least one run, and 22 of 25 passed in both.
+Every expectation passed in both runs.
 
-The new behavior held. The daily review added an `(observed)` rule naming
-the sender and its priority only at the third agreeing signal, and none for a
-sender with two (5); found no signal in mail read and archived, a receipt
-left unread, a priority the user changed, or a reply to a thread sift starred
-(6); and added a newsletter to Valued (24), or opened a question when the
-signals conflicted with the user's Not valued line (25). A thread the user
-swapped from Important to Low priority stayed Low priority on a new reply, a
-star the user removed came back when a new message asked something, and
-stayed off when the new message only said thanks (7). Gmail's own Important
-mark came off a sale sift called Junk (16) and off a group thread whose new
-message Gmail had marked (8), while a mark the user had set stayed (8). Every
-run heading was a `###` heading after the Runs intro (2, 5, 9, 18, 24), no
-run with nothing new read the rubric whole or edited a heading (11), and no
-rubric line held account digits.
-
-Failures:
-
-| Eval | Run | Expectation missed | Cause |
-|------|-----|--------------------|-------|
-| 7 | 1 | Changelog unchanged | Logged its own new `(inferred)` About me notes in the changelog; no rule was learned from the user's edits |
-| 8 | 1 | No call removes IMPORTANT from the user's thread | Removed the mark before fetching the thread, then restored it; the end state is right |
-| 23 | 2 | Unsolicited sale is Junk | Read the list's "you subscribed" footer as a relationship and chose Bulk |
+The daily review added an `(observed)` rule naming the sender and its
+priority only at the third agreeing signal, and none for a sender with two
+(5); found no signal in mail read and archived, a receipt left unread, a
+priority the user changed, or a reply to a thread sift starred (6); and added
+a newsletter to Valued (24), or opened a question when the signals conflicted
+with the user's Not valued line (25). A thread the user swapped from
+Important to Low priority stayed Low priority on a new reply, a star the user
+removed came back when a new message asked something, and stayed off when the
+new message only said thanks (7). Every thread with a new reply was fetched
+before any label change, so Gmail's own Important mark came off a group
+thread while a mark the user had set stayed, with no call removing it (8).
+Every run heading was a `###` heading after the Runs intro (2, 5, 9, 18, 24),
+no run with nothing new read the rubric whole or edited a heading (11), and
+no rubric line held account digits.
 
 Not graded, seen in a few trials: the Bulk and Junk split for marketing and
-list mail varies between runs (eval 21's sale, eval 19's potluck);
-`(inferred)` About me notes sometimes replace the template's placeholder
-topic; the Daily review note usually sits in the run summary rather than on
-its own line; log summaries sometimes miscount; and unrequested category
-labels.
+list mail varies between runs (evals 2, 14, and 19); category labels the
+eval's rubric doesn't name are sometimes created (`AI/Newsletter`,
+`AI/Delivery`, `AI/Appointment`); a changelog entry for sift's own
+`(inferred)` notes appears in some runs and not others; one run heading in
+eval 1, which has no heading check, landed above the Runs intro; the Daily
+review note usually sits in the run summary rather than on its own line; and
+log formatting varies (bullets, bold, em dashes).
 
 ## Harness
 
@@ -96,28 +85,28 @@ labels.
 
 | Eval | Scenario | Run 1 | Run 2 | Time r1 (s) | Time r2 (s) | Calls r1 | Calls r2 | Tokens r1 | Tokens r2 |
 |------|----------|-------|-------|-------------|-------------|----------|----------|-----------|-----------|
-| 1 | First run: create docs and labels | 9/9 | 9/9 | 135.1 | 122.1 | 30 | 29 | 722,096 | 730,868 |
-| 2 | Sender context; star by message | 12/12 | 12/12 | 227.4 | 247.8 | 43 | 53 | 1,177,753 | 1,764,708 |
-| 3 | Real purchase from label history | 7/7 | 7/7 | 120.7 | 88.7 | 17 | 22 | 583,123 | 602,849 |
-| 4 | Bulk, Junk, and Low priority | 8/8 | 8/8 | 111.0 | 133.2 | 26 | 31 | 611,046 | 792,782 |
-| 5 | Daily review reaches the threshold | 11/11 | 11/11 | 190.8 | 187.0 | 28 | 33 | 1,031,905 | 1,372,396 |
-| 6 | Daily review: nothing is a signal | 9/9 | 9/9 | 211.4 | 146.1 | 29 | 28 | 820,061 | 782,783 |
-| 7 | User's edits stand on new replies | 9/10 | 10/10 | 264.6 | 218.5 | 48 | 29 | 1,984,764 | 803,962 |
-| 8 | Gmail's Important mark vs the user's | 6/7 | 7/7 | 213.9 | 191.9 | 27 | 27 | 1,028,214 | 843,859 |
-| 9 | New reply in a sifted thread | 7/7 | 7/7 | 105.6 | 109.0 | 25 | 22 | 705,520 | 648,006 |
-| 10 | Answered question applied | 7/7 | 7/7 | 153.6 | 115.7 | 25 | 19 | 989,763 | 539,308 |
-| 11 | Nothing new: cheap exit | 7/7 | 7/7 | 51.2 | 52.5 | 15 | 12 | 447,762 | 341,919 |
-| 12 | Archive granted for Junk | 5/5 | 5/5 | 96.2 | 84.1 | 26 | 26 | 653,078 | 566,249 |
-| 13 | Archive asked, not granted | 7/7 | 7/7 | 93.0 | 99.2 | 20 | 25 | 543,656 | 586,875 |
-| 14 | Docs connector missing | 7/7 | 7/7 | 59.4 | 54.7 | 17 | 15 | 479,137 | 399,829 |
-| 15 | Oversized rubric consolidation | 9/9 | 9/9 | 134.4 | 139.0 | 17 | 16 | 533,263 | 658,832 |
-| 16 | Existing marks are context | 7/7 | 7/7 | 125.8 | 129.2 | 28 | 34 | 722,145 | 776,840 |
-| 17 | About me as memory | 9/9 | 9/9 | 134.9 | 117.2 | 27 | 25 | 818,908 | 741,727 |
-| 18 | Whole-inbox backlog, two pages | 10/10 | 10/10 | 284.2 | 228.6 | 95 | 93 | 1,835,092 | 1,324,095 |
-| 19 | Label the rubric asks for, under AI/ | 7/7 | 7/7 | 171.2 | 147.9 | 34 | 29 | 807,502 | 817,955 |
-| 20 | Tidy About me into groups | 8/8 | 8/8 | 127.1 | 199.1 | 21 | 28 | 770,493 | 1,264,032 |
-| 21 | Category labels by what a message is | 11/11 | 11/11 | 298.4 | 214.4 | 57 | 50 | 1,256,943 | 766,295 |
-| 22 | Newsletters lists decide Bulk | 9/9 | 9/9 | 134.4 | 86.5 | 26 | 18 | 1,035,094 | 574,403 |
-| 23 | Mail meant for the user, not Bulk | 9/9 | 8/9 | 219.5 | 156.8 | 43 | 33 | 1,559,263 | 749,477 |
-| 24 | Newsletter reaches the threshold | 10/10 | 10/10 | 105.2 | 121.5 | 19 | 20 | 465,390 | 678,736 |
-| 25 | Learned newsletter conflicts with the user's line | 9/9 | 9/9 | 137.2 | 110.1 | 27 | 22 | 938,758 | 759,980 |
+| 1 | First run: create docs and labels | 9/9 | 9/9 | 96.7 | 123.5 | 28 | 28 | 628,655 | 728,096 |
+| 2 | Sender context; star by message | 12/12 | 12/12 | 258.8 | 230.8 | 52 | 54 | 2,026,705 | 1,592,171 |
+| 3 | Real purchase from label history | 7/7 | 7/7 | 74.1 | 99.4 | 18 | 20 | 472,318 | 564,605 |
+| 4 | Bulk, Junk, and Low priority | 8/8 | 8/8 | 103.3 | 106.2 | 28 | 31 | 727,872 | 509,188 |
+| 5 | Daily review reaches the threshold | 11/11 | 11/11 | 142.9 | 170.4 | 27 | 28 | 867,095 | 934,945 |
+| 6 | Daily review: nothing is a signal | 9/9 | 9/9 | 165.6 | 155.5 | 31 | 26 | 1,021,632 | 854,019 |
+| 7 | User's edits stand on new replies | 10/10 | 10/10 | 164.0 | 227.9 | 28 | 32 | 694,357 | 962,145 |
+| 8 | Gmail's Important mark vs the user's | 7/7 | 7/7 | 219.1 | 150.7 | 31 | 27 | 907,392 | 835,420 |
+| 9 | New reply in a sifted thread | 7/7 | 7/7 | 106.5 | 112.9 | 22 | 22 | 601,757 | 682,689 |
+| 10 | Answered question applied | 7/7 | 7/7 | 104.5 | 148.9 | 18 | 20 | 491,767 | 439,862 |
+| 11 | Nothing new: cheap exit | 7/7 | 7/7 | 53.1 | 43.6 | 14 | 11 | 396,499 | 305,866 |
+| 12 | Archive granted for Junk | 5/5 | 5/5 | 97.8 | 97.5 | 26 | 27 | 716,506 | 580,251 |
+| 13 | Archive asked, not granted | 7/7 | 7/7 | 113.2 | 128.2 | 21 | 25 | 652,655 | 698,531 |
+| 14 | Docs connector missing | 7/7 | 7/7 | 81.2 | 59.8 | 20 | 17 | 517,063 | 422,087 |
+| 15 | Oversized rubric consolidation | 9/9 | 9/9 | 193.3 | 149.8 | 19 | 23 | 709,672 | 898,219 |
+| 16 | Existing marks are context | 7/7 | 7/7 | 114.6 | 109.2 | 24 | 27 | 596,581 | 661,677 |
+| 17 | About me as memory | 9/9 | 9/9 | 131.0 | 111.2 | 28 | 27 | 805,223 | 804,727 |
+| 18 | Whole-inbox backlog, two pages | 10/10 | 10/10 | 231.3 | 245.0 | 82 | 95 | 1,000,271 | 1,190,489 |
+| 19 | Label the rubric asks for, under AI/ | 7/7 | 7/7 | 150.4 | 122.7 | 32 | 27 | 712,331 | 607,207 |
+| 20 | Tidy About me into groups | 8/8 | 8/8 | 142.4 | 144.1 | 23 | 29 | 821,717 | 1,095,493 |
+| 21 | Category labels by what a message is | 11/11 | 11/11 | 224.0 | 245.2 | 53 | 46 | 708,420 | 884,752 |
+| 22 | Newsletters lists decide Bulk | 9/9 | 9/9 | 89.3 | 95.4 | 26 | 19 | 672,623 | 565,065 |
+| 23 | Mail meant for the user, not Bulk | 9/9 | 9/9 | 256.4 | 130.4 | 47 | 32 | 1,896,127 | 828,840 |
+| 24 | Newsletter reaches the threshold | 10/10 | 10/10 | 110.9 | 120.9 | 21 | 19 | 640,136 | 479,241 |
+| 25 | Learned newsletter conflicts with the user's line | 9/9 | 9/9 | 129.2 | 104.0 | 24 | 22 | 828,424 | 771,371 |
