@@ -57,9 +57,9 @@ archive, mark read, mute, trash, or move mail, so nothing sift does can hide a
 message. The rubric's Permissions section may grant more.
 
 **The user's edits stand.** When a thread's priority or star differs from
-what the log says sift last applied, the user changed it. Sift keeps the
-user's version and doesn't learn from it: the user corrects sift by editing
-the rubric. A new reply can arrive with Gmail's own Important mark, so before
+what the log says sift last applied, the user changed it. Sift keeps it, and
+doesn't learn from it, though a new message that needs a reply still gets a
+star. A new reply can arrive with Gmail's own Important mark, so before
 changing Important on such a thread, fetch it: if a message from before sift's
 call carries the mark and the log shows another priority, the user added it.
 
@@ -159,8 +159,9 @@ and the first result answers it:
 
 If every check comes back empty, the run has nothing to do. Don't read the rest
 of the rubric or tidy it. Add one line to the log's Runs section, "<date> <time>:
-nothing new", or, when the newest run entry is already an empty run from
-the run's date, update its time instead. Say "Nothing new" in chat, and stop.
+nothing new", or, when the newest such line is from the run's date, update
+its time instead. Never edit a run heading: the next run searches from it.
+Say "Nothing new" in chat, and stop.
 
 ## Step 3: Tidy the rubric
 
@@ -195,8 +196,7 @@ entry.
 ## Step 4: Learn
 
 Do this before labeling, so today's run benefits from what the user did since
-the last one. The user corrects sift by editing the rubric, which the run
-reads in full; this step adds what sift can learn on its own.
+the last one. The user corrects sift in the rubric; this step adds the rest.
 
 **Answered questions first.** Read the comment threads sift opened on the
 rubric (see [Never block](#never-block)). Sift's comments carry the user's
@@ -229,7 +229,7 @@ Then count, for each sender with a new signal, the `observed` lines the log
 holds for that sender. When 3 or more of that sender's threads suggest the
 same label and none suggests a different one, add one rule under Added by
 sift, or update the one already there for that sender:
-`(observed) <rule naming the sender> | <n> threads: <what the user did> | <run's date>`.
+`(observed) <sender>: <suggested priority> | <n> threads: <what the user did> | <run's date>`.
 A newsletter goes in the Newsletters section instead (see
 [Newsletters](#newsletters)). The rule changes no thread's labels: the user
 has already dealt with those threads. When it would contradict one of the
@@ -237,8 +237,7 @@ user's own rules, don't add it: open a question (see
 [Never block](#never-block)).
 
 Write `Daily review: <run's date>, <n> threads checked, <n> signals` under
-this run's heading, even when nothing turned up, so later runs that day skip
-the review.
+this run's heading, even with no signals, so later runs that day skip it.
 
 **Every rubric change** this step makes is the smallest one that would have
 produced the right call: an example, or a rule under Added by sift. Name the
@@ -353,9 +352,9 @@ reply. When torn, choose the less severe call:
 Apply the call at the thread level, leaving one priority: for Important, add
 `IMPORTANT` and remove any `AI/` priority label; for the others, add that
 label and remove `IMPORTANT` and any other `AI/` priority label. Then add
-`STARRED` when the thread needs a reply and has no star yet. Never remove a
-star, and on a re-evaluated thread keep whatever the user changed (see
-[Labels](#labels)). Batch the calls where the tools allow.
+`STARRED` when a message sift hasn't evaluated before needs a reply and the
+thread has no star: a star the user removed stays off until a new message
+needs one. Never remove a star, and keep whatever else the user changed. Batch the calls where the tools allow.
 
 Then carry out whatever the rubric's Permissions section grants for the
 priority just applied, such as archiving a thread labeled `AI/Junk` when Permissions
@@ -454,7 +453,8 @@ at the start of every run.
   `(inferred) <fact> | <source> | <date learned>`, the date learned being the
   run's date from Step 2, for example
   `(inferred) jordan.lee@riversideunited.example coaches the U12 team | Contacts | 2026-10-10`.
-  A fact with an end date says so ("until November 1").
+  A fact with an end date says so ("until November 1"). Never record an
+  account, card, or ID number, or any part of one.
 - **Edit only `(inferred)` lines.** Every other line is the user's. When the
   user edits an inferred line, take the edit as a correction; when they remove
   `(inferred)`, the line is theirs from then on.

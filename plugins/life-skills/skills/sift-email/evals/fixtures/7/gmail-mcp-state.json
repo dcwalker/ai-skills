@@ -171,6 +171,52 @@
           ]
         }
       ]
+    },
+    "t-unstarred-thanks": {
+      "id": "t-unstarred-thanks",
+      "subject": "Cones for Saturday",
+      "from": "coach.ellis@riversideunited.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-10T13:45:00Z",
+      "snippet": "Thanks, all set for Saturday!",
+      "labelIds": [
+        "INBOX",
+        "UNREAD",
+        "IMPORTANT"
+      ],
+      "messages": [
+        {
+          "id": "t-unstarred-thanks-m1",
+          "from": "coach.ellis@riversideunited.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-08T20:00:00Z",
+          "snippet": "Pat, can you bring the orange cones to Saturday's game?",
+          "body": "Pat, can you bring the orange cones to Saturday's game?",
+          "labelIds": [
+            "INBOX",
+            "IMPORTANT"
+          ]
+        },
+        {
+          "id": "t-unstarred-thanks-m2",
+          "from": "coach.ellis@riversideunited.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T13:45:00Z",
+          "snippet": "Thanks, all set for Saturday!",
+          "body": "Thanks, all set for Saturday!",
+          "labelIds": [
+            "INBOX",
+            "UNREAD",
+            "IMPORTANT"
+          ]
+        }
+      ]
     }
   },
   "drafts": {}

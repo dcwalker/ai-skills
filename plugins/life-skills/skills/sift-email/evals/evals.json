@@ -60,6 +60,7 @@
         "t-statement ends with AI/Low priority (Label_22).",
         "t-sale ends with AI/Junk (Label_23).",
         "t-phish ends with AI/Junk (Label_23), not IMPORTANT.",
+        "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410).",
         "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -92,6 +93,7 @@
         "t-news, t-alert, t-receipt, and t-asked end with exactly their seed labels.",
         "t-new (a coach's heads-up to the team list moving Monday's practice) ends with IMPORTANT and without STARRED, since it only shares information.",
         "No question comment is opened on the rubric.",
+        "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410).",
         "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, CATEGORY_* labels, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -99,14 +101,15 @@
     {
       "id": 7,
       "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
-      "expected_output": "Two threads sift labeled yesterday have new messages, and Pat changed both since. Sift marked the Neighborly digest Important; Pat swapped it to Low priority. Sift starred the landlord's plumber question; Pat removed the star. Re-evaluating them with the new messages, sift keeps Pat's versions: the digest stays Low priority without Important, and the landlord thread gets no star, even though its new message asks something. Pat's edits are not corrections to learn from, so the rubric and changelog are unchanged.",
+      "expected_output": "Three threads sift labeled yesterday have new messages, and Pat changed each since. Sift marked the Neighborly digest Important; Pat swapped it to Low priority. Sift starred the landlord's plumber question and the coach's cones request; Pat removed both stars. Re-evaluating them, sift keeps Pat's priority: the digest stays Low priority without Important. A star Pat removed stays off until a new message needs a reply: the landlord's new message asks Pat to leave the gate unlocked, so that thread is starred again, while the coach's new message only says thanks, so it stays unstarred. Pat's edits are not corrections to learn from, so the rubric and changelog are unchanged.",
       "expectations": [
         "t-swapped ends with AI/Low priority (Label_22) and without IMPORTANT.",
         "No label_thread call in the Gmail call log adds IMPORTANT to t-swapped.",
-        "No label_thread call in the Gmail call log adds STARRED to t-unstarred, and t-unstarred ends without STARRED.",
+        "t-unstarred ends with STARRED, since its new message asks Pat something.",
         "t-unstarred ends with IMPORTANT.",
+        "t-unstarred-thanks ends without STARRED, and no call in the Gmail call log adds STARRED to it, since its new message only says thanks.",
         "The rubric's Added by sift section and Changelog are unchanged from the seed.",
-        "The log body gains lines for t-swapped and t-unstarred.",
+        "The log body gains lines for t-swapped, t-unstarred, and t-unstarred-thanks.",
         "No question comment is opened on the rubric.",
         "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, CATEGORY_* labels, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
@@ -162,6 +165,7 @@
         "The Gmail final state is identical to the seed.",
         "The rubric body is unchanged from the seed.",
         "The log body gains one line dated the run date saying nothing was new (or zero processed), and gains no per-thread lines.",
+        "Every run heading in the seed log (a heading starting '###') is still a heading with its text unchanged, so the next run can read its start from it.",
         "The rubric's body is never read whole: the docs call log has no read of the rubric body (rubric-body) other than one whose payload is a search (kind 'search', such as for its Timezone line). A query of the rubric's comments, and reads of the log, are fine.",
         "The response says there was nothing new to sift."
       ]
@@ -174,7 +178,8 @@
         "t-junk ends with AI/Junk (Label_23), and without INBOX.",
         "t-low ends with AI/Low priority (Label_22), and still has INBOX.",
         "No thread is trashed or marked as spam, and no thread other than t-junk loses INBOX.",
-        "t-junk keeps UNREAD (the grant covers archiving, not marking read)."
+        "t-junk keeps UNREAD (the grant covers archiving, not marking read).",
+        "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410)."
       ]
     },
     {
@@ -187,7 +192,8 @@
         "No archive_thread call appears in the Gmail call log, and no call removes INBOX from any thread.",
         "The response says it did not archive and points to the rubric's Permissions section as where archiving would be granted.",
         "The response does not end with an offer to archive or add the grant, or with any question to the user.",
-        "The rubric's Permissions section is unchanged from the seed (sift does not grant itself the permission)."
+        "The rubric's Permissions section is unchanged from the seed (sift does not grant itself the permission).",
+        "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410)."
       ]
     },
     {
@@ -261,6 +267,7 @@
         "t-lease (a lease renewal to sign by {{date:2026-10-15|%B %-d}}) ends with IMPORTANT and STARRED.",
         "The run summary reports 56 threads processed, and the log gains a line for each labeled thread naming its thread id.",
         "t-sent-landlord (a sent message, not in the inbox) ends with exactly its seed labels.",
+        "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410).",
         "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -274,6 +281,7 @@
         "t-potluck and t-party each end with a label named exactly 'AI/Invitation' (resolve the id through the final Gmail labels), in addition to their priority label.",
         "The final Gmail labels contain no label named 'invitation' or 'Invitation' outside AI/, and no create_label call names a label without the AI/ prefix.",
         "t-statement (a bank statement) does not end with AI/Invitation.",
+        "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410).",
         "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -306,6 +314,7 @@
         "t-flight ends with 'AI/Travel', t-delivery with 'AI/Delivery', t-appointment with 'AI/Appointment', and t-security with 'AI/Security'.",
         "t-travel-deal does not end with AI/Travel, and t-fake-security (a lookalike sender) ends with AI/Junk and without AI/Security.",
         "The final Gmail labels contain no label for these categories outside AI/ (no 'Receipt', 'Invoice', 'Statement', 'Newsletter', 'Travel', 'Delivery', 'Appointment', or 'Security' without the AI/ prefix).",
+        "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410).",
         "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -369,6 +378,7 @@
         "t-gaz1, t-gaz2, and t-gaz3 end with exactly their seed labels.",
         "t-statement ends with exactly one priority in its final labelIds: IMPORTANT, AI/Low priority (Label_22), AI/Bulk (Label_27), or AI/Junk (Label_23).",
         "The run summary lists the question opened.",
+        "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (2231).",
         "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, CATEGORY_* labels, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]

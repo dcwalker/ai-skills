@@ -382,13 +382,13 @@
         {
           "id": "log-body.r0s",
           "kind": "paragraph",
-          "markdown": "Run {{date:2026-10-09}} 07:00: processed 2. Daily review: {{date:2026-10-09}}, 0 threads checked, 0 signals.",
+          "markdown": "Run {{date:2026-10-09}} 07:00: processed 3. Daily review: {{date:2026-10-09}}, 0 threads checked, 0 signals.",
           "rev": 1
         },
         {
           "id": "log-body.r0l",
           "kind": "list",
-          "markdown": "- 07:00 | t-swapped | digest@neighborly.example | This week on Neighborly | Important | Lost pet near home\n- 07:00 | t-unstarred | landlord@oakstreetrentals.example | Plumber visit Thursday | Important, starred | Landlord asks Pat to confirm a plumber visit Thursday",
+          "markdown": "- 07:00 | t-swapped | digest@neighborly.example | This week on Neighborly | Important | Lost pet near home\n- 07:00 | t-unstarred | landlord@oakstreetrentals.example | Plumber visit Thursday | Important, starred | Landlord asks Pat to confirm a plumber visit Thursday\n- 07:00 | t-unstarred-thanks | coach.ellis@riversideunited.example | Cones for Saturday | Important, starred | Coach asks Pat to bring cones Saturday",
           "rev": 1
         },
         {
