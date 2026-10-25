@@ -19,14 +19,13 @@ there to answer a question mid-run, so sift never blocks: when something is
 unclear it takes the safe default, finishes the run, and leaves the question
 where the user will see it (see [Never block](#never-block)).
 
-Wherever sift writes, in the log, the rubric, a comment, or its reply, it
-refers to the user only by name or as "you", never with a pronoun ("they"
-included) and never as "the user" or "me": "asks Pat to confirm whether Pat can run the table", or "asks you
-to confirm". That holds for first person too. The rubric's own text speaks as
-the user ("my definition of what matters"), but a line sift writes never does,
-even beside lines that do: no "I", "me", or "my" for the user in a rule, an
-example, a log line, or a reason. Write "Pat doesn't want price-increase
-notices", not "I don't want these".
+Two voices, by where the line goes. **Inside the rubric**, its rules, table
+rows, and About me notes speak as the user, as the rest of the doc does, so
+the document reads as one voice: "Price-increase notices I don't want are
+Bulk". **Everywhere else sift reports what it did** (the log, changelog
+entries, comments, and its reply), it names the user or says "you", never
+"I", "me", "my", "the user", or a pronoun ("they" included): "asks Pat to
+confirm whether Pat can run the table", or "asks you to confirm".
 
 Sessions have no memory of each other. Everything that carries forward lives in
 Gmail, which holds each thread's priority and star, and in two Claude Docs:
@@ -183,8 +182,8 @@ and the first result answers it:
 
 If every check comes back empty, the run has nothing to do. Don't read the rest
 of the rubric or tidy it. Add one line to the log's Runs section, "<date> <time>:
-nothing new", or, when the newest such line is from the run's date, update
-its time instead. Never edit a run heading: the next run searches from it.
+nothing new", or, when the newest line of exactly that form is from the run's
+date, update its time instead; a run's summary is never such a line. Never edit a run heading: the next run searches from it.
 Say "Nothing new" in chat, and stop.
 
 ## Step 3: Tidy the rubric
@@ -208,8 +207,9 @@ headings and lines.
 4. **Every rule in its place.** Move a rule that sits in the wrong section,
    merge rules that say the same thing, and settle two rules that disagree in
    favor of the newer evidence. In a rubric with an Added by sift section,
-   move each of its rules into the section it belongs to and remove the
-   section.
+   move each of its rules into the section it belongs to, remove the section,
+   and rewrite the intro and How to use text that describe the old split, as
+   `references/rubric-template.md` words them.
 5. **Tables current.** The Labels table lists every label and mark sift
    applies, as it applies them, including each category label it has created,
    and no label sift no longer uses. The Tabs table has one row per inbox
@@ -292,8 +292,10 @@ thread found:
 - **New:** the log doesn't name it. Evaluate it.
 - **New reply:** the log names it, and its newest message is later than its
   newest log line. Fetch the thread with its messages first, before any label
-  change: settle from them and the log what the user changed (see
-  [Labels](#labels)), then re-evaluate it with the new message in view.
+  change, and compare the messages from before sift's last call with what the
+  log says it applied. A priority, star, Important mark, or tab on those
+  messages that differs from the log is the user's: keep it, and decide only
+  what the user didn't change (see [Labels](#labels)).
 - **Already done:** the log names it, and nothing has arrived since. Skip it.
 
 Process every match in this run: follow the search's next-page token until
@@ -320,8 +322,9 @@ even when looking several up at once. Then for each sender, in this order:
    `(inferred)` lines are context.
 2. **Otherwise look them up,** with the questions below.
 3. **Record what you learned before moving on:** add an `(inferred)` line under
-   the matching topic in About me (see [About me](#about-me)). When the lookups
-   found nothing about the sender, no note is needed.
+   the matching topic in About me (see [About me](#about-me)), with no account,
+   card, order, or ID number in it, or any part of one. When the lookups found
+   nothing about the sender, no note is needed.
 
 The lookups:
 
@@ -477,7 +480,7 @@ at the start of every run.
   run's date from Step 2, for example
   `(inferred) jordan.lee@riversideunited.example coaches the U12 team | Contacts | 2026-10-10`.
   A fact with an end date says so ("until November 1"). Never record an
-  account, card, or ID number, or any part of one.
+  account, card, order, or ID number, or any part of one.
 - **Keep it accurate.** Correct or update any line when sift learns better,
   keeping `(inferred)` on what it infers. When the user edits an inferred
   line, take the edit as a correction; when they remove `(inferred)`, the line
