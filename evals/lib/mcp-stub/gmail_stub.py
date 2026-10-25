@@ -434,9 +434,14 @@ def _label_view(label: dict) -> dict:
 def list_labels(pageSize: int = 0, pageToken: str = "") -> dict:
     """Lists all labels in the account. Each carries its labelId, name,
     labelType (SYSTEM or USER), and message and thread counts. Use the
-    labelId values with label_thread, unlabel_thread, modify_thread_labels,
-    and search_threads' label: operator."""
-    result = {"labels": [_label_view(l) for l in state.data["labels"].values()]}
+    labelId values with label_thread, unlabel_thread, and
+    modify_thread_labels; search_threads' label: operator takes the name.
+    Gmail's inbox tabs are listed too, as system labels: the five standard
+    CATEGORY_* tabs, plus any further one a fixture's labels define."""
+    labels = dict(state.data["labels"])
+    for cid in sorted(_CATEGORY_IDS):
+        labels.setdefault(cid, {"id": cid, "name": cid, "type": "system"})
+    result = {"labels": [_label_view(l) for l in labels.values()]}
     state.log_call("list_labels", {}, result)
     return result
 
@@ -519,7 +524,7 @@ def _category_matches(t: dict, arg: str) -> bool:
     wanted = _CATEGORY_NAMES.get(arg.lower())
     if wanted is None:
         return False
-    held = [lbl for lbl in t["labelIds"] if lbl in _CATEGORY_IDS]
+    held = [lbl for lbl in t["labelIds"] if lbl.startswith("CATEGORY_")]
     return wanted in held or (wanted == "CATEGORY_PERSONAL" and not held)
 
 
@@ -533,8 +538,8 @@ def _check_label_ids(label_ids: list[str]) -> None:
 def _change_labels(t: dict, add: list[str], remove: list[str]) -> None:
     """Add and remove label ids on a thread, leaving every other label alone,
     except that adding a category replaces the thread's previous one."""
-    if any(lbl in _CATEGORY_IDS for lbl in add):
-        t["labelIds"] = [lbl for lbl in t["labelIds"] if lbl not in _CATEGORY_IDS]
+    if any(lbl.startswith("CATEGORY_") for lbl in add):
+        t["labelIds"] = [lbl for lbl in t["labelIds"] if not lbl.startswith("CATEGORY_")]
     for lbl in add:
         if lbl not in t["labelIds"]:
             t["labelIds"].append(lbl)

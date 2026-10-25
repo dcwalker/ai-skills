@@ -1,0 +1,212 @@
+{
+  "anchor_date": "2026-10-10",
+  "stub_now": "2026-10-10T15:00:00Z",
+  "me": "pat@example.com",
+  "labels": {
+    "INBOX": {
+      "id": "INBOX",
+      "name": "INBOX",
+      "type": "system"
+    },
+    "SENT": {
+      "id": "SENT",
+      "name": "SENT",
+      "type": "system"
+    },
+    "TRASH": {
+      "id": "TRASH",
+      "name": "TRASH",
+      "type": "system"
+    },
+    "SPAM": {
+      "id": "SPAM",
+      "name": "SPAM",
+      "type": "system"
+    },
+    "STARRED": {
+      "id": "STARRED",
+      "name": "STARRED",
+      "type": "system"
+    },
+    "IMPORTANT": {
+      "id": "IMPORTANT",
+      "name": "IMPORTANT",
+      "type": "system"
+    },
+    "UNREAD": {
+      "id": "UNREAD",
+      "name": "UNREAD",
+      "type": "system"
+    },
+    "Label_1": {
+      "id": "Label_1",
+      "name": "Soccer",
+      "type": "user"
+    },
+    "Label_2": {
+      "id": "Label_2",
+      "name": "Receipts",
+      "type": "user"
+    },
+    "Label_3": {
+      "id": "Label_3",
+      "name": "Newsletter",
+      "type": "user"
+    },
+    "Label_4": {
+      "id": "Label_4",
+      "name": "School",
+      "type": "user"
+    },
+    "Label_20": {
+      "id": "Label_20",
+      "name": "AI",
+      "type": "user"
+    },
+    "Label_22": {
+      "id": "Label_22",
+      "name": "AI/Low priority",
+      "type": "user"
+    },
+    "Label_23": {
+      "id": "Label_23",
+      "name": "AI/Junk",
+      "type": "user"
+    },
+    "Label_27": {
+      "id": "Label_27",
+      "name": "AI/Bulk",
+      "type": "user"
+    }
+  },
+  "threads": {
+    "t-new": {
+      "id": "t-new",
+      "subject": "Action needed: rate your recent order",
+      "from": "orders@trailgear.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-10T01:30:00Z",
+      "snippet": "How are your trekking poles working out? Rate order #87554 and tell us what you think.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "t-new-m1",
+          "from": "orders@trailgear.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T01:30:00Z",
+          "snippet": "How are your trekking poles working out? Rate order #87554 and tell us what you think.",
+          "body": "How are your trekking poles working out? Rate order #87554 and tell us what you think."
+        }
+      ]
+    },
+    "t-old-1": {
+      "id": "t-old-1",
+      "subject": "Order #87001 confirmed",
+      "from": "orders@trailgear.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-08-02T16:00:00Z",
+      "snippet": "Thanks for your order of a 30L daypack.",
+      "labelIds": [
+        "Label_2"
+      ],
+      "messages": [
+        {
+          "id": "t-old-1-m1",
+          "from": "orders@trailgear.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-08-02T16:00:00Z",
+          "snippet": "Thanks for your order of a 30L daypack.",
+          "body": "Thanks for your order of a 30L daypack."
+        }
+      ]
+    },
+    "t-old-2": {
+      "id": "t-old-2",
+      "subject": "Order #87001 delivered",
+      "from": "orders@trailgear.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-08-06T16:00:00Z",
+      "snippet": "Your order was delivered.",
+      "labelIds": [
+        "Label_2"
+      ],
+      "messages": [
+        {
+          "id": "t-old-2-m1",
+          "from": "orders@trailgear.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-08-06T16:00:00Z",
+          "snippet": "Your order was delivered.",
+          "body": "Your order was delivered."
+        }
+      ]
+    },
+    "t-old-3": {
+      "id": "t-old-3",
+      "subject": "Order #87554 confirmed",
+      "from": "orders@trailgear.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-09-12T16:00:00Z",
+      "snippet": "Thanks for your order of trekking poles.",
+      "labelIds": [
+        "Label_2"
+      ],
+      "messages": [
+        {
+          "id": "t-old-3-m1",
+          "from": "orders@trailgear.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-09-12T16:00:00Z",
+          "snippet": "Thanks for your order of trekking poles.",
+          "body": "Thanks for your order of trekking poles."
+        }
+      ]
+    },
+    "t-bookshop": {
+      "id": "t-bookshop",
+      "subject": "Your order has shipped",
+      "from": "orders@bookshop.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-10T13:00:00Z",
+      "snippet": "Your order #4471 has shipped and should arrive Thursday.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "t-bookshop-m1",
+          "from": "orders@bookshop.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T13:00:00Z",
+          "snippet": "Your order #4471 has shipped and should arrive Thursday.",
+          "body": "Your order #4471 has shipped and should arrive Thursday."
+        }
+      ]
+    }
+  },
+  "drafts": {}
+}

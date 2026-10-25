@@ -55,8 +55,8 @@ specifically, sift also stars the thread (system label `STARRED`). Sift never
 removes a star, its own included: the user clears stars.
 
 **Tabs.** Sift also files each thread it evaluates into the inbox tab the
-rubric's Tabs section gives, including where Important mail and anything the
-section doesn't place go (Primary, when it doesn't say). The tab is a call of
+rubric's Tabs table gives, including where Important mail and anything the
+table doesn't place go (Primary, when it doesn't say). The tab is a call of
 its own, apart from priority and labels, so a Bulk thread can be in Social and
 one newsletter in Updates while another is in Promotions. Gmail's own sort
 carries no weight: when a thread is in another tab, move it. Move a thread by
@@ -76,13 +76,14 @@ star. A new reply can arrive with Gmail's own Important mark or tab, so either
 is the user's only when a message from before sift's call carries it and the
 log shows otherwise (Step 5 fetches the thread to check).
 
-When the rubric asks for a label of its own, in its Category labels or
+When the rubric asks for a label of its own, in its Labels table or
 Permissions section, such as "label event invitations as invitation", create
 it under `AI/` in title case, `AI/Invitation`, never as a bare `invitation`
 beside the user's own labels. Apply it alongside the thread's priority, never
 in place of one. Decide by what the message is, as the rubric describes
 it, not by whether it uses a particular word: a message asking where a receipt
-is does not get `AI/Receipt`.
+is does not get `AI/Receipt`. A label sift starts using gets a row in the
+Labels table, saying when sift applies it, in the same run.
 
 Label changes take label IDs, and `label:` searches take label names: quote a
 name with a space (`label:"AI/Low priority"`) or write its spaces and `/` as
@@ -121,19 +122,28 @@ it disagrees with your instincts, follow the rubric. The rubric's Timezone line
 names the user's timezone, and every date and time sift writes is the run's
 date and time in that timezone (Step 2 says how to read it).
 
-Everything above the rubric's **Added by sift** section is the user's: the
-how-to, the label key, the About me notes, and the user's rules. Sift never
-rewords, moves, or removes any of it, with four exceptions: lines under
-About me that start with `(inferred)` are sift's own (see [About me](#about-me));
-lines under Newsletters that start with `(learned)` are sift's own (see
-[Newsletters](#newsletters));
-sift may move the user's About me lines, never changing their words, to keep
-related notes together; and a template placeholder, a line wholly in parentheses such as `- (I add these)`
-or `### (topic, such as Kids' soccer, Home, or Work)`, may be replaced by the
-first real entry in its place. Its own rules go under Added by sift, each one
-learned from the user's answers or the daily review, so a sift rule may
-narrow one of the user's rules for exactly the cases its evidence covers, and
-no further.
+**The rubric is one living document, and sift keeps all of it accurate**: the
+how-to, the Labels table, About me, every rule section, Newsletters, Tabs, and
+Examples. Each rule sits in the section it belongs to, so the doc never gives
+two answers to one question. Sift edits any section to place what it learns,
+to merge or reword overlapping rules without changing what they say, and to
+keep the Labels table matching the labels sift applies, category labels
+included. It never adds to Permissions or Notify: those say what sift may do,
+and only the user grants that.
+
+- **Markers.** A line sift writes from evidence carries a marker and a date:
+  `(inferred)` for a fact under About me, `(observed)` for a rule from the
+  daily review, `(learned)` for a Newsletters line. The user's lines and the
+  rules from their answers carry none. A user's edit to a marked line is the
+  latest word on it.
+- **Evidence wins.** When the evidence contradicts a rule, whoever wrote it,
+  rewrite that rule to match, mark it `(observed)`, and put its old wording in
+  the changelog entry.
+- **Older rubrics.** A rubric with an Added by sift section, from an earlier
+  template, has its rules moved into the sections they belong to and that
+  section removed, once, in Step 3.
+- **Placeholders.** A line wholly in parentheses, such as `- (I add these)`,
+  is replaced by the first real entry in its place.
 
 ## Step 2: Check whether there is anything to do
 
@@ -180,7 +190,7 @@ Say "Nothing new" in chat, and stop.
 ## Step 3: Tidy the rubric
 
 Do this on every run, before anything else touches the rubric, even when no
-mail is new. Go through these four checks in order, and fix each one that
+mail is new. Go through these six checks in order, and fix each one that
 fails. A fresh-looking rubric is not a reason to skip them: read the actual
 headings and lines.
 
@@ -194,17 +204,27 @@ headings and lines.
    team, or event, so it sits with them. Check every line, the user's own
    included, and "Right now:" lines too: a line about the school's auction
    belongs under the school's heading even though it is time-limited. Move
-   the user's lines, never reword them, and drop nothing.
-4. **Size.** If the rubric outside About me runs past roughly two pages, or
+   lines and drop nothing.
+4. **Every rule in its place.** Move a rule that sits in the wrong section,
+   merge rules that say the same thing, and settle two rules that disagree in
+   favor of the newer evidence. In a rubric with an Added by sift section,
+   move each of its rules into the section it belongs to and remove the
+   section.
+5. **Tables current.** The Labels table lists every label and mark sift
+   applies, as it applies them, including each category label it has created,
+   and no label sift no longer uses. The Tabs table has one row per inbox
+   tab Gmail offers: list the labels once, and add a row for any `CATEGORY_*`
+   tab the table lacks, saying it holds nothing until the user says what
+   goes there.
+6. **Size.** If the rubric outside About me runs past roughly two pages, or
    the changelog past 20 entries, consolidate it as
    [Keeping the rubric healthy](#keeping-the-rubric-healthy) describes:
-   merge overlapping rules under Added by sift, trim the examples to the most
-   instructive, and keep the newest 20 changelog entries, counting the one
-   this step adds.
+   merge overlapping rules, trim the examples to the most instructive, and
+   keep the newest 20 changelog entries, counting the one this step adds.
 
 Record what this step changed in one changelog entry dated the run's date,
 such as "Reorganized About me: merged Soccer into Kids' soccer, moved two
-notes". When all four checks pass, the step changes nothing and adds no
+notes". When all six checks pass, the step changes nothing and adds no
 entry.
 
 ## Step 4: Learn
@@ -216,7 +236,8 @@ the last one. The user corrects sift in the rubric; this step adds the rest.
 rubric (see [Never block](#never-block)). Sift's comments carry the user's
 name, the same as the user's own, so every comment sift writes starts with
 `Sift:`, and a comment without it is the user's. A thread whose latest
-comment is the user's is an answer. Apply it as a rubric change, relabel the
+comment is the user's is an answer. Apply it as a rubric change in the section
+it belongs to, unmarked since it is the user's word, relabel the
 thread the question was about if the answer settles it, then reply in that
 thread saying what changed. That reply, starting `Sift:`, marks the
 answer as applied.
@@ -241,20 +262,19 @@ Record each signal under this run's heading in the log (Step 7):
 `observed | <thread id> | <sender> | sift applied <label> | <what the user did> | suggests <label>`.
 Then count, for each sender with a new signal, the `observed` lines the log
 holds for that sender. When 3 or more of that sender's threads suggest the
-same label and none suggests a different one, add one rule under Added by
-sift, or update the one already there for that sender:
+same label and none suggests a different one, add one rule to the section for
+that priority, or update the rule already there for that sender:
 `(observed) <sender>: <suggested priority> | <n> threads: <what the user did> | <run's date>`.
 A newsletter goes in the Newsletters section instead (see
 [Newsletters](#newsletters)). The rule changes no thread's labels: the user
-has already dealt with those threads. When it would contradict one of the
-user's own rules, don't add it: open a question (see
-[Never block](#never-block)).
+has already dealt with those threads. When it contradicts a rule already in
+the rubric, rewrite that rule instead (Evidence wins, in Step 1).
 
 Write `Daily review: <run's date>, <n> threads checked, <n> signals` under
 this run's heading, even with no signals, so later runs that day skip it.
 
 **Every rubric change** this step makes is the smallest one that would have
-produced the right call: an example, or a rule under Added by sift. Name the
+produced the right call: an example, or a rule in its section. Name the
 senders the evidence shows, or the narrowest category that covers them
 ("automated deadline notices from the club registrar"), never a wider class
 such as all vendors or all community organizations. Note each change in the
@@ -340,7 +360,7 @@ priority sections.
 
 A newsletter is placed by the rubric's Newsletters section rather than by its
 mass-mail signals, since every newsletter carries them, and gets the
-newsletter category label when the Category labels section names one.
+newsletter category label when the Labels table names one.
 
 Choose exactly one priority. A star for needs reply can accompany any of them,
 and depends on the message, not the sender: star the thread when the message
@@ -427,8 +447,8 @@ naming its sender and subject. A missing or empty Notify means none.
 
 When a run needs the user's judgment, it does not wait for it:
 
-1. Take the safe default. For an unclear new thread, apply the tie-breaking
-   rules in Step 6. For a learned rule that conflicts with the user's own,
+1. Take the safe default. For an unclear new thread, apply the rubric's When
+   torn section (Step 6). For evidence too thin or mixed to settle a rule,
    change nothing until the user answers.
 2. Open a comment on the rubric doc, anchored on the rule or example it is
    about (or the doc's title when none fits). Start it with `Sift:`, name the
@@ -458,14 +478,14 @@ at the start of every run.
   `(inferred) jordan.lee@riversideunited.example coaches the U12 team | Contacts | 2026-10-10`.
   A fact with an end date says so ("until November 1"). Never record an
   account, card, or ID number, or any part of one.
-- **Edit only `(inferred)` lines.** Every other line is the user's. When the
-  user edits an inferred line, take the edit as a correction; when they remove
-  `(inferred)`, the line is theirs from then on.
+- **Keep it accurate.** Correct or update any line when sift learns better,
+  keeping `(inferred)` on what it infers. When the user edits an inferred
+  line, take the edit as a correction; when they remove `(inferred)`, the line
+  reads as the user's statement.
 - **Keep it grouped.** Each topic heading holds the notes about one subject,
   and related notes sit next to each other within it. When a note sits under
   the wrong topic or apart from its related notes, move it; when two headings
-  cover the same subject, merge them. This applies to the user's lines as
-  well as sift's, moved but never reworded, and nothing is dropped. Note a
+  cover the same subject, merge them. Nothing is dropped. Note a
   reorganization in the changelog.
 - **Keep it current.** Remove an inferred line once its end date has passed,
   or once its sender has not written in 180 days. Re-check a sourced fact
@@ -479,21 +499,21 @@ the user wants to read under Valued and the rest under Not valued. Read it on
 every run, so the user's edits take effect on the next run. Match by sender or
 name; a newsletter on neither list is Not valued.
 
-Lines the user writes are the user's. Sift adds a line only from the daily
-review (Step 4), once a newsletter reaches its threshold, under Valued:
-`(learned) <newsletter name> | <sender> | observed <date>`, with the run's
-date from Step 2. When it is on the user's Not valued list, sift adds nothing
-and opens a question instead (see [Never block](#never-block)). Note each
-line added in the changelog.
+Sift adds a line from the daily review (Step 4), once a newsletter reaches its
+threshold, under Valued: `(learned) <newsletter name> | <sender> | observed
+<date>`, with the run's date from Step 2. When the newsletter is on the Not
+valued list, move its line to Valued, marked the same way. Note each line
+added or moved in the changelog.
 
 ## Keeping the rubric healthy
 
 The rubric is read in full on every run, so it has to stay short. About me
-follows its own upkeep above; when the rest grows past roughly two pages, consolidate overlapping rules under Added by sift and
-keep only the most instructive examples. A consolidated rule covers no more
-than the rules it replaces: it names the same senders they named, with no
-open-ended category such as "and similar" or "other vendors". Never touch a rule above Added by sift. The
-changelog keeps the last 20 entries, this run's included, newest first.
+follows its own upkeep above; when the rest grows past roughly two pages,
+consolidate overlapping rules wherever they sit and keep only the most
+instructive examples. A consolidated rule covers no more than the rules it
+replaces: it names the same senders they named, with no open-ended category
+such as "and similar" or "other vendors". The changelog keeps the last 20
+entries, this run's included, newest first.
 
 ## Running it as a routine
 
