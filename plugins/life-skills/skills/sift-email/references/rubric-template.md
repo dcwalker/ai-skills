@@ -21,6 +21,9 @@ Timezone: UTC (change to yours, such as Europe/Berlin)
 - **Choose newsletters:** list the ones I want to read under Newsletters,
   Valued. Every other newsletter gets AI/Bulk. Sift adds lines there too, each
   starting with "(learned)", from its daily check.
+- **Choose tabs:** say under Tabs which mail goes in Social, Promotions, or
+  Updates. Sift moves mail to match, whatever tab Gmail picked, and keeps a
+  tab I set by hand.
 - **Allow more than labels:** add it under Permissions, for example
   "Archive threads labeled AI/Junk".
 - **Tell sift about yourself:** add notes under About me, grouped by topic.
@@ -136,6 +139,28 @@ not on the words it happens to use. Sift creates each one under AI/.
 - **Account security:** label AI/Security the sign-in alerts, password resets,
   and verification codes from services I use. A message that only looks like
   one, from a lookalike sender, is Junk instead.
+
+## Tabs
+
+Which Gmail inbox tab each kind of mail belongs in, whatever tab Gmail chose.
+Sift files every thread it labels here, judged on what the message is, apart
+from its priority. Important mail always goes to Primary, and so does
+anything not listed below.
+
+### Social
+
+- Notifications from social networks and fitness or community apps
+
+### Promotions
+
+- Marketing, sales, and newsletters from stores and brands
+
+### Updates
+
+- Receipts, statements, invoices, and bills
+- Delivery, travel, and appointment notices
+- Account and security alerts
+- Automated notifications that only confirm something already done
 
 ## Added by sift
 

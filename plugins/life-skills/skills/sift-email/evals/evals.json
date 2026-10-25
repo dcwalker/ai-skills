@@ -1,6 +1,6 @@
 {
   "skill_name": "sift-email",
-  "notes": "MCP-stub-backed batch for sift-email (see evals/lib/mcp-stub: gmail_stub.py, docs_stub.py, contacts_stub.py). The executor is a real, separate `claude -p --strict-mcp-config` subprocess run by evals/lib/run-mcp-trials.sh, one turn per eval with no follow-ups: sift runs unattended, so every eval checks that it finishes the run without waiting on the user. The skill sets disable-model-invocation, so every prompt starts with /sift-email, followed by the rubric and log links (eval 1 gives none, for the first run; eval 14 gives links but no Claude Docs server). Fixtures are anchored to 2026-10-10 with the Gmail stub's stub_now at 15:00 UTC, and Important is Gmail's IMPORTANT system label and a needed reply is STARRED; the AI label ids are fixed: Label_22 AI/Low priority, Label_23 AI/Junk, Label_27 AI/Bulk, Label_28 AI/Newsletter; Label_1-4 are the user's own (Soccer, Receipts, Newsletter, School). Grade against each trial's eval.json and the gmail, docs, and contacts state-out files and call logs, not the reply's own account. Evals 6, 7, 11, 13, and 14 are the cases where sift must hold back (nothing in the daily review is a signal, the user's own edits, nothing to do, an unauthorized action, a missing connector), and 25 is a learned newsletter that conflicts with the user's own Not valued line. Log run headings carry their start in epoch seconds as {{epoch:...}} tokens, which fixture-dates.py moves with the dates.",
+  "notes": "MCP-stub-backed batch for sift-email (see evals/lib/mcp-stub: gmail_stub.py, docs_stub.py, contacts_stub.py). The executor is a real, separate `claude -p --strict-mcp-config` subprocess run by evals/lib/run-mcp-trials.sh, one turn per eval with no follow-ups: sift runs unattended, so every eval checks that it finishes the run without waiting on the user. The skill sets disable-model-invocation, so every prompt starts with /sift-email, followed by the rubric and log links (eval 1 gives none, for the first run; eval 14 gives links but no Claude Docs server). Fixtures are anchored to 2026-10-10 with the Gmail stub's stub_now at 15:00 UTC, and Important is Gmail's IMPORTANT system label, a needed reply is STARRED, and a tab is one CATEGORY_* label (CATEGORY_PERSONAL or none for Primary), filed by the rubric's Tabs section; the AI label ids are fixed: Label_22 AI/Low priority, Label_23 AI/Junk, Label_27 AI/Bulk, Label_28 AI/Newsletter; Label_1-4 are the user's own (Soccer, Receipts, Newsletter, School). Grade against each trial's eval.json and the gmail, docs, and contacts state-out files and call logs, not the reply's own account. Evals 6, 7, 11, 13, and 14 are the cases where sift must hold back (nothing in the daily review is a signal, the user's own edits, nothing to do, an unauthorized action, a missing connector), and 25 is a learned newsletter that conflicts with the user's own Not valued line. Log run headings carry their start in epoch seconds as {{epoch:...}} tokens, which fixture-dates.py moves with the dates.",
   "evals": [
     {
       "id": 1,
@@ -33,7 +33,7 @@
         "The calls show the run looked up who the senders are: a search_contacts call for the coach's address or name, and a Gmail search for mail the user sent to the landlord (from:me or in:sent with the landlord's address) or a contacts search for the landlord.",
         "The log body gains one line per labeled thread naming its thread id, what was applied, and a specific reason.",
         "The log gains this run's heading as a '###' heading (not bold text or another level) reading '<date> <time> (<epoch seconds>)', placed after the Runs section's intro and above any earlier run's heading.",
-        "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     },
@@ -47,7 +47,7 @@
         "The Gmail call log shows a search for the sender's earlier mail (from:orders@trailgear.example or the sender's domain, beyond the inbox) or a search by the Receipts label, before t-new is labeled.",
         "The log line for t-new gives a reason that refers to the user's earlier orders or the Receipts label, not only to the subject's wording.",
         "t-old-1, t-old-2, and t-old-3 end with exactly their seed labels.",
-        "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     },
@@ -62,7 +62,7 @@
         "t-sale ends with AI/Junk (Label_23).",
         "t-phish ends with AI/Junk (Label_23), not IMPORTANT.",
         "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410).",
-        "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     },
@@ -80,7 +80,7 @@
         "No line above the rubric's Added by sift section is removed, reworded, or moved.",
         "No question comment is opened on the rubric.",
         "The log gains this run's heading as a '###' heading (not bold text or another level) reading '<date> <time> (<epoch seconds>)', placed after the Runs section's intro and above any earlier run's heading.",
-        "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, CATEGORY_* labels, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     },
@@ -96,7 +96,7 @@
         "t-new (a coach's heads-up to the team list moving Monday's practice) ends with IMPORTANT and without STARRED, since it only shares information.",
         "No question comment is opened on the rubric.",
         "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410).",
-        "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, CATEGORY_* labels, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     },
@@ -113,7 +113,7 @@
         "The rubric's Added by sift section and Changelog are unchanged from the seed.",
         "The log body gains lines for t-swapped, t-unstarred, and t-unstarred-thanks.",
         "No question comment is opened on the rubric.",
-        "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, CATEGORY_* labels, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     },
@@ -127,7 +127,7 @@
         "No unlabel_thread or modify_thread_labels call in the Gmail call log removes IMPORTANT from t-user-important.",
         "Neither thread ends with STARRED, since neither new message asks Pat anything.",
         "The rubric's Added by sift section and Changelog are unchanged from the seed.",
-        "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, CATEGORY_* labels, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     },
@@ -141,7 +141,7 @@
         "The Gmail call log shows a search that can return t-reply by time, such as in:inbox with after: in epoch seconds or the last run's date.",
         "The log body gains a line for t-reply whose reason mentions the new request or deadline.",
         "The log gains this run's heading as a '###' heading (not bold text or another level) reading '<date> <time> (<epoch seconds>)', placed after the Runs section's intro and above any earlier run's heading.",
-        "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     },
@@ -155,7 +155,7 @@
         "The Claude Docs state gains a reply in thread q-1 (parent utterance q-1) whose body starts with 'Sift:' and says what changed.",
         "No new top-level comment thread is opened on the rubric about the reimbursement form.",
         "The seed comments q-1 and a-1 are still present and unchanged.",
-        "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     },
@@ -209,7 +209,7 @@
         "t-promo does not end with IMPORTANT.",
         "The response says the rubric and log could not be opened or that the Claude Docs connector is missing, and that doc updates were skipped.",
         "The response does not claim to have read the rubric or written to the log.",
-        "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     },
@@ -225,7 +225,7 @@
         "The consolidated rules under Added by sift name only senders the 22 replaced rules named (the bookshop, the meal kit service, the library, and so on) and contain no open-ended category such as 'and similar', 'etc.', 'other vendors', or a general class of sender standing in for the named ones.",
         "The Examples section has fewer than 24 entries.",
         "The Changelog has at most 20 entries, newest first; its first entry, dated the run date, records the consolidation, and any seed entries kept are the newest ones (from the end of September), not the oldest.",
-        "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     },
@@ -239,7 +239,7 @@
         "t-gmail-important (a members-only sale from a store the user never bought from, marked Important by Gmail) ends with AI/Junk (Label_23), not IMPORTANT.",
         "t-school-news (a school newsletter labeled School) ends with AI/Low priority (Label_22) and without AI/Bulk (Label_27), IMPORTANT, or STARRED.",
         "STARRED stays on t-starred, IMPORTANT is removed from t-gmail-important, and Label_4 (School) stays on t-school-news.",
-        "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     },
@@ -255,7 +255,7 @@
         "The rubric's About me section gains a line starting '(inferred)' about taylor.nguyen@riversideunited.example (or Taylor Nguyen) that names a source (such as Contacts) and the run date, placed under the Kids' soccer heading.",
         "The '(inferred)' line about volunteering at the book fair, whose end date has passed, is no longer in the rubric.",
         "Every About me line that does not start with '(inferred)' matches the seed word for word, and the '(inferred)' line about the PTA auction chair is still present.",
-        "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     },
@@ -272,7 +272,7 @@
         "t-sent-landlord (a sent message, not in the inbox) ends with exactly its seed labels.",
         "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410).",
         "The log gains this run's heading as a '###' heading (not bold text or another level) reading '<date> <time> (<epoch seconds>)', placed after the Runs section's intro and above any earlier run's heading.",
-        "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     },
@@ -286,7 +286,7 @@
         "The final Gmail labels contain no label named 'invitation' or 'Invitation' outside AI/, and no create_label call names a label without the AI/ prefix.",
         "t-statement (a bank statement) does not end with AI/Invitation.",
         "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410).",
-        "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     },
@@ -301,7 +301,7 @@
         "The PTA auction line sits under the same heading as the Maple Grove Elementary line, not under the soccer heading.",
         "The landlord line and the car line both sit under the Home heading.",
         "The Changelog gains an entry dated the run date that records reorganizing About me.",
-        "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     },
@@ -319,7 +319,7 @@
         "t-travel-deal does not end with AI/Travel, and t-fake-security (a lookalike sender) ends with AI/Junk and without AI/Security.",
         "The final Gmail labels contain no label for these categories outside AI/ (no 'Receipt', 'Invoice', 'Statement', 'Newsletter', 'Travel', 'Delivery', 'Appointment', or 'Security' without the AI/ prefix).",
         "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410).",
-        "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     },
@@ -335,7 +335,7 @@
         "t-gazette, t-deals, and t-running each end with a label named exactly 'AI/Newsletter' (resolve ids through the final Gmail labels).",
         "The rubric's Newsletters section still reads as seeded: the Valued list holds only the Riverside Gazette line, the Not valued list holds only the Deal Digest line, and no line starting '(learned)' was added.",
         "The log gains a line for each of the three threads whose reason refers to the Valued or Not valued list, or to the newsletter being on neither list, for its call.",
-        "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, CATEGORY_* labels, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     },
@@ -351,7 +351,7 @@
         "t-promo-known (a sale from a store Pat ordered from) ends with AI/Bulk (Label_27), not AI/Junk (Label_23).",
         "t-spam (a sale from a store Pat never shopped at) ends with AI/Junk (Label_23).",
         "t-old-order ends with exactly its seed labels.",
-        "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, CATEGORY_* labels, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     },
@@ -368,7 +368,7 @@
         "t-run1, t-run2, t-run3, and t-deals end with exactly their seed labels.",
         "No question comment is opened on the rubric.",
         "The log gains this run's heading as a '###' heading (not bold text or another level) reading '<date> <time> (<epoch seconds>)', placed after the Runs section's intro and above any earlier run's heading.",
-        "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, CATEGORY_* labels, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     },
@@ -384,7 +384,39 @@
         "t-statement ends with exactly one priority in its final labelIds: IMPORTANT, AI/Low priority (Label_22), AI/Bulk (Label_27), or AI/Junk (Label_23).",
         "The run summary lists the question opened.",
         "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (2231).",
-        "Every thread keeps all of its seed labels other than AI/... and IMPORTANT (INBOX, UNREAD, STARRED, CATEGORY_* labels, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/... or IMPORTANT, plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 26,
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "Seven new threads, each sorted by Gmail into a tab that disagrees with the rubric's Tabs section. Sift files each by the rubric, not by Gmail: the bookshop receipt Gmail put in Promotions goes to Updates; the run-tracking app's kudos Gmail put in Updates goes to Social, while staying AI/Bulk; the lamp sale Gmail left in Primary goes to Promotions; the coach's question Gmail put in Social is Important and starred and moves to Primary; Pat's running club newsletter, on the Valued list, is Low priority with AI/Newsletter and goes to Updates, where the rubric puts club newsletters, while the gear store's newsletter is AI/Newsletter in Promotions; and Riley's FYI, which the Tabs section doesn't place, goes to Primary. No thread goes to Forums.",
+      "expectations": [
+        "t-receipt ends with CATEGORY_UPDATES and no other CATEGORY_* label.",
+        "t-kudos ends with CATEGORY_SOCIAL and AI/Bulk (Label_27).",
+        "t-sale ends with CATEGORY_PROMOTIONS.",
+        "t-coach ends with IMPORTANT and STARRED, and in Primary: with CATEGORY_PERSONAL or no CATEGORY_* label.",
+        "t-club-news ends with CATEGORY_UPDATES, AI/Newsletter, and AI/Low priority (Label_22).",
+        "t-store-news ends with CATEGORY_PROMOTIONS and AI/Newsletter.",
+        "t-fyi ends in Primary: with CATEGORY_PERSONAL or no CATEGORY_* label.",
+        "No thread ends with CATEGORY_FORUMS, and no thread ends with more than one CATEGORY_* label.",
+        "The log body gains a line for each of the seven threads that names the tab it was filed in.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 27,
+      "prompt": "/sift-email Rubric: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000a1 Log: https://claude.ai/code/artifact/5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "expected_output": "Two threads sift labeled yesterday have new messages, and Gmail sorted each new message into Promotions. On the bakery thread, sift had filed it in Promotions and the earlier message is now in Primary, so Pat moved it: Pat's tab stands, and sift moves the thread back to Primary. On the bookshop thread, the earlier message is still in Updates where sift filed it, so only Gmail re-sorted the new message: sift files the thread by the rubric, back in Updates. Neither edit is learned from, so the rubric and changelog are unchanged.",
+      "expectations": [
+        "t-moved ends in Primary: with CATEGORY_PERSONAL or no CATEGORY_* label.",
+        "t-gmail-tab ends with CATEGORY_UPDATES and without CATEGORY_PROMOTIONS.",
+        "The Gmail call log shows a get_thread call for each of t-moved and t-gmail-tab before any label change to that thread.",
+        "The rubric's Added by sift section and Changelog are unchanged from the seed.",
+        "The log body gains lines for t-moved and t-gmail-tab.",
+        "Every thread keeps all of its seed labels other than AI/..., IMPORTANT, and CATEGORY_* (INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4), and gains or loses only labels named AI/..., IMPORTANT, or CATEGORY_* (its tab, at most one), plus STARRED, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     }

@@ -1,0 +1,22 @@
+{
+  "anchor_date": "2026-10-10",
+  "contacts": {
+    "people/c101": {
+      "names": [
+        "Jordan Lee"
+      ],
+      "emails": [
+        "jordan.lee@riversideunited.example"
+      ],
+      "organizations": [
+        "Riverside United FC — U12 Coach"
+      ],
+      "groups": [
+        {
+          "id": "contactGroups/soccer",
+          "name": "Soccer"
+        }
+      ]
+    }
+  }
+}

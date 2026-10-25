@@ -52,16 +52,27 @@ every thread it calls something else. When someone is waiting on the user
 specifically, sift also stars the thread (system label `STARRED`). Sift never
 removes a star, its own included: the user clears stars.
 
-Create any missing `AI/` labels on the first run. Never create other labels,
-archive, mark read, mute, trash, or move mail, so nothing sift does can hide a
-message. The rubric's Permissions section may grant more.
+**Tabs.** Sift also files each thread it evaluates into the inbox tab the
+rubric's Tabs section gives: Primary, Social, Promotions, or Updates, never
+Forums. The tab is a call of its own, apart from priority and labels, so a
+Bulk thread can be in Social and one newsletter in Updates while another is
+in Promotions. Gmail's own sort carries no weight: when a thread is in another
+tab, move it. Important mail always goes to Primary, and so does anything the
+Tabs section doesn't place. Move a thread by adding its tab's label
+(`CATEGORY_PERSONAL` for Primary, `CATEGORY_SOCIAL`, `CATEGORY_PROMOTIONS`, or
+`CATEGORY_UPDATES`); Gmail removes the old one.
 
-**The user's edits stand.** When a thread's priority or star differs from
+Create any missing `AI/` labels on the first run. Never create other labels,
+archive, mark read, mute, trash, or move mail out of the inbox (a tab keeps it
+in the inbox), so nothing sift does can hide a message. The rubric's
+Permissions section may grant more.
+
+**The user's edits stand.** When a thread's priority, star, or tab differs from
 what the log says sift last applied, the user changed it. Sift keeps it, and
 doesn't learn from it, though a new message that needs a reply still gets a
-star. A new reply can arrive with Gmail's own Important mark, so the mark is
-the user's only when a message from before sift's call carries it and the log
-shows another priority (Step 5 fetches the thread to check).
+star. A new reply can arrive with Gmail's own Important mark or tab, so either
+is the user's only when a message from before sift's call carries it and the
+log shows otherwise (Step 5 fetches the thread to check).
 
 When the rubric asks for a label of its own, in its Category labels or
 Permissions section, such as "label event invitations as invitation", create
@@ -306,8 +317,8 @@ The lookups:
 **What the message is:**
 
 - What labels does the thread already carry? The user's own labels (often
-  applied by filters on arrival), a star, and the Important mark Gmail adds on
-  arrival are context like every other signal here. They can help explain a
+  applied by filters on arrival), a star, and the Important mark and tab Gmail
+  gives on arrival are context like every other signal here. They can help explain a
   message, but none of them decides the call: the rubric does.
 - Is the user in To rather than Cc, or the only recipient?
 - Does it mention a date, deadline, or event in the next week?
@@ -318,9 +329,8 @@ itself. Marketing copy says "action required"; a coach's two-line note doesn't.
 
 **Mass mail or mail meant for the user.** Mass mail is sent to a list rather
 than to the user personally. The signs are a no-reply sender, an unsubscribe
-link, the user missing from To or a list address in To, and Gmail's
-`CATEGORY_PROMOTIONS` or `CATEGORY_UPDATES` label. Only when those leave it
-unclear, read the raw message for `List-Unsubscribe` or `List-Id` headers. Of
+link, and the user missing from To or a list address in To; Gmail's tab is
+not one. Only when those leave it unclear, read the raw message for `List-Unsubscribe` or `List-Id` headers. Of
 mass mail, ask: would the user miss it if it were archived unread? If not, it
 is `AI/Bulk`, unless it is unsolicited or spam-like, which is `AI/Junk`. Mail
 meant for the user that they may need later, such as a receipt or an FYI from
@@ -353,7 +363,9 @@ Apply the call at the thread level, leaving one priority: for Important, add
 label and remove `IMPORTANT` and any other `AI/` priority label. Then add
 `STARRED` when a message sift hasn't evaluated before needs a reply and the
 thread has no star: a star the user removed stays off until a new message
-needs one. Never remove a star, and keep whatever else the user changed. Batch the calls where the tools allow.
+needs one. Never remove a star. Then file the thread into its tab (see
+[Labels](#labels)) unless it is already there. Keep whatever else the user
+changed, and batch the calls where the tools allow.
 
 Then carry out whatever the rubric's Permissions section grants for the
 priority just applied, such as archiving a thread labeled `AI/Junk` when Permissions
@@ -374,7 +386,8 @@ summary under that heading (Step 8) starts with both docs' links.
 Never use a message's timestamp or a made-up time. `<applied>` names the
 priority (`Important`, `AI/Low priority`, `AI/Bulk`, or `AI/Junk`), then
 `starred` when sift added the star or `star kept` when the thread already had
-one, then any category label; where the user's edit stood, say so. The log is
+one, then the tab (`Primary`, `Social`, `Promotions`, or `Updates`), then any
+category label; where the user's edit stood, say so. The log is
 the only record of what sift has seen and applied. The reason is how the user
 audits a call later, so make it specific: "Coach asking for carpool
 volunteers by Friday" beats "Seems important."
@@ -398,8 +411,8 @@ each item this run has not done, do it now, then continue.
 Write the run summary directly under this run's heading in the log, above its
 thread lines, then repeat it in chat:
 
-- Counts: processed, important, low priority, bulk, junk, starred, taken from
-  what was actually applied this run.
+- Counts: processed, important, low priority, bulk, junk, starred, and moved
+  to each tab, taken from what was actually applied this run.
 - The important and starred threads, one line each with the reason.
 - The daily review's line, when it ran, and the rubric changes it produced.
 - Questions opened, and answers applied.
