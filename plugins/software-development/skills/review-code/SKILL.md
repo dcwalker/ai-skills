@@ -121,8 +121,9 @@ For each affected skill, check and report:
 - **Description quality**: the frontmatter `description` states what the skill
   does AND when to use it, with concrete triggering phrases — the description
   is the only thing the model sees when deciding whether to load the skill.
-- **Line budget / progressive disclosure**: SKILL.md under ~500 lines; large
-  reference material split into `references/` files rather than inlined.
+- **Progressive disclosure**: reference material the skill consults only
+  under a particular condition split into `references/` files rather than
+  inlined in SKILL.md.
 - **Naming convention**: lowercase-hyphen name; action skills follow
   `{intent}-{subject}[-{qualifier}]`, integrations `{tool}[-{scope}]`. Reuse
   the intent words already established by sibling skills (no synonym drift,
@@ -212,7 +213,7 @@ Note:
 
 Skill: triage (plugins/life-skills/skills/triage)
 ---
-Static checks:  description ✓ · line budget ⚠ (699 — over ~500, flag) ·
+Static checks:  description ✓ · disclosure ⚠ (inlined lookup tables, flag) ·
                 naming ✓ · resources ✓ · eval hygiene ✓
 Evals:          not run (on-request only); baseline of record:
                 evals/benchmark-baseline.json (83.3% pass, 2026-07-31)

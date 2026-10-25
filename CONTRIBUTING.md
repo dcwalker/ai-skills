@@ -71,9 +71,9 @@ Skills are tested with evals, not unit tests. See [evals/README.md](evals/README
 - A new skill needs a `benchmark-baseline.json` established before merge; an existing skill's changes are benchmarked against its current `benchmark-baseline.json`
 - If a change to an existing skill lowers its benchmark pass rate, or otherwise regresses behavior relative to `benchmark-baseline.json`, justify the regression in the PR description (what tradeoff was made and why it's acceptable) before it can be accepted. Update `benchmark-baseline.json` only after that regression (or an improvement) has been reviewed and accepted
 
-### Skill File Size
+### Reference Files
 
-Keep `SKILL.md` under ~500 lines. Past that, split reference material into
+A skill can move reference material out of `SKILL.md` into
 `references/<topic>.md` alongside it, replacing it in `SKILL.md` with a short
 summary and a link — the same progressive-disclosure shape the README follows,
 and what `review-code`'s skill-quality mode checks for.
