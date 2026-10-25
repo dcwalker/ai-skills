@@ -75,7 +75,7 @@ Query support in search_threads is a small, documented subset of Gmail
 syntax -- enough for triage's scoped-inbox flow, writing's corpus searches,
 and sift-email's unprocessed-mail search: `in:inbox`, `in:sent`,
 `in:anywhere`, `from:<addr|me>`, `to:<addr|me>`, `subject:<word>`,
-`label:<label_id|name>`, `is:unread`, `is:starred`, `is:important`,
+`label:<label_id|name>`, `category:<tab>`, `is:unread`, `is:starred`, `is:important`,
 `after:`/`before:` (a date, or epoch seconds),
 `newer_than:`/`older_than:`, bare words (matched against subject+snippet),
 "quoted phrases", an uppercase `OR` between two terms, and `-` negation of
@@ -170,7 +170,7 @@ def _in_matches(t: dict, place: str) -> bool:
 # that search could never return a result, so no eval could exercise a cached
 # card being extended -- the failure looked like "no new samples" every time.
 # The relative forms (`newer_than:2d`) stay unimplemented; nothing needs them.
-_UNIMPLEMENTED = ("is:", "has:", "category:",
+_UNIMPLEMENTED = ("is:", "has:",
                   "newer:", "older:", "size:", "larger:", "smaller:")
 
 _AGE_UNITS = {"d": 1, "m": 30, "y": 365}
@@ -265,6 +265,7 @@ _OPERATORS = {
     "older_than:": lambda t, arg: _age_matches(t, arg, newer=False),
     "after:": lambda t, arg: _date_matches(t, arg, newer=True),
     "before:": lambda t, arg: _date_matches(t, arg, newer=False),
+    "category:": lambda t, arg: _category_matches(t, arg),
 }
 
 
@@ -497,15 +498,38 @@ def modify_thread_labels(
     return result
 
 
+# Inbox tabs. The live label_thread description says adding the target
+# CATEGORY_* label moves a thread to that tab (CATEGORY_PERSONAL for Primary)
+# and "Gmail automatically removes the previous category", so a thread holds
+# at most one. A fixture thread with none is in Primary.
+_CATEGORY_IDS = {"CATEGORY_PERSONAL", "CATEGORY_SOCIAL", "CATEGORY_PROMOTIONS",
+                 "CATEGORY_UPDATES", "CATEGORY_FORUMS"}
+_CATEGORY_NAMES = {"primary": "CATEGORY_PERSONAL", "social": "CATEGORY_SOCIAL",
+                   "promotions": "CATEGORY_PROMOTIONS", "updates": "CATEGORY_UPDATES",
+                   "forums": "CATEGORY_FORUMS"}
+
+
+def _category_matches(t: dict, arg: str) -> bool:
+    """category:<tab> -- a thread with no category label counts as Primary."""
+    wanted = _CATEGORY_NAMES.get(arg.lower())
+    if wanted is None:
+        return False
+    held = [lbl for lbl in t["labelIds"] if lbl in _CATEGORY_IDS]
+    return wanted in held or (wanted == "CATEGORY_PERSONAL" and not held)
+
+
 def _check_label_ids(label_ids: list[str]) -> None:
-    system_ids = {"INBOX", "UNREAD", "STARRED", "IMPORTANT", "TRASH", "SPAM"}
+    system_ids = {"INBOX", "UNREAD", "STARRED", "IMPORTANT", "TRASH", "SPAM"} | _CATEGORY_IDS
     for lbl in label_ids:
         if lbl not in system_ids and lbl not in state.data["labels"]:
             raise ValueError(f"gmail-stub: no label with id {lbl!r} -- use list_labels for ids")
 
 
 def _change_labels(t: dict, add: list[str], remove: list[str]) -> None:
-    """Add and remove label ids on a thread, leaving every other label alone."""
+    """Add and remove label ids on a thread, leaving every other label alone,
+    except that adding a category replaces the thread's previous one."""
+    if any(lbl in _CATEGORY_IDS for lbl in add):
+        t["labelIds"] = [lbl for lbl in t["labelIds"] if lbl not in _CATEGORY_IDS]
     for lbl in add:
         if lbl not in t["labelIds"]:
             t["labelIds"].append(lbl)
