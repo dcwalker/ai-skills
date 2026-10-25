@@ -82,8 +82,10 @@ in place of one. Decide by what the message is, as the rubric describes
 it, not by whether it uses a particular word: a message asking where a receipt
 is does not get `AI/Receipt`.
 
-Searches and label changes take label IDs, not names. List the labels once at
-the start of a run and use the IDs from then on.
+Label changes take label IDs, and `label:` searches take label names: quote a
+name with a space (`label:"AI/Low priority"`) or write its spaces and `/` as
+`-` (`label:AI-Low-priority`). List the labels once at the start of a run and
+use the IDs from then on.
 
 ## Step 1: Find the rubric and log
 

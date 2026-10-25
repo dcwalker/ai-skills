@@ -81,11 +81,12 @@ and sift-email's unprocessed-mail search: `in:inbox`, `in:sent`,
 "quoted phrases", an uppercase `OR` between two terms, and `-` negation of
 any of these.
 
-`label:` takes a label id, which is the only form the live connector's
-search_threads description documents. A display name, quoted when it holds
-a space (`label:"AI/Low priority"`), matches too, because a live read-only
-search with a quoted nested label name returned that label's threads
-(2026-10-10). Names compare without regard to letter case.
+`label:` takes a label's display name, never its id, as the live connector's
+search_threads description says ("Label IDs such as `Label_123` match
+nothing"; checked live 2026-10-13: `label:Label_56` returned nothing and
+`label:AI-Sifted` returned the threads). Quote a name with a space
+(`label:"AI/Low priority"`) or write its spaces and `/` as `-`
+(`label:AI-Low-priority`). Names compare without regard to letter case.
 
 `newer_than:`/`older_than:` take a number and a unit (d, m, or y; a month
 counts as 30 days and a year as 365) and count back from the fixture's
@@ -207,12 +208,16 @@ def _age_matches(t: dict, arg: str, newer: bool) -> bool:
     return actual > cutoff if newer else actual < cutoff
 
 
+def _label_form(name: str) -> str:
+    """A label name as label: compares it: any letter case, with spaces and
+    "/" read as "-", so "AI/Low priority" and AI-Low-priority are one name."""
+    return name.strip('"').lower().replace(" ", "-").replace("/", "-")
+
+
 def _label_matches(t: dict, arg: str) -> bool:
-    """A label id, or a label's display name in any letter case."""
-    wanted = arg.strip('"')
-    if wanted in t["labelIds"]:
-        return True
-    ids = {l["id"] for l in state.data["labels"].values() if l["name"].lower() == wanted.lower()}
+    """A label's display name, quoted or dashed. An id matches nothing."""
+    wanted = _label_form(arg)
+    ids = {l["id"] for l in state.data["labels"].values() if _label_form(l["name"]) == wanted}
     return any(i in t["labelIds"] for i in ids)
 
 
