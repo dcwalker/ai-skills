@@ -63,11 +63,6 @@
       "name": "AI",
       "type": "user"
     },
-    "Label_21": {
-      "id": "Label_21",
-      "name": "AI/Important",
-      "type": "user"
-    },
     "Label_22": {
       "id": "Label_22",
       "name": "AI/Low priority",
@@ -78,21 +73,6 @@
       "name": "AI/Junk",
       "type": "user"
     },
-    "Label_24": {
-      "id": "Label_24",
-      "name": "AI/Needs reply",
-      "type": "user"
-    },
-    "Label_25": {
-      "id": "Label_25",
-      "name": "AI/Sifted",
-      "type": "user"
-    },
-    "Label_26": {
-      "id": "Label_26",
-      "name": "AI/Wrong",
-      "type": "user"
-    },
     "Label_27": {
       "id": "Label_27",
       "name": "AI/Bulk",
@@ -100,8 +80,118 @@
     }
   },
   "threads": {
-    "t-webinar": {
-      "id": "t-webinar",
+    "t-cc1": {
+      "id": "t-cc1",
+      "subject": "Fall pottery classes are open",
+      "from": "programs@riversidecc.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-03T20:00:00Z",
+      "snippet": "Fall pottery classes are open: Tuesday and Thursday evenings, six weeks, all levels.\n\nYou are receiving this because you",
+      "labelIds": [
+        "INBOX",
+        "Label_27",
+        "STARRED",
+        "CATEGORY_PROMOTIONS"
+      ],
+      "messages": [
+        {
+          "id": "t-cc1-m1",
+          "from": "programs@riversidecc.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-03T20:00:00Z",
+          "snippet": "Fall pottery classes are open: Tuesday and Thursday evenings, six weeks, all levels.\n\nYou are receiving this because you",
+          "body": "Fall pottery classes are open: Tuesday and Thursday evenings, six weeks, all levels.\n\nYou are receiving this because you signed up at Riverside Community Center. Unsubscribe: https://riversidecc.example/unsubscribe"
+        }
+      ]
+    },
+    "t-cc2": {
+      "id": "t-cc2",
+      "subject": "Winter swim lessons: registration opens Monday",
+      "from": "programs@riversidecc.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-05T18:00:00Z",
+      "snippet": "Winter swim lessons for ages 4 to 12. Registration opens Monday at 9am.\n\nYou are receiving this because you signed up at",
+      "labelIds": [
+        "INBOX",
+        "Label_27",
+        "STARRED",
+        "CATEGORY_PROMOTIONS"
+      ],
+      "messages": [
+        {
+          "id": "t-cc2-m1",
+          "from": "programs@riversidecc.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-05T18:00:00Z",
+          "snippet": "Winter swim lessons for ages 4 to 12. Registration opens Monday at 9am.\n\nYou are receiving this because you signed up at",
+          "body": "Winter swim lessons for ages 4 to 12. Registration opens Monday at 9am.\n\nYou are receiving this because you signed up at Riverside Community Center. Unsubscribe: https://riversidecc.example/unsubscribe"
+        }
+      ]
+    },
+    "t-cc3": {
+      "id": "t-cc3",
+      "subject": "Volunteers wanted for the Harvest Fair",
+      "from": "programs@riversidecc.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-08T20:00:00Z",
+      "snippet": "We need volunteers for the Harvest Fair on October 24. Sign up for a two-hour shift.\n\nYou are receiving this because you",
+      "labelIds": [
+        "INBOX",
+        "Label_27",
+        "STARRED",
+        "CATEGORY_PROMOTIONS"
+      ],
+      "messages": [
+        {
+          "id": "t-cc3-m1",
+          "from": "programs@riversidecc.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-08T20:00:00Z",
+          "snippet": "We need volunteers for the Harvest Fair on October 24. Sign up for a two-hour shift.\n\nYou are receiving this because you",
+          "body": "We need volunteers for the Harvest Fair on October 24. Sign up for a two-hour shift.\n\nYou are receiving this because you signed up at Riverside Community Center. Unsubscribe: https://riversidecc.example/unsubscribe"
+        }
+      ]
+    },
+    "t-webinar1": {
+      "id": "t-webinar1",
+      "subject": "Webinar: Scaling your stack",
+      "from": "events@cloudco.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-05T15:00:00Z",
+      "snippet": "Join us for 'Scaling your stack', a live webinar next Tuesday at 10am. Save your seat.",
+      "labelIds": [
+        "UNREAD",
+        "IMPORTANT"
+      ],
+      "messages": [
+        {
+          "id": "t-webinar1-m1",
+          "from": "events@cloudco.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-05T15:00:00Z",
+          "snippet": "Join us for 'Scaling your stack', a live webinar next Tuesday at 10am. Save your seat.",
+          "body": "Join us for 'Scaling your stack', a live webinar next Tuesday at 10am. Save your seat."
+        }
+      ]
+    },
+    "t-webinar2": {
+      "id": "t-webinar2",
       "subject": "Reminder: webinar Tuesday",
       "from": "events@cloudco.example",
       "to": [
@@ -110,14 +200,12 @@
       "date": "2026-10-08T17:00:00Z",
       "snippet": "Reminder: 'Scaling your stack' webinar is Tuesday at 10am. Add it to your calendar.",
       "labelIds": [
-        "INBOX",
-        "Label_21",
-        "Label_25",
-        "Label_26"
+        "UNREAD",
+        "IMPORTANT"
       ],
       "messages": [
         {
-          "id": "t-webinar-m1",
+          "id": "t-webinar2-m1",
           "from": "events@cloudco.example",
           "to": [
             "pat@example.com"
@@ -128,57 +216,84 @@
         }
       ]
     },
-    "t-pta": {
-      "id": "t-pta",
-      "subject": "PTA budget draft",
-      "from": "treasurer@maplegrovepta.example",
+    "t-shop": {
+      "id": "t-shop",
+      "subject": "Lamps 30% off this weekend",
+      "from": "deals@lampsandco.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-07T16:00:00Z",
+      "snippet": "Every floor and desk lamp is 30% off through Sunday.\n\nUnsubscribe: https://lampsandco.example/unsubscribe",
+      "labelIds": [
+        "Label_27",
+        "CATEGORY_PROMOTIONS"
+      ],
+      "messages": [
+        {
+          "id": "t-shop-m1",
+          "from": "deals@lampsandco.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-07T16:00:00Z",
+          "snippet": "Every floor and desk lamp is 30% off through Sunday.\n\nUnsubscribe: https://lampsandco.example/unsubscribe",
+          "body": "Every floor and desk lamp is 30% off through Sunday.\n\nUnsubscribe: https://lampsandco.example/unsubscribe"
+        }
+      ]
+    },
+    "t-asked": {
+      "id": "t-asked",
+      "subject": "Bake sale on Friday",
+      "from": "sam@maplegrovepta.example",
       "to": [
         "pat@example.com"
       ],
       "date": "2026-10-08T19:00:00Z",
-      "snippet": "Attached is the draft budget for next week's meeting. Comments welcome.",
+      "snippet": "Pat, could you bring a dozen cookies to the bake sale Friday? Let me know either way.",
       "labelIds": [
         "INBOX",
-        "Label_23",
-        "Label_25",
-        "Label_26"
+        "UNREAD",
+        "Label_22",
+        "STARRED"
       ],
       "messages": [
         {
-          "id": "t-pta-m1",
-          "from": "treasurer@maplegrovepta.example",
+          "id": "t-asked-m1",
+          "from": "sam@maplegrovepta.example",
           "to": [
             "pat@example.com"
           ],
           "date": "2026-10-08T19:00:00Z",
-          "snippet": "Attached is the draft budget for next week's meeting. Comments welcome.",
-          "body": "Attached is the draft budget for next week's meeting. Comments welcome."
+          "snippet": "Pat, could you bring a dozen cookies to the bake sale Friday? Let me know either way.",
+          "body": "Pat, could you bring a dozen cookies to the bake sale Friday? Let me know either way."
         }
       ]
     },
-    "t-new": {
-      "id": "t-new",
-      "subject": "Your hold is ready",
-      "from": "noreply@citylibrary.example",
+    "t-new-cc": {
+      "id": "t-new-cc",
+      "subject": "Family movie night this Friday",
+      "from": "programs@riversidecc.example",
       "to": [
         "pat@example.com"
       ],
-      "date": "2026-10-10T14:00:00Z",
-      "snippet": "Your hold on 'The Overstory' is ready for pickup until Oct 17.",
+      "date": "2026-10-10T13:00:00Z",
+      "snippet": "Bring a blanket: family movie night is Friday at 6pm in the gym. Free popcorn.\n\nYou are receiving this because you signe",
       "labelIds": [
         "INBOX",
-        "UNREAD"
+        "UNREAD",
+        "CATEGORY_PROMOTIONS"
       ],
       "messages": [
         {
-          "id": "t-new-m1",
-          "from": "noreply@citylibrary.example",
+          "id": "t-new-cc-m1",
+          "from": "programs@riversidecc.example",
           "to": [
             "pat@example.com"
           ],
-          "date": "2026-10-10T14:00:00Z",
-          "snippet": "Your hold on 'The Overstory' is ready for pickup until Oct 17.",
-          "body": "Your hold on 'The Overstory' is ready for pickup until Oct 17."
+          "date": "2026-10-10T13:00:00Z",
+          "snippet": "Bring a blanket: family movie night is Friday at 6pm in the gym. Free popcorn.\n\nYou are receiving this because you signe",
+          "body": "Bring a blanket: family movie night is Friday at 6pm in the gym. Free popcorn.\n\nYou are receiving this because you signed up at Riverside Community Center. Unsubscribe: https://riversidecc.example/unsubscribe"
         }
       ]
     }

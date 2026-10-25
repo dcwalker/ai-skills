@@ -75,7 +75,8 @@ Query support in search_threads is a small, documented subset of Gmail
 syntax -- enough for triage's scoped-inbox flow, writing's corpus searches,
 and sift-email's unprocessed-mail search: `in:inbox`, `in:sent`,
 `in:anywhere`, `from:<addr|me>`, `to:<addr|me>`, `subject:<word>`,
-`label:<label_id|name>`, `is:unread`, `after:`/`before:`,
+`label:<label_id|name>`, `is:unread`, `is:starred`, `is:important`,
+`after:`/`before:` (a date, or epoch seconds),
 `newer_than:`/`older_than:`, bare words (matched against subject+snippet),
 "quoted phrases", an uppercase `OR` between two terms, and `-` negation of
 any of these.
@@ -233,11 +234,20 @@ def _thread_date(t: dict):
 
 def _date_matches(t: dict, arg: str, newer: bool) -> bool:
     """after:/before: -- strictly outside the named day, Gmail's own reading.
+    An all-digit argument is epoch seconds, which the Gmail API's filtering
+    guide documents and a live read-only search honored (2026-10-24), and is
+    compared against the thread's full timestamp.
 
     An unparseable argument matches nothing, for the same reason an
     unimplemented operator does: a silent match-everything would turn a
     malformed query into a passing trial.
     """
+    if arg.isdigit():
+        moment = _thread_datetime(t)
+        if moment is None:
+            return False
+        bound = datetime.datetime.fromtimestamp(int(arg), datetime.timezone.utc)
+        return moment > bound if newer else moment < bound
     bound, actual = _parse_query_date(arg), _thread_date(t)
     if bound is None or actual is None:
         return False

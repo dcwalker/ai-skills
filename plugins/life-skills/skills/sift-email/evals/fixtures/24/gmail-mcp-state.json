@@ -63,11 +63,6 @@
       "name": "AI",
       "type": "user"
     },
-    "Label_21": {
-      "id": "Label_21",
-      "name": "AI/Important",
-      "type": "user"
-    },
     "Label_22": {
       "id": "Label_22",
       "name": "AI/Low priority",
@@ -76,21 +71,6 @@
     "Label_23": {
       "id": "Label_23",
       "name": "AI/Junk",
-      "type": "user"
-    },
-    "Label_24": {
-      "id": "Label_24",
-      "name": "AI/Needs reply",
-      "type": "user"
-    },
-    "Label_25": {
-      "id": "Label_25",
-      "name": "AI/Sifted",
-      "type": "user"
-    },
-    "Label_26": {
-      "id": "Label_26",
-      "name": "AI/Wrong",
       "type": "user"
     },
     "Label_27": {
@@ -105,31 +85,90 @@
     }
   },
   "threads": {
-    "t-running": {
-      "id": "t-running",
-      "subject": "Hilltop Running Club Monthly: September",
+    "t-run1": {
+      "id": "t-run1",
+      "subject": "Hilltop Running Club: September race recap",
+      "from": "news@hilltoprunners.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-03T10:00:00Z",
+      "snippet": "Results from the Riverside 5K, plus photos from the finish line.\n\nYou are receiving this because you subscribed. Unsubsc",
+      "labelIds": [
+        "INBOX",
+        "Label_27",
+        "Label_28",
+        "STARRED",
+        "CATEGORY_UPDATES"
+      ],
+      "messages": [
+        {
+          "id": "t-run1-m1",
+          "from": "news@hilltoprunners.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-03T10:00:00Z",
+          "snippet": "Results from the Riverside 5K, plus photos from the finish line.\n\nYou are receiving this because you subscribed. Unsubsc",
+          "body": "Results from the Riverside 5K, plus photos from the finish line.\n\nYou are receiving this because you subscribed. Unsubscribe: https://hilltoprunners.example/unsubscribe"
+        }
+      ]
+    },
+    "t-run2": {
+      "id": "t-run2",
+      "subject": "Hilltop Running Club: fall training tips",
+      "from": "news@hilltoprunners.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-05T10:00:00Z",
+      "snippet": "Coach Lee on building mileage for the Harvest 10K.\n\nYou are receiving this because you subscribed. Unsubscribe: https://",
+      "labelIds": [
+        "INBOX",
+        "Label_27",
+        "Label_28",
+        "STARRED",
+        "CATEGORY_UPDATES"
+      ],
+      "messages": [
+        {
+          "id": "t-run2-m1",
+          "from": "news@hilltoprunners.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-05T10:00:00Z",
+          "snippet": "Coach Lee on building mileage for the Harvest 10K.\n\nYou are receiving this because you subscribed. Unsubscribe: https://",
+          "body": "Coach Lee on building mileage for the Harvest 10K.\n\nYou are receiving this because you subscribed. Unsubscribe: https://hilltoprunners.example/unsubscribe"
+        }
+      ]
+    },
+    "t-run3": {
+      "id": "t-run3",
+      "subject": "Hilltop Running Club Monthly: October",
       "from": "news@hilltoprunners.example",
       "to": [
         "pat@example.com"
       ],
       "date": "2026-10-08T10:00:00Z",
-      "snippet": "Club news, member spotlights, and the summer race results.",
+      "snippet": "Club news, member spotlights, and the trail cleanup schedule.\n\nYou are receiving this because you subscribed. Unsubscrib",
       "labelIds": [
         "INBOX",
-        "Label_22",
-        "Label_25",
-        "Label_28"
+        "Label_27",
+        "Label_28",
+        "STARRED",
+        "CATEGORY_UPDATES"
       ],
       "messages": [
         {
-          "id": "t-running-m1",
+          "id": "t-run3-m1",
           "from": "news@hilltoprunners.example",
           "to": [
             "pat@example.com"
           ],
           "date": "2026-10-08T10:00:00Z",
-          "snippet": "Club news, member spotlights, and the summer race results.",
-          "body": "Club news, member spotlights, and the summer race results.\n\nYou are receiving this because you subscribed. Unsubscribe: https://hilltoprunners.example/unsubscribe"
+          "snippet": "Club news, member spotlights, and the trail cleanup schedule.\n\nYou are receiving this because you subscribed. Unsubscrib",
+          "body": "Club news, member spotlights, and the trail cleanup schedule.\n\nYou are receiving this because you subscribed. Unsubscribe: https://hilltoprunners.example/unsubscribe"
         }
       ]
     },
@@ -144,9 +183,10 @@
       "snippet": "Our editors picked 35 deals on luggage, lamps, and more.",
       "labelIds": [
         "INBOX",
-        "Label_25",
+        "UNREAD",
         "Label_27",
-        "Label_28"
+        "Label_28",
+        "CATEGORY_PROMOTIONS"
       ],
       "messages": [
         {

@@ -58,7 +58,7 @@
         {
           "id": "rubric-body.4",
           "kind": "list",
-          "markdown": "- **Change a rule:** edit any section above \"Added by sift\". Sift never changes those.\n- **Correct a label:** in Gmail, swap the AI label for the right one, or add AI/Wrong. Sift learns from it on its next run and records the change in the Changelog.\n- **Answer a question:** sift asks in comments that start with \"Sift:\". Reply in the thread, and the next run applies your answer.\n- **Choose newsletters:** list the ones I want to read under Newsletters, Valued. Every other newsletter gets AI/Bulk. Sift adds lines there too, each starting with \"(learned)\", when I correct a newsletter's label.\n- **Allow more than labels:** add it under Permissions, for example \"Archive threads labeled AI/Junk\".\n- **Tell sift about yourself:** add notes under About me, grouped by topic. Sift adds its own notes there too, each starting with \"(inferred)\". Edit one to correct it, or remove \"(inferred)\" to make it yours.",
+          "markdown": "- **Change a rule:** edit any section above \"Added by sift\". Sift never changes those.\n- **Correct sift:** add or edit a rule here; the next run follows it. Fixing one thread's label or Important mark in Gmail fixes that thread only, and sift won't undo it.\n- **Let sift learn on its own:** once a day, sift checks how I handled the mail it labeled. When I reply to or star several threads from one sender that it ranked low, or archive its Important mail unread, it adds a rule starting with \"(observed)\" under Added by sift.\n- **Answer a question:** sift asks in comments that start with \"Sift:\". Reply in the thread, and the next run applies your answer.\n- **Choose newsletters:** list the ones I want to read under Newsletters, Valued. Every other newsletter gets AI/Bulk. Sift adds lines there too, each starting with \"(learned)\", from its daily check.\n- **Allow more than labels:** add it under Permissions, for example \"Archive threads labeled AI/Junk\".\n- **Tell sift about yourself:** add notes under About me, grouped by topic. Sift adds its own notes there too, each starting with \"(inferred)\". Edit one to correct it, or remove \"(inferred)\" to make it yours.",
           "rev": 1
         },
         {
@@ -70,7 +70,7 @@
         {
           "id": "rubric-body.6",
           "kind": "table",
-          "markdown": "| Label | Meaning |\n|---|---|\n| AI/Important | I'd want to see it today |\n| AI/Low priority | Meant for me, nothing urgent |\n| AI/Bulk | Mass mail I wouldn't miss if it were archived unread |\n| AI/Junk | Mail I never want |\n| AI/Needs reply | Someone is waiting on me |\n| AI/Sifted | Sift has evaluated it |\n| AI/Wrong | I add this to flag a bad call |",
+          "markdown": "| Label | Meaning |\n|---|---|\n| Important (Gmail's mark) | I'd want to see it today |\n| AI/Low priority | Meant for me, nothing urgent |\n| AI/Bulk | Mass mail I wouldn't miss if it were archived unread |\n| AI/Junk | Mail I never want |\n| Star | Someone is waiting on me |",
           "rev": 1
         },
         {
@@ -106,7 +106,7 @@
         {
           "id": "rubric-body.12",
           "kind": "paragraph",
-          "markdown": "Senders, topics, or situations that should always get AI/Important.",
+          "markdown": "Senders, topics, or situations that should always be marked Important.",
           "rev": 1
         },
         {
@@ -124,7 +124,7 @@
         {
           "id": "rubric-body.15",
           "kind": "paragraph",
-          "markdown": "What counts as someone waiting on me specifically. It depends on the message, not on who sent it.",
+          "markdown": "What counts as someone waiting on me specifically, which sift stars. It depends on the message, not on who sent it.",
           "rev": 1
         },
         {
@@ -262,7 +262,7 @@
         {
           "id": "rubric-body.29",
           "kind": "paragraph",
-          "markdown": "Rules sift learned from my corrections. Sift adds, sharpens, and consolidates rules only here. A rule here can narrow one of mine for the cases it names.",
+          "markdown": "Rules sift learned from my answers to its questions, and \"(observed)\" rules from its daily check of how I handle mail. Sift adds, sharpens, and consolidates rules only here. A rule here can narrow one of mine for the cases it names.",
           "rev": 1
         },
         {
@@ -304,7 +304,7 @@
         {
           "id": "rubric-body.36",
           "kind": "list",
-          "markdown": "- (sift adds these from corrections)",
+          "markdown": "- (sift adds these)",
           "rev": 1
         },
         {
@@ -340,7 +340,7 @@
         {
           "id": "log-body.1",
           "kind": "paragraph",
-          "markdown": "What sift did on each run, newest first, so I can check any call. To correct one, change its label in Gmail (see the rubric's \"How to use this doc\").",
+          "markdown": "What sift did on each run, newest first, so I can check any call. To correct sift, edit the rubric (see its \"How to use this doc\").",
           "rev": 1
         },
         {
@@ -352,13 +352,19 @@
         {
           "id": "log-body.3",
           "kind": "paragraph",
-          "markdown": "Each run adds its date and time, a short summary, then one line per thread:",
+          "markdown": "Each run adds its date, time, and start in epoch seconds, a short summary, then one line per thread:",
           "rev": 1
         },
         {
           "id": "log-body.4",
           "kind": "paragraph",
-          "markdown": "time | thread id | sender | subject | labels applied | reason",
+          "markdown": "time | thread id | sender | subject | applied | reason",
+          "rev": 1
+        },
+        {
+          "id": "log-body.4a",
+          "kind": "paragraph",
+          "markdown": "The first run each day also adds a \"Daily review\" line, and an \"observed\" line for each sign of how I handled a thread sift labeled.",
           "rev": 1
         },
         {
@@ -370,7 +376,7 @@
         {
           "id": "log-body.6",
           "kind": "heading",
-          "markdown": "### {{date:2026-10-09}} 07:00",
+          "markdown": "### {{date:2026-10-09}} 07:00 ({{epoch:1791547200}})",
           "rev": 1
         },
         {

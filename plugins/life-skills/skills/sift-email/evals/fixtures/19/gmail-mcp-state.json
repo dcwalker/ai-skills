@@ -63,11 +63,6 @@
       "name": "AI",
       "type": "user"
     },
-    "Label_21": {
-      "id": "Label_21",
-      "name": "AI/Important",
-      "type": "user"
-    },
     "Label_22": {
       "id": "Label_22",
       "name": "AI/Low priority",
@@ -76,21 +71,6 @@
     "Label_23": {
       "id": "Label_23",
       "name": "AI/Junk",
-      "type": "user"
-    },
-    "Label_24": {
-      "id": "Label_24",
-      "name": "AI/Needs reply",
-      "type": "user"
-    },
-    "Label_25": {
-      "id": "Label_25",
-      "name": "AI/Sifted",
-      "type": "user"
-    },
-    "Label_26": {
-      "id": "Label_26",
-      "name": "AI/Wrong",
       "type": "user"
     },
     "Label_27": {
@@ -134,7 +114,7 @@
         "pat@example.com"
       ],
       "date": "2026-10-10T13:10:00Z",
-      "snippet": "Sam invited you to Jamie's 9th birthday party on Sunday, October 18. RSVP by Thursday.",
+      "snippet": "Sam invited you to Jamie's 9th birthday party on Sunday, {{date:2026-10-18|%B %-d}}. RSVP by Thursday.",
       "labelIds": [
         "INBOX",
         "UNREAD"
@@ -147,8 +127,8 @@
             "pat@example.com"
           ],
           "date": "2026-10-10T13:10:00Z",
-          "snippet": "Sam invited you to Jamie's 9th birthday party on Sunday, October 18. RSVP by Thursday.",
-          "body": "Sam invited you to Jamie's 9th birthday party on Sunday, October 18. RSVP by Thursday."
+          "snippet": "Sam invited you to Jamie's 9th birthday party on Sunday, {{date:2026-10-18|%B %-d}}. RSVP by Thursday.",
+          "body": "Sam invited you to Jamie's 9th birthday party on Sunday, {{date:2026-10-18|%B %-d}}. RSVP by Thursday."
         }
       ]
     },
@@ -159,7 +139,7 @@
       "to": [
         "pat@example.com"
       ],
-      "date": "2026-10-09T12:00:00Z",
+      "date": "2026-10-09T12:30:00Z",
       "snippet": "Your September statement for account ending 4410 is ready to view.",
       "labelIds": [
         "INBOX"
@@ -171,7 +151,7 @@
           "to": [
             "pat@example.com"
           ],
-          "date": "2026-10-09T12:00:00Z",
+          "date": "2026-10-09T12:30:00Z",
           "snippet": "Your September statement for account ending 4410 is ready to view.",
           "body": "Your September statement for account ending 4410 is ready to view."
         }

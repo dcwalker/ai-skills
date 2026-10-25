@@ -63,11 +63,6 @@
       "name": "AI",
       "type": "user"
     },
-    "Label_21": {
-      "id": "Label_21",
-      "name": "AI/Important",
-      "type": "user"
-    },
     "Label_22": {
       "id": "Label_22",
       "name": "AI/Low priority",
@@ -76,21 +71,6 @@
     "Label_23": {
       "id": "Label_23",
       "name": "AI/Junk",
-      "type": "user"
-    },
-    "Label_24": {
-      "id": "Label_24",
-      "name": "AI/Needs reply",
-      "type": "user"
-    },
-    "Label_25": {
-      "id": "Label_25",
-      "name": "AI/Sifted",
-      "type": "user"
-    },
-    "Label_26": {
-      "id": "Label_26",
-      "name": "AI/Wrong",
       "type": "user"
     },
     "Label_27": {
@@ -107,12 +87,12 @@
       "to": [
         "pat@example.com"
       ],
-      "date": "2026-10-08T15:00:00Z",
-      "snippet": "12 new posts near you, including a lost cat on Pine St.",
+      "date": "2026-10-10T13:00:00Z",
+      "snippet": "Update: the lost cat on Pine St needs a foster home by Sunday. Can you help?",
       "labelIds": [
         "INBOX",
-        "Label_22",
-        "Label_25"
+        "UNREAD",
+        "Label_22"
       ],
       "messages": [
         {
@@ -123,35 +103,72 @@
           ],
           "date": "2026-10-08T15:00:00Z",
           "snippet": "12 new posts near you, including a lost cat on Pine St.",
-          "body": "12 new posts near you, including a lost cat on Pine St."
+          "body": "12 new posts near you, including a lost cat on Pine St.",
+          "labelIds": [
+            "INBOX",
+            "Label_22"
+          ]
+        },
+        {
+          "id": "t-swapped-m2",
+          "from": "digest@neighborly.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T13:00:00Z",
+          "snippet": "Update: the lost cat on Pine St needs a foster home by Sunday. Can you help?",
+          "body": "Update: the lost cat on Pine St needs a foster home by Sunday. Can you help?",
+          "labelIds": [
+            "INBOX",
+            "UNREAD",
+            "Label_22"
+          ]
         }
       ]
     },
-    "t-added": {
-      "id": "t-added",
-      "subject": "Your plan price is changing",
-      "from": "billing@streamflix.example",
+    "t-unstarred": {
+      "id": "t-unstarred",
+      "subject": "Plumber visit Thursday",
+      "from": "landlord@oakstreetrentals.example",
       "to": [
         "pat@example.com"
       ],
-      "date": "2026-10-08T18:00:00Z",
-      "snippet": "Starting Nov 15, your monthly price changes from $15.49 to $17.99.",
+      "date": "2026-10-10T13:30:00Z",
+      "snippet": "One more thing: can you leave the side gate unlocked Thursday morning?",
       "labelIds": [
         "INBOX",
-        "Label_22",
-        "Label_23",
-        "Label_25"
+        "UNREAD",
+        "IMPORTANT"
       ],
       "messages": [
         {
-          "id": "t-added-m1",
-          "from": "billing@streamflix.example",
+          "id": "t-unstarred-m1",
+          "from": "landlord@oakstreetrentals.example",
           "to": [
             "pat@example.com"
           ],
           "date": "2026-10-08T18:00:00Z",
-          "snippet": "Starting Nov 15, your monthly price changes from $15.49 to $17.99.",
-          "body": "Starting Nov 15, your monthly price changes from $15.49 to $17.99."
+          "snippet": "Pat, can the plumber come Thursday between 9 and 11 to look at the kitchen sink?",
+          "body": "Pat, can the plumber come Thursday between 9 and 11 to look at the kitchen sink?",
+          "labelIds": [
+            "INBOX",
+            "IMPORTANT"
+          ]
+        },
+        {
+          "id": "t-unstarred-m2",
+          "from": "landlord@oakstreetrentals.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T13:30:00Z",
+          "snippet": "One more thing: can you leave the side gate unlocked Thursday morning?",
+          "body": "One more thing: can you leave the side gate unlocked Thursday morning?",
+          "labelIds": [
+            "INBOX",
+            "UNREAD",
+            "IMPORTANT"
+          ]
         }
       ]
     }

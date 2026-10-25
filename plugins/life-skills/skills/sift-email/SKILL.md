@@ -1,6 +1,6 @@
 ---
 name: sift-email
-description: "Bulk-label new Gmail by importance in one unattended pass, guided by a living rubric in Claude Docs that learns from the user's corrections. No per-item review, and it never stops to ask, so it can run as a scheduled routine. It runs only when called directly, with /sift-email or by a routine that reads this file, never on its own. For interactive, one-by-one processing of emails, cards, or tickets, use triage instead."
+description: "Bulk-label new Gmail by importance in one unattended pass, guided by a living rubric in Claude Docs that learns from the user's edits and from how the user handles the mail. No per-item review, and it never stops to ask, so it can run as a scheduled routine. It runs only when called directly, with /sift-email or by a routine that reads this file, never on its own. For interactive, one-by-one processing of emails, cards, or tickets, use triage instead."
 disable-model-invocation: true
 metadata:
   category: life-skills
@@ -10,9 +10,9 @@ metadata:
 
 Label new Gmail by importance in a single pass, without stopping to review items
 with the user. The point is that the user glances at labels later, not that they
-sit through a session now. Every action is a visible, reversible label, so a
-wrong call costs one glance and one correction, and each correction makes the
-next run better.
+sit through a session now. Every action is a visible, reversible label, mark,
+or star, so a wrong call costs one glance, and how the user handles the mail
+afterward makes later runs better.
 
 Sift is built to run unattended, usually as a scheduled routine. Nobody is
 there to answer a question mid-run, so sift never blocks: when something is
@@ -29,47 +29,45 @@ example, a log line, or a reason. Write "Pat doesn't want price-increase
 notices", not "I don't want these".
 
 Sessions have no memory of each other. Everything that carries forward lives in
-two places, and this skill reads and writes both on every run:
-
-- **Gmail labels** hold the working state: what has been processed, what was
-  labeled, and what the user corrected.
-- **Two Claude Docs** hold the judgment: the rubric (rules and examples) and the
-  log (what was decided and why).
+Gmail, which holds each thread's priority and star, and in two Claude Docs:
+the rubric (rules and examples) and the log (what sift decided, when, and
+why).
 
 ## Labels
 
-All AI labels are nested under `AI/` so they never mix with the user's own.
+Sift uses Gmail's own Important mark and star, which mail clients already
+show, and three labels of its own, nested under `AI/` so they never mix with
+the user's.
 
-| Label | Meaning |
-|---|---|
-| `AI/Important` | The user would want to see this today |
-| `AI/Low priority` | Mail meant for the user with nothing urgent, such as an FYI or a receipt they may need later |
-| `AI/Bulk` | Mass mail the user would not miss if it were archived unread |
-| `AI/Junk` | Unsolicited marketing, spam-like, or mail the user never wants |
-| `AI/Needs reply` | Someone is waiting on the user specifically |
-| `AI/Sifted` | Sift has evaluated this thread |
-| `AI/Wrong` | Applied by the user to flag a bad call |
+| Priority | How sift applies it | Meaning |
+|---|---|---|
+| Important | Gmail's Important mark (system label `IMPORTANT`) | The user would want to see this today |
+| Low priority | `AI/Low priority` | Mail meant for the user with nothing urgent, such as an FYI or a receipt they may need later |
+| Bulk | `AI/Bulk` | Mass mail the user would not miss if it were archived unread |
+| Junk | `AI/Junk` | Unsolicited marketing, spam-like, or mail the user never wants |
 
-Every thread sift evaluates gets `AI/Sifted` and exactly one priority label:
-`AI/Important`, `AI/Low priority`, `AI/Bulk`, or `AI/Junk`. `AI/Needs reply` is added on
-top of any of them when it applies. `AI/Sifted` is the record of what sift has
-seen, so a thread that carries it but no priority label is one the user
-removed a label from (Step 4).
+Every thread sift evaluates gets exactly one priority. Gmail marks some
+threads Important on its own when they arrive, so sift removes that mark from
+every thread it calls something else. When someone is waiting on the user
+specifically, sift also stars the thread (system label `STARRED`). Sift never
+removes a star, its own included: the user clears stars.
 
-Gmail labels a whole thread, including messages that arrive later, so a new
-reply in a sifted thread already carries the old labels. Step 5 finds those
-replies by date instead.
+Create any missing `AI/` labels on the first run. Never create other labels,
+archive, mark read, mute, trash, or move mail, so nothing sift does can hide a
+message. The rubric's Permissions section may grant more.
 
-Create any missing labels on the first run. Never create other labels, archive,
-mark read, mute, trash, or move mail. Sift only adds and removes `AI/` labels,
-so nothing it does can hide a message. The user may later grant more for specific
-categories; that grant lives in the rubric, not here.
+**The user's edits stand.** When a thread's priority or star differs from
+what the log says sift last applied, the user changed it. Sift keeps the
+user's version and doesn't learn from it: the user corrects sift by editing
+the rubric. A new reply can arrive with Gmail's own Important mark, so before
+changing Important on such a thread, fetch it: if a message from before sift's
+call carries the mark and the log shows another priority, the user added it.
 
 When the rubric asks for a label of its own, in its Category labels or
 Permissions section, such as "label event invitations as invitation", create
 it under `AI/` in title case, `AI/Invitation`, never as a bare `invitation`
-beside the user's own labels. Apply it alongside the thread's priority label,
-never in place of one. Decide by what the message is, as the rubric describes
+beside the user's own labels. Apply it alongside the thread's priority, never
+in place of one. Decide by what the message is, as the rubric describes
 it, not by whether it uses a particular word: a message asking where a receipt
 is does not get `AI/Receipt`.
 
@@ -93,9 +91,10 @@ such as a memory file. Never guess at an existing doc, and never create a
 second pair when links were given.
 
 If a link does not open, or the docs connector is missing, keep going: label
-the whole inbox with the starter rubric's rules, skip every doc update, and say
-in the summary which doc could not be opened or which connector to turn on. A
-missing doc is never a reason to stop the run or to wait for the user. Don't
+every inbox thread (`in:inbox`, as if the log had no run) by the rules in
+`references/rubric-template.md`, skip every doc update, and say in the summary
+which doc could not be opened or which connector to turn on. A missing doc is
+never a reason to stop the run, ask, or wait for the user. Don't
 try to open a doc link any other way, such as fetching it on the web.
 
 Before the first doc edit in a run, read the docs connector's own guide for
@@ -117,39 +116,44 @@ sift may move the user's About me lines, never changing their words, to keep
 related notes together; and a template placeholder, a line wholly in parentheses such as `- (I add these)`
 or `### (topic, such as Kids' soccer, Home, or Work)`, may be replaced by the
 first real entry in its place. Its own rules go under Added by sift, each one
-learned from the user's corrections, so a sift rule may narrow one of the
-user's rules for exactly the cases its corrections cover, and no further.
+learned from the user's answers or the daily review, so a sift rule may
+narrow one of the user's rules for exactly the cases its evidence covers, and
+no further.
 
 ## Step 2: Check whether there is anything to do
 
 Most scheduled runs find nothing new, so check that cheaply before reading the
 rubric. A first run, with no doc links given, always has work: skip to Step 3.
 
-From the log, read only the newest run heading, for the last run's date and
-time, and from the rubric only its Timezone line (search the doc for it rather
-than reading it whole).
+From the log, read only the newest run heading, for the last run's start
+time, whether a "Daily review: <date>" line carries the run's date, and from the rubric only its
+Timezone line (search the doc for these rather than reading either whole).
 
 Then read the system clock once, in that timezone (for example,
-`TZ=<the Timezone line's zone> date '+%Y-%m-%d %H:%M'`). That is the run's date
-and time, and every date or time sift writes this run uses it: the log heading
-and lines, the "nothing new" line, changelog entries, About me dates, and the
-check for whether a note's end date has passed. Never use the machine's own
-local date, the date your environment reports, or a message's date: near
-midnight they fall on a different day than the user's. A first run, which
-skips this step, reads the clock the same way in the starter rubric's
-timezone.
+`TZ=<the Timezone line's zone> date '+%Y-%m-%d %H:%M %s'`), for the run's
+date, time, and epoch seconds. Every date or time sift writes this run uses
+it: the log heading and lines, the "nothing new" line, changelog entries,
+About me dates, and the check for whether a note's end date has passed.
+Never use the machine's own local date, the date your environment reports,
+or a message's date: near midnight they fall on a different day than the
+user's. A first run, which skips this step, reads the clock the same way in
+the starter rubric's timezone.
 
-Then run each of these checks once, using label IDs. Each needs only a
-single search or query, and the first result answers it:
+A run heading reads `<date> <time> (<epoch seconds>)`, the run's start, and
+the next run searches from it, so mail that arrives during a run, or after a
+run that failed before writing its heading, is still found. When the newest
+heading has no epoch seconds, search from its date (`after:<YYYY/MM/DD>`);
+the log keeps a thread from being processed twice.
 
-- An inbox thread sift has not evaluated: `in:inbox -label:<AI/Sifted id>`.
-- A sifted inbox thread with a message since the last run:
-  `in:inbox label:<AI/Sifted id> after:<date of the last run>`, whose newest
-  message is later than the last run.
-- A thread the user marked wrong: `label:<AI/Wrong id>`.
-- A sifted thread with no priority label:
-  `label:<AI/Sifted id> -label:<AI/Important id> -label:<AI/Low priority id> -label:<AI/Bulk id> -label:<AI/Junk id>`.
-- A thread carrying two priority labels, one search for each pair.
+Then run each of these checks once. Each needs only a single search or query,
+and the first result answers it:
+
+- Mail since the last run: `in:inbox after:<the last run's epoch seconds>`,
+  counting only a thread the log doesn't name or whose newest message is
+  later than its newest log line. When the log has no run yet, any inbox
+  thread at all is work.
+- The daily review is due: the log has no "Daily review" line dated the
+  run's date (see Step 4).
 - A comment thread on the rubric whose latest comment is the user's (see
   [Never block](#never-block)).
 
@@ -157,10 +161,6 @@ If every check comes back empty, the run has nothing to do. Don't read the rest
 of the rubric or tidy it. Add one line to the log's Runs section, "<date> <time>:
 nothing new", or, when the newest run entry is already an empty run from
 the run's date, update its time instead. Say "Nothing new" in chat, and stop.
-
-A swap, where the user replaced sift's label with another priority label,
-leaves nothing these checks find. Step 4 catches it on the next run that has
-work.
 
 ## Step 3: Tidy the rubric
 
@@ -192,9 +192,11 @@ such as "Reorganized About me: merged Soccer into Kids' soccer, moved two
 notes". When all four checks pass, the step changes nothing and adds no
 entry.
 
-## Step 4: Learn from corrections
+## Step 4: Learn
 
-Do this before labeling, so today's run benefits from yesterday's feedback.
+Do this before labeling, so today's run benefits from what the user did since
+the last one. The user corrects sift by editing the rubric, which the run
+reads in full; this step adds what sift can learn on its own.
 
 **Answered questions first.** Read the comment threads sift opened on the
 rubric (see [Never block](#never-block)). Sift's comments carry the user's
@@ -205,68 +207,63 @@ thread the question was about if the answer settles it, then reply in that
 thread saying what changed. That reply, starting `Sift:`, marks the
 answer as applied.
 
-**Label corrections.** Find corrections from the last 14 days:
+**Daily review.** When the log has no "Daily review" line dated the run's
+date, read how the user handled the threads sift labeled 1 to 7 days before
+the run. Take each thread the log's lines name in that window and that no
+`observed` line names yet, fetch its labels and messages (metadata only),
+and look for these signals, compared against what the log says sift applied:
 
-- **Explicit:** threads with `label:AI/Wrong`.
-- **Added:** a thread carrying two priority labels, or a priority label that
-  the log shows sift did not apply. The label the user added is the answer,
-  and the one sift applied was wrong. Remove sift's label.
-- **Changed:** threads the log shows sift labeled that now carry a different
-  priority label (the user swapped it), or that gained or lost
-  `AI/Needs reply`. A change to `AI/Needs reply` corrects that label only.
-- **Removed:** threads with `AI/Sifted` and no priority label.
+| Sift applied | What the user did since | Suggests |
+|---|---|---|
+| Bulk or Junk | Replied in the thread, or starred it | Low priority |
+| Low priority | Replied in the thread, or starred it | Important |
+| Important | Archived it while still unread | Low priority |
 
-When the user's own label gives the answer, use it. When it does not
-(`AI/Wrong` alone, or a removed label), read the direction from what sift had
-applied, which the log records:
+A star or reply counts only when the thread's log line shows no star (Step 7),
+since a reply to a thread sift starred is expected. Nothing else is a signal: opening, reading, archiving read mail, leaving a thread
+alone, or changing its priority (the user's edits stand) says nothing.
 
-| Sift applied | Correct label |
-|---|---|
-| `AI/Important` | `AI/Low priority` |
-| `AI/Bulk` | `AI/Low priority` |
-| `AI/Junk` | `AI/Low priority` |
-| `AI/Low priority` | Unclear: could be Important, Bulk, or Junk |
+Record each signal under this run's heading in the log (Step 7):
+`observed | <thread id> | <sender> | sift applied <label> | <what the user did> | suggests <label>`.
+Then count, for each sender with a new signal, the `observed` lines the log
+holds for that sender. When 3 or more of that sender's threads suggest the
+same label and none suggests a different one, add one rule under Added by
+sift, or update the one already there for that sender:
+`(observed) <rule naming the sender> | <n> threads: <what the user did> | <run's date>`.
+A newsletter goes in the Newsletters section instead (see
+[Newsletters](#newsletters)). The rule changes no thread's labels: the user
+has already dealt with those threads. When it would contradict one of the
+user's own rules, don't add it: open a question (see
+[Never block](#never-block)).
 
-When the direction is unclear, leave the thread's labels as they are and open
-a question (see [Never block](#never-block)). Relabel every other correction now,
-so the same wrong call is never reapplied.
+Write `Daily review: <run's date>, <n> threads checked, <n> signals` under
+this run's heading, even when nothing turned up, so later runs that day skip
+the review.
 
-For each correction, work out what the user meant. Usually it's clear from
-the sender, subject, and what was changed. Turn it into the smallest rubric
-change that would have produced the right call: add an example, or add or
-sharpen a rule under Added by sift. When the user's own rule produced the wrong
-call, leave it as written and add a sift rule naming the exception. Prefer
-generalizing over memorizing one email, but name the senders the corrections
-show, or the narrowest category that covers them ("automated deadline notices
-from the club registrar"), never a wider class the evidence doesn't show, such
-as all vendors or all community organizations.
-
-When the corrected thread is a newsletter, record the newsletter in the
-rubric's Newsletters section instead of adding a rule: under Valued when the
-correct label is Important or Low priority, under Not valued when it is Bulk
-or Junk (see [Newsletters](#newsletters)).
-
-If a correction is genuinely ambiguous, don't guess and don't stop. Open it
-as a question, and leave the rubric alone for that item.
-
-After handling a correction, remove `AI/Wrong` from the thread and note the
-change in the rubric's changelog with the run's date (from Step 2, not the
-date of the mail or the answer that prompted it). The changelog records rubric
-changes only; an opened question goes in the run summary, not the changelog.
+**Every rubric change** this step makes is the smallest one that would have
+produced the right call: an example, or a rule under Added by sift. Name the
+senders the evidence shows, or the narrowest category that covers them
+("automated deadline notices from the club registrar"), never a wider class
+such as all vendors or all community organizations. Note each change in the
+rubric's changelog with the run's date (from Step 2, not the date of the mail
+or the answer that prompted it). The changelog records rubric changes only;
+an opened question goes in the run summary.
 
 ## Step 5: Gather new mail
 
-Two searches, using label IDs:
+Search `in:inbox after:<the last run's epoch seconds>` (Step 2 says what to
+search from when the heading has none). When the log has no run yet, search
+`in:inbox`: the first run labels the whole inbox, however old. Sort each
+thread found:
 
-- **New threads:** `in:inbox -label:<AI/Sifted id>`, every inbox thread sift
-  has not evaluated, however old. A first run labels the whole inbox.
-- **New replies:** `in:inbox label:<AI/Sifted id> after:<date of the last run>`,
-  where the last run's date is the newest run summary in the log. Keep only
-  threads whose newest message is later than that run, and re-evaluate them
-  with the new message in view.
+- **New:** the log doesn't name it. Evaluate it.
+- **New reply:** the log names it, and its newest message is later than its
+  newest log line. Re-evaluate it with the new message in view, keeping
+  anything the user changed (see [Labels](#labels)).
+- **Already done:** the log names it, and nothing has arrived since. Skip it.
 
 Process every match in this run. A search returns one page at a time, so
-follow each search's next-page token until there is none; never stop at the
+follow the search's next-page token until there is none; never stop at the
 first page.
 
 Fetch metadata only (sender, recipients, subject, date, snippet, existing
@@ -274,8 +271,6 @@ labels). Read a full body only when the metadata can't settle the call, such as
 a snippet that points to "see attached" or a portal.
 
 If nothing matches, write a run summary reporting zero (Step 8) and stop.
-The summary still matters: the next run's new-reply search starts from its
-date.
 
 ## Step 6: Label
 
@@ -313,9 +308,9 @@ The lookups:
 **What the message is:**
 
 - What labels does the thread already carry? The user's own labels (often
-  applied by filters on arrival), a star, and Gmail's own Important marker are
-  context like every other signal here. They can help explain a message, but
-  none of them decides the call: the rubric does.
+  applied by filters on arrival), a star, and the Important mark Gmail adds on
+  arrival are context like every other signal here. They can help explain a
+  message, but none of them decides the call: the rubric does.
 - Is the user in To rather than Cc, or the only recipient?
 - Does it mention a date, deadline, or event in the next week?
 - Is it a reply in a thread the user started?
@@ -339,13 +334,12 @@ signals, since every newsletter carries them. One on the Valued list is
 is `AI/Bulk`. Either way it also gets the rubric's newsletter category label,
 such as `AI/Newsletter`, when its Category labels section has one.
 
-Choose exactly one priority label. `AI/Needs reply` can accompany any of them,
-and depends on the message, not the sender: add it when the message itself asks
-the user something or needs their acknowledgment, as the rubric's Needs reply
-section defines. A message to a group that only informs, or a reply that only
-acknowledges the user's own message ("ok, thanks"), needs no reply.
-When a re-evaluated thread's priority changes, remove the old priority label so
-only one remains. When torn, choose the less severe call:
+Choose exactly one priority. A star for needs reply can accompany any of them,
+and depends on the message, not the sender: star the thread when the message
+itself asks the user something or needs their acknowledgment, as the rubric's
+Needs reply section defines. A message to a group that only informs, or a
+reply that only acknowledges the user's own message ("ok, thanks"), needs no
+reply. When torn, choose the less severe call:
 
 - Between important and low priority, choose important. A false alarm is
   visible and costs a glance, while a miss blends into the inbox and may never
@@ -356,31 +350,38 @@ only one remains. When torn, choose the less severe call:
   mass mail the user signed up for but would not miss belongs in bulk.
 - Between low priority and junk, choose low priority; dull legitimate mail is never junk.
 
-Add `AI/Sifted` to every thread evaluated. Apply labels at the thread level.
-Batch the calls where the tools allow.
+Apply the call at the thread level, leaving one priority: for Important, add
+`IMPORTANT` and remove any `AI/` priority label; for the others, add that
+label and remove `IMPORTANT` and any other `AI/` priority label. Then add
+`STARRED` when the thread needs a reply and has no star yet. Never remove a
+star, and on a re-evaluated thread keep whatever the user changed (see
+[Labels](#labels)). Batch the calls where the tools allow.
 
-Then carry out whatever the rubric's Permissions section grants for the label
-just applied, such as archiving a thread labeled `AI/Junk` when Permissions
+Then carry out whatever the rubric's Permissions section grants for the
+priority just applied, such as archiving a thread labeled `AI/Junk` when Permissions
 says so, or adding a label the rubric asks for (under `AI/`, as
 [Labels](#labels) describes), and nothing it doesn't grant. A grant applies on every run, without
 asking.
 
 ## Step 7: Log
 
-Under the log's Runs section, add a heading for this run (its date and time,
-newest run first), then one line per thread. On a run that created the docs,
-the summary under that heading (Step 8) starts with both docs' links.
+Under the log's Runs section, add a heading for this run,
+`<date> <time> (<epoch seconds>)` from the clock in Step 2, newest run first,
+then one line per thread evaluated. On a run that created the docs, the
+summary under that heading (Step 8) starts with both docs' links.
 
-`<time> | <thread id> | <sender> | <subject> | <labels applied> | <one-sentence reason>`
+`<time> | <thread id> | <sender> | <subject> | <applied> | <one-sentence reason>`
 
-The date and time are the run's, read from the clock in Step 2. Never use a
-message's timestamp or a made-up time. The thread id is what Step 4 uses to
-tell which labels sift applied. The reason is how the user audits a call
-later, so make it specific: "Coach asking for carpool volunteers by Friday"
-beats "Seems important."
+Never use a message's timestamp or a made-up time. `<applied>` names the
+priority (`Important`, `AI/Low priority`, `AI/Bulk`, or `AI/Junk`), then
+`starred` when sift added the star or `star kept` when the thread already had
+one, then any category label; where the user's edit stood, say so. The log is
+the only record of what sift has seen and applied. The reason is how the user
+audits a call later, so make it specific: "Coach asking for carpool
+volunteers by Friday" beats "Seems important."
 
 Keep the log to the last 30 days. When older entries exist, replace them with a
-one-line summary per week (counts by label, corrections received).
+one-line summary per week (counts by priority, stars added, rules learned).
 
 ## Step 8: Summarize
 
@@ -398,10 +399,10 @@ each item this run has not done, do it now, then continue.
 Write the run summary directly under this run's heading in the log, above its
 thread lines, then repeat it in chat:
 
-- Counts: processed, important, low priority, bulk, junk, needs reply, taken from
-  the labels actually applied this run.
-- The important and needs-reply threads, one line each with the reason.
-- Corrections learned and the rubric changes they produced.
+- Counts: processed, important, low priority, bulk, junk, starred, taken from
+  what was actually applied this run.
+- The important and starred threads, one line each with the reason.
+- The daily review's line, when it ran, and the rubric changes it produced.
 - Questions opened, and answers applied.
 - Actions taken under a Permissions grant, such as threads archived.
 - Anything skipped (missing connector, doc not opened).
@@ -424,9 +425,9 @@ naming its sender and subject. A missing or empty Notify means none.
 
 When a run needs the user's judgment, it does not wait for it:
 
-1. Take the safe default. For an unclear correction, keep the thread's current
-   labels, `AI/Wrong` included, until the user answers. For an unclear new
-   thread, apply the tie-breaking rules in Step 6.
+1. Take the safe default. For an unclear new thread, apply the tie-breaking
+   rules in Step 6. For a learned rule that conflicts with the user's own,
+   change nothing until the user answers.
 2. Open a comment on the rubric doc, anchored on the rule or example it is
    about (or the doc's title when none fits). Start it with `Sift:`, name the
    thread by sender, subject, and date, say what sift did, and ask one
@@ -475,13 +476,12 @@ the user wants to read under Valued and the rest under Not valued. Read it on
 every run, so the user's edits take effect on the next run. Match by sender or
 name; a newsletter on neither list is Not valued.
 
-Lines the user writes are the user's. Sift adds a line only from a correction
-(Step 4): `(learned) <newsletter name> | <sender> | corrected <date>`, with the
-run's date from Step 2. A later correction the other way moves the line to the
-other list and updates its date. A correction that conflicts with a line the
-user wrote leaves that line and the thread's labels as they are, and opens a
-question (see [Never block](#never-block)). Note each line added or moved in
-the changelog.
+Lines the user writes are the user's. Sift adds a line only from the daily
+review (Step 4), once a newsletter reaches its threshold, under Valued:
+`(learned) <newsletter name> | <sender> | observed <date>`, with the run's
+date from Step 2. When it is on the user's Not valued list, sift adds nothing
+and opens a question instead (see [Never block](#never-block)). Note each
+line added in the changelog.
 
 ## Keeping the rubric healthy
 
