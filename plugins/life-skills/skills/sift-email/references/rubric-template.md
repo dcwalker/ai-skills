@@ -78,13 +78,16 @@ Not a reply, even from someone I know:
 
 ## Low priority
 
-Mail meant for me that doesn't meet the rules above, including:
+Mail meant for me that doesn't meet the rules above, even from a no-reply
+sender, including:
 
 - Automated notifications that only confirm something already done
 - Group threads where I am Cc'd and nothing is asked of me
 - Newsletters on my Valued list
 - Receipts and statements
 - FYIs from people I know
+- Review requests and order follow-ups from companies I've actually bought
+  from, even when they read like marketing
 
 ## Bulk
 
@@ -113,6 +116,16 @@ Mail I never want, including:
 
 - Promotions and marketing I didn't ask for, even when worded urgently
 - Spam-like or phishing-like messages
+
+## When torn
+
+When a message could fit two priorities, choose the less severe:
+
+- Important over Low priority: a false alarm costs a glance, while a miss may
+  never be noticed
+- Low priority over Bulk: mail meant for me belongs in Low priority
+- Bulk over Junk: mass mail I signed up for belongs in Bulk
+- Low priority over Junk: dull legitimate mail is never Junk
 
 ## Category labels
 
@@ -145,7 +158,7 @@ not on the words it happens to use. Sift creates each one under AI/.
 Which Gmail inbox tab each kind of mail belongs in, whatever tab Gmail chose.
 Sift files every thread it labels here, judged on what the message is, apart
 from its priority. Important mail always goes to Primary, and so does
-anything not listed below.
+anything not listed below. I don't use the Forums tab.
 
 ### Social
 

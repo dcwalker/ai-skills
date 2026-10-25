@@ -39,26 +39,28 @@ Sift uses Gmail's own Important mark and star, which mail clients already
 show, and three labels of its own, nested under `AI/` so they never mix with
 the user's.
 
-| Priority | How sift applies it | Meaning |
-|---|---|---|
-| Important | Gmail's Important mark (system label `IMPORTANT`) | The user would want to see this today |
-| Low priority | `AI/Low priority` | Mail meant for the user with nothing urgent, such as an FYI or a receipt they may need later |
-| Bulk | `AI/Bulk` | Mass mail the user would not miss if it were archived unread |
-| Junk | `AI/Junk` | Unsolicited marketing, spam-like, or mail the user never wants |
+| Priority | How sift applies it |
+|---|---|
+| Important | Gmail's Important mark (system label `IMPORTANT`) |
+| Low priority | `AI/Low priority` |
+| Bulk | `AI/Bulk` |
+| Junk | `AI/Junk` |
 
-Every thread sift evaluates gets exactly one priority. Gmail marks some
+What each priority means, and which mail gets it, is the rubric's to say: its
+Labels table and its rule sections. Every thread sift evaluates gets exactly
+one priority. Gmail marks some
 threads Important on its own when they arrive, so sift removes that mark from
 every thread it calls something else. When someone is waiting on the user
 specifically, sift also stars the thread (system label `STARRED`). Sift never
 removes a star, its own included: the user clears stars.
 
 **Tabs.** Sift also files each thread it evaluates into the inbox tab the
-rubric's Tabs section gives: Primary, Social, Promotions, or Updates, never
-Forums. The tab is a call of its own, apart from priority and labels, so a
-Bulk thread can be in Social and one newsletter in Updates while another is
-in Promotions. Gmail's own sort carries no weight: when a thread is in another
-tab, move it. Important mail always goes to Primary, and so does anything the
-Tabs section doesn't place. Move a thread by adding its tab's label
+rubric's Tabs section gives, including where Important mail and anything the
+section doesn't place go (Primary, when it doesn't say). The tab is a call of
+its own, apart from priority and labels, so a Bulk thread can be in Social and
+one newsletter in Updates while another is in Promotions. Gmail's own sort
+carries no weight: when a thread is in another tab, move it. Move a thread by
+adding its tab's label
 (`CATEGORY_PERSONAL` for Primary, `CATEGORY_SOCIAL`, `CATEGORY_PROMOTIONS`, or
 `CATEGORY_UPDATES`); Gmail removes the old one.
 
@@ -312,9 +314,8 @@ The lookups:
   how the user treated them and how the rubric's examples label them.
 - Is it tied to something the user actually bought, or from a company they
   ordered from recently? Check before you say so: find the order in the
-  sender's earlier mail, or under the user's receipts label. When it is, the
-  message is not unsolicited, even when it reads like marketing: a review
-  request or order follow-up from such a sender is Low priority, not Junk.
+  sender's earlier mail, or under the user's receipts label. What a purchase
+  changes about the call is the rubric's to say.
 
 **What the message is:**
 
@@ -332,33 +333,20 @@ itself. Marketing copy says "action required"; a coach's two-line note doesn't.
 **Mass mail or mail meant for the user.** Mass mail is sent to a list rather
 than to the user personally. The signs are a no-reply sender, an unsubscribe
 link, and the user missing from To or a list address in To; Gmail's tab is
-not one. Only when those leave it unclear, read the raw message for `List-Unsubscribe` or `List-Id` headers. Of
-mass mail, ask: would the user miss it if it were archived unread? If not, it
-is `AI/Bulk`, unless it is unsolicited or spam-like, which is `AI/Junk`. Mail
-meant for the user that they may need later, such as a receipt or an FYI from
-someone they know, is `AI/Low priority`, never Bulk, even from a no-reply sender.
+not one. Only when those leave it unclear, read the raw message for
+`List-Unsubscribe` or `List-Id` headers. Whether it is mass mail is a fact
+about the message; which priority that earns is the rubric's to say, in its
+priority sections.
 
-A newsletter is decided by the rubric's Newsletters section, not by its
-signals, since every newsletter carries them. One on the Valued list is
-`AI/Low priority`, never Bulk. One on the Not valued list, or on neither list,
-is `AI/Bulk`. Either way it also gets the rubric's newsletter category label,
-such as `AI/Newsletter`, when its Category labels section has one.
+A newsletter is placed by the rubric's Newsletters section rather than by its
+mass-mail signals, since every newsletter carries them, and gets the
+newsletter category label when the Category labels section names one.
 
 Choose exactly one priority. A star for needs reply can accompany any of them,
 and depends on the message, not the sender: star the thread when the message
-itself asks the user something or needs their acknowledgment, as the rubric's
-Needs reply section defines. A message to a group that only informs, or a
-reply that only acknowledges the user's own message ("ok, thanks"), needs no
-reply. When torn, choose the less severe call:
-
-- Between important and low priority, choose important. A false alarm is
-  visible and costs a glance, while a miss blends into the inbox and may never
-  be noticed.
-- Between low priority and bulk, choose low priority. Bulk is for mass mail
-  the user would not miss; mail meant for the user belongs in low priority.
-- Between bulk and junk, choose bulk. Junk is for mail the user never wants;
-  mass mail the user signed up for but would not miss belongs in bulk.
-- Between low priority and junk, choose low priority; dull legitimate mail is never junk.
+meets the rubric's Needs reply section. When the rubric leaves a call between
+two priorities open, follow its When torn section; when it has none, choose
+the less severe priority.
 
 Apply the call at the thread level, leaving one priority: for Important, add
 `IMPORTANT` and remove any `AI/` priority label; for the others, add that

@@ -190,13 +190,13 @@
         {
           "id": "rubric-body.26",
           "kind": "paragraph",
-          "markdown": "Mail meant for me that doesn't meet the rules above, including:",
+          "markdown": "Mail meant for me that doesn't meet the rules above, even from a no-reply sender, including:",
           "rev": 1
         },
         {
           "id": "rubric-body.27",
           "kind": "list",
-          "markdown": "- Automated notifications that only confirm something already done\n- Group threads where I am Cc'd and nothing is asked of me\n- Newsletters on my Valued list\n- Receipts and statements\n- FYIs from people I know",
+          "markdown": "- Automated notifications that only confirm something already done\n- Group threads where I am Cc'd and nothing is asked of me\n- Newsletters on my Valued list\n- Receipts and statements\n- FYIs from people I know\n- Review requests and order follow-ups from companies I've actually bought from, even when they read like marketing",
           "rev": 1
         },
         {
@@ -272,6 +272,24 @@
           "rev": 1
         },
         {
+          "id": "rubric-body.torn0",
+          "kind": "heading",
+          "markdown": "## When torn",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.torn1",
+          "kind": "paragraph",
+          "markdown": "When a message could fit two priorities, choose the less severe:",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.torn2",
+          "kind": "list",
+          "markdown": "- Important over Low priority: a false alarm costs a glance, while a miss may never be noticed\n- Low priority over Bulk: mail meant for me belongs in Low priority\n- Bulk over Junk: mass mail I signed up for belongs in Bulk\n- Low priority over Junk: dull legitimate mail is never Junk",
+          "rev": 1
+        },
+        {
           "id": "rubric-body.31",
           "kind": "heading",
           "markdown": "## Category labels",
@@ -298,7 +316,7 @@
         {
           "id": "rubric-body.tabs1",
           "kind": "paragraph",
-          "markdown": "Which Gmail inbox tab each kind of mail belongs in, whatever tab Gmail chose. Sift files every thread it labels here, judged on what the message is, apart from its priority. Important mail always goes to Primary, and so does anything not listed below.",
+          "markdown": "Which Gmail inbox tab each kind of mail belongs in, whatever tab Gmail chose. Sift files every thread it labels here, judged on what the message is, apart from its priority. Important mail always goes to Primary, and so does anything not listed below. I don't use the Forums tab.",
           "rev": 1
         },
         {
