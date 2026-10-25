@@ -183,8 +183,9 @@ and the first result answers it:
 If every check comes back empty, the run has nothing to do. Don't read the rest
 of the rubric or tidy it. Add one line to the log's Runs section, "<date> <time>:
 nothing new", or, when the newest line of exactly that form is from the run's
-date, update its time instead; a run's summary is never such a line. Never edit a run heading: the next run searches from it.
-Say "Nothing new" in chat, and stop.
+date, update its time instead; a run's summary is never such a line. Never
+edit a run heading: the next run searches from it. Say "Nothing new" in chat,
+and stop.
 
 ## Step 3: Tidy the rubric
 
@@ -255,8 +256,9 @@ and look for these signals, compared against what the log says sift applied:
 | Important | Archived it while still unread | Low priority |
 
 A star or reply counts only when the thread's log line shows no star (Step 7),
-since a reply to a thread sift starred is expected. Nothing else is a signal: opening, reading, archiving read mail, leaving a thread
-alone, or changing its priority (the user's edits stand) says nothing.
+since a reply to a thread sift starred is expected. Nothing else is a signal:
+opening, reading, archiving read mail, leaving a thread alone, or changing its
+priority (the user's edits stand) says nothing.
 
 Record each signal under this run's heading in the log (Step 7):
 `observed | <thread id> | <sender> | sift applied <label> | <what the user did> | suggests <label>`.
@@ -344,8 +346,8 @@ The lookups:
 
 - What labels does the thread already carry? The user's own labels (often
   applied by filters on arrival), a star, and the Important mark and tab Gmail
-  gives on arrival are context like every other signal here. They can help explain a
-  message, but none of them decides the call: the rubric does.
+  gives on arrival are context like every other signal here. They can help
+  explain a message, but none of them decides the call: the rubric does.
 - Is the user in To rather than Cc, or the only recipient?
 - Does it mention a date, deadline, or event in the next week?
 - Is it a reply in a thread the user started?
@@ -391,8 +393,9 @@ asking.
 Under the log's Runs section, after its intro and above the newest run, add
 this run's heading as exactly `### <date> <time> (<epoch seconds>)`, from the
 clock in Step 2: a `###` heading, never bold text or another level, since the
-next run searches from it. Then add one line per thread evaluated. On a run that created the docs, the
-summary under that heading (Step 8) starts with both docs' links.
+next run searches from it. Then add one line per thread evaluated. On a run
+that created the docs, the summary under that heading (Step 8) starts with both
+docs' links.
 
 `<time> | <thread id> | <sender> | <subject> | <applied> | <one-sentence reason>`
 

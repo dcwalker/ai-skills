@@ -75,7 +75,8 @@ Query support in search_threads is a small, documented subset of Gmail
 syntax -- enough for triage's scoped-inbox flow, writing's corpus searches,
 and sift-email's unprocessed-mail search: `in:inbox`, `in:sent`,
 `in:anywhere`, `from:<addr|me>`, `to:<addr|me>`, `subject:<word>`,
-`label:<label_id|name>`, `category:<tab>`, `is:unread`, `is:starred`, `is:important`,
+`label:<name>`, `category:<tab>`, `is:unread`, `is:starred`,
+`is:important`,
 `after:`/`before:` (a date, or epoch seconds),
 `newer_than:`/`older_than:`, bare words (matched against subject+snippet),
 "quoted phrases", an uppercase `OR` between two terms, and `-` negation of
