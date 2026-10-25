@@ -134,7 +134,7 @@
       "expectations": [
         "The output uses the local/text review format (=== Code Review === with a Risk Score), since there is no PR.",
         "A Skill Quality section is present and names the plan-weekly-review skill (or its path).",
-        "The Skill Quality section reports static checks (description quality, line budget, naming, bundled resources, and/or eval hygiene -- at least some of these named).",
+        "The Skill Quality section reports static checks (description quality, progressive disclosure, naming, bundled resources, and/or eval hygiene -- at least some of these named).",
         "The output explicitly states evals were NOT run for this review (on-request only) and references the checked-in benchmark-baseline as the last verified result; no eval-results table or fresh pass-rate numbers are fabricated.",
         "The transcript shows no executor/grader subagents were spawned to run the fixture skill's evals."
       ]
