@@ -75,17 +75,19 @@ Query support in search_threads is a small, documented subset of Gmail
 syntax -- enough for triage's scoped-inbox flow, writing's corpus searches,
 and sift-email's unprocessed-mail search: `in:inbox`, `in:sent`,
 `in:anywhere`, `from:<addr|me>`, `to:<addr|me>`, `subject:<word>`,
-`label:<label_id|name>`, `category:<tab>`, `is:unread`, `is:starred`, `is:important`,
+`label:<name>`, `category:<tab>`, `is:unread`, `is:starred`,
+`is:important`,
 `after:`/`before:` (a date, or epoch seconds),
 `newer_than:`/`older_than:`, bare words (matched against subject+snippet),
 "quoted phrases", an uppercase `OR` between two terms, and `-` negation of
 any of these.
 
-`label:` takes a label id, which is the only form the live connector's
-search_threads description documents. A display name, quoted when it holds
-a space (`label:"AI/Low priority"`), matches too, because a live read-only
-search with a quoted nested label name returned that label's threads
-(2026-10-10). Names compare without regard to letter case.
+`label:` takes a label's display name, never its id, as the live connector's
+search_threads description says ("Label IDs such as `Label_123` match
+nothing"; checked live 2026-10-13: `label:Label_56` returned nothing and
+`label:AI-Sifted` returned the threads). Quote a name with a space
+(`label:"AI/Low priority"`) or write its spaces and `/` as `-`
+(`label:AI-Low-priority`). Names compare without regard to letter case.
 
 `newer_than:`/`older_than:` take a number and a unit (d, m, or y; a month
 counts as 30 days and a year as 365) and count back from the fixture's
@@ -207,12 +209,16 @@ def _age_matches(t: dict, arg: str, newer: bool) -> bool:
     return actual > cutoff if newer else actual < cutoff
 
 
+def _label_form(name: str) -> str:
+    """A label name as label: compares it: any letter case, with spaces and
+    "/" read as "-", so "AI/Low priority" and AI-Low-priority are one name."""
+    return name.strip('"').lower().replace(" ", "-").replace("/", "-")
+
+
 def _label_matches(t: dict, arg: str) -> bool:
-    """A label id, or a label's display name in any letter case."""
-    wanted = arg.strip('"')
-    if wanted in t["labelIds"]:
-        return True
-    ids = {l["id"] for l in state.data["labels"].values() if l["name"].lower() == wanted.lower()}
+    """A label's display name, quoted or dashed. An id matches nothing."""
+    wanted = _label_form(arg)
+    ids = {l["id"] for l in state.data["labels"].values() if _label_form(l["name"]) == wanted}
     return any(i in t["labelIds"] for i in ids)
 
 
@@ -429,9 +435,14 @@ def _label_view(label: dict) -> dict:
 def list_labels(pageSize: int = 0, pageToken: str = "") -> dict:
     """Lists all labels in the account. Each carries its labelId, name,
     labelType (SYSTEM or USER), and message and thread counts. Use the
-    labelId values with label_thread, unlabel_thread, modify_thread_labels,
-    and search_threads' label: operator."""
-    result = {"labels": [_label_view(l) for l in state.data["labels"].values()]}
+    labelId values with label_thread, unlabel_thread, and
+    modify_thread_labels; search_threads' label: operator takes the name.
+    Gmail's inbox tabs are listed too, as system labels: the five standard
+    CATEGORY_* tabs, plus any further one a fixture's labels define."""
+    labels = dict(state.data["labels"])
+    for cid in sorted(_CATEGORY_IDS):
+        labels.setdefault(cid, {"id": cid, "name": cid, "type": "system"})
+    result = {"labels": [_label_view(l) for l in labels.values()]}
     state.log_call("list_labels", {}, result)
     return result
 
@@ -514,7 +525,7 @@ def _category_matches(t: dict, arg: str) -> bool:
     wanted = _CATEGORY_NAMES.get(arg.lower())
     if wanted is None:
         return False
-    held = [lbl for lbl in t["labelIds"] if lbl in _CATEGORY_IDS]
+    held = [lbl for lbl in t["labelIds"] if lbl.startswith("CATEGORY_")]
     return wanted in held or (wanted == "CATEGORY_PERSONAL" and not held)
 
 
@@ -528,8 +539,8 @@ def _check_label_ids(label_ids: list[str]) -> None:
 def _change_labels(t: dict, add: list[str], remove: list[str]) -> None:
     """Add and remove label ids on a thread, leaving every other label alone,
     except that adding a category replaces the thread's previous one."""
-    if any(lbl in _CATEGORY_IDS for lbl in add):
-        t["labelIds"] = [lbl for lbl in t["labelIds"] if lbl not in _CATEGORY_IDS]
+    if any(lbl.startswith("CATEGORY_") for lbl in add):
+        t["labelIds"] = [lbl for lbl in t["labelIds"] if not lbl.startswith("CATEGORY_")]
     for lbl in add:
         if lbl not in t["labelIds"]:
             t["labelIds"].append(lbl)
