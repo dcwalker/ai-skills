@@ -145,33 +145,55 @@ def format_date(date: datetime.date, fmt: str) -> str:
     return text[:1].upper() + text[1:] if capitalize else text
 
 
+def date_token(token: str, value: str, fmt: str | None, days: int) -> str:
+    date = moved(value, days)
+    return format_date(date, fmt) if fmt else date.isoformat()
+
+
+def today_token(token: str, value: str, fmt: str | None, days: int) -> str:
+    return zone_today(value).isoformat()
+
+
+def todayepoch_token(token: str, value: str, fmt: str | None, days: int) -> str:
+    try:
+        hour, minute = (int(p) for p in (fmt or "00:00").split(":"))
+    except ValueError:
+        fail(f"{token!r} needs a time like 00:00")
+    moment = datetime.datetime.combine(zone_today(value), datetime.time(hour, minute),
+                                       zoneinfo.ZoneInfo(value))
+    return str(int(moment.timestamp()))
+
+
+def epoch_token(token: str, value: str, fmt: str | None, days: int) -> str:
+    if not value.isdigit():
+        fail(f"{token!r} needs whole Unix seconds like 1791640800")
+    return str(int(value) + days * 86400)
+
+
+def slack_token(token: str, value: str, permalink: bool, days: int) -> str:
+    ts = SLACK_TS.match(value)
+    if not ts:
+        fail(f"{token!r} needs a Slack timestamp like 1790525640.000100")
+    seconds = int(ts.group(1)) + days * 86400
+    return f"p{seconds}{ts.group(2)}" if permalink else f"{seconds}.{ts.group(2)}"
+
+
+TOKEN_KINDS = {
+    "date": date_token,
+    "today": today_token,
+    "todayepoch": todayepoch_token,
+    "epoch": epoch_token,
+    "slackts": lambda token, value, fmt, days: slack_token(token, value, False, days),
+    "slackp": lambda token, value, fmt, days: slack_token(token, value, True, days),
+}
+
+
 def resolve_tokens(text: str, days: int, anchored: bool) -> str:
     def replace(match: re.Match) -> str:
         if not anchored:
             fail(f"token {match.group(0)!r} in a fixture with no anchor_date")
         kind, value, fmt = match.group(1), match.group(2).strip(), match.group(3)
-        if kind == "date":
-            date = moved(value, days)
-            return format_date(date, fmt) if fmt else date.isoformat()
-        if kind == "today":
-            return zone_today(value).isoformat()
-        if kind == "todayepoch":
-            try:
-                hour, minute = (int(p) for p in (fmt or "00:00").split(":"))
-            except ValueError:
-                fail(f"{match.group(0)!r} needs a time like 00:00")
-            moment = datetime.datetime.combine(zone_today(value), datetime.time(hour, minute),
-                                               zoneinfo.ZoneInfo(value))
-            return str(int(moment.timestamp()))
-        if kind == "epoch":
-            if not value.isdigit():
-                fail(f"{match.group(0)!r} needs whole Unix seconds like 1791640800")
-            return str(int(value) + days * 86400)
-        ts = SLACK_TS.match(value)
-        if not ts:
-            fail(f"{match.group(0)!r} needs a Slack timestamp like 1790525640.000100")
-        seconds = int(ts.group(1)) + days * 86400
-        return f"{seconds}.{ts.group(2)}" if kind == "slackts" else f"p{seconds}{ts.group(2)}"
+        return TOKEN_KINDS[kind](match.group(0), value, fmt, days)
     return TOKEN.sub(replace, text)
 
 
