@@ -2,7 +2,7 @@
   "calls": [
     {
       "match": ["auth", "status"],
-      "stdout": "github.com\n  ✓ Logged in to github.com account dcwalker (keyring)\n  ✓ Git operations for github.com configured to use https protocol.\n  ✓ Token: gho_****\n",
+      "stdout": "github.com\n  ✓ Logged in to github.com account darby-wade (keyring)\n  ✓ Git operations for github.com configured to use https protocol.\n  ✓ Token: gho_****\n",
       "exit_code": 0
     },
     {
@@ -48,7 +48,7 @@
     },
     {
       "match": ["issue", "create"],
-      "stdout": "https://github.com/dcwalker/widget-app/issues/101\n",
+      "stdout": "https://github.com/darby-wade/widget-app/issues/101\n",
       "exit_code": 0
     }
   ],

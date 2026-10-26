@@ -1,7 +1,7 @@
 {
   "calendar": {
-    "id": "dan.walker@example.com",
-    "summary": "Dan Walker",
+    "id": "darby.wade@example.com",
+    "summary": "Darby Wade",
     "timeZone": "America/Los_Angeles"
   },
   "updated": "2026-10-08T22:00:00Z",
@@ -40,8 +40,8 @@
           "organizer": true
         },
         {
-          "email": "dan.walker@example.com",
-          "displayName": "Dan Walker",
+          "email": "darby.wade@example.com",
+          "displayName": "Darby Wade",
           "responseStatus": "accepted",
           "self": true
         },
@@ -86,8 +86,8 @@
           "organizer": true
         },
         {
-          "email": "dan.walker@example.com",
-          "displayName": "Dan Walker",
+          "email": "darby.wade@example.com",
+          "displayName": "Darby Wade",
           "responseStatus": "accepted",
           "self": true
         }
@@ -126,8 +126,8 @@
           "responseStatus": "accepted"
         },
         {
-          "email": "dan.walker@example.com",
-          "displayName": "Dan Walker",
+          "email": "darby.wade@example.com",
+          "displayName": "Darby Wade",
           "responseStatus": "accepted",
           "organizer": true,
           "self": true

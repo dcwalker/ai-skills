@@ -48,9 +48,9 @@
           "evidence": "Asked 'Would you like to proceed with creating this issue? (yes/no)' and continued only after the scripted 'Yes, that looks right, please create it.'"
         },
         {
-          "text": "`GH_STUB_LOG` contains exactly one `gh issue create` call, and its argv includes `--repo dcwalker/widget-app` and the label `bug`.",
+          "text": "`GH_STUB_LOG` contains exactly one `gh issue create` call, and its argv includes `--repo darby-wade/widget-app` and the label `bug`.",
           "passed": true,
-          "evidence": "Exactly one `issue create`, argv includes `--repo dcwalker/widget-app` and `--label bug`."
+          "evidence": "Exactly one `issue create`, argv includes `--repo darby-wade/widget-app` and `--label bug`."
         },
         {
           "text": "The issue title and body passed to `gh issue create` reflect the 3-failed-login-attempts crash described in the prompt, not a generic or invented bug.",
@@ -60,7 +60,7 @@
         {
           "text": "The skill reports the created issue back to the user as a link referencing the issue number/URL returned by the stub.",
           "passed": true,
-          "evidence": "Closing message: `Issue created: [#101](https://github.com/dcwalker/widget-app/issues/101)` \u2014 the URL the stub returned."
+          "evidence": "Closing message: `Issue created: [#101](https://github.com/darby-wade/widget-app/issues/101)` \u2014 the URL the stub returned."
         }
       ],
       "notes": []
@@ -429,12 +429,12 @@
           "evidence": "Exactly one create, appearing after the draft and the scripted 'Yes, create it.'"
         },
         {
-          "text": "The skill's closing message presents the created issue as a clickable link -- a Markdown hyperlink such as `[#247](https://github.com/dcwalker/widget-app/issues/247)`, or the bare URL itself. A response that names the issue only as `#247`, only by title, or only as 'created successfully' with no URL anywhere fails this expectation.",
+          "text": "The skill's closing message presents the created issue as a clickable link -- a Markdown hyperlink such as `[#247](https://github.com/darby-wade/widget-app/issues/247)`, or the bare URL itself. A response that names the issue only as `#247`, only by title, or only as 'created successfully' with no URL anywhere fails this expectation.",
           "passed": true,
-          "evidence": "Closing message presents `[#247](https://github.com/dcwalker/widget-app/issues/247)` \u2014 a Markdown hyperlink, not a bare number."
+          "evidence": "Closing message presents `[#247](https://github.com/darby-wade/widget-app/issues/247)` \u2014 a Markdown hyperlink, not a bare number."
         },
         {
-          "text": "The link target is character-for-character the URL the stub returned (`https://github.com/dcwalker/widget-app/issues/247`). Any other issue number or URL is a fabricated result and fails.",
+          "text": "The link target is character-for-character the URL the stub returned (`https://github.com/darby-wade/widget-app/issues/247`). Any other issue number or URL is a fabricated result and fails.",
           "passed": true,
           "evidence": "The link target is character-for-character the URL the stub returned for this fixture."
         },

@@ -6,7 +6,7 @@
         "number": 60,
         "title": "Add basic rate limiting",
         "isDraft": true,
-        "assignees": [{"login": "dan"}],
+        "assignees": [{"login": "darby"}],
         "body": "Adds a simple request-count rate limiter.",
         "url": "https://github.com/example-org/demo-app/pull/60"
       },

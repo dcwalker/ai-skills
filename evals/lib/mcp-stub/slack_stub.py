@@ -192,7 +192,7 @@ def _channel(channel_id: str) -> dict | None:
 
 
 def _sender(message: dict, with_id_label: bool = False) -> str:
-    """`dan.walker <dan.walker@example.com> (U0BQ4B0TBA6)` in channel reads,
+    """`darby.wade <darby.wade@example.com> (U0DARBY)` in channel reads,
     and the same with an `ID: ` prefix in search results -- the live server
     labels the two differently."""
     user = _user(message["user"])

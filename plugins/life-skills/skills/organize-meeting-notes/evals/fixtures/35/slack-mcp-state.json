@@ -1,21 +1,21 @@
 {
   "me": {
-    "id": "U0DAN",
-    "name": "dan.walker",
-    "display_name": "dan.walker",
-    "real_name": "Dan Walker",
-    "email": "dan.walker@example.com",
+    "id": "U0DARBY",
+    "name": "darby.wade",
+    "display_name": "darby.wade",
+    "real_name": "Darby Wade",
+    "email": "darby.wade@example.com",
     "title": "Engineering Manager",
     "timezone": "America/Los_Angeles",
     "org": "example-co"
   },
   "users": {
-    "U0DAN": {
-      "id": "U0DAN",
-      "name": "dan.walker",
-      "display_name": "dan.walker",
-      "real_name": "Dan Walker",
-      "email": "dan.walker@example.com",
+    "U0DARBY": {
+      "id": "U0DARBY",
+      "name": "darby.wade",
+      "display_name": "darby.wade",
+      "real_name": "Darby Wade",
+      "email": "darby.wade@example.com",
       "title": "Engineering Manager",
       "timezone": "America/Los_Angeles"
     },
@@ -43,7 +43,7 @@
       "id": "D0PRIYA",
       "name": "priya.raman",
       "purpose": "",
-      "creator": "U0DAN",
+      "creator": "U0DARBY",
       "created": "2026-01-05 08:00:00 PST",
       "is_archived": false,
       "type": "im"
@@ -52,7 +52,7 @@
       "id": "D0JORDAN",
       "name": "jordan.lee",
       "purpose": "",
-      "creator": "U0DAN",
+      "creator": "U0DARBY",
       "created": "2026-01-05 08:00:00 PST",
       "is_archived": false,
       "type": "im"
@@ -80,7 +80,7 @@
       {
         "ts": "1791292380.000200",
         "time": "2026-10-06 06:13:00 PDT",
-        "user": "U0DAN",
+        "user": "U0DARBY",
         "text": "sent, it's the figma file from Monday",
         "thread_ts": null,
         "reactions": []

@@ -165,7 +165,7 @@ JSON file:
 ```json
 {"messages": [
   {"id": "18c2f0e7", "thread": "18c2f0e7", "date": "2026-07-29T16:02:00-07:00", "from": "jordan@example.com", "text": "Can you take the first week of August?"},
-  {"id": "18c2f9a1", "thread": "18c2f0e7", "date": "2026-07-30T09:14:00-07:00", "from": "dan@example.com", "text": "hey Jordan,\n\nyes I can take it.\n\nthanks\ndan\n\nOn Tue, Jul 29, Jordan wrote:\n> Can you take the first week of August?"}
+  {"id": "18c2f9a1", "thread": "18c2f0e7", "date": "2026-07-30T09:14:00-07:00", "from": "darby@example.com", "text": "hey Jordan,\n\nyes I can take it.\n\nthanks\ndarby\n\nOn Tue, Jul 29, Jordan wrote:\n> Can you take the first week of August?"}
 ]}
 ```
 
@@ -184,8 +184,8 @@ including `Former:` ones, plus any `--me` value, and writes one line per
 **segment**, a stretch of text with a single author:
 
 ```json
-{"thread":"gmail:18c2f0e7","msg":"gmail:18c2f9a1","date":"2026-07-30T09:14:00-07:00","from":"dan@example.com","author":"user","match":"identifier","kind":"body","text":"yes I can take it."}
-{"thread":"gmail:18c2f0e7","msg":"gmail:18c2f9a1","date":"2026-07-30T09:14:00-07:00","from":"dan@example.com","author":"other","kind":"quoted","text":"On Tue, Jul 29, Jordan wrote:\n> Can you take the first week of August?"}
+{"thread":"gmail:18c2f0e7","msg":"gmail:18c2f9a1","date":"2026-07-30T09:14:00-07:00","from":"darby@example.com","author":"user","match":"identifier","kind":"body","text":"yes I can take it."}
+{"thread":"gmail:18c2f0e7","msg":"gmail:18c2f9a1","date":"2026-07-30T09:14:00-07:00","from":"darby@example.com","author":"other","kind":"quoted","text":"On Tue, Jul 29, Jordan wrote:\n> Can you take the first week of August?"}
 ```
 
 | Field | Value |
