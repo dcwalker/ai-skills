@@ -280,10 +280,30 @@ for e in json.load(open(sys.argv[1]))['evals']:
   # this a trial loaded the developer's own plugins (the sift-email trials for
   # issue #109 listed software-development and swift-lsp). None was used, but
   # a trial measures the staged skill and its stubs, nothing else.
+  #
+  # The harness's own files are kept from the trial, too. Sift-email trials
+  # read env.sh, github-seed.json (every fake repository's files, another
+  # user's rubric included), and the gh cassette from the run directory,
+  # learning answers the skill should have had to find. Each file below is
+  # denied twice, because the two mechanisms cover different tools: a
+  # Read(//path) deny rule covers the Read, Grep, and Glob tools and the file
+  # commands Claude Code recognizes in Bash, and sandbox.filesystem.denyRead
+  # covers every program Bash runs. The denied files are the eval's
+  # expectations (eval.json and evals.json), benchmark grades, fixture seeds,
+  # the MCP stubs' seeds, state, and call logs (the stubs run outside the
+  # sandbox, so they still read and write them), the trial's own records,
+  # and every other user's private repository in a fake GitHub, which real
+  # GitHub would not let the user clone. The gh stub's cassette, call log,
+  # and counts stay readable: the stub runs inside the sandbox and needs
+  # them. So do the CLI stubs' fixtures (notes, Day One, OCR), for the same
+  # reason.
+  #   https://code.claude.com/docs/en/sandboxing
+  #   https://code.claude.com/docs/en/permissions
   RUN_DIR_REAL="$(cd "$RUN_DIR" && pwd -P)"
+  EVALS_DIR_REAL="$(cd "$EVALS_DIR" && pwd -P)"
   TRIAL_SETTINGS="$(python3 -c '
-import json, os, sys
-plugin, run_dir, home = sys.argv[1], sys.argv[2], sys.argv[3]
+import glob, json, os, sys
+plugin, run_dir, home, evals_dir = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
 disabled = {plugin: False}
 for name in ("settings.json", "settings.local.json"):
     try:
@@ -292,17 +312,40 @@ for name in ("settings.json", "settings.local.json"):
     except (OSError, ValueError):
         continue
     disabled.update({key: False for key in enabled})
+services = ("trello", "gmail", "atlassian", "slack", "calendar", "docs", "contacts")
+denied = [os.path.join(run_dir, name) for name in (
+    "env.sh", "eval.json", "mcp-config.json", "mcp-config.resume.json",
+    "events.jsonl", "stderr.txt", "metrics.json", "transcript.txt", "tools.log",
+    "github-seed.json", "github-state-out.json",
+    *(f"{s}-{kind}" for s in services
+      for kind in ("state-seed.json", "state-out.json", "calls.log")))]
+denied += [os.path.join(evals_dir, "evals.json")]
+denied += glob.glob(os.path.join(evals_dir, "benchmark-*"))
+denied += glob.glob(os.path.join(evals_dir, "fixtures", "*", "*-mcp-state.json"))
+denied += glob.glob(os.path.join(evals_dir, "fixtures", "*", "github-fixture.json"))
+try:
+    with open(os.path.join(run_dir, "github-seed.json")) as fh:
+        seed = json.load(fh)
+except (OSError, ValueError):
+    seed = {}
+for full_name, spec in seed.get("repos", {}).items():
+    if full_name.split("/")[0] != seed.get("login") and spec.get("private", True):
+        denied.append(os.path.join(run_dir, "github", "git", *full_name.split("/")))
 print(json.dumps({
     "enabledPlugins": disabled,
-    "permissions": {"allow": [f"Edit(/{run_dir}/**)"]},
+    "permissions": {
+        "allow": [f"Edit(/{run_dir}/**)"],
+        "deny": [f"Read(/{path})" for path in denied]
+                + [f"Read(/{path}/**)" for path in denied if os.path.isdir(path)],
+    },
     "sandbox": {
         "enabled": True,
         "allowUnsandboxedCommands": False,
         "failIfUnavailable": True,
-        "filesystem": {"allowWrite": [run_dir]},
+        "filesystem": {"allowWrite": [run_dir], "denyRead": denied},
     },
 }))
-' "$PLUGIN_NAME@$MARKETPLACE_NAME" "$RUN_DIR_REAL" "$HOME")"
+' "$PLUGIN_NAME@$MARKETPLACE_NAME" "$RUN_DIR_REAL" "$HOME" "$EVALS_DIR_REAL")"
 
   # `|| true` on the claude call: a failing trial (session limit, transient
   # API error) must not abort the batch under set -e -- its events.jsonl

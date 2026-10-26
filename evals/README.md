@@ -349,6 +349,15 @@ repositories attached to it. An MCP-backed fixture with a
   only the login's own when the search is limited to it (`--owner <login>`,
   `user:<login>`), every repository's, other users' included, when it isn't.
 
+Every commit a trial makes carries the fixture user's name, Pat Example:
+`env.sh` sets `GIT_AUTHOR_*` and `GIT_COMMITTER_*`. Without them a commit in
+a clone the trial made itself took the developer's name, since the isolation
+preamble turns off the host's git config and git then falls back to the
+machine's account. Another user's private repository is also kept out of
+reach (the driver's denied files are listed under MCP stub servers,
+below): its bare repository is unreadable to the trial, so a clone of it
+fails, as it would on GitHub.
+
 The file's dates and `{{...}}` tokens resolve like any stub state, against
 the same `anchor_date`. After the trial, `run-mcp-trials.sh` writes
 `github-state-out.json`: each repository's commits (subject and body) and
@@ -833,6 +842,25 @@ Eight things the shared driver does that a hand-run trial must do for itself:
     keys such as `excludedCommands` or `filesystem.allowWrite`, and
     `WebFetch(domain:...)` rules (which open the sandbox's network) out of
     it, or point `TRIALS_DIR` outside the repository.
+- It keeps the harness's own files out of the trial's reach. Sift-email
+  trials read `env.sh`, `github-seed.json` (every fake repository's files,
+  another user's rubric included), and the gh cassette from the run
+  directory, and so learned answers the skill should have had to find. Each
+  file below is denied twice, since the two mechanisms cover different
+  tools: a `Read(//<path>)` deny rule covers the Read, Grep, and Glob tools
+  and the file commands Claude Code recognizes in Bash, and
+  `sandbox.filesystem.denyRead` covers every program Bash runs. Denied:
+  `eval.json` and the skill's `evals.json` (the expectations), its
+  `benchmark-*` files, each fixture's `*-mcp-state.json` and
+  `github-fixture.json`, the MCP stubs' seeds, state, and call logs in the
+  run directory (the stubs run outside the sandbox, so they still use
+  them), `env.sh`, `mcp-config*.json`, the trial's own records, and in a
+  fake GitHub, `github-seed.json`, `github-state-out.json`, and every other
+  user's private repository, which real GitHub would not let the user
+  clone. The gh stub's cassette, call log, and counts stay readable, and so
+  do the CLI stubs' fixtures (Notes, Day One, OCR): those stubs run inside
+  the sandbox and need them. A trial that goes looking can still read the
+  cassette, and with it which searches find which repositories.
   - After each trial, its Write and Edit calls and its Bash write targets
     (redirections and the operands of commands that write or delete files)
     are checked against the run directory. Each one outside it is listed in
