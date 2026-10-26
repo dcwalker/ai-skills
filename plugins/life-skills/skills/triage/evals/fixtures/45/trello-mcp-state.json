@@ -1,0 +1,51 @@
+{
+  "anchor_date": "2026-10-26",
+  "stub_now": "2026-10-26T15:00:00Z",
+  "boards": {
+    "board-1": {
+      "id": "board-1",
+      "name": "Personal Tasks"
+    }
+  },
+  "lists": {
+    "list-1": {
+      "id": "list-1",
+      "name": "Inbox",
+      "board_id": "board-1"
+    }
+  },
+  "labels": {
+    "label-1": {
+      "id": "label-1",
+      "name": "home",
+      "color": "green",
+      "board_id": "board-1"
+    }
+  },
+  "cards": {
+    "card-1": {
+      "id": "card-1",
+      "name": "Pick up the dry cleaning",
+      "desc": "Ticket 4471 at Bright Cleaners on Pine Street.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [],
+      "due": null,
+      "due_complete": false,
+      "pos": 1024,
+      "url": "https://trello.com/c/card-1/pick-up-dry-cleaning"
+    },
+    "card-2": {
+      "id": "card-2",
+      "name": "Idea: build a treehouse",
+      "desc": "For the oak in the back yard. Maybe next summer.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [],
+      "due": null,
+      "due_complete": false,
+      "pos": 2048,
+      "url": "https://trello.com/c/card-2/idea-build-a-treehouse"
+    }
+  }
+}

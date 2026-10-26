@@ -132,9 +132,10 @@ repositories:
    first line is `# Triage Preferences`:
    - **A saved location**, when you have persistent memory and it names the
      repository and folder.
-   - **Local checkouts**: the working directory and each git checkout beside
-     it. A checkout's owner and name are the last two parts of its `origin`
-     remote's path.
+   - **Local checkouts**: the working directory and each git checkout in the
+     directory directly above it, and nowhere else. Never search the
+     filesystem (`find /`, a home-directory sweep) for the file. A checkout's
+     owner and name are the last two parts of its `origin` remote's path.
    - **A search of the user's repositories**, when the session can search:
      `gh search code '"Triage Preferences"' --owner <login> --filename preferences.md`.
      Always pass `--owner <login>`; never search all of GitHub or another
@@ -174,9 +175,11 @@ across the Jira project. Those are the only labels triage proposes. Triage
 brings no labels of its own and never creates one unasked; a new label comes
 only from the pattern offer in Step 9b.
 
-For an email scope, also look for sift-email's rubric (`sift-email/rubric.md`
-in the same repository as the preferences file, found and verified the same
-way). When it exists, read its Labels table before the first item, propose
+For an email scope, also look for sift-email's rubric: `sift-email/rubric.md`
+whose first line is `# Email Sift Rubric`. Look in the preferences file's
+repository first; otherwise find it by the same lookup as Step 0b, searching
+for `'"Email Sift Rubric"' --owner <login> --filename rubric.md`, and verify
+it the same way. Without a login or a verified match, there is no rubric. When it exists, read its Labels table before the first item, propose
 labels the way it defines them, and say so when a thread carries a label the
 rubric doesn't define or one that contradicts its rules. Triage reads the
 rubric and never edits it.
@@ -489,7 +492,8 @@ Check-in:  check in with <who> about <what>; when should I remind you?
 
 Never describe it as the other person's move or as nothing for the user to
 do: "nothing to do until they reply" and "it's on the vendor now" are the
-wrong framing. The run then closes with a processed-count summary.
+wrong framing. The run then closes with a short processed-count report
+(Step 10).
 
 Read [references/email-triage.md](references/email-triage.md) for the tree in
 full — the order the branches are tested in, what each one writes, the count
@@ -540,7 +544,8 @@ Apply this flow:
    original wording wrong, and an edit made for tidiness destroys the record of
    what the item actually said. If the capture is worth recording on the source,
    add a comment — additive, attributable, and it leaves the original intact.
-5. **Always confirm before creating or editing.** Never auto-write.
+5. **Always confirm before creating or editing**, unless the user
+   authorized the write up front. Never write unasked.
 
 For email scope, capturing to Trello is for items likely to outlive a single
 inbox review. The discriminator is durability: if the next action is "reply to
@@ -612,13 +617,16 @@ Archive it and leave it unread?
   has several open points, ask the next one in the following reply, before
   moving to the next item.
 
-An item that needs no changes still gets its reply: "Looks complete. Mark it
-reviewed, or move on?" The user decides that, not you by omission.
+An item that needs no changes still gets its reply: "Looks complete. Anything
+to change, or move on?" Moving on writes nothing. The user decides whether it
+needs a change, not you by omission.
 
 ### Applying the answer
 
 Apply what the user approves as soon as they answer, before the next item is
-shown, then re-fetch the item and confirm the change landed. Applying means
+shown, then re-fetch the item and confirm the change landed. The next reply
+always opens with a `Done:` line naming what changed, before anything else,
+or `Done: no changes.` when the user moved on. Applying means
 changing the item (its title, description, labels, dates, state, a capture),
 never carrying out the task it describes (Step 6): "we need to call the
 plumber about this" retitles the item; it does not go looking for plumbers. The next reply
@@ -677,8 +685,9 @@ title, the same label, or the same kind of content. Each one's own listing
 details (subject and snippet, or title and description) must justify it, not
 the shared sender or label alone; a thread from the same bank that reports an
 unrecognized charge does not join an archive of the bank's promotions. When
-any match, the next reply's question is the offer, listing each item by its
-linked or quoted title, one per line:
+any match, the next reply is the offer alone, with no new item in it,
+listing each item by its linked or quoted title, one per line; the next item
+follows once the user answers:
 
 ```
 These three look the same. Archive them too, leaving them unread?
@@ -714,7 +723,9 @@ run. If new items now match the scope, give the count and ask whether to work
 them now, in the Step 1b order among themselves, or in a later run.
 
 Then close the run in a few lines: how many items were worked, what changed,
-in counts, and anything left open, each named by its linked or quoted title.
+in counts, and anything left open (an item the user skipped, or one whose
+question went unanswered), each named by its linked or quoted title. An item
+the user decided is not left open.
 For an email scope, use the count block in
 [references/email-triage.md](references/email-triage.md). When no preferences
 file was found and the user hasn't answered the offer yet, make it here
@@ -737,10 +748,11 @@ never impose more structure than the work justifies.
 
 - One item per reply, one question per reply, on every platform, whatever was
   authorized up front. Apply an answer before showing the next item. There is
-  no end-of-run batch summary.
+  no end-of-run batch of proposals; the closing report gives counts and
+  anything left open.
 - Review every item individually, even ones that already look complete or
-  well-formed. A high-quality item still gets its reply ("Looks complete. Mark
-  it reviewed, or move on?") rather than being silently passed over. The user
+  well-formed. A high-quality item still gets its reply ("Looks complete.
+  Anything to change, or move on?") rather than being silently passed over. The user
   decides whether an item needs a change, not you by omission.
 - A batch action is never an item's triage. Only the user's own decision,
   offered for similar items by title (Step 9b) or asked for directly, finishes

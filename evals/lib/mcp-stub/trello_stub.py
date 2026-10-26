@@ -29,6 +29,7 @@ State model (the fake Trello "database"):
                               "labels": ["<label_id>", ...],
                               "due": null or "<ISO date>",
                               "due_complete": false,
+                              "closed": <bool, optional: archived>,
                               "pos": <number, optional>,
                               "url": "https://trello.com/c/<id>/<slug>",
                               "created": "<ISO datetime, optional>"}},
@@ -69,9 +70,17 @@ and one that means to test ordering sets "pos" on every card in the list.
 create_card and update_card turn "top", "bottom", or a number into a stored
 numeric "pos".
 
-It does not cover move-to-archive/checklists/comments -- not exercised by
-the eval batches, and view_card's checklists/comments are always returned
-empty here.
+Archive and complete are separate states, as in Trello: archive_card and
+unarchive_card set a card's "closed", and mark_card_complete sets its
+"due_complete", and neither touches the other. An archived card leaves
+view_list, view_board's counts, and search_trello, as it leaves the board's
+active view; view_card still returns it, with "closed" true. The three
+tools' names and parameters match the live Trello MCP's; the live tools
+answer with one text line per card, and the stub with update_card's
+structured per-card results, an unverified simplification.
+
+It does not cover checklists or comments -- not exercised by the eval
+batches, and view_card's checklists/comments are always returned empty here.
 """
 
 import copy
@@ -163,7 +172,8 @@ def _without_pos(card: dict) -> dict:
 
 def _cards_in_list(list_id: str) -> list[dict]:
     """A list's cards top to bottom, by "pos" (see Card order above)."""
-    in_list = [c for c in state.data["cards"].values() if c["list_id"] == list_id]
+    in_list = [c for c in state.data["cards"].values()
+               if c["list_id"] == list_id and not c.get("closed")]
     ordered = sorted(enumerate(in_list), key=lambda pair: _effective_pos(pair[1], pair[0]))
     return [card for _, card in ordered]
 
@@ -209,7 +219,8 @@ def view_board(board_id: str) -> dict:
         {
             "id": lst["id"],
             "name": lst["name"],
-            "card_count": sum(1 for c in state.data["cards"].values() if c["list_id"] == lst["id"]),
+            "card_count": sum(1 for c in state.data["cards"].values()
+                             if c["list_id"] == lst["id"] and not c.get("closed")),
         }
         for lst in state.data["lists"].values()
         if lst["board_id"] == resolved
@@ -246,7 +257,7 @@ def view_card(card_id: str) -> dict:
     if card_id not in state.data["cards"]:
         raise ValueError(f"trello-stub: no card with id {card_id!r}")
     card = state.data["cards"][card_id]
-    result = dict(_without_pos(card), checklists=[], comments=[])
+    result = dict(_without_pos(card), closed=bool(card.get("closed")), checklists=[], comments=[])
     state.log_call("view_card", {"card_id": card_id}, result)
     return result
 
@@ -287,6 +298,8 @@ def _split_created(q: str) -> tuple[str, datetime.datetime | None]:
 
 def _card_matches_search(c: dict, q: str, board_id: str | None, exclude_completed: bool) -> bool:
     if board_id and c["board_id"] != board_id:
+        return False
+    if c.get("closed"):
         return False
     if exclude_completed and c.get("due_complete"):
         return False
@@ -579,6 +592,51 @@ def update_card(
         result,
     )
     return result
+
+
+_CARD_URL = re.compile(r"^https://trello\.com/c/([^/]+)")
+
+
+def _set_card_flag(tool: str, card_id: str | list[str], field: str, value: bool) -> dict:
+    """Set one boolean field on each card named by id or card URL."""
+    ids = card_id if isinstance(card_id, list) else [card_id]
+    results = []
+    for raw in ids:
+        match = _CARD_URL.match(raw)
+        cid = match.group(1) if match else raw
+        if cid not in state.data["cards"]:
+            results.append({"card_id": raw, "ok": False, "error": f"trello-stub: no card with id {raw!r}"})
+            continue
+        state.data["cards"][cid][field] = value
+        results.append({"card_id": cid, "ok": True, "card": _without_pos(state.data["cards"][cid])})
+    state.flush()
+    result = {"results": results, "succeeded": sum(1 for r in results if r["ok"]),
+              "failed": sum(1 for r in results if not r["ok"])}
+    state.log_call(tool, {"card_id": card_id}, result)
+    return result
+
+
+@server.tool()
+def archive_card(card_id: str | list[str]) -> dict:
+    """Archive one or more Trello cards, removing them from the active board
+    view. Archiving is reversible with unarchive_card. It does not mark the
+    card complete. Pass a list of card IDs or card URLs to batch."""
+    return _set_card_flag("archive_card", card_id, "closed", True)
+
+
+@server.tool()
+def unarchive_card(card_id: str | list[str]) -> dict:
+    """Restore one or more archived Trello cards back to their lists. Pass a
+    list of card IDs or card URLs to batch."""
+    return _set_card_flag("unarchive_card", card_id, "closed", False)
+
+
+@server.tool()
+def mark_card_complete(card_id: str | list[str]) -> dict:
+    """Mark one or more Trello cards as complete (the checkmark in the web
+    UI). It does not archive the card. Pass a list of card IDs or card URLs
+    to batch."""
+    return _set_card_flag("mark_card_complete", card_id, "due_complete", True)
 
 
 if __name__ == "__main__":

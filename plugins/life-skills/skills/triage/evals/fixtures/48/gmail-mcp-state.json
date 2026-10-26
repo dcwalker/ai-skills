@@ -1,0 +1,41 @@
+{
+  "anchor_date": "2026-10-26",
+  "stub_now": "2026-10-26T15:00:00Z",
+  "me": "eval-user@example.com",
+  "threads": {
+    "thread-1": {
+      "id": "thread-1",
+      "subject": "Your vehicle registration renewal",
+      "from": "renewals@dmv-services.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-21T10:00:00Z",
+      "snippet": "Your registration expires {{date:2026-12-01|%B %-d}}. To renew online you'll need a passed emissions test, proof of insurance, and the $86 fee.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-1",
+          "from": "renewals@dmv-services.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-21T10:00:00Z",
+          "snippet": "Your registration expires {{date:2026-12-01|%B %-d}}. To renew online you'll need a passed emissions test, proof of insurance, and the $86 fee.",
+          "body": "Your registration expires {{date:2026-12-01|%B %-d}}. To renew online you'll need a passed emissions test, proof of insurance, and the $86 fee."
+        }
+      ]
+    }
+  },
+  "labels": {
+    "Label_1": {
+      "id": "Label_1",
+      "name": "Car",
+      "type": "user"
+    }
+  },
+  "drafts": {}
+}

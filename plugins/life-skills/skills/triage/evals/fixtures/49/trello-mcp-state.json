@@ -1,0 +1,57 @@
+{
+  "anchor_date": "2026-10-26",
+  "stub_now": "2026-10-26T15:00:00Z",
+  "boards": {
+    "board-1": {
+      "id": "board-1",
+      "name": "Personal Tasks"
+    }
+  },
+  "lists": {
+    "list-1": {
+      "id": "list-1",
+      "name": "Inbox",
+      "board_id": "board-1"
+    },
+    "list-2": {
+      "id": "list-2",
+      "name": "Backlog",
+      "board_id": "board-1"
+    },
+    "list-3": {
+      "id": "list-3",
+      "name": "Someday",
+      "board_id": "board-1"
+    }
+  },
+  "labels": {
+    "label-1": {
+      "id": "label-1",
+      "name": "home",
+      "color": "green",
+      "board_id": "board-1"
+    },
+    "label-2": {
+      "id": "label-2",
+      "name": "school",
+      "color": "blue",
+      "board_id": "board-1"
+    }
+  },
+  "cards": {
+    "card-1": {
+      "id": "card-1",
+      "name": "Clean the gutters",
+      "desc": "Front and back, before the winter rain.",
+      "list_id": "list-2",
+      "board_id": "board-1",
+      "labels": [
+        "label-1"
+      ],
+      "due": null,
+      "due_complete": false,
+      "pos": 1024,
+      "url": "https://trello.com/c/card-1/clean-the-gutters"
+    }
+  }
+}

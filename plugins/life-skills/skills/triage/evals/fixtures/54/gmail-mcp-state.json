@@ -1,0 +1,40 @@
+{
+  "anchor_date": "2026-10-26",
+  "stub_now": "2026-10-26T15:00:00Z",
+  "me": "eval-user@example.com",
+  "threads": {
+    "thread-1": {
+      "id": "thread-1",
+      "subject": "Biscuit's annual reminder",
+      "from": "front-desk@maplewood-vet.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-12T11:00:00Z",
+      "snippet": "Biscuit is due for his rabies booster and annual vaccinations. Call us at 555-0142 to book.",
+      "labelIds": [
+        "Label_1"
+      ],
+      "messages": [
+        {
+          "id": "msg-1",
+          "from": "front-desk@maplewood-vet.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-12T11:00:00Z",
+          "snippet": "Biscuit is due for his rabies booster and annual vaccinations. Call us at 555-0142 to book.",
+          "body": "Hello,\n\nBiscuit is due for his rabies booster and annual vaccinations. Call us at 555-0142 to book a time that suits you.\n\nMaplewood Vet Clinic"
+        }
+      ]
+    }
+  },
+  "labels": {
+    "Label_1": {
+      "id": "Label_1",
+      "name": "Pets",
+      "type": "user"
+    }
+  },
+  "drafts": {}
+}

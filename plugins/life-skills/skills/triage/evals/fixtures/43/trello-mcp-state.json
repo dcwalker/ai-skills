@@ -1,0 +1,91 @@
+{
+  "anchor_date": "2026-10-26",
+  "stub_now": "2026-10-26T15:00:00Z",
+  "boards": {
+    "board-1": {
+      "id": "board-1",
+      "name": "Personal Tasks"
+    }
+  },
+  "lists": {
+    "list-1": {
+      "id": "list-1",
+      "name": "Inbox",
+      "board_id": "board-1"
+    }
+  },
+  "labels": {
+    "label-1": {
+      "id": "label-1",
+      "name": "home",
+      "color": "green",
+      "board_id": "board-1"
+    },
+    "label-2": {
+      "id": "label-2",
+      "name": "finance",
+      "color": "yellow",
+      "board_id": "board-1"
+    },
+    "label-3": {
+      "id": "label-3",
+      "name": "health",
+      "color": "red",
+      "board_id": "board-1"
+    }
+  },
+  "cards": {
+    "card-1": {
+      "id": "card-1",
+      "name": "jacket",
+      "desc": "Return the blue rain jacket to Fieldline Outfitters; it's the wrong size. The receipt is in the kitchen drawer, and the return window closes {{date:2026-11-09|%B %-d}}.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [],
+      "due": null,
+      "due_complete": false,
+      "pos": 1024,
+      "url": "https://trello.com/c/card-1/jacket"
+    },
+    "card-2": {
+      "id": "card-2",
+      "name": "HDMI cable",
+      "desc": "Return the extra HDMI cable to Voltmart. It's still in the box.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [],
+      "due": null,
+      "due_complete": false,
+      "pos": 2048,
+      "url": "https://trello.com/c/card-2/hdmi-cable"
+    },
+    "card-3": {
+      "id": "card-3",
+      "name": "Book a flu shot at the pharmacy",
+      "desc": "Walk-ins are fine on weekday mornings.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [
+        "label-3"
+      ],
+      "due": null,
+      "due_complete": false,
+      "pos": 3072,
+      "url": "https://trello.com/c/card-3/book-flu-shot"
+    },
+    "card-4": {
+      "id": "card-4",
+      "name": "Pay the water bill",
+      "desc": "Due {{date:2026-11-05|%B %-d}}. Pay online with the account number on the bill.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [
+        "label-2"
+      ],
+      "due": "2026-11-05",
+      "due_complete": false,
+      "pos": 4096,
+      "url": "https://trello.com/c/card-4/pay-water-bill"
+    }
+  }
+}

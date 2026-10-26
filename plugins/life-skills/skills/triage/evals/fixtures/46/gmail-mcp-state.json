@@ -1,0 +1,41 @@
+{
+  "anchor_date": "2026-10-26",
+  "stub_now": "2026-10-26T15:00:00Z",
+  "me": "eval-user@example.com",
+  "threads": {
+    "thread-1": {
+      "id": "thread-1",
+      "subject": "Book fair helpers needed",
+      "from": "pta@oakridge-elementary.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-22T16:30:00Z",
+      "snippet": "Could you run the book fair table on {{date:2026-11-07|%A, %B %-d}}? You'd need to collect the cash box, set up two tables by 8am, and find one more helper.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-1",
+          "from": "pta@oakridge-elementary.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-22T16:30:00Z",
+          "snippet": "Could you run the book fair table on {{date:2026-11-07|%A, %B %-d}}? You'd need to collect the cash box, set up two tables by 8am, and find one more helper.",
+          "body": "Hi,\n\nCould you run the book fair table on {{date:2026-11-07|%A, %B %-d}}? You'd need to collect the cash box from the school office the day before, set up two tables in the gym by 8am, and find one more parent to help you through lunch.\n\nThanks so much,\nOakridge PTA"
+        }
+      ]
+    }
+  },
+  "labels": {
+    "Label_1": {
+      "id": "Label_1",
+      "name": "School",
+      "type": "user"
+    }
+  },
+  "drafts": {}
+}

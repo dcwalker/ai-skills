@@ -1,0 +1,12 @@
+{
+  "anchor_date": "2026-10-26",
+  "login": "pat-example",
+  "repos": {
+    "pat-example/files": {
+      "private": true,
+      "files": {
+        "triage/preferences.md": "# Triage Preferences\n\nTriage reads this file before every run and applies what it says without asking again.\n\n## Capturing to Trello\n\nNew cards go on the \"Personal Tasks\" board, \"Backlog\" list, at the top.\nEvery card's description links back to its source.\n\n## Dates\n\n## Email\n\nOnce a thread has a Trello card, archive it, leaving it unread.\n\n## Processing order\n\n## Other\n"
+      }
+    }
+  }
+}

@@ -97,10 +97,10 @@ The item's reply (Step 9) states the action on its summary line, so the user
 can check it before hearing the changes it drove:
 
 ```
-"Dishwasher"
+[Dishwasher](https://trello.com/c/abc123)
 The landlord is fixing it; your action is to check in about the repair on Oct 12.
 Dates:     Oct 12 (the date the landlord gave)
 Labels:    Waiting
 Proposed:  title "Check in with the landlord about the dishwasher repair"; due Oct 12
-Apply these?
+Retitle it and set the due date?
 ```

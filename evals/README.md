@@ -123,8 +123,8 @@ intact.
 
 Three clauses belong in every executor prompt, because none is enforceable from
 the harness side. They apply to Agent-tool subagent executors: the `claude -p`
-drivers (`lib/run-mcp-trials.sh` and triage's `run-trials.sh`) pass the eval's
-prompt through unchanged, so none of these reach their trials.
+driver (`lib/run-mcp-trials.sh`, which triage's `run-trials.sh` calls) passes
+the eval's prompt through unchanged, so none of these reach its trials.
 
 1. **Run every command through `in-trial.sh`.** Per the section above.
 2. **The executor's own session conventions do not apply inside the trial.**
@@ -461,9 +461,11 @@ than `gh`/Sonar. `evals/lib/mcp-stub/` holds real,
 protocol-compliant MCP stdio servers (built on the official `mcp` Python SDK,
 not a hand-rolled JSON-RPC shim) that stand in for the real third-party
 server -- `trello_stub.py` implements the subset of Trello tools `triage`
-actually calls, `gmail_stub.py` the six Gmail operations its email workflow
+actually calls, including `archive_card`, `unarchive_card`, and
+`mark_card_complete`, which keep archived and complete as separate states as
+Trello does, `gmail_stub.py` the six Gmail operations its email workflow
 (Step 7b) names plus the official Gmail MCP's `trash_thread` and
-`create_label`, which its delete branch and label bootstrap need, and `jira_stub.py` the Atlassian MCP's Jira subset
+`create_label`, which its delete branch and pattern-label offer need, and `jira_stub.py` the Atlassian MCP's Jira subset
 (including the cloudId-discovery flow via getAccessibleAtlassianResources
 and a documented JQL subset that fails loudly on unsupported constructs,
 plus a getConfluencePage whose response layout is modelled on Confluence's
@@ -656,37 +658,22 @@ every stub has it:
 for any skill's MCP-backed trials: it runs each eval's `claude -p` subprocess
 with `--output-format stream-json` and extracts real wall-clock duration and
 token usage into a per-trial `metrics.json` alongside `transcript.txt`.
-`plugins/life-skills/skills/triage/evals/run-trials.sh` predates it and still
-carries its own copy of that loop. It matches the shared driver on four
-things — the `TRIALS_DIR` override, the skill-plus-`references/` copy, the
-`--allowedTools` allowlist, and keeping writes in the run directory (`dontAsk`
-with a scoped `Edit` rule, and the Bash sandbox with its preflight) — and on
-nothing else below. Its sandbox lets Bash reach every host, through a
-`WebFetch(domain:*)` allow rule, so the curl tier its Step 1 names meets the
-network as before. It has no multi-turn `follow_ups` support, no per-trial
-`HOME`/`TMPDIR` isolation, and no after-the-fact write check, since
-`--output-format json` keeps no per-call record. Without a private `HOME` it
-also cannot strip the developer's settings, so an `Edit` or `Write` allow
-rule, an extra directory, or a `sandbox.excludedCommands` or
-`sandbox.filesystem.allowWrite` entry in `~/.claude/settings.json` widens a
-triage trial's boundary, and so does any hook the developer has configured. Two
-of these gaps break triage trials today. Eval 23 scripts a `follow_ups` turn,
-which this driver never sends, so the trial ends at the scope question and
-fails every expectation about the reply that should follow it. Eval 20 is
-graded partly from `tools.log`, the per-call record this driver does not
-keep. The rest do not: none of triage's fixtures carry a `home/`, and the
-skill writes nothing under `$HOME`. The settings gap is about the
-developer's own files rather than the measurement, and the `HOME` gap is not
-purely theoretical either: Step 5a reads `~/references/`, so a triage trial
-run through its own driver reads whatever that directory holds
-on the machine running it, rather than a fixture-controlled one. Folding it
-into a caller of this script is the fix, and remains the worthwhile follow-up
-its own header calls it. In place of the `HOME` isolation, triage's driver keeps
-the running user's instructions out with the `managed-only` instruction-files
-setting and `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1`; without them, a user rule in
-`~/.claude/rules/` loaded into every trial and made trials refuse graded writes.
+`plugins/life-skills/skills/triage/evals/run-trials.sh` is a thin caller of
+it. One opt-in keeps the running user's instructions out more thoroughly than
+the private `HOME` does: a suite whose `evals.json` sets
+`"instruction_files": "managed-only"` at its top level (alongside
+`skill_name` and `evals`) gets the `managed-only` instruction-files setting in
+every trial, which leaves out user, project, and local `CLAUDE.md` files,
+`.claude/rules/`, and every `AGENTS.md`, but not skills. The private `HOME`
+already drops `~/.claude/rules/` and `~/.claude/CLAUDE.md`; this also drops an
+`AGENTS.md` in a directory above the workspace, which loads whenever
+`TRIALS_DIR` sits inside this repository or the developer's home. It is opt-in
+because it would drop a fixture's own `AGENTS.md` or `CLAUDE.md` too. Triage
+sets it: its fixtures carry no instruction files, and without it a user rule
+such as "ask before changing data" made trials refuse the writes they were
+graded on.
 
-Both honour a `TRIALS_DIR` environment variable. Output otherwise lands in
+The driver honours a `TRIALS_DIR` environment variable. Output otherwise lands in
 `<skill-evals-dir>/.trial-runs/`, which is gitignored but leaves `evals.json`
 and `fixtures/` a few directories above each trial's own working directory —
 within reach of an executor that goes looking, and that is the answer key.
@@ -698,7 +685,11 @@ TRIALS_DIR=/tmp/writing-trials bash evals/lib/run-mcp-trials.sh \
 ```
 
 Multi-turn trials: an eval may carry a `follow_ups` array of later user
-messages alongside its `prompt`. The driver runs the first turn, reads the
+messages alongside its `prompt`. An eval with a `follow_ups` key is scripted
+even when the array is empty: `"follow_ups": []` marks a single-turn eval
+whose last question the user must not answer, and the simulated user below
+never plays it, so a suite that mixes scripted and simulated evals runs in one
+command with `SIMULATED_USER=1`. The driver runs the first turn, reads the
 session id off its result event, and resumes that same session for each
 follow-up, so a revision eval ("draft it", "shorter", "now add this") is a
 real conversation rather than one prompt describing three. Every turn's
@@ -712,7 +703,7 @@ writes. The seed file is never rewritten, and stays what graders diff against.
 
 Simulated user: an interview-driven skill cannot be scripted that way,
 because `follow_ups` arrive in a fixed order whatever the skill asks. Run
-the driver with `SIMULATED_USER=1` and each eval without `follow_ups` gets a
+the driver with `SIMULATED_USER=1` and each eval with no `follow_ups` key gets a
 second `claude -p` playing the user, one reply per turn, from the eval's
 prompt and the conversation so far. It never sees `expected_output` or the
 expectations, runs with no tools, no MCP servers, and none of the running
@@ -768,8 +759,7 @@ Eight things the shared driver does that a hand-run trial must do for itself:
   interview runs `conduct-interview`: `"stage_skills": ["conduct-interview"]`),
   and the driver stages each one beside the skill under test the same way,
   `SKILL.md`, `references/`, and `scripts/` only. A name with no sibling
-  `SKILL.md` behind it stops the batch. triage's own `run-trials.sh` does not
-  read this key.
+  `SKILL.md` behind it stops the batch.
 - The same `enabledPlugins` setting turns off every other plugin the
   developer has enabled in `~/.claude/settings.json` or
   `settings.local.json`. The private `HOME` links the developer's plugins
@@ -832,7 +822,7 @@ Eight things the shared driver does that a hand-run trial must do for itself:
     plugins still run, outside the sandbox. `disableAllHooks` would stop
     them, but in a trial it also stopped the `managed-only` instruction-files
     setting from applying, which loaded the developer's `~/.claude/rules`
-    into triage trials, so neither driver sets it.
+    into triage trials, so the driver does not set it.
   - The developer's settings are copied without `permissions`, `sandbox`, or
     `hooks`, which merge across scopes and would widen the boundary or run
     outside it. Project settings are another matter: a trial workspace has no

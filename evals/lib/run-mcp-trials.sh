@@ -7,9 +7,7 @@
 #
 # The per-trial environment comes from run-mcp-eval.sh, which is the harness
 # proper; this script only sequences trials and extracts metrics. triage's
-# own evals/run-trials.sh predates this file and still carries its own copy
-# of the loop -- reducing it to a caller of this script is a worthwhile
-# follow-up, not something done here.
+# evals/run-trials.sh is a thin caller of this script.
 #
 # The nested `claude` subprocess inherits the parent session's credentials, so
 # this does run when delegated to an in-session Bash tool call. It also runs as
@@ -24,7 +22,8 @@
 #
 # Set TRIALS_DIR to write the trials somewhere else (see below). Set
 # SIMULATED_USER=1 to have a model play the user in evals that carry no
-# follow_ups (see "simulated user" below); SIMULATED_USER_MAX_TURNS caps the
+# follow_ups key (see "simulated user" below; an empty follow_ups list marks
+# a single-turn eval, which it never answers); SIMULATED_USER_MAX_TURNS caps the
 # replies it sends (default 40), and an eval's optional `simulated_user`
 # string briefs it privately.
 #
@@ -299,11 +298,22 @@ for e in json.load(open(sys.argv[1]))['evals']:
   # reason.
   #   https://code.claude.com/docs/en/sandboxing
   #   https://code.claude.com/docs/en/permissions
+  #
+  # A suite whose evals.json sets "instruction_files": "managed-only" at its
+  # top level also keeps every instruction file out of its trials: user,
+  # project, and local CLAUDE.md files, .claude/rules/, and every AGENTS.md,
+  # skills excepted (https://code.claude.com/docs/en/memory). The private HOME
+  # below already drops ~/.claude/rules and ~/.claude/CLAUDE.md, but not an
+  # AGENTS.md in a directory above the workspace, which loads whenever
+  # TRIALS_DIR sits inside this repository or the developer's home. It is
+  # opt-in because it would also drop an AGENTS.md or CLAUDE.md a fixture
+  # ships on purpose; triage's fixtures ship none.
   RUN_DIR_REAL="$(cd "$RUN_DIR" && pwd -P)"
   EVALS_DIR_REAL="$(cd "$EVALS_DIR" && pwd -P)"
   TRIAL_SETTINGS="$(python3 -c '
 import glob, json, os, sys
 plugin, run_dir, home, evals_dir = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
+instruction_files = json.load(open(os.path.join(evals_dir, "evals.json"))).get("instruction_files")
 disabled = {plugin: False}
 for name in ("settings.json", "settings.local.json"):
     try:
@@ -331,7 +341,7 @@ except (OSError, ValueError):
 for full_name, spec in seed.get("repos", {}).items():
     if full_name.split("/")[0] != seed.get("login") and spec.get("private", True):
         denied.append(os.path.join(run_dir, "github", "git", *full_name.split("/")))
-print(json.dumps({
+settings = {
     "enabledPlugins": disabled,
     "permissions": {
         "allow": [f"Edit(/{run_dir}/**)"],
@@ -344,7 +354,12 @@ print(json.dumps({
         "failIfUnavailable": True,
         "filesystem": {"allowWrite": [run_dir], "denyRead": denied},
     },
-}))
+}
+if instruction_files is not None:
+    if instruction_files != "managed-only":
+        raise SystemExit(f"evals.json: instruction_files must be \"managed-only\", not {instruction_files!r}")
+    settings["pluginConfigs"] = {"agents-md@builtin": {"options": {"instructionFiles": "managed-only"}}}
+print(json.dumps(settings))
 ' "$PLUGIN_NAME@$MARKETPLACE_NAME" "$RUN_DIR_REAL" "$HOME" "$EVALS_DIR_REAL")"
 
   # `|| true` on the claude call: a failing trial (session limit, transient
@@ -535,13 +550,17 @@ json.dump(config, open(sys.argv[2], 'w'), indent=2)
   : > "$RUN_DIR/stderr.txt"
   run_turn "$PROMPT"
 
-  # A fixture's follow_ups drive later turns of the same session.
+  # A fixture's follow_ups drive later turns of the same session. An eval
+  # with a follow_ups key is scripted, even when the list is empty: an empty
+  # list marks a single-turn eval whose last question the user must not
+  # answer, so the simulated user below never plays it. FOLLOW_UPS is the
+  # list's length, or -1 when the eval has no follow_ups key.
   FOLLOW_UPS=$(python3 -c "
 import json, sys
 data = json.load(open(sys.argv[1]))
 for e in data['evals']:
     if str(e['id']) == sys.argv[2]:
-        print(len(e.get('follow_ups', [])))
+        print(len(e['follow_ups']) if 'follow_ups' in e else -1)
         break
 " "$EVALS_DIR/evals.json" "$ID")
   SESSION_ID=$(python3 -c "
@@ -572,7 +591,7 @@ for e in data['evals']:
       echo "  follow-up $((TURN + 1))/$FOLLOW_UPS"
       run_turn "$NEXT" "$SESSION_ID"
     done
-  elif [[ "${SIMULATED_USER:-}" == "1" ]]; then
+  elif [[ "$FOLLOW_UPS" -lt 0 && "${SIMULATED_USER:-}" == "1" ]]; then
     # Simulated user: an eval whose skill interviews the user cannot be
     # scripted in advance, because canned replies arrive in a fixed order
     # whatever the skill asks. Instead a second `claude -p` plays the user,

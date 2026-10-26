@@ -1,0 +1,12 @@
+{
+  "anchor_date": "2026-10-26",
+  "login": "pat-example",
+  "repos": {
+    "pat-example/files": {
+      "private": true,
+      "files": {
+        "sift-email/rubric.md": "# Email Sift Rubric\n\nSift labels new Gmail by importance on a schedule, and reads this doc in full before every run. It's my definition of what matters.\n\n## Labels\n\nEvery label sift applies, and when.\n\n| Label | When sift applies it |\n|---|---|\n| AI/Bulk | Mass mail I wouldn't miss if it were archived unread: sales, offers, and promotions |\n| AI/Receipt | The message is a receipt for something I bought, or carries one. A sale, an offer, or a promotion from a store I buy from is not a receipt and gets none |\n| AI/Newsletter | It works as a newsletter, whatever it calls itself |\n"
+      }
+    }
+  }
+}
