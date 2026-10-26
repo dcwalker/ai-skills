@@ -72,7 +72,8 @@ For each thread, decide in this order:
    Where the check-in is recorded follows the pattern the scope already uses,
    such as an existing waiting-for label or a Trello list
    ([determining-actions.md](determining-actions.md)); with no pattern, name
-   the check-in and ask when and where to record it. The reply reads as the
+   the check-in and ask when, then where to record it in the item's next
+   reply. The reply reads as the
    user's action, never as the other person's:
 
    ```

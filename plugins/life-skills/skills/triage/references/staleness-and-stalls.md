@@ -16,7 +16,7 @@ status change, or for email, the last message in the thread). Items in a
 |---|---|
 | 3–7 days | Note it; no action required |
 | 8–21 days | Ask: "No updates in N days, want me to draft a status comment or follow-up?" |
-| 22+ days | Ask the same; if no clear progress, also offer the stall interview (Step 8b) |
+| 22+ days | Ask the same; if no clear progress, offer the stall interview (Step 8b) in the item's next reply, after that answer |
 
 Before trusting the last-activity timestamp, confirm it reflects real
 activity. A bulk import, sync, or migration can stamp many items with an

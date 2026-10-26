@@ -130,8 +130,10 @@ repositories:
 
 1. **Who the user is.** Run `gh api user` once for the login. It is the only
    source of the user's identity: never take one from the file, an email, a
-   memory note, or a repository's name. Without a login, treat the file as
-   not found.
+   memory note, or a repository's name. Without a login (no `gh`, or `gh`
+   not signed in), preferences are unavailable: run on the skill's defaults,
+   say so in one line in the first item's reply, and make no offer to create
+   the file, since there is nowhere to put it.
 2. **Look in this order**, stopping at the first `triage/preferences.md` whose
    first line is `# Triage Preferences`:
    - **A saved location**, when you have persistent memory and it names the
@@ -587,7 +589,8 @@ status are exempt outright.
 Calculate the days since real activity — a comment, a field update, a status
 change, or for email the last message in the thread. Under a week, note it and
 move on. Past a week, ask whether to draft a status comment. Past three weeks,
-ask the same and offer the stall interview. Treat a suspiciously identical
+ask the same, and offer the stall interview in a following reply about the
+item, once the status-comment question is answered. Treat a suspiciously identical
 timestamp shared across many items as a bulk import rather than real activity,
 and fall back to content signals.
 
@@ -650,12 +653,12 @@ the same way, in this order. A reply that follows an answer about the scope
 or the order needs no `Done:` line, and a pending Scope Confirmation block
 always comes first.
 
-
 1. A `Done:` line naming what changed ("Done: archived, left unread."), or
    `Done: no changes.` when the user moved on or declined.
 2. A one-line note for any item skipped because it left the scope (Step 3.0).
 3. Then exactly one of: an offer (below), the next item, or the closing
-   report.
+   report. A report of items changed together (Step 9b) comes before the
+   next item when it asks nothing.
 
 Each reply asks exactly one question, and a reply that already holds a
 question never goes on to present another item. When several things want
@@ -750,11 +753,12 @@ These three look the same. Archive them too, leaving them unread?
 On a yes, apply the decision to each, confirm each landed, and take them out
 of the run; they are finished. The user can pull any one out first.
 
-When the user asks directly ("apply this to any others like it"), search the
-whole scope that way, apply the decision to every item that passes the
-membership check, and report each one changed by title, one per line. Name
-any near-miss you left out and why, and make it that reply's question; the
-next item waits for the answer.
+When the user asks directly ("apply this to any others like it"), the request
+is the confirmation: search the whole scope that way, apply the decision to
+every item that passes the membership check, and report each one changed by
+title, one per line. Name any near-miss you left out and why, and make it that
+reply's question; the next item waits for the answer. With no near-miss, the
+next item follows the report in the same reply.
 
 **Pattern labels.** When three or more items in the run share a pattern no
 existing label covers, in their content or in the decisions the user made
@@ -839,7 +843,9 @@ never impose more structure than the work justifies.
 - Refer to every card, issue, or thread by a hyperlink to the item itself,
   never a bare title or key, and never a URL the platform did not return.
 - Always show the full draft of any comment, email, or new Trello card before
-  writing it.
+  writing it. Up-front authorization covers saving a reply draft or creating
+  a card, which the item's reply then shows in full under `Applied:`; a
+  comment, which other people see, is always proposed first.
 - Preserve the user's voice in any drafted text.
 - One question at a time during the stall interview.
 - Propose each change once, in the item's reply.

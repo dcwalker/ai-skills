@@ -85,11 +85,14 @@ pattern before proposing where this one goes:
 
 Follow the pattern you find and name it in the proposal ("matching your other
 check-ins, which carry a due date on the waiting-for list"). When the scope
-shows no pattern, ask, offering the options that fit the platform:
+shows no pattern, ask when first, then, in the item's next reply, how to
+record it, offering the options that fit the platform:
 
 > "This is a check-in with the plumber about the estimate. When should you
-> check in, and how do you want check-ins recorded: a due date on this card or
-> a calendar reminder?"
+> check in?"
+>
+> "Should check-ins like this get a due date on the card, or a calendar
+> reminder?"
 
 ## Presenting the action
 
