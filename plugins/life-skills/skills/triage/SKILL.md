@@ -156,8 +156,8 @@ persistent memory, save its repository and folder there. A saved location that
 fails a check or no longer holds the file is replaced, never trusted.
 
 **Not found.** Run on the skill's own defaults and write nothing yet. Offer to
-create the file once, as an offer of its own (Step 9, "One question per
-reply"): when the user states a default (below), or at the close of the run.
+create the file once: as the offer for a default the user states (below),
+or else as the closing report's question (Step 10).
 Name the private repository you would use (the one holding
 `sift-email/rubric.md` when there is one, otherwise ask which), and create
 `triage/preferences.md` from
@@ -167,10 +167,12 @@ push it. Never create a repository.
 
 **A default stated mid-run.** When the user states a standing preference
 ("cards go to the top of Backlog", "due at 5 PM on the deadline day"), apply
-it for the rest of the run and offer, once, to add it to the file, in the
-very next reply, as an offer of its own. Add it on a
-yes, in the section it belongs to, as one plain sentence, and commit it. A
-one-off decision about a single item is not a default; don't offer to save it.
+it for the rest of the run and offer, once, to add it to the file, as an
+offer of its own: in the reply after the current item has no open point
+left. A default in the opening request is offered after the first item is
+decided. Add it on a yes, in the section it belongs to, as one plain
+sentence, and commit it. A one-off decision about a single item is not a
+default; don't offer to save it.
 
 ### 0c. Read the label set
 
@@ -610,12 +612,12 @@ block reads pending, no matter how routine the proposals look.
 Keep it short enough to say aloud, in this shape:
 
 ```
-[Renew car registration](https://trello.com/c/abc123)
-DMV renewal notice for the car; the fee is $86.
+[Your vehicle registration renewal notice](https://mail.google.com/mail/u/0/#inbox/abc123)
+DMV renewal notice for the car; the fee is $86, due Nov 14.
 Dates:     due Nov 14
 Labels:    none
-Proposed:  title "Renew the car registration online"; due date Nov 14
-Archive it and leave it unread?
+Proposed:  capture "Renew the car registration online" to Trello, due Nov 14
+Capture it, then archive the thread and leave it unread?
 ```
 
 - **Title**, a hyperlink to the item itself using the web URL the platform
@@ -643,7 +645,11 @@ needs a change, not you by omission.
 
 ### How a reply opens, and one question per reply
 
-Every reply after the user answers opens the same way, in this order:
+Every reply that follows a decision (on an item, an offer, or a batch) opens
+the same way, in this order. A reply that follows an answer about the scope
+or the order needs no `Done:` line, and a pending Scope Confirmation block
+always comes first.
+
 
 1. A `Done:` line naming what changed ("Done: archived, left unread."), or
    `Done: no changes.` when the user moved on or declined.
@@ -658,14 +664,16 @@ asking, take the first that applies, and leave the rest for later replies:
 1. A pending scope (Step 0) or a two-source order question (Step 1b).
 2. The current item's next open point.
 3. An offer, in a reply of its own with no new item in it, made in the reply
-   right after the answer that prompted it, never saved for the close: the
+   right after the current item's last open point is settled, never saved
+   for the close: the
    same decision for similar items, a near-miss left out of one, a new label
    from a pattern (Step 9b), saving a default the user just stated (Step 0b).
    One offer per reply.
 4. The next item's question.
 
-At the close, the new-arrivals question (Step 10) comes first; a pending
-preferences-file offer gets the reply after it.
+At the close, the new-arrivals question (Step 10) comes first; once it is
+settled, the closing report carries any pending preferences-file offer as
+its one question.
 
 ### Applying the answer
 
@@ -771,8 +779,8 @@ in counts, and anything left open (an item the user skipped, or one whose
 question went unanswered), each named by its linked or quoted title. An item
 the user decided is not left open. For an email scope, use the count block
 in [references/email-triage.md](references/email-triage.md). When no
-preferences file was found and the user hasn't answered the offer yet, make
-it in its own reply after this one (Step 0b).
+preferences file was found and the user hasn't answered the offer yet, end
+the closing report with it as its one question (Step 0b).
 
 ---
 

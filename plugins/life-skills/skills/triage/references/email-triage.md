@@ -86,7 +86,8 @@ For each thread, decide in this order:
 No branch marks a thread read, or unread, as a side effect: archiving leaves
 the read state as it was unless the user asked (SKILL.md Step 9a). Always
 confirm each label change, draft, read-state change, and archive before
-writing, unless the user authorized it up front.
+writing, unless the user authorized it up front or the preferences file
+settles it.
 
 ## Closing an email run
 
