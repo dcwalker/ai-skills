@@ -355,8 +355,8 @@ a clone the trial made itself took the developer's name, since the isolation
 preamble turns off the host's git config and git then falls back to the
 machine's account. Another user's private repository is also kept out of
 reach (the driver's denied files are listed under MCP stub servers,
-below): its bare repository is unreadable to the trial, so a clone of it fails, as it would
-on GitHub.
+below): its bare repository is unreadable to the trial, so a clone of it
+fails, as it would on GitHub.
 
 The file's dates and `{{...}}` tokens resolve like any stub state, against
 the same `anchor_date`. After the trial, `run-mcp-trials.sh` writes
