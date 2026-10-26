@@ -20,7 +20,8 @@ context:
 - **Project/initiative:** State the end goal. "Launch self-serve billing portal
   for SMB customers" beats "billing portal".
 - **Email captured as an action:** When converting an email into a tracked
-  action (a Trello card, a Jira issue, or a stored email action label), set
+  action (a Trello card, a Jira issue, or an existing label the account uses
+  for actions), set
   the title or subject line to the next action verb, not the original email
   subject. "Reply to Sue with Q3 forecast" beats "FW: Q3 numbers".
 - **Waiting on someone else:** Name the user's check-in, who it is with, and

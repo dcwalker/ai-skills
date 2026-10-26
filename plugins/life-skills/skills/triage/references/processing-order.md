@@ -20,15 +20,17 @@ Take the first that applies, and record which one it was:
 
 1. **An order the user stated.** "Do the overdue ones first", "go by due date",
    "start with the school emails". This always wins.
-2. **The source's own order**, on the platform the user asked to triage. See
+2. **The user's preferences file**, when it names an order for this kind of
+   scope ("Inbox: Starred first, then oldest first").
+3. **The source's own order**, on the platform the user asked to triage. See
    the platform notes below. Only the triaged platform's order counts: when
    triaging a Trello list turns up a linked Jira issue, the issue is worked
    where its card sits in the list, not where it sits in the Jira backlog, and
    the reverse when triaging Jira.
-3. **A ranking or importance signal**: a priority field, an urgent or flagged
+4. **A ranking or importance signal**: a priority field, an urgent or flagged
    label, Gmail's Starred or Important, a due date. These apply when the source
    has no order of its own, as in an inbox.
-4. **Chronological, oldest first.** First in, first out: the item that has
+5. **Chronological, oldest first.** First in, first out: the item that has
    waited longest is worked first.
 
 ## Platform notes
@@ -46,11 +48,12 @@ is rank, the backlog order a team sets by dragging issues: search with
 returned. Rank is not printed in the results; the order of the results is the
 rank. Priority and due date do not override rank either.
 
-**Gmail.** An inbox has no order of its own, so it goes by signals 3 and 4
-without asking: threads carrying `STARRED` or `IMPORTANT` in their `labelIds`
-first, then the rest, each part oldest first. `search_threads` lists the
-newest thread first, so this usually means reading the listing from the bottom
-up. A Gmail label or search query is treated the same way.
+**Gmail.** An inbox has no order of its own, so it goes by signals 4 and 5
+without asking, unless the preferences file says otherwise: threads carrying
+`STARRED` or `IMPORTANT` in their `labelIds` first, then the rest, each part
+oldest first. `search_threads` lists the newest thread first, so this usually
+means reading the listing from the bottom up. A Gmail label or search query is
+treated the same way.
 
 ## When to ask
 
@@ -73,7 +76,8 @@ front do not answer this question:
 two signals on the same level disagree inside one source, such as a
 high-priority item due after a low-priority one with nothing above them to
 settle it, take the earlier-listed signal (priority before due date), name
-the conflict on the `Order:` line, and ask whether to switch. Changes
+the conflict on the `Order:` line, and say the user can switch at any time,
+as a statement rather than the reply's one question. Changes
 authorized up front go ahead in the chosen order meanwhile.
 
 ## Groups do not change the order
@@ -106,4 +110,4 @@ Order:     asked (scope spans Trello and Jira)
 ```
 
 The block, with this line, is shown once, in the first item's reply, and
-again only if the order changes.
+again only if the scope or the order changes.

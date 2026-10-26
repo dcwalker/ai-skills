@@ -27,5 +27,5 @@ moving, and no more.
 **Reference vs. action** — Keep actionable and non-actionable items in
 separate places. Reference items belong in a topical label or folder, never
 in the inbox. Action reminders belong in a dedicated action surface (Trello,
-Jira, or the `Action` and `Waiting For` Gmail labels), never mixed in with
+Jira, or the account's own action labels or stars), never mixed in with
 reference material.

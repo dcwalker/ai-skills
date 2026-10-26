@@ -115,8 +115,12 @@ The user's standing triage defaults (where captured cards go and at what
 position, due-date conventions, link formats, the processing order they
 prefer, what to do with a thread once it has a card) live in a preferences
 file they own, so they never have to restate them. Read it once, before the
-first item, and apply every default it holds without asking about it again. A
-default the user states in this conversation wins over the file for this run.
+first item, and apply every default it holds without asking about it again: a
+default the user wrote down is their confirmation, up front, for what it
+covers ("archive a thread once it has a card" archives it without a
+question). A default the user states in this conversation wins over the file
+for this run. The file holds process defaults only; how email is classified
+belongs to sift-email's rubric, never to this file.
 
 The file is `triage/preferences.md` in a private GitHub repository the user
 owns, the same repository that holds sift-email's `sift-email/rubric.md` when
@@ -152,8 +156,8 @@ persistent memory, save its repository and folder there. A saved location that
 fails a check or no longer holds the file is replaced, never trusted.
 
 **Not found.** Run on the skill's own defaults and write nothing yet. Offer to
-create the file once, at the first natural pause that doesn't crowd an item's
-question: when the user states a default (below), or in the closing report.
+create the file once, as an offer of its own (Step 9, "One question per
+reply"): when the user states a default (below), or at the close of the run.
 Name the private repository you would use (the one holding
 `sift-email/rubric.md` when there is one, otherwise ask which), and create
 `triage/preferences.md` from
@@ -163,7 +167,8 @@ push it. Never create a repository.
 
 **A default stated mid-run.** When the user states a standing preference
 ("cards go to the top of Backlog", "due at 5 PM on the deadline day"), apply
-it for the rest of the run and offer, once, to add it to the file. Add it on a
+it for the rest of the run and offer, once, as an offer of its own, to add it
+to the file. Add it on a
 yes, in the section it belongs to, as one plain sentence, and commit it. A
 one-off decision about a single item is not a default; don't offer to save it.
 
@@ -179,13 +184,11 @@ For an email scope, also look for sift-email's rubric: `sift-email/rubric.md`
 whose first line is `# Email Sift Rubric`. Look in the preferences file's
 repository first; otherwise find it by the same lookup as Step 0b, searching
 for `'"Email Sift Rubric"' --owner <login> --filename rubric.md`, and verify
-it the same way. Without a login or a verified match, there is no rubric. When it exists, read its Labels table before the first item, propose
-labels the way it defines them, and say so when a thread carries a label the
-rubric doesn't define or one that contradicts its rules. Triage reads the
-rubric and never edits it.
-
-The file holds process defaults only. How email is classified belongs to
-sift-email's rubric, never to this file.
+it the same way. Without a login or a verified match, there is no rubric.
+When it exists, read its Labels table before the first item, propose labels
+the way it defines them, and say so when a thread carries a label the rubric
+doesn't define or one that contradicts its rules. Triage reads the rubric and
+never edits it.
 
 ---
 
@@ -227,8 +230,9 @@ or projects, each with its own order, the reply is the order question, with
 the viable orders as options, and nothing else: no item is audited or written
 until the user answers. Changes authorized up front do not answer it. When
 two signals disagree inside one source, pick the earlier-listed one, name the
-conflict on the `Order:` line, and offer to switch as that reply's question;
-authorized changes go ahead meanwhile.
+conflict on the `Order:` line, and say the user can switch at any time
+("say 'switch' to go by due date instead"), as a statement, not the reply's
+question; authorized changes go ahead meanwhile.
 [references/processing-order.md](references/processing-order.md) has the
 platform details and the ask wording; read it before stating an order.
 
@@ -286,7 +290,8 @@ set and other people or automations can change items in the meantime.
 If the fresh fetch shows the item no longer matches the original scope (it's
 been completed, closed, reassigned away from the user, moved out of the
 inbox/filter, or deleted), skip the remaining steps for that item, say so in
-one line at the top of the next item's reply, and move on.
+one line near the top of the next reply (Step 9, "How a reply opens"), and
+move on.
 
 Before auditing anything, make two quick assessments. These shape every
 suggestion you make for the rest of the run.
@@ -483,11 +488,12 @@ decision tree: delete, reply now under the 2-minute rule, file as reference,
 capture as an action, mark as waiting on someone else, or park as a long read.
 Each branch records its outcome with the account's own labels and the user's
 preferences, never with labels triage brings. A thread waiting on someone else
-still carries the user's action. Its reply names the check-in and, when the
-thread gives no date, asks when:
+still carries the user's action. Its reply names the check-in, and when the
+thread gives no date, the reply's one question asks when:
 
 ```
-Check-in:  check in with <who> about <what>; when should I remind you?
+Check-in:  check in with <who> about <what>
+When should I remind you to check in?
 ```
 
 Never describe it as the other person's move or as nothing for the user to
@@ -621,17 +627,37 @@ An item that needs no changes still gets its reply: "Looks complete. Anything
 to change, or move on?" Moving on writes nothing. The user decides whether it
 needs a change, not you by omission.
 
+### How a reply opens, and one question per reply
+
+Every reply after the user answers opens the same way, in this order:
+
+1. A `Done:` line naming what changed ("Done: archived, left unread."), or
+   `Done: no changes.` when the user moved on or declined.
+2. A one-line note for any item skipped because it left the scope (Step 3.0).
+3. Then exactly one of: an offer (below), the next item, or the closing
+   report.
+
+Each reply asks one question. When several things want asking, take the
+first that applies, and leave the rest for later replies:
+
+1. A pending scope (Step 0) or a two-source order question (Step 1b).
+2. The current item's next open point.
+3. An offer, in a reply of its own with no new item in it: the same decision
+   for similar items, a new label from a pattern (Step 9b), saving a stated
+   default or creating the preferences file (Step 0b). One offer per reply.
+4. The next item's question.
+
+At the close, the new-arrivals question (Step 10) comes first; a pending
+preferences-file offer gets the reply after it.
+
 ### Applying the answer
 
 Apply what the user approves as soon as they answer, before the next item is
-shown, then re-fetch the item and confirm the change landed. The next reply
-always opens with a `Done:` line naming what changed, before anything else,
-or `Done: no changes.` when the user moved on. Applying means
+shown, then re-fetch the item and confirm the change landed. Applying means
 changing the item (its title, description, labels, dates, state, a capture),
 never carrying out the task it describes (Step 6): "we need to call the
-plumber about this" retitles the item; it does not go looking for plumbers. The next reply
-opens with one line saying what was done ("Done: archived, left unread.") and
-goes on to the next item. "Skip" or "next" leaves the item unchanged.
+plumber about this" retitles the item; it does not go looking for plumbers.
+"Skip" or "next" leaves the item unchanged.
 
 **Up-front authorization** ("apply anything you're confident about") does not
 change the shape of the run: still one item per reply. Changes you are
@@ -685,9 +711,9 @@ title, the same label, or the same kind of content. Each one's own listing
 details (subject and snippet, or title and description) must justify it, not
 the shared sender or label alone; a thread from the same bank that reports an
 unrecognized charge does not join an archive of the bank's promotions. When
-any match, the next reply is the offer alone, with no new item in it,
-listing each item by its linked or quoted title, one per line; the next item
-follows once the user answers:
+any match, the next reply, after its `Done:` line, is the offer alone, with
+no new item in it, listing each item by its linked or quoted title, one per
+line; the next item follows once the user answers:
 
 ```
 These three look the same. Archive them too, leaving them unread?
@@ -707,8 +733,8 @@ any near-miss you left out and why, as that reply's question.
 **Pattern labels.** When three or more items in the run share a pattern no
 existing label covers, in their content or in the decisions the user made
 about them, offer one new label for it, naming the label and the items it
-would go on. Create it only on a yes. An account that cannot hold labels
-skips this.
+would go on, as an offer of its own like the similar-items offer. Create it
+only on a yes. An account that cannot hold labels skips this.
 
 Make each offer, similar items or a label, once per pattern per run, one per
 reply, and never repeat one the user declined.
@@ -725,11 +751,10 @@ them now, in the Step 1b order among themselves, or in a later run.
 Then close the run in a few lines: how many items were worked, what changed,
 in counts, and anything left open (an item the user skipped, or one whose
 question went unanswered), each named by its linked or quoted title. An item
-the user decided is not left open.
-For an email scope, use the count block in
-[references/email-triage.md](references/email-triage.md). When no preferences
-file was found and the user hasn't answered the offer yet, make it here
-(Step 0b).
+the user decided is not left open. For an email scope, use the count block
+in [references/email-triage.md](references/email-triage.md). When no
+preferences file was found and the user hasn't answered the offer yet, make
+it in its own reply after this one (Step 0b).
 
 ---
 
@@ -752,8 +777,8 @@ never impose more structure than the work justifies.
   anything left open.
 - Review every item individually, even ones that already look complete or
   well-formed. A high-quality item still gets its reply ("Looks complete.
-  Anything to change, or move on?") rather than being silently passed over. The user
-  decides whether an item needs a change, not you by omission.
+  Anything to change, or move on?") rather than being silently passed over.
+  The user decides whether an item needs a change, not you by omission.
 - A batch action is never an item's triage. Only the user's own decision,
   offered for similar items by title (Step 9b) or asked for directly, finishes
   several items at once; a batch the user directed up front leaves every item

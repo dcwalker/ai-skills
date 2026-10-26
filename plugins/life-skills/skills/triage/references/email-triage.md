@@ -53,8 +53,8 @@ For each thread, decide in this order:
 2. **2-minute rule?** If a reply or action can be completed in under two
    minutes and is ever going to be done, offer to draft it now. On a yes,
    draft it via `create_draft`: show the draft, confirm the wording, then
-   leave it in the user's Gmail drafts for them to review and send. The Gmail MCP does not send; sending stays
-   with the user. Do not defer.
+   leave it in the user's Gmail drafts for them to review and send. The
+   Gmail MCP does not send; sending stays with the user.
 3. **Reference only?** If the thread is purely informational and should be
    kept, propose the account's existing label that fits it (sift-email's
    rubric decides which, when there is one) and archiving out of the inbox.
@@ -76,8 +76,8 @@ For each thread, decide in this order:
    user's action, never as the other person's:
 
    ```
-   Check-in:  check in with the landlord about the dishwasher repair;
-              when should I remind you?
+   Check-in:  check in with the landlord about the dishwasher repair
+   When should I remind you to check in?
    ```
 6. **Read later?** If the content is long-form and worth reading but not
    actionable now, propose the account's existing read-later label or star,
