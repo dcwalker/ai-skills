@@ -77,7 +77,7 @@ and sift-email's unprocessed-mail search: `in:inbox`, `in:sent`,
 `in:anywhere`, `from:<addr|me>`, `to:<addr|me>`, `subject:<word>`,
 `label:<name>`, `category:<tab>`, `is:unread`, `is:starred`,
 `is:important`,
-`after:`/`before:` (a date, or epoch seconds),
+`after:`/`before:` (a date; epoch seconds match nothing),
 `newer_than:`/`older_than:`, bare words (matched against subject+snippet),
 "quoted phrases", an uppercase `OR` between two terms, and `-` negation of
 any of these.
@@ -141,7 +141,6 @@ def _thread_listing(t: dict) -> dict:
         "subject": t["subject"],
         "from": t["from"],
         "to": t["to"],
-        "date": t["date"],
         "labelIds": t["labelIds"],
     }, t)
 
@@ -239,25 +238,25 @@ def _thread_date(t: dict):
 
 
 def _date_matches(t: dict, arg: str, newer: bool) -> bool:
-    """after:/before: -- strictly outside the named day, Gmail's own reading.
-    An all-digit argument is epoch seconds, which the Gmail API's filtering
-    guide documents and a live read-only search honored (2026-10-24), and is
-    compared against the thread's full timestamp.
+    """after:/before: -- against midnight of the named day, as the live
+    connector's description says: after: includes that day, before: excludes
+    it (checked live 2026-10-26: after:2026/10/26 returned that day's mail).
+
+    An all-digit argument (epoch seconds) matches nothing. A live search
+    honored it on 2026-10-24, but by 2026-10-26 in:inbox after:<epoch>
+    returned nothing even for an epoch a day and a half back, which left
+    sift-email's routine finding no new mail for hours.
 
     An unparseable argument matches nothing, for the same reason an
     unimplemented operator does: a silent match-everything would turn a
     malformed query into a passing trial.
     """
     if arg.isdigit():
-        moment = _thread_datetime(t)
-        if moment is None:
-            return False
-        bound = datetime.datetime.fromtimestamp(int(arg), datetime.timezone.utc)
-        return moment > bound if newer else moment < bound
+        return False
     bound, actual = _parse_query_date(arg), _thread_date(t)
     if bound is None or actual is None:
         return False
-    return actual > bound if newer else actual < bound
+    return actual >= bound if newer else actual < bound
 
 # Each entry maps an operator prefix to how its argument is tested.
 _OPERATORS = {
@@ -363,8 +362,8 @@ def search_threads(
         if not includeTrash and "TRASH" in t["labelIds"] and "in:trash" not in query and "in:anywhere" not in query:
             continue
         if not query or _thread_matches(t, query):
-            matches.append(_thread_listing(t))
-    matches.sort(key=lambda m: m["date"], reverse=True)
+            matches.append(t)
+    matches = [_thread_listing(t) for t in sorted(matches, key=lambda t: t["date"], reverse=True)]
     # Paging as the live tool does: pageSize defaults to 20 and is capped at
     # 50, and a page with more after it carries nextPageToken and
     # resultCountEstimate (both seen in a live response, 2026-10-10). The
