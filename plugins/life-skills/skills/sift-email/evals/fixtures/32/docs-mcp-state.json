@@ -1,0 +1,422 @@
+{
+  "anchor_date": "2026-10-10",
+  "me": {
+    "principal": "u_pat",
+    "name": "Pat Example"
+  },
+  "docs": {
+    "5f0c2a7e-1b3d-4c8e-9a10-0000000000a1": {
+      "name": "Email Sift Rubric",
+      "tabs": [
+        {
+          "id": "rubric-tab",
+          "name": "Email Sift Rubric",
+          "node": "rubric-body"
+        }
+      ]
+    },
+    "5f0c2a7e-1b3d-4c8e-9a10-0000000000b2": {
+      "name": "Email Sift Log",
+      "tabs": [
+        {
+          "id": "log-tab",
+          "name": "Email Sift Log",
+          "node": "log-body"
+        }
+      ]
+    }
+  },
+  "nodes": {
+    "rubric-body": {
+      "doc": "5f0c2a7e-1b3d-4c8e-9a10-0000000000a1",
+      "rev": 1,
+      "blocks": [
+        {
+          "id": "rubric-body.0",
+          "kind": "heading",
+          "markdown": "# Email Sift Rubric",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.1",
+          "kind": "paragraph",
+          "markdown": "Sift labels new Gmail by importance on a schedule, and reads this doc in full before every run. It's my definition of what matters, and a living document: sift keeps every section current as it learns how I handle mail, marks what it inferred, and records each change in the Changelog. Keep it under about two pages.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.2",
+          "kind": "paragraph",
+          "markdown": "Timezone: America/Chicago",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.3",
+          "kind": "heading",
+          "markdown": "## How to use this doc",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.4",
+          "kind": "list",
+          "markdown": "- **Change a rule:** edit any section. Sift follows it from the next run and keeps the rest of the doc consistent with it.\n- **Correct sift:** add or edit a rule here; the next run follows it. Fixing one thread's label or Important mark in Gmail fixes that thread only, and sift won't undo it.\n- **Let sift learn on its own:** once a day, sift checks how I handled the mail it labeled. When I reply to or star several threads from one sender that it ranked low, or archive its Important mail unread, it adds or rewrites the rule in the section it belongs to, starting with \"(observed)\".\n- **Check sift's close calls:** when this doc doesn't settle a kind of mail, sift makes the call and writes it as a rule starting with \"(inferred)\" in the section for that priority. Edit the line to change the call, or remove \"(inferred)\" to make it yours. Sift doesn't ask questions or read comments.\n- **Choose newsletters:** list the ones I want to read under Newsletters, Valued. Every other newsletter gets AI/Bulk. Sift adds lines there too, each starting with \"(learned)\", from its daily check.\n- **Choose tabs:** say under Tabs which mail goes in Social, Promotions, or Updates. Sift moves mail to match, whatever tab Gmail picked, and keeps a tab I set by hand.\n- **Allow more than labels:** add it under Permissions, for example \"Archive threads labeled AI/Junk\". Only I add permissions or notifications.\n- **Tell sift about yourself:** add notes under About me, grouped by topic. Sift adds its own notes there too, each starting with \"(inferred)\". Edit one to correct it, or remove \"(inferred)\" to make it yours.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.5",
+          "kind": "heading",
+          "markdown": "## Labels",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.lab0",
+          "kind": "paragraph",
+          "markdown": "Every label and mark sift applies, and when. A thread gets one priority, plus a star and category labels when they fit, each judged on what the message is, not on the words it uses. Sift creates labels under AI/ and keeps this table current, adding a row for each label it starts using.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.lab1",
+          "kind": "table",
+          "markdown": "| Label | When sift applies it |\n|---|---|\n| Important (Gmail's mark) | Priority: I'd want to see it today |\n| AI/Low priority | Priority: meant for me, nothing urgent |\n| AI/Bulk | Priority: mass mail I wouldn't miss if it were archived unread |\n| AI/Junk | Priority: mail I never want |\n| Star | Someone is waiting on me (see Needs reply) |\n| AI/Receipt, AI/Statement, AI/Invoice | The message is one, or carries one as an attachment. One that only talks about one (\"where is my receipt?\") gets none |\n| AI/Newsletter | It works as a newsletter, whatever it calls itself: a \"newsletter\", a \"gazette\", or a regular Friday update that reads like one |\n| AI/Travel | Booking confirmations, itineraries, boarding passes, and check-in reminders for trips I've booked; not travel deals |\n| AI/Delivery | Tracking, \"out for delivery\", and \"delivered\" notices for orders I've placed; not shipping promotions |\n| AI/Appointment | Confirmations, reminders, and reschedules for appointments I have; not \"book your next visit\" promotions |\n| AI/Security | Sign-in alerts, password resets, and verification codes from services I use; a lookalike sender is Junk instead |",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.7",
+          "kind": "heading",
+          "markdown": "## About me",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.8",
+          "kind": "paragraph",
+          "markdown": "Who I am, the people in my mail, and what matters to me right now, grouped by topic so related notes sit together. Sift reads this before every run and keeps it current: it adds lines that start with \"(inferred)\", with where it learned each one and when, corrects lines when it learns better, and moves notes so related ones sit together.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.9",
+          "kind": "heading",
+          "markdown": "### (topic, such as Kids' soccer, Home, or Work)",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.10",
+          "kind": "list",
+          "markdown": "- (I add these)",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.11",
+          "kind": "heading",
+          "markdown": "## Always important",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.12",
+          "kind": "paragraph",
+          "markdown": "Senders, topics, or situations that should always be marked Important.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.13",
+          "kind": "list",
+          "markdown": "- Anything from a person I have written to in the last 90 days, unless it is clearly bulk mail\n- Deadlines, payments, or schedule changes affecting the next 7 days\n- Anything from my kids' coaches or teachers",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.14",
+          "kind": "heading",
+          "markdown": "## Needs reply",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.15",
+          "kind": "paragraph",
+          "markdown": "What counts as someone waiting on me specifically, which sift stars. It depends on the message, not on who sent it.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.16",
+          "kind": "list",
+          "markdown": "- A direct question addressed to me by name or as the only recipient\n- Requests for a decision, approval, or volunteer sign-up\n- A statement addressed to me that needs me to acknowledge it, such as a confirmation someone is waiting on",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.17",
+          "kind": "paragraph",
+          "markdown": "Not a reply, even from someone I know:",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.18",
+          "kind": "list",
+          "markdown": "- A message to a group that only shares information, such as a note to all tenants about a visit\n- An acknowledgment of my own message, such as \"ok, thanks\" or \"got it\"",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.19",
+          "kind": "heading",
+          "markdown": "## Low priority",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.20",
+          "kind": "paragraph",
+          "markdown": "Mail meant for me that doesn't meet the rules above, even from a no-reply sender, including:",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.21",
+          "kind": "list",
+          "markdown": "- Automated notifications that only confirm something already done\n- Group threads where I am Cc'd and nothing is asked of me\n- Newsletters on my Valued list\n- Receipts and statements\n- FYIs from people I know\n- Review requests and order follow-ups from companies I've actually bought from, even when they read like marketing",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.bulk1",
+          "kind": "heading",
+          "markdown": "## Bulk",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.bulk2",
+          "kind": "paragraph",
+          "markdown": "Mass mail I wouldn't miss if it were archived unread, including:",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.bulk3",
+          "kind": "list",
+          "markdown": "- Newsletters not on my Valued list\n- Promotions from companies I've signed up with or bought from\n- Social network notifications",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.bulk4",
+          "kind": "heading",
+          "markdown": "## Newsletters",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.bulk5",
+          "kind": "paragraph",
+          "markdown": "Valued newsletters get AI/Low priority. Every other newsletter, listed under Not valued or not listed at all, gets AI/Bulk. One per line: name | sender.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.bulk6",
+          "kind": "heading",
+          "markdown": "### Valued",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.bulk7",
+          "kind": "list",
+          "markdown": "- (I add these)",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.bulk8",
+          "kind": "heading",
+          "markdown": "### Not valued",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.bulk9",
+          "kind": "list",
+          "markdown": "- (I add these)",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.22",
+          "kind": "heading",
+          "markdown": "## Junk",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.23",
+          "kind": "paragraph",
+          "markdown": "Mail I never want, including:",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.24",
+          "kind": "list",
+          "markdown": "- Promotions and marketing I didn't ask for, even when worded urgently\n- Spam-like or phishing-like messages",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.torn0",
+          "kind": "heading",
+          "markdown": "## When torn",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.torn1",
+          "kind": "paragraph",
+          "markdown": "When a message could fit two priorities, choose the less severe:",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.torn2",
+          "kind": "list",
+          "markdown": "- Important over Low priority: a false alarm costs a glance, while a miss may never be noticed\n- Low priority over Bulk: mail meant for me belongs in Low priority\n- Bulk over Junk: mass mail I signed up for belongs in Bulk\n- Low priority over Junk: dull legitimate mail is never Junk",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.tabs0",
+          "kind": "heading",
+          "markdown": "## Tabs",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.tab0",
+          "kind": "paragraph",
+          "markdown": "Every Gmail inbox tab and how I want it used, whatever tab Gmail chose. Sift files every thread it labels by this table, judged on what the message is, apart from its priority, and adds a row for any tab Gmail adds, unused until I say what goes there.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.tab1",
+          "kind": "table",
+          "markdown": "| Tab | What goes here | Related labels |\n|---|---|---|\n| Primary | Important mail, and anything the other rows don't place | Important, AI/Low priority |\n| Social | Notifications from social networks and fitness or community apps | Usually AI/Bulk |\n| Promotions | Marketing, sales, and newsletters from stores and brands | AI/Bulk, AI/Junk, AI/Newsletter |\n| Updates | Receipts, statements, invoices, and bills; delivery, travel, and appointment notices; account and security alerts; automated notifications that only confirm something already done | AI/Receipt, AI/Statement, AI/Invoice, AI/Delivery, AI/Travel, AI/Appointment, AI/Security |\n| Forums | Nothing: I don't use this tab | |",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.31",
+          "kind": "heading",
+          "markdown": "## Permissions",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.32",
+          "kind": "paragraph",
+          "markdown": "Actions beyond priority labels that sift may take, by category. Empty means priority labels only. For example: \"Archive threads labeled AI/Junk\", or \"Label event invitations as invitation\". Sift creates any label I name here under AI/ in title case (AI/Invitation).",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.33",
+          "kind": "list",
+          "markdown": "- (none yet)",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.34",
+          "kind": "heading",
+          "markdown": "## Examples",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.35",
+          "kind": "paragraph",
+          "markdown": "Real cases that teach the rules. Format: sender | subject | correct label | why.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.36",
+          "kind": "list",
+          "markdown": "- (sift adds these)",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.37",
+          "kind": "heading",
+          "markdown": "## Changelog",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.38",
+          "kind": "paragraph",
+          "markdown": "Newest first. Date | change | prompted by.",
+          "rev": 1
+        },
+        {
+          "id": "rubric-body.39",
+          "kind": "list",
+          "markdown": "- (sift adds these)",
+          "rev": 1
+        }
+      ]
+    },
+    "log-body": {
+      "doc": "5f0c2a7e-1b3d-4c8e-9a10-0000000000b2",
+      "rev": 1,
+      "blocks": [
+        {
+          "id": "log-body.0",
+          "kind": "heading",
+          "markdown": "# Email Sift Log",
+          "rev": 1
+        },
+        {
+          "id": "log-body.1",
+          "kind": "paragraph",
+          "markdown": "What sift did on each run, newest first, so I can check any call. To correct sift, edit the rubric (see its \"How to use this doc\").",
+          "rev": 1
+        },
+        {
+          "id": "log-body.2",
+          "kind": "heading",
+          "markdown": "## Runs",
+          "rev": 1
+        },
+        {
+          "id": "log-body.3",
+          "kind": "paragraph",
+          "markdown": "Each run adds its date, time, and start in epoch seconds, a short summary, then one line per thread:",
+          "rev": 1
+        },
+        {
+          "id": "log-body.4",
+          "kind": "paragraph",
+          "markdown": "time | thread id | sender | subject | applied | reason",
+          "rev": 1
+        },
+        {
+          "id": "log-body.4a",
+          "kind": "paragraph",
+          "markdown": "The first run each day also adds a \"Daily review\" line, and an \"observed\" line for each sign of how I handled a thread sift labeled.",
+          "rev": 1
+        },
+        {
+          "id": "log-body.5",
+          "kind": "paragraph",
+          "markdown": "Times are in the timezone the rubric names.",
+          "rev": 1
+        },
+        {
+          "id": "log-body.6",
+          "kind": "heading",
+          "markdown": "### {{date:2026-10-09}} 07:00 ({{epoch:1791547200}})",
+          "rev": 1
+        },
+        {
+          "id": "log-body.7",
+          "kind": "paragraph",
+          "markdown": "Run {{date:2026-10-09}} 07:00: processed 1, low priority 1.",
+          "rev": 1
+        },
+        {
+          "id": "log-body.8",
+          "kind": "list",
+          "markdown": "- 07:00 | t-asked | treasurer@maplegrovepta.example | Reimbursement form | AI/Low priority | Form with no deadline",
+          "rev": 1
+        },
+        {
+          "id": "log-body.9",
+          "kind": "heading",
+          "markdown": "## Weekly summaries",
+          "rev": 1
+        },
+        {
+          "id": "log-body.10",
+          "kind": "paragraph",
+          "markdown": "Runs older than 30 days, rolled up to one line per week.",
+          "rev": 1
+        },
+        {
+          "id": "log-body.11",
+          "kind": "list",
+          "markdown": "- (none yet)",
+          "rev": 1
+        }
+      ]
+    }
+  },
+  "comments": []
+}

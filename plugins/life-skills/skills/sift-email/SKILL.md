@@ -16,14 +16,14 @@ afterward makes later runs better.
 
 Sift is built to run unattended, usually as a scheduled routine. Nobody is
 there to answer a question mid-run, so sift never blocks: when something is
-unclear it takes the safe default, finishes the run, and leaves the question
-where the user will see it (see [Never block](#never-block)).
+unclear it takes the safe default, finishes the run, and writes the call into
+the rubric where the user will see it (see [Never block](#never-block)).
 
 Two voices, by where the line goes. **Inside the rubric**, its rules, table
 rows, and About me notes speak as the user, as the rest of the doc does, so
 the document reads as one voice: "Price-increase notices I don't want are
 Bulk". **Everywhere else sift reports what it did** (the log, changelog
-entries, comments, and its reply), it names the user or says "you", never
+entries and its reply), it names the user or says "you", never
 "I", "me", "my", "the user", or a pronoun ("they" included): "asks Pat to
 confirm whether Pat can run the table", or "asks you to confirm".
 
@@ -113,7 +113,7 @@ never a reason to stop the run, ask, or wait for the user. Don't
 try to open a doc link any other way, such as fetching it on the web.
 
 Before the first doc edit in a run, read the docs connector's own guide for
-how to edit blocks and comment, rather than guessing the call shapes.
+how to edit blocks, rather than guessing the call shapes.
 
 Unless Step 2 ends the run, read the whole rubric before Step 3. It is the
 user's own definition of importance, so where
@@ -131,9 +131,10 @@ included. It never adds to Permissions or Notify: those say what sift may do,
 and only the user grants that.
 
 - **Markers.** A line sift writes from evidence carries a marker and a date:
-  `(inferred)` for a fact under About me, `(observed)` for a rule from the
-  daily review, `(learned)` for a Newsletters line. The user's lines and the
-  rules from their answers carry none. A user's edit to a marked line is the
+  `(inferred)` for a fact under About me or a call sift made when the rubric
+  left it open (see [Never block](#never-block)), `(observed)` for a rule from
+  the daily review, `(learned)` for a Newsletters line. The user's lines carry
+  none. A user's edit to a marked line is the
   latest word on it.
 - **Evidence wins.** When the evidence contradicts a rule, whoever wrote it,
   rewrite that rule to match, mark it `(observed)`, and put its old wording in
@@ -177,8 +178,6 @@ and the first result answers it:
   thread at all is work.
 - The daily review is due: the log has no "Daily review" line dated the
   run's date (see Step 4).
-- A comment thread on the rubric whose latest comment is the user's (see
-  [Never block](#never-block)).
 
 If every check comes back empty, the run has nothing to do. Don't read the rest
 of the rubric or tidy it. Add one line to the log's Runs section, "<date> <time>:
@@ -237,16 +236,6 @@ and the landlord".
 Do this before labeling, so today's run benefits from what the user did since
 the last one. The user corrects sift in the rubric; this step adds the rest.
 
-**Answered questions first.** Read the comment threads sift opened on the
-rubric (see [Never block](#never-block)). Sift's comments carry the user's
-name, the same as the user's own, so every comment sift writes starts with
-`Sift:`, and a comment without it is the user's. A thread whose latest
-comment is the user's is an answer. Apply it as a rubric change in the section
-it belongs to, unmarked since it is the user's word, relabel the
-thread the question was about if the answer settles it, then reply in that
-thread saying what changed. That reply, starting `Sift:`, marks the
-answer as applied.
-
 **Daily review.** When the log has no "Daily review" line dated the run's
 date, read how the user handled the threads sift labeled 1 to 7 days before
 the run. Take each thread the log's lines name in that window and that no
@@ -285,8 +274,7 @@ senders the evidence shows, or the narrowest category that covers them
 ("automated deadline notices from the club registrar"), never a wider class
 such as all vendors or all community organizations. Note each change in the
 rubric's changelog with the run's date (from Step 2, not the date of the mail
-or the answer that prompted it). The changelog records rubric changes only;
-an opened question goes in the run summary.
+that prompted it).
 
 ## Step 5: Gather new mail
 
@@ -449,7 +437,8 @@ thread lines, then repeat it in chat:
   to each tab, taken from what was actually applied this run.
 - The important and starred threads, one line each with the reason.
 - The daily review's line, when it ran, and the rubric changes it produced.
-- Questions opened, and answers applied.
+- Calls written into the rubric as `(inferred)` lines (see
+  [Never block](#never-block)).
 - Actions taken under a Permissions grant, such as threads archived.
 - Anything skipped (missing connector, doc not opened).
 - On a run that created the docs, their links first, in the log summary as
@@ -458,10 +447,9 @@ thread lines, then repeat it in chat:
 Keep it scannable. The user should be able to read it in under a minute. A
 scheduled run's chat output may have no reader, which is why the log carries
 it too. For the same reason, end on the summary, never on an offer or a
-question: anything that needs the user's answer is a comment on the rubric
-(see [Never block](#never-block)). When the request asked for an action the
-rubric does not grant, such as archiving, say it was not done and that the
-grant belongs in the rubric's Permissions section. Do not offer to do it, or
+question. When the request asked for an action the rubric does not grant,
+such as archiving, say it was not done and that the grant belongs in the
+rubric's Permissions section. Do not offer to do it, or
 to add the grant yourself: Permissions is the user's to write. Beyond the log
 and this reply, send no push notification or message about a run, whatever
 tools exist, except one per thread the rubric's Notify section describes,
@@ -473,17 +461,17 @@ When a run needs the user's judgment, it does not wait for it:
 
 1. Take the safe default. For an unclear new thread, apply the rubric's When
    torn section (Step 6). For evidence too thin or mixed to settle a rule,
-   change nothing until the user answers.
-2. Open a comment on the rubric doc, anchored on the rule or example it is
-   about (or the doc's title when none fits). Start it with `Sift:`, name the
-   thread by sender, subject, and date, say what sift did, and ask one
-   specific question.
-3. List the question in the run summary.
+   change nothing.
+2. When the rubric left a thread's call open and no line already covers that
+   kind of mail, write the call into the rubric as a rule, in the section for
+   the priority applied, so the user sees it there and the next run makes the
+   same call: `(inferred) <the kind of mail, in the user's voice>: <priority> | <why it was a close call> | <run's date>`.
+   Name the narrowest kind that covers it, as for any rule (Step 4), and note
+   it in the changelog. The user corrects it by editing the line.
+3. List each such line in the run summary.
 
-The next run reads the user's replies in Step 4 and applies them. Don't open
-a second comment for a question that already has an open one, and don't put
-the question, or any offer to do more, at the end of the reply: the run ends on
-its summary.
+Sift asks the user nothing and opens no comment on either doc, and it reads
+none: the rubric's text is the only place the user corrects sift.
 
 ## About me
 
