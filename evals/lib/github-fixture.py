@@ -14,7 +14,8 @@ fixture-dates.py, which this script's input has already been through):
 
 {
   "anchor_date": "2026-10-10",
-  "login": "pat-example",                 // the authenticated user
+  "login": "pat-example",                 // the authenticated user, or null
+                                          // for a gh that is not logged in
   "repos": {
     "pat-example/files": {
       "private": true,
@@ -176,6 +177,11 @@ def search_entries(repos: dict, login: str) -> list[dict]:
 def cassette(seed: dict) -> dict:
     login = seed["login"]
     repos = seed.get("repos", {})
+    if login is None:
+        # A gh with no login answers every API call the same way.
+        return {"calls": [], "default": {
+            "exit_code": 4,
+            "stderr": "To get started with GitHub CLI, please run:  gh auth login\n"}}
     calls = [{"match_regex": r"^api (.* )?/?user( |$)",
               "stdout_json": {"login": login, "type": "User"}}]
     for full_name, spec in repos.items():
@@ -194,7 +200,7 @@ def setup(seed_path: str, run_dir: str, checkouts_dir: str) -> None:
     with open(seed_path) as fh:
         seed = json.load(fh)
     if "login" not in seed:
-        fail("github-fixture.json needs a \"login\"")
+        fail("github-fixture.json needs a \"login\" (null for a gh that is not logged in)")
     for full_name, spec in seed.get("repos", {}).items():
         if full_name.count("/") != 1:
             fail(f"repository names are owner/name, not {full_name!r}")

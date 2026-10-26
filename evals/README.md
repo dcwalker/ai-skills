@@ -29,6 +29,8 @@ evals/
 │   │                     Fake Apple Notes, Day One CLI, and handwriting
 │   │                     recognition, driven by fixture state. See below.
 │   ├── git-fixture.sh    Builds a scratch git repo from a fixture spec.
+│   ├── github-fixture.py Fake GitHub for MCP-backed trials: repositories,
+│   │                     checkouts, and a gh cassette. See below.
 │   ├── run-eval.sh       Per-eval harness: wires fixture + gh-stub + env vars,
 │   │                     and writes <run-dir>/in-trial.sh to run commands
 │   │                     inside that environment.
@@ -321,6 +323,37 @@ has no such guard, so run Xcode fixtures through `run-eval.sh`. Fixtures that
 write `info.plist` files with `plutil` (tidy-workspace 16 and 17) need macOS.
 Pass a `$HOME` path to `in-trial.sh` as one quoted string, so the trial's
 shell expands it rather than the caller's.
+
+## The fake GitHub (github-fixture.py)
+
+A skill that keeps its own data in a GitHub repository (sift-email's rubric
+and state) needs more from GitHub than canned `gh` answers: repositories it
+can clone, pull, and push, and checkouts where a cloud routine puts the
+repositories attached to it. An MCP-backed fixture with a
+`github-fixture.json` gets all three from `run-mcp-eval.sh`:
+
+- **Repositories.** Each entry under `repos` (`"owner/name": {"private":
+  true, "files": {...}}`) becomes a bare repository at
+  `<run-dir>/github/git/<owner>/<name>` with one commit holding its files.
+  Clones of `https://github.com/<owner>/<name>` resolve there through a
+  `url.insteadOf` rule the trial's environment carries.
+- **Checkouts.** An entry with `"checkout": true` is also cloned to
+  `<run-dir>/<name>`, beside the workspace, the way a routine clones each
+  attached repository beside the others. Its `origin` is the bare
+  repository's path, so its owner and name are the path's last two parts, as
+  they are behind a cloud session's git proxy.
+- **A gh cassette.** `gh api user` answers with the fixture's `login` (or
+  fails as an unauthenticated `gh` when `login` is null), `gh api
+  repos/<owner>/<name>` and `gh repo view` describe each repository, and a
+  code search for a file's first heading answers with the matching files:
+  only the login's own when the search is limited to it (`--owner <login>`,
+  `user:<login>`), every repository's, other users' included, when it isn't.
+
+The file's dates and `{{...}}` tokens resolve like any stub state, against
+the same `anchor_date`. After the trial, `run-mcp-trials.sh` writes
+`github-state-out.json`: each repository's commits (subject and body) and
+its files at HEAD. Grade against it and `github-seed.json`, never the
+checkouts, which can hold work that was never pushed.
 
 ## The Notes, Day One, and OCR stubs
 
