@@ -57,12 +57,18 @@ rather than preserving redundant copies.
 
 ## Labels / tags
 
-Propose labels that will help find the item later. Calibrate to context:
+Propose labels that will help find the item later, chosen from the labels the
+scope already has (SKILL.md Step 0c). Calibrate the choice to context:
 
-- **Personal:** Simple tags like "travel", "home", "health", "finance".
+- **Personal:** Simple topical labels like "travel", "home", "health",
+  "finance", when the board has them.
 - **Professional:** Domain ("auth", "billing"), type ("bug", "feature",
-  "tech-debt"), and specifics ("mobile", "ios", "android"). Prefer specific
-  over generic when both apply.
-- **Email:** Use plain label names with no prefix character. The core action
-  labels are `Action`, `Waiting For`, and optionally `Read-Review` and
-  `To-Print`. Reference labels are topical (person, project, domain).
+  "tech-debt"), and specifics ("mobile", "ios", "android"), from the project's
+  labels in use. Prefer specific over generic when both apply.
+- **Email:** The account's own labels. When sift-email's rubric exists, its
+  Labels table says which label a thread gets; follow it, and flag a thread
+  whose current label disagrees with it.
+
+A label the set lacks is never proposed for one item. When three or more
+items share a pattern no label covers, SKILL.md Step 9b offers one new label
+for them, once.

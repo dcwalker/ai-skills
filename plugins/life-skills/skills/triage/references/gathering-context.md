@@ -94,7 +94,8 @@ For each URL that is not on the list above, attempt access in this order:
 | `mail.google.com` / Gmail | `get_thread` (Gmail MCP) |
 
 If no MCP is available for a domain and WebFetch fails, note the URL as
-unresolved and flag it for the user.
+unresolved and say so in the item's reply, with the reason (a login wall, a
+private repository, a 404).
 
 Some linked content has no extraction path with any available tool, such as
 recorded video, whiteboard/canvas tools, or images without OCR. Note these as
@@ -161,9 +162,13 @@ linked. Skip for Tier 1 personal tasks.
 
 For every item found, propose adding it as a link. Confirm before adding.
 
-## Step 5c: Propose theme groupings
+## Content that can't be read (Step 5c)
 
-If the Step 1 listing pass or the accumulated per-item audits surface a
-recurring theme not yet captured by an existing label or tag, propose a new
-grouping label and name the items it would apply to. Confirm before creating
-or applying it.
+The same rule as an unresolved link applies to the item's own content. An
+email body that is a single hosted image, an attachment with no extraction
+path, a scanned PDF with no text layer, and a page behind a login or in a
+private repository are all unread. Name each in the item's reply with the
+reason ("the body is one hosted image"), and carry nothing from it into the
+action, title, description, or labels. When the unread part is where the ask
+lives, the reply's question is whether the user can tell you what it says, or
+will read it themselves.

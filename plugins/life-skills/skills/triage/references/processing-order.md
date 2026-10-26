@@ -9,8 +9,8 @@ and skips all of it.
 
 The order the user keeps their items in is information. A Trello list sorted
 top to bottom, a Jira backlog ranked by hand, or an inbox read oldest first all
-say what the user means to deal with first. Working the set in that order, and
-presenting the Step 9 summary in it, keeps the triage in step with how the user
+say what the user means to deal with first. Presenting the items one at a time in
+that order keeps the triage in step with how the user
 already thinks about the work. Working it in whatever order a tool happened to
 return throws that away.
 
@@ -78,23 +78,18 @@ authorized up front go ahead in the chosen order meanwhile.
 
 ## Groups do not change the order
 
-Step 1a's groups (by sender, label, list, and so on) exist to find batch
-actions. They never reorder the items: after a batch, everything still in
-scope is worked and reported in the order above. In an inbox going oldest
+Groups of similar items (by sender, label, list, and so on), whether a batch
+the user directed or a decision offered for similar items, never reorder the
+items: everything still in scope is worked in the order above. In an inbox going oldest
 first, a bank's newest promotion is not pulled forward because the bank's
 oldest thread comes first.
 
-## Numbering
+## No numbering
 
-Once the order is set, number the items 1, 2, 3, ... in it. The number stays
-with the item for the whole run, whatever happens to it, and starts the item's
-entry in every report, batch lines included, always followed by the item's
-title or link: "2, 4, 5" on its own names nothing. Sorting each outcome group
-by number is what keeps the order: urgency, due date, and the order changes
-were applied never re-sort a group. An urgent item is flagged on the
-`⚠️ Time-sensitive` list instead, and stays where its number puts it, with
-its entry keeping every detail. Before
-sending, check that each group's numbers only go up.
+Items are not numbered. Each reply presents one item, named by its linked or
+quoted title, so a position number adds nothing the user can use, and read
+aloud it is noise. Urgency never moves an item forward: an urgent item is
+flagged with `⚠️` on its own summary line when its turn comes.
 
 ## Recording it
 
@@ -110,25 +105,5 @@ Order:     single item
 Order:     asked (scope spans Trello and Jira)
 ```
 
-Step 9's summary groups the items by outcome (needs your attention, changed,
-no changes needed, archived) and lists them by position number within each
-group, including items with no changes and the per-item entries that follow a
-batch:
-
-```
-Order: Starred or Important first, then oldest first (inbox default)
-⚠️ Time-sensitive
-  4. "Your lease renewal is attached": reply due tomorrow
-
-Needs your attention
-  1. "Parent-teacher conferences rescheduled": pick a new slot by Friday
-  4. ⚠️ "Your lease renewal is attached": decide whether to renew; reply due
-     tomorrow, Oct 9, by 5pm
-
-Changed
-  2. "Notes from Tuesday's planning call": labeled Reference, archived
-  3. "Can you review the grant draft?": draft reply saved
-
-Open questions
-  1. "Parent-teacher conferences rescheduled": which slot works for you?
-```
+The block, with this line, is shown once, in the first item's reply, and
+again only if the order changes.

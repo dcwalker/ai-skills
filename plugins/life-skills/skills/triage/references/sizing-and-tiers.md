@@ -5,45 +5,46 @@ professional work, and how big is it — and the tier they select between. The
 tier decides how much enrichment an item gets for the rest of the run, so read
 this when an item's context or size is not obvious from the first glance.
 
-## Groups on a large set (Step 1a)
+## Groups never change the order
 
-Groups exist to find batch actions. They never change the processing order
-(Step 1b): items still in scope after a batch are worked and reported in that
-order, by position number, as if the group had not been formed.
+A group of similar items, whether the user directed it up front (Step 1a) or
+it came from a decision offered for similar items (Step 9b), never changes
+the processing order (Step 1b): items still in scope are worked one at a time
+in that order, as if the group had not been formed.
 
-## Batch actions (Step 1a)
+## Groups of items (Steps 1a and 9b)
 
-A batch action is one change (a label, a move, an archive, a merge) applied to several
-items in a group at once. It is proposed and confirmed like any other change.
+A group action is one change (a label, a move, an archive, a merge) applied to
+several items at once: a batch the user asked for, or the user's decision on
+one item offered for the items like it.
 
 **Membership.** Each item's own listing details (subject and snippet, or title
 and description), not just the shared sender or label, must justify its place
 in the batch. A thread that shares a sender with promotional mail but reports
 an unrecognized charge does not belong in an archive batch with the promotions.
 
-**After it is applied**, check each item in the batch against the scope again:
+**Naming the items.** An offer or a report names every item in the group by
+link, or by its exact title or subject when no link is available, one per
+line, so the user can pull one out before confirming. A summary description
+("9 promotional emails", "survey, webinar invite, ...") does not name the
+items.
 
-- An item the action moved out of scope (archived out of the inbox, moved off
-  the list being triaged, closed) is finished.
-- An item still in scope is presented to the user individually for triage,
-  with its own entry and its own proposed changes in the Step 9 summary, as if
-  the batch had not happened. A batch action never counts as its triage.
+**After it is applied**, check each item against the scope again:
 
-**Presenting it in Step 9.** The batch gets one entry that names every item in
-it by link, or by its exact title or subject when no link is available, so the
-user can pull one out before confirming. A summary description ("9 promotional
-emails", "survey, webinar invite, ...") does not name the items. The entry also
-says whether the action takes those items out of scope. Items it leaves in
-scope get their own per-item entries as well; an entry such as "12 threads
-labeled Finance" never stands in for them.
+- An item the user's own decision covered (Step 9b), or that the action moved
+  out of scope (archived out of the inbox, moved off the list being triaged,
+  closed), is finished.
+- An item a directed batch left in scope (labeled Finance, but still in the
+  inbox) is still worked one at a time, with its own reply, as if the batch
+  had not happened. A batch action never counts as its triage.
 
-**Batches in sequence.** Items a first batch leaves in scope can be finished by
-a later batch that moves them out of scope. After a Finance label on every
-Harbor Bank thread, the nine promotional mailers can go into one archive batch,
-presented as one entry naming all nine. What cannot happen is an item staying
-in scope with no entry of its own: a list of items under one shared decision
-("Applies to: ...", "same treatment") that leaves them in scope is group
-triage, not individual review.
+**Groups in sequence.** Items a first batch leaves in scope can be finished by
+a later decision. After a Finance label on every Harbor Bank thread, the user
+archives one promotional mailer, and the next reply offers the same archive
+for the other eight, each listed by title. What cannot happen is an item
+staying in scope that the user never saw: a shared decision ("same
+treatment") that the user didn't make about named items is group triage, not
+individual review.
 
 ## 3a. Work context
 
