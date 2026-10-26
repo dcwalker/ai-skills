@@ -1,0 +1,163 @@
+{
+  "anchor_date": "2026-10-10",
+  "stub_now": "2026-10-10T15:00:00Z",
+  "me": "pat@example.com",
+  "labels": {
+    "INBOX": {
+      "id": "INBOX",
+      "name": "INBOX",
+      "type": "system"
+    },
+    "SENT": {
+      "id": "SENT",
+      "name": "SENT",
+      "type": "system"
+    },
+    "TRASH": {
+      "id": "TRASH",
+      "name": "TRASH",
+      "type": "system"
+    },
+    "SPAM": {
+      "id": "SPAM",
+      "name": "SPAM",
+      "type": "system"
+    },
+    "STARRED": {
+      "id": "STARRED",
+      "name": "STARRED",
+      "type": "system"
+    },
+    "IMPORTANT": {
+      "id": "IMPORTANT",
+      "name": "IMPORTANT",
+      "type": "system"
+    },
+    "UNREAD": {
+      "id": "UNREAD",
+      "name": "UNREAD",
+      "type": "system"
+    },
+    "Label_1": {
+      "id": "Label_1",
+      "name": "Soccer",
+      "type": "user"
+    },
+    "Label_2": {
+      "id": "Label_2",
+      "name": "Receipts",
+      "type": "user"
+    },
+    "Label_3": {
+      "id": "Label_3",
+      "name": "Newsletter",
+      "type": "user"
+    },
+    "Label_4": {
+      "id": "Label_4",
+      "name": "School",
+      "type": "user"
+    },
+    "Label_20": {
+      "id": "Label_20",
+      "name": "AI",
+      "type": "user"
+    },
+    "Label_22": {
+      "id": "Label_22",
+      "name": "AI/Low priority",
+      "type": "user"
+    },
+    "Label_23": {
+      "id": "Label_23",
+      "name": "AI/Junk",
+      "type": "user"
+    },
+    "Label_27": {
+      "id": "Label_27",
+      "name": "AI/Bulk",
+      "type": "user"
+    }
+  },
+  "threads": {
+    "t-asked": {
+      "id": "t-asked",
+      "subject": "Reimbursement form",
+      "from": "treasurer@maplegrovepta.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-07T18:00:00Z",
+      "snippet": "Pat, here's the reimbursement form for the supplies you bought.",
+      "labelIds": [
+        "INBOX",
+        "Label_22"
+      ],
+      "messages": [
+        {
+          "id": "t-asked-m1",
+          "from": "treasurer@maplegrovepta.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-07T18:00:00Z",
+          "snippet": "Pat, here's the reimbursement form for the supplies you bought.",
+          "body": "Pat, here's the reimbursement form for the supplies you bought."
+        }
+      ]
+    },
+    "t-coach": {
+      "id": "t-coach",
+      "subject": "Saturday carpool",
+      "from": "riley.coach@example.com",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-10T12:30:00Z",
+      "snippet": "Hi Pat, can you drive two kids to Saturday's 9am game? Let me know by Thursday.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "t-coach-m1",
+          "from": "riley.coach@example.com",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T12:30:00Z",
+          "snippet": "Hi Pat, can you drive two kids to Saturday's 9am game? Let me know by Thursday.",
+          "body": "Hi Pat, can you drive two kids to Saturday's 9am game? Let me know by Thursday."
+        }
+      ]
+    },
+    "t-collect": {
+      "id": "t-collect",
+      "subject": "Notice of outstanding balance",
+      "from": "notices@recoverypoint-services.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-10T13:00:00Z",
+      "snippet": "Our records show an outstanding balance of $38.20 referred to us by Lakeside Parking for a",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "t-collect-m1",
+          "from": "notices@recoverypoint-services.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T13:00:00Z",
+          "snippet": "Our records show an outstanding balance of $38.20 referred to us by Lakeside Parking for a",
+          "body": "Our records show an outstanding balance of $38.20 referred to us by Lakeside Parking for a citation issued to you. Please review your account at recoverypoint-services.example or contact us within 30 days. This is a communication from a debt collector."
+        }
+      ]
+    }
+  },
+  "drafts": {}
+}

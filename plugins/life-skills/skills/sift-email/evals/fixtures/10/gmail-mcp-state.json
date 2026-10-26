@@ -105,6 +105,32 @@
           "body": "Pat, here's the reimbursement form for the supplies you bought."
         }
       ]
+    },
+    "t-carpool": {
+      "id": "t-carpool",
+      "subject": "Saturday carpool",
+      "from": "riley.coach@example.com",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-10T12:30:00Z",
+      "snippet": "Hi Pat, can you drive two kids to Saturday's 9am game? Let me know by Thursday.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "t-carpool-m1",
+          "from": "riley.coach@example.com",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T12:30:00Z",
+          "snippet": "Hi Pat, can you drive two kids to Saturday's 9am game? Let me know by Thursday.",
+          "body": "Hi Pat, can you drive two kids to Saturday's 9am game? Let me know by Thursday."
+        }
+      ]
     }
   },
   "drafts": {}

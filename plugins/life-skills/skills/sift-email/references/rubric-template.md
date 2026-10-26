@@ -19,8 +19,10 @@ Timezone: UTC (change to yours, such as Europe/Berlin)
   mail it labeled. When I reply to or star several threads from one sender
   that it ranked low, or archive its Important mail unread, it adds or
   rewrites the rule in the section it belongs to, starting with "(observed)".
-- **Answer a question:** sift asks in comments that start with "Sift:". Reply
-  in the thread, and the next run applies your answer.
+- **Check sift's close calls:** when this doc doesn't settle a kind of mail,
+  sift makes the call and writes it as a rule starting with "(inferred)" in
+  the section for that priority. Edit the line to change the call, or remove
+  "(inferred)" to make it yours. Sift doesn't ask questions or read comments.
 - **Choose newsletters:** list the ones I want to read under Newsletters,
   Valued. Every other newsletter gets AI/Bulk. Sift adds lines there too, each
   starting with "(learned)", from its daily check.
