@@ -3,8 +3,8 @@
   "stub_now": "2026-10-02T16:00:00Z",
   "cloud": {
     "id": "b7c9e1a2-0000-4000-8000-example00001",
-    "url": "https://danwalker.atlassian.net",
-    "name": "danwalker"
+    "url": "https://home-projects.atlassian.invalid",
+    "name": "home-projects"
   },
   "projects": {
     "HOME": {
@@ -19,7 +19,7 @@
   "users": [
     {
       "accountId": "user-1",
-      "displayName": "Dan Walker",
+      "displayName": "Sam Rivera",
       "emailAddress": "eval-user@example.com"
     }
   ],
@@ -68,11 +68,11 @@
       ],
       "assignee": {
         "accountId": "user-1",
-        "displayName": "Dan Walker"
+        "displayName": "Sam Rivera"
       },
       "reporter": {
         "accountId": "user-1",
-        "displayName": "Dan Walker"
+        "displayName": "Sam Rivera"
       },
       "created": "2026-09-08T09:00:00Z",
       "updated": "2026-09-08T09:00:00Z",
@@ -99,11 +99,11 @@
       ],
       "assignee": {
         "accountId": "user-1",
-        "displayName": "Dan Walker"
+        "displayName": "Sam Rivera"
       },
       "reporter": {
         "accountId": "user-1",
-        "displayName": "Dan Walker"
+        "displayName": "Sam Rivera"
       },
       "created": "2026-09-09T09:00:00Z",
       "updated": "2026-09-09T09:00:00Z",
@@ -130,11 +130,11 @@
       ],
       "assignee": {
         "accountId": "user-1",
-        "displayName": "Dan Walker"
+        "displayName": "Sam Rivera"
       },
       "reporter": {
         "accountId": "user-1",
-        "displayName": "Dan Walker"
+        "displayName": "Sam Rivera"
       },
       "created": "2026-09-11T09:00:00Z",
       "updated": "2026-09-11T09:00:00Z",

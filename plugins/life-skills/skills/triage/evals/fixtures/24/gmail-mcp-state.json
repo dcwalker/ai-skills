@@ -17,7 +17,7 @@
           "to": ["eval-user@example.com"],
           "date": "2026-10-07T16:05:00Z",
           "snippet": "Biscuit's rabies booster and annual vaccines are due. Please book an appointment by {{date:2026-11-20|%B %-d, %Y}}.",
-          "body": "Hi Dan,\n\nOur records show Biscuit is due for his rabies booster and annual vaccinations. Please book an appointment by {{date:2026-11-20|%B %-d, %Y}} -- call us on 555-0142 or reply to this email with a few times that suit you.\n\nWhen you come in, please bring a fresh stool sample for his yearly parasite screen and his vaccination record booklet.\n\nThanks,\nMaplewood Vet Clinic front desk"
+          "body": "Hi Sam,\n\nOur records show Biscuit is due for his rabies booster and annual vaccinations. Please book an appointment by {{date:2026-11-20|%B %-d, %Y}} -- call us on 555-0142 or reply to this email with a few times that suit you.\n\nWhen you come in, please bring a fresh stool sample for his yearly parasite screen and his vaccination record booklet.\n\nThanks,\nMaplewood Vet Clinic front desk"
         }
       ]
     }

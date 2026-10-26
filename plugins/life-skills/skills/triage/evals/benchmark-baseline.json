@@ -817,7 +817,7 @@
         {
           "text": "Each new card's description references the source Jira issue (the HOME-7 key or its summary), so the cards link back to where the to-dos came from.",
           "passed": true,
-          "evidence": "Each desc contains 'Captured from Jira HOME-7 \"Convert the garage into a home office\": https://danwalker.atlassian.net/browse/HOME-7'."
+          "evidence": "Each desc contains 'Captured from Jira HOME-7 \"Convert the garage into a home office\": https://home-projects.atlassian.invalid/browse/HOME-7'."
         },
         {
           "text": "The seeded card-1 ('Renew passport before February Japan trip') is unmodified in the final Trello state.",
@@ -875,7 +875,7 @@
         {
           "text": "Each new card's description references the source Jira issue (the HOME-7 key or its summary), so the cards link back to where the to-dos came from.",
           "passed": true,
-          "evidence": "Each desc begins 'Captured from Jira HOME-7 \"Convert the garage into a home office\": https://danwalker.atlassian.net/browse/HOME-7'."
+          "evidence": "Each desc begins 'Captured from Jira HOME-7 \"Convert the garage into a home office\": https://home-projects.atlassian.invalid/browse/HOME-7'."
         },
         {
           "text": "The seeded card-1 ('Renew passport before February Japan trip') is unmodified in the final Trello state.",
@@ -3460,9 +3460,9 @@
           "evidence": "Open question 1: 'which board should the card go on? **Personal Tasks** ... or **Home** ...? ... I didn't want to guess.' States a preference but does not pick."
         },
         {
-          "text": "The response names the passport renewal as the action to capture (renew Maya's passport: photos, signed form, in-person appointment, before January 12, 2027), so the user can see what the card would hold once a board is chosen.",
+          "text": "The response names the passport renewal as the action to capture (renew Ella's passport: photos, signed form, in-person appointment, before January 12, 2027), so the user can see what the card would hold once a board is chosen.",
           "passed": true,
-          "evidence": "Proposed card 'Renew Maya's passport' with photos, form signed by both parents, in-person appointment, 'Passport expires 2027-01-12'."
+          "evidence": "Proposed card 'Renew Ella's passport' with photos, form signed by both parents, in-person appointment, 'Passport expires 2027-01-12'."
         },
         {
           "text": "thread-1 is not archived without a record of its action: its final labelIds still include INBOX, or they include Label_1 ('Action'). No reply draft is created for it.",
@@ -3508,9 +3508,9 @@
           "evidence": "Open question 1: 'which board should the card go on? You have two, **Personal Tasks** and **Home** ... I didn't want to guess.'"
         },
         {
-          "text": "The response names the passport renewal as the action to capture (renew Maya's passport: photos, signed form, in-person appointment, before January 12, 2027), so the user can see what the card would hold once a board is chosen.",
+          "text": "The response names the passport renewal as the action to capture (renew Ella's passport: photos, signed form, in-person appointment, before January 12, 2027), so the user can see what the card would hold once a board is chosen.",
           "passed": true,
-          "evidence": "Proposed card 'Renew Maya's passport (book appointment, photos, signed form)'; checklist covers photos, form with both parents' signatures, in-person appointment; expires 2027-01-12."
+          "evidence": "Proposed card 'Renew Ella's passport (book appointment, photos, signed form)'; checklist covers photos, form with both parents' signatures, in-person appointment; expires 2027-01-12."
         },
         {
           "text": "thread-1 is not archived without a record of its action: its final labelIds still include INBOX, or they include Label_1 ('Action'). No reply draft is created for it.",

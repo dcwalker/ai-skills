@@ -5,7 +5,7 @@
   "projects": {
     "HOME": {"key": "HOME", "id": "10001", "name": "Home Projects", "issueTypes": ["Task"]}
   },
-  "me": {"accountId": "user-1", "displayName": "Dan Walker"},
+  "me": {"accountId": "user-1", "displayName": "Sam Rivera"},
   "issues": {
     "HOME-3": {
       "key": "HOME-3", "id": "20003", "project": "HOME",
@@ -13,21 +13,21 @@
       "description": "The garage door only opens about halfway, then the opener strains and stops. Want it working before {{date:2026-12-21|%Q}} so the car can go inside.",
       "status": {"name": "To Do", "statusCategory": "To Do"},
       "issuetype": "Task", "priority": null, "labels": ["home"],
-      "assignee": {"accountId": "user-1", "displayName": "Dan Walker"},
-      "reporter": {"accountId": "user-1", "displayName": "Dan Walker"},
+      "assignee": {"accountId": "user-1", "displayName": "Sam Rivera"},
+      "reporter": {"accountId": "user-1", "displayName": "Sam Rivera"},
       "created": "2026-06-15T09:00:00Z", "updated": "2026-08-20T19:30:00Z",
       "resolution": null, "duedate": null,
       "comments": [
         {"id": "c-301", "created": "2026-07-02T18:10:00Z",
-         "author": {"accountId": "user-1", "displayName": "Dan Walker"},
+         "author": {"accountId": "user-1", "displayName": "Sam Rivera"},
          "body": "Got a quote from Brightline Garage Doors: $1,850 to replace the opener and both springs. Too much, want a second quote."},
         {"id": "c-302", "created": "2026-08-20T19:30:00Z",
-         "author": {"accountId": "user-1", "displayName": "Dan Walker"},
+         "author": {"accountId": "user-1", "displayName": "Sam Rivera"},
          "body": "Left messages with two more companies. Nobody called back."}
       ]
     }
   },
-  "users": [{"accountId": "user-1", "displayName": "Dan Walker", "emailAddress": "eval-user@example.com"}],
+  "users": [{"accountId": "user-1", "displayName": "Sam Rivera", "emailAddress": "eval-user@example.com"}],
   "transitions": [
     {"id": "11", "name": "To Do", "to": {"name": "To Do", "statusCategory": "To Do"}},
     {"id": "21", "name": "In Progress", "to": {"name": "In Progress", "statusCategory": "In Progress"}},

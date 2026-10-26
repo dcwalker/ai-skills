@@ -16,7 +16,7 @@
           "to": ["eval-user@example.com"],
           "date": "2026-07-29T10:12:00Z",
           "snippet": "Could you send me the final Q3 forecast by Friday? Just the summary tab is fine.",
-          "body": "Hi Dan,\n\nCould you send me the final Q3 forecast by Friday? Just the summary tab is fine, no need for the full workbook.\n\nThanks,\nSue"
+          "body": "Hi Sam,\n\nCould you send me the final Q3 forecast by Friday? Just the summary tab is fine, no need for the full workbook.\n\nThanks,\nSue"
         }
       ]
     },
@@ -35,7 +35,7 @@
           "to": ["quotes@northfence.example"],
           "date": "2026-07-27T16:40:00Z",
           "snippet": "Following up on my request for a quote to replace the back fence panels.",
-          "body": "Hello,\n\nFollowing up on my request from last week for a quote to replace the back fence panels (about 12 metres). Could you let me know when someone can come out to measure?\n\nDan"
+          "body": "Hello,\n\nFollowing up on my request from last week for a quote to replace the back fence panels (about 12 metres). Could you let me know when someone can come out to measure?\n\nSam"
         }
       ]
     },
