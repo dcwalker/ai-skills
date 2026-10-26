@@ -197,6 +197,14 @@ ENV_FILE="$RUN_DIR/env.sh"
     echo "export GIT_CONFIG_VALUE_0=\"https://github.com/\""
     echo "export GIT_CONFIG_KEY_1=\"url.file://$RUN_DIR/github/git/.insteadOf\""
     echo "export GIT_CONFIG_VALUE_1=\"git@github.com:\""
+    # Every commit the trial makes, in a checkout or in a clone of its own,
+    # carries the fixture user's name. The isolation preamble turns off the
+    # host's git config, and git then falls back to the machine's account
+    # name, which put the developer's name on trial commits.
+    echo "export GIT_AUTHOR_NAME=\"Pat Example\""
+    echo "export GIT_AUTHOR_EMAIL=\"pat@example.com\""
+    echo "export GIT_COMMITTER_NAME=\"Pat Example\""
+    echo "export GIT_COMMITTER_EMAIL=\"pat@example.com\""
     echo "export GITHUB_SEED=\"$RUN_DIR/github-seed.json\""
     echo "export GITHUB_STATE_OUT=\"$RUN_DIR/github-state-out.json\""
   fi

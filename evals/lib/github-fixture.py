@@ -224,8 +224,6 @@ def setup(seed_path: str, run_dir: str, checkouts_dir: str) -> None:
             if os.path.exists(dest):
                 fail(f"two checkouts would share {dest}")
             git("clone", "--quiet", bare, dest)
-            git("config", "user.name", "Pat Example", cwd=dest)
-            git("config", "user.email", "pat@example.com", cwd=dest)
     with open(os.path.join(run_dir, "gh-cassette.json"), "w") as fh:
         json.dump(cassette(seed), fh, indent=2)
         fh.write("\n")
