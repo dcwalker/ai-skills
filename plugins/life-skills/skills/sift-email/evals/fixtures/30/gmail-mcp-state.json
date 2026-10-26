@@ -82,6 +82,11 @@
       "id": "CATEGORY_PURCHASES",
       "name": "CATEGORY_PURCHASES",
       "type": "system"
+    },
+    "Label_29": {
+      "id": "Label_29",
+      "name": "AI/Notifications",
+      "type": "user"
     }
   },
   "threads": {
