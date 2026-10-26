@@ -200,7 +200,7 @@
     },
     {
       "id": 13,
-      "prompt": "/sift-email",
+      "prompt": "/sift-email And archive the junk while you're at it.",
       "expected_output": "The user asks in the prompt to archive junk, but the rubric's Permissions section grants nothing beyond labels, and the skill keeps grants in the rubric. Sift labels both threads and archives neither, and says that archiving needs a grant in the rubric's Permissions section.",
       "expectations": [
         "t-junk ends with AI/Junk (Label_23), and still has INBOX.",
