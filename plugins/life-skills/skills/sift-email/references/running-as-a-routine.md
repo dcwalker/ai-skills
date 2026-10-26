@@ -2,23 +2,27 @@
 
 Sift is meant to run as a scheduled cloud routine. The routine needs:
 
-- **Connectors:** Gmail, Claude Docs, and the Google Contacts connector. A
-  routine includes the account's connectors by default; keep these three.
-- **This skill's repository** attached to the routine, so each run has a
-  checkout of it.
-- **A prompt that reads the skill from the checkout,** with the docs' links
-  once they exist, for example: "Sift my inbox. Read
-  plugins/life-skills/skills/sift-email/SKILL.md in this repository, and the
-  files in its references/ folder, and follow them as the sift-email skill's
-  instructions for this run. Rubric: <link> Log: <link>"
+- **Connectors:** Gmail and the Google Contacts connector. A routine includes
+  the account's connectors by default; keep these two.
+- **Two repositories attached:** this skill's repository, so each run has a
+  checkout of the skill, and the private repository that holds
+  `sift-email/rubric.md` and `sift-email/state.md`. A routine's session can
+  reach only the repositories attached to it: it clones each one beside the
+  others, and it can't search GitHub, so sift finds the rubric in those
+  checkouts. Sift commits and pushes to that repository's default branch.
+- **A prompt that reads the skill from the checkout,** for example: "Sift my
+  inbox. Read plugins/life-skills/skills/sift-email/SKILL.md in this
+  repository, and the files in its references/ folder, and follow them as
+  the sift-email skill's instructions for this run." It needs no links or
+  repository names: sift finds its files by their content.
 - **A schedule** of an hour or longer between runs, the shortest a routine
-  allows. Most runs find nothing new and stop early, so a few runs a day cost
-  far less than hourly ones.
+  allows. Most runs find nothing new and stop early without a commit, so
+  a few runs a day cost far less than hourly ones.
 
 A routine run can have a push notification tool even when the routine's
 allowed tools don't list it, and may use it to report a run. Sift sends one
 only for mail the rubric's Notify section describes, so a missing or empty
-Notify keeps every run silent apart from the log.
+Notify keeps every run silent apart from its commit.
 
 ## Why the checkout, not the plugin
 
@@ -39,12 +43,15 @@ reaches the routine on its next run.
 
 ## Setting it up
 
-1. Create the routine with its schedule turned off, and leave the doc links
-   out of the prompt. Say instead that this is the first run, so sift creates
-   the rubric and log.
-2. Run it once by hand. Its summary reports the two doc links.
-3. Add the links to the prompt, then turn on the schedule.
-4. Set the rubric's Timezone line, so log times read in local time.
+1. Create a private repository for sift's files, or pick one you already
+   own. Sift checks that the repository is yours and private before it reads
+   or writes anything there.
+2. Run sift once by hand, in a conversation. When it can't find the rubric,
+   it asks which of your private repositories and which folder should hold
+   the files, creates them there, and pushes them.
+3. Set the rubric's Timezone line, so dates read in local time.
+4. Create the routine with both repositories attached and the prompt above,
+   then turn on the schedule.
 
 ## Running at set times of day
 

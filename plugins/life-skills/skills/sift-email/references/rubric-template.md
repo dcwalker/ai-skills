@@ -22,7 +22,9 @@ Timezone: UTC (change to yours, such as Europe/Berlin)
 - **Check sift's close calls:** when this doc doesn't settle a kind of mail,
   sift makes the call and writes it as a rule starting with "(inferred)" in
   the section for that priority. Edit the line to change the call, or remove
-  "(inferred)" to make it yours. Sift doesn't ask questions or read comments.
+  "(inferred)" to make it yours. Sift doesn't ask questions.
+- **See why sift labeled something:** each run's commit message lists every
+  thread it labeled, with the reason.
 - **Choose newsletters:** list the ones I want to read under Newsletters,
   Valued. Every other newsletter gets AI/Bulk. Sift adds lines there too, each
   starting with "(learned)", from its daily check.

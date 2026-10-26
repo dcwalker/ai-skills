@@ -7,8 +7,8 @@ reasonably stops to ask whether the item still stands. The suite then
 measures the calendar instead of the skill. This script keeps every date in
 a fixture where its author put it relative to the day it was written.
 
-A fixture opts in by giving each of its *-mcp-state.json files a top-level
-"anchor_date": the date the scenario was written for (YYYY-MM-DD). Every
+A fixture opts in by giving each of its *-mcp-state.json files (and its
+github-fixture.json, when it has one) a top-level "anchor_date": the date the scenario was written for (YYYY-MM-DD). Every
 state file in one fixture directory must name the same anchor. The shift is
 the gap from the anchor to the run date, rounded down to whole weeks so a
 weekday stays right: "Thursday, Oct 8" is still a Thursday after the move.
@@ -98,7 +98,9 @@ def run_date() -> datetime.date:
 def fixture_anchor(fixture_dir: str) -> datetime.date | None:
     """The one anchor every state file in the fixture names, or None."""
     anchors = {}
-    for path in sorted(glob.glob(os.path.join(fixture_dir, "*-mcp-state.json"))):
+    paths = glob.glob(os.path.join(fixture_dir, "*-mcp-state.json"))
+    paths += glob.glob(os.path.join(fixture_dir, "github-fixture.json"))
+    for path in sorted(paths):
         with open(path) as fh:
             anchors[os.path.basename(path)] = json.load(fh).get("anchor_date")
     named = {a for a in anchors.values() if a is not None}

@@ -132,11 +132,26 @@ add_stub_server calendar calendar_stub.py
 add_stub_server docs docs_stub.py
 add_stub_server contacts contacts_stub.py
 
+# A fixture with github-fixture.json gets a fake GitHub: bare repositories
+# under $RUN_DIR/github/git/<owner>/<name>, checkouts of the ones it marks
+# "checkout" beside the workspace (where a cloud routine clones each attached
+# repository), and a gh cassette that answers about them. See
+# github-fixture.py. Grade the repositories from $RUN_DIR/github-state-out.json,
+# which run-mcp-trials.sh writes after the trial.
+GITHUB_FIXTURE=""
+if [[ -f "$FIXTURE_DIR/github-fixture.json" ]]; then
+  GITHUB_FIXTURE=1
+  python3 "$SCRIPT_DIR/fixture-dates.py" state "$FIXTURE_DIR" "$FIXTURE_DIR/github-fixture.json" \
+    "$RUN_DIR/github-seed.json"
+  python3 "$SCRIPT_DIR/github-fixture.py" setup "$RUN_DIR/github-seed.json" "$RUN_DIR" "$RUN_DIR"
+fi
+
 # A fixture that seeds the CLI stubs (Notes, Day One, OCR) needs no MCP server.
 CLI_STUB_FIXTURE=""
 for CLI_FIXTURE in notes-fixture.json dayone-fixture.json ocr-fixture.json; do
   [[ -f "$FIXTURE_DIR/$CLI_FIXTURE" ]] && CLI_STUB_FIXTURE=1
 done
+[[ -n "$GITHUB_FIXTURE" ]] && CLI_STUB_FIXTURE=1
 
 if [[ "$MCP_SERVERS_JSON" == "{}" ]] && [[ -z "$CONVERSATION_ONLY" ]] && [[ -z "$CLI_STUB_FIXTURE" ]]; then
   echo "run-mcp-eval: fixture $FIXTURE_DIR provides no recognized *-mcp-state.json file" >&2
@@ -172,6 +187,19 @@ ENV_FILE="$RUN_DIR/env.sh"
   emit_notes_dayone_fixture_env "$FIXTURE_DIR" "$RUN_DIR"
   echo "export GH_STUB_LOG=\"$RUN_DIR/gh-calls.log\""
   echo "export GH_STUB_COUNTS_DIR=\"$RUN_DIR\""
+  if [[ -n "$GITHUB_FIXTURE" ]]; then
+    # After the isolation preamble, which clears any GIT_CONFIG_COUNT rules:
+    # a clone of https://github.com/<owner>/<name> resolves to the fixture's
+    # bare repository.
+    echo "export GH_STUB_CASSETTE=\"$RUN_DIR/gh-cassette.json\""
+    echo "export GIT_CONFIG_COUNT=2"
+    echo "export GIT_CONFIG_KEY_0=\"url.file://$RUN_DIR/github/git/.insteadOf\""
+    echo "export GIT_CONFIG_VALUE_0=\"https://github.com/\""
+    echo "export GIT_CONFIG_KEY_1=\"url.file://$RUN_DIR/github/git/.insteadOf\""
+    echo "export GIT_CONFIG_VALUE_1=\"git@github.com:\""
+    echo "export GITHUB_SEED=\"$RUN_DIR/github-seed.json\""
+    echo "export GITHUB_STATE_OUT=\"$RUN_DIR/github-state-out.json\""
+  fi
   # Per-service grading artifacts (only for services this fixture wired up):
   for SERVICE in trello gmail atlassian slack calendar docs contacts; do
     if [[ -f "$FIXTURE_DIR/$SERVICE-mcp-state.json" ]]; then

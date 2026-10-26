@@ -855,6 +855,7 @@ def bash_targets(command):
 # card) corrupts the evidence graders read, so any such write is recorded in
 # tampering.log and counted in metrics.json, whether or not it went through.
 HARNESS_FILE = re.compile(r"(-calls\.log|-state-out\.json|-state-seed\.json|\.counts\.json)$|"
+                          r"^(github-seed\.json|gh-cassette\.json)$|"
                           r"^(tools\.log|events\.jsonl|metrics\.json|escapes\.log|"
                           r"tampering\.log|env\.sh|mcp-config(\.resume)?\.json|eval\.json)$")
 tampering = []
@@ -1020,6 +1021,13 @@ for line in open(sys.argv[1]):
     echo "  Nothing was moved or deleted. Inspect those paths, then see" >&2
     echo "  $RUN_DIR/escapes.log and tools.log. Stopping the run." >&2
     exit 1
+  fi
+
+  # A fake-GitHub trial's repositories as the trial left them: each one's
+  # commits and its files at HEAD, beside the seed in github-seed.json.
+  if [[ -f "$RUN_DIR/github-seed.json" ]]; then
+    python3 "$SCRIPT_DIR/github-fixture.py" snapshot "$RUN_DIR/github-seed.json" "$RUN_DIR" \
+      "$RUN_DIR/github-state-out.json" || echo "  WARNING: could not snapshot eval $ID's repositories"
   fi
 
   if [[ -n "$TRIAL_HOST_TMP" ]]; then
