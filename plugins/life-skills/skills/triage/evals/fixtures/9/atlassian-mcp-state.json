@@ -12,13 +12,13 @@
       "description": "Multi-week project, drawings are done. Builder starts the first week of {{date:2026-09-01|%B}}. IMPORTANT: before anything can start, someone needs to book a waste skip for the first week of works, arrange it with the neighbours (shared driveway access), and confirm the electrician's second-fix date. None of that is tracked anywhere yet.",
       "status": {"name": "In Progress", "statusCategory": "In Progress"},
       "issuetype": "Task", "priority": "High", "labels": ["home", "renovation"],
-      "assignee": {"accountId": "user-1", "displayName": "Sam Rivera"},
-      "reporter": {"accountId": "user-1", "displayName": "Sam Rivera"},
+      "assignee": {"accountId": "user-1", "displayName": "Darby Wade"},
+      "reporter": {"accountId": "user-1", "displayName": "Darby Wade"},
       "created": "2026-07-01T09:00:00Z", "updated": "2026-07-29T09:00:00Z",
       "resolution": null, "duedate": "2026-09-30", "comments": []
     }
   },
-  "users": [{"accountId": "user-1", "displayName": "Sam Rivera", "emailAddress": "eval-user@example.com"}],
+  "users": [{"accountId": "user-1", "displayName": "Darby Wade", "emailAddress": "eval-user@example.com"}],
   "transitions": [
     {"id": "11", "name": "To Do", "to": {"name": "To Do", "statusCategory": "To Do"}},
     {"id": "21", "name": "In Progress", "to": {"name": "In Progress", "statusCategory": "In Progress"}},

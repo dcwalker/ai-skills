@@ -48,7 +48,7 @@
           ],
           "date": "2026-10-06T18:25:00Z",
           "snippet": "Thanks for coming out Tuesday to look at the gutters. Could you send the written quote by Friday, {{date:2026-10-16|%B %-d, %Y}}?",
-          "body": "Hi Marco,\n\nThanks for coming out Tuesday to look at the gutters. Could you send the written quote by Friday, {{date:2026-10-16|%B %-d, %Y}}? I'd like to get the work booked before the leaves come down.\n\nSam"
+          "body": "Hi Marco,\n\nThanks for coming out Tuesday to look at the gutters. Could you send the written quote by Friday, {{date:2026-10-16|%B %-d, %Y}}? I'd like to get the work booked before the leaves come down.\n\nDarby"
         }
       ]
     },

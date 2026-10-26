@@ -432,7 +432,7 @@ def looks_like_identifier(token: str, bare_handles: bool) -> bool:
 
 
 def normalize_identifier(value: str) -> str:
-    """Lowercased bare identifier; "Dan Walker <dan@x.com>" becomes "dan@x.com"."""
+    """Lowercased bare identifier; "Darby Wade <darby@x.com>" becomes "darby@x.com"."""
     bracketed = ADDRESS_IN_BRACKETS.search(value)
     if bracketed:
         value = bracketed.group(1)

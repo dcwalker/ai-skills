@@ -93,8 +93,8 @@
       "priority": null,
       "labels": [],
       "assignee": {
-        "accountId": "acct-dan",
-        "displayName": "Dan Walker"
+        "accountId": "acct-darby",
+        "displayName": "Darby Wade"
       },
       "reporter": {
         "accountId": "acct-omar",
@@ -265,9 +265,9 @@
   },
   "users": [
     {
-      "accountId": "acct-dan",
-      "displayName": "Dan Walker",
-      "emailAddress": "dan.walker@example.com"
+      "accountId": "acct-darby",
+      "displayName": "Darby Wade",
+      "emailAddress": "darby.wade@example.com"
     },
     {
       "accountId": "acct-priya",
@@ -286,8 +286,8 @@
     }
   ],
   "me": {
-    "accountId": "acct-dan",
-    "displayName": "Dan Walker"
+    "accountId": "acct-darby",
+    "displayName": "Darby Wade"
   },
   "transitions": []
 }

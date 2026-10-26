@@ -19,13 +19,13 @@
   "users": [
     {
       "accountId": "user-1",
-      "displayName": "Sam Rivera",
+      "displayName": "Darby Wade",
       "emailAddress": "eval-user@example.com"
     }
   ],
   "me": {
     "accountId": "user-1",
-    "displayName": "Sam Rivera"
+    "displayName": "Darby Wade"
   },
   "transitions": [
     {
@@ -72,11 +72,11 @@
       ],
       "assignee": {
         "accountId": "user-1",
-        "displayName": "Sam Rivera"
+        "displayName": "Darby Wade"
       },
       "reporter": {
         "accountId": "user-1",
-        "displayName": "Sam Rivera"
+        "displayName": "Darby Wade"
       },
       "created": "2026-09-24T09:00:00Z",
       "updated": "2026-09-24T09:00:00Z",
@@ -103,11 +103,11 @@
       ],
       "assignee": {
         "accountId": "user-1",
-        "displayName": "Sam Rivera"
+        "displayName": "Darby Wade"
       },
       "reporter": {
         "accountId": "user-1",
-        "displayName": "Sam Rivera"
+        "displayName": "Darby Wade"
       },
       "created": "2026-09-14T09:00:00Z",
       "updated": "2026-09-14T09:00:00Z",
@@ -134,11 +134,11 @@
       ],
       "assignee": {
         "accountId": "user-1",
-        "displayName": "Sam Rivera"
+        "displayName": "Darby Wade"
       },
       "reporter": {
         "accountId": "user-1",
-        "displayName": "Sam Rivera"
+        "displayName": "Darby Wade"
       },
       "created": "2026-09-02T09:00:00Z",
       "updated": "2026-09-02T09:00:00Z",

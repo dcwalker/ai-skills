@@ -16,7 +16,7 @@
           "to": ["eval-user@example.com"],
           "date": "2026-07-29T19:30:00Z",
           "snippet": "You're down to organize the bake sale stall for the {{date:2026-09-19|%B}} fair.",
-          "body": "Hi Sam,\n\nThanks for volunteering! You're down to organize the bake sale stall for the school fair on {{date:2026-09-19|%-d %B}}. That means recruiting 3-4 parent helpers, arranging who bakes what, sorting a float for the cash box, and picking up the table from the caretaker the day before.\n\nNo rush to reply -- just make sure it's all sorted by early {{date:2026-09-01|%B}}.\n\nBest,\nLakeside PTA"
+          "body": "Hi Darby,\n\nThanks for volunteering! You're down to organize the bake sale stall for the school fair on {{date:2026-09-19|%-d %B}}. That means recruiting 3-4 parent helpers, arranging who bakes what, sorting a float for the cash box, and picking up the table from the caretaker the day before.\n\nNo rush to reply -- just make sure it's all sorted by early {{date:2026-09-01|%B}}.\n\nBest,\nLakeside PTA"
         }
       ]
     }

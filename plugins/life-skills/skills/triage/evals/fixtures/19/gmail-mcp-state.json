@@ -28,7 +28,7 @@
         "eval-user@example.com"
       ],
       "date": "2026-09-29T18:20:00Z",
-      "snippet": "Hi Sam, the board left a note for you in the {{date:2026-09-01|%B}} minutes.",
+      "snippet": "Hi Darby, the board left a note for you in the {{date:2026-09-01|%B}} minutes.",
       "labelIds": [
         "INBOX",
         "UNREAD"
@@ -41,8 +41,8 @@
             "eval-user@example.com"
           ],
           "date": "2026-09-29T18:20:00Z",
-          "snippet": "Hi Sam, the board left a note for you in the {{date:2026-09-01|%B}} minutes.",
-          "body": "Hi Sam,\n\nThe board left a note for you in the {{date:2026-09-01|%B}} minutes: https://portal.oakridge-hoa.invalid/minutes/{{date:2026-09-01|%Y-%m}}/notes\n\nThanks,\nCarol\nOakridge HOA secretary"
+          "snippet": "Hi Darby, the board left a note for you in the {{date:2026-09-01|%B}} minutes.",
+          "body": "Hi Darby,\n\nThe board left a note for you in the {{date:2026-09-01|%B}} minutes: https://portal.oakridge-hoa.invalid/minutes/{{date:2026-09-01|%Y-%m}}/notes\n\nThanks,\nCarol\nOakridge HOA secretary"
         }
       ]
     }

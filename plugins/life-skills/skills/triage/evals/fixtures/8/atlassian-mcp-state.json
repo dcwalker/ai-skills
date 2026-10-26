@@ -12,8 +12,8 @@
       "description": "Current policy expires {{date:2026-09-15|%-d %B}}. Compare at least two quotes against the renewal offer; last year's premium was $1,240. Documents are in the shared drive under Insurance/{{date:2026-07-31|%Y}}.",
       "status": {"name": "To Do", "statusCategory": "To Do"},
       "issuetype": "Task", "priority": "High", "labels": ["home", "finance"],
-      "assignee": {"accountId": "user-1", "displayName": "Sam Rivera"},
-      "reporter": {"accountId": "user-1", "displayName": "Sam Rivera"},
+      "assignee": {"accountId": "user-1", "displayName": "Darby Wade"},
+      "reporter": {"accountId": "user-1", "displayName": "Darby Wade"},
       "created": "2026-07-22T09:00:00Z", "updated": "2026-07-30T09:00:00Z",
       "resolution": null, "duedate": "2026-09-10", "comments": []
     },
@@ -23,13 +23,13 @@
       "description": "Replaced the washer and the tap body. No further action.",
       "status": {"name": "Done", "statusCategory": "Done"},
       "issuetype": "Task", "priority": "Low", "labels": ["home"],
-      "assignee": {"accountId": "user-1", "displayName": "Sam Rivera"},
-      "reporter": {"accountId": "user-1", "displayName": "Sam Rivera"},
+      "assignee": {"accountId": "user-1", "displayName": "Darby Wade"},
+      "reporter": {"accountId": "user-1", "displayName": "Darby Wade"},
       "created": "2026-06-10T09:00:00Z", "updated": "2026-06-20T09:00:00Z",
       "resolution": "Done", "duedate": null, "comments": []
     }
   },
-  "users": [{"accountId": "user-1", "displayName": "Sam Rivera", "emailAddress": "eval-user@example.com"}],
+  "users": [{"accountId": "user-1", "displayName": "Darby Wade", "emailAddress": "eval-user@example.com"}],
   "transitions": [
     {"id": "11", "name": "To Do", "to": {"name": "To Do", "statusCategory": "To Do"}},
     {"id": "21", "name": "In Progress", "to": {"name": "In Progress", "statusCategory": "In Progress"}},
