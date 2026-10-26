@@ -301,7 +301,10 @@ thread found:
   change, and compare the messages from before sift's last call with what the
   log says it applied. A priority, star, Important mark, or tab on those
   messages that differs from the log is the user's: keep it, and decide only
-  what the user didn't change (see [Labels](#labels)).
+  what the user didn't change (see [Labels](#labels)). Read the tab from each
+  earlier message's own labels, not the thread's, since the thread shows the
+  new message's tab too: an earlier message in Primary when the log says
+  Promotions means the user moved it, so file the whole thread in Primary.
 - **Already done:** the log names it, and nothing has arrived since. Skip it.
 
 Process every match in this run: follow the search's next-page token until
@@ -419,7 +422,9 @@ volunteers by Friday" beats "Seems important."
 entry names the user or says "you", even when it restates a rubric rule
 written as "I": "nothing asked of Pat", not "nothing asked of me"; "not on
 Pat's Valued list", not "not on my Valued list". No log line holds an
-account, card, order, or ID number, or any part of one.
+account, card, order, or ID number, or any part of one, including one in a
+subject: copy the subject with the number left out ("Your receipt for
+order #4412" becomes "Your receipt for order").
 
 Keep the log to the last 30 days. When older entries exist, replace them with a
 one-line summary per week (counts by priority, stars added, rules learned).
