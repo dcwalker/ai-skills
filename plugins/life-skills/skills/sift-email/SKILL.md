@@ -1,6 +1,6 @@
 ---
 name: sift-email
-description: "Bulk-label new Gmail by importance in one unattended pass, guided by a living rubric in Claude Docs that learns from the user's edits and from how the user handles the mail. No per-item review, and it never stops to ask, so it can run as a scheduled routine. It runs only when called directly, with /sift-email or by a routine that reads this file, never on its own. For interactive, one-by-one processing of emails, cards, or tickets, use triage instead."
+description: "Bulk-label new Gmail by importance in one unattended pass, guided by a living rubric, kept in a private GitHub repository the user owns, that learns from the user's edits and from how the user handles the mail. No per-item review, and it never stops to ask, so it can run as a scheduled routine. It runs only when called directly, with /sift-email or by a routine that reads this file, never on its own. For interactive, one-by-one processing of emails, cards, or tickets, use triage instead."
 disable-model-invocation: true
 metadata:
   category: life-skills
@@ -22,15 +22,18 @@ the rubric where the user will see it (see [Never block](#never-block)).
 Two voices, by where the line goes. **Inside the rubric**, its rules, table
 rows, and About me notes speak as the user, as the rest of the doc does, so
 the document reads as one voice: "Price-increase notices I don't want are
-Bulk". **Everywhere else sift reports what it did** (the log, changelog
-entries and its reply), it names the user or says "you", never
+Bulk". **Everywhere else sift reports what it did** (the state file, commit
+messages, changelog entries, and its reply), it names the user or says "you", never
 "I", "me", "my", "the user", or a pronoun ("they" included): "asks Pat to
 confirm whether Pat can run the table", or "asks you to confirm".
 
 Sessions have no memory of each other. Everything that carries forward lives in
-Gmail, which holds each thread's priority and star, and in two Claude Docs:
-the rubric (rules and examples) and the log (what sift decided, when, and
-why).
+Gmail, which holds each thread's priority and star, and in two Markdown files
+in a private GitHub repository the user owns, both in its `sift-email/`
+folder: `rubric.md` (rules and examples, which the user reads and edits) and
+`state.md` (what sift has applied to each thread, and when it last ran). Each
+run that changes anything ends in one commit, whose message says what sift did
+and why.
 
 ## Labels
 
@@ -69,11 +72,11 @@ in the inbox), so nothing sift does can hide a message. The rubric's
 Permissions section may grant more.
 
 **The user's edits stand.** When a thread's priority, star, or tab differs from
-what the log says sift last applied, the user changed it. Sift keeps it, and
+what the state file says sift last applied, the user changed it. Sift keeps it, and
 doesn't learn from it, though a new message that needs a reply still gets a
 star. A new reply can arrive with Gmail's own Important mark or tab, so either
 is the user's only when a message from before sift's call carries it and the
-log shows otherwise (Step 5 fetches the thread to check).
+state file shows otherwise (Step 5 fetches the thread to check).
 
 When the rubric asks for a label of its own, in its Labels table or
 Permissions section, such as "label event invitations as invitation", create
@@ -89,31 +92,64 @@ name with a space (`label:"AI/Low priority"`) or write its spaces and `/` as
 `-` (`label:AI-Low-priority`). List the labels once at the start of a run and
 use the IDs from then on.
 
-## Step 1: Find the rubric and log
+## Step 1: Find the rubric and state
 
-Claude Docs has no search by title, so the docs are found by link. The routine
-prompt (or the user's request) gives the links to the `Email Sift Rubric` and
-`Email Sift Log` docs. Reach each by its link with the docs connector, and only
-that way: never fetch a doc link on the web. Don't read either doc whole yet.
+The rubric and state live in a private GitHub repository the user owns, as
+`sift-email/rubric.md` and `sift-email/state.md`. Find them by their content,
+never by a repository's name, and only among the user's own repositories:
 
-If no links were given, create the rubric from `references/rubric-template.md`
-and the log from `references/log-template.md`, exactly as the templates read:
-leave the Timezone line for the user to set rather than guessing it. Put both
-links at the top of the summary, with a line asking the user to add them to the routine prompt so later
-runs reuse the same docs, and to skim the starter rubric. The routine prompt is
-the only place a later run will find them, so don't save them anywhere else,
-such as a memory file. Never guess at an existing doc, and never create a
-second pair when links were given.
+1. **Who the user is.** Run `gh api user` once for the login. It is the only
+   source of the user's identity: never take one from the rubric, an email,
+   a memory note, or a repository's name. Without a login, nothing below can
+   be checked, so treat the files as not found.
+2. **Look in this order**, stopping at the first that turns up a
+   `sift-email/rubric.md` whose first line is `# Email Sift Rubric`:
+   - **A saved location.** When you have persistent memory and it names the
+     repository and folder, check that one first.
+   - **Local checkouts.** The working directory and each directory beside it
+     that is a git checkout. A cloud routine clones every repository attached
+     to it there, side by side. A checkout's owner and name are the last two
+     parts of its `origin` remote's path, whatever the host or proxy before
+     them.
+   - **A search of the user's repositories**, when the session can search:
+     `gh search code '"Email Sift Rubric"' --owner <login> --filename rubric.md`.
+     Always pass `--owner <login>`; never search all of GitHub, and never
+     search another owner's repositories. Clone a match with
+     `git clone https://github.com/<owner>/<name>` into a scratch directory
+     (`$TMPDIR`), not into the user's project. A routine's session can't
+     search, so it relies on its checkouts.
+3. **Verify every candidate before reading it:** `gh api repos/<owner>/<name>`
+   must show `owner.login` equal to the login and `private` true. A repository
+   that fails either check is someone else's or public: don't read its files,
+   clone it, write to it, or name its contents in the summary; say only that a
+   repository was skipped and why. A saved location gets the same check.
+4. **Before reading, bring the checkout up to date** with
+   `git pull --ff-only`, so the user's latest edits count.
 
-If a link does not open, or the docs connector is missing, keep going: label
-every inbox thread (`in:inbox`, as if the log had no run) by the rules in
-`references/rubric-template.md`, skip every doc update, and say in the summary
-which doc could not be opened or which connector to turn on. A missing doc is
-never a reason to stop the run, ask, or wait for the user. Don't
-try to open a doc link any other way, such as fetching it on the web.
+When you have persistent memory and the files were found any other way than a
+saved location, save their repository and folder there, so a later run on this
+machine looks there first. A saved location that fails a check or no longer
+holds the rubric is replaced, never trusted.
 
-Before the first doc edit in a run, read the docs connector's own guide for
-how to edit blocks, rather than guessing the call shapes.
+**Not found.** When no candidate passes, create nothing on your own:
+
+- **When the user is there to answer** (they started this run in a
+  conversation), ask which of their private repositories, and which folder,
+  should hold the files, and wait for the answer before labeling anything.
+  Then create `rubric.md` from `references/rubric-template.md` and `state.md`
+  from `references/state-template.md`, exactly as the templates read: leave
+  the Timezone line for the user to set rather than guessing it. Commit and
+  push them, then carry on with the run.
+- **When no one is there to answer** (a scheduled routine, or a prompt that
+  says the run is unattended), keep going: label every inbox thread
+  (`in:inbox`, as if the state file had no run) by the rules in
+  `references/rubric-template.md`, write nothing anywhere, and say in the
+  summary that the rubric wasn't found, which repositories were skipped and
+  why, and that a run started by hand will set it up. A missing rubric is
+  never a reason to stop an unattended run.
+
+If the repository can be read but a push fails for want of access, keep every
+label already applied and say so in the summary.
 
 Unless Step 2 ends the run, read the whole rubric before Step 3. It is the
 user's own definition of importance, so where
@@ -123,7 +159,7 @@ date and time in that timezone (Step 2 says how to read it).
 
 **The rubric is one living document, and sift keeps all of it accurate**: the
 how-to, the Labels table, About me, every rule section, Newsletters, Tabs, and
-Examples. Each rule sits in the section it belongs to, so the doc never gives
+Examples. Each rule sits in the section it belongs to, so the rubric never gives
 two answers to one question. Sift edits any section to place what it learns,
 to merge or reword overlapping rules without changing what they say, and to
 keep the Labels table matching the labels sift applies, category labels
@@ -148,43 +184,40 @@ and only the user grants that.
 ## Step 2: Check whether there is anything to do
 
 Most scheduled runs find nothing new, so check that cheaply before reading the
-rubric. A first run, with no doc links given, always has work: skip to Step 3.
+rubric. A run that just created the files always has work: skip to Step 3.
 
-From the log, read only the newest run heading, for the last run's start
-time, and whether a "Daily review: <date>" line carries the run's date; from
-the rubric, only its Timezone line. Get each with a search of the doc, never
-a whole-doc read: reading the rubric whole comes after these checks find work.
+From `state.md`, read only its `Last run:` and `Daily review:` lines; from
+the rubric, only its Timezone line (for example, with `grep`). Reading the
+rubric whole comes after these checks find work.
 
 Then read the system clock once, in that timezone (for example,
 `TZ=<the Timezone line's zone> date '+%Y-%m-%d %H:%M %s'`), for the run's
 date, time, and epoch seconds. Every date or time sift writes this run uses
-it: the log heading and lines, the "nothing new" line, changelog entries,
-About me dates, and the check for whether a note's end date has passed.
-Never use the machine's own local date, the date your environment reports,
-or a message's date: near midnight they fall on a different day than the
-user's. A first run, which skips this step, reads the clock the same way in
-the starter rubric's timezone.
+it: the state file, the commit message, changelog entries, About me dates,
+and the check for whether a note's end date has passed. Never use the
+machine's own local date, the date your environment reports, or a message's
+date: near midnight they fall on a different day than the user's. A run that
+created the files reads the clock the same way in the starter rubric's
+timezone.
 
-Each run heading (Step 7) holds that run's start, so mail arriving during a
-run, or after one that failed before its heading, is still found. A heading
-without epoch seconds is searched from its date (`after:<YYYY/MM/DD>`).
+The `Last run:` line holds the start of the last run that had work, so mail
+arriving during a run, or after one that failed before saving, is still
+found.
 
-Then run each of these checks once. Each needs only a single search or query,
-and the first result answers it:
+Then run each of these checks once. Each needs only a single search, and the
+first result answers it:
 
 - Mail since the last run: `in:inbox after:<the last run's epoch seconds>`,
-  counting only a thread the log doesn't name or whose newest message is
-  later than its newest log line. When the log has no run yet, any inbox
-  thread at all is work.
-- The daily review is due: the log has no "Daily review" line dated the
-  run's date (see Step 4).
+  counting only a thread the state file doesn't name or whose newest message
+  is later than its line's epoch. When the state file has no run yet, any
+  inbox thread at all is work.
+- The daily review is due: the `Daily review:` line is not the run's date
+  (see Step 4).
 
-If every check comes back empty, the run has nothing to do. Don't read the rest
-of the rubric or tidy it. Add one line to the log's Runs section, "<date> <time>:
-nothing new", or, when the newest line of exactly that form is from the run's
-date, update its time instead; a run's summary is never such a line. Never
-edit a run heading: the next run searches from it. Say "Nothing new" in chat,
-and stop.
+If every check comes back empty, the run has nothing to do. Don't read the
+rest of the rubric, tidy it, or change either file, and make no commit: the
+next run searches from the same `Last run:` line and finds the same nothing.
+Say "Nothing new" in chat, and stop.
 
 ## Step 3: Tidy the rubric
 
@@ -236,11 +269,12 @@ and the landlord".
 Do this before labeling, so today's run benefits from what the user did since
 the last one. The user corrects sift in the rubric; this step adds the rest.
 
-**Daily review.** When the log has no "Daily review" line dated the run's
+**Daily review.** When the state file's `Daily review:` line is not the run's
 date, read how the user handled the threads sift labeled 1 to 7 days before
-the run. Take each thread the log's lines name in that window and that no
-`observed` line names yet, fetch its labels and messages (metadata only),
-and look for these signals, compared against what the log says sift applied:
+the run. Take each thread whose line in the state file falls in that window
+and that no `observed` line names yet, fetch its labels and messages
+(metadata only), and look for these signals, compared against what the state
+file says sift applied:
 
 | Sift applied | What the user did since | Suggests |
 |---|---|---|
@@ -248,15 +282,15 @@ and look for these signals, compared against what the log says sift applied:
 | Low priority | Replied in the thread, or starred it | Important |
 | Important | Archived it while still unread | Low priority |
 
-A star or reply counts only when the thread's log line shows no star (Step 7),
+A star or reply counts only when the thread's line shows no star (Step 7),
 since a reply to a thread sift starred is expected. Nothing else is a signal:
 opening, reading, archiving read mail, leaving a thread alone, or changing its
 priority (the user's edits stand) says nothing.
 
-Record each signal under this run's heading in the log (Step 7):
-`observed | <thread id> | <sender> | sift applied <label> | <what the user did> | suggests <label>`.
-Then count, for each sender with a new signal, the `observed` lines the log
-holds for that sender. When 3 or more of that sender's threads suggest the
+Record each signal in the state file's Observed section (Step 7):
+`<run's date> | <thread id> | <sender> | sift applied <label> | <what the user did> | suggests <label>`.
+Then count, for each sender with a new signal, the Observed lines the state
+file holds for that sender. When 3 or more of that sender's threads suggest the
 same label and none suggests a different one, add one rule to the section for
 that priority, or update the rule already there for that sender:
 `(observed) <sender>: <suggested priority> | <n> threads: <what the user did> | <run's date>`.
@@ -265,8 +299,9 @@ A newsletter goes in the Newsletters section instead (see
 has already dealt with those threads. When it contradicts a rule already in
 the rubric, rewrite that rule instead (Evidence wins, in Step 1).
 
-Write `Daily review: <run's date>, <n> threads checked, <n> signals` under
-this run's heading, even with no signals, so later runs that day skip it.
+Set the state file's line to `Daily review: <run's date>`, even with no
+signals, so later runs that day skip it, and put
+`Daily review: <n> threads checked, <n> signals` in the run summary.
 
 **Every rubric change** this step makes is the smallest one that would have
 produced the right call: an example, or a rule in its section. Name the
@@ -278,22 +313,23 @@ that prompted it).
 
 ## Step 5: Gather new mail
 
-Search `in:inbox after:<the last run's epoch seconds>` (Step 2 says what to
-search from when the heading has none). When the log has no run yet, search
+Search `in:inbox after:<the last run's epoch seconds>`, from the state
+file's `Last run:` line. When the state file has no run yet, search
 `in:inbox`: the first run labels the whole inbox, however old. Sort each
 thread found:
 
-- **New:** the log doesn't name it. Evaluate it.
-- **New reply:** the log names it, and its newest message is later than its
-  newest log line. Fetch the thread with its messages first, before any label
-  change, and compare the messages from before sift's last call with what the
-  log says it applied. A priority, star, Important mark, or tab on those
-  messages that differs from the log is the user's: keep it, and decide only
+- **New:** the state file doesn't name it. Evaluate it.
+- **New reply:** the state file names it, and its newest message is later
+  than its line's epoch. Fetch the thread with its messages first, before any
+  label change, and compare the messages from before sift's last call with
+  what the state file says it applied. A priority, star, Important mark, or
+  tab on those messages that differs from it is the user's: keep it, and decide only
   what the user didn't change (see [Labels](#labels)). Read the tab from each
   earlier message's own labels, not the thread's, since the thread shows the
-  new message's tab too: an earlier message in Primary when the log says
+  new message's tab too: an earlier message in Primary when the state file says
   Promotions means the user moved it, so file the whole thread in Primary.
-- **Already done:** the log names it, and nothing has arrived since. Skip it.
+- **Already done:** the state file names it, and nothing has arrived since.
+  Skip it.
 
 Process every match in this run: follow the search's next-page token until
 there is none, never stopping at the first page.
@@ -302,7 +338,8 @@ Fetch metadata only (sender, recipients, subject, date, snippet, existing
 labels). Read a full body only when the metadata can't settle the call, such as
 a snippet that points to "see attached" or a portal.
 
-If nothing matches, write a run summary reporting zero (Step 8) and stop.
+If nothing matches and the daily review changed nothing, the run has nothing
+to save: say "Nothing new" in chat and stop, as in Step 2.
 
 ## Step 6: Label
 
@@ -383,39 +420,50 @@ says so, or adding a label the rubric asks for (under `AI/`, as
 [Labels](#labels) describes), and nothing it doesn't grant. A grant applies on every run, without
 asking.
 
-## Step 7: Log
+## Step 7: Save the run
 
-Under the log's Runs section, after its intro and above the newest run, add
-this run's heading as exactly `### <date> <time> (<epoch seconds>)`, from the
-clock in Step 2: a `###` heading, never bold text or another level, since the
-next run searches from it. Write the heading first, directly above the
-previous newest run's heading, so the Runs section stays newest first; every
-run that has work writes one. Then add one line per thread evaluated. On a run
-that created the docs, the summary under that heading (Step 8) starts with both
-docs' links.
+Update `state.md` (its layout is in `references/state-template.md`):
 
-`<time> | <thread id> | <sender> | <subject> | <applied> | <one-sentence reason>`
+- `Last run: <date> <time> (<epoch seconds>)`, from the clock in Step 2, the
+  run's start. The next run searches from it.
+- One line per thread under Threads, replacing the thread's earlier line:
+  `<thread id> | <epoch seconds> | <applied>`, the epoch being this run's
+  start. `<applied>` names the priority (`Important`, `AI/Low priority`,
+  `AI/Bulk`, or `AI/Junk`), then `starred` when sift added the star or
+  `star kept` when the thread already had one, then the tab (`Primary`,
+  `Social`, `Promotions`, or `Updates`), then any category label; where the
+  user's edit stood, say `user's` after it (`Important (user's)`). The state
+  file is the only record of what sift has seen and applied.
+- Drop Threads lines older than 30 days and Observed lines older than 90.
 
-Never use a message's timestamp or a made-up time. `<applied>` names the
-priority (`Important`, `AI/Low priority`, `AI/Bulk`, or `AI/Junk`), then
-`starred` when sift added the star or `star kept` when the thread already had
-one, then the tab (`Primary`, `Social`, `Promotions`, or `Updates`), then any
-category label; where the user's edit stood, say so. The log is
-the only record of what sift has seen and applied. The reason is how the user
-audits a call later, so make it specific: "Coach asking for carpool
-volunteers by Friday" beats "Seems important."
+Then commit `rubric.md` and `state.md` together in one commit and push it to
+the repository's default branch. The subject is
+`Sift <date> <time>: <n> threads`; the body is the run summary (Step 8),
+then one line per thread evaluated:
 
-**Log lines report, so they name the user.** Every line sift writes in the log
-(reasons, the summary, `observed` and Daily review lines) and every changelog
-entry names the user or says "you", even when it restates a rubric rule
-written as "I": "nothing asked of Pat", not "nothing asked of me"; "not on
-Pat's Valued list", not "not on my Valued list". No log line holds an
-account, card, order, or ID number, or any part of one, including one in a
-subject: copy the subject with the number left out ("Your receipt for
-order #4412" becomes "Your receipt for order").
+`<thread id> | <sender> | <subject> | <applied> | <one-sentence reason>`
 
-Keep the log to the last 30 days. When older entries exist, replace them with a
-one-line summary per week (counts by priority, stars added, rules learned).
+The reason is how the user audits a call later, through the commit history,
+so make it specific: "Coach asking for carpool volunteers by Friday" beats
+"Seems important." Never use a message's timestamp or a made-up time.
+
+If the push is rejected because the remote moved (the user edited the rubric
+during the run), `git pull --rebase` and push again. If the rebase conflicts,
+abort it, reset to the remote's version, redo this run's changes to both
+files on top of it (the user's edits win wherever they touch the same lines),
+commit, and push once more. If that fails too, push nothing and say so in the
+summary: the labels are already applied, and the next run starts from the
+older `Last run:` line and finds these threads again.
+
+**What sift writes outside the rubric reports, so it names the user.** Every
+line sift writes in the state file and the commit message (reasons, the
+summary, Observed and Daily review lines) and every changelog entry names the
+user or says "you", even when it restates a rubric rule written as "I":
+"nothing asked of Pat", not "nothing asked of me"; "not on Pat's Valued
+list", not "not on my Valued list". None of them holds an account, card,
+order, or ID number, or any part of one, including one in a subject: copy the
+subject with the number left out ("Your receipt for order #4412" becomes
+"Your receipt for order").
 
 ## Step 8: Summarize
 
@@ -428,10 +476,11 @@ each item this run has not done, do it now, then continue.
 - Every sender whose lookup found something has an `(inferred)` note, and no
   sender About me already covered was looked up.
 - Every action the Permissions section grants was carried out.
-- On a run that created the docs, the log summary carries both doc links.
+- On a run that created the files, the summary names the repository and
+  folder that hold them.
 
-Write the run summary directly under this run's heading in the log, above its
-thread lines, then repeat it in chat:
+Write the run summary at the top of the commit message's body (Step 7), then
+repeat it in chat:
 
 - Counts: processed, important, low priority, bulk, junk, starred, and moved
   to each tab, taken from what was actually applied this run.
@@ -440,18 +489,18 @@ thread lines, then repeat it in chat:
 - Calls written into the rubric as `(inferred)` lines (see
   [Never block](#never-block)).
 - Actions taken under a Permissions grant, such as threads archived.
-- Anything skipped (missing connector, doc not opened).
-- On a run that created the docs, their links first, in the log summary as
-  well as in chat.
+- Anything skipped (a missing connector, a repository that failed the checks
+  in Step 1, a push that didn't land).
+- On a run that created the files, their repository and folder first.
 
 Keep it scannable. The user should be able to read it in under a minute. A
-scheduled run's chat output may have no reader, which is why the log carries
-it too. For the same reason, end on the summary, never on an offer or a
+scheduled run's chat output may have no reader, which is why the commit
+carries it too. For the same reason, end on the summary, never on an offer or a
 question. When the request asked for an action the rubric does not grant,
 such as archiving, say it was not done and that the grant belongs in the
 rubric's Permissions section. Do not offer to do it, or
-to add the grant yourself: Permissions is the user's to write. Beyond the log
-and this reply, send no push notification or message about a run, whatever
+to add the grant yourself: Permissions is the user's to write. Beyond the
+commit and this reply, send no push notification or message about a run, whatever
 tools exist, except one per thread the rubric's Notify section describes,
 naming its sender and subject. A missing or empty Notify means none.
 
@@ -470,8 +519,9 @@ When a run needs the user's judgment, it does not wait for it:
    it in the changelog. The user corrects it by editing the line.
 3. List each such line in the run summary.
 
-Sift asks the user nothing and opens no comment on either doc, and it reads
-none: the rubric's text is the only place the user corrects sift.
+Sift asks the user nothing during a run (the one exception is Step 1, when
+the files can't be found and the user is there to answer), and the rubric's
+text is the only place the user corrects sift.
 
 ## About me
 
@@ -530,6 +580,5 @@ entries, this run's included, newest first.
 ## Running it as a routine
 
 Sift is meant to run on a schedule. For the setup a Claude Code cloud routine
-needs (connectors, the repository checkout it reads this skill from, the doc
-links in its prompt, and the schedule), see
+needs (connectors, the repositories it clones, and the schedule), see
 `references/running-as-a-routine.md`.
