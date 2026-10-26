@@ -42,7 +42,7 @@
           ],
           "date": "2026-09-29T15:00:00Z",
           "snippet": "Your cleaning with Dr. Reyes is on Wednesday, {{date:2026-10-14|%B %-d}} at 3:30pm. Please confirm or reschedule.",
-          "body": "Hi Dan,\n\nYour cleaning with Dr. Reyes is on Wednesday, {{date:2026-10-14|%B %-d}} at 3:30pm.\n\nConfirm your appointment: https://brightsmile-dental.invalid/appt/confirm?token=8f2c91d7e4a6\nNeed a different time? Reschedule: https://brightsmile-dental.invalid/appt/reschedule?token=8f2c91d7e4a6\n\nBright Smile Dental\n\nStop appointment reminders: https://mail.brightsmile-dental.invalid/u/8f2c91d7e4a6"
+          "body": "Hi Darby,\n\nYour cleaning with Dr. Reyes is on Wednesday, {{date:2026-10-14|%B %-d}} at 3:30pm.\n\nConfirm your appointment: https://brightsmile-dental.invalid/appt/confirm?token=8f2c91d7e4a6\nNeed a different time? Reschedule: https://brightsmile-dental.invalid/appt/reschedule?token=8f2c91d7e4a6\n\nBright Smile Dental\n\nStop appointment reminders: https://mail.brightsmile-dental.invalid/u/8f2c91d7e4a6"
         }
       ]
     },

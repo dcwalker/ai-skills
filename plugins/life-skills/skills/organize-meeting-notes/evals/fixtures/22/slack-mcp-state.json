@@ -1,21 +1,21 @@
 {
   "me": {
-    "id": "U0DAN",
-    "name": "dan.walker",
-    "display_name": "dan.walker",
-    "real_name": "Dan Walker",
-    "email": "dan.walker@example.com",
+    "id": "U0DARBY",
+    "name": "darby.wade",
+    "display_name": "darby.wade",
+    "real_name": "Darby Wade",
+    "email": "darby.wade@example.com",
     "title": "Engineering Manager",
     "timezone": "America/Los_Angeles",
     "org": "example-co"
   },
   "users": {
-    "U0DAN": {
-      "id": "U0DAN",
-      "name": "dan.walker",
-      "display_name": "dan.walker",
-      "real_name": "Dan Walker",
-      "email": "dan.walker@example.com",
+    "U0DARBY": {
+      "id": "U0DARBY",
+      "name": "darby.wade",
+      "display_name": "darby.wade",
+      "real_name": "Darby Wade",
+      "email": "darby.wade@example.com",
       "title": "Engineering Manager",
       "timezone": "America/Los_Angeles"
     },
@@ -79,7 +79,7 @@
       "id": "D0LENA",
       "name": "lena.fischer",
       "purpose": "",
-      "creator": "U0DAN",
+      "creator": "U0DARBY",
       "created": "2026-01-05 08:00:00 PST",
       "is_archived": false,
       "type": "im"
@@ -88,15 +88,15 @@
       "id": "D0JORDAN",
       "name": "jordan.lee",
       "purpose": "",
-      "creator": "U0DAN",
+      "creator": "U0DARBY",
       "created": "2026-01-05 08:00:00 PST",
       "is_archived": false,
       "type": "im"
     },
     "G0PLATLEADS": {
       "id": "G0PLATLEADS",
-      "name": "mpdm-dan.walker--priya.raman--marcus.hall-1",
-      "purpose": "Group messaging with: @dan.walker @priya.raman @marcus.hall",
+      "name": "mpdm-darby.wade--priya.raman--marcus.hall-1",
+      "purpose": "Group messaging with: @darby.wade @priya.raman @marcus.hall",
       "creator": "U0MARCUS",
       "created": "2026-01-05 08:00:00 PST",
       "is_archived": false,
@@ -187,7 +187,7 @@
       {
         "ts": "1790714462.000200",
         "time": "2026-09-29 13:41:02 PDT",
-        "user": "U0DAN",
+        "user": "U0DARBY",
         "text": "yes, I'll take your Tues-Wed",
         "thread_ts": null,
         "reactions": []

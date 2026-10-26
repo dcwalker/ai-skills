@@ -1,5 +1,5 @@
 {
-  "me": "dan.walker@example.com",
+  "me": "darby.wade@example.com",
   "labels": {
     "INBOX": {
       "id": "INBOX",
@@ -19,7 +19,7 @@
       "subject": "Agenda: vendor renewal review",
       "from": "priya.raman@example.com",
       "to": [
-        "dan.walker@example.com",
+        "darby.wade@example.com",
         "sam.ortiz@acmesupplies.com"
       ],
       "date": "2026-10-05T16:20:00-07:00",
@@ -32,7 +32,7 @@
           "id": "m-agenda",
           "from": "priya.raman@example.com",
           "to": [
-            "dan.walker@example.com",
+            "darby.wade@example.com",
             "sam.ortiz@acmesupplies.com"
           ],
           "date": "2026-10-05T16:20:00-07:00",
@@ -46,7 +46,7 @@
       "subject": "Re: vendor renewal review - revised pricing",
       "from": "sam.ortiz@acmesupplies.com",
       "to": [
-        "dan.walker@example.com",
+        "darby.wade@example.com",
         "priya.raman@example.com"
       ],
       "date": "2026-10-06T14:05:00-07:00",
@@ -59,12 +59,12 @@
           "id": "m-followup",
           "from": "sam.ortiz@acmesupplies.com",
           "to": [
-            "dan.walker@example.com",
+            "darby.wade@example.com",
             "priya.raman@example.com"
           ],
           "date": "2026-10-06T14:05:00-07:00",
           "snippet": "As promised, the revised two-year pricing",
-          "body": "Dan, Priya,\n\nAs promised in this morning's review, the revised pricing for a two-year term is 8% below the current rate, with the 4-hour support SLA included. The offer holds until Oct 20.\n\nSam"
+          "body": "Darby, Priya,\n\nAs promised in this morning's review, the revised pricing for a two-year term is 8% below the current rate, with the 4-hour support SLA included. The offer holds until Oct 20.\n\nSam"
         }
       ]
     },
@@ -73,7 +73,7 @@
       "subject": "Vendor renewal - early thoughts",
       "from": "priya.raman@example.com",
       "to": [
-        "dan.walker@example.com"
+        "darby.wade@example.com"
       ],
       "date": "2026-06-12T09:00:00-07:00",
       "snippet": "Starting to think about the Acme renewal",
@@ -85,7 +85,7 @@
           "id": "m-old",
           "from": "priya.raman@example.com",
           "to": [
-            "dan.walker@example.com"
+            "darby.wade@example.com"
           ],
           "date": "2026-06-12T09:00:00-07:00",
           "snippet": "Starting to think about the Acme renewal",
@@ -98,7 +98,7 @@
       "subject": "Your order has shipped",
       "from": "orders@shop.example.com",
       "to": [
-        "dan.walker@example.com"
+        "darby.wade@example.com"
       ],
       "date": "2026-10-06T08:00:00-07:00",
       "snippet": "Your order #4471 is on its way",
@@ -110,7 +110,7 @@
           "id": "m-shipping",
           "from": "orders@shop.example.com",
           "to": [
-            "dan.walker@example.com"
+            "darby.wade@example.com"
           ],
           "date": "2026-10-06T08:00:00-07:00",
           "snippet": "Your order #4471 is on its way",

@@ -1,22 +1,22 @@
 {
   "anchor_date": "2026-10-02",
   "me": {
-    "id": "U0DAN",
-    "name": "dan.walker",
-    "display_name": "dan.walker",
-    "real_name": "Dan Walker",
-    "email": "dan.walker@example.com",
+    "id": "U0DARBY",
+    "name": "darby.wade",
+    "display_name": "darby.wade",
+    "real_name": "Darby Wade",
+    "email": "darby.wade@example.com",
     "title": "",
     "timezone": "America/Los_Angeles",
     "org": "riverside-gardeners"
   },
   "users": {
-    "U0DAN": {
-      "id": "U0DAN",
-      "name": "dan.walker",
-      "display_name": "dan.walker",
-      "real_name": "Dan Walker",
-      "email": "dan.walker@example.com",
+    "U0DARBY": {
+      "id": "U0DARBY",
+      "name": "darby.wade",
+      "display_name": "darby.wade",
+      "real_name": "Darby Wade",
+      "email": "darby.wade@example.com",
       "title": "",
       "timezone": "America/Los_Angeles"
     },
@@ -47,14 +47,14 @@
         "ts": "1790525640.000100",
         "time": "2026-09-27 09:14:00 PDT",
         "user": "U0MARIA",
-        "text": "The plant swap is Saturday {{date:2026-10-10|%B %-d}} at the community hall. <@U0DAN|dan.walker> could you bring the four folding tables from your garage? We need them set up by 9am.",
+        "text": "The plant swap is Saturday {{date:2026-10-10|%B %-d}} at the community hall. <@U0DARBY|darby.wade> could you bring the four folding tables from your garage? We need them set up by 9am.",
         "thread_ts": null,
         "reactions": []
       },
       {
         "ts": "1790527200.000200",
         "time": "2026-09-27 09:40:00 PDT",
-        "user": "U0DAN",
+        "user": "U0DARBY",
         "text": "Sure, I can do that.",
         "thread_ts": "1790525640.000100",
         "reactions": []

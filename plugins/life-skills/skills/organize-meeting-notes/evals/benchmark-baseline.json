@@ -264,7 +264,7 @@
         {
           "text": "The final Attendees section lists 'Alex Lee' and 'Amy Wong' (title case, alphabetically sorted by first name), not 'A. Lee'/'A. Wong' or an incorrect guessed name.",
           "passed": true,
-          "evidence": "Final Attendees: 'Alex Lee', 'Amy Wong', 'Dan Walker', in title case and sorted by first name."
+          "evidence": "Final Attendees: 'Alex Lee', 'Amy Wong', 'Darby Wade', in title case and sorted by first name."
         },
         {
           "text": "The Trello call log shows exactly one card created, for the mockup-update action item, with a description including the meeting title 'Design Review'.",
@@ -368,7 +368,7 @@
         {
           "text": "The normal flow still completes without a per-line interview: every raw note line appears in the notes, attendees are formatted from the emails, and the standard section order is produced.",
           "passed": true,
-          "evidence": "There were no questions. Both raw lines appear, attendees show as 'Dan Walker' and 'Sam Ortiz', and order runs metadata, Attendees, Notes, Action Items ('None.')."
+          "evidence": "There were no questions. Both raw lines appear, attendees show as 'Darby Wade' and 'Sam Ortiz', and order runs metadata, Attendees, Notes, Action Items ('None.')."
         },
         {
           "text": "The skill never offers to create tasks in Trello or any other tool, since the user did not ask for any, and no Action Items entry links to a task.",
@@ -447,7 +447,7 @@
         {
           "text": "The Notes section is a single flat bulleted list with no bold topic labels and no sub-sections.",
           "passed": true,
-          "evidence": "Notes is a flat list of two bullets ('Priya Raman finished the export fix; it's shipping today.' and 'Dan Walker is still blocked on the staging credentials.') with no bold labels."
+          "evidence": "Notes is a flat list of two bullets ('Priya Raman finished the export fix; it's shipping today.' and 'Darby Wade is still blocked on the staging credentials.') with no bold labels."
         },
         {
           "text": "No summary line appears between the metadata block and `###### Attendees` (nor anywhere else), since the notes are far below the length thresholds.",
@@ -497,9 +497,9 @@
           "evidence": "Inline quotes \"9 percent of the mid-market book in the first quarter alone\" and \"Nine percent. That's, uh, that's a different conversation.\" and the blockquote all match transcript lines word for word; no altered wording."
         },
         {
-          "text": "The `Speaker 3` line is not attributed to Dan Walker or any other attendee by guesswork: the skill either asks the user who spoke or leaves that line out of the notes entirely.",
+          "text": "The `Speaker 3` line is not attributed to Darby Wade or any other attendee by guesswork: the skill either asks the user who spoke or leaves that line out of the notes entirely.",
           "passed": true,
-          "evidence": "Assistant asked who Speaker 3 was; when the user guessed Dan by elimination, the final notes kept \"An unidentified speaker, labeled only 'Speaker 3'\" and the report says it was not attributed to Dan Walker."
+          "evidence": "Assistant asked who Speaker 3 was; when the user guessed Darby by elimination, the final notes kept \"An unidentified speaker, labeled only 'Speaker 3'\" and the report says it was not attributed to Darby Wade."
         },
         {
           "text": "The trivial closing remark about the dog is not quoted, showing the significance bar was applied rather than quoting whatever was available.",
@@ -685,9 +685,9 @@
           "evidence": "Final file records two-week shifts starting Dec 1 after Priya's Thanksgiving-freeze objection, Oct 17 conditional on the staging dry run, and shutdown after the migration because the dry run needs the environment."
         },
         {
-          "text": "The disagreements behind the decisions are recorded, not just their outcomes: Dan Walker's burnout concern and the week-two night cover that resolved it, Priya Raman's objection to Oct 10 (the untested rollback plan and the 9-hour past rollback) that moved the date, and Dan's shut-down-this-week proposal being reversed.",
+          "text": "The disagreements behind the decisions are recorded, not just their outcomes: Darby Wade's burnout concern and the week-two night cover that resolved it, Priya Raman's objection to Oct 10 (the untested rollback plan and the 9-hour past rollback) that moved the date, and Darby's shut-down-this-week proposal being reversed.",
           "passed": true,
-          "evidence": "Notes record Dan's burnout concern and his acceptance with the week-two night cover, Priya's Oct 10 objection quoting the untested rollback and 9-hour rollback, and Priya objecting to Dan's shut-down-this-week proposal."
+          "evidence": "Notes record Darby's burnout concern and his acceptance with the week-two night cover, Priya's Oct 10 objection quoting the untested rollback and 9-hour rollback, and Priya objecting to Darby's shut-down-this-week proposal."
         },
         {
           "text": "The on-call comp time question is recorded in place in the notes as undecided and deferred to next week's sync, rather than dropped or collected into a separate catch-all section.",
@@ -697,12 +697,12 @@
         {
           "text": "Chatter such as the audio problems and Lena Fischer dropping off stays out, and the notes do not restate the chat message by message.",
           "passed": false,
-          "evidence": "Staging note opens \"After Lena dropped off the call, Dan raised...\", so Lena dropping off is mentioned; the notes also largely restate the chat message by message (e.g. separate bullets for Dan agreeing and Priya confirming Oct 17)."
+          "evidence": "Staging note opens \"After Lena dropped off the call, Darby raised...\", so Lena dropping off is mentioned; the notes also largely restate the chat message by message (e.g. separate bullets for Darby agreeing and Priya confirming Oct 17)."
         },
         {
           "text": "Notes name the person who raised, decided, or took on each point in the sentence itself, and every attribution matches the chat message's sender or the user's answer.",
           "passed": true,
-          "evidence": "Every attribution matches the chat sender (Lena proposal, Dan burnout, Priya freeze and Oct 10 objection, Lena comp time), and the runbook owner Dan comes from the user's answer."
+          "evidence": "Every attribution matches the chat sender (Lena proposal, Darby burnout, Priya freeze and Oct 10 objection, Lena comp time), and the runbook owner Darby comes from the user's answer."
         },
         {
           "text": "An `###### Agenda` section sits between `###### Attendees` and `###### Notes`, listing the three calendar agenda items in their original order and wording.",
@@ -727,7 +727,7 @@
         {
           "text": "No facts, owners, or dates appear that are absent from the chat log, the pasted calendar event, and the user's answers, and no task is created in any tool.",
           "passed": false,
-          "evidence": "Action item \"File the staging environment decommission ticket after the Postgres primary cutover\" adds a timing for filing the ticket that the chat does not give (Dan only said \"I'll file the decommission ticket\"). No task tool was called."
+          "evidence": "Action item \"File the staging environment decommission ticket after the Postgres primary cutover\" adds a timing for filing the ticket that the chat does not give (Darby only said \"I'll file the decommission ticket\"). No task tool was called."
         }
       ]
     },
@@ -861,9 +861,9 @@
           "evidence": "All four images use ![descriptive alt](file) followed by an italic caption line."
         },
         {
-          "text": "The take-home decision is attributed from the comment thread (Lena Fischer proposed it, Dan Walker agreed), and Lena Fischer's action item keeps 'by Sep 10', with the year optionally added, rather than being reworded or dropped.",
+          "text": "The take-home decision is attributed from the comment thread (Lena Fischer proposed it, Darby Wade agreed), and Lena Fischer's action item keeps 'by Sep 10', with the year optionally added, rather than being reworded or dropped.",
           "passed": true,
-          "evidence": "Note says Lena Fischer proposed dropping the take-home and Dan Walker agreed, matching the comment thread; action item reads \"Lena Fischer: Update the interview guide by Sep 10, 2026\"."
+          "evidence": "Note says Lena Fischer proposed dropping the take-home and Darby Wade agreed, matching the comment thread; action item reads \"Lena Fischer: Update the interview guide by Sep 10, 2026\"."
         },
         {
           "text": "Any summary is justified by the reported section count or text length alone, with the images excluded from the measurement, and no task is created in any tool.",
@@ -1014,7 +1014,7 @@
         {
           "text": "Notes about the reorg and the promotion case come only from the raw notes and the user's answers; nothing is attributed to the unrecorded part of the meeting beyond that.",
           "passed": true,
-          "evidence": "Final reorg and promo bullets match the raw notes and the user's answer (on-call rotation worry, kept off the record; staff case over Q4, Dan to help scope). The only chat-derived part is Sam's in-meeting request to pause, and nothing is said about what was discussed after recording stopped."
+          "evidence": "Final reorg and promo bullets match the raw notes and the user's answer (on-call rotation worry, kept off the record; staff case over Q4, Darby to help scope). The only chat-derived part is Sam's in-meeting request to pause, and nothing is said about what was discussed after recording stopped."
         },
         {
           "text": "No task is created in any tool.",
@@ -1059,19 +1059,19 @@
           "evidence": "In the final Notes, right after the burn-up and migration bullets, Priya says to track services cut over, Marcus says the services-migrated dashboard is basically done and in staging with Lena's team, and Priya decides to report services cut over. Each is attributed."
         },
         {
-          "text": "The off-topic on-call swap between Lena and Dan is included rather than dropped as unrelated to the meeting topic.",
+          "text": "The off-topic on-call swap between Lena and Darby is included rather than dropped as unrelated to the meeting topic.",
           "passed": true,
-          "evidence": "Final Notes: 'Separately, Lena Fischer messaged Dan Walker during the meeting to ask about swapping on-call next week... Dan agreed to cover her Tuesday-Wednesday shift.'"
+          "evidence": "Final Notes: 'Separately, Lena Fischer messaged Darby Wade during the meeting to ask about swapping on-call next week... Darby agreed to cover her Tuesday-Wednesday shift.'"
         },
         {
           "text": "Jordan Lee's direct message asking for the burn-up chart is included even though Jordan did not attend.",
           "passed": true,
-          "evidence": "Final Notes: 'Jordan Lee, who wasn't in the meeting, messaged Dan Walker during the discussion asking for a copy of the burn-up chart...'"
+          "evidence": "Final Notes: 'Jordan Lee, who wasn't in the meeting, messaged Darby Wade during the discussion asking for a copy of the burn-up chart...'"
         },
         {
-          "text": "Marcus's group direct message to Dan and Priya at 1:25 PM (keep the headcount discussion short because budget numbers aren't final until Oct 9) is included, placed in time order or beside the headcount note.",
+          "text": "Marcus's group direct message to Darby and Priya at 1:25 PM (keep the headcount discussion short because budget numbers aren't final until Oct 9) is included, placed in time order or beside the headcount note.",
           "passed": true,
-          "evidence": "The headcount bullet in the final includes Marcus's message to Dan and Priya asking to keep the discussion short because budget numbers aren't final until October 9."
+          "evidence": "The headcount bullet in the final includes Marcus's message to Darby and Priya asking to keep the discussion short because budget numbers aren't final until October 9."
         },
         {
           "text": "The Deploy Bot post is not included as meeting content.",
@@ -1235,9 +1235,9 @@
           "evidence": "Final Notes: 'Priya flagged that legal hasn't signed off on the new privacy text yet, so the team should avoid committing to a date out loud.' It sits right after the go/no-go bullet."
         },
         {
-          "text": "Marcus's 2:12 PM direct message (on his phone in the car, unable to share his screen, asking Dan to drive that part) and Dan's 2:13 PM reply are included rather than dropped as unrelated to the meeting topic.",
+          "text": "Marcus's 2:12 PM direct message (on his phone in the car, unable to share his screen, asking Darby to drive that part) and Darby's 2:13 PM reply are included rather than dropped as unrelated to the meeting topic.",
           "passed": true,
-          "evidence": "Final Notes: 'Marcus joined by phone from the car and couldn't share his screen, so Dan drove that part of the walkthrough.' This carries both Marcus's 2:12 PM message and Dan's 2:13 PM 'yep, got it' reply."
+          "evidence": "Final Notes: 'Marcus joined by phone from the car and couldn't share his screen, so Darby drove that part of the walkthrough.' This carries both Marcus's 2:12 PM message and Darby's 2:13 PM 'yep, got it' reply."
         },
         {
           "text": "Neither the 1:40 PM nor the 3:10 PM #release-4-2 message is presented as chat from during the meeting, and neither becomes a note or action item on the strength of chat alone.",
@@ -1287,9 +1287,9 @@
           "evidence": "Turn 1: 'searched items created 2026‑10‑01 to 2026‑10‑02, filtered to the meeting's actual window 2:00–2:45 PM plus its 15‑minute grace period'."
         },
         {
-          "text": "REL-101, REL-102, REL-103, and REL-107 are each included. REL-102 is included even though it is unrelated to the meeting, and REL-107 is included because it is assigned to Dan Walker, even though Omar Haddad created it.",
+          "text": "REL-101, REL-102, REL-103, and REL-107 are each included. REL-102 is included even though it is unrelated to the meeting, and REL-107 is included because it is assigned to Darby Wade, even though Omar Haddad created it.",
           "passed": true,
-          "evidence": "The final Notes and Action Items include REL-101, REL-102 (Bump Node to 22), REL-103, and REL-107 (assigned to Dan, 'opened by Omar Haddad')."
+          "evidence": "The final Notes and Action Items include REL-101, REL-102 (Bump Node to 22), REL-103, and REL-107 (assigned to Darby, 'opened by Omar Haddad')."
         },
         {
           "text": "REL-103 is identified as created after the meeting ended and is tied to the go/no-go criteria discussion.",
@@ -1346,7 +1346,7 @@
         {
           "text": "The response states that Trello does not show who created the cards and asks the user whether an attendee created them, without proposing or assuming a creator.",
           "passed": true,
-          "evidence": "Turn 1: 'the tool doesn't show who created or is assigned to them... Did Dan or Lena create these (or are either assigned to them)?' It proposes no creator."
+          "evidence": "Turn 1: 'the tool doesn't show who created or is assigned to them... Did Darby or Lena create these (or are either assigned to them)?' It proposes no creator."
         },
         {
           "text": "'Book the venue for the offsite' and 'Draft the offsite agenda' are both identified as candidates, and the agenda card is identified as created after the meeting ended and tied to the agenda note.",
@@ -1525,7 +1525,7 @@
           "evidence": "Final Attendees: 'engineering-all@example.com invited, 312 attendees at peak'. This is one line."
         },
         {
-          "text": "No person's name appears in the final Attendees section: none of Priya Raman, Marcus Hall, Lena Fischer, Sam Ortiz, Jordan Lee, Alex Kim, Ravi Singh, or Dan Walker is listed there, and there is no participant list or sub-grouping under it.",
+          "text": "No person's name appears in the final Attendees section: none of Priya Raman, Marcus Hall, Lena Fischer, Sam Ortiz, Jordan Lee, Alex Kim, Ravi Singh, or Darby Wade is listed there, and there is no participant list or sub-grouping under it.",
           "passed": true,
           "evidence": "The Attendees section holds only the invited-list line, with no names and no sub-grouping. Names appear only in Notes."
         },
@@ -1656,9 +1656,9 @@
           "evidence": "Turn 1 asks: 'The Zoom report shows 5 participants, but 6 people were invited (...). Who didn't attend?'"
         },
         {
-          "text": "The final Attendees section lists all six invitees by name, as plain lines in title case, sorted by first name: Dan Walker, Lena Fischer, Marcus Hall, Priya Raman, Ravi Singh, Sam Ortiz.",
+          "text": "The final Attendees section lists all six invitees by name, as plain lines in title case, sorted by first name: Darby Wade, Lena Fischer, Marcus Hall, Priya Raman, Ravi Singh, Sam Ortiz.",
           "passed": true,
-          "evidence": "Final Attendees: Dan Walker, Lena Fischer, Marcus Hall, Priya Raman, ~~Ravi Singh~~, Sam Ortiz, plain title-case lines sorted by first name."
+          "evidence": "Final Attendees: Darby Wade, Lena Fischer, Marcus Hall, Priya Raman, ~~Ravi Singh~~, Sam Ortiz, plain title-case lines sorted by first name."
         },
         {
           "text": "Ravi Singh's name is struck through and no other name is.",
@@ -1752,7 +1752,7 @@
         {
           "text": "After the correction, the response includes Priya's 6:20 AM #design post (user testing slots open Thursday) and the 6:12 to 6:13 AM mockups-link exchange for the Design Sync, and does not present the 9:14 AM lunch message as meeting chat.",
           "passed": true,
-          "evidence": "Turn 4 response: it removed the 'lunch at noon?' message as outside the window, and added Priya asking for the mockups link with Dan's Figma file plus Priya's #design post about Thursday user-testing slots."
+          "evidence": "Turn 4 response: it removed the 'lunch at noon?' message as outside the window, and added Priya asking for the mockups link with Darby's Figma file plus Priya's #design post about Thursday user-testing slots."
         },
         {
           "text": "The Design Sync's saved file, as it stands at the end of the run, no longer carries the 9:14 AM lunch message as meeting chat.",
@@ -1812,9 +1812,9 @@
           "evidence": "Turn 1 asks: 'Marcus Hall was invited (tentative RSVP) but isn't in your attendee list ... did he attend, or should he be marked as not attending?'"
         },
         {
-          "text": "The final Attendees section lists Dan Walker, Marcus Hall, and Priya Raman sorted by first name, with Marcus Hall struck through and no other name struck through.",
+          "text": "The final Attendees section lists Darby Wade, Marcus Hall, and Priya Raman sorted by first name, with Marcus Hall struck through and no other name struck through.",
           "passed": true,
-          "evidence": "Final Attendees: Dan Walker, ~~Marcus Hall~~, Priya Raman; only Marcus is struck through."
+          "evidence": "Final Attendees: Darby Wade, ~~Marcus Hall~~, Priya Raman; only Marcus is struck through."
         },
         {
           "text": "No task is created in any tool.",
@@ -1888,7 +1888,7 @@
         {
           "text": "The final document's Action Items section lists both action items as plain `- [ ] <text>` lines with no links.",
           "passed": true,
-          "evidence": "Final Action Items: '- [ ] Priya Raman: Schedule the three panel interviews by ...' and '- [ ] Dan Walker: Send decline emails ...', with no links."
+          "evidence": "Final Action Items: '- [ ] Priya Raman: Schedule the three panel interviews by ...' and '- [ ] Darby Wade: Send decline emails ...', with no links."
         },
         {
           "text": "The final document is still produced after the user says to leave the action items as a plain list.",

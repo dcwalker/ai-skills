@@ -1,7 +1,7 @@
 {
   "calendar": {
-    "id": "dan.walker@example.com",
-    "summary": "Dan Walker",
+    "id": "darby.wade@example.com",
+    "summary": "Darby Wade",
     "timeZone": "America/Los_Angeles"
   },
   "updated": "2026-10-20T19:00:00Z",
@@ -10,7 +10,7 @@
       "conferenceData": {},
       "created": "2026-10-12T17:00:00Z",
       "creator": {
-        "email": "dan.walker@example.com"
+        "email": "darby.wade@example.com"
       },
       "description": "Agenda:\n1. Launch checklist (owner: Maya Okafor, due Oct 23)\n2. Press kit\n3. Docs freeze date",
       "end": {
@@ -22,7 +22,7 @@
       "id": "evt-launch-1020",
       "location": "Zoom",
       "organizer": {
-        "email": "dan.walker@example.com",
+        "email": "darby.wade@example.com",
         "self": true
       },
       "start": {
@@ -35,8 +35,8 @@
       "useDefaultReminders": true,
       "attendees": [
         {
-          "email": "dan.walker@example.com",
-          "displayName": "Dan Walker",
+          "email": "darby.wade@example.com",
+          "displayName": "Darby Wade",
           "responseStatus": "accepted",
           "organizer": true,
           "self": true

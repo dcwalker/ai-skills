@@ -3,7 +3,7 @@
   "stub_now": "2026-10-26T15:00:00Z",
   "cloud": {
     "id": "b7c9e1a2-0000-4000-8000-example00041",
-    "url": "https://pat-example.atlassian.net",
+    "url": "https://pat-example.atlassian.invalid",
     "name": "pat-example"
   },
   "projects": {

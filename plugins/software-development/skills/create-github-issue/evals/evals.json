@@ -3,12 +3,12 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Create a GitHub issue in the dcwalker/widget-app repo. Here's the bug: when a user enters an incorrect password three times in a row on the /login page, the app crashes with an unhandled exception instead of showing an account-lockout message. It's reproducible every time in Chrome 126 on macOS, for both new and existing accounts. Title it something like 'Login page crashes after 3 failed password attempts instead of showing lockout message' and label it 'bug'. This is a scripted, single-session interaction: after you show me the draft and ask for approval, my reply will be 'Yes, that looks right, please create it.' Go ahead and complete the full flow including creating the issue once I approve.",
+      "prompt": "Create a GitHub issue in the darby-wade/widget-app repo. Here's the bug: when a user enters an incorrect password three times in a row on the /login page, the app crashes with an unhandled exception instead of showing an account-lockout message. It's reproducible every time in Chrome 126 on macOS, for both new and existing accounts. Title it something like 'Login page crashes after 3 failed password attempts instead of showing lockout message' and label it 'bug'. This is a scripted, single-session interaction: after you show me the draft and ask for approval, my reply will be 'Yes, that looks right, please create it.' Go ahead and complete the full flow including creating the issue once I approve.",
       "expected_output": "The skill authenticates, discovers repo labels/milestones/recent issues, drafts an issue body describing the crash with reproduction steps, presents the full draft (repository, labels, title, body) and asks for yes/no approval, then -- only after the scripted approval -- calls `gh issue create` with the matching title, a body describing the 3-failed-attempts crash, and the 'bug' label.",
       "expectations": [
         "The transcript shows a full issue draft (repository, title, body, labels) presented to the user before any `gh issue create` call is logged.",
         "The transcript shows an explicit approval request (e.g. 'Would you like to proceed with creating this issue?') and the scripted 'yes' reply before `gh issue create` is called.",
-        "`GH_STUB_LOG` contains exactly one `gh issue create` call, and its argv includes `--repo dcwalker/widget-app` and the label `bug`.",
+        "`GH_STUB_LOG` contains exactly one `gh issue create` call, and its argv includes `--repo darby-wade/widget-app` and the label `bug`.",
         "The issue title and body passed to `gh issue create` reflect the 3-failed-login-attempts crash described in the prompt, not a generic or invented bug.",
         "The skill reports the created issue back to the user as a link referencing the issue number/URL returned by the stub."
       ]
@@ -26,7 +26,7 @@
     },
     {
       "id": 3,
-      "prompt": "File a bug in dcwalker/widget-app: the CSV export button on the /reports page does nothing when clicked -- no download, no error, no console output. Reproducible every time. Title: 'CSV export button on Reports page produces no output'. Label it 'bug'. This is a scripted session: after you present the draft and ask for approval, my reply is 'No, don't create this yet, I need to check with the team first.' Do not create the issue.",
+      "prompt": "File a bug in darby-wade/widget-app: the CSV export button on the /reports page does nothing when clicked -- no download, no error, no console output. Reproducible every time. Title: 'CSV export button on Reports page produces no output'. Label it 'bug'. This is a scripted session: after you present the draft and ask for approval, my reply is 'No, don't create this yet, I need to check with the team first.' Do not create the issue.",
       "expected_output": "The skill drafts the issue and presents it for approval as usual, but after the scripted decline, it does not call `gh issue create` and instead acknowledges the user wants to hold off.",
       "expectations": [
         "A full draft (title, body, labels) is presented before the decline.",
@@ -36,7 +36,7 @@
     },
     {
       "id": 4,
-      "prompt": "File an issue in dcwalker/widget-app: the checkout page shows the wrong currency symbol for UK customers -- it shows '$' instead of '£'. Reproducible on any account with a UK billing address. Title it 'Checkout shows $ instead of £ for UK customers' and label it 'bug'. Scripted session: when you present the draft and ask for approval, my reply is 'Close, but change the title to \"Wrong currency symbol shown at checkout for UK billing addresses\" and add the \"needs-repro\" label too, don't create it yet.' After you revise and present the updated draft, my next reply is 'Yes, that's right, create it now.'",
+      "prompt": "File an issue in darby-wade/widget-app: the checkout page shows the wrong currency symbol for UK customers -- it shows '$' instead of '£'. Reproducible on any account with a UK billing address. Title it 'Checkout shows $ instead of £ for UK customers' and label it 'bug'. Scripted session: when you present the draft and ask for approval, my reply is 'Close, but change the title to \"Wrong currency symbol shown at checkout for UK billing addresses\" and add the \"needs-repro\" label too, don't create it yet.' After you revise and present the updated draft, my next reply is 'Yes, that's right, create it now.'",
       "expected_output": "The skill presents an initial draft, revises the title and labels per the requested changes without dropping the original 'bug' label, presents the revised draft, and only calls `gh issue create` after the second, explicit approval -- with the revised title and both labels.",
       "expectations": [
         "An initial draft is presented before any revision request appears in the transcript.",
@@ -47,7 +47,7 @@
     },
     {
       "id": 5,
-      "prompt": "Open a GitHub issue in dcwalker/widget-app. The password-reset email link expires after 5 minutes instead of the documented 24 hours, so most users can't complete a reset before it dies. This looks related to issue #42, which was about the login form not clearing the password field -- please reference #42 in the body since they were reported around the same time and might share a root cause in the auth service. Title: 'Password reset link expires after 5 minutes instead of 24 hours'. Label 'bug'. Scripted session: after the draft and approval request, my reply is 'Yes, create it.'",
+      "prompt": "Open a GitHub issue in darby-wade/widget-app. The password-reset email link expires after 5 minutes instead of the documented 24 hours, so most users can't complete a reset before it dies. This looks related to issue #42, which was about the login form not clearing the password field -- please reference #42 in the body since they were reported around the same time and might share a root cause in the auth service. Title: 'Password reset link expires after 5 minutes instead of 24 hours'. Label 'bug'. Scripted session: after the draft and approval request, my reply is 'Yes, create it.'",
       "expected_output": "The draft body explicitly references issue #42 as related context, and after the scripted approval, `gh issue create` is called with a body that includes the '#42' reference.",
       "expectations": [
         "The presented draft body includes a reference to '#42' (e.g. 'Related to #42' or similar) connecting it to the named related issue.",
@@ -68,7 +68,7 @@
     },
     {
       "id": 7,
-      "prompt": "File a bug in dcwalker/widget-app: the notification bell icon in the top nav shows a red dot for unread notifications even after all notifications have been read and the page has been refreshed. Reproducible consistently. Title: 'Notification bell shows unread dot after all notifications are read'. Please label it 'urgent'. Scripted session: if 'urgent' isn't an available label, pick 'bug' instead and tell me so -- then when you present the draft and ask for approval, my reply is 'Yes, go ahead.'",
+      "prompt": "File a bug in darby-wade/widget-app: the notification bell icon in the top nav shows a red dot for unread notifications even after all notifications have been read and the page has been refreshed. Reproducible consistently. Title: 'Notification bell shows unread dot after all notifications are read'. Please label it 'urgent'. Scripted session: if 'urgent' isn't an available label, pick 'bug' instead and tell me so -- then when you present the draft and ask for approval, my reply is 'Yes, go ahead.'",
       "expected_output": "The repository's discovered labels are bug, enhancement, documentation, needs-repro, and good-first-issue -- 'urgent' is not among them. The skill does not invent an 'urgent' label; it tells the user it isn't available and substitutes 'bug' per the user's fallback instruction. The draft it presents and later creates uses only 'bug' as a label.",
       "expectations": [
         "The transcript shows the skill noting that 'urgent' is not one of the repository's available labels, rather than silently using it.",
@@ -79,7 +79,7 @@
     },
     {
       "id": 8,
-      "prompt": "File an issue in dcwalker/widget-app: bulk-deleting more than 20 items from the inventory list only deletes the first 20 and silently ignores the rest, with no error shown. Reproducible every time with 21+ selected items. Title: 'Bulk delete silently caps at 20 items'. Label 'bug'. Scripted session with two rounds of feedback: first, when you present the draft and ask for approval, my reply is 'Add a note in the body that this also affects the bulk-archive action, same 20-item cap, don't create yet.' Second, after you update and re-present, my reply is 'Also add the \"needs-repro\" label, still don't create it.' Third, after that update, my reply is 'Perfect, create it now.'",
+      "prompt": "File an issue in darby-wade/widget-app: bulk-deleting more than 20 items from the inventory list only deletes the first 20 and silently ignores the rest, with no error shown. Reproducible every time with 21+ selected items. Title: 'Bulk delete silently caps at 20 items'. Label 'bug'. Scripted session with two rounds of feedback: first, when you present the draft and ask for approval, my reply is 'Add a note in the body that this also affects the bulk-archive action, same 20-item cap, don't create yet.' Second, after you update and re-present, my reply is 'Also add the \"needs-repro\" label, still don't create it.' Third, after that update, my reply is 'Perfect, create it now.'",
       "expected_output": "The skill iterates through two rounds of revisions (adding the bulk-archive note, then adding the 'needs-repro' label) before creating the issue, presenting an updated draft after each round and only calling `gh issue create` after the third, explicit approval.",
       "expectations": [
         "At least three distinct draft presentations appear in the transcript: the initial draft and one after each of the two revision rounds.",
@@ -89,7 +89,7 @@
     },
     {
       "id": 9,
-      "prompt": "File a GitHub issue in dcwalker/widget-app. Title: 'Add CSV export to the audit log page'. Body: the audit log page only supports viewing in-browser; add a button to export the currently filtered results as CSV, matching the existing export pattern used on the Reports page. Labels: enhancement. Milestone: v1.2 Release. No assignee. Scripted session: after you present the draft and ask for approval, my reply is 'Yes, create it.'",
+      "prompt": "File a GitHub issue in darby-wade/widget-app. Title: 'Add CSV export to the audit log page'. Body: the audit log page only supports viewing in-browser; add a button to export the currently filtered results as CSV, matching the existing export pattern used on the Reports page. Labels: enhancement. Milestone: v1.2 Release. No assignee. Scripted session: after you present the draft and ask for approval, my reply is 'Yes, create it.'",
       "expected_output": "Since the user supplied every field upfront (title, body, label, milestone, explicit 'no assignee'), the skill confirms the set of optional fields together rather than asking one-by-one, presents a single consolidated draft, and after the scripted approval calls `gh issue create` with the enhancement label and v1.2 Release milestone set, and no assignee flag.",
       "expectations": [
         "The skill's confirmation of optional fields (labels, milestone, assignee) is presented together in one message rather than as a series of separate one-field-at-a-time questions.",
@@ -100,7 +100,7 @@
     },
     {
       "id": 10,
-      "prompt": "File a bug in dcwalker/widget-app: uploading a profile picture larger than 2MB fails with a generic 'Something went wrong' message instead of telling the user the file is too large. Reproducible every time with files over 2MB. Title: 'Profile picture upload shows generic error for files over 2MB instead of a size-limit message'. Label 'bug'. Scripted session: after you present the draft and ask for approval, my reply is 'Yes, create it.' (Note: in this scenario, the actual `gh issue create` call will fail with a permissions error -- respond to that as it happens.)",
+      "prompt": "File a bug in darby-wade/widget-app: uploading a profile picture larger than 2MB fails with a generic 'Something went wrong' message instead of telling the user the file is too large. Reproducible every time with files over 2MB. Title: 'Profile picture upload shows generic error for files over 2MB instead of a size-limit message'. Label 'bug'. Scripted session: after you present the draft and ask for approval, my reply is 'Yes, create it.' (Note: in this scenario, the actual `gh issue create` call will fail with a permissions error -- respond to that as it happens.)",
       "expected_output": "The skill presents the draft, gets approval, attempts `gh issue create`, and the stub returns a failure (HTTP 403 / insufficient permissions). The skill surfaces the actual error to the user, does not claim the issue was created, and offers a next step (e.g. check permissions, retry).",
       "expectations": [
         "The draft is presented and approved before any `gh issue create` attempt appears in the transcript.",
@@ -112,12 +112,12 @@
     },
     {
       "id": 11,
-      "prompt": "File a bug in dcwalker/widget-app: the 'Export to PDF' button on the invoice detail page produces a PDF where every currency amount reads 'NaN'. It happens every time on invoices that contain a discount line, and never on invoices without one. Title: 'Invoice PDF export renders currency amounts as NaN when a discount line is present'. Label it 'bug'. This is a scripted, single-session interaction: after you show me the draft and ask for approval, my reply will be 'Yes, please create it.' Complete the flow through creation, then tell me where the issue ended up.",
-      "expected_output": "After the scripted approval the skill calls `gh issue create` and the stub prints https://github.com/dcwalker/widget-app/issues/247. Step 8 requires the result be shared as a clickable link, so the skill's closing message presents the issue as a hyperlink pointing at exactly that URL -- not a bare '#247', not an unlinked 'the issue was created', and not a URL it constructed instead of reading from the command's output.",
+      "prompt": "File a bug in darby-wade/widget-app: the 'Export to PDF' button on the invoice detail page produces a PDF where every currency amount reads 'NaN'. It happens every time on invoices that contain a discount line, and never on invoices without one. Title: 'Invoice PDF export renders currency amounts as NaN when a discount line is present'. Label it 'bug'. This is a scripted, single-session interaction: after you show me the draft and ask for approval, my reply will be 'Yes, please create it.' Complete the flow through creation, then tell me where the issue ended up.",
+      "expected_output": "After the scripted approval the skill calls `gh issue create` and the stub prints https://github.com/darby-wade/widget-app/issues/247. Step 8 requires the result be shared as a clickable link, so the skill's closing message presents the issue as a hyperlink pointing at exactly that URL -- not a bare '#247', not an unlinked 'the issue was created', and not a URL it constructed instead of reading from the command's output.",
       "expectations": [
         "`GH_STUB_LOG` contains exactly one `gh issue create` call, and it appears after the draft and the scripted approval in the transcript.",
-        "The skill's closing message presents the created issue as a clickable link -- a Markdown hyperlink such as `[#247](https://github.com/dcwalker/widget-app/issues/247)`, or the bare URL itself. A response that names the issue only as `#247`, only by title, or only as 'created successfully' with no URL anywhere fails this expectation.",
-        "The link target is character-for-character the URL the stub returned (`https://github.com/dcwalker/widget-app/issues/247`). Any other issue number or URL is a fabricated result and fails.",
+        "The skill's closing message presents the created issue as a clickable link -- a Markdown hyperlink such as `[#247](https://github.com/darby-wade/widget-app/issues/247)`, or the bare URL itself. A response that names the issue only as `#247`, only by title, or only as 'created successfully' with no URL anywhere fails this expectation.",
+        "The link target is character-for-character the URL the stub returned (`https://github.com/darby-wade/widget-app/issues/247`). Any other issue number or URL is a fabricated result and fails.",
         "No second, differently-numbered issue link appears anywhere in the response."
       ]
     }

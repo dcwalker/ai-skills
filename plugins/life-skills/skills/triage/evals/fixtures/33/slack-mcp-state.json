@@ -1,22 +1,22 @@
 {
   "anchor_date": "2026-10-09",
   "me": {
-    "id": "U0DAN",
-    "name": "dan.walker",
-    "display_name": "dan.walker",
-    "real_name": "Dan Walker",
-    "email": "dan.walker@example.com",
+    "id": "U0DARBY",
+    "name": "darby.wade",
+    "display_name": "darby.wade",
+    "real_name": "Darby Wade",
+    "email": "darby.wade@example.com",
     "title": "Support Lead",
     "timezone": "America/Los_Angeles",
     "org": "northwind-support"
   },
   "users": {
-    "U0DAN": {
-      "id": "U0DAN",
-      "name": "dan.walker",
-      "display_name": "dan.walker",
-      "real_name": "Dan Walker",
-      "email": "dan.walker@example.com",
+    "U0DARBY": {
+      "id": "U0DARBY",
+      "name": "darby.wade",
+      "display_name": "darby.wade",
+      "real_name": "Darby Wade",
+      "email": "darby.wade@example.com",
       "title": "Support Lead",
       "timezone": "America/Los_Angeles"
     },
@@ -47,7 +47,7 @@
         "ts": "1791216300.000100",
         "time": "2026-10-05 09:05:00 PDT",
         "user": "U07KQ3M9TF",
-        "text": "<@U0DAN|dan.walker> could you send the updated on-call rota to the support team before the planning meeting on {{date:2026-10-15|%A, %B %-d}}? It needs the new weekend slots.",
+        "text": "<@U0DARBY|darby.wade> could you send the updated on-call rota to the support team before the planning meeting on {{date:2026-10-15|%A, %B %-d}}? It needs the new weekend slots.",
         "thread_ts": null,
         "reactions": [{"name": "trello", "count": 1}]
       }

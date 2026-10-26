@@ -101,7 +101,7 @@
         {
           "text": "The transcript does not claim to have created a brand-new PR",
           "passed": true,
-          "evidence": "Report says 'Updated [#55](...pull/55) with the nav highlight fix' and states the PR already existed as a draft assigned to `dan`."
+          "evidence": "Report says 'Updated [#55](...pull/55) with the nav highlight fix' and states the PR already existed as a draft assigned to `darby`."
         }
       ],
       "notes": []

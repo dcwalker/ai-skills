@@ -39,7 +39,7 @@ contract as trello_stub.py.
 
 State model:
   {
-    "calendar": {"id": "user@example.com", "summary": "Dan",
+    "calendar": {"id": "user@example.com", "summary": "Darby",
                  "timeZone": "America/Los_Angeles"},
     "updated": "<ISO datetime>",
     "stub_now": "<ISO datetime, optional: the default startTime>",

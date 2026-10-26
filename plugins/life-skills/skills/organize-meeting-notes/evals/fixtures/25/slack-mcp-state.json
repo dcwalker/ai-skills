@@ -1,21 +1,21 @@
 {
   "me": {
-    "id": "U0DAN",
-    "name": "dan.walker",
-    "display_name": "dan.walker",
-    "real_name": "Dan Walker",
-    "email": "dan.walker@example.com",
+    "id": "U0DARBY",
+    "name": "darby.wade",
+    "display_name": "darby.wade",
+    "real_name": "Darby Wade",
+    "email": "darby.wade@example.com",
     "title": "Engineering Manager",
     "timezone": "America/Los_Angeles",
     "org": "example-co"
   },
   "users": {
-    "U0DAN": {
-      "id": "U0DAN",
-      "name": "dan.walker",
-      "display_name": "dan.walker",
-      "real_name": "Dan Walker",
-      "email": "dan.walker@example.com",
+    "U0DARBY": {
+      "id": "U0DARBY",
+      "name": "darby.wade",
+      "display_name": "darby.wade",
+      "real_name": "Darby Wade",
+      "email": "darby.wade@example.com",
       "title": "Engineering Manager",
       "timezone": "America/Los_Angeles"
     },
@@ -52,15 +52,15 @@
       "id": "D0MARCUS",
       "name": "marcus.hall",
       "purpose": "",
-      "creator": "U0DAN",
+      "creator": "U0DARBY",
       "created": "2026-01-05 08:00:00 PST",
       "is_archived": false,
       "type": "im"
     },
     "G0RELLEADS": {
       "id": "G0RELLEADS",
-      "name": "mpdm-dan.walker--priya.raman--marcus.hall-1",
-      "purpose": "Group messaging with: @dan.walker @priya.raman @marcus.hall",
+      "name": "mpdm-darby.wade--priya.raman--marcus.hall-1",
+      "purpose": "Group messaging with: @darby.wade @priya.raman @marcus.hall",
       "creator": "U0PRIYA",
       "created": "2026-01-05 08:00:00 PST",
       "is_archived": false,
@@ -98,7 +98,7 @@
       {
         "ts": "1790889185.000400",
         "time": "2026-10-01 14:13:05 PDT",
-        "user": "U0DAN",
+        "user": "U0DARBY",
         "text": "yep, got it",
         "thread_ts": null,
         "reactions": []
