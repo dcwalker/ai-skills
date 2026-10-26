@@ -207,10 +207,13 @@ found.
 Then run each of these checks once. Each needs only a single search, and the
 first result answers it:
 
-- Mail since the last run: `in:inbox after:<the last run's epoch seconds>`,
-  counting only a thread the state file doesn't name or whose newest message
-  is later than its line's epoch. When the state file has no run yet, any
-  inbox thread at all is work.
+- Mail since the last run: `in:inbox after:<the day before the last run's
+  date, as YYYY/MM/DD>`. Gmail's `after:` takes only a date and returns
+  nothing for epoch seconds, and its search results carry no message dates,
+  so fetch each thread found (metadata only) and count it only when its
+  newest message is later than the last run's epoch and, for a thread the
+  state file names, later than its line's epoch. When the state file has no
+  run yet, any inbox thread at all is work.
 - The daily review is due: the `Daily review:` line is not the run's date
   (see Step 4).
 
@@ -313,11 +316,14 @@ that prompted it).
 
 ## Step 5: Gather new mail
 
-Search `in:inbox after:<the last run's epoch seconds>`, from the state
-file's `Last run:` line. When the state file has no run yet, search
-`in:inbox`: the first run labels the whole inbox, however old. Sort each
-thread found:
+Search `in:inbox after:<the day before the last run's date, as YYYY/MM/DD>`,
+from the state file's `Last run:` line, as in Step 2, and fetch each thread
+found (metadata only) for its messages' dates. When the state file has no run
+yet, search `in:inbox`: the first run labels the whole inbox, however old.
+Sort each thread found:
 
+- **Before the last run:** its newest message is no later than the last
+  run's epoch. Skip it.
 - **New:** the state file doesn't name it. Evaluate it.
 - **New reply:** the state file names it, and its newest message is later
   than its line's epoch. Fetch the thread with its messages first, before any

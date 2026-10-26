@@ -171,7 +171,7 @@ under AI/ in title case (AI/Invitation).
 ## Notify
 
 Mail that should send me a push notification when sift labels it. Empty means
-sift never notifies me; its runs report only in the log.
+sift never notifies me; its runs report only in their commit messages.
 
 - (none yet)
 

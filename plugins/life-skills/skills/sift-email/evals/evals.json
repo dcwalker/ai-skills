@@ -148,7 +148,7 @@
       "expectations": [
         "t-reply ends with IMPORTANT and STARRED, and without AI/Low priority (Label_22).",
         "t-quiet ends with exactly its seed labels.",
-        "The Gmail call log shows a search that can return t-reply by time, such as in:inbox with after: in epoch seconds or the last run's date.",
+        "The Gmail call log shows a search that can return t-reply by time, such as in:inbox with after: the last run's date or the day before it.",
         "state.md's Threads line for t-reply is updated, and the commit message's line for t-reply gives a reason that mentions the new request or deadline.",
         "In pat-example/files, state.md's 'Last run:' line now reads the run's date and time with its start in epoch seconds ('<date> <time> (<epoch seconds>)'), and the run's changes reached the repository's main branch in one new commit.",
         "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
