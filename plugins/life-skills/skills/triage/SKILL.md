@@ -167,8 +167,8 @@ push it. Never create a repository.
 
 **A default stated mid-run.** When the user states a standing preference
 ("cards go to the top of Backlog", "due at 5 PM on the deadline day"), apply
-it for the rest of the run and offer, once, as an offer of its own, to add it
-to the file. Add it on a
+it for the rest of the run and offer, once, to add it to the file, in the
+very next reply, as an offer of its own. Add it on a
 yes, in the section it belongs to, as one plain sentence, and commit it. A
 one-off decision about a single item is not a default; don't offer to save it.
 
@@ -358,7 +358,9 @@ open"). This covers an image-only email body, an attachment, a scanned file,
 and a page behind a login or in a private repository, as well as links. Never
 describe, summarize, or guess at content you didn't read, and never name an
 action from it: the action is then the user's to supply, or to read it
-themselves.
+themselves. Saying what you couldn't read is a statement in the reply, not a
+second question; ask about it only when it holds the item's ask, and then as
+the reply's one question.
 
 Read [references/gathering-context.md](references/gathering-context.md) for
 5a and 5b: which URLs to collect, fetching past an auth wall, the full list of
@@ -397,8 +399,12 @@ not start the work. Do the work only when:
   meant, ask.
 - **A quick look, under two minutes, makes the item itself better**: finding
   the link, date, price, or contact the item is missing so the title or
-  description can name it. Put what you found into the proposal, and stop
-  there. Research that is the item's task is the user's to do later, not
+  description can name it. When an item is missing one of those and a source
+  already connected in this session would likely have it (the user's email,
+  their files, a linked page), take that look before writing the item's
+  reply; don't wait to be asked. Put what you found into the proposal, and
+  stop there: never open an acting link (Step 5a) or do the task the link
+  serves. Research that is the item's task is the user's to do later, not
   enrichment.
 
 An under-two-minute action of the user's (a short reply, a quick lookup they
@@ -430,6 +436,14 @@ action Step 6 named. **Only propose the title once**, in the item's reply
 A description should answer: what needs to be done, why it matters, what done
 looks like, and any constraints. If key parts are missing, suggest additions in
 plain language that fits the context. Confirm before adding anything.
+
+An item whose action happens somewhere specific ("renew it online", "pay on
+the portal", "call the office") needs the means to do it: the link, the
+portal, the phone number. When it doesn't carry one, it is not complete,
+even if every other field is set. Take the quick look Step 6 allows in the
+sources already connected (the email that prompted it, the user's files), and
+propose adding what you find, or say the link is missing when nothing turns
+it up.
 
 ### Labels / Tags
 
@@ -637,14 +651,17 @@ Every reply after the user answers opens the same way, in this order:
 3. Then exactly one of: an offer (below), the next item, or the closing
    report.
 
-Each reply asks one question. When several things want asking, take the
-first that applies, and leave the rest for later replies:
+Each reply asks exactly one question, and a reply that already holds a
+question never goes on to present another item. When several things want
+asking, take the first that applies, and leave the rest for later replies:
 
 1. A pending scope (Step 0) or a two-source order question (Step 1b).
 2. The current item's next open point.
-3. An offer, in a reply of its own with no new item in it: the same decision
-   for similar items, a new label from a pattern (Step 9b), saving a stated
-   default or creating the preferences file (Step 0b). One offer per reply.
+3. An offer, in a reply of its own with no new item in it, made in the reply
+   right after the answer that prompted it, never saved for the close: the
+   same decision for similar items, a near-miss left out of one, a new label
+   from a pattern (Step 9b), saving a default the user just stated (Step 0b).
+   One offer per reply.
 4. The next item's question.
 
 At the close, the new-arrivals question (Step 10) comes first; a pending
@@ -728,7 +745,8 @@ of the run; they are finished. The user can pull any one out first.
 When the user asks directly ("apply this to any others like it"), search the
 whole scope that way, apply the decision to every item that passes the
 membership check, and report each one changed by title, one per line. Name
-any near-miss you left out and why, as that reply's question.
+any near-miss you left out and why, and make it that reply's question; the
+next item waits for the answer.
 
 **Pattern labels.** When three or more items in the run share a pattern no
 existing label covers, in their content or in the decisions the user made
