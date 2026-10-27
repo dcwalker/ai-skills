@@ -38,15 +38,15 @@ and why.
 ## Labels
 
 Sift uses Gmail's own Important mark and star, which mail clients already
-show, and three labels of its own, nested under `AI/` so they never mix with
-the user's.
+show, and three priority labels, plain top-level labels that sit among the
+user's own, so the user can show or hide each one in Gmail.
 
 | Priority | How sift applies it |
 |---|---|
 | Important | Gmail's Important mark (system label `IMPORTANT`) |
-| Low priority | `AI/Low priority` |
-| Bulk | `AI/Bulk` |
-| Junk | `AI/Junk` |
+| Low priority | `Low priority` |
+| Bulk | `Bulk` |
+| Junk | `Junk` |
 
 What each priority means, and which mail gets it, is the rubric's to say: its
 Labels table and its rule sections. Every thread sift evaluates gets exactly
@@ -66,10 +66,11 @@ adding its tab's label
 (`CATEGORY_PERSONAL` for Primary, `CATEGORY_SOCIAL`, `CATEGORY_PROMOTIONS`, or
 `CATEGORY_UPDATES`); Gmail removes the old one.
 
-Create any missing `AI/` labels on the first run. Never create other labels,
-archive, mark read, mute, trash, or move mail out of the inbox (a tab keeps it
-in the inbox), so nothing sift does can hide a message. The rubric's
-Permissions section may grant more.
+Create any of the three priority labels that are missing on the first run,
+and other labels only as the next paragraphs say. Never archive, mark read,
+mute, trash, or move mail out of the inbox (a tab keeps it in the inbox), and
+never rename or delete a label, so nothing sift does can hide a message or
+undo the user's filing. The rubric's Permissions section may grant more.
 
 **The user's edits stand.** When a thread's priority, star, or tab differs from
 what the state file says sift last applied, the user changed it. Sift keeps it, and
@@ -78,19 +79,28 @@ star. A new reply can arrive with Gmail's own Important mark or tab, so either
 is the user's only when a message from before sift's call carries it and the
 state file shows otherwise (Step 5 fetches the thread to check).
 
-When the rubric asks for a label of its own, in its Labels table or
-Permissions section, such as "label event invitations as invitation", create
-it under `AI/` in title case, `AI/Invitation`, never as a bare `invitation`
-beside the user's own labels. Apply it alongside the thread's priority, never
-in place of one. Decide by what the message is, as the rubric describes
-it, not by whether it uses a particular word: a message asking where a receipt
-is does not get `AI/Receipt`. A label sift starts using gets a row in the
-Labels table, saying when sift applies it, in the same run.
+**The Labels table lists every label.** The rubric's Labels table has a row
+for every user label in the account, the user's own included, saying what
+goes there (Step 3 adds rows for labels that lack one). Apply any label whose
+row fits the thread, the user's own labels included, unless its row says sift
+doesn't apply it, and never one without a row. Apply it alongside the
+thread's priority, never in place of one. Decide by what the message is, as
+the row describes it, not by whether it uses a particular word: a message
+asking where a receipt is does not get `Receipt`. Remove a label only when it
+is a priority label sift is replacing; any other label may be the user's, so
+it stays.
+
+When the rubric asks for a label that doesn't exist yet, in its Labels table
+or Permissions section, such as "label event invitations as invitation",
+create it in title case, `Invitation`. When a label of that name already
+exists, whatever its case, use it as it is: it may be the user's, and its row
+says what goes there. A label sift starts using gets a row in the Labels table,
+saying when sift applies it, in the same run.
 
 Label changes take label IDs, and `label:` searches take label names: quote a
-name with a space (`label:"AI/Low priority"`) or write its spaces and `/` as
-`-` (`label:AI-Low-priority`). List the labels once at the start of a run and
-use the IDs from then on.
+name with a space (`label:"Low priority"`) or write its spaces and `/` as `-`
+(`label:low-priority`). List the labels once at the start of a run and use the
+IDs from then on.
 
 ## Step 1: Find the rubric and state
 
@@ -162,8 +172,8 @@ how-to, the Labels table, About me, every rule section, Newsletters, Tabs, and
 Examples. Each rule sits in the section it belongs to, so the rubric never gives
 two answers to one question. Sift edits any section to place what it learns,
 to merge or reword overlapping rules without changing what they say, and to
-keep the Labels table matching the labels sift applies, category labels
-included. It never adds to Permissions or Notify: those say what sift may do,
+keep the Labels table listing every label in the account and when it
+applies. It never adds to Permissions or Notify: those say what sift may do,
 and only the user grants that.
 
 - **Markers.** A line sift writes from evidence carries a marker and a date:
@@ -247,10 +257,17 @@ headings and lines.
    and rewrite the intro and How to use text that describe the old split, as
    `references/rubric-template.md` words them.
 5. **Tables current.** Compare the Labels table with the label list fetched
-   at the start of the run: every `AI/` label in the account has a row saying
-   when sift applies it, category labels included, and a label sift no longer
-   applies says so in its row rather than disappearing. Gmail's Important mark
-   and the star have rows too. The Tabs table has one row per inbox
+   at the start of the run: every user label in the account (`labelType`
+   `USER`) has a row, the user's own included (a row names a label whatever
+   its case, so `travel` is covered by a `Travel` row), and a row whose label is gone
+   from the account is removed. For a label without a row, search the threads
+   that carry it (`label:` with its name, metadata only, the newest five or
+   so) and add a row starting with `(inferred)` that says what goes there, so
+   sift applies it to mail like that from then on. When those threads show no
+   clear pattern, or there are none, the row says sift doesn't apply the
+   label until the user says when. A label sift no longer applies says so in
+   its row rather than disappearing. Gmail's Important mark and the star have
+   rows too. The Tabs table has one row per inbox
    tab Gmail offers: list the labels once, and add a row for any `CATEGORY_*`
    tab the table lacks, saying it holds nothing until the user says what
    goes there.
@@ -412,8 +429,9 @@ two priorities open, follow its When torn section; when it has none, choose
 the less severe priority.
 
 Apply the call at the thread level, leaving one priority: for Important, add
-`IMPORTANT` and remove any `AI/` priority label; for the others, add that
-label and remove `IMPORTANT` and any other `AI/` priority label. Then add
+`IMPORTANT` and remove any priority label (`Low priority`, `Bulk`, or
+`Junk`); for the others, add that label and remove `IMPORTANT` and the other
+two priority labels. Then add
 `STARRED` when a message sift hasn't evaluated before needs a reply and the
 thread has no star: a star the user removed stays off until a new message
 needs one. Never remove a star. Then file the thread into its tab (see
@@ -421,8 +439,8 @@ needs one. Never remove a star. Then file the thread into its tab (see
 changed, and batch the calls where the tools allow.
 
 Then carry out whatever the rubric's Permissions section grants for the
-priority just applied, such as archiving a thread labeled `AI/Junk` when Permissions
-says so, or adding a label the rubric asks for (under `AI/`, as
+priority just applied, such as archiving a thread labeled `Junk` when
+Permissions says so, or adding a label the rubric asks for (as
 [Labels](#labels) describes), and nothing it doesn't grant. A grant applies on every run, without
 asking.
 
@@ -434,10 +452,10 @@ Update `state.md` (its layout is in `references/state-template.md`):
   run's start. The next run searches from it.
 - One line per thread under Threads, replacing the thread's earlier line:
   `<thread id> | <epoch seconds> | <applied>`, the epoch being this run's
-  start. `<applied>` names the priority (`Important`, `AI/Low priority`,
-  `AI/Bulk`, or `AI/Junk`), then `starred` when sift added the star or
+  start. `<applied>` names the priority (`Important`, `Low priority`,
+  `Bulk`, or `Junk`), then `starred` when sift added the star or
   `star kept` when the thread already had one, then the tab (`Primary`,
-  `Social`, `Promotions`, or `Updates`), then any category label; where the
+  `Social`, `Promotions`, or `Updates`), then any other label it added; where the
   user's edit stood, say `user's` after it (`Important (user's)`). The state
   file is the only record of what sift has seen and applied.
 - Drop Threads lines older than 30 days and Observed lines older than 90.

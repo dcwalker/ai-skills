@@ -58,29 +58,19 @@
       "name": "School",
       "type": "user"
     },
-    "Label_20": {
-      "id": "Label_20",
-      "name": "AI",
-      "type": "user"
-    },
     "Label_22": {
       "id": "Label_22",
-      "name": "AI/Low priority",
+      "name": "Low priority",
       "type": "user"
     },
     "Label_23": {
       "id": "Label_23",
-      "name": "AI/Junk",
+      "name": "Junk",
       "type": "user"
     },
     "Label_27": {
       "id": "Label_27",
-      "name": "AI/Bulk",
-      "type": "user"
-    },
-    "Label_28": {
-      "id": "Label_28",
-      "name": "AI/Newsletter",
+      "name": "Bulk",
       "type": "user"
     }
   },
@@ -97,7 +87,7 @@
       "labelIds": [
         "INBOX",
         "Label_27",
-        "Label_28",
+        "Label_3",
         "STARRED",
         "CATEGORY_UPDATES"
       ],
@@ -126,7 +116,7 @@
       "labelIds": [
         "INBOX",
         "Label_27",
-        "Label_28",
+        "Label_3",
         "STARRED",
         "CATEGORY_UPDATES"
       ],
@@ -155,7 +145,7 @@
       "labelIds": [
         "INBOX",
         "Label_27",
-        "Label_28",
+        "Label_3",
         "STARRED",
         "CATEGORY_UPDATES"
       ],
@@ -185,7 +175,7 @@
         "INBOX",
         "UNREAD",
         "Label_27",
-        "Label_28",
+        "Label_3",
         "CATEGORY_PROMOTIONS"
       ],
       "messages": [

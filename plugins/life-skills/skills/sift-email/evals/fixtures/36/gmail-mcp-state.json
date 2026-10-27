@@ -1,0 +1,165 @@
+{
+  "anchor_date": "2026-10-10",
+  "stub_now": "2026-10-10T15:00:00Z",
+  "me": "pat@example.com",
+  "labels": {
+    "INBOX": {
+      "id": "INBOX",
+      "name": "INBOX",
+      "type": "system"
+    },
+    "SENT": {
+      "id": "SENT",
+      "name": "SENT",
+      "type": "system"
+    },
+    "TRASH": {
+      "id": "TRASH",
+      "name": "TRASH",
+      "type": "system"
+    },
+    "SPAM": {
+      "id": "SPAM",
+      "name": "SPAM",
+      "type": "system"
+    },
+    "STARRED": {
+      "id": "STARRED",
+      "name": "STARRED",
+      "type": "system"
+    },
+    "IMPORTANT": {
+      "id": "IMPORTANT",
+      "name": "IMPORTANT",
+      "type": "system"
+    },
+    "UNREAD": {
+      "id": "UNREAD",
+      "name": "UNREAD",
+      "type": "system"
+    },
+    "Label_1": {
+      "id": "Label_1",
+      "name": "Soccer",
+      "type": "user"
+    },
+    "Label_2": {
+      "id": "Label_2",
+      "name": "Receipts",
+      "type": "user"
+    },
+    "Label_3": {
+      "id": "Label_3",
+      "name": "Newsletter",
+      "type": "user"
+    },
+    "Label_4": {
+      "id": "Label_4",
+      "name": "School",
+      "type": "user"
+    },
+    "Label_22": {
+      "id": "Label_22",
+      "name": "Low priority",
+      "type": "user"
+    },
+    "Label_23": {
+      "id": "Label_23",
+      "name": "Junk",
+      "type": "user"
+    },
+    "Label_27": {
+      "id": "Label_27",
+      "name": "Bulk",
+      "type": "user"
+    },
+    "Label_5": {
+      "id": "Label_5",
+      "name": "travel",
+      "type": "user"
+    }
+  },
+  "threads": {
+    "t-old-trip": {
+      "id": "t-old-trip",
+      "subject": "Your stay at Pinecrest Lodge is confirmed",
+      "from": "reservations@pinecrestlodge.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-08-14T17:00:00Z",
+      "snippet": "Pat, your stay August 22 to 24 at Pinecrest Lodge is confirmed. Check-in is at 3pm.",
+      "labelIds": [
+        "Label_5",
+        "CATEGORY_UPDATES"
+      ],
+      "messages": [
+        {
+          "id": "t-old-trip-m1",
+          "from": "reservations@pinecrestlodge.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-08-14T17:00:00Z",
+          "snippet": "Pat, your stay August 22 to 24 at Pinecrest Lodge is confirmed. Check-in is at 3pm.",
+          "body": "Pat, your stay August 22 to 24 at Pinecrest Lodge is confirmed. Check-in is at 3pm."
+        }
+      ]
+    },
+    "t-flight": {
+      "id": "t-flight",
+      "subject": "Your flight to Denver is confirmed",
+      "from": "bookings@skyway.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-10T13:00:00Z",
+      "snippet": "Pat Example, your flight SW 418 from Portland to Denver on November 6 is confirmed. Confirmation code QX7P2L. Check in o",
+      "labelIds": [
+        "INBOX",
+        "UNREAD",
+        "CATEGORY_UPDATES"
+      ],
+      "messages": [
+        {
+          "id": "t-flight-m1",
+          "from": "bookings@skyway.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T13:00:00Z",
+          "snippet": "Pat Example, your flight SW 418 from Portland to Denver on November 6 is confirmed. Confirmation code QX7P2L. Check in o",
+          "body": "Pat Example, your flight SW 418 from Portland to Denver on November 6 is confirmed. Confirmation code QX7P2L. Check in opens 24 hours before departure."
+        }
+      ]
+    },
+    "t-fare-sale": {
+      "id": "t-fare-sale",
+      "subject": "Fares from $49 this week only",
+      "from": "deals@skyway.example",
+      "to": [
+        "pat@example.com"
+      ],
+      "date": "2026-10-10T14:00:00Z",
+      "snippet": "Fly for less: fares from $49 on routes across the West. Book by Sunday. Unsubscribe: https://skyway.example/unsubscribe",
+      "labelIds": [
+        "INBOX",
+        "UNREAD",
+        "CATEGORY_PROMOTIONS"
+      ],
+      "messages": [
+        {
+          "id": "t-fare-sale-m1",
+          "from": "deals@skyway.example",
+          "to": [
+            "pat@example.com"
+          ],
+          "date": "2026-10-10T14:00:00Z",
+          "snippet": "Fly for less: fares from $49 on routes across the West. Book by Sunday. Unsubscribe: https://skyway.example/unsubscribe",
+          "body": "Fly for less: fares from $49 on routes across the West. Book by Sunday. Unsubscribe: https://skyway.example/unsubscribe"
+        }
+      ]
+    }
+  },
+  "drafts": {}
+}
