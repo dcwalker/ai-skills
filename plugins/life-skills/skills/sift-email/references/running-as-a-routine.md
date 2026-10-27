@@ -6,7 +6,7 @@ Sift is meant to run as a scheduled cloud routine. The routine needs:
   the account's connectors by default; keep these two.
 - **Two repositories attached:** this skill's repository, so each run has a
   checkout of the skill, and the private repository that holds
-  `sift-email/rubric.md` and `sift-email/state.md`. A routine's session can
+  `sift-email/rubric.md` and the state files. A routine's session can
   reach only the repositories attached to it: it clones each one beside the
   others, and it can't search GitHub, so sift finds the rubric in those
   checkouts. Sift commits and pushes to that repository's default branch.
@@ -52,6 +52,19 @@ reaches the routine on its next run.
 3. Set the rubric's Timezone line, so dates read in local time.
 4. Create the routine with both repositories attached and the prompt above,
    then turn on the schedule.
+
+## More than one Gmail account
+
+Each Gmail account needs its own run: a routine whose Gmail connector is
+signed in to that account, or a run by hand in a session connected to it.
+Attach the same two repositories and use the same prompt. Every account
+shares the rubric, and sift keeps a separate `state-<account>.md` for each,
+naming the account it finds from Gmail, so nothing in the prompt has to say
+which account it is.
+
+Give each routine a different minute of the hour, such as `0` and `30`, so
+two runs rarely save at once. When they do, the second push is rejected and
+sift rebases onto the first before pushing again.
 
 ## Running at set times of day
 

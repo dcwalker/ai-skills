@@ -510,8 +510,11 @@ and `get_thread`, and on each message from `get_thread`. The field name
 comes from the live Gmail MCP's tool descriptions, which say both tools
 return one for the thread and for each message; the URL format is not
 documented, so the stub's `https://mail.google.com/mail/u/0/#all/<id>` is a
-placeholder, unverified against a live response. A fixture's thread or
-message can set its own `"viewUrl"`, or `null` for none. The Atlassian
+placeholder. A live response (observed 2026-10-27) used
+`https://mail.google.com/mail/?authuser=<signed-in address>#all/...`, and a
+fixture that sets the top-level `"view_url_style": "authuser"` gets that form
+with its `"me"` address. A fixture's thread or message can set its own
+`"viewUrl"`, or `null` for none. The Atlassian
 tools document no URL in their output, so `jira_stub.py` adds none.
 
 Changing a stub that several skills share changes what their trials see, so
