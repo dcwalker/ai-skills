@@ -39,13 +39,14 @@ Timezone: UTC (change to yours, such as Europe/Berlin)
 
 ## Labels
 
-Every label in my account and every mark sift applies, and when. A thread
-gets one priority, plus a star and other labels when they fit, each judged on
-what the message is, not on the words it uses. Sift applies any label here
-when a thread fits its row, mine included, unless the row says sift doesn't
-apply it. It keeps this table current: a row for each label it starts using,
+Every label in my Gmail accounts and every mark sift applies, and when. A
+thread gets one priority, plus a star and other labels when they fit, each
+judged on what the message is, not on the words it uses. Sift applies any
+label here when a thread fits its row, mine included, unless the row says
+sift doesn't apply it, and in every account, creating the label in one that
+lacks it. It keeps this table current: a row for each label it starts using,
 and an "(inferred)" row for each of my labels that lacks one, saying what goes
-there.
+there. Only I remove a row.
 
 | Label | When sift applies it |
 |---|---|
