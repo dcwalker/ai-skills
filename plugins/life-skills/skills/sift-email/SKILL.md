@@ -163,7 +163,8 @@ never from the rubric, a memory note, or the request:
 
 Compare addresses in lowercase, and for `gmail.com` and `googlemail.com`
 ignore dots and anything from a `+` in the part before the `@`, since Gmail
-does: `pat.example@gmail.com` and `patexample@gmail.com` are one account.
+does: at those domains, `Pat.Example+news` and `patexample` before the `@`
+are one account.
 
 **This account's state file** is the one in `sift-email/` whose
 `Account: <address>` line names this account by that comparison, whatever its
@@ -182,7 +183,7 @@ file name. When none does:
   whole inbox (Step 5).
 
 The file name uses the address as found, in lowercase:
-`state-pat.example@gmail.com.md`.
+`state-pat@example.com.md`.
 
 **Not found.** When no candidate passes, create nothing on your own:
 
