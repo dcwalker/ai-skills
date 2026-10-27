@@ -361,8 +361,11 @@ Fetch metadata only (sender, recipients, subject, date, snippet, existing
 labels). Read a full body only when the metadata can't settle the call, such as
 a snippet that points to "see attached" or a portal.
 
-If nothing matches and the daily review changed nothing, the run has nothing
-to save: say "Nothing new" in chat and stop, as in Step 2.
+If nothing matches, the run got this far because the daily review was due, so
+it still has work to save: the tidied rubric, the daily review's changes, and
+the `Daily review:` line. Skip Step 6 and go on to Step 7, which commits them
+with no Threads lines, even when the review found no signals and the tidy
+changed nothing.
 
 ## Step 6: Label
 
