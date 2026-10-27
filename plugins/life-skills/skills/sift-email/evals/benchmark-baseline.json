@@ -41,11 +41,12 @@
       33,
       34,
       35,
-      36
+      36,
+      37
     ],
     "runs_per_configuration": 2,
     "executor": "real `claude -p --strict-mcp-config --output-format stream-json` subprocess, one per trial, via evals/lib/run-mcp-trials.sh",
-    "notes": "Baseline for sift-email after its labels moved out of the AI/ parent to plain top-level names: the priority labels are Low priority, Bulk, and Junk; the rubric's Labels table lists every label in the account, the user's own included, with an (inferred) row for each user label that lacked one; sift applies any label whose row fits unless the row says it doesn't, and uses a label of the same name in any case before creating one in title case. Evals 1-36, two runs each, with run-mcp-trials.sh against the Gmail and Contacts stubs and the fake GitHub, on SKILL.md as of branch sift-email-plain-labels, run in parallel with separate trial directories under $TMPDIR, on 2026-10-27. Evals 35 (an uncataloged user label gets an inferred row and is applied) and 36 (an existing lowercase label is used) are new. Failures: eval 26 run 1 (claimed t-kudos moved to Social, in the commit and state, and a changelog line in the first person, three checks); eval 15 run 2 (moved the Added by sift rules without consolidating or trimming Examples, two checks); eval 16 run 1 (an order number in the commit message) and run 2 (t-gmail-important labeled Bulk, not Junk); eval 23 run 2 (an order number in the commit message); eval 19 run 2 (a changelog line in the first person); eval 7 run 1 (a rule and example about a thread the user relabeled); eval 28 run 1 (rewrapped Permissions). Not graded: some trials read harness files in the run directory, and one ran env, printing the stub proxy's credentials into its transcript; sift created category labels with rubric rows (Delivery, Statement, Receipt) unasked, including Receipt beside the user's Receipts in eval 30; a few commit bodies miscounted priorities."
+    "notes": "Baseline for sift-email after its labels moved out of the AI/ parent to plain top-level names: the priority labels are Low priority, Bulk, and Junk; the rubric's Labels table lists every label in the account, the user's own included, with an (inferred) row for each user label that lacked one; sift applies any label whose row fits unless the row says it doesn't, and uses a label of the same name in any case before creating one in title case. Evals 1-36, two runs each, with run-mcp-trials.sh against the Gmail and Contacts stubs and the fake GitHub, on SKILL.md as of branch sift-email-plain-labels, run in parallel with separate trial directories under $TMPDIR, on 2026-10-27. Evals 35 (an uncataloged user label gets an inferred row and is applied) and 36 (an existing lowercase label is used) are new. Failures: eval 26 run 1 (claimed t-kudos moved to Social, in the commit and state, and a changelog line in the first person, three checks); eval 15 run 2 (moved the Added by sift rules without consolidating or trimming Examples, two checks); eval 16 run 1 (an order number in the commit message) and run 2 (t-gmail-important labeled Bulk, not Junk); eval 23 run 2 (an order number in the commit message); eval 19 run 2 (a changelog line in the first person); eval 7 run 1 (a rule and example about a thread the user relabeled); eval 28 run 1 (rewrapped Permissions). Not graded: some trials read harness files in the run directory, and one ran env, printing the stub proxy's credentials into its transcript; sift created category labels with rubric rows (Delivery, Statement, Receipt) unasked, including Receipt beside the user's Receipts in eval 30; a few commit bodies miscounted priorities. Evals 6, 11, and 37 were rerun, two runs each, after a run with no new mail but a due daily review was changed to still tidy the rubric and commit: eval 37 is new (one run started its inferred Soccer row with '(inferred, <date>)', not '(inferred)'), and eval 6 run 2 quoted a rubric rule in the first person in its reply."
   },
   "runs": [
     {
@@ -413,56 +414,56 @@
         "failed": 0,
         "total": 9,
         "not_exercised": 0,
-        "time_seconds": 269.192,
-        "tokens": 1335156,
-        "tool_calls": 34,
+        "time_seconds": 291.776,
+        "tokens": 1611058,
+        "tool_calls": 42,
         "errors": 0
       },
       "expectations": [
         {
           "text": "state.md's 'Daily review:' line reads the run date, and its Observed section gains no line.",
           "passed": true,
-          "evidence": "'Daily review: 2026-10-27'; Observed section unchanged ('(none yet)')."
+          "evidence": "state.md: 'Daily review: 2026-10-27'; diff adds no line to Observed."
         },
         {
           "text": "The rubric gains no '(observed)' rule, and no rule or example is added to the rubric about t-news, t-alert, t-receipt, t-survey, t-asked, or their senders, and no changelog entry records a rule learned from them. About me notes saying who a sender is are fine.",
           "passed": true,
-          "evidence": "Rubric only gained an About me note about jordan.lee (t-new sender) and a changelog entry for that note; no (observed) rule, nothing about t-news/t-alert/t-receipt/t-survey/t-asked."
+          "evidence": "Rubric additions are only an About me note and an Example for jordan.lee (t-new) and a changelog line for that note; no (observed) rule and nothing about t-news/t-alert/t-receipt/t-survey/t-asked or their senders."
         },
         {
           "text": "t-survey ends with Junk (Label_23) and without Low priority (Label_22).",
           "passed": true,
-          "evidence": "t-survey out: INBOX, Junk."
+          "evidence": "t-survey ends ['INBOX','Label_23'], no Label_22."
         },
         {
           "text": "t-news, t-alert, t-receipt, and t-asked end with exactly their seed labels.",
           "passed": true,
-          "evidence": "t-news, t-alert, t-receipt, t-asked labelIds identical to seed."
+          "evidence": "t-news, t-alert, t-receipt, and t-asked final labels equal seed."
         },
         {
           "text": "t-new (a coach's heads-up to the team list moving Monday's practice) ends with IMPORTANT and without STARRED, since it only shares information.",
           "passed": true,
-          "evidence": "t-new out: INBOX, UNREAD, IMPORTANT; no STARRED."
+          "evidence": "t-new gained IMPORTANT only (modify_thread_labels add ['IMPORTANT']); no STARRED."
         },
         {
           "text": "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410).",
           "passed": true,
-          "evidence": "No '4410' in final rubric."
+          "evidence": "Added rubric lines contain no account number or 4410."
         },
         {
           "text": "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
           "passed": true,
-          "evidence": "Commit says 'You replied to confirm'; state/changelog neutral; reply uses 'you'."
+          "evidence": "Commit and changelog say 'Pat's own reply'/name the coach; reply says 'Pat's own edit'. 'About me' only first-person match."
         },
         {
           "text": "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
           "passed": true,
-          "evidence": "Only t-new gained IMPORTANT; seeds kept."
+          "evidence": "Only change across threads is t-new +IMPORTANT; all seed labels kept."
         },
         {
           "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
           "passed": true,
-          "evidence": "No create_draft/trash/spam calls."
+          "evidence": "No create_draft, trash, or spam calls in the Gmail log."
         }
       ]
     },
@@ -723,36 +724,36 @@
         "failed": 0,
         "total": 5,
         "not_exercised": 0,
-        "time_seconds": 44.903,
-        "tokens": 426539,
-        "tool_calls": 11,
+        "time_seconds": 43.005,
+        "tokens": 476132,
+        "tool_calls": 13,
         "errors": 0
       },
       "expectations": [
         {
           "text": "No label_thread, unlabel_thread, modify_thread_labels, create_label, archive_thread, or trash_thread call appears in the Gmail call log.",
           "passed": true,
-          "evidence": "gmail-calls.log has only search_threads and list_labels."
+          "evidence": "Only Gmail call: search_threads 'in:inbox after:2026/10/26'."
         },
         {
           "text": "The Gmail final state is identical to the seed.",
           "passed": true,
-          "evidence": "t-done and t-done-2 labels identical in seed and out; no new labels."
+          "evidence": "gmail-state-out equals seed."
         },
         {
           "text": "pat-example/files gains no commit: its main branch still has only the fixture's commit, and rubric.md and state.md are unchanged.",
           "passed": true,
-          "evidence": "github-state-out shows only the Fixture commit; no file diffs."
+          "evidence": "Bare repo main has only e809077 'Fixture state'; github-state-out files equal the seed."
         },
         {
           "text": "The rubric is never read whole: the tool log shows no Read of sift-email/rubric.md without a line limit and no cat or similar of the whole file; a grep or a read of its Timezone line is fine, as are reads of state.md.",
           "passed": true,
-          "evidence": "tools.log: only head -1 rubric.md and grep ^Timezone: rubric.md; no Read or cat of the whole file."
+          "evidence": "tools.log reads rubric only via 'head -1' and 'grep -n \"^Timezone:\"'; no full read or cat."
         },
         {
           "text": "The response says there was nothing new to sift.",
           "passed": true,
-          "evidence": "Reply: \"Nothing new\" after noting no inbox mail since the last run."
+          "evidence": "Reply ends 'Nothing new.' after saying both Step 2 checks came back empty."
         }
       ]
     },
@@ -2362,6 +2363,64 @@
       ]
     },
     {
+      "eval_id": 37,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.875,
+        "passed": 7,
+        "failed": 1,
+        "total": 8,
+        "not_exercised": 0,
+        "time_seconds": 154.272,
+        "tokens": 1311679,
+        "tool_calls": 31,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "No label_thread, unlabel_thread, modify_thread_labels, create_label, archive_thread, or trash_thread call appears in the Gmail call log, and the Gmail final state is identical to the seed.",
+          "passed": true,
+          "evidence": "Gmail log has only list_labels, search_threads (label:Soccer, in:inbox after:2026/10/26), and get_thread on t-done/t-done-2; gmail-state-out equals seed."
+        },
+        {
+          "text": "The rubric's Labels table gains one row for Soccer that starts with '(inferred)' and describes mail about the kids' soccer team (its team, club, coach, games, or practices), not a rule that sift doesn't apply it.",
+          "passed": false,
+          "evidence": "Row added is '| Soccer | (inferred, 2026-10-27) My own label, for messages from Riverside United U12's coach or registrar about team logistics (practice/game changes, uniforms) |'. It describes the team's mail, but the cell starts with '(inferred, 2026-10-27)', not the '(inferred)' marker."
+        },
+        {
+          "text": "The rubric's changelog gains an entry dated the run date that records the Soccer row.",
+          "passed": true,
+          "evidence": "Changelog: '- 2026-10-27 | Added a Labels table row for Soccer (Pat's own label, ...) | Step 3 tidy, label had no row'."
+        },
+        {
+          "text": "state.md's 'Daily review:' line reads the run date, and its Observed section gains no line.",
+          "passed": true,
+          "evidence": "state.md on main: 'Daily review: 2026-10-27'; Observed still only '- (none yet)'."
+        },
+        {
+          "text": "state.md's Threads section still lists exactly t-done and t-done-2, each still saying Low priority.",
+          "passed": true,
+          "evidence": "Threads section: '- t-done | 1792756800 | Low priority' and '- t-done-2 | 1792756800 | Low priority', nothing else."
+        },
+        {
+          "text": "pat-example/files gains exactly one new commit on main, and that commit changes both sift-email/rubric.md and sift-email/state.md.",
+          "passed": true,
+          "evidence": "main has Fixture state + one commit 6d601e8 'Sift 2026-10-27 10:20: 0 threads', changing sift-email/rubric.md and sift-email/state.md."
+        },
+        {
+          "text": "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+          "passed": true,
+          "evidence": "Commit message says 'Pat's own label'; changelog says 'Pat's own label'; reply says 'your own label'. No I/me/my for the user outside the rubric row."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "No create_draft, trash, or spam calls in the Gmail log; final state equals seed."
+        }
+      ]
+    },
+    {
       "eval_id": 1,
       "configuration": "with_skill",
       "run_number": 2,
@@ -2721,61 +2780,61 @@
       "configuration": "with_skill",
       "run_number": 2,
       "result": {
-        "pass_rate": 1.0,
-        "passed": 9,
-        "failed": 0,
+        "pass_rate": 0.8889,
+        "passed": 8,
+        "failed": 1,
         "total": 9,
         "not_exercised": 0,
-        "time_seconds": 400.9,
-        "tokens": 1754802,
-        "tool_calls": 42,
+        "time_seconds": 267.48,
+        "tokens": 1069674,
+        "tool_calls": 33,
         "errors": 0
       },
       "expectations": [
         {
           "text": "state.md's 'Daily review:' line reads the run date, and its Observed section gains no line.",
           "passed": true,
-          "evidence": "'Daily review: 2026-10-27'; Observed unchanged."
+          "evidence": "state.md: 'Daily review: 2026-10-27'; diff adds no line to Observed."
         },
         {
           "text": "The rubric gains no '(observed)' rule, and no rule or example is added to the rubric about t-news, t-alert, t-receipt, t-survey, t-asked, or their senders, and no changelog entry records a rule learned from them. About me notes saying who a sender is are fine.",
           "passed": true,
-          "evidence": "Rubric gained About me note and Example about jordan.lee (t-new), not about the listed threads; no (observed) rule."
+          "evidence": "Rubric additions are only an (inferred) About me note and Example for jordan.lee (t-new) and a changelog line for them; no (observed) rule and nothing about the five reviewed threads or their senders."
         },
         {
           "text": "t-survey ends with Junk (Label_23) and without Low priority (Label_22).",
           "passed": true,
-          "evidence": "t-survey out: INBOX, Junk."
+          "evidence": "t-survey ends ['INBOX','Label_23'], no Label_22."
         },
         {
           "text": "t-news, t-alert, t-receipt, and t-asked end with exactly their seed labels.",
           "passed": true,
-          "evidence": "t-news, t-alert, t-receipt, t-asked identical to seed."
+          "evidence": "t-news, t-alert, t-receipt, and t-asked final labels equal seed."
         },
         {
           "text": "t-new (a coach's heads-up to the team list moving Monday's practice) ends with IMPORTANT and without STARRED, since it only shares information.",
           "passed": true,
-          "evidence": "t-new out: IMPORTANT, no STARRED."
+          "evidence": "t-new gained IMPORTANT only; no STARRED."
         },
         {
           "text": "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410).",
           "passed": true,
-          "evidence": "No '4410' in final rubric."
+          "evidence": "Added rubric lines contain no account number or 4410."
         },
         {
           "text": "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
-          "passed": true,
-          "evidence": "Commit/state/changelog use Pat; reply uses 'you'."
+          "passed": false,
+          "evidence": "Reply quotes the rubric rule 'Anything from my kids' coaches or teachers' in sift's own summary; that is rubric text, not text quoted from a message."
         },
         {
           "text": "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
           "passed": true,
-          "evidence": "Only t-new gained IMPORTANT; seeds kept."
+          "evidence": "Only change across threads is t-new +IMPORTANT; all seed labels kept."
         },
         {
           "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
           "passed": true,
-          "evidence": "No create_draft/trash/spam calls."
+          "evidence": "No create_draft, trash, or spam calls in the Gmail log."
         }
       ]
     },
@@ -3036,8 +3095,8 @@
         "failed": 0,
         "total": 5,
         "not_exercised": 0,
-        "time_seconds": 47.27,
-        "tokens": 513579,
+        "time_seconds": 42.909,
+        "tokens": 476261,
         "tool_calls": 13,
         "errors": 0
       },
@@ -3045,27 +3104,27 @@
         {
           "text": "No label_thread, unlabel_thread, modify_thread_labels, create_label, archive_thread, or trash_thread call appears in the Gmail call log.",
           "passed": true,
-          "evidence": "gmail-calls.log has only search_threads."
+          "evidence": "Only Gmail call: search_threads 'in:inbox after:2026/10/26'."
         },
         {
           "text": "The Gmail final state is identical to the seed.",
           "passed": true,
-          "evidence": "t-done and t-done-2 labels identical in seed and out; no new labels."
+          "evidence": "gmail-state-out equals seed."
         },
         {
           "text": "pat-example/files gains no commit: its main branch still has only the fixture's commit, and rubric.md and state.md are unchanged.",
           "passed": true,
-          "evidence": "github-state-out shows only the Fixture commit; no file diffs."
+          "evidence": "Bare repo main has only 3168a9a 'Fixture state'; github-state-out files equal the seed."
         },
         {
           "text": "The rubric is never read whole: the tool log shows no Read of sift-email/rubric.md without a line limit and no cat or similar of the whole file; a grep or a read of its Timezone line is fine, as are reads of state.md.",
           "passed": true,
-          "evidence": "tools.log: only head -5 rubric.md and grep ^Timezone: rubric.md; no Read or cat of the whole file."
+          "evidence": "tools.log reads rubric only via 'head -5' and 'grep -n \"^Timezone:\"'; no full read or cat."
         },
         {
           "text": "The response says there was nothing new to sift.",
           "passed": true,
-          "evidence": "Reply: \"Nothing new\" after noting no inbox mail since the last run."
+          "evidence": "Reply is 'Nothing new.'"
         }
       ]
     },
@@ -4673,31 +4732,89 @@
           "evidence": "gmail-calls.log has only search/get/list_labels/modify_thread_labels{create_label} calls; no create_draft, trash, or spam call; no thread gains TRASH/SPAM."
         }
       ]
+    },
+    {
+      "eval_id": 37,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "not_exercised": 0,
+        "time_seconds": 120.004,
+        "tokens": 1064367,
+        "tool_calls": 25,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "No label_thread, unlabel_thread, modify_thread_labels, create_label, archive_thread, or trash_thread call appears in the Gmail call log, and the Gmail final state is identical to the seed.",
+          "passed": true,
+          "evidence": "Gmail log has only search_threads, list_labels, and get_thread; gmail-state-out equals seed."
+        },
+        {
+          "text": "The rubric's Labels table gains one row for Soccer that starts with '(inferred)' and describes mail about the kids' soccer team (its team, club, coach, games, or practices), not a rule that sift doesn't apply it.",
+          "passed": true,
+          "evidence": "Row added: '| Soccer | (inferred) Riverside United U12 team logistics from the coach or registrar: schedule changes, uniform pickup (2026-10-27) |'."
+        },
+        {
+          "text": "The rubric's changelog gains an entry dated the run date that records the Soccer row.",
+          "passed": true,
+          "evidence": "Changelog: '- 2026-10-27 | Added a Labels table row for Soccer (Riverside United U12 team logistics) | tidy found a user label with no row'."
+        },
+        {
+          "text": "state.md's 'Daily review:' line reads the run date, and its Observed section gains no line.",
+          "passed": true,
+          "evidence": "state.md on main: 'Daily review: 2026-10-27'; Observed still '- (none yet)'."
+        },
+        {
+          "text": "state.md's Threads section still lists exactly t-done and t-done-2, each still saying Low priority.",
+          "passed": true,
+          "evidence": "Threads section lists only t-done and t-done-2, each '| Low priority'."
+        },
+        {
+          "text": "pat-example/files gains exactly one new commit on main, and that commit changes both sift-email/rubric.md and sift-email/state.md.",
+          "passed": true,
+          "evidence": "main has Fixture state + one commit de9b604 'Sift 2026-10-27 10:20: 0 threads' changing rubric.md and state.md."
+        },
+        {
+          "text": "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+          "passed": true,
+          "evidence": "Commit message, changelog, state.md, and reply use no I/me/my for the user."
+        },
+        {
+          "text": "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam.",
+          "passed": true,
+          "evidence": "No create_draft, trash, or spam calls; final state equals seed."
+        }
+      ]
     }
   ],
   "run_summary": {
     "with_skill": {
       "pass_rate": {
-        "mean": 0.9851,
-        "stddev": 0.0459,
+        "mean": 0.9823,
+        "stddev": 0.0483,
         "min": 0.75,
         "max": 1.0
       },
       "time_seconds": {
-        "mean": 225.2762,
-        "stddev": 95.6469,
+        "mean": 221.3117,
+        "stddev": 93.6736,
         "min": 41.825,
         "max": 479.52
       },
       "tokens": {
-        "mean": 1271435,
-        "stddev": 424871,
+        "mean": 1263816,
+        "stddev": 418044,
         "min": 235589,
         "max": 2722512
       },
       "tool_calls": {
-        "mean": 34.7361,
-        "stddev": 15.2734,
+        "mean": 34.5676,
+        "stddev": 15.0738,
         "min": 7,
         "max": 106
       }
