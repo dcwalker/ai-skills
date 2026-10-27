@@ -26,37 +26,40 @@ Timezone: UTC (change to yours, such as Europe/Berlin)
 - **See why sift labeled something:** each run's commit message lists every
   thread it labeled, with the reason.
 - **Choose newsletters:** list the ones I want to read under Newsletters,
-  Valued. Every other newsletter gets AI/Bulk. Sift adds lines there too, each
+  Valued. Every other newsletter gets Bulk. Sift adds lines there too, each
   starting with "(learned)", from its daily check.
 - **Choose tabs:** say under Tabs which mail goes in Social, Promotions, or
   Updates. Sift moves mail to match, whatever tab Gmail picked, and keeps a
   tab I set by hand.
 - **Allow more than labels:** add it under Permissions, for example
-  "Archive threads labeled AI/Junk". Only I add permissions or notifications.
+  "Archive threads labeled Junk". Only I add permissions or notifications.
 - **Tell sift about yourself:** add notes under About me, grouped by topic.
   Sift adds its own notes there too, each starting with "(inferred)". Edit one
   to correct it, or remove "(inferred)" to make it yours.
 
 ## Labels
 
-Every label and mark sift applies, and when. A thread gets one priority, plus
-a star and category labels when they fit, each judged on what the message is,
-not on the words it uses. Sift creates labels under AI/ and keeps this table
-current, adding a row for each label it starts using.
+Every label in my account and every mark sift applies, and when. A thread
+gets one priority, plus a star and other labels when they fit, each judged on
+what the message is, not on the words it uses. Sift applies any label here
+when a thread fits its row, mine included, unless the row says sift doesn't
+apply it. It keeps this table current: a row for each label it starts using,
+and an "(inferred)" row for each of my labels that lacks one, saying what goes
+there.
 
 | Label | When sift applies it |
 |---|---|
 | Important (Gmail's mark) | Priority: I'd want to see it today |
-| AI/Low priority | Priority: meant for me, nothing urgent |
-| AI/Bulk | Priority: mass mail I wouldn't miss if it were archived unread |
-| AI/Junk | Priority: mail I never want |
+| Low priority | Priority: meant for me, nothing urgent |
+| Bulk | Priority: mass mail I wouldn't miss if it were archived unread |
+| Junk | Priority: mail I never want |
 | Star | Someone is waiting on me (see Needs reply) |
-| AI/Receipt, AI/Statement, AI/Invoice | The message is one, or carries one as an attachment. One that only talks about one ("where is my receipt?") gets none |
-| AI/Newsletter | It works as a newsletter, whatever it calls itself: a "newsletter", a "gazette", or a regular Friday update that reads like one |
-| AI/Travel | Booking confirmations, itineraries, boarding passes, and check-in reminders for trips I've booked; not travel deals |
-| AI/Delivery | Tracking, "out for delivery", and "delivered" notices for orders I've placed; not shipping promotions |
-| AI/Appointment | Confirmations, reminders, and reschedules for appointments I have; not "book your next visit" promotions |
-| AI/Security | Sign-in alerts, password resets, and verification codes from services I use; a lookalike sender is Junk instead |
+| Receipt, Statement, Invoice | The message is one, or carries one as an attachment. One that only talks about one ("where is my receipt?") gets none |
+| Newsletter | It works as a newsletter, whatever it calls itself: a "newsletter", a "gazette", or a regular Friday update that reads like one |
+| Travel | Booking confirmations, itineraries, boarding passes, and check-in reminders for trips I've booked; not travel deals |
+| Delivery | Tracking, "out for delivery", and "delivered" notices for orders I've placed; not shipping promotions |
+| Appointment | Confirmations, reminders, and reschedules for appointments I have; not "book your next visit" promotions |
+| Security | Sign-in alerts, password resets, and verification codes from services I use; a lookalike sender is Junk instead |
 
 ## About me
 
@@ -116,8 +119,8 @@ Mass mail I wouldn't miss if it were archived unread, including:
 
 ## Newsletters
 
-Valued newsletters get AI/Low priority. Every other newsletter, listed under
-Not valued or not listed at all, gets AI/Bulk. One per line: name | sender.
+Valued newsletters get Low priority. Every other newsletter, listed under
+Not valued or not listed at all, gets Bulk. One per line: name | sender.
 
 ### Valued
 
@@ -153,18 +156,18 @@ say what goes there.
 
 | Tab | What goes here | Related labels |
 |---|---|---|
-| Primary | Important mail, and anything the other rows don't place | Important, AI/Low priority |
-| Social | Notifications from social networks and fitness or community apps | Usually AI/Bulk |
-| Promotions | Marketing, sales, and newsletters from stores and brands | AI/Bulk, AI/Junk, AI/Newsletter |
-| Updates | Receipts, statements, invoices, and bills; delivery, travel, and appointment notices; account and security alerts; automated notifications that only confirm something already done | AI/Receipt, AI/Statement, AI/Invoice, AI/Delivery, AI/Travel, AI/Appointment, AI/Security |
+| Primary | Important mail, and anything the other rows don't place | Important, Low priority |
+| Social | Notifications from social networks and fitness or community apps | Usually Bulk |
+| Promotions | Marketing, sales, and newsletters from stores and brands | Bulk, Junk, Newsletter |
+| Updates | Receipts, statements, invoices, and bills; delivery, travel, and appointment notices; account and security alerts; automated notifications that only confirm something already done | Receipt, Statement, Invoice, Delivery, Travel, Appointment, Security |
 | Forums | Nothing: I don't use this tab | |
 
 ## Permissions
 
 Actions beyond priority labels that sift may take, by category. Empty means
-priority labels only. For example: "Archive threads labeled AI/Junk", or
+priority labels only. For example: "Archive threads labeled Junk", or
 "Label event invitations as invitation". Sift creates any label I name here
-under AI/ in title case (AI/Invitation).
+in title case (Invitation), or uses mine when I already have one by that name.
 
 - (none yet)
 

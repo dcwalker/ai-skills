@@ -58,24 +58,19 @@
       "name": "School",
       "type": "user"
     },
-    "Label_20": {
-      "id": "Label_20",
-      "name": "AI",
-      "type": "user"
-    },
     "Label_22": {
       "id": "Label_22",
-      "name": "AI/Low priority",
+      "name": "Low priority",
       "type": "user"
     },
     "Label_23": {
       "id": "Label_23",
-      "name": "AI/Junk",
+      "name": "Junk",
       "type": "user"
     },
     "Label_27": {
       "id": "Label_27",
-      "name": "AI/Bulk",
+      "name": "Bulk",
       "type": "user"
     }
   },
