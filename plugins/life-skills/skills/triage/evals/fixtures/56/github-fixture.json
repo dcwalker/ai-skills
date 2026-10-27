@@ -1,0 +1,12 @@
+{
+  "anchor_date": "2026-10-26",
+  "login": "pat-example",
+  "repos": {
+    "pat-example/files": {
+      "private": true,
+      "files": {
+        "README.md": "# Files\n\nPrivate notes and documents.\n"
+      }
+    }
+  }
+}

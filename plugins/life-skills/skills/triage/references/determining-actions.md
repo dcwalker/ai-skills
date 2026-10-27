@@ -25,8 +25,11 @@ it, file it), someday (park it), or noise (delete or archive it). Say which.
 ## The three kinds
 
 **Now.** Something to do at the next opportunity, with no particular time or
-place. Under two minutes, it is done in this run under the 2-minute rule (a
-reply draft, a label, a comment). Longer, it is captured as an action.
+place. Under two minutes, it is offered under the 2-minute rule ("Want me to
+draft that reply now?") and done in this run only on a yes. Longer, it is
+captured as an action. Either way, what the user says needs doing is recorded
+as the item's action; triage does not start the task on its own (SKILL.md
+Step 6).
 
 **At a time or place.** Something tied to a date, a deadline, an appointment,
 or a location. The time becomes a due date or a calendar entry; the place goes
@@ -69,8 +72,10 @@ pattern before proposing where this one goes:
 
 - **Due dates.** Do similar items, especially other check-ins, carry due
   dates? Then this one gets a due date too.
-- **A waiting-for list or label.** Is there a `Waiting For` list on the board,
-  or a `Waiting For` label in use? Check-ins go there.
+- **A waiting-for list or label.** Is there a waiting-for list on the board,
+  or a waiting-for label in use? Check-ins go there.
+- **The preferences file.** Does it say how check-ins and due dates are
+  recorded? Then that settles it.
 - **Context labels.** Do items carry place or context labels (`@errands`,
   `@home`, `@office`)? A place-bound action gets the matching one.
 - **Titles.** Do existing check-ins share a phrasing ("Check in with X about
@@ -79,20 +84,26 @@ pattern before proposing where this one goes:
   timed action is proposed as an event, never created unconfirmed.
 
 Follow the pattern you find and name it in the proposal ("matching your other
-check-ins, which carry a due date on the Waiting For list"). When the scope
-shows no pattern, ask, offering the options that fit the platform:
+check-ins, which carry a due date on the waiting-for list"). When the scope
+shows no pattern, ask when first, then, in the item's next reply, how to
+record it, offering the options that fit the platform:
 
 > "This is a check-in with the plumber about the estimate. When should you
-> check in, and how do you want check-ins recorded: a due date on this card, a
-> calendar reminder, or just the Waiting For label?"
+> check in?"
+>
+> "Should check-ins like this get a due date on the card, or a calendar
+> reminder?"
 
 ## Presenting the action
 
-Step 9's summary leads each item's entry with its action, so the user can
-check it before reading the field changes it drove:
+The item's reply (Step 9) states the action on its summary line, so the user
+can check it before hearing the changes it drove:
 
 ```
-Action:       check-in: ask the landlord about the dishwasher repair, Oct 12
-Title:        "Dishwasher" → "Check in with the landlord about the dishwasher repair"
-Due date:     2026-10-12 (the date the landlord gave)
+[Dishwasher](https://trello.com/c/abc123)
+The landlord is fixing it; your action is to check in about the repair on Oct 12.
+Dates:     Oct 12 (the date the landlord gave)
+Labels:    Waiting
+Proposed:  title "Check in with the landlord about the dishwasher repair"; due Oct 12
+Retitle it and set the due date?
 ```

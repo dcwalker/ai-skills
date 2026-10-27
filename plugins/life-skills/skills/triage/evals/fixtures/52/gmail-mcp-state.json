@@ -1,0 +1,72 @@
+{
+  "anchor_date": "2026-10-26",
+  "stub_now": "2026-10-26T15:00:00Z",
+  "me": "eval-user@example.com",
+  "threads": {
+    "thread-1": {
+      "id": "thread-1",
+      "subject": "October flyer",
+      "from": "office@oakridge-elementary.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-22T13:00:00Z",
+      "snippet": "",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-1",
+          "from": "office@oakridge-elementary.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-22T13:00:00Z",
+          "snippet": "",
+          "body": "<html><body><img src=\"https://cdn.oakridge-elementary.invalid/flyers/october.png\" alt=\"\" width=\"600\"></body></html>"
+        }
+      ]
+    },
+    "thread-2": {
+      "id": "thread-2",
+      "subject": "Your library book is due {{date:2026-10-30|%B %-d}}",
+      "from": "notices@riverside-library.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-23T08:00:00Z",
+      "snippet": "\"The Backyard Orchard\" is due back on {{date:2026-10-30|%B %-d}}. Renew it online or return it to any branch.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-2",
+          "from": "notices@riverside-library.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-23T08:00:00Z",
+          "snippet": "\"The Backyard Orchard\" is due back on {{date:2026-10-30|%B %-d}}. Renew it online or return it to any branch.",
+          "body": "\"The Backyard Orchard\" is due back on {{date:2026-10-30|%B %-d}}. Renew it online or return it to any branch."
+        }
+      ]
+    }
+  },
+  "labels": {
+    "Label_1": {
+      "id": "Label_1",
+      "name": "School",
+      "type": "user"
+    },
+    "Label_2": {
+      "id": "Label_2",
+      "name": "Library",
+      "type": "user"
+    }
+  },
+  "drafts": {}
+}

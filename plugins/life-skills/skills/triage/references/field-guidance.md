@@ -20,7 +20,8 @@ context:
 - **Project/initiative:** State the end goal. "Launch self-serve billing portal
   for SMB customers" beats "billing portal".
 - **Email captured as an action:** When converting an email into a tracked
-  action (a Trello card, a Jira issue, or a stored email action label), set
+  action (a Trello card, a Jira issue, or an existing label the account uses
+  for actions), set
   the title or subject line to the next action verb, not the original email
   subject. "Reply to Sue with Q3 forecast" beats "FW: Q3 numbers".
 - **Waiting on someone else:** Name the user's check-in, who it is with, and
@@ -57,12 +58,18 @@ rather than preserving redundant copies.
 
 ## Labels / tags
 
-Propose labels that will help find the item later. Calibrate to context:
+Propose labels that will help find the item later, chosen from the labels the
+scope already has (SKILL.md Step 0c). Calibrate the choice to context:
 
-- **Personal:** Simple tags like "travel", "home", "health", "finance".
+- **Personal:** Simple topical labels like "travel", "home", "health",
+  "finance", when the board has them.
 - **Professional:** Domain ("auth", "billing"), type ("bug", "feature",
-  "tech-debt"), and specifics ("mobile", "ios", "android"). Prefer specific
-  over generic when both apply.
-- **Email:** Use plain label names with no prefix character. The core action
-  labels are `Action`, `Waiting For`, and optionally `Read-Review` and
-  `To-Print`. Reference labels are topical (person, project, domain).
+  "tech-debt"), and specifics ("mobile", "ios", "android"), from the project's
+  labels in use. Prefer specific over generic when both apply.
+- **Email:** The account's own labels. When sift-email's rubric exists, its
+  Labels table says which label a thread gets; follow it, and flag a thread
+  whose current label disagrees with it.
+
+A label the set lacks is never proposed for one item. When three or more
+items share a pattern no label covers, SKILL.md Step 9b offers one new label
+for them, once.

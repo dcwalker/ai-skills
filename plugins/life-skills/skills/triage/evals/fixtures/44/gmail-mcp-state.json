@@ -1,0 +1,104 @@
+{
+  "anchor_date": "2026-10-26",
+  "stub_now": "2026-10-26T15:00:00Z",
+  "me": "eval-user@example.com",
+  "threads": {
+    "thread-1": {
+      "id": "thread-1",
+      "subject": "Your Greenleaf Grocers receipt",
+      "from": "receipts@greenleafgrocers.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-21T17:05:00Z",
+      "snippet": "Thanks for shopping with us. Total $64.18, paid with card ending 2210.",
+      "labelIds": [
+        "INBOX",
+        "Label_1"
+      ],
+      "messages": [
+        {
+          "id": "msg-1",
+          "from": "receipts@greenleafgrocers.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-21T17:05:00Z",
+          "snippet": "Thanks for shopping with us. Total $64.18, paid with card ending 2210.",
+          "body": "Thanks for shopping with us. Total $64.18, paid with card ending 2210."
+        }
+      ]
+    },
+    "thread-2": {
+      "id": "thread-2",
+      "subject": "Fall sale: 30% off everything this weekend",
+      "from": "deals@fieldline-outfitters.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-22T12:00:00Z",
+      "snippet": "Our biggest sale of the season: 30% off everything, this weekend only. Shop now.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD",
+        "Label_1"
+      ],
+      "messages": [
+        {
+          "id": "msg-2",
+          "from": "deals@fieldline-outfitters.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-22T12:00:00Z",
+          "snippet": "Our biggest sale of the season: 30% off everything, this weekend only. Shop now.",
+          "body": "Our biggest sale of the season: 30% off everything, this weekend only. Shop now."
+        }
+      ]
+    },
+    "thread-3": {
+      "id": "thread-3",
+      "subject": "The Weekly Trowel: bulbs to plant now",
+      "from": "news@weeklytrowel.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-23T07:00:00Z",
+      "snippet": "This week: which spring bulbs to plant before the ground freezes, and how deep.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-3",
+          "from": "news@weeklytrowel.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-23T07:00:00Z",
+          "snippet": "This week: which spring bulbs to plant before the ground freezes, and how deep.",
+          "body": "This week: which spring bulbs to plant before the ground freezes, and how deep."
+        }
+      ]
+    }
+  },
+  "labels": {
+    "Label_1": {
+      "id": "Label_1",
+      "name": "AI/Receipt",
+      "type": "user"
+    },
+    "Label_2": {
+      "id": "Label_2",
+      "name": "AI/Bulk",
+      "type": "user"
+    },
+    "Label_3": {
+      "id": "Label_3",
+      "name": "AI/Newsletter",
+      "type": "user"
+    }
+  },
+  "drafts": {}
+}

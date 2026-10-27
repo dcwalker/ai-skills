@@ -1,0 +1,25 @@
+{
+  "anchor_date": "2026-10-26",
+  "login": "pat-example",
+  "repos": {
+    "pat-example/files": {
+      "private": true,
+      "files": {
+        "README.md": "# Files\n\nPrivate notes and documents.\n"
+      }
+    },
+    "pat-example/notes": {
+      "private": false,
+      "files": {
+        "triage/preferences.md": "# Triage Preferences\n\nTriage reads this file before every run and applies what it says without asking again.\n\n## Capturing to Trello\n\nNew cards go on the \"Personal Tasks\" board, \"Someday\" list, at the bottom.\n\n## Dates\n\n## Email\n\n\n## Processing order\n\n## Other\n"
+      }
+    },
+    "riley-sample/files": {
+      "private": true,
+      "checkout": true,
+      "files": {
+        "triage/preferences.md": "# Triage Preferences\n\nTriage reads this file before every run and applies what it says without asking again.\n\n## Capturing to Trello\n\nNew cards go on the \"Personal Tasks\" board, \"Someday\" list, at the bottom.\n\n## Dates\n\n## Email\n\n\n## Processing order\n\n## Other\n"
+      }
+    }
+  }
+}

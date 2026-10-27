@@ -1,0 +1,40 @@
+{
+  "anchor_date": "2026-10-26",
+  "stub_now": "2026-10-26T15:00:00Z",
+  "me": "eval-user@example.com",
+  "threads": {
+    "thread-1": {
+      "id": "thread-1",
+      "subject": "Your library card expires soon",
+      "from": "accounts@riverside-library.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-15T09:00:00Z",
+      "snippet": "Your Riverside Library card expires on {{date:2026-11-15|%B %-d}}. Renew online at https://riverside-library.invalid/account/renew or at any branch.",
+      "labelIds": [
+        "Label_1"
+      ],
+      "messages": [
+        {
+          "id": "msg-1",
+          "from": "accounts@riverside-library.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-15T09:00:00Z",
+          "snippet": "Your Riverside Library card expires on {{date:2026-11-15|%B %-d}}. Renew online at https://riverside-library.invalid/account/renew or at any branch.",
+          "body": "Your Riverside Library card expires on {{date:2026-11-15|%B %-d}}. Renew online at https://riverside-library.invalid/account/renew or at any branch."
+        }
+      ]
+    }
+  },
+  "labels": {
+    "Label_1": {
+      "id": "Label_1",
+      "name": "Library",
+      "type": "user"
+    }
+  },
+  "drafts": {}
+}

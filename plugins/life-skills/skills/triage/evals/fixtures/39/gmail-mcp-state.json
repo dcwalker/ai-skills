@@ -1,0 +1,98 @@
+{
+  "anchor_date": "2026-10-26",
+  "stub_now": "2026-10-26T15:00:00Z",
+  "me": "eval-user@example.com",
+  "threads": {
+    "thread-1": {
+      "id": "thread-1",
+      "subject": "Your Fieldline order has shipped",
+      "from": "orders@fieldline-outfitters.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-20T09:15:00Z",
+      "snippet": "Your order #44817 (trail socks, 2 pairs) has shipped and should arrive Thursday.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-1",
+          "from": "orders@fieldline-outfitters.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-20T09:15:00Z",
+          "snippet": "Your order #44817 (trail socks, 2 pairs) has shipped and should arrive Thursday.",
+          "body": "Your order #44817 (trail socks, 2 pairs) has shipped and should arrive Thursday."
+        }
+      ]
+    },
+    "thread-2": {
+      "id": "thread-2",
+      "subject": "Salad for Saturday?",
+      "from": "jordan@example.com",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-22T18:40:00Z",
+      "snippet": "Are you still coming on Saturday? Could you bring a salad? Let me know either way.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-2",
+          "from": "jordan@example.com",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-22T18:40:00Z",
+          "snippet": "Are you still coming on Saturday? Could you bring a salad? Let me know either way.",
+          "body": "Hi,\n\nAre you still coming on Saturday? Could you bring a salad? Let me know either way.\n\nJordan"
+        }
+      ]
+    },
+    "thread-3": {
+      "id": "thread-3",
+      "subject": "The Weekly Trowel: bulbs to plant now",
+      "from": "news@weeklytrowel.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-24T07:00:00Z",
+      "snippet": "This week: which spring bulbs to plant before the ground freezes, and how deep.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-3",
+          "from": "news@weeklytrowel.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-24T07:00:00Z",
+          "snippet": "This week: which spring bulbs to plant before the ground freezes, and how deep.",
+          "body": "This week: which spring bulbs to plant before the ground freezes, and how deep."
+        }
+      ]
+    }
+  },
+  "labels": {
+    "Label_1": {
+      "id": "Label_1",
+      "name": "Receipts",
+      "type": "user"
+    },
+    "Label_2": {
+      "id": "Label_2",
+      "name": "Newsletters",
+      "type": "user"
+    }
+  },
+  "drafts": {}
+}

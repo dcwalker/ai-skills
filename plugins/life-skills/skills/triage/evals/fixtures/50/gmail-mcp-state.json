@@ -1,0 +1,145 @@
+{
+  "anchor_date": "2026-10-26",
+  "stub_now": "2026-10-26T15:00:00Z",
+  "me": "eval-user@example.com",
+  "threads": {
+    "thread-1": {
+      "id": "thread-1",
+      "subject": "Your Parcelpost delivery digest for {{date:2026-10-20|%b %-d}}",
+      "from": "noreply@parcelpost.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-20T06:00:00Z",
+      "snippet": "Here's what's arriving today: one package from Fieldline Outfitters, scheduled by 8pm.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-1",
+          "from": "noreply@parcelpost.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-20T06:00:00Z",
+          "snippet": "Here's what's arriving today: one package from Fieldline Outfitters, scheduled by 8pm.",
+          "body": "Here's what's arriving today: one package from Fieldline Outfitters, scheduled by 8pm."
+        }
+      ]
+    },
+    "thread-2": {
+      "id": "thread-2",
+      "subject": "Signature needed: schedule a redelivery",
+      "from": "noreply@parcelpost.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-21T14:10:00Z",
+      "snippet": "We missed you. A package needs your signature. Schedule a redelivery by {{date:2026-10-30|%B %-d}} or it goes back to the sender.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-2",
+          "from": "noreply@parcelpost.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-21T14:10:00Z",
+          "snippet": "We missed you. A package needs your signature. Schedule a redelivery by {{date:2026-10-30|%B %-d}} or it goes back to the sender.",
+          "body": "We missed you. A package needs your signature. Schedule a redelivery by {{date:2026-10-30|%B %-d}} or it goes back to the sender."
+        }
+      ]
+    },
+    "thread-3": {
+      "id": "thread-3",
+      "subject": "Your Parcelpost delivery digest for {{date:2026-10-22|%b %-d}}",
+      "from": "noreply@parcelpost.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-22T06:00:00Z",
+      "snippet": "Here's what's arriving today: one package from Fieldline Outfitters, scheduled by 8pm.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-3",
+          "from": "noreply@parcelpost.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-22T06:00:00Z",
+          "snippet": "Here's what's arriving today: one package from Fieldline Outfitters, scheduled by 8pm.",
+          "body": "Here's what's arriving today: one package from Fieldline Outfitters, scheduled by 8pm."
+        }
+      ]
+    },
+    "thread-4": {
+      "id": "thread-4",
+      "subject": "Your Parcelpost delivery digest for {{date:2026-10-23|%b %-d}}",
+      "from": "noreply@parcelpost.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-23T06:00:00Z",
+      "snippet": "Here's what's arriving today: one package from Fieldline Outfitters, scheduled by 8pm.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-4",
+          "from": "noreply@parcelpost.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-23T06:00:00Z",
+          "snippet": "Here's what's arriving today: one package from Fieldline Outfitters, scheduled by 8pm.",
+          "body": "Here's what's arriving today: one package from Fieldline Outfitters, scheduled by 8pm."
+        }
+      ]
+    },
+    "thread-5": {
+      "id": "thread-5",
+      "subject": "Carpool on Thursday?",
+      "from": "jordan@example.com",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-24T19:20:00Z",
+      "snippet": "Can you drive the kids to practice on Thursday? I can take next week.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-5",
+          "from": "jordan@example.com",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-24T19:20:00Z",
+          "snippet": "Can you drive the kids to practice on Thursday? I can take next week.",
+          "body": "Can you drive the kids to practice on Thursday? I can take next week."
+        }
+      ]
+    }
+  },
+  "labels": {
+    "Label_1": {
+      "id": "Label_1",
+      "name": "Deliveries",
+      "type": "user"
+    }
+  },
+  "drafts": {}
+}

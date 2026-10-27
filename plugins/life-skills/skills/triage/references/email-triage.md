@@ -9,7 +9,8 @@ not apply.
 
 Follow the same MCP → skill → CLI → REST hierarchy Step 2 defines. The Gmail
 MCP exposes the operations needed: `search_threads`, `get_thread`,
-`list_labels`, `modify_thread_labels`, `archive_thread`, `create_draft`. Use
+`list_labels`, `modify_thread_labels`, `archive_thread`, `create_draft`.
+Marking read or unread is a label change: remove or add `UNREAD`. Use
 `search_threads` with the scope query (e.g. `in:inbox`) to enumerate the
 corpus, then fetch metadata only. Defer `get_thread` (full body) until needed,
 per Step 0's bounded-read rule.
@@ -46,64 +47,63 @@ tree. The tree applies GTD email principles directly.
 For each thread, decide in this order:
 
 1. **Delete?** If the thread has no future value as either action or reference,
-   propose deleting it. When the corpus is large, offer to group by sender and
-   delete obvious noise as one batch action (SKILL.md Step 1a). A thread
-   joins the batch only when its own subject and snippet show it is noise,
-   not because it shares a sender with noise. Threads a batch action leaves
-   in the inbox, such as after a batch label, still walk this tree
-   individually.
+   propose deleting it. A thread is noise on its own subject and snippet, not
+   because it shares a sender with noise. Once the user decides one, SKILL.md
+   Step 9b offers the same decision for the threads like it.
 2. **2-minute rule?** If a reply or action can be completed in under two
-   minutes and is ever going to be done, draft it now via `create_draft`. Show
-   the draft, confirm the wording, then leave it in the user's Gmail drafts
-   for them to review and send. The Gmail MCP does not send; sending stays
-   with the user. Do not defer.
+   minutes and is ever going to be done, offer to draft it now. On a yes,
+   draft it via `create_draft`: show the draft, confirm the wording, then
+   leave it in the user's Gmail drafts for them to review and send. The
+   Gmail MCP does not send; sending stays with the user.
 3. **Reference only?** If the thread is purely informational and should be
-   kept, propose applying a topical reference label and archiving out of the
-   inbox. Use a single flat label list, not nested labels. Search is the
-   retrieval mechanism, not folder navigation.
-4. **Action, > 2 minutes?** Capture the action somewhere durable:
-   - Apply the `Action` label and edit the subject of a stored copy (or note
-     the action verb in a comment), **or**
-   - Capture to Trello via the Step 7c flow as a card whose title is the
-     action Step 6 named. Either way, then archive the thread out of the inbox.
-5. **Waiting for someone else?** Apply the `Waiting For` label and archive.
-   The label, not the inbox, is the reminder surface. The next move is the
-   other person's, but the thread's action is still the user's: the check-in
-   Step 6 named, saying who it is with, what it is about, and when. A date the
-   thread gives (a promised reply, a deadline) sets when; with none, ask
-   rather than pick one. Where the check-in is recorded follows the pattern
-   the scope already uses
+   kept, propose the account's existing label that fits it (sift-email's
+   rubric decides which, when there is one) and archiving out of the inbox.
+   Search is the retrieval mechanism, not folder navigation.
+4. **Action, > 2 minutes?** Capture the action somewhere durable: capture to
+   Trello via the Step 7c flow as a card whose title is the action Step 6
+   named, or keep it in Gmail the way the account already marks threads to
+   act on (an existing label, a star, or left in the inbox). The preferences
+   file may say what happens to the thread once it has a card (unstar it,
+   archive it).
+5. **Waiting for someone else?** The next move is the other person's, but the
+   thread's action is still the user's: the check-in Step 6 named, saying who
+   it is with, what it is about, and when. A date the thread gives (a
+   promised reply, a deadline) sets when; with none, ask rather than pick one.
+   Where the check-in is recorded follows the pattern the scope already uses,
+   such as an existing waiting-for label or a Trello list
    ([determining-actions.md](determining-actions.md)); with no pattern, name
-   the check-in in the summary and ask when and where to record it. The
-   entry reads as the user's action, never as the other person's:
+   the check-in and ask when, then where to record it in the item's next
+   reply. The reply reads as the
+   user's action, never as the other person's:
 
    ```
-   Waiting For:  check in with the landlord about the dishwasher repair;
-                 when should I remind you?
+   Check-in:  check in with the landlord about the dishwasher repair
+   When should I remind you to check in?
    ```
-6. **Read-review later?** If the content is long-form and worth reading but
-   not actionable now, apply `Read-Review` and archive.
+6. **Read later?** If the content is long-form and worth reading but not
+   actionable now, propose the account's existing read-later label or star,
+   if it has one, or leaving it in the inbox; ask when it has neither.
 
-Always confirm each label change, draft, and archive before writing.
+No branch marks a thread read, or unread, as a side effect: archiving leaves
+the read state as it was unless the user asked (SKILL.md Step 9a). Always
+confirm each label change, draft, read-state change, and archive before
+writing, unless the user authorized it up front or the preferences file
+settles it.
 
 ## Closing an email run
 
-After walking the corpus, surface counts:
+After the last thread, surface counts in the closing report:
 
 ```
 Inbox processed: N threads
   Deleted:       X
   Replied (<2m): X
-  Captured:      X (Trello: X, action label: X)
-  Waiting For:   X
-  Read-Review:   X
+  Captured:      X (Trello: X, kept in Gmail: X)
+  Check-ins:     X
+  Read later:    X
   Reference:     X
+  Marked read:   X
 ```
 
-Remind the user that `Action` and `Waiting For` labels are only useful if
-reviewed regularly, and suggest a review cadence if the user does not already
-have one.
-
-If any of the `Action`, `Waiting For`, `Read-Review`, or `To-Print` labels do
-not yet exist in the user's Gmail account (check via `list_labels`), propose
-creating them and confirm before doing so.
+Labels are never created here. A label the account lacks is offered only
+from a pattern across three or more threads (SKILL.md Step 9b).

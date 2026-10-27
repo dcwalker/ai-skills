@@ -1,0 +1,145 @@
+{
+  "anchor_date": "2026-10-26",
+  "stub_now": "2026-10-26T15:00:00Z",
+  "me": "eval-user@example.com",
+  "threads": {
+    "thread-1": {
+      "id": "thread-1",
+      "subject": "Webinar: retirement planning basics",
+      "from": "events@harborbank.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-19T14:00:00Z",
+      "snippet": "Join our free webinar on retirement planning basics. Register now to save your seat.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-1",
+          "from": "events@harborbank.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-19T14:00:00Z",
+          "snippet": "Join our free webinar on retirement planning basics. Register now to save your seat.",
+          "body": "Join our free webinar on retirement planning basics. Register now to save your seat."
+        }
+      ]
+    },
+    "thread-2": {
+      "id": "thread-2",
+      "subject": "Dinner on Friday?",
+      "from": "jordan@example.com",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-20T18:30:00Z",
+      "snippet": "Are you free for dinner on Friday? Thinking of the noodle place on Main.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-2",
+          "from": "jordan@example.com",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-20T18:30:00Z",
+          "snippet": "Are you free for dinner on Friday? Thinking of the noodle place on Main.",
+          "body": "Are you free for dinner on Friday? Thinking of the noodle place on Main."
+        }
+      ]
+    },
+    "thread-3": {
+      "id": "thread-3",
+      "subject": "Webinar invite: cut your home energy bill",
+      "from": "news@brightgrid-energy.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-21T15:00:00Z",
+      "snippet": "Learn ten ways to cut your energy bill this winter in our free live webinar. Save your spot.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-3",
+          "from": "news@brightgrid-energy.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-21T15:00:00Z",
+          "snippet": "Learn ten ways to cut your energy bill this winter in our free live webinar. Save your spot.",
+          "body": "Learn ten ways to cut your energy bill this winter in our free live webinar. Save your spot."
+        }
+      ]
+    },
+    "thread-4": {
+      "id": "thread-4",
+      "subject": "Register now: fall gardening webinar",
+      "from": "news@weeklytrowel.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-22T07:00:00Z",
+      "snippet": "Our free fall gardening webinar is next week. Register to get the link.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-4",
+          "from": "news@weeklytrowel.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-22T07:00:00Z",
+          "snippet": "Our free fall gardening webinar is next week. Register to get the link.",
+          "body": "Our free fall gardening webinar is next week. Register to get the link."
+        }
+      ]
+    },
+    "thread-5": {
+      "id": "thread-5",
+      "subject": "Your webinar recording and certificate",
+      "from": "training@safeworks-courses.example",
+      "to": [
+        "eval-user@example.com"
+      ],
+      "date": "2026-10-23T16:00:00Z",
+      "snippet": "Thanks for attending the first-aid refresher webinar. Your recording and completion certificate are attached; keep the certificate for your records.",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "msg-5",
+          "from": "training@safeworks-courses.example",
+          "to": [
+            "eval-user@example.com"
+          ],
+          "date": "2026-10-23T16:00:00Z",
+          "snippet": "Thanks for attending the first-aid refresher webinar. Your recording and completion certificate are attached; keep the certificate for your records.",
+          "body": "Thanks for attending the first-aid refresher webinar. Your recording and completion certificate are attached; keep the certificate for your records."
+        }
+      ]
+    }
+  },
+  "labels": {
+    "Label_1": {
+      "id": "Label_1",
+      "name": "Training",
+      "type": "user"
+    }
+  },
+  "drafts": {}
+}

@@ -234,16 +234,16 @@ dates, and totals.
   workspace.
 - MCP-backed skills (`sift-email`, `triage`, `writing`): trials must be real `claude -p`
   subprocesses. Run `bash evals/lib/run-mcp-trials.sh <skill-evals-dir>`
-  (`triage` has its own equivalent driver at
-  `plugins/life-skills/skills/triage/evals/run-trials.sh`); it wires the MCP
-  stubs via `evals/lib/run-mcp-eval.sh` and saves per-trial transcripts, call
-  logs, final state, and metrics for grading. Both drivers pass an explicit
+  (`triage`'s `plugins/life-skills/skills/triage/evals/run-trials.sh` is a
+  thin caller of it); it wires the MCP stubs via `evals/lib/run-mcp-eval.sh`
+  and saves per-trial transcripts, call logs, final state, and metrics for
+  grading. The driver passes an explicit
   `--allowedTools` allowlist rather than `--dangerously-skip-permissions`, so
-  they run as root, in a container, in CI, or delegated to an in-session Bash
+  it runs as root, in a container, in CI, or delegated to an in-session Bash
   call — the nested `claude` inherits the parent session's credentials.
 - Trial output defaults to `<skill-evals-dir>/.trial-runs/`, which is
   gitignored but leaves `evals.json` and `fixtures/` a few directories above
-  each trial's own working directory. Both drivers honour `TRIALS_DIR`, which
+  each trial's own working directory. The driver honours `TRIALS_DIR`, which
   puts the workspaces outside the repo:
 
   ```bash
