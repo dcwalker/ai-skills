@@ -48,6 +48,7 @@ State model (the fake Gmail "database"):
                                "bcc": [...], "subject": "...", "body": "...",
                                "replyToMessageId": null or "<message_id>"}},
     "me": "user@example.com",
+    "view_url_style": "<optional: 'authuser' for the live format; see below>",
     "stub_now": "<ISO datetime, optional: the stub's fixed 'now'>"
   }
 
@@ -68,6 +69,11 @@ message's own id) is a plausible Gmail web address and a placeholder,
 unverified against a live response. A thread or message whose fixture
 entry sets "viewUrl" returns that value instead, and one that sets it to
 null returns no viewUrl at all, for an eval about a thread with no link.
+A live get_message and get_thread response (observed 2026-10-27) carried
+https://mail.google.com/mail/?authuser=<the signed-in address>#all/<id>, so
+a fixture that sets the top-level "view_url_style" to "authuser" gets that
+form, with its "me" address, in place of the placeholder; the live id part
+(thread-f:<number>) is not reproduced.
 search_threads' listing carries no messages here (unlike the live tool's
 related-message previews), so message URLs come only from get_thread.
 
@@ -122,9 +128,12 @@ _VIEW_URL_BASE = "https://mail.google.com/mail/u/0/#all/"  # placeholder format;
 
 def _with_view_url(view: dict, source: dict) -> dict:
     """Add the thread's or message's viewUrl: the fixture's own when it sets
-    one, none when it sets null, otherwise the placeholder built from its id."""
+    one, none when it sets null, otherwise one built from its id, in the live
+    authuser form when the fixture asks for it."""
     if "viewUrl" in source:
         url = source["viewUrl"]
+    elif state.data.get("view_url_style") == "authuser":
+        url = f"https://mail.google.com/mail/?authuser={state.data.get('me', '')}#all/{source['id']}"
     else:
         url = _VIEW_URL_BASE + source["id"]
     view.pop("viewUrl", None)

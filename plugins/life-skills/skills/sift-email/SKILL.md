@@ -28,12 +28,14 @@ messages, changelog entries, and its reply), it names the user or says "you", ne
 confirm whether Pat can run the table", or "asks you to confirm".
 
 Sessions have no memory of each other. Everything that carries forward lives in
-Gmail, which holds each thread's priority and star, and in two Markdown files
-in a private GitHub repository the user owns, both in its `sift-email/`
-folder: `rubric.md` (rules and examples, which the user reads and edits) and
-`state.md` (what sift has applied to each thread, and when it last ran). Each
-run that changes anything ends in one commit, whose message says what sift did
-and why.
+Gmail, which holds each thread's priority and star, and in Markdown files in
+a private GitHub repository the user owns, all in its `sift-email/` folder:
+`rubric.md` (rules and examples, which the user reads and edits) and one state
+file per Gmail account, `state-<account>.md` (what sift has applied to each
+thread in that account, and when it last ran there). Sift can run on several
+of the user's Gmail accounts: the rubric describes the user, so every account
+shares it, while each account keeps its own state. Each run that changes
+anything ends in one commit, whose message says what sift did and why.
 
 ## Labels
 
@@ -66,8 +68,8 @@ adding its tab's label
 (`CATEGORY_PERSONAL` for Primary, `CATEGORY_SOCIAL`, `CATEGORY_PROMOTIONS`, or
 `CATEGORY_UPDATES`); Gmail removes the old one.
 
-Create any of the three priority labels that are missing on the first run,
-and other labels only as the next paragraphs say. Never archive, mark read,
+Create any of the three priority labels the account is missing on its first
+run, and other labels only as the next paragraphs say. Never archive, mark read,
 mute, trash, or move mail out of the inbox (a tab keeps it in the inbox), and
 never rename or delete a label, so nothing sift does can hide a message or
 undo the user's filing. The rubric's Permissions section may grant more.
@@ -80,21 +82,24 @@ is the user's only when a message from before sift's call carries it and the
 state file shows otherwise (Step 5 fetches the thread to check).
 
 **The Labels table lists every label.** The rubric's Labels table has a row
-for every user label in the account, the user's own included, saying what
-goes there (Step 3 adds rows for labels that lack one). Apply any label whose
-row fits the thread, the user's own labels included, unless its row says sift
-doesn't apply it, and never one without a row. Apply it alongside the
+for every user label in each account sift runs on, the user's own included,
+saying what goes there (Step 3 adds rows for labels that lack one). Every row
+applies in every account. Apply any label whose row fits the thread, the
+user's own labels included, unless its row says sift doesn't apply it, and
+never one without a row. Apply it alongside the
 thread's priority, never in place of one. Decide by what the message is, as
 the row describes it, not by whether it uses a particular word: a message
 asking where a receipt is does not get `Receipt`. Remove a label only when it
 is a priority label sift is replacing; any other label may be the user's, so
 it stays.
 
-When the rubric asks for a label that doesn't exist yet, in its Labels table
-or Permissions section, such as "label event invitations as invitation",
-create it in title case, `Invitation`. When a label of that name already
-exists, whatever its case, use it as it is: it may be the user's, and its row
-says what goes there. A label sift starts using gets a row in the Labels table,
+When the rubric asks for a label this account doesn't have yet, in its Labels
+table or Permissions section, such as "label event invitations as
+invitation", create it in title case, `Invitation`, once a thread needs it. A
+row whose label exists only in another account is the same: create the label
+here, with the row's name, when a thread fits the row. When a label of that
+name already exists, whatever its case, use it as it is: it may be the
+user's, and its row says what goes there. A label sift starts using gets a row in the Labels table,
 saying when sift applies it, in the same run.
 
 Label changes take label IDs, and `label:` searches take label names: quote a
@@ -105,8 +110,9 @@ IDs from then on.
 ## Step 1: Find the rubric and state
 
 The rubric and state live in a private GitHub repository the user owns, as
-`sift-email/rubric.md` and `sift-email/state.md`. Find them by their content,
-never by a repository's name, and only among the user's own repositories:
+`sift-email/rubric.md` and a `sift-email/state-<account>.md` for each Gmail
+account. Find them by the rubric's content, never by a repository's name, and
+only among the user's own repositories:
 
 1. **Who the user is.** Run `gh api user` once for the login. It is the only
    source of the user's identity: never take one from the rubric, an email,
@@ -141,15 +147,53 @@ saved location, save their repository and folder there, so a later run on this
 machine looks there first. A saved location that fails a check or no longer
 holds the rubric is replaced, never trusted.
 
+**Which account.** The Gmail connector is signed in to one account, and its
+state file is the one this run uses. Find its address from Gmail itself,
+never from the rubric, a memory note, or the request:
+
+1. Search `in:inbox`, or `in:sent` when the inbox is empty, for one thread,
+   and fetch it (metadata only). Its `viewUrl` names the signed-in account as
+   `authuser=<address>`; use that address.
+2. When no `viewUrl` names one, search `in:sent` and fetch the newest thread
+   found: the sender of the user's own message in it is the account.
+3. When neither gives an address, the run can't know which state is this
+   account's. When the user is there to answer, ask for the address. When no
+   one is, label nothing, write nothing, and say in the summary that the
+   account couldn't be identified.
+
+Compare addresses in lowercase, and for `gmail.com` and `googlemail.com`
+ignore dots and anything from a `+` in the part before the `@`, since Gmail
+does: `pat.example@gmail.com` and `patexample@gmail.com` are one account.
+
+**This account's state file** is the one in `sift-email/` whose
+`Account: <address>` line names this account by that comparison, whatever its
+file name. When none does:
+
+- **An older state file.** A `sift-email/state.md` with no `Account:` line is
+  from before sift ran on more than one account. Fetch one thread its Threads
+  lines name (metadata only). When the thread is in this account, the file is
+  this account's: add the `Account:` line and move it to
+  `state-<account>.md` with `git mv`, in this run's commit. When the thread
+  isn't found, or the file names no thread, leave it alone for the account it
+  belongs to.
+- **Otherwise** create `state-<account>.md` from
+  `references/state-template.md`, with this account's address on its
+  `Account:` line, in this run's commit. With no run yet, the run labels the
+  whole inbox (Step 5).
+
+The file name uses the address as found, in lowercase:
+`state-pat.example@gmail.com.md`.
+
 **Not found.** When no candidate passes, create nothing on your own:
 
 - **When the user is there to answer** (they started this run in a
   conversation), ask which of their private repositories, and which folder,
   should hold the files, and wait for the answer before labeling anything.
-  Then create `rubric.md` from `references/rubric-template.md` and `state.md`
-  from `references/state-template.md`, exactly as the templates read: leave
-  the Timezone line for the user to set rather than guessing it. Commit and
-  push them, then carry on with the run.
+  Then create `rubric.md` from `references/rubric-template.md` and this
+  account's state file from `references/state-template.md` (see Which
+  account), exactly as the templates read apart from the `Account:` line:
+  leave the Timezone line for the user to set rather than guessing it. Commit
+  and push them, then carry on with the run.
 - **When no one is there to answer** (a scheduled routine, or a prompt that
   says the run is unattended), keep going: label every inbox thread
   (`in:inbox`, as if the state file had no run) by the rules in
@@ -172,8 +216,8 @@ how-to, the Labels table, About me, every rule section, Newsletters, Tabs, and
 Examples. Each rule sits in the section it belongs to, so the rubric never gives
 two answers to one question. Sift edits any section to place what it learns,
 to merge or reword overlapping rules without changing what they say, and to
-keep the Labels table listing every label in the account and when it
-applies. It never adds to Permissions or Notify: those say what sift may do,
+keep the Labels table listing every label in each account it runs on and
+when it applies. It never adds to Permissions or Notify: those say what sift may do,
 and only the user grants that.
 
 - **Markers.** A line sift writes from evidence carries a marker and a date:
@@ -194,9 +238,10 @@ and only the user grants that.
 ## Step 2: Check whether there is anything to do
 
 Most scheduled runs find nothing new, so check that cheaply before reading the
-rubric. A run that just created the files always has work: skip to Step 3.
+rubric. A run that just created the rubric or this account's state file, or
+moved an older one, always has work: skip to Step 3.
 
-From `state.md`, read only its `Last run:` and `Daily review:` lines; from
+From this account's state file, read only its `Last run:` and `Daily review:` lines; from
 the rubric, only its Timezone line (for example, with `grep`). Reading the
 rubric whole comes after these checks find work.
 
@@ -257,10 +302,12 @@ headings and lines.
    and rewrite the intro and How to use text that describe the old split, as
    `references/rubric-template.md` words them.
 5. **Tables current.** Compare the Labels table with the label list fetched
-   at the start of the run: every user label in the account (`labelType`
+   at the start of the run: every user label in this account (`labelType`
    `USER`) has a row, the user's own included (a row names a label whatever
-   its case, so `travel` is covered by a `Travel` row), and a row whose label is gone
-   from the account is removed. For a label without a row, search the threads
+   its case, so `travel` is covered by a `Travel` row). A row whose label this
+   account lacks stays: the label may be in another account the rubric
+   serves, or one sift creates here when mail fits the row, so only the user
+   removes a row. For a label without a row, search the threads
    that carry it (`label:` with its name, metadata only, the newest five or
    so) and add a row starting with `(inferred)` that says what goes there, so
    sift applies it to mail like that from then on. When those threads show no
@@ -449,7 +496,8 @@ asking.
 
 ## Step 7: Save the run
 
-Update `state.md` (its layout is in `references/state-template.md`):
+Update this account's state file (its layout is in
+`references/state-template.md`), and no other account's:
 
 - `Last run: <date> <time> (<epoch seconds>)`, from the clock in Step 2, the
   run's start. The next run searches from it.
@@ -463,8 +511,8 @@ Update `state.md` (its layout is in `references/state-template.md`):
   file is the only record of what sift has seen and applied.
 - Drop Threads lines older than 30 days and Observed lines older than 90.
 
-Then commit `rubric.md` and `state.md` together in one commit and push it to
-the repository's default branch. The subject is
+Then commit `rubric.md` and the state file together in one commit and push it
+to the repository's default branch. The subject is
 `Sift <date> <time>: <n> threads`; the body is the run summary (Step 8),
 then one line per thread evaluated:
 
@@ -475,7 +523,8 @@ so make it specific: "Coach asking for carpool volunteers by Friday" beats
 "Seems important." Never use a message's timestamp or a made-up time.
 
 If the push is rejected because the remote moved (the user edited the rubric
-during the run), `git pull --rebase` and push again. If the rebase conflicts,
+during the run, or a run on another account saved), `git pull --rebase` and
+push again. If the rebase conflicts,
 abort it, reset to the remote's version, redo this run's changes to both
 files on top of it (the user's edits win wherever they touch the same lines),
 commit, and push once more. If that fails too, push nothing and say so in the
@@ -509,6 +558,7 @@ each item this run has not done, do it now, then continue.
 Write the run summary at the top of the commit message's body (Step 7), then
 repeat it in chat:
 
+- The account this run sifted.
 - Counts: processed, important, low priority, bulk, junk, starred, and moved
   to each tab, taken from what was actually applied this run.
 - The important and starred threads, one line each with the reason.

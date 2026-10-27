@@ -1,9 +1,11 @@
 # Email Sift State
 
-Sift's record of what it has applied, so each run knows where the last one
-stopped. Sift keeps this file; to change how sift labels mail, edit the
-rubric instead. Each run's reasons are in its commit message.
+Sift's record of what it has applied in one Gmail account, so each run there
+knows where the last one stopped. Sift keeps this file; to change how sift
+labels mail, edit the rubric instead. Each run's reasons are in its commit
+message.
 
+Account: (the account's address)
 Last run: (none yet)
 Daily review: (none yet)
 

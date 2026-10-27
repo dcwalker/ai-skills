@@ -1,0 +1,206 @@
+{
+  "anchor_date": "2026-10-10",
+  "stub_now": "2026-10-10T15:00:00Z",
+  "me": "pat.work@example.com",
+  "view_url_style": "authuser",
+  "labels": {
+    "INBOX": {
+      "id": "INBOX",
+      "name": "INBOX",
+      "type": "system"
+    },
+    "SENT": {
+      "id": "SENT",
+      "name": "SENT",
+      "type": "system"
+    },
+    "TRASH": {
+      "id": "TRASH",
+      "name": "TRASH",
+      "type": "system"
+    },
+    "SPAM": {
+      "id": "SPAM",
+      "name": "SPAM",
+      "type": "system"
+    },
+    "STARRED": {
+      "id": "STARRED",
+      "name": "STARRED",
+      "type": "system"
+    },
+    "IMPORTANT": {
+      "id": "IMPORTANT",
+      "name": "IMPORTANT",
+      "type": "system"
+    },
+    "UNREAD": {
+      "id": "UNREAD",
+      "name": "UNREAD",
+      "type": "system"
+    },
+    "Label_9": {
+      "id": "Label_9",
+      "name": "Clients",
+      "type": "user"
+    }
+  },
+  "threads": {
+    "t-client-old1": {
+      "id": "t-client-old1",
+      "subject": "Kickoff notes for the Harborline project",
+      "from": "priya.shah@harborline.example",
+      "to": [
+        "pat.work@example.com"
+      ],
+      "date": "2026-09-22T16:00:00Z",
+      "snippet": "Hi Pat, attached are the kickoff notes from today. We agreed on a six-week timeline and weekly check-ins on Tuesdays. Pr",
+      "labelIds": [
+        "Label_9"
+      ],
+      "messages": [
+        {
+          "id": "t-client-old1-m1",
+          "from": "priya.shah@harborline.example",
+          "to": [
+            "pat.work@example.com"
+          ],
+          "date": "2026-09-22T16:00:00Z",
+          "snippet": "Hi Pat, attached are the kickoff notes from today. We agreed on a six-week timeline and weekly check-ins on Tuesdays. Pr",
+          "body": "Hi Pat, attached are the kickoff notes from today. We agreed on a six-week timeline and weekly check-ins on Tuesdays. Priya"
+        }
+      ]
+    },
+    "t-client-old2": {
+      "id": "t-client-old2",
+      "subject": "Weekly check-in: Harborline",
+      "from": "priya.shah@harborline.example",
+      "to": [
+        "pat.work@example.com"
+      ],
+      "date": "2026-09-29T16:00:00Z",
+      "snippet": "Hi Pat, thanks for the update. The wireframes look good; the team will send comments by Thursday. Priya",
+      "labelIds": [
+        "Label_9"
+      ],
+      "messages": [
+        {
+          "id": "t-client-old2-m1",
+          "from": "priya.shah@harborline.example",
+          "to": [
+            "pat.work@example.com"
+          ],
+          "date": "2026-09-29T16:00:00Z",
+          "snippet": "Hi Pat, thanks for the update. The wireframes look good; the team will send comments by Thursday. Priya",
+          "body": "Hi Pat, thanks for the update. The wireframes look good; the team will send comments by Thursday. Priya"
+        }
+      ]
+    },
+    "t-client-old3": {
+      "id": "t-client-old3",
+      "subject": "Invoice 1 received",
+      "from": "ops@harborline.example",
+      "to": [
+        "pat.work@example.com"
+      ],
+      "date": "2026-10-02T17:00:00Z",
+      "snippet": "Hello Pat, we received the first invoice for the Harborline project and it is scheduled for payment. Harborline Operatio",
+      "labelIds": [
+        "Label_9"
+      ],
+      "messages": [
+        {
+          "id": "t-client-old3-m1",
+          "from": "ops@harborline.example",
+          "to": [
+            "pat.work@example.com"
+          ],
+          "date": "2026-10-02T17:00:00Z",
+          "snippet": "Hello Pat, we received the first invoice for the Harborline project and it is scheduled for payment. Harborline Operatio",
+          "body": "Hello Pat, we received the first invoice for the Harborline project and it is scheduled for payment. Harborline Operations"
+        }
+      ]
+    },
+    "t-client-q": {
+      "id": "t-client-q",
+      "subject": "Revised timeline: can you approve by Friday?",
+      "from": "priya.shah@harborline.example",
+      "to": [
+        "pat.work@example.com"
+      ],
+      "date": "2026-10-10T13:00:00Z",
+      "snippet": "Hi Pat, the team proposed moving the launch two weeks later to fit the extra testing. Can you approve the revised timeli",
+      "labelIds": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "messages": [
+        {
+          "id": "t-client-q-m1",
+          "from": "priya.shah@harborline.example",
+          "to": [
+            "pat.work@example.com"
+          ],
+          "date": "2026-10-10T13:00:00Z",
+          "snippet": "Hi Pat, the team proposed moving the launch two weeks later to fit the extra testing. Can you approve the revised timeli",
+          "body": "Hi Pat, the team proposed moving the launch two weeks later to fit the extra testing. Can you approve the revised timeline by Friday? Priya"
+        }
+      ]
+    },
+    "t-flight": {
+      "id": "t-flight",
+      "subject": "Your flight confirmation: Chicago to Denver",
+      "from": "bookings@skyway.example",
+      "to": [
+        "pat.work@example.com"
+      ],
+      "date": "2026-10-10T12:00:00Z",
+      "snippet": "Thanks for booking with Skyway. Your trip from Chicago (ORD) to Denver (DEN) on October 21 is confirmed. Check in opens ",
+      "labelIds": [
+        "INBOX",
+        "UNREAD",
+        "CATEGORY_UPDATES"
+      ],
+      "messages": [
+        {
+          "id": "t-flight-m1",
+          "from": "bookings@skyway.example",
+          "to": [
+            "pat.work@example.com"
+          ],
+          "date": "2026-10-10T12:00:00Z",
+          "snippet": "Thanks for booking with Skyway. Your trip from Chicago (ORD) to Denver (DEN) on October 21 is confirmed. Check in opens ",
+          "body": "Thanks for booking with Skyway. Your trip from Chicago (ORD) to Denver (DEN) on October 21 is confirmed. Check in opens 24 hours before departure."
+        }
+      ]
+    },
+    "t-promo": {
+      "id": "t-promo",
+      "subject": "48-hour sale: 30% off everything",
+      "from": "deals@gadgetbarn.example",
+      "to": [
+        "pat.work@example.com"
+      ],
+      "date": "2026-10-10T11:00:00Z",
+      "snippet": "Our biggest sale of the season ends Sunday at midnight. Take 30% off everything with code FALL30. Unsubscribe from these",
+      "labelIds": [
+        "INBOX",
+        "UNREAD",
+        "CATEGORY_PROMOTIONS"
+      ],
+      "messages": [
+        {
+          "id": "t-promo-m1",
+          "from": "deals@gadgetbarn.example",
+          "to": [
+            "pat.work@example.com"
+          ],
+          "date": "2026-10-10T11:00:00Z",
+          "snippet": "Our biggest sale of the season ends Sunday at midnight. Take 30% off everything with code FALL30. Unsubscribe from these",
+          "body": "Our biggest sale of the season ends Sunday at midnight. Take 30% off everything with code FALL30. Unsubscribe from these emails at any time."
+        }
+      ]
+    }
+  },
+  "drafts": {}
+}

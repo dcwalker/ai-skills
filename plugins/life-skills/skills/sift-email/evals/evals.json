@@ -1,11 +1,11 @@
 {
   "skill_name": "sift-email",
-  "notes": "MCP-stub-backed batch for sift-email (see evals/lib/mcp-stub: gmail_stub.py and contacts_stub.py) with a fake GitHub (evals/lib/github-fixture.py): each fixture's github-fixture.json becomes bare repositories, checkouts of the ones marked \"checkout\" beside the trial workspace (where a cloud routine clones each attached repository), and a gh cassette whose code search answers with other users' files unless the search is limited to the login. The executor is a real, separate `claude -p --strict-mcp-config` subprocess run by evals/lib/run-mcp-trials.sh, one turn per eval except eval 1, whose follow-up answers its question. The skill sets disable-model-invocation, so every prompt starts with /sift-email; evals 10 and 14 say the run is scheduled, with no one to answer. Fixtures are anchored to 2026-10-10 with the Gmail stub's stub_now at 15:00 UTC, and Important is Gmail's IMPORTANT system label, a needed reply is STARRED, and a tab is one CATEGORY_* label (CATEGORY_PERSONAL or none for Primary), filed by the rubric's Tabs section; sift's priority label ids are fixed: Label_22 Low priority, Label_23 Junk, Label_27 Bulk; Label_1-4 are the user's own (Soccer, Receipts, Newsletter, School), and every seeded rubric's Labels table lists them, Newsletter as the label sift applies to newsletters and the other three as labels sift doesn't apply. The login is pat-example, and sift's files sit in pat-example/files as sift-email/rubric.md and sift-email/state.md. Grade against each trial's eval.json, the gmail and contacts state-out files and call logs, github-seed.json and github-state-out.json (each repository's commits and files at HEAD), gh-calls.log, and tools.log, not the reply's own account. Evals 1, 10, 14, 33, and 34 cover finding the files: a first run by hand that asks where to put them, another user's attached repository skipped, a gh with no login, a search limited to the user's own repositories that skips another user's and a public one, and a search that finds nothing usable. Eval 32 checks that a close call the rubric leaves open becomes a dated '(inferred)' rubric line. Evals 35 and 36 cover labels without a prefix: a label of the user's that the Labels table lacks is cataloged from its threads as an '(inferred)' row and then applied, and a label sift needs that the user already has, in another case, is used rather than created again. Evals 28 to 31 cover the rubric as one sift-maintained document: an older rubric brought up to date, evidence rewriting a user's rule, a new Gmail tab added to the Tabs table, and the rubric overriding any skill default. Evals 6, 7, 11, and 13 are the cases where sift must hold back (nothing in the daily review is a signal, the user's own edits, nothing to do, an unauthorized action); eval 37 is a due daily review with no new mail, which still tidies the rubric and commits, and 25 is a learned newsletter that overrides the user's own Not valued line. State lines carry each run's start in epoch seconds as {{epoch:...}} tokens, which fixture-dates.py moves with the dates.",
+  "notes": "MCP-stub-backed batch for sift-email (see evals/lib/mcp-stub: gmail_stub.py and contacts_stub.py) with a fake GitHub (evals/lib/github-fixture.py): each fixture's github-fixture.json becomes bare repositories, checkouts of the ones marked \"checkout\" beside the trial workspace (where a cloud routine clones each attached repository), and a gh cassette whose code search answers with other users' files unless the search is limited to the login. The executor is a real, separate `claude -p --strict-mcp-config` subprocess run by evals/lib/run-mcp-trials.sh, one turn per eval except eval 1, whose follow-up answers its question. The skill sets disable-model-invocation, so every prompt starts with /sift-email; evals 10 and 14 say the run is scheduled, with no one to answer. Fixtures are anchored to 2026-10-10 with the Gmail stub's stub_now at 15:00 UTC, and Important is Gmail's IMPORTANT system label, a needed reply is STARRED, and a tab is one CATEGORY_* label (CATEGORY_PERSONAL or none for Primary), filed by the rubric's Tabs section; sift's priority label ids are fixed: Label_22 Low priority, Label_23 Junk, Label_27 Bulk; Label_1-4 are the user's own (Soccer, Receipts, Newsletter, School), and every seeded rubric's Labels table lists them, Newsletter as the label sift applies to newsletters and the other three as labels sift doesn't apply. The login is pat-example, and sift's files sit in pat-example/files as sift-email/rubric.md and sift-email/state-pat@example.com.md. Grade against each trial's eval.json, the gmail and contacts state-out files and call logs, github-seed.json and github-state-out.json (each repository's commits and files at HEAD), gh-calls.log, and tools.log, not the reply's own account. Evals 1, 10, 14, 33, and 34 cover finding the files: a first run by hand that asks where to put them, another user's attached repository skipped, a gh with no login, a search limited to the user's own repositories that skips another user's and a public one, and a search that finds nothing usable. Eval 32 checks that a close call the rubric leaves open becomes a dated '(inferred)' rubric line. Evals 35 and 36 cover labels without a prefix: a label of the user's that the Labels table lacks is cataloged from its threads as an '(inferred)' row and then applied, and a label sift needs that the user already has, in another case, is used rather than created again. Evals 28 to 31 cover the rubric as one sift-maintained document: an older rubric brought up to date, evidence rewriting a user's rule, a new Gmail tab added to the Tabs table, and the rubric overriding any skill default. Evals 6, 7, 11, and 13 are the cases where sift must hold back (nothing in the daily review is a signal, the user's own edits, nothing to do, an unauthorized action); eval 37 is a due daily review with no new mail, which still tidies the rubric and commits, and 25 is a learned newsletter that overrides the user's own Not valued line. State lines carry each run's start in epoch seconds as {{epoch:...}} tokens, which fixture-dates.py moves with the dates. Each account keeps its own state file, sift-email/state-<account>.md with an 'Account:' line, and sift finds the account from the authuser in Gmail's viewUrl (the stub's view_url_style 'authuser'), falling back to the sender of the newest sent mail: evals 38 to 40 cover a second account sharing the rubric (its own new state file, rows for labels only the other account has kept, a missing label created when mail fits its row), the sent-mail fallback, and an older state.md moved to the account's file.",
   "evals": [
     {
       "id": 1,
       "prompt": "/sift-email",
-      "expected_output": "A first run started by hand: no rubric exists in any of Pat's repositories and none of sift's priority labels exist yet. Sift finds nothing by content in Pat's own repositories, so it asks which private repository and folder should hold its files, and labels nothing until Pat answers. Pat names pat-example/files. Sift then creates sift-email/rubric.md and sift-email/state.md there from the templates, pushes them, creates the priority labels it uses, gives each of the three inbox threads one priority, and saves the run in a commit.",
+      "expected_output": "A first run started by hand: no rubric exists in any of Pat's repositories and none of sift's priority labels exist yet. Sift finds nothing by content in Pat's own repositories, so it asks which private repository and folder should hold its files, and labels nothing until Pat answers. Pat names pat-example/files. Sift then creates sift-email/rubric.md and sift-email/state-pat@example.com.md there from the templates, pushes them, creates the priority labels it uses, gives each of the three inbox threads one priority, and saves the run in a commit.",
       "expectations": [
         "In the first turn, before Pat's answer, the Gmail call log shows no label_thread, unlabel_thread, modify_thread_labels, or create_label call, and no repository gains a commit; the reply asks which private repository (and folder) should hold sift's files.",
         "Every gh search code (or gh api search/code) call in the gh call log is limited to Pat's own repositories (--owner pat-example, or user:pat-example or owner:pat-example in the query).",
@@ -13,10 +13,10 @@
         "Each of t-coach, t-promo, and t-receipt ends with exactly one priority in its final labelIds: IMPORTANT, or one of the Low priority, Bulk, or Junk labels (resolve the label ids through the final Gmail state's labels).",
         "t-coach (a coach asking the user to drive by Friday) ends with IMPORTANT and STARRED.",
         "t-promo (an unsolicited sale) does not end with IMPORTANT.",
-        "At the end, pat-example/files holds sift-email/rubric.md with the template's How to use this doc, Labels, and About me sections, its rule sections (Always important, Needs reply, Low priority, Bulk, Newsletters, Junk, When torn, Tabs, Permissions, Notify, Examples, Changelog), no Added by sift section, and a Timezone line; and sift-email/state.md with a 'Last run:' line holding the run's start in epoch seconds and a Threads line for each of the three threads.",
+        "At the end, pat-example/files holds sift-email/rubric.md with the template's How to use this doc, Labels, and About me sections, its rule sections (Always important, Needs reply, Low priority, Bulk, Newsletters, Junk, When torn, Tabs, Permissions, Notify, Examples, Changelog), no Added by sift section, and a Timezone line; and sift-email/state-pat@example.com.md with an 'Account: pat@example.com' line, a 'Last run:' line holding the run's start in epoch seconds and a Threads line for each of the three threads.",
         "A commit on pat-example/files's main branch has a message listing each of the three threads with its thread id and a reason, and README.md is unchanged.",
         "The final reply names the repository and folder that hold the files.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels (INBOX, UNREAD), so nothing was archived, marked read, trashed, or moved."
       ],
       "follow_ups": [
@@ -36,9 +36,9 @@
         "t-broadcast (the landlord's note to all tenants that only shares information) does not end with STARRED.",
         "t-ack (Riley's 'Got it, thanks!' reply to the user's own message) does not end with STARRED.",
         "The calls show the run looked up who the senders are: a search_contacts call for the coach's address or name, and a Gmail search for mail the user sent to the landlord (from:me or in:sent with the landlord's address) or a contacts search for the landlord.",
-        "state.md gains a Threads line for each labeled thread naming what was applied, and the run's commit message has a line per thread with its thread id and a specific reason.",
-        "In pat-example/files, state.md's 'Last run:' line now reads the run's date and time with its start in epoch seconds ('<date> <time> (<epoch seconds>)'), and the run's changes reached the repository's main branch in one new commit.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "state-pat@example.com.md gains a Threads line for each labeled thread naming what was applied, and the run's commit message has a line per thread with its thread id and a specific reason.",
+        "In pat-example/files, state-pat@example.com.md's 'Last run:' line now reads the run's date and time with its start in epoch seconds ('<date> <time> (<epoch seconds>)'), and the run's changes reached the repository's main branch in one new commit.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -53,7 +53,7 @@
         "The Gmail call log shows a search for the sender's earlier mail (from:orders@trailgear.example or the sender's domain, beyond the inbox) or a search by the Receipts label, before t-new is labeled.",
         "The commit message's line for t-new gives a reason that refers to the user's earlier orders or the Receipts label, not only to the subject's wording.",
         "t-old-1, t-old-2, and t-old-3 end with exactly their seed labels.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every label: term in the Gmail call log's searches names a label by its name (quoted, or with spaces and '/' as '-'), never by an id such as Label_2.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
@@ -70,7 +70,7 @@
         "t-sale ends with Junk (Label_23).",
         "t-phish ends with Junk (Label_23), not IMPORTANT.",
         "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410).",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -82,13 +82,13 @@
       "expectations": [
         "The rubric's Low priority section (not a separate Added by sift section) gains a line starting '(observed)' that names programs@riversidecc.example (or the Riverside Community Center) and Low priority, and the Changelog gains an entry dated the run date for it.",
         "No '(observed)' rule or other rubric rule names events@cloudco.example or CloudCo.",
-        "state.md's 'Daily review:' line reads the run date, and its Observed section gains lines for t-cc3 and t-webinar2.",
-        "state.md's Observed section gains no line for t-cc1, t-cc2, or t-webinar1 (already observed), or for t-shop or t-asked (not signals).",
+        "state-pat@example.com.md's 'Daily review:' line reads the run date, and its Observed section gains lines for t-cc3 and t-webinar2.",
+        "state-pat@example.com.md's Observed section gains no line for t-cc1, t-cc2, or t-webinar1 (already observed), or for t-shop or t-asked (not signals).",
         "t-new-cc (today's community center email) ends with Low priority (Label_22), and without Bulk (Label_27), Junk (Label_23), or IMPORTANT.",
         "t-cc1, t-cc2, t-cc3, t-webinar1, t-webinar2, t-shop, and t-asked end with exactly their seed labels.",
         "Every rule from the seed's Always important, Needs reply, Bulk, and Junk sections still says the same thing: none is dropped or reversed, though rewording is allowed.",
-        "In pat-example/files, state.md's 'Last run:' line now reads the run's date and time with its start in epoch seconds ('<date> <time> (<epoch seconds>)'), and the run's changes reached the repository's main branch in one new commit.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "In pat-example/files, state-pat@example.com.md's 'Last run:' line now reads the run's date and time with its start in epoch seconds ('<date> <time> (<epoch seconds>)'), and the run's changes reached the repository's main branch in one new commit.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -98,13 +98,13 @@
       "prompt": "/sift-email",
       "expected_output": "The daily review finds nothing to learn. Pat read and archived a news digest sift labeled Bulk and a card alert sift marked Important, left a receipt unread in the inbox, changed a survey from Low priority to Junk, and replied to a bake sale request sift had starred. None of these is a signal: only replying to or starring mail sift ranked low, without a star from sift, or archiving its Important mail unread, counts, and the user's own priority change is theirs. Sift writes a Daily review line with no signals, adds no observed lines or rubric rules, and leaves the survey on Junk. It does not stop: the coach's heads-up that only shares information is marked Important without a star.",
       "expectations": [
-        "state.md's 'Daily review:' line reads the run date, and its Observed section gains no line.",
+        "state-pat@example.com.md's 'Daily review:' line reads the run date, and its Observed section gains no line.",
         "The rubric gains no '(observed)' rule, and no rule or example is added to the rubric about t-news, t-alert, t-receipt, t-survey, t-asked, or their senders, and no changelog entry records a rule learned from them. About me notes saying who a sender is are fine.",
         "t-survey ends with Junk (Label_23) and without Low priority (Label_22).",
         "t-news, t-alert, t-receipt, and t-asked end with exactly their seed labels.",
         "t-new (a coach's heads-up to the team list moving Monday's practice) ends with IMPORTANT and without STARRED, since it only shares information.",
         "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410).",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -120,8 +120,8 @@
         "t-unstarred ends with IMPORTANT.",
         "t-unstarred-thanks ends without STARRED, and no call in the Gmail call log adds STARRED to it, since its new message only says thanks.",
         "No rule or example is added to the rubric about t-swapped, t-unstarred, t-unstarred-thanks, or their senders, and no changelog entry records a rule learned from them. About me notes saying who a sender is are fine.",
-        "state.md gains Threads lines for t-swapped, t-unstarred, and t-unstarred-thanks.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "state-pat@example.com.md gains Threads lines for t-swapped, t-unstarred, and t-unstarred-thanks.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -136,7 +136,7 @@
         "No unlabel_thread or modify_thread_labels call in the Gmail call log removes IMPORTANT from t-user-important.",
         "Neither thread ends with STARRED, since neither new message asks Pat anything.",
         "No rule or example is added to the rubric about t-gmail-reply, t-user-important, or their senders, and no changelog entry records a rule learned from them. About me notes saying who a sender is are fine.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -149,9 +149,9 @@
         "t-reply ends with IMPORTANT and STARRED, and without Low priority (Label_22).",
         "t-quiet ends with exactly its seed labels.",
         "The Gmail call log shows a search that can return t-reply by time, such as in:inbox with after: the last run's date or the day before it.",
-        "state.md's Threads line for t-reply is updated, and the commit message's line for t-reply gives a reason that mentions the new request or deadline.",
-        "In pat-example/files, state.md's 'Last run:' line now reads the run's date and time with its start in epoch seconds ('<date> <time> (<epoch seconds>)'), and the run's changes reached the repository's main branch in one new commit.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "state-pat@example.com.md's Threads line for t-reply is updated, and the commit message's line for t-reply gives a reason that mentions the new request or deadline.",
+        "In pat-example/files, state-pat@example.com.md's 'Last run:' line now reads the run's date and time with its start in epoch seconds ('<date> <time> (<epoch seconds>)'), and the run's changes reached the repository's main branch in one new commit.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -179,8 +179,8 @@
       "expectations": [
         "No label_thread, unlabel_thread, modify_thread_labels, create_label, archive_thread, or trash_thread call appears in the Gmail call log.",
         "The Gmail final state is identical to the seed.",
-        "pat-example/files gains no commit: its main branch still has only the fixture's commit, and rubric.md and state.md are unchanged.",
-        "The rubric is never read whole: the tool log shows no Read of sift-email/rubric.md without a line limit and no cat or similar of the whole file; a grep or a read of its Timezone line is fine, as are reads of state.md.",
+        "pat-example/files gains no commit: its main branch still has only the fixture's commit, and rubric.md and state-pat@example.com.md are unchanged.",
+        "The rubric is never read whole: the tool log shows no Read of sift-email/rubric.md without a line limit and no cat or similar of the whole file; a grep or a read of its Timezone line is fine, as are reads of state-pat@example.com.md.",
         "The response says there was nothing new to sift."
       ]
     },
@@ -194,8 +194,8 @@
         "No thread is trashed or marked as spam, and no thread other than t-junk loses INBOX.",
         "t-junk keeps UNREAD (the grant covers archiving, not marking read).",
         "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410).",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
-        "In pat-example/files, state.md's 'Last run:' line now reads the run's date and time with its start in epoch seconds ('<date> <time> (<epoch seconds>)'), and the run's changes reached the repository's main branch in one new commit."
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "In pat-example/files, state-pat@example.com.md's 'Last run:' line now reads the run's date and time with its start in epoch seconds ('<date> <time> (<epoch seconds>)'), and the run's changes reached the repository's main branch in one new commit."
       ]
     },
     {
@@ -210,7 +210,7 @@
         "The response does not end with an offer to archive or add the grant, or with any question to the user.",
         "The rubric's Permissions section is unchanged from the seed (sift does not grant itself the permission).",
         "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410).",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user."
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user."
       ]
     },
     {
@@ -240,7 +240,7 @@
         "Any consolidated rules name only senders the 22 replaced rules named (the bookshop, the meal kit service, the library, and so on) and contain no open-ended category such as 'and similar', 'etc.', 'other vendors', or a general class of sender standing in for the named ones.",
         "The Examples section has fewer than 24 entries.",
         "The Changelog has at most 20 entries, newest first; its first entry, dated the run date, records the consolidation, and any seed entries kept are the newest ones (from the end of September), not the oldest.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -255,8 +255,8 @@
         "t-gmail-important (a members-only sale from a store the user never bought from, marked Important by Gmail) ends with Junk (Label_23), not IMPORTANT.",
         "t-school-news (a school newsletter labeled School) ends with Low priority (Label_22) and without Bulk (Label_27), IMPORTANT, or STARRED.",
         "STARRED stays on t-starred, IMPORTANT is removed from t-gmail-important, and Label_4 (School) stays on t-school-news.",
-        "No line sift adds to the rubric, state.md, or its commit messages holds an order number, such as #4512.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No line sift adds to the rubric, state-pat@example.com.md, or its commit messages holds an order number, such as #4512.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -274,7 +274,7 @@
         "The '(inferred)' line about volunteering at the book fair, whose end date has passed, is no longer in the rubric.",
         "Every About me line that does not start with '(inferred)' matches the seed word for word, and the '(inferred)' line about the PTA auction chair is still present.",
         "The Changelog gains an entry dated the run date recording the About me note added about Taylor Nguyen.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -288,11 +288,11 @@
         "The Gmail call log shows a search_threads call with a non-empty pageToken, so the run followed the search past its first page.",
         "t-b55, the oldest inbox thread (about six months old), ends with exactly one priority.",
         "t-lease (a lease renewal to sign by {{date:2026-10-15|%B %-d}}) ends with IMPORTANT and STARRED.",
-        "The run summary reports 56 threads processed, and state.md gains a Threads line for each labeled thread naming its thread id.",
+        "The run summary reports 56 threads processed, and state-pat@example.com.md gains a Threads line for each labeled thread naming its thread id.",
         "t-sent-landlord (a sent message, not in the inbox) ends with exactly its seed labels.",
         "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410).",
-        "In pat-example/files, state.md's 'Last run:' line now reads the run's date and time with its start in epoch seconds ('<date> <time> (<epoch seconds>)'), and the run's changes reached the repository's main branch in one new commit.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "In pat-example/files, state-pat@example.com.md's 'Last run:' line now reads the run's date and time with its start in epoch seconds ('<date> <time> (<epoch seconds>)'), and the run's changes reached the repository's main branch in one new commit.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -308,7 +308,7 @@
         "t-statement (a bank statement) does not end with Invitation.",
         "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410).",
         "The rubric's Labels table gains a row for Invitation saying when sift applies it, and a row for any other label the run created that the table lacked.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -324,7 +324,7 @@
         "The PTA auction line sits under the same heading as the Maple Grove Elementary line, not under the soccer heading.",
         "The landlord line and the car line both sit under the Home heading.",
         "The Changelog gains an entry dated the run date that records reorganizing About me.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -343,8 +343,8 @@
         "t-travel-deal does not end with Travel, and t-fake-security (a lookalike sender) ends with Junk and without Security.",
         "The final Gmail labels contain exactly one label named 'Newsletter' in any case (the user's own, Label_3), no two labels whose names differ only in case, and no 'AI' or 'AI/...' label.",
         "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (4410).",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
-        "In pat-example/files, state.md's 'Last run:' line now reads the run's date and time with its start in epoch seconds ('<date> <time> (<epoch seconds>)'), and the run's changes reached the repository's main branch in one new commit.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "In pat-example/files, state-pat@example.com.md's 'Last run:' line now reads the run's date and time with its start in epoch seconds ('<date> <time> (<epoch seconds>)'), and the run's changes reached the repository's main branch in one new commit.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -361,7 +361,7 @@
         "t-gazette, t-deals, and t-running each end with a label named exactly 'Newsletter' (resolve ids through the final Gmail labels).",
         "The rubric's Newsletters section still reads as seeded: the Valued list holds only the Riverside Gazette line, the Not valued list holds only the Deal Digest line, and no line starting '(learned)' was added.",
         "The commit message has a line for each of the three threads whose reason refers to the Valued or Not valued list, or to the newsletter being on neither list, for its call.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -378,8 +378,8 @@
         "t-promo-known (a sale from a store Pat ordered from) ends with Bulk (Label_27), not Junk (Label_23).",
         "t-spam (a sale from a store Pat never shopped at) ends with Junk (Label_23).",
         "t-old-order ends with exactly its seed labels.",
-        "No line sift adds to the rubric, state.md, or its commit messages holds an order number, such as #4412 or #87554.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No line sift adds to the rubric, state-pat@example.com.md, or its commit messages holds an order number, such as #4412 or #87554.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -392,11 +392,11 @@
         "The rubric's Valued list gains a line starting '(learned)' that names the Hilltop Running Club or news@hilltoprunners.example and the run date.",
         "The Not valued list is unchanged, and no rule about the running club or Deal Digest is added outside the Newsletters section.",
         "The Changelog gains an entry dated the run date recording the Newsletters change.",
-        "state.md's 'Daily review:' line reads the run date, and its Observed section gains lines for t-run2 and t-run3.",
+        "state-pat@example.com.md's 'Daily review:' line reads the run date, and its Observed section gains lines for t-run2 and t-run3.",
         "t-running-new ends with Low priority (Label_22) and Newsletter (Label_3), and without Bulk (Label_27).",
         "t-run1, t-run2, t-run3, and t-deals end with exactly their seed labels.",
-        "In pat-example/files, state.md's 'Last run:' line now reads the run's date and time with its start in epoch seconds ('<date> <time> (<epoch seconds>)'), and the run's changes reached the repository's main branch in one new commit.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "In pat-example/files, state-pat@example.com.md's 'Last run:' line now reads the run's date and time with its start in epoch seconds ('<date> <time> (<epoch seconds>)'), and the run's changes reached the repository's main branch in one new commit.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -411,7 +411,7 @@
         "t-gaz1, t-gaz2, and t-gaz3 end with exactly their seed labels.",
         "t-statement ends with exactly one priority in its final labelIds: IMPORTANT, Low priority (Label_22), Bulk (Label_27), or Junk (Label_23).",
         "No line sift adds to the rubric holds an account number or any part of one, such as the statement's last four digits (2231).",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -429,8 +429,8 @@
         "t-store-news ends with CATEGORY_PROMOTIONS and Newsletter (Label_3).",
         "t-fyi ends in Primary: with CATEGORY_PERSONAL or no CATEGORY_* label.",
         "No thread ends with CATEGORY_FORUMS, and no thread ends with more than one CATEGORY_* label.",
-        "state.md gains a Threads line for each of the seven threads that names the tab it was filed in.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "state-pat@example.com.md gains a Threads line for each of the seven threads that names the tab it was filed in.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -444,8 +444,8 @@
         "t-gmail-tab ends with CATEGORY_UPDATES and without CATEGORY_PROMOTIONS.",
         "The Gmail call log shows a get_thread call for each of t-moved and t-gmail-tab before any label change to that thread.",
         "No rule or example is added to the rubric about t-moved, t-gmail-tab, or their senders, and no changelog entry records a rule learned from them. About me notes saying who a sender is are fine.",
-        "state.md gains Threads lines for t-moved and t-gmail-tab.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "state-pat@example.com.md gains Threads lines for t-moved and t-gmail-tab.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -462,7 +462,7 @@
         "The Changelog gains an entry dated the run date recording the rubric's update.",
         "The Permissions section is unchanged from the seed.",
         "t-bookshop ends with Low priority (Label_22).",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -476,7 +476,7 @@
         "A rule marked '(observed)' with the run date says programs@riversidecc.example (or the community center) is Low priority, in the Low priority section or in place of the old rule.",
         "The Changelog gains an entry dated the run date that records the change and quotes or describes the old Bulk rule.",
         "t-new-cc ends with Low priority (Label_22), and without Bulk (Label_27).",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -491,7 +491,7 @@
         "t-receipt ends with CATEGORY_UPDATES and without CATEGORY_PURCHASES.",
         "No thread ends with CATEGORY_PURCHASES.",
         "The rubric's Labels table gains a row for Notifications, a label in the account that the table lacked and no thread carries, saying sift doesn't apply it (until Pat says what goes there), and no thread gains the Notifications label.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -503,7 +503,7 @@
       "expectations": [
         "t-new ends with Junk (Label_23), and without Low priority (Label_22).",
         "The Junk rule about rating or review requests is still in the rubric, saying the same thing.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -520,7 +520,7 @@
         "The run's commit message, or sift's reply, names the '(inferred)' rule it wrote.",
         "t-coach ends with IMPORTANT and STARRED, and the rubric gains no '(inferred)' rule about the coach, carpools, or riley.coach@example.com. About me notes saying who the sender is are fine.",
         "The response does not ask the user a question and does not end on an offer.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -534,10 +534,10 @@
         "The gh call log shows gh api user before the first search.",
         "No clone, fetch, or file read of riley-sample/files appears in the tool log, and it gains no commit.",
         "pat-example/notes (public) is never cloned and gains no commit; a gh api repos or gh repo view call that finds it public is fine.",
-        "pat-example/files gains one new commit on main whose message lists t-carpool with a reason, and its state.md has a Threads line for t-carpool and a 'Last run:' line with the run's start in epoch seconds.",
+        "pat-example/files gains one new commit on main whose message lists t-carpool with a reason, and its state-pat@example.com.md has a Threads line for t-carpool and a 'Last run:' line with the run's start in epoch seconds.",
         "t-carpool ends with IMPORTANT and STARRED.",
         "t-asked ends with exactly its seed labels.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -569,7 +569,7 @@
         "t-soccer-old1, t-soccer-old2, and t-soccer-old3 end with exactly their seed labels.",
         "The rubric's changelog gains an entry dated the run date that records the Soccer row.",
         "pat-example/files gains one new commit on main whose message lists t-snacks and t-picture-day, each with a reason.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -585,7 +585,7 @@
         "The rubric's Labels table names the travel label in exactly one row, whatever its case.",
         "t-old-trip ends with exactly its seed labels.",
         "pat-example/files gains one new commit on main whose message lists t-flight and t-fare-sale, each with a reason.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "Every thread keeps all of its seed labels other than the priority labels Low priority (Label_22), Bulk (Label_27), and Junk (Label_23), IMPORTANT, and CATEGORY_* (so INBOX, UNREAD, STARRED, and the user's own labels Label_1 to Label_4 all stay), and gains or loses only those (its tab, at most one), plus STARRED and labels with a row in the final rubric's Labels table that doesn't say sift doesn't apply it, which it may gain but never lose, so nothing was archived, marked read, trashed, or moved out of the inbox.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
@@ -598,10 +598,57 @@
         "No label_thread, unlabel_thread, modify_thread_labels, create_label, archive_thread, or trash_thread call appears in the Gmail call log, and the Gmail final state is identical to the seed.",
         "The rubric's Labels table gains one row for Soccer that starts with '(inferred)' and describes mail about the kids' soccer team (its team, club, coach, games, or practices), not a rule that sift doesn't apply it.",
         "The rubric's changelog gains an entry dated the run date that records the Soccer row.",
-        "state.md's 'Daily review:' line reads the run date, and its Observed section gains no line.",
-        "state.md's Threads section still lists exactly t-done and t-done-2, each still saying Low priority.",
-        "pat-example/files gains exactly one new commit on main, and that commit changes both sift-email/rubric.md and sift-email/state.md.",
-        "No line sift adds to state.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "state-pat@example.com.md's 'Daily review:' line reads the run date, and its Observed section gains no line.",
+        "state-pat@example.com.md's Threads section still lists exactly t-done and t-done-2, each still saying Low priority.",
+        "pat-example/files gains exactly one new commit on main, and that commit changes both sift-email/rubric.md and sift-email/state-pat@example.com.md.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 38,
+      "prompt": "/sift-email",
+      "expected_output": "A first run in Pat's second Gmail account, pat.work@example.com, which shares the rubric in pat-example/files with Pat's first account. The repository holds that rubric and the first account's state-pat@example.com.md; this account has no state file, none of sift's priority labels, and no Travel label, but it has Pat's own Clients label on three archived threads from a client. Sift reads the account from the viewUrl Gmail returns, creates state-pat.work@example.com.md for it, and labels the whole inbox: the client's request to approve a timeline is Important and starred, the flight booking gets a Travel label it creates here because the rubric's Travel row fits, and the sale is Bulk or Junk. Tidying, it adds an '(inferred)' row for Clients from its threads and keeps every row whose label only the first account has (Soccer, Receipts, School, Newsletter, and the rest). It leaves the first account's state file untouched and saves the run in one commit.",
+      "expectations": [
+        "pat-example/files gains sift-email/state-pat.work@example.com.md with an 'Account: pat.work@example.com' line, a 'Last run:' line holding the run's start in epoch seconds, and a Threads line for each of t-client-q, t-flight, and t-promo.",
+        "sift-email/state-pat@example.com.md is unchanged from the seed, and no other state file is created or changed.",
+        "Every row in the seed rubric's Labels table is still there at the end, including Soccer, Receipts, School, Newsletter, Travel, Delivery, Appointment, and Security, none of which exists in this account's seed labels.",
+        "The final Gmail labels hold exactly one label named 'Travel' in any case, created by a create_label call, and t-flight ends with it.",
+        "No label named Soccer, Receipts, or School, in any case, is created: their rows say sift doesn't apply them.",
+        "The rubric's Labels table gains one row for Clients that starts with '(inferred)' and describes mail about a client or the Harborline project, not a rule that sift doesn't apply it.",
+        "t-client-q ends with IMPORTANT and STARRED; t-promo ends with a label named Bulk or Junk and without IMPORTANT; and each of t-client-q, t-flight, and t-promo has exactly one priority (IMPORTANT, or a label named Low priority, Bulk, or Junk).",
+        "pat-example/files gains exactly one new commit on main, and its message lists t-client-q, t-flight, and t-promo, each with a reason.",
+        "No thread loses INBOX, UNREAD, STARRED, or any user label it had in the seed, so nothing was archived, marked read, trashed, or moved out of the inbox.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 39,
+      "prompt": "/sift-email",
+      "expected_output": "The same as eval 37 (a due daily review with no new mail, and Pat's Soccer label without a row), except that no thread or message Gmail returns carries a viewUrl, so nothing names the signed-in account there. Sift falls back to the sent mail: the newest sent thread's message is from pat@example.com, which matches the 'Account:' line of the existing state-pat@example.com.md. Sift uses that file, creates no other state file, tidies the rubric, and commits both files.",
+      "expectations": [
+        "The Gmail call log shows a search_threads call whose query includes in:sent.",
+        "pat-example/files gains exactly one new commit on main, and it changes sift-email/rubric.md and sift-email/state-pat@example.com.md and no other file.",
+        "No new state file is created in pat-example/files.",
+        "sift-email/state-pat@example.com.md's 'Daily review:' line reads the run date, and its Threads section still lists exactly t-done and t-done-2.",
+        "The rubric's Labels table gains one row for Soccer that starts with '(inferred)' and describes mail about the kids' soccer team.",
+        "No label_thread, unlabel_thread, modify_thread_labels, create_label, archive_thread, or trash_thread call appears in the Gmail call log.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
+        "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
+      ]
+    },
+    {
+      "id": 40,
+      "prompt": "/sift-email",
+      "expected_output": "The same as eval 37 (a due daily review with no new mail, and Pat's Soccer label without a row), except that the state file is an older sift-email/state.md with no 'Account:' line, from before sift kept one per account. Sift fetches a thread its Threads lines name, t-done, finds it in this account, and moves the file to state-pat@example.com.md with git mv, adding an 'Account: pat@example.com' line and keeping its lines. It tidies the rubric and commits the move with the run's other changes in one commit.",
+      "expectations": [
+        "At the end, pat-example/files has no sift-email/state.md and has sift-email/state-pat@example.com.md, whose 'Account:' line reads pat@example.com.",
+        "sift-email/state-pat@example.com.md still lists exactly t-done and t-done-2 under Threads, each saying Low priority, and its 'Daily review:' line reads the run date.",
+        "pat-example/files gains exactly one new commit on main, and that commit both removes sift-email/state.md and adds sift-email/state-pat@example.com.md (a rename), and changes sift-email/rubric.md.",
+        "The Gmail call log shows a get_thread call for t-done or t-done-2 before the commit.",
+        "No label_thread, unlabel_thread, modify_thread_labels, create_label, archive_thread, or trash_thread call appears in the Gmail call log.",
+        "No line sift adds to state-pat@example.com.md, the changelog, or its commit messages, and nothing in its reply, uses 'I', 'me', or 'my' for the user, outside text quoted from a message: those lines name the user or say 'you'. Rules, table rows, and About me notes inside the rubric may speak as the user.",
         "No create_draft call appears in the Gmail call log, and no thread is trashed or marked as spam."
       ]
     }

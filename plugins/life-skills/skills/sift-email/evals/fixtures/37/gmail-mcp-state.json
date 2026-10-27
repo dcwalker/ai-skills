@@ -2,6 +2,7 @@
   "anchor_date": "2026-10-10",
   "stub_now": "2026-10-10T15:00:00Z",
   "me": "pat@example.com",
+  "view_url_style": "authuser",
   "labels": {
     "INBOX": {
       "id": "INBOX",
