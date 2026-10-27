@@ -636,8 +636,11 @@ Capture it, then archive the thread and leave it unread?
   issue, leads the summary line with `⚠️` and why it is urgent; the dates
   still appear in full.
 - **Labels**: the item's current labels, or `none`.
-- **Proposed** (or **Applied**, below): each change from Step 7, one short
-  line each, with any draft (comment, reply, new card) shown in full.
+- **Proposed** (or **Applied**, below): every change to the item, one short
+  line each, with any draft (comment, reply, new card) shown in full. The
+  reply always summarizes every change, including ones made without asking
+  because confidence was high or the user authorized them up front; a change
+  is never made silently.
 - **One question**, last. Ask the thing that most needs the user. When an item
   has several open points, ask the next one in the following reply, before
   moving to the next item.
@@ -688,11 +691,24 @@ plumber about this" retitles the item; it does not go looking for plumbers.
 "Skip" or "next" leaves the item unchanged.
 
 **Up-front authorization** ("apply anything you're confident about") does not
-change the shape of the run: still one item per reply. Changes you are
-confident about are applied before the item's reply, which lists them under
-`Applied:` rather than `Proposed:`, and the one question covers what is
-unclear. With nothing unclear, the question is whether there is anything else
-on this one. A question about one field never holds back the others.
+change the shape of the run: still one item per reply. "Tell me afterward" or
+"summarize at the end" is answered by the closing report (Step 10); it never
+turns the run into a batch. "Without waiting for me to confirm each one"
+approves the changes; it never covers working more than one item per turn, so
+the reply still stops after each item. No reply presents two items, numbers the
+items, or lists the scope's items with their proposals; the first reply gives
+the count and presents the first item only. Changes you are confident about are
+applied before the item's reply, which lists them under `Applied:` rather than
+`Proposed:`, and the one question covers what is unclear. Authorization covers
+the kinds of change the user named or that the skill routinely makes (titles,
+descriptions, labels, dates, archiving, reply drafts, captures); deleting or
+trashing is covered only when the user named it. Without authorization, nothing
+is written before the user's answer: the item's reply only proposes. With
+nothing unclear, the question is whether there is anything else on this one.
+Either way the reply ends there, and the run waits for the user's answer before
+touching the next item: one item per turn, even when every change was
+authorized and nothing needs asking. A question about one field never holds
+back the others.
 
 Before applying any status-changing action (closing, archiving, marking
 complete), confirm how the platform's status model and automations behave, for
@@ -709,7 +725,13 @@ Apply an item's changes in this order:
 5. Child tasks / subtasks
 6. Trello todo captures (Step 7c)
 7. Status comment or saved Gmail draft (user sends from Gmail)
-8. Read state, archive, complete, or delete, each only as decided (Step 9a)
+8. Read state, archive, complete, or delete, each only as decided (Step 9a).
+   A Gmail archive removes `INBOX` and nothing else: the same call never
+   removes `UNREAD` unless the user asked for the thread to be marked read.
+
+A change goes on an `Applied:` or `Done:` line, or into the closing report,
+only after its write call succeeded and the re-fetch shows it. A change that
+was proposed but not written is never reported as made.
 
 ### 9a. Every state change is its own decision
 
@@ -773,7 +795,9 @@ reply, and never repeat one the user declined.
 
 ## Step 10: Check for New Arrivals and Close
 
-When the last item is done, re-run the original Step 0 scope query (same
+The reply after the last item's answer opens with its `Done:` line, like
+every reply after a decision, and only then turns to new arrivals and the
+close. When the last item is done, re-run the original Step 0 scope query (same
 board, filter, label, or inbox search) and compare against the items in this
 run. If new items now match the scope, give the count and ask whether to work
 them now, in the Step 1b order among themselves, or in a later run.
@@ -802,9 +826,17 @@ never impose more structure than the work justifies.
 ## Quality Rules
 
 - One item per reply, one question per reply, on every platform, whatever was
-  authorized up front. Apply an answer before showing the next item. There is
+  authorized up front. End the reply after its question and wait: never work
+  the next item in the same turn. Apply an answer before showing the next
+  item. There is
   no end-of-run batch of proposals; the closing report gives counts and
   anything left open.
+- Every reply after a decision opens with its `Done:` line, including the
+  closing reply and the reply after a declined offer (`Done: no changes.`).
+- Write first, then report: make the write calls and confirm them before
+  composing the reply that lists them under `Applied:` or `Done:`.
+- Every item's reply summarizes every change made to it, even when confidence
+  was high and no confirmation was needed. Nothing changes silently.
 - Review every item individually, even ones that already look complete or
   well-formed. A high-quality item still gets its reply ("Looks complete.
   Anything to change, or move on?") rather than being silently passed over.
