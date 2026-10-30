@@ -7,7 +7,12 @@ Personal Claude Code plugins and skills, distributed as a plugin marketplace.
 - [Plugins](#plugins)
 - [Usage](#usage)
 - [Installation](#installation)
+  - [Updating an installed plugin](#updating-an-installed-plugin)
+  - [Claude Code on the web](#claude-code-on-the-web)
 - [Evals](#evals)
+  - [How it works](#how-it-works)
+  - [Where the results are](#where-the-results-are)
+  - [How to run](#how-to-run)
 - [Contributing](#contributing)
 
 ## Plugins
@@ -52,23 +57,9 @@ Run `/plugin` to browse installed and available plugins, or to update/remove one
 
 ### Updating an installed plugin
 
-Installing a plugin copies it at a specific commit, into a directory named after
-that commit — one such directory per plugin, `life-skills` shown here:
-
-```text
-~/.claude/plugins/cache/dcwalker-skills/life-skills/
-├── c2eeda74d2a9/skills/   conduct-interview, organize-meeting-notes, triage
-└── ea42d071a0d5/skills/   the same three, plus writing
-```
-
-That copy is what loads, and it stays pinned to its commit. Refreshing the
-marketplace does not move it: the marketplace is a separate clone holding the
-catalog, so a refresh gives you a current *listing* of what is available while
-the plugin keeps loading the skills it was installed with. A skill added after
-you installed will not appear, and nothing reports an error, because from the
-plugin's point of view nothing is wrong.
-
-Updating is therefore two stages, and the second is the one that matters:
+An installed plugin stays pinned to the commit it was installed at, so refreshing
+the marketplace alone does not pick up new skills. Update the marketplace, then
+each plugin, and restart:
 
 ```bash
 claude plugin marketplace update dcwalker-skills
@@ -77,84 +68,16 @@ claude plugin update software-development@dcwalker-skills
 claude plugin update utilities@dcwalker-skills
 ```
 
-The marketplace update is shared; each installed plugin then needs its own
-update. Updating one does not touch the others, so a skill added to
-`software-development` stays missing until that second line runs.
-
-The equivalents live under `/plugin` in the app: update the marketplace, then
-update each plugin (uninstalling and reinstalling has the same effect). Either
-way, **restart afterwards** — the update prints `Restart to apply changes`, and
-skills are enumerated when a session starts, so a session already running keeps
-the old set.
-
-To check that an update actually landed, ask which commit each plugin is pinned
-to:
-
-```bash
-claude plugin list
-```
-
-Matching versions across all plugins, at the commit you expect, means the
-update worked and only a restart is missing. A plugin still showing the old
-commit was not updated — most likely its `plugin update` line was skipped, or
-the marketplace update failed first.
-
-Do not judge this by the cache directory. Updating one plugin can materialize a
-new commit directory for the *other* one without repointing it, so
-`ls ~/.claude/plugins/cache/dcwalker-skills/*/*/skills/` will happily show a
-directory containing the new skill for a plugin that is still loading the old
-copy. What decides is the `installPath` recorded per plugin in
-`~/.claude/plugins/installed_plugins.json`, which is what `claude plugin list`
-reports.
+Why the two stages are needed, and how to confirm an update landed with
+`claude plugin list`, is in [Updating an installed plugin](docs/updating-plugins.md).
 
 ### Claude Code on the web
 
-The steps above cover a local install. A cloud session gets neither of them:
-it clones the repository, but marketplace registrations and installed plugins
-live in `~/.claude` on the machine where `/plugin` ran, so they do not travel.
-`/plugin` is also unavailable in cloud sessions, leaving no in-session way to
-add them. A fresh cloud session therefore reports `No plugins installed`, and
-`/software-development:land-pr` comes back as an unknown command.
-
-Install them from the cloud environment's **Setup script** instead, which runs
-before Claude Code launches. Open the environment dialog at
-[claude.ai/code](https://claude.ai/code) and set:
-
-```bash
-#!/bin/bash
-claude plugin marketplace add dcwalker/ai-skills || true
-claude plugin install life-skills@dcwalker-skills --scope user || true
-claude plugin install software-development@dcwalker-skills --scope user || true
-```
-
-The `|| true` matters, and it cuts both ways. A setup script that exits
-non-zero fails the session outright, so without it a transient network error
-during an install would cost you the whole session rather than one plugin. But
-exiting zero is also what tells Claude Code the script succeeded, and it
-snapshots the filesystem at that point and starts every later session from that
-snapshot. A swallowed install error is therefore cached rather than retried:
-the environment comes back missing that plugin every time, because the script
-runs once per environment rather than once per session.
-
-To check whether that happened, run `claude plugin list` in a session — the
-`/plugin` command itself is unavailable in cloud sessions. To recover, edit the
-setup script: any change to it, or to the environment's allowed network hosts,
-rebuilds the snapshot and re-runs the install. Left alone, the cache rebuilds
-by itself after roughly seven days.
-
-Two consequences worth knowing:
-
-- The setup script belongs to the environment, not to this repository, so it
-  applies to every repo you open in that environment and is lost if the
-  environment is recreated. That is why it is written down here.
-- Installing at `--scope user` deliberately leaves local sessions alone. The
-  alternative, committing `extraKnownMarketplaces`/`enabledPlugins` to
-  `.claude/settings.json`, would apply everywhere but project settings outrank
-  user settings — so in this repository a committed marketplace would shadow a
-  local checkout-based install and load the skills as published on the default
-  branch. Editing a skill on a branch and then invoking it would run the
-  pre-edit version, which is precisely the wrong behavior in the repository
-  where these skills are authored.
+Cloud sessions do not carry over plugins installed locally, and `/plugin` is
+unavailable there. Install the plugins from the cloud environment's **Setup
+script** instead. The script, why each line ends in `|| true`, and how to recover
+a cached failed install are in
+[Claude Code on the web](docs/claude-code-on-the-web.md).
 
 ## Evals
 
@@ -172,10 +95,11 @@ against ground truth instead of trusting the executor's self-report.
   under `evals/fixtures/<id>/`.
 - Every trial runs in an isolated scratch environment. External systems are
   mocked at their natural seam: a fixture-driven fake `gh` CLI on `PATH` for
-  GitHub-touching skills, an opt-in fixture hook for SonarQube, and real
-  protocol-compliant MCP stub servers (Trello, Gmail,
-  Jira, Slack) for MCP-dependent skills, swapped in via
-  `claude --strict-mcp-config`.
+  GitHub-touching skills, an opt-in fixture hook for SonarQube, stub
+  `sonar-scanner`, trash, Apple Notes, Day One, and OCR commands for the
+  skills that shell out to them, and real protocol-compliant MCP stub servers
+  (Trello, Gmail, Jira, Slack, Calendar, Claude Docs, Contacts) for
+  MCP-dependent skills, swapped in via `claude --strict-mcp-config`.
 - An executor runs the skill against the trial's prompt; grading then checks
   the actual final state: files and git history, stub call logs, and final
   stub-state snapshots diffed against the seed.
@@ -231,7 +155,7 @@ dates, and totals.
   prepares an isolated trial (scratch repo, stubs on `PATH`, fixture env
   vars); the executor is then a Claude subagent pointed at the prepared
   workspace.
-- MCP-backed skills (`triage`, `writing`): trials must be real `claude -p`
+- MCP-backed skills (`organize-meeting-notes`, `triage`, `writing`): trials must be real `claude -p`
   subprocesses. Run `bash evals/lib/run-mcp-trials.sh <skill-evals-dir>`
   (`triage`'s `plugins/life-skills/skills/triage/evals/run-trials.sh` is a
   thin caller of it); it wires the MCP stubs via `evals/lib/run-mcp-eval.sh`
@@ -240,9 +164,13 @@ dates, and totals.
   `--allowedTools` allowlist rather than `--dangerously-skip-permissions`, so
   it runs as root, in a container, in CI, or delegated to an in-session Bash
   call — the nested `claude` inherits the parent session's credentials.
+- Multi-turn MCP evals: set `SIMULATED_USER=1` on the driver so a model plays
+  the user in every eval without a `follow_ups` key; without it those trials
+  stop after the first turn. `SIMULATED_USER_MAX_TURNS` caps its replies
+  (default 40).
 - Trial output defaults to `<skill-evals-dir>/.trial-runs/`, which is
   gitignored but leaves `evals.json` and `fixtures/` a few directories above
-  each trial's own working directory. The driver honours `TRIALS_DIR`, which
+  each trial's own working directory. The driver honors `TRIALS_DIR`, which
   puts the workspaces outside the repo:
 
   ```bash
@@ -265,3 +193,16 @@ Coding standards, testing expectations (including the eval requirements for
 new and modified skills), and documentation guidelines are in
 [CONTRIBUTING.md](CONTRIBUTING.md). Directives specific to AI coding agents
 working in this repo are in [AGENTS.md](AGENTS.md).
+
+Every pull request runs two GitHub Actions workflows from
+[`.github/workflows/`](.github/workflows/):
+
+- **Claude PR Review** reviews non-draft PRs on open, using this repo's
+  `review-code` skill as the rubric. Comment `/re-review` to run it again;
+  the `skip-code-review` label skips it.
+- **Sensitive info check** scans for denylisted personal information on PRs,
+  pushes to `main`, and a weekly schedule.
+
+The repo's [`.mcp.json`](.mcp.json) connects agents working here to
+SonarCloud's MCP server, reading the token from the `SONAR_TOKEN` environment
+variable.
