@@ -643,6 +643,128 @@
         "No task is created in any tool."
       ],
       "simulated_user": "You are Darby Wade, who took these notes. If the assistant asks when Priya is sending the press kit, say by Friday, Oct 23, 2026. If it asks anything else, answer briefly: the docs freeze on Oct 28, 2026 so translations can start. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+    },
+    {
+      "id": 42,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: Deploy Review\nStart: Oct 21, 2026 at 10:00 AM\nEnd: 10:30 AM\nDuration: 30 minutes\nAttendees: darby.wade@example.com, priya.raman@example.com\n\nRaw notes:\n- went over the 4.2.1 deploy checklist\n\nNo Trello.",
+      "expected_output": "Tests that a human reply under a bot-authored parent is kept. In #deploys, Deploy Bot posts at 10:05 AM that the 4.2.1 staging deploy finished, and Priya Raman replies in that thread at 10:08 AM that staging smoke tests fail on login and the production deploy is on hold. The bot's own posts (10:05 AM and 10:12 AM, and the 9:40 AM one outside the window) are excluded, but Priya's reply is a person's message in the window and goes in the notes beside the deploy checklist discussion, with the bot parent given only as the context that makes it readable. The note records the chat check before its footer.",
+      "expectations": [
+        "The final notes include Priya Raman's 10:08 AM reply that staging smoke tests fail on login and that the production deploy is on hold.",
+        "Deploy Bot's posts are not presented as attendee messages: the 10:05 AM parent appears at most as the context for Priya's reply, and the 10:12 AM paused notice and the 9:40 AM post are not presented as meeting chat.",
+        "The Slack call log shows a slack_read_thread call on the 10:05 AM #deploys message, or the reply was otherwise read with the chat tool's own read operation.",
+        "The final document carries the chat disclosure line (`Chat: searched <start> to <end> by date only (...); read ...`) as an italic line after the Action Items section and before the `#### YYYY-MM-DD HH:MM: <Meeting Title>` footer, naming #deploys among the conversations read.",
+        "The report does not list Priya's reply among items left out, and does not call that reply a bot or integration post.",
+        "No task is created in any tool."
+      ],
+      "simulated_user": "You are Darby Wade, who took these notes. Answer any question briefly: the checklist was fine except for the staging login issue. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+    },
+    {
+      "id": 43,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: PartnerCo Integration Sync\nStart: Oct 22, 2026 at 2:00 PM\nEnd: 2:30 PM\nDuration: 30 minutes\nAttendees: darby.wade@example.com, jordan.lee@example.com\n\nRaw notes:\n- webhook delivery plan\n\nNo Trello.",
+      "expected_output": "Tests that a Slack hit with a blank author is resolved by user ID before it is treated as a bot. In the shared #ext-partnerco channel, Jordan Lee asks at 2:06 PM whether PartnerCo retries failed webhook deliveries, and a Slack Connect user from PartnerCo replies in that thread at 2:12 PM: up to 3 times with backoff, so idempotency keys are needed. Search and reads show that reply's author with a blank name and only the user ID U0EXTALEX; slack_read_user_profile on that ID shows Alex Kim, Integrations Lead at PartnerCo, and Bot: No. The skill looks the ID up, keeps the reply as a person's message attributed to Alex Kim of PartnerCo, and excludes only the 2:20 PM Jira Cloud integration post.",
+      "expectations": [
+        "The Slack call log shows a slack_read_user_profile call (or slack_search_users call) for U0EXTALEX before the 2:12 PM reply is placed or left out.",
+        "The final notes include the 2:12 PM reply that PartnerCo retries failed webhook deliveries up to 3 times with backoff, so idempotency keys are needed, attributed to Alex Kim (of PartnerCo).",
+        "The 2:12 PM reply is not described anywhere in the reply as a bot, integration, or unknown-author post, and is not listed among items left out.",
+        "The 2:20 PM Jira Cloud post is not presented as an attendee's message.",
+        "The final document carries the chat disclosure line (`Chat: searched <start> to <end> by date only (...); read ...`) as an italic line after the Action Items section and before the `#### YYYY-MM-DD HH:MM: <Meeting Title>` footer, naming #ext-partnerco among the conversations read.",
+        "No task is created in any tool."
+      ],
+      "simulated_user": "You are Darby Wade, who took these notes. Answer any question briefly: the plan is for Jordan to add idempotency keys to the webhook handler this sprint. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+    },
+    {
+      "id": 44,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: Budget Sync\nStart: Oct 22, 2026 at 9:30 AM\nEnd: 10:00 AM\nDuration: 30 minutes\nAttendees: darby.wade@example.com, sam.ortiz@example.com\n\nRaw notes:\n- Q1 travel budget holds flat\n- contractor spend reviewed\n\nNo Trello.",
+      "expected_output": "Tests that a thread about a different meeting, posted during this one, is kept as a side conversation. During the Budget Sync, Jordan Lee (not an attendee) posts the platform standup summary in #platform-standup at 9:40 AM, saying the flaky auth test needs an owner, and Darby replies in the thread at 9:44 AM, taking the flaky auth test. It has nothing to do with the budget, but the user sent a message in it during the window, so it goes in the notes as a side conversation in time order or beside the discussion it ran alongside, never dropped as off topic. Darby's reply is a commitment, so it may also become an action item.",
+      "expectations": [
+        "The final notes include the #platform-standup thread: Jordan Lee's 9:40 AM standup summary as the parent and Darby's 9:44 AM reply taking the flaky auth test.",
+        "The thread is presented as a side conversation (or otherwise marked as not about the budget) rather than as budget discussion.",
+        "The report does not list the standup thread among items left out as off topic or unrelated.",
+        "The final document carries the chat disclosure line (`Chat: searched <start> to <end> by date only (...); read ...`) as an italic line after the Action Items section and before the `#### YYYY-MM-DD HH:MM: <Meeting Title>` footer, naming #platform-standup among the conversations read.",
+        "No task is created in any tool."
+      ],
+      "simulated_user": "You are Darby Wade, who took these notes. If asked, the travel budget stays at this year's level and contractor spend is on plan; there are no action items from the budget discussion. If asked who owns the flaky auth test or when it is due, say you own it and there's no date. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+    },
+    {
+      "id": 45,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: 1:1 with Priya\nStart: Oct 23, 2026 at 3:00 PM\nEnd: 3:30 PM\nDuration: 30 minutes\nAttendees: darby.wade@example.com, priya.raman@example.com\n\nRaw notes:\n- priya wants to lead the cache redesign\n\nNo Trello.",
+      "expected_output": "Tests that a short logistics message is kept. In the direct message with Priya Raman, Priya asks at 3:01 PM whether Darby is coming over, since Priya is in room 4B, and Darby answers 'omw' at 3:02 PM. Both are in the window and sent by attendees, so they go in the notes (for example, as a note that the 1:1 met in room 4B, or as the exchange itself), not dropped as too trivial.",
+      "expectations": [
+        "The final notes include Priya's 3:01 PM message asking whether Darby was coming over (room 4B), or the fact it records (the meeting was in room 4B, with Darby on the way), attributed to the direct message with Priya.",
+        "The report does not list the 3:01 PM or 3:02 PM messages among items left out as trivial, logistical, or not meeting content.",
+        "The final document carries the chat disclosure line (`Chat: searched <start> to <end> by date only (...); read ...`) as an italic line after the Action Items section and before the `#### YYYY-MM-DD HH:MM: <Meeting Title>` footer, naming the direct message with Priya Raman.",
+        "No task is created in any tool."
+      ],
+      "simulated_user": "You are Darby Wade, who took these notes. If asked, you agreed Priya will lead the cache redesign starting next sprint. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+    },
+    {
+      "id": 46,
+      "prompt": "Organize my notes from both of this morning's meetings for my journal, one Markdown file each in this folder.\n\nMeeting 1: API Review\nStart: Oct 26, 2026 at 9:00 AM\nEnd: 9:30 AM\nDuration: 30 minutes\nAttendees: darby.wade@example.com, priya.raman@example.com\nRaw notes:\n- approved the v2 pagination change\n\nMeeting 2: Budget Check-in\nStart: Oct 26, 2026 at 10:00 AM\nEnd: 10:20 AM\nDuration: 20 minutes\nAttendees: darby.wade@example.com, sam.ortiz@example.com\nRaw notes:\n- no change to Q4 forecast\n\nNo Trello.",
+      "expected_output": "Tests that every saved note records its own chat check and that a batch run keeps a per-meeting checklist outside the user's folder. The API Review window (9:00 to 9:30 AM Pacific) holds Priya's 9:12 AM #api-review message linking diff 412; the Budget Check-in window (10:00 to 10:20 AM) holds nothing. Each saved file ends its body with an italic chat disclosure line before the footer: the first naming #api-review as read, the second ending 'nothing to read'. Because the run covers two meetings, the skill writes a checklist file in a scratch or temporary directory outside the working folder, recording for each meeting the window searched, the conversations and threads read, and anything left out with a reason.",
+      "expectations": [
+        "The API Review file, as saved at the end of the run, carries an italic `Chat: searched 9:00 AM to 9:30 AM by date only (...); read #api-review.` line (or equivalent wording naming #api-review) after its Action Items section and before its `####` footer.",
+        "The Budget Check-in file, as saved at the end of the run, carries an italic `Chat: searched 10:00 AM to 10:20 AM by date only (...); nothing to read.` line after its Action Items section and before its `####` footer.",
+        "The API Review file includes Priya's 9:12 AM diff 412 link.",
+        "During the run the skill writes a checklist file outside the working directory (a scratch or temporary directory), with an entry per meeting recording the window searched and the conversations read (or that there was nothing to read), and no such checklist file is left in the working directory.",
+        "No task is created in any tool."
+      ],
+      "simulated_user": "You are Darby Wade, who took these notes. If asked, the pagination change ships in the next release, and the Q4 forecast stays at the number from September. There are no action items. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+    },
+    {
+      "id": 47,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: Incident Review\nStart: Oct 7, 2026 at 9:00 AM PT\nEnd: 10:00 AM PT\nDuration: 60 minutes\nAttendees: darby.wade@example.com, priya.raman@example.com, jordan.lee@example.com\n\nRaw notes:\n- walked through the checkout outage timeline\n- agreed to roll back 4.2.0\n\nNo Trello.",
+      "expected_output": "Tests the windowed Confluence search. The window is 9:00 AM to 10:15 AM PT (16:00 to 17:15 UTC). Four pages matter: 'Decision: roll back 4.2.0', created by Priya at 16:40 UTC, counts as created in the window; 'Checkout incident runbook', which Jordan edited at 16:20 UTC (version 5 added 'Purge the CDN cache before rollback') and edited again on Oct 8, counts as edited in the window, found only by searching by contributor and date and reading version history, since its lastmodified is Oct 8; 'Q4 capacity plan', edited by Priya only at 19:30 UTC, is outside the window and left out; the Loom live doc 'Incident Review 2026-10-07', whose versions carry only the organizer Darby's account, is left out because no attendee other than the organizer edited it. The report opens the Confluence findings with a `Confluence: searched ...` line and lists each page's link, title, editors, and time.",
+      "expectations": [
+        "The Atlassian call log shows a searchConfluence call whose CQL names an attendee's account ID (contributor or creator) and is bounded by the meeting date, and a listConfluenceContentVersions call on page 9000000102 (the runbook).",
+        "The final notes link 'Decision: roll back 4.2.0' beside the rollback note, as created by Priya Raman during the meeting.",
+        "The final notes or report include 'Checkout incident runbook' as edited by Jordan Lee during the meeting (around 9:20 AM PT), and say what the edit added (purging the CDN cache before rollback) or that it was edited in the window.",
+        "'Q4 capacity plan' is not presented as edited during the meeting.",
+        "The Loom live doc 'Incident Review 2026-10-07' is not presented as notes or edits made by an attendee during the meeting; the report says it was left out because only the organizer's (Loom's) account edited it.",
+        "The report's Confluence findings open with a line of the form `Confluence: searched <start> to <end + 15 minutes> (...); found <count> ...`, and list each included page with its link, title, editors, and time.",
+        "No task is created in any tool."
+      ],
+      "simulated_user": "You are Darby Wade, who took these notes. Answer any question briefly: the outage started when 4.2.0 shipped a cache change, and Priya owns the rollback, done today. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+    },
+    {
+      "id": 48,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: Program Sync\nStart: Oct 26, 2026 at 1:00 PM\nEnd: 1:30 PM\nDuration: 30 minutes\nAttendees: darby.wade@example.com, sam.ortiz@example.com\n\nRaw notes:\n- tina's strategic programs team will run Q1 intake\n\nNo Trello.",
+      "expected_output": "Tests the likely tier of name research for a person mentioned but not attending. A Slack user search for Tina returns Tina Alvarez, Director, Strategic Programs, and Tina Brooks, Senior Accountant, Finance. Only Tina Alvarez's title fits 'strategic programs team', so the notes name Tina Alvarez without asking, and the report's Resolved from sources entry gives the tier and evidence (for example `Tina: Tina Alvarez, likely (title Director, Strategic Programs fits the strategic programs team)`).",
+      "expectations": [
+        "The Slack call log shows a slack_search_users call (or another directory search) for Tina.",
+        "The final notes name Tina Alvarez (full name) for the strategic programs team, not Tina Brooks and not a bare 'Tina'.",
+        "The skill does not ask the user who Tina is.",
+        "The report's Resolved from sources section lists Tina as Tina Alvarez, marked likely (or equivalent), with the evidence that Tina Alvarez's title (Director, Strategic Programs) fits, and may note Tina Brooks as the match that did not fit.",
+        "No task is created in any tool."
+      ],
+      "simulated_user": "You are Darby Wade, who took these notes. If asked who Tina is, say Tina Alvarez. If asked anything else, answer briefly: intake opens in January. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+    },
+    {
+      "id": 49,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: 1:1 with Sam\nStart: Oct 27, 2026 at 10:00 AM\nEnd: 10:30 AM\nDuration: 30 minutes\nAttendees: darby.wade@example.com, sam.ortiz@example.com\n\nRaw notes:\n- sam says marika wants the ledger migration done before the reorg\n\nNo Trello.",
+      "expected_output": "Tests the possible tier for a garbled name resolvable only through the org chart. No directory or contact matches 'Marika'. Contacts show Sam Ortiz's manager is Lena Fischer, whose manager is Mareike Vogt, Chief Financial Officer: a sound-alike two levels above the speaker. That is a candidate, not a match, so the draft writes the name in the `First (Last?)` form and asks, naming Mareike Vogt and the reporting-line evidence, with the meeting and the quoted note. After the user confirms, the final notes use Mareike Vogt.",
+      "expectations": [
+        "The contacts call log shows lookups that reach Sam Ortiz's reporting line (Sam Ortiz, then Lena Fischer, or a search returning Mareike Vogt).",
+        "The skill asks about Marika, naming Mareike Vogt as the candidate with the reporting-line evidence (Sam's manager's manager, or two levels above Sam), rather than applying the name without asking.",
+        "The question names the meeting (the 1:1 with Sam) and quotes or restates the note it came from (Marika wanting the ledger migration done before the reorg).",
+        "Before the user confirms, any draft shown writes the name in a `First (Last?)` form (for example `Mareike (Vogt?)`), not as a confirmed full name.",
+        "After the user confirms, the final notes name Mareike Vogt.",
+        "No task is created in any tool."
+      ],
+      "simulated_user": "You are Darby Wade, who took these notes. If asked whether Marika is Mareike Vogt, say yes. If asked anything else, answer briefly: the reorg lands in January. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+    },
+    {
+      "id": 50,
+      "prompt": "Organize these meeting notes for my journal.\n\nMeeting: Vendor Review\nStart: Oct 28, 2026 at 2:00 PM\nEnd: 2:30 PM\nDuration: 30 minutes\nAttendees: darby.wade@example.com, priya.raman@example.com\n\nRaw notes:\n- shane flagged the renewal price jump\n\nNo Trello.",
+      "expected_output": "Tests that a question restates its context. Nobody named Shane is in Slack's directory or the contacts, so the skill must ask who Shane is. The question names the meeting (Vendor Review), quotes the note ('shane flagged the renewal price jump'), and says what was already searched (the Slack directory and contacts) and that no candidate was found. A bare 'Who is Shane?' fails. The user answers Shane Patel, the vendor's account manager, and the final notes use that name.",
+      "expectations": [
+        "The skill searches at least one directory (slack_search_users or search_contacts) for Shane before asking.",
+        "The question about Shane names the Vendor Review meeting and quotes or closely restates the note 'shane flagged the renewal price jump'.",
+        "The question says which sources were already searched (for example the Slack directory and contacts) and that none had a match.",
+        "The skill never asks a bare question about Shane (for example, only 'Who is Shane?') with no meeting or quote.",
+        "The final notes name Shane Patel.",
+        "No task is created in any tool."
+      ],
+      "simulated_user": "You are Darby Wade, who took these notes. If asked who Shane is, say Shane Patel, the vendor's account manager. If asked anything else, answer briefly: the renewal went up 18 percent. If a question about Shane gives no meeting or quote, answer anyway. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
     }
   ]
 }

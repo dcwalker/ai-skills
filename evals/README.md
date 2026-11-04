@@ -469,9 +469,12 @@ Trello does, `gmail_stub.py` the six Gmail operations its email workflow
 (including the cloudId-discovery flow via getAccessibleAtlassianResources
 and a documented JQL subset that fails loudly on unsupported constructs,
 plus a getConfluencePage whose response layout is modelled on Confluence's
-REST v2 docs rather than a live response; see its docstring),
+REST v2 docs rather than a live response, and Confluence's CQL search,
+version history, and `executeRead` operations, whose responses follow live
+calls recorded on 2026-11-03; see its docstring),
 `slack_stub.py` the search and read operations a corpus-building skill
-calls, and `calendar_stub.py` the Google Calendar connector's read tools
+calls (including bot users and Slack Connect users whose messages show a
+blank name until their profile is read), and `calendar_stub.py` the Google Calendar connector's read tools
 (event layouts copied from a live test event; attendee and calendar-list
 layouts follow the schema and are flagged unverified in its docstring),
 `docs_stub.py` the Claude Docs connector's doc and comment tools (doc

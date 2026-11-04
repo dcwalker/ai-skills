@@ -1,0 +1,85 @@
+{
+  "me": {
+    "id": "U0DARBY",
+    "name": "darby.wade",
+    "display_name": "darby.wade",
+    "real_name": "Darby Wade",
+    "email": "darby.wade@example.com",
+    "title": "Engineering Manager",
+    "timezone": "America/Los_Angeles",
+    "org": "example-co"
+  },
+  "users": {
+    "U0DARBY": {
+      "id": "U0DARBY",
+      "name": "darby.wade",
+      "real_name": "Darby Wade",
+      "email": "darby.wade@example.com",
+      "title": "Engineering Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0JORDAN": {
+      "id": "U0JORDAN",
+      "name": "jordan.lee",
+      "real_name": "Jordan Lee",
+      "email": "jordan.lee@example.com",
+      "title": "Software Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0EXTALEX": {
+      "id": "U0EXTALEX",
+      "name": "alex.kim",
+      "real_name": "Alex Kim",
+      "email": "alex.kim@partnerco.example",
+      "title": "Integrations Lead",
+      "timezone": "America/New_York",
+      "org": "PartnerCo",
+      "external": true
+    },
+    "U0JIRABOT": {
+      "id": "U0JIRABOT",
+      "name": "jira-cloud",
+      "real_name": "Jira Cloud",
+      "email": "",
+      "title": "",
+      "timezone": "America/Los_Angeles",
+      "is_bot": true
+    }
+  },
+  "channels": {
+    "C0EXTPC": {
+      "id": "C0EXTPC",
+      "name": "ext-partnerco",
+      "purpose": "Shared channel with PartnerCo",
+      "creator": "U0DARBY",
+      "created": "2026-03-02",
+      "is_archived": false,
+      "type": "private_channel"
+    }
+  },
+  "messages": {
+    "C0EXTPC": [
+      {
+        "ts": "1792703160.000001",
+        "time": "2026-10-22 14:06:00 PDT",
+        "user": "U0JORDAN",
+        "text": "Alex, does PartnerCo retry failed webhook deliveries?",
+        "thread_ts": null
+      },
+      {
+        "ts": "1792703520.000002",
+        "time": "2026-10-22 14:12:00 PDT",
+        "user": "U0EXTALEX",
+        "text": "yes, up to 3 times with backoff, so you'll want idempotency keys on your side",
+        "thread_ts": "1792703160.000001"
+      },
+      {
+        "ts": "1792704000.000001",
+        "time": "2026-10-22 14:20:00 PDT",
+        "user": "U0JIRABOT",
+        "text": "INT-88 Add idempotency keys to webhook handler was created by Jordan Lee",
+        "thread_ts": null
+      }
+    ]
+  }
+}
