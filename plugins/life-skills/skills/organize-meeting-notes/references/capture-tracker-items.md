@@ -92,12 +92,15 @@ minutes after the actual end, with the same rule for the 15 minutes after
 the end. A page reaches the notes this way even when nobody shared its link.
 
 **Finding them**: search with CQL for each attendee's account ID (look it
-up by email first) as a contributor, bounded by the meeting's date rather
-than its times, for example `contributor = "<account ID>" and lastmodified
->= "2026-03-12"`. A later edit replaces `lastmodified`, so a page edited
-again after the window no longer matches a bound on the window itself.
-CQL reads `"YYYY-MM-DD HH:mm"` as UTC; convert any time bound from the
-meeting's time zone. Page through the results until they run out.
+up by email first) as a contributor, bounded from the day before the
+meeting's date rather than by its times, for example for a meeting on
+Mar 12, 2026: `contributor = "<account ID>" and lastmodified >=
+"2026-03-11"`. A later edit replaces `lastmodified`, so a page edited again
+after the window no longer matches a bound on the window itself. CQL reads
+dates and `"YYYY-MM-DD HH:mm"` as UTC, so a bound on the meeting's own date
+can miss an edit made late in the evening west of UTC; starting a day
+early covers it, and version history then places each edit. Page through
+the results until they run out.
 
 **Placing an edit in the window**: for each result, list the page's
 versions. Each version records when its editing session started; reading a
