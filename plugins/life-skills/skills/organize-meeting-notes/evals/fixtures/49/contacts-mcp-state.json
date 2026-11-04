@@ -1,0 +1,60 @@
+{
+  "contacts": {
+    "people/c4901": {
+      "names": [
+        "Sam Ortiz"
+      ],
+      "emails": [
+        "sam.ortiz@example.com"
+      ],
+      "organizations": [
+        "Example Co \u2014 Finance Partner"
+      ],
+      "relationships": [
+        {
+          "person": "Lena Fischer",
+          "type": "Manager"
+        }
+      ]
+    },
+    "people/c4902": {
+      "names": [
+        "Lena Fischer"
+      ],
+      "emails": [
+        "lena.fischer@example.com"
+      ],
+      "organizations": [
+        "Example Co \u2014 Director of Finance"
+      ],
+      "relationships": [
+        {
+          "person": "Mareike Vogt",
+          "type": "Manager"
+        }
+      ]
+    },
+    "people/c4903": {
+      "names": [
+        "Mareike Vogt"
+      ],
+      "emails": [
+        "mareike.vogt@example.com"
+      ],
+      "organizations": [
+        "Example Co \u2014 Chief Financial Officer"
+      ]
+    },
+    "people/c4904": {
+      "names": [
+        "Marisa Klein"
+      ],
+      "emails": [
+        "marisa.klein@example.com"
+      ],
+      "organizations": [
+        "Example Co \u2014 Design"
+      ]
+    }
+  }
+}

@@ -110,7 +110,8 @@ is reachable:
 - **Shared links**: every URL in the notes, chat, or email.
 - **Ticket tracker**: every referenced work item.
 - **Items created during the meeting**: work items and cards attendees
-  created or were assigned.
+  created or were assigned, and wiki pages (Confluence pages and live docs)
+  attendees created or edited.
 
 The detail for each follows.
 
@@ -221,8 +222,11 @@ For each available source:
   keyword or sender search says nothing about the window. Report that chat
   holds nothing only after the window itself came back empty.
 
-  When presenting chat, found or empty, open with one line in this shape,
-  before any finding, filling in every part:
+  Every meeting note records its chat check, found or empty, so a dropped
+  message can be traced from the note alone. Write one line in this shape,
+  filling in every part, into the note as an italic line after the Action
+  Items section and before the closing `####` line (see Step 8), and open
+  the report's chat findings with the same line, before any finding:
 
   `Chat: searched <start> to <end> by date only (<date terms used>); read <conversations read>.`
 
@@ -235,6 +239,16 @@ For each available source:
   every conversation read, including one that came back empty. When the
   listing fallback replaced the search, write `listed conversations for
   <start> to <end>` in place of the search part.
+
+  When one run covers more than one meeting, keep a checklist file in the
+  session's scratch or temporary directory, outside the user's folder, so
+  what was checked survives a long run and context compaction. Give each
+  meeting an entry with the window searched, the search pages read, the
+  conversations and threads read, and each item left out with its reason.
+  Update a meeting's entry when its chat check finishes, before writing its
+  note. When earlier work in the run is no longer in view, read the
+  checklist rather than relying on memory, and re-run any check it does not
+  record.
 
   Keep every message sent by or to an attendee inside that window, including
   join and leave notices, reactions, and messages from people outside the
@@ -249,6 +263,25 @@ For each available source:
   message about the recording rather than the meeting (a request to stop
   recording, someone leaving) is not meeting content; it explains why the
   transcript is partial, and it goes in the Step 2 schedule note.
+
+  The bot and integration exclusion covers only the post a bot or
+  integration made, never the people around it:
+  - A person's reply in a thread a bot started is kept. The bot's post is
+    excluded, and may appear only as the context that makes the reply
+    readable, marked as a bot post.
+  - A message whose author shows a blank name is not a bot post until its
+    user ID says so. Look the ID up (in Slack, the user's profile) before
+    deciding. An external user from a partner organization in a shared
+    channel (Slack Connect) is a person: keep the message, attributed to
+    the name and organization the profile gives.
+  - A short logistics message is kept like any other (joining, running
+    late, a room change, "running 5 min late, start without me").
+  - A thread posted during the window about a different meeting, such as a
+    standup summary, is kept as a side conversation.
+
+  Each message in the window reviewed and left out is listed in the report
+  by its time, author, and conversation, with the reason, so the user can
+  overrule the call. The list describes a message; it never quotes it.
 - **Email**: look for threads involving the attendees or matching the
   meeting topic close to the meeting date (an agenda sent beforehand, a
   document circulated for the meeting, a follow-up thread).
@@ -268,8 +301,9 @@ For each available source:
   up and capture the item's current summary and status so the note can name
   what was actually discussed.
 - **Items created during the meeting**: for every reachable tracker (Jira,
-  Trello, or another task tool), whether or not the notes mention one, find
-  the items attendees created or were assigned during the meeting, following
+  Trello, or another task tool) and wiki (Confluence), whether or not the
+  notes mention one, find the items attendees created or were assigned, and
+  the pages they created or edited, during the meeting, following
   [references/capture-tracker-items.md](references/capture-tracker-items.md).
 
 Include in the document what clearly belongs to this meeting, without asking,
@@ -379,13 +413,30 @@ the answer before asking:
   documents, earlier meetings in the same series), for names, project terms,
   and recurring context.
 
+Research every person named in the notes, the transcript, or chat, not
+only the attendees, following
+[references/resolve-names.md](references/resolve-names.md): it sets the
+order of sources and the confidence tier that decides whether a name is
+applied, applied and reported, or asked about with a candidate.
+
 A value a source states is a finding, not a guess; record it and its source
 for the Step 8 report. Ask the user only about a transcription problem no
 source settles (a garbled or illegible word, a name that matches no one) or
 a fact the document needs that no source confirms. Ask about each as you
-reach it, one question at a time, without proposing a name or a date. A line
-that leaves no gap needs no question, and nothing is inferred that no source
+reach it, one question at a time. Never propose a speaker for a transcript
+label, an owner for an action item, or a date; a mentioned person's name may
+be offered as a candidate, as the names reference describes. A line that
+leaves no gap needs no question, and nothing is inferred that no source
 says.
+
+Every question restates the scenario so the user can answer without asking
+for more: which meeting, where in it the item came up, a short verbatim
+quote when one helps, which sources were already checked, and any candidate
+with its evidence. Not `Who is Ravi?`, but: `In the Hiring Sync, your note
+says "ravi has the offer letter". I found no Ravi in the chat directory or
+your contacts. Who is Ravi?` This holds for every question the skill
+asks (names, owners, due dates, speakers, image placement, conflicts) and
+for each item in the Step 8 "Still unknown" list.
 
 - Capture not just facts but also action items, events and experiences, and
   information that is important not to forget.
@@ -590,6 +641,7 @@ Return final Markdown with:
 - Then `###### Agenda`, only when Step 3b captured an agenda
 - Then `###### Notes`
 - Then `###### Action Items`, always, with `None.` when there are none
+- Then the italic chat disclosure line, when a chat source was reachable
 
 Summary rule (based on read length):
 - Measure the finished Notes section by its text alone: count the words and
@@ -628,6 +680,10 @@ Summary rule (based on read length):
   4. Before adding it, check each sentence against its note, and rewrite any
      sentence whose subject, verb, or claim that note does not support.
 
+After the Action Items section, add the Step 1b chat disclosure line in
+italics (`*Chat: searched ...*`), found or empty, whenever a chat source was
+reachable.
+
 At the very end, append:
 - `#### YYYY-MM-DD HH:MM: <Meeting Title>`
 - Use 24-hour time.
@@ -636,14 +692,19 @@ After the document, outside it, add a short report so the user can see what
 was done without having been asked along the way. Leave out any part with
 nothing in it:
 - **Resolved from sources**: each gap filled from a source, with the value
-  and where it came from (for example, `J. Rivera: Jose, from contacts`).
+  and where it came from (for example, `J. Rivera: Jose, from contacts`). A
+  name carries its tier and evidence from the names reference (for example,
+  `Omar: Omar Haddad, likely (title Director, Data Platform fits the data
+  platform team)`).
 - **Added from sources**: what Step 1b put in the document, by source, and
   what it left out and why. Open chat findings with the Step 1b disclosure
-  line.
+  line, and tracker and Confluence findings with their own lines.
 - **Summary measurement**: the word and line count, and the section count
   when the notes are sectioned, so the user can see why a summary was or was
   not added, and the note each summary sentence came from.
-- **Still unknown**: anything left out because no source or answer gave it.
+- **Still unknown**: anything left out because no source or answer gave it,
+  each item with its meeting, where it came up, and what was searched, never
+  a bare name or term.
 
 ## Quality Rules
 

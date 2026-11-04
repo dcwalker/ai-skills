@@ -62,6 +62,36 @@ response was available to copy. The behaviour it exists to reproduce, a
 page built from macros returning an empty body, comes from observed use
 rather than documentation; a fixture expresses it with "body": "".
 
+The Confluence search and version tools serve the same "pages" section.
+A page that a meeting-window search should find adds these optional fields:
+  "subType": "live" (a live doc; omit for a regular page),
+  "space": "<space title>", "spaceKey": "<KEY>", "excerpt": "...",
+  "versions": [{"number": 1, "authorId": "<account ID>",
+                "createdAt": "<ISO>", "collaborators": ["<account ID>", ...],
+                "message": "", "body": "<markdown at that version>"}]
+A page without "versions" has one, by "me", at the stub's fixed now.
+Their layouts come from live responses recorded on Nov 3, 2026 (Trello
+card 82246), with unused fields left out:
+  searchConfluence(cql)            {"data": {"results": [...], "totalSize", "_links"}}
+  listConfluenceContentVersions    {"data": {"results": [version, ...]}}, newest first
+  executeRead(name, arguments) runs getConfluenceContentVersion,
+  diffConfluenceContentVersions, and getPeopleInfo.
+A search result's "lastModified" is the latest version's "createdAt"
+truncated to whole seconds: when that editing session started. A version's
+"collaborators" lists every account that edited in its session, the author
+included. getPeopleInfo resolves account IDs from "users".
+
+CQL support in searchConfluence is a small, documented subset: clauses
+joined by AND, each one of `contributor = "<id>"` (any version's author or
+collaborator), `creator = "<id>"` (version 1's author), `type = page` or
+`type in (page, live)`, `space = KEY`, and `created` or `lastmodified`
+compared with `>=`, `>`, `<=`, or `<` against "YYYY-MM-DD" or
+"YYYY-MM-DD HH:mm", read as UTC, with an optional trailing `ORDER BY`
+`lastmodified` or `created`. `created` is version 1's time and
+`lastmodified` the latest version's, so a page edited again after a window
+no longer matches a `lastmodified` bound on it. Anything else raises a loud
+error, as JQL does.
+
 JQL support in searchJiraIssuesUsingJql is a small, documented subset:
 clauses joined by AND, each one of `project = KEY`, `status != NAME`,
 `statusCategory != NAME` (and the `=` forms), `text ~ "words"` or
@@ -100,6 +130,7 @@ default order is unverified.
 """
 
 import datetime
+import difflib
 import re
 import zoneinfo
 
@@ -547,6 +578,224 @@ def lookupJiraAccountId(cloudId: str, searchString: str) -> list[dict]:  # NOSON
         if needle in u["displayName"].lower() or needle in u.get("emailAddress", "").lower()
     ]
     state.log_call("lookupJiraAccountId", {"cloudId": cloudId, "searchString": searchString}, result)
+    return result
+
+
+# --- Confluence search and version history --------------------------------
+
+_CQL_OPERATORS = (">=", "<=", ">", "<")
+
+
+def _page_versions(page: dict) -> list[dict]:
+    """A page's versions, oldest first."""
+    versions = page.get("versions") or [{
+        "number": 1, "authorId": state.data.get("me", {}).get("accountId", ""),
+        "createdAt": _STUB_NOW, "collaborators": [], "body": page.get("body", "")}]
+    return sorted(versions, key=lambda v: v["number"])
+
+
+def _content_type(page: dict) -> str:
+    return "live_doc" if page.get("subType") == "live" else "page"
+
+
+def _version_view(page: dict, version: dict) -> dict:
+    return {"contentType": _content_type(page), "number": version["number"],
+            "authorId": version["authorId"], "message": version.get("message", ""),
+            "createdAt": version["createdAt"], "minorEdit": False}
+
+
+def _get_page(content_id: str) -> dict:
+    page = state.data.get("pages", {}).get(str(content_id))
+    if page is None:
+        raise ValueError(f"atlassian-stub: no Confluence content with id {content_id!r}")
+    return page
+
+
+def _get_version(page: dict, number: int) -> dict:
+    for version in _page_versions(page):
+        if version["number"] == int(number):
+            return version
+    raise ValueError(f"atlassian-stub: content {page['id']} has no version {number}")
+
+
+def _parse_cql_datetime(value: str) -> datetime.datetime:
+    text = value.replace("/", "-")
+    for layout in ("%Y-%m-%d %H:%M", "%Y-%m-%d"):
+        try:
+            return datetime.datetime.strptime(text, layout).replace(tzinfo=datetime.timezone.utc)
+        except ValueError:
+            continue
+    raise ValueError(f"atlassian-stub: unsupported CQL date {value!r} -- use YYYY-MM-DD or YYYY-MM-DD HH:mm")
+
+
+def _cql_clause_matches(page: dict, clause: str) -> bool:
+    versions = _page_versions(page)
+    match = re.fullmatch(r'(contributor|creator)\s*=\s*"?([^"]+)"?', clause, flags=re.IGNORECASE)
+    if match:
+        field, wanted = match.group(1).lower(), match.group(2)
+        if field == "creator":
+            return versions[0]["authorId"] == wanted
+        return any(wanted == v["authorId"] or wanted in v.get("collaborators", []) for v in versions)
+    match = re.fullmatch(r'(created|lastmodified)\s*(>=|<=|>|<)\s*"([^"]+)"', clause, flags=re.IGNORECASE)
+    if match:
+        field, operator, value = match.group(1).lower(), match.group(2), match.group(3)
+        actual = _parse_iso((versions[0] if field == "created" else versions[-1])["createdAt"])
+        bound = _parse_cql_datetime(value)
+        return {">=": actual >= bound, "<=": actual <= bound,
+                ">": actual > bound, "<": actual < bound}[operator]
+    match = re.fullmatch(r'type\s*(=|in)\s*\(?([^)]+)\)?', clause, flags=re.IGNORECASE)
+    if match:
+        wanted = {t.strip().strip('"').lower() for t in match.group(2).split(",")}
+        kinds = {"page"} | ({"live"} if page.get("subType") == "live" else set())
+        return bool(kinds & wanted)
+    match = re.fullmatch(r'space\s*=\s*"?([^"]+)"?', clause, flags=re.IGNORECASE)
+    if match:
+        return page.get("spaceKey", "").lower() == match.group(1).lower()
+    raise ValueError(f"atlassian-stub: unsupported CQL clause {clause!r}")
+
+
+def _search_result(page: dict) -> dict:
+    latest = _page_versions(page)[-1]
+    webui = page.get("webui") or f"/spaces/{page.get('spaceKey', 'ENG')}/pages/{page['id']}/{page['title'].replace(' ', '+')}"
+    content = {"id": page["id"], "type": "page", "status": "current",
+               "title": page["title"], "_links": {"webui": webui}}
+    if page.get("subType"):
+        content["subType"] = page["subType"]
+    seconds = _parse_iso(latest["createdAt"]).astimezone(datetime.timezone.utc).replace(microsecond=0)
+    return {"content": content, "title": page["title"], "excerpt": page.get("excerpt", ""),
+            "url": webui, "resultGlobalContainer": {"title": page.get("space", "")},
+            "entityType": "content",
+            "lastModified": seconds.strftime("%Y-%m-%dT%H:%M:%S.000Z")}
+
+
+@server.tool()
+def searchConfluence(  # NOSONAR(S1542) camelCase = real MCP tool name
+    cql: str,
+    cloudId: str = "",
+    limit: int = 25,
+    start: int = 0,
+) -> dict:
+    """Search Confluence content with CQL (Confluence Query Language).
+    Date-times in created and lastmodified take the form "YYYY-MM-DD HH:mm"
+    and are read as UTC."""
+    if cloudId:
+        _check_cloud(cloudId)
+    args = {"cql": cql, "cloudId": cloudId, "limit": limit, "start": start}
+    query, order = _split_order_by(" ".join(cql.split()))
+    clauses = [c.strip() for c in re.split(r" and ", query, flags=re.IGNORECASE) if c.strip()]
+    try:
+        pages = [p for p in state.data.get("pages", {}).values()
+                 if all(_cql_clause_matches(p, c) for c in clauses)]
+        if order:
+            field, _, direction = order.partition(" ")
+            index = 0 if field.lower() == "created" else -1
+            if field.lower() not in ("created", "lastmodified"):
+                raise ValueError(f"atlassian-stub: unsupported CQL ORDER BY {order!r}")
+            pages.sort(key=lambda p: _parse_iso(_page_versions(p)[index]["createdAt"]),
+                       reverse=direction.strip().lower() == "desc")
+    except ValueError as error:
+        # Logged before refusing, so a grader sees the attempt in the call log.
+        state.log_call("searchConfluence", args, {"error": str(error)})
+        raise
+    window = pages[start:start + limit]
+    result = {"data": {"results": [_search_result(p) for p in window],
+                       "start": start, "limit": limit, "size": len(window), "totalSize": len(pages),
+                       "_links": {"base": f"{state.data['cloud']['url']}/wiki"}}}
+    state.log_call("searchConfluence", {"cql": cql, "cloudId": cloudId, "limit": limit, "start": start}, result)
+    return result
+
+
+@server.tool()
+def listConfluenceContentVersions(  # NOSONAR(S1542) camelCase = real MCP tool name
+    contentId: str,
+    cloudId: str = "",
+) -> dict:
+    """List the versions of a Confluence page or live doc, newest first.
+    Each version's createdAt is when its editing session started."""
+    if cloudId:
+        _check_cloud(cloudId)
+    page = _get_page(contentId)
+    result = {"data": {"results": [_version_view(page, v) for v in reversed(_page_versions(page))]}}
+    state.log_call("listConfluenceContentVersions", {"contentId": contentId, "cloudId": cloudId}, result)
+    return result
+
+
+def _read_content_version(arguments: dict) -> dict:
+    page = _get_page(arguments["contentId"])
+    version = _get_version(page, arguments["versionNumber"])
+    view = _version_view(page, version)
+    view["prevVersion"] = version["number"] - 1 if version["number"] > 1 else None
+    view["collaborators"] = version.get("collaborators") or [version["authorId"]]
+    data = {"ok": True, "contentType": _content_type(page), "version": view}
+    if arguments.get("content_format"):
+        data["body"] = {"format": arguments["content_format"], "value": version.get("body", ""),
+                        "lossyConversion": True, "lostFeatures": []}
+    return {"data": data}
+
+
+def _read_diff(arguments: dict) -> dict:
+    page = _get_page(arguments["contentId"])
+    old = _get_version(page, arguments["from_version"])
+    new = _get_version(page, arguments["to_version"])
+    latest = _page_versions(page)[-1]["number"]
+    lines = list(difflib.unified_diff(
+        old.get("body", "").splitlines(), new.get("body", "").splitlines(),
+        fromfile=f"a/{page['id']}@v{old['number']}.md", tofile=f"b/{page['id']}@v{new['number']}.md",
+        lineterm=""))
+    additions = sum(1 for l in lines if l.startswith("+") and not l.startswith("+++"))
+    deletions = sum(1 for l in lines if l.startswith("-") and not l.startswith("---"))
+    status = lambda n: "current" if n == latest else "historical"  # noqa: E731
+    return {"data": {"ok": True, "id": page["id"], "contentType": _content_type(page),
+                     "from": {"version": old["number"], "status": status(old["number"])},
+                     "to": {"version": new["number"], "status": status(new["number"])},
+                     "diff": {"patch": "\n".join(lines) + ("\n" if lines else ""),
+                              "additions": additions, "deletions": deletions,
+                              "hunks": sum(1 for l in lines if l.startswith("@@")), "empty": not lines}}}
+
+
+def _person(account_id: str) -> dict:
+    user = next((u for u in state.data.get("users", []) if u["accountId"] == account_id), None)
+    if user is None:
+        return {"person": {"accountId": account_id}, "facets": {"identity": {"status": "not_found"}},
+                "partial": True}
+    identity = {"accountId": account_id, "name": user["displayName"],
+                "email": user.get("emailAddress", ""), "accountStatus": "active"}
+    return {"person": {"accountId": account_id, "name": user["displayName"]},
+            "facets": {"identity": {"status": "complete", "data": identity}}, "partial": False}
+
+
+def _read_people(arguments: dict) -> dict | list:
+    identifiers = arguments["identifier"]
+    if isinstance(identifiers, str):
+        identifiers = [identifiers]
+    if len(identifiers) > 10:
+        raise ValueError("atlassian-stub: getPeopleInfo takes at most 10 identifiers per call")
+    people = [_person(i) for i in identifiers]
+    return people[0] if len(people) == 1 else people
+
+
+_READS = {"getConfluenceContentVersion": _read_content_version,
+          "diffConfluenceContentVersions": _read_diff,
+          "getPeopleInfo": _read_people}
+
+
+@server.tool()
+def executeRead(  # NOSONAR(S1542) camelCase = real MCP tool name
+    name: str,
+    arguments: dict | None = None,
+) -> dict | list:
+    """Run a read-only Atlassian operation by name. Supported names:
+    getConfluenceContentVersion (contentId, versionNumber, optional
+    content_format: "markdown"), diffConfluenceContentVersions (contentId,
+    from_version, to_version), and getPeopleInfo (identifier: up to 10
+    account IDs)."""
+    arguments = arguments or {}
+    if name not in _READS:
+        error = f"atlassian-stub: unsupported executeRead name {name!r}"
+        state.log_call("executeRead", {"name": name, "arguments": arguments}, {"error": error})
+        raise ValueError(error)
+    result = _READS[name](arguments)
+    state.log_call("executeRead", {"name": name, "arguments": arguments}, result)
     return result
 
 

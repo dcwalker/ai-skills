@@ -45,7 +45,8 @@ State model (the fake Slack workspace):
     "me": {"id": "U...", "name": "...", "real_name": "...",
             "email": "...", "timezone": "...", "org": "..."},
     "users": {"<user_id>": {"id", "name", "real_name", "email",
-                             "title", "timezone"}},
+                             "title", "timezone", "org",
+                             "is_bot", "external"}},
     "channels": {"<channel_id>": {"id": "C...", "name": "channel-name",
                                    "purpose": "...", "creator": "U...",
                                    "created": "<display time>",
@@ -67,6 +68,13 @@ slack_search_public_and_private call fail with that message, logged first.
 It stands for a chat tool that cannot search at all, the case where a skill
 has to list conversations and read each one instead; it is an eval
 construct, not a reproduction of any particular live error.
+
+A user with "is_bot": true is a bot or integration: its profile reports
+`Bot: Yes`. A user with "external": true is a Slack Connect user from
+another organization (their own "org"): search results, their context
+lines, and channel and thread reads show that user with a blank name and
+email but keep the user ID, as a live search did for a partner company's
+user in a shared channel. slack_read_user_profile on that ID shows the name.
 
 Times are stored as display strings rather than computed from `ts`, so a
 fixture reads the way the live server's output reads and no timezone maths
@@ -191,11 +199,20 @@ def _channel(channel_id: str) -> dict | None:
     return None
 
 
+def _shown_user(user_id: str) -> dict:
+    """A user as message listings show them: an external Slack Connect user
+    keeps only their ID."""
+    user = _user(user_id)
+    if user.get("external"):
+        return {"id": user.get("id", user_id), "real_name": "", "email": ""}
+    return user
+
+
 def _sender(message: dict, with_id_label: bool = False) -> str:
     """`darby.wade <darby.wade@example.com> (U0DARBY)` in channel reads,
     and the same with an `ID: ` prefix in search results -- the live server
     labels the two differently."""
-    user = _user(message["user"])
+    user = _shown_user(message["user"])
     uid = user.get("id", message["user"])
     return f"{user.get('real_name', '')} <{user.get('email', '')}> ({'ID: ' if with_id_label else ''}{uid})"
 
@@ -282,7 +299,7 @@ def _render_context(channel_id: str, message: dict, seen: set) -> str:
             continue
         out += f"{label}: \n"
         for neighbour in neighbours:
-            user = _user(neighbour["user"])
+            user = _shown_user(neighbour["user"])
             head = f"From: {user.get('real_name', '')} <{user.get('email', '')}> (ID: {user.get('id', '')})"
             if neighbour["ts"] in seen:
                 out += f"- [See result above] {head} Message_ts: {neighbour['ts']}\n"
@@ -499,7 +516,7 @@ def slack_read_thread(
                      key=lambda m: m["ts"])[:limit]
 
     def block(message: dict) -> str:
-        user = _user(message["user"])
+        user = _shown_user(message["user"])
         return (
             f"From: {user.get('real_name', '')} <{user.get('email', '')}> ({user.get('id', '')})\n"
             f"Time: {message.get('time', '')}\n"
@@ -656,13 +673,13 @@ def slack_read_user_profile(user_id: str = "", include_locale: bool = False,
         f"Pronouns: \n"
         f"Title: {user.get('title', '')}\n"
         f"Email: {user.get('email', '')}\n"
-        f"Organization Name: {me.get('org', '')}\n"
+        f"Organization Name: {user.get('org', me.get('org', ''))}\n"
         f"Phone: \n"
         f"Status:  \n"
         f"Timezone: {user.get('timezone', '')}\n"
         f"Admin: {'Yes' if is_me else 'No'}\n"
         f"Owner: {'Yes' if is_me else 'No'}\n"
-        "Bot: No\n"
+        f"Bot: {'Yes' if user.get('is_bot') else 'No'}\n"
         "Restricted: No\n"
     )
     result = {"result": body}

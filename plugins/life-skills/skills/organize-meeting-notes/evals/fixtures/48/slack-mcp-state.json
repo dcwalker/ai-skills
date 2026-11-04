@@ -1,0 +1,48 @@
+{
+  "me": {
+    "id": "U0DARBY",
+    "name": "darby.wade",
+    "display_name": "darby.wade",
+    "real_name": "Darby Wade",
+    "email": "darby.wade@example.com",
+    "title": "Engineering Manager",
+    "timezone": "America/Los_Angeles",
+    "org": "example-co"
+  },
+  "users": {
+    "U0DARBY": {
+      "id": "U0DARBY",
+      "name": "darby.wade",
+      "real_name": "Darby Wade",
+      "email": "darby.wade@example.com",
+      "title": "Engineering Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0SAM": {
+      "id": "U0SAM",
+      "name": "sam.ortiz",
+      "real_name": "Sam Ortiz",
+      "email": "sam.ortiz@example.com",
+      "title": "Finance Partner",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0TINAA": {
+      "id": "U0TINAA",
+      "name": "tina.alvarez",
+      "real_name": "Tina Alvarez",
+      "email": "tina.alvarez@example.com",
+      "title": "Director, Strategic Programs",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0TINAB": {
+      "id": "U0TINAB",
+      "name": "tina.brooks",
+      "real_name": "Tina Brooks",
+      "email": "tina.brooks@example.com",
+      "title": "Senior Accountant, Finance",
+      "timezone": "America/Los_Angeles"
+    }
+  },
+  "channels": {},
+  "messages": {}
+}
