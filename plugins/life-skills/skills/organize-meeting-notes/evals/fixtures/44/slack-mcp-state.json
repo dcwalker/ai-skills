@@ -1,0 +1,67 @@
+{
+  "me": {
+    "id": "U0DARBY",
+    "name": "darby.wade",
+    "display_name": "darby.wade",
+    "real_name": "Darby Wade",
+    "email": "darby.wade@example.com",
+    "title": "Engineering Manager",
+    "timezone": "America/Los_Angeles",
+    "org": "example-co"
+  },
+  "users": {
+    "U0DARBY": {
+      "id": "U0DARBY",
+      "name": "darby.wade",
+      "real_name": "Darby Wade",
+      "email": "darby.wade@example.com",
+      "title": "Engineering Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0SAM": {
+      "id": "U0SAM",
+      "name": "sam.ortiz",
+      "real_name": "Sam Ortiz",
+      "email": "sam.ortiz@example.com",
+      "title": "Finance Partner",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0JORDAN": {
+      "id": "U0JORDAN",
+      "name": "jordan.lee",
+      "real_name": "Jordan Lee",
+      "email": "jordan.lee@example.com",
+      "title": "Software Engineer",
+      "timezone": "America/Los_Angeles"
+    }
+  },
+  "channels": {
+    "C0STANDUP": {
+      "id": "C0STANDUP",
+      "name": "platform-standup",
+      "purpose": "Async standup",
+      "creator": "U0JORDAN",
+      "created": "2025-06-01",
+      "is_archived": false,
+      "type": "public_channel"
+    }
+  },
+  "messages": {
+    "C0STANDUP": [
+      {
+        "ts": "1792687200.000001",
+        "time": "2026-10-22 09:40:00 PDT",
+        "user": "U0JORDAN",
+        "text": "Standup summary for today: checkout API is green, the flaky auth test is still open and needs an owner.",
+        "thread_ts": null
+      },
+      {
+        "ts": "1792687440.000002",
+        "time": "2026-10-22 09:44:00 PDT",
+        "user": "U0DARBY",
+        "text": "I'll take the flaky auth test",
+        "thread_ts": "1792687200.000001"
+      }
+    ]
+  }
+}

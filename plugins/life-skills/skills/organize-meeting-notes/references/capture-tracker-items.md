@@ -1,8 +1,9 @@
 # Capturing Tracker Items Created During the Meeting
 
 Read this in Step 1b when a ticket tracker (Jira, Trello, or another task
-tool) is reachable. It finds the work items and cards participants created
-during the meeting, which the raw notes often do not mention.
+tool) or Confluence is reachable. It finds the work items and cards
+participants created during the meeting, and the Confluence pages they
+created or edited, which the raw notes often do not mention.
 
 ## Which Items Count
 
@@ -82,14 +83,61 @@ the meeting content it relates to. List each item left out because it fell
 after the end and did not relate to the meeting, so the user can overrule
 that call.
 
+## Confluence Pages
+
+A page or live doc (Confluence's always-editable page type, such as the
+meeting page Loom creates) counts when an attendee created it or edited it
+within the same window as tracker items: from the actual start to 15
+minutes after the actual end, with the same rule for the 15 minutes after
+the end. A page reaches the notes this way even when nobody shared its link.
+
+**Finding them**: search with CQL for each attendee's account ID (look it
+up by email first) as a contributor, bounded from the day before the
+meeting's date rather than by its times, for example for a meeting on
+Mar 12, 2026: `contributor = "<account ID>" and lastmodified >=
+"2026-03-11"`. A later edit replaces `lastmodified`, so a page edited again
+after the window no longer matches a bound on the window itself. CQL reads
+dates and `"YYYY-MM-DD HH:mm"` as UTC, so a bound on the meeting's own date
+can miss an edit made late in the evening west of UTC; starting a day
+early covers it, and version history then places each edit. Page through
+the results until they run out.
+
+**Placing an edit in the window**: for each result, list the page's
+versions. Each version records when its editing session started; reading a
+version gives every account that edited during that session. A version
+whose start falls in the window places an edit by those accounts in it; a
+page whose first version falls in it was created in it. A session is one
+version however long it ran (a live doc saves one about 15 minutes after
+the last edit), so the notes can say that an attendee edited a page during
+the meeting, but never when a line in it was written. To say what changed,
+diff the in-window version against the one before it.
+
+**Loom meeting pages**: Loom creates its page a few minutes before the
+meeting and adds its recap a few minutes after it, and both versions carry
+the organizer's account ID. A Loom page counts only when an attendee other
+than the organizer edited it in the window. When only the organizer's
+account appears, leave it out as Loom's own edits and say so in the
+report.
+
+**Reporting**: open the Confluence findings with one line in the tracker
+line's shape, before any finding:
+
+`Confluence: searched pages edited <start> to <end + 15 minutes> (<search used>); found <count> created or edited by attendees.`
+
+Then list each page with its link, title, who created or edited it, and the
+version time, marking each one created rather than edited. List each page
+left out, and why (edited only outside the window, or only Loom's edits),
+so the user can overrule that call.
+
 ## Where They Go
 
 Include each item that counts, without asking; the report lists them all.
 
 - **Notes**: place the item beside the discussion it came from, using the
   Step 5 tracked work item format (`[KEY-123](...): <summary> (<status>)`).
-  An item with no matching note follows the Step 5 unanchored enrichment
-  rule.
+  A Confluence page goes in as a Markdown link with who created or edited
+  it during the meeting and what the edit holds. An item with no matching
+  note follows the Step 5 unanchored enrichment rule.
 - **Action items**: when the item is a task, it also becomes a Step 7 action
   item linked to it, led by its assignee, or its creator when unassigned.
   Find a due date the item does not carry as Step 7 does for any action

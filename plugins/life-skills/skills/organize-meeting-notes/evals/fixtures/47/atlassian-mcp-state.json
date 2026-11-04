@@ -1,0 +1,154 @@
+{
+  "cloud": {
+    "id": "a1b2c3d4-0000-4000-8000-000000000047",
+    "url": "https://example.atlassian.net",
+    "name": "example"
+  },
+  "projects": {},
+  "issues": {},
+  "transitions": [],
+  "me": {
+    "accountId": "5f0000000000000000000001",
+    "displayName": "Darby Wade"
+  },
+  "users": [
+    {
+      "accountId": "5f0000000000000000000001",
+      "displayName": "Darby Wade",
+      "emailAddress": "darby.wade@example.com"
+    },
+    {
+      "accountId": "712020:00000000-0000-4000-8000-000000000002",
+      "displayName": "Priya Raman",
+      "emailAddress": "priya.raman@example.com"
+    },
+    {
+      "accountId": "5f0000000000000000000003",
+      "displayName": "Jordan Lee",
+      "emailAddress": "jordan.lee@example.com"
+    }
+  ],
+  "pages": {
+    "9000000101": {
+      "id": "9000000101",
+      "title": "Decision: roll back 4.2.0",
+      "spaceId": "9001",
+      "spaceKey": "ENG",
+      "space": "Engineering",
+      "tinyId": "Dr4kQ1",
+      "excerpt": "Decision\nRoll back 4.2.0 and hold the release until the cache fix lands.",
+      "body": "## Decision\n\nRoll back 4.2.0 and hold the release until the cache fix lands.\n\n## Owner\n\nPriya Raman",
+      "versions": [
+        {
+          "number": 1,
+          "authorId": "712020:00000000-0000-4000-8000-000000000002",
+          "createdAt": "2026-10-07T16:40:12.511Z",
+          "collaborators": [
+            "712020:00000000-0000-4000-8000-000000000002"
+          ],
+          "body": "## Decision\n\nRoll back 4.2.0 and hold the release until the cache fix lands.\n\n## Owner\n\nPriya Raman"
+        }
+      ]
+    },
+    "9000000102": {
+      "id": "9000000102",
+      "title": "Checkout incident runbook",
+      "spaceId": "9001",
+      "spaceKey": "ENG",
+      "space": "Engineering",
+      "tinyId": "Rb8mW2",
+      "excerpt": "Rollback steps\n1. Freeze deploys\n2. Page the on-call",
+      "body": "## Rollback steps\n\n1. Freeze deploys\n2. Page the on-call\n3. Roll back the release\n4. Purge the CDN cache before rollback\n5. Post a status update",
+      "versions": [
+        {
+          "number": 6,
+          "authorId": "5f0000000000000000000003",
+          "createdAt": "2026-10-08T21:10:44.002Z",
+          "collaborators": [
+            "5f0000000000000000000003"
+          ],
+          "body": "## Rollback steps\n\n1. Freeze deploys\n2. Page the on-call\n3. Roll back the release\n4. Purge the CDN cache before rollback\n5. Post a status update"
+        },
+        {
+          "number": 5,
+          "authorId": "5f0000000000000000000003",
+          "createdAt": "2026-10-07T16:20:03.118Z",
+          "collaborators": [
+            "5f0000000000000000000003"
+          ],
+          "body": "## Rollback steps\n\n1. Freeze deploys\n2. Page the on-call\n3. Roll back the release\n4. Purge the CDN cache before rollback"
+        },
+        {
+          "number": 4,
+          "authorId": "5f0000000000000000000003",
+          "createdAt": "2026-09-01T18:00:00.000Z",
+          "collaborators": [
+            "5f0000000000000000000003"
+          ],
+          "body": "## Rollback steps\n\n1. Freeze deploys\n2. Page the on-call\n3. Roll back the release"
+        }
+      ]
+    },
+    "9000000103": {
+      "id": "9000000103",
+      "title": "Q4 capacity plan",
+      "spaceId": "9001",
+      "spaceKey": "ENG",
+      "space": "Engineering",
+      "tinyId": "Cp3nE3",
+      "excerpt": "Capacity\nAdd two checkout API nodes in November.",
+      "body": "## Capacity\n\nAdd two checkout API nodes in November.",
+      "versions": [
+        {
+          "number": 3,
+          "authorId": "712020:00000000-0000-4000-8000-000000000002",
+          "createdAt": "2026-10-07T19:30:00.000Z",
+          "collaborators": [
+            "712020:00000000-0000-4000-8000-000000000002"
+          ],
+          "body": "## Capacity\n\nAdd two checkout API nodes in November."
+        },
+        {
+          "number": 2,
+          "authorId": "712020:00000000-0000-4000-8000-000000000002",
+          "createdAt": "2026-09-20T17:00:00.000Z",
+          "collaborators": [
+            "712020:00000000-0000-4000-8000-000000000002"
+          ],
+          "body": "## Capacity\n\nAdd one checkout API node in November."
+        }
+      ]
+    },
+    "9000000104": {
+      "id": "9000000104",
+      "title": "Incident Review 2026-10-07",
+      "spaceId": "9001",
+      "subType": "live",
+      "spaceKey": "ENG",
+      "space": "Engineering",
+      "tinyId": "Lm5pR4",
+      "excerpt": "Event\nIncident Review\nDate\n2026-10-07  4:00 PM - 5:00 PM Coordinated Universal Time\nInvitees\nDarby Wade\nPriya Raman\nJordan Lee\nSynced from Google Calendar | Adjust your setting",
+      "body": "#  Meeting notes \n\n- Loom summary: the team reviewed the checkout outage and agreed to roll back.\n",
+      "versions": [
+        {
+          "number": 2,
+          "authorId": "5f0000000000000000000001",
+          "createdAt": "2026-10-07T17:03:31.792Z",
+          "collaborators": [
+            "5f0000000000000000000001"
+          ],
+          "body": "#  Meeting notes \n\n- Loom summary: the team reviewed the checkout outage and agreed to roll back.\n"
+        },
+        {
+          "number": 1,
+          "authorId": "5f0000000000000000000001",
+          "createdAt": "2026-10-07T15:54:25.854Z",
+          "collaborators": [
+            "5f0000000000000000000001"
+          ],
+          "body": "#  Meeting notes \n\n- Any notes you take here will be visible to your team...\n"
+        }
+      ]
+    }
+  }
+}
