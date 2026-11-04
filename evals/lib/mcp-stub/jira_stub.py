@@ -628,29 +628,43 @@ def _parse_cql_datetime(value: str) -> datetime.datetime:
     raise ValueError(f"atlassian-stub: unsupported CQL date {value!r} -- use YYYY-MM-DD or YYYY-MM-DD HH:mm")
 
 
+def _split_cql_clause(clause: str) -> tuple[str, str, str]:
+    """A clause's field, operator, and unquoted value, split at the first
+    operator without regular expressions: `type in (page, live)` keeps its
+    list in the value."""
+    text = clause.strip()
+    lower = text.lower()
+    marks = [i for i in (lower.find(c) for c in "<>=") if i >= 0]
+    at_in = lower.find(" in ")
+    if at_in >= 0 and (not marks or at_in < min(marks)):
+        field, operator, value = text[:at_in], "in", text[at_in + 4:]
+    elif marks:
+        at = min(marks)
+        operator = text[at:at + 2] if text[at:at + 2] in (">=", "<=") else text[at]
+        field, value = text[:at], text[at + len(operator):]
+    else:
+        return lower, "", ""
+    return field.strip().lower(), operator, value.strip().strip("()").strip().strip('"')
+
+
 def _cql_clause_matches(page: dict, clause: str) -> bool:
     versions = _page_versions(page)
-    match = re.fullmatch(r'(contributor|creator)\s*=\s*"?([^"]+)"?', clause, flags=re.IGNORECASE)
-    if match:
-        field, wanted = match.group(1).lower(), match.group(2)
+    field, operator, value = _split_cql_clause(clause)
+    if field in ("contributor", "creator") and operator == "=":
         if field == "creator":
-            return versions[0]["authorId"] == wanted
-        return any(wanted == v["authorId"] or wanted in v.get("collaborators", []) for v in versions)
-    match = re.fullmatch(r'(created|lastmodified)\s*(>=|<=|>|<)\s*"([^"]+)"', clause, flags=re.IGNORECASE)
-    if match:
-        field, operator, value = match.group(1).lower(), match.group(2), match.group(3)
+            return versions[0]["authorId"] == value
+        return any(value == v["authorId"] or value in v.get("collaborators", []) for v in versions)
+    if field in ("created", "lastmodified") and operator in _CQL_OPERATORS:
         actual = _parse_iso((versions[0] if field == "created" else versions[-1])["createdAt"])
         bound = _parse_cql_datetime(value)
         return {">=": actual >= bound, "<=": actual <= bound,
                 ">": actual > bound, "<": actual < bound}[operator]
-    match = re.fullmatch(r'type\s*(=|in)\s*\(?([^)]+)\)?', clause, flags=re.IGNORECASE)
-    if match:
-        wanted = {t.strip().strip('"').lower() for t in match.group(2).split(",")}
+    if field == "type" and operator in ("=", "in"):
+        wanted = {t.strip().strip('"').lower() for t in value.split(",")}
         kinds = {"page"} | ({"live"} if page.get("subType") == "live" else set())
         return bool(kinds & wanted)
-    match = re.fullmatch(r'space\s*=\s*"?([^"]+)"?', clause, flags=re.IGNORECASE)
-    if match:
-        return page.get("spaceKey", "").lower() == match.group(1).lower()
+    if field == "space" and operator == "=":
+        return page.get("spaceKey", "").lower() == value.lower()
     raise ValueError(f"atlassian-stub: unsupported CQL clause {clause!r}")
 
 
