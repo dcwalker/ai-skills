@@ -628,6 +628,24 @@ def _parse_cql_datetime(value: str) -> datetime.datetime:
     raise ValueError(f"atlassian-stub: unsupported CQL date {value!r} -- use YYYY-MM-DD or YYYY-MM-DD HH:mm")
 
 
+def _split_cql_and(query: str) -> list[str]:
+    """Split CQL on AND, in any letter case, only outside "quoted values",
+    so `title ~ "bugs and fixes"` stays one clause."""
+    clauses, buffer, in_quotes, index = [], "", False, 0
+    while index < len(query):
+        char = query[index]
+        if char == '"':
+            in_quotes = not in_quotes
+        if not in_quotes and query[index:index + 5].lower() == " and ":
+            clauses.append(buffer)
+            buffer, index = "", index + 5
+            continue
+        buffer += char
+        index += 1
+    clauses.append(buffer)
+    return [c.strip() for c in clauses if c.strip()]
+
+
 def _split_cql_clause(clause: str) -> tuple[str, str, str]:
     """A clause's field, operator, and unquoted value, split at the first
     operator without regular expressions: `type in (page, live)` keeps its
@@ -696,7 +714,7 @@ def searchConfluence(  # NOSONAR(S1542) camelCase = real MCP tool name
         _check_cloud(cloudId)
     args = {"cql": cql, "cloudId": cloudId, "limit": limit, "start": start}
     query, order = _split_order_by(" ".join(cql.split()))
-    clauses = [c.strip() for c in re.split(r" and ", query, flags=re.IGNORECASE) if c.strip()]
+    clauses = _split_cql_and(query)
     try:
         pages = [p for p in state.data.get("pages", {}).values()
                  if all(_cql_clause_matches(p, c) for c in clauses)]
