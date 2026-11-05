@@ -14,17 +14,25 @@ is the model's call.
 
 Standard library only (Python 3.9+).
 
+The file must sit under the current folder, the home folder, or a temporary
+folder.
+
 Usage:
   measure_notes.py NOTES.md
   measure_notes.py -   (read the Markdown from standard input)
 """
 
 import json
+import os
 import re
 import sys
+import tempfile
 
 IMAGE = re.compile(r"!\[[^\]]*\]\([^)]*\)")
-LINK = re.compile(r"\[((?:[^\[\]]|\[[^\]]*\])+)\]\((?:<[^>]+>|[^)\s]+)(?:[ \t]+\"[^\"]*\")?\)")
+# A link is its bracketed text followed at once by a destination: `(url)`,
+# `(<url>)`, or either with a "title".
+LINK_TEXT = re.compile(r"\[((?:[^\[\]]|\[[^\]]*\])+)\]")
+DESTINATION = re.compile(r"\((?:<[^>]+>|[^)\s]+)(?:[ \t]+\"[^\"]*\")?\)")
 TOPIC = re.compile(r"^\*\*[^*]+\*\*$|^__[^_]+__$")
 
 
@@ -42,9 +50,24 @@ def notes_section(lines):
     return section, inside
 
 
+def link_text(text):
+    """text with each Markdown link replaced by its link text."""
+    out, pos = [], 0
+    match = LINK_TEXT.search(text, pos)
+    while match:
+        dest = DESTINATION.match(text, match.end())
+        if dest:
+            out.append(text[pos:match.start()] + match.group(1))
+            pos = dest.end()
+            match = LINK_TEXT.search(text, pos)
+        else:
+            match = LINK_TEXT.search(text, match.start() + 1)
+    return "".join(out) + text[pos:]
+
+
 def plain(line):
     text = IMAGE.sub("", line.strip())
-    text = LINK.sub(r"\1", text)
+    text = link_text(text)
     text = re.sub(r"^>\s?", "", text)
     text = re.sub(r"^([-*+]|\d+[.)])\s+(\[[ xX]\]\s+)?", "", text)
     text = re.sub(r"[*_~`]+", "", text)
@@ -82,13 +105,29 @@ def measure(markdown):
     }
 
 
+def safe_path(path):
+    """path resolved, or exit when it is not Markdown or text under the
+    current folder, the home folder, or a temporary folder (including the
+    agent's scratch folder, CLAUDE_CODE_TMPDIR)."""
+    resolved = os.path.realpath(path)
+    if not resolved.lower().endswith((".md", ".markdown", ".txt")):
+        sys.exit(f"measure_notes: {path} must be a .md, .markdown, or .txt file")
+    roots = {os.getcwd(), os.path.expanduser("~"), tempfile.gettempdir(), "/tmp"}
+    roots.update(os.environ[name] for name in ("TMPDIR", "TMP", "TEMP", "CLAUDE_CODE_TMPDIR")
+                 if os.environ.get(name))
+    for root in (os.path.realpath(r) for r in roots):
+        if resolved.startswith(root.rstrip(os.sep) + os.sep):
+            return resolved
+    sys.exit(f"measure_notes: {path} is outside the current, home, and temporary folders")
+
+
 def main():
     if len(sys.argv) != 2 or sys.argv[1] in ("-h", "--help"):
         sys.exit(__doc__)
     if sys.argv[1] == "-":
         markdown = sys.stdin.read()
     else:
-        with open(sys.argv[1], encoding="utf-8") as handle:
+        with open(safe_path(sys.argv[1]), encoding="utf-8") as handle:
             markdown = handle.read()
     print(json.dumps(measure(markdown), indent=2))
 

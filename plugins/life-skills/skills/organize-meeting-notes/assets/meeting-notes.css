@@ -38,11 +38,8 @@
   --step-0: 1.0625rem;
   --step-1: 1.25rem;
   --step-3: 2rem;
-}
 
-/* Harbor (default) */
-
-:root {
+  /* Harbor (default) */
   color-scheme: light;
 
   --paper: #f3f5f8;

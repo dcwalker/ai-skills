@@ -40,7 +40,8 @@ Usage:
 The output defaults to the Markdown path with an .html extension. --base is
 the folder image paths are relative to (default: the Markdown file's
 folder), for a Markdown file kept in a scratch directory. It prints the path
-written.
+written. Both files must sit under the current folder, the home folder, or a
+temporary folder.
 """
 
 import argparse
@@ -50,22 +51,79 @@ import mimetypes
 import os
 import re
 import sys
+import tempfile
 
 SKILL_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CSS_PATH = os.path.join(SKILL_DIR, "assets", "meeting-notes.css")
 
+TEMP_VARIABLES = ("TMPDIR", "TMP", "TEMP", "CLAUDE_CODE_TMPDIR")
+
 PALETTES = ("harbor", "evergreen", "plum", "ember", "teal")
 
 LIST_ITEM = re.compile(r"^([-*+]|\d+[.)])[ \t]+")
-HEADING = re.compile(r"^(#{1,6})[ \t]+(.*?)[ \t]*#*[ \t]*$")
 TASK = re.compile(r"^\[([ xX])\][ \t]+")
 IMAGE_ONLY = re.compile(r"^!\[[^\]]*\]\([^)]*\)$")
+RULE = re.compile(r"^(\*\s*){3,}$|^(-\s*){3,}$|^(_\s*){3,}$")
+BLANKS = " \t"
+
+
+def heading(text):
+    """An ATX heading's level and text, or None. Trailing #s are dropped."""
+    level = len(text) - len(text.lstrip("#"))
+    rest = text[level:]
+    if not 1 <= level <= 6 or rest[:1] not in (" ", "\t") or not rest:
+        return None
+    return level, rest.strip(BLANKS).rstrip("#").rstrip(BLANKS)
+
+
+class InlineMatch:
+    """The parts of a link or image match that inline_element reads."""
+
+    def __init__(self, start, end, groups):
+        self._start, self._end, self._groups = start, end, groups
+
+    def start(self):
+        return self._start
+
+    def end(self):
+        return self._end
+
+    def group(self, index):
+        return self._groups[index - 1]
+
+    def groups(self):
+        return self._groups
+
+
+# A link or image is its bracketed text, matched here, followed at once by
+# a destination, matched by DESTINATION: `(url)`, `(<url>)`, or either with
+# a "title".
+LINK_TEXT = re.compile(r"\[((?:[^\[\]]|\[[^\]]*\])+)\]")
+IMAGE_TEXT = re.compile(r"!\[([^\]]*)\]")
+DESTINATION = re.compile(r"\((?:<([^>]+)>|([^)\s]+))(?:[ \t]+\"([^\"]*)\")?\)")
+
+
+class BracketPattern:
+    """search() like a compiled pattern, for bracketed text plus destination."""
+
+    def __init__(self, text_pattern):
+        self.text_pattern = text_pattern
+
+    def search(self, text, pos):
+        match = self.text_pattern.search(text, pos)
+        while match:
+            dest = DESTINATION.match(text, match.end())
+            if dest:
+                return InlineMatch(match.start(), dest.end(), (match.group(1),) + dest.groups())
+            match = self.text_pattern.search(text, match.start() + 1)
+        return None
+
 
 # Inline patterns, tried at each position in this order.
 INLINE = [
     ("code", re.compile(r"`([^`]+)`")),
-    ("image", re.compile(r"!\[([^\]]*)\]\((?:<([^>]+)>|([^)\s]+))(?:[ \t]+\"([^\"]*)\")?\)")),
-    ("link", re.compile(r"\[((?:[^\[\]]|\[[^\]]*\])+)\]\((?:<([^>]+)>|([^)\s]+))(?:[ \t]+\"([^\"]*)\")?\)")),
+    ("image", BracketPattern(IMAGE_TEXT)),
+    ("link", BracketPattern(LINK_TEXT)),
     ("bold", re.compile(r"\*\*(.+?)\*\*|__(.+?)__")),
     ("strike", re.compile(r"~~(.+?)~~")),
     ("italic", re.compile(r"(?<![\w*])\*(?![\s*])(.+?)(?<![\s*])\*(?![\w*])"
@@ -138,81 +196,57 @@ class Renderer:
     def blocks(self, lines):
         out, i = [], 0
         while i < len(lines):
-            line = lines[i]
-            stripped = line.strip()
-            if not stripped:
+            if not lines[i].strip():
                 i += 1
                 continue
-            heading = HEADING.match(stripped)
-            if heading and line == line.lstrip():
-                level = len(heading.group(1))
-                out.append(f"<h{level}>{self.inline(heading.group(2))}</h{level}>")
-                i += 1
-                continue
-            if re.match(r"^(\*\s*){3,}$|^(-\s*){3,}$|^(_\s*){3,}$", stripped):
-                out.append("<hr>")
-                i += 1
-                continue
-            if stripped.startswith(">"):
-                quote = []
-                while i < len(lines) and lines[i].strip().startswith(">"):
-                    quote.append(re.sub(r"^\s*>[ \t]?", "", lines[i]))
-                    i += 1
-                out.append("<blockquote>\n" + "\n".join(self.blocks(quote)) + "\n</blockquote>")
-                continue
-            if LIST_ITEM.match(line):
-                html_list, i = self.list_block(lines, i)
-                out.append(html_list)
-                continue
-            if IMAGE_ONLY.match(stripped):
-                # An image gets its own paragraph, so a caption under it
-                # stays a paragraph of its own.
-                out.append("<p>" + self.inline(stripped) + "</p>")
-                i += 1
-                continue
-            para = []
-            while i < len(lines):
-                current = lines[i]
-                if not current.strip() or para and (
-                        LIST_ITEM.match(current) or current.strip().startswith(">")
-                        or HEADING.match(current.strip()) or IMAGE_ONLY.match(current.strip())):
-                    break
-                para.append(current.strip())
-                i += 1
-            out.append("<p>" + "<br>\n".join(self.inline(p) for p in para) + "</p>")
+            html_block, i = self.block(lines, i)
+            out.append(html_block)
         return out
+
+    def block(self, lines, i):
+        """The block that starts at a non-blank line i, and the line after it."""
+        line = lines[i]
+        stripped = line.strip()
+        title = heading(stripped)
+        if title and line == line.lstrip():
+            level, text = title
+            return f"<h{level}>{self.inline(text)}</h{level}>", i + 1
+        if RULE.match(stripped):
+            return "<hr>", i + 1
+        if stripped.startswith(">"):
+            return self.blockquote(lines, i)
+        if LIST_ITEM.match(line):
+            return self.list_block(lines, i)
+        if IMAGE_ONLY.match(stripped):
+            # An image gets its own paragraph, so a caption under it stays a
+            # paragraph of its own.
+            return "<p>" + self.inline(stripped) + "</p>", i + 1
+        return self.paragraph(lines, i)
+
+    def blockquote(self, lines, i):
+        quote = []
+        while i < len(lines) and lines[i].strip().startswith(">"):
+            quote.append(re.sub(r"^\s*>[ \t]?", "", lines[i]))
+            i += 1
+        return "<blockquote>\n" + "\n".join(self.blocks(quote)) + "\n</blockquote>", i
+
+    def paragraph(self, lines, i):
+        para = []
+        while i < len(lines) and not ends_paragraph(lines[i], bool(para)):
+            para.append(lines[i].strip())
+            i += 1
+        return "<p>" + "<br>\n".join(self.inline(p) for p in para) + "</p>", i
 
     def list_block(self, lines, i):
         ordered = LIST_ITEM.match(lines[i]).group(1)[0].isdigit()
-        indent = len(lines[i]) - len(lines[i].lstrip())
+        indent = indent_of(lines[i])
         items = []
         while i < len(lines):
             line = lines[i]
             match = LIST_ITEM.match(line.lstrip())
-            line_indent = len(line) - len(line.lstrip())
-            if not match or line_indent != indent or match.group(1)[0].isdigit() != ordered:
+            if not match or indent_of(line) != indent or match.group(1)[0].isdigit() != ordered:
                 break
-            content_col = line_indent + match.end()
-            body = [line.lstrip()[match.end():]]
-            i += 1
-            while i < len(lines):
-                nxt = lines[i]
-                if not nxt.strip():
-                    # A blank line ends the item unless indented content follows.
-                    j = i + 1
-                    while j < len(lines) and not lines[j].strip():
-                        j += 1
-                    if j < len(lines) and len(lines[j]) - len(lines[j].lstrip()) > indent:
-                        body.append("")
-                        i += 1
-                        continue
-                    break
-                nxt_indent = len(nxt) - len(nxt.lstrip())
-                if nxt_indent <= indent:
-                    break
-                body.append(nxt[min(nxt_indent, content_col):] if nxt_indent >= content_col
-                            else nxt.lstrip())
-                i += 1
+            body, i = item_body(lines, i, indent, indent + match.end())
             items.append(self.list_item(body))
         tag = "ol" if ordered else "ul"
         return f"<{tag}>\n" + "\n".join(items) + f"\n</{tag}>", i
@@ -238,11 +272,55 @@ class Renderer:
         return f"<li>{checkbox}{text}</li>"
 
 
+def indent_of(line):
+    return len(line) - len(line.lstrip())
+
+
+def ends_paragraph(line, started):
+    """Whether line ends a paragraph: a blank line, or once the paragraph has
+    a line, the start of another block."""
+    stripped = line.strip()
+    if not stripped:
+        return True
+    return started and bool(LIST_ITEM.match(line) or stripped.startswith(">")
+                            or heading(stripped) or IMAGE_ONLY.match(stripped))
+
+
+def blank_continues(lines, i, indent):
+    """Whether the blank line i sits inside a list item: indented content
+    follows the blank lines."""
+    j = i + 1
+    while j < len(lines) and not lines[j].strip():
+        j += 1
+    return j < len(lines) and indent_of(lines[j]) > indent
+
+
+def item_body(lines, i, indent, content_col):
+    """A list item's lines with its marker and indentation removed, and the
+    line after the item."""
+    body = [lines[i].lstrip()[content_col - indent:]]
+    i += 1
+    while i < len(lines):
+        line = lines[i]
+        if not line.strip():
+            if not blank_continues(lines, i, indent):
+                break
+            body.append("")
+        elif indent_of(line) <= indent:
+            break
+        else:
+            body.append(line[content_col:] if indent_of(line) >= content_col else line.lstrip())
+        i += 1
+    return body, i
+
+
 def plain_title(markdown_lines):
     for line in markdown_lines:
-        match = re.match(r"^##[ \t]+(.+)$", line)
-        if match:
-            return re.sub(r"[*_~`\[\]]|\]\([^)]*\)", "", match.group(1)).strip()
+        rest = line[2:] if line.startswith("##") else ""
+        if rest[:1] in (" ", "\t") and len(rest) > 1:
+            # The title starts after the blanks, keeping at least one character.
+            title = rest.lstrip(BLANKS) or rest[-1]
+            return re.sub(r"[*_~`\[\]]|\]\([^)]*\)", "", title).strip()
     return "Meeting notes"
 
 
@@ -256,7 +334,30 @@ def palette_switcher():
             "    <legend>Color</legend>\n" + "\n".join(rows) + "\n  </fieldset>\n</div>")
 
 
+def allowed_roots():
+    """The folders this script reads notes from and writes pages to: the
+    current folder, the home folder, and the temporary folders, including
+    the agent's scratch folder (CLAUDE_CODE_TMPDIR)."""
+    roots = {os.getcwd(), os.path.expanduser("~"), tempfile.gettempdir(), "/tmp"}
+    roots.update(os.environ[name] for name in TEMP_VARIABLES if os.environ.get(name))
+    return [os.path.realpath(root) for root in roots]
+
+
+def safe_path(path, suffixes):
+    """path resolved, or exit when it falls outside allowed_roots() or does not
+    end in one of suffixes, so a wrong argument cannot reach another file."""
+    resolved = os.path.realpath(path)
+    if not resolved.lower().endswith(suffixes):
+        sys.exit(f"render_html: {path} must end in {' or '.join(suffixes)}")
+    for root in allowed_roots():
+        if resolved.startswith(root.rstrip(os.sep) + os.sep):
+            return resolved
+    sys.exit(f"render_html: {path} is outside the current, home, and temporary folders")
+
+
 def render(md_path, out_path, base=None):
+    md_path = safe_path(md_path, (".md", ".markdown", ".txt"))
+    out_path = safe_path(out_path, (".html",))
     with open(md_path, encoding="utf-8") as handle:
         lines = handle.read().replace("\r\n", "\n").split("\n")
     with open(CSS_PATH, encoding="utf-8") as handle:
