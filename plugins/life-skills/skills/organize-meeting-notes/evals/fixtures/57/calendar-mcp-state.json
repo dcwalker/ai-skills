@@ -1,0 +1,56 @@
+{
+  "calendar": {
+    "id": "darby.wade@example.com",
+    "summary": "Darby Wade",
+    "timeZone": "America/Los_Angeles"
+  },
+  "updated": "2026-10-28T22:00:00Z",
+  "events": [
+    {
+      "conferenceData": {},
+      "created": "2026-10-10T17:00:00Z",
+      "creator": {
+        "email": "darby.wade@example.com"
+      },
+      "description": "",
+      "end": {
+        "dateTime": "2026-10-28T13:30:00-07:00",
+        "timeZone": "America/Los_Angeles"
+      },
+      "eventType": "DEFAULT",
+      "htmlLink": "https://www.google.com/calendar/event?eid=evt-roadmap-1028",
+      "id": "evt-roadmap-1028",
+      "location": "Zoom",
+      "organizer": {
+        "email": "darby.wade@example.com"
+      },
+      "start": {
+        "dateTime": "2026-10-28T13:00:00-07:00",
+        "timeZone": "America/Los_Angeles"
+      },
+      "status": "confirmed",
+      "summary": "Roadmap Review",
+      "updated": "2026-10-10T17:00:00Z",
+      "useDefaultReminders": true,
+      "attendees": [
+        {
+          "email": "darby.wade@example.com",
+          "displayName": "Darby Wade",
+          "responseStatus": "accepted",
+          "organizer": true,
+          "self": true
+        },
+        {
+          "email": "priya.raman@example.com",
+          "displayName": "Priya Raman",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "marcus.hall@example.com",
+          "displayName": "Marcus Hall",
+          "responseStatus": "accepted"
+        }
+      ]
+    }
+  ]
+}

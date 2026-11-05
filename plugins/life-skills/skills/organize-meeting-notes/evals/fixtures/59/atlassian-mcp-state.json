@@ -1,0 +1,50 @@
+{
+  "cloud": {
+    "id": "a1b2c3d4-0000-4000-8000-000000000059",
+    "url": "https://example.atlassian.net",
+    "name": "example"
+  },
+  "timeZone": "America/Los_Angeles",
+  "projects": {},
+  "issues": {},
+  "transitions": [],
+  "me": {
+    "accountId": "acct-darby",
+    "displayName": "Darby Wade"
+  },
+  "users": [
+    {
+      "accountId": "acct-darby",
+      "displayName": "Darby Wade",
+      "emailAddress": "darby.wade@example.com"
+    },
+    {
+      "accountId": "acct-tom",
+      "displayName": "Tom Becker",
+      "emailAddress": "tom.becker@example.com"
+    }
+  ],
+  "pages": {
+    "9000005901": {
+      "id": "9000005901",
+      "title": "Ops glossary",
+      "spaceId": "9001",
+      "spaceKey": "OPS",
+      "space": "Operations",
+      "tinyId": "Og5gL1",
+      "excerpt": "PIR: Post-Incident Review, held within five business days of a Sev 1 or Sev 2 incident.",
+      "body": "PIR: Post-Incident Review, held within five business days of a Sev 1 or Sev 2 incident.\n\nRCA: Root cause analysis.",
+      "versions": [
+        {
+          "number": 1,
+          "authorId": "acct-tom",
+          "createdAt": "2026-08-03T17:00:00.000Z",
+          "collaborators": [
+            "acct-tom"
+          ],
+          "body": "PIR: Post-Incident Review, held within five business days of a Sev 1 or Sev 2 incident.\n\nRCA: Root cause analysis."
+        }
+      ]
+    }
+  }
+}

@@ -1,13 +1,13 @@
 ---
 name: organize-meeting-notes
-description: Clean up and structure meeting notes for a personal journal with strict formatting, filling gaps from the user's calendar, contacts, chat, trackers, and other notes and asking only about what no source settles, drafting the notes from screenshots, audio transcripts, or chat transcripts when none were taken. Use when the user asks to organize, polish, or journalize meeting notes.
+description: Clean up and structure meeting notes with strict formatting, filling gaps from the user's calendar, contacts, chat, trackers, and other notes and asking only about what no source settles, drafting the notes from screenshots, audio transcripts, or chat transcripts when none were taken. Use when the user asks to organize, polish, or journalize meeting notes.
 metadata:
   category: life-skills
 ---
 
 # Organize Meeting Notes
 
-Clean and organize raw meeting notes into a journal-ready Markdown format with this final order:
+Clean and organize raw meeting notes into a structured Markdown format with this final order:
 1. Meeting metadata
 2. Attendees
 3. Agenda (only when one is available)
@@ -18,7 +18,7 @@ Clean and organize raw meeting notes into a journal-ready Markdown format with t
 
 Use this skill when:
 - The user asks to clean up, organize, or rewrite meeting notes
-- The user wants notes converted into a personal journal format
+- The user wants notes converted into a consistent, structured format
 - The user wants the notes filled out from their calendar, chat, trackers,
   and other notes
 - No notes were taken, but the meeting left screenshots, an audio transcript,
@@ -134,8 +134,12 @@ For each available source:
   search, in two steps:
   1. Find the conversations active in the window with a search bounded only
      by date, carrying no topic keyword and no sender filter. When the tool
-     takes timestamps, convert the window in the user's own timezone (from
-     the chat profile or the calendar). If the tool refuses a search bounded
+     takes timestamps, get them from the bundled script, never by hand, in
+     the user's own timezone (from the chat profile or the calendar):
+     `python3 <skill-dir>/scripts/meeting_times.py window --start
+     "YYYY-MM-DD HH:MM" --end "HH:MM" --tz <IANA zone>`. It also gives the
+     window in UTC for a wiki search and the local date for a date filter,
+     and handles a daylight-saving change. If the tool refuses a search bounded
      only by timestamps, retry it with the meeting's date added as a date
      filter (`on:YYYY-MM-DD` in Slack's search syntax), keeping the
      timestamp bounds alongside it; dropping them returns the whole day.
@@ -164,7 +168,7 @@ For each available source:
   counts when its replies fall inside it. Keep each reply with its own
   thread, even when two threads share a channel and their replies
   interleave in time:
-  - Present each thread as its own block: the parent message first, then
+  - Present each thread as its own exchange: the parent message first, then
     only the replies whose `thread_ts` is that parent's, in time order.
     Never list replies from different threads in one sequence.
   - A reply answers its own parent, not the message shown just before it.
@@ -174,37 +178,34 @@ For each available source:
     Never present it as a result of, or a comment on, another thread.
   - A reply in the window that continues a thread started before it is a
     follow-up, and its parent is the context that makes it readable.
-    Include the parent with the reply, marked as posted before the
-    meeting (its time and author), never as chat from during it. Say
-    whether the follow-up relates to the meeting's content: one that does
-    belongs beside the discussion it continues; one that does not shows
-    what the attendee was attending to instead of the meeting, and is
-    kept like any other side conversation.
+    Include the parent with the reply, and say in the exchange's lead-in
+    that the parent was posted before the meeting (its time and author),
+    never presenting it as chat from during it. Whether the follow-up
+    relates to the meeting's content decides where it goes, as for any
+    other exchange (see the placement rule below).
 
   For example, two threads in one channel whose replies interleave, for a
-  meeting that ran 10:00 to 10:30 AM:
+  meeting that ran 10:00 to 10:30 AM and reviewed the cutover checklist:
 
   ```markdown
-  **#billing-cutover, thread started 9:40 AM by Noor Haddad (posted before the meeting)**
-  - Noor Haddad, 9:40 AM: are the invoice totals matching after the dry run?
-  - Tom Becker, 10:12 AM: not quite, two accounts are off by a cent
-  Follow-up during the meeting on the dry run; it relates to the cutover checklist the meeting reviewed.
-
-  **#billing-cutover, thread started 10:05 AM by Tom Becker**
-  - Tom Becker, 10:05 AM: who signs off on the rollback plan?
-  - Noor Haddad, 10:14 AM: I do, by Friday
+  - The team walked through the cutover checklist. [In Slack](<permalink>), Tom Becker followed up on Noor Haddad's 9:40 AM question from before the meeting about the dry run:
+    - Noor Haddad, 9:40 AM: are the invoice totals matching after the dry run?
+    - Tom Becker, 10:12 AM: not quite, two accounts are off by a cent
+  - Noor Haddad will own the rollback plan. [In Slack](<permalink>), Tom Becker asked who signs off on it:
+    - Tom Becker, 10:05 AM: who signs off on the rollback plan?
+    - Noor Haddad, 10:14 AM: I do, by Friday
   ```
 
   Tom's 10:12 reply lands between the two messages of the second thread
-  in time, and still goes under the first: it answers Noor's question.
+  in time, and still goes with the first: it answers Noor's question.
 
   For example, in Slack, for a meeting that actually ran 2:00 PM to 2:45 PM
   Pacific on Oct 1, 2026: search with `after` and `before` set to that
   window's Unix timestamps and `on:2026-10-01` as the only filter, sorted
   by time, with no keywords and no `from:` filter. Read each conversation
   found with `oldest` and `latest` set to the same timestamps. Read the
-  thread of each message with replies, and of each reply hit. Then open the
-  chat findings with the disclosure line below.
+  thread of each message with replies, and of each reply hit. Then record
+  the check with the disclosure line below.
 
   When the chat tool cannot search by date alone, prefer a search bounded by
   start and end timestamps, which most tools accept even when they reject a
@@ -222,11 +223,11 @@ For each available source:
   keyword or sender search says nothing about the window. Report that chat
   holds nothing only after the window itself came back empty.
 
-  Every meeting note records its chat check, found or empty, so a dropped
-  message can be traced from the note alone. Write one line in this shape,
-  filling in every part, into the note as an italic line after the Action
-  Items section and before the closing `####` line (see Step 8), and open
-  the report's chat findings with the same line, before any finding:
+  The report records each meeting's chat check, found or empty, so a
+  dropped message can be traced. The notes are the deliverable, not a log
+  of the check: never write this line into the document. Open the report's
+  chat findings with one line in this shape, filling in every part, before
+  any finding:
 
   `Chat: searched <start> to <end> by date only (<date terms used>); read <conversations read>.`
 
@@ -246,7 +247,8 @@ For each available source:
   meeting an entry with the window searched, the search pages read, the
   conversations and threads read, and each item left out with its reason.
   Update a meeting's entry when its chat check finishes, before writing its
-  note. When earlier work in the run is no longer in view, read the
+  note. The report gives each meeting its own disclosure line. When
+  earlier work in the run is no longer in view, read the
   checklist rather than relying on memory, and re-run any check it does not
   record.
 
@@ -254,12 +256,49 @@ For each available source:
   join and leave notices, reactions, and messages from people outside the
   meeting; exclude only bot and integration posts. Side conversations count
   even when they are off the meeting topic, because they show what the
-  attendees were engaged with: include them in time order, or beside the
-  part of the discussion they ran alongside. Time order applies between
-  conversations and threads, never across them: each thread stays one
-  block, as in the example above, even when its replies interleave with
-  another thread's. Keep each one, and never drop one because it is off
-  topic or a participant called it unrelated. A
+  attendees were engaged with. Keep each one, and never drop one because it
+  is off topic or a participant called it unrelated.
+
+  Weave chat into the notes as exchanges, never as a separate chat section
+  or a transcript of the channel. An exchange is a lead-in sentence that
+  links the conversation, then each message as a nested bullet:
+  - The lead-in opens with a link named for the chat tool (`[In
+    Slack](<permalink>)`) to the exchange's first message, or to its thread,
+    then says in reported speech who did what (asked, answered, followed
+    up), ending with a colon.
+  - Each message bullet is `<Sender>, <time>: <message>`, with the sender as
+    Step 3 resolves names and the time the bounded read shows. The message
+    is the text as sent, verbatim: never correct its spelling, trim it, or
+    reword it.
+  - An exchange that relates to the meeting's content goes at the end of
+    the note on the discussion it ran alongside, as a continuation of that
+    note.
+  - An exchange that does not relate to it is a note of its own, in time
+    order with the discussion around it.
+
+  Time order applies between conversations and threads, never across them:
+  each thread stays one exchange, as in the example above, even when its
+  replies interleave with another thread's.
+
+  For example, for a meeting where Lena Fischer walked through the database
+  failover drill, related chat:
+
+  ```markdown
+  - Lena Fischer walked through the database failover drill, including the manual step before promoting the replica. [In Slack](<permalink>), Marcus Hall asked who runs that step:
+    - Marcus Hall, 2:12 PM: who actually runs the manual step lena mentioned?
+    - Priya Raman, 2:13 PM: teh primary on-call, per the runbook
+  ```
+
+  Unrelated chat in the same meeting:
+
+  ```markdown
+  - Lena Fischer walked through the database failover drill, including the manual step before promoting the replica.
+  - [In Slack](<permalink>), Marcus Hall asked who wants coffee after the meeting:
+    - Marcus Hall, 2:20 PM: coffee run after this, anyone?
+    - Priya Raman, 2:21 PM: yes please, oat latte
+  ```
+
+  A
   message about the recording rather than the meeting (a request to stop
   recording, someone leaving) is not meeting content; it explains why the
   transcript is partial, and it goes in the Step 2 schedule note.
@@ -323,6 +362,9 @@ Format metadata exactly as:
 - Bold only the values
 
 Time correction rule:
+- Compare them with `python3 <skill-dir>/scripts/meeting_times.py check-end
+  --start "YYYY-MM-DD HH:MM" --duration <minutes> --end "<stated end>"`,
+  which gives the computed end and whether it matches.
 - If end-start matches duration, keep end time as-is.
 - If not, strikethrough only the original end time value and append corrected end time value (start + duration), both in the `End:` field.
 - Example mismatch pattern:
@@ -417,7 +459,30 @@ Research every person named in the notes, the transcript, or chat, not
 only the attendees, following
 [references/resolve-names.md](references/resolve-names.md): it sets the
 order of sources and the confidence tier that decides whether a name is
-applied, applied and reported, or asked about with a candidate.
+applied, applied and reported, or asked about with a candidate. A name
+that matches an attendee only by a short form (`Ben` for Benjamin) is not
+settled by the attendee list: run source 3, the subject search from any
+date, before applying it.
+
+Refer to each person with the pronouns their profile states (a pronouns
+field, or pronouns written into a chat or directory name, such as
+`Rowan Pike (they/them)`). When no profile states them, use the person's
+name or they/them. Never infer pronouns from a name.
+
+Research every acronym, project codename, and team or system term the line
+assumes, the same way, before asking what it means:
+1. The notes, the transcript, and the chat already read.
+2. A search for the term itself in each reachable source, run on its own
+   and with no date bound (the Step 1b window bounds only find what
+   happened during the meeting; a definition usually predates it): chat
+   messages, the wiki (in Confluence, `text ~ "<term>"`), the tracker (in
+   Jira, `text ~ "<term>"`), email, and the user's other notes.
+3. When a source defines the term (a glossary, a page or ticket that spells
+   it out, a message that explains it), and no other source defines it
+   differently, use that meaning without asking: spell the acronym out on
+   first use, and list it in the report with its source.
+4. When sources define it differently, ask, naming each meaning and where
+   it came from. When no source mentions it, ask, saying what was searched.
 
 A value a source states is a finding, not a guess; record it and its source
 for the Step 8 report. Ask the user only about a transcription problem no
@@ -457,7 +522,7 @@ Name rules in notes:
 - Later mentions: first name only, unless multiple attendees share the same first name.
 
 Acronym rule:
-- Spell out acronyms on first use.
+- Spell out acronyms on first use, with the meaning Step 4 found.
 
 URL rule:
 - If URLs are listed at the end of notes, move them into relevant note locations as Markdown hyperlinks.
@@ -522,18 +587,48 @@ Quote rule (only when a transcript was provided):
 - Quote only words that appear verbatim in the transcript. Never quote from
   the raw notes, from the user's answers, or from memory, and never
   reconstruct what someone probably said.
-- Use two forms, chosen by significance:
+- Quote what carries emotion, or a person's own view, that a summary note
+  would lose. The emotion can be the speaker's own, or the reaction the
+  line drew from the room. Look for:
+  - A line the audience reacted to: everyone laughed, reacted audibly (a
+    gasp, a cheer, a groan, shown in the transcript), or responded in chat
+    (a burst of replies or reactions in the meeting window).
+  - A personal experience on the topic, good or bad: an anecdote, a
+    personal connection, a moment of realization.
+  - Pointed or direct feedback, whether or not it is actionable (and all
+    the more when it is).
+  - A statement that decided something, committed someone, reversed a
+    position, registered a real disagreement, or changed the meeting's
+    direction.
+  - Wording that matters in itself: a specific commitment, a number, a term
+    the group adopted.
+- The test is emotion, not importance. A status update ("the migration is
+  80% done") carries none, so the note says it just as well and it is not
+  quoted.
+- A brief quote that says everything its note would say is better than a
+  paraphrase of it, because it keeps the feeling a summary drops. For
+  example, `"I've rebuilt this importer three times and never want to see
+  it again, so it ships Friday" — Noor Haddad` conveys what `Noor is
+  frustrated; the importer ships Friday` does not.
+- Keep the notes balanced: they are primarily note text, with quotes added
+  where they are significant. A section that reads as a string of quotes
+  has lost its notes.
+- Use two forms:
   - Inline quote: a short quoted fragment inside the note's own sentence, in
-    quotation marks with the speaker named, for wording that matters in
-    itself (a specific commitment, a number, a term the group adopted).
-  - Pull quote: a blockquote for an impactful statement, meaning one that
-    decided something, committed someone, reversed a position, registered a
-    real disagreement, or changed the meeting's direction.
+    quotation marks with the speaker named. This is the usual form.
+  - Pull quote: a blockquote, used for one of these:
+    - To break up heavy text: in a long stretch of notes, a pull quote gives
+      the reader visual relief and makes the section easier to read.
+    - As a review (reinforcement): placed after the note it supports, to
+      emphasize the meeting's central point or act as an exclamation point
+      for it.
+    - To highlight "tweetables": short, punchy, or provocative lines that
+      would work well on social media.
 - Format a pull quote as `> "<exact words>" — <Speaker>` on its own line
   directly under the note it supports, indented to that note's bullet.
-- Include at most one pull quote per section, or one for the meeting when the
-  notes are not sectioned. Skip any quote that only restates its note in
-  other words: the bar is that a reader would want the speaker's own words.
+- There is no fixed limit on quotes. Include every statement that meets
+  this bar, however many come from one section or one speaker, as long as
+  the notes stay balanced.
 - Trim with an ellipsis to cut filler or a false start. Never change,
   reorder, or clean up the words themselves. Restoring a censored word, per
   the explicit language rule, is not a change.
@@ -591,7 +686,11 @@ After Steps 4 and 5, format the notes section as a bulleted list:
    - Keep a due date in the words used in the meeting; adding the year to an
      otherwise specific date (`by Sep 10, 2026`) is fine. When those words
      could mean more than one date (a weekday such as "Friday"), add the
-     calendar date they refer to, counted from the meeting date.
+     calendar date they refer to, counted from the meeting date with
+     `python3 <skill-dir>/scripts/meeting_times.py due --meeting-date
+     YYYY-MM-DD --weekday <day>` (add `--next-week` for "next Friday" meant
+     as the following week). When it notes the weekday is the meeting's
+     own, settle which week from the transcript or ask.
    - When an item's owner or due date is unknown, look for it as Step 4
      does (the tracker, the chat thread, the calendar, the user's other
      notes). When no source gives it, ask an open question about whichever
@@ -605,6 +704,12 @@ After Steps 4 and 5, format the notes section as a bulleted list:
      down, when a release ships) is not the due date of an action that
      leads to it. Give an action that date only when the meeting tied the
      date to that action itself.
+   - Before listing an item, or asking whether it happened, check whether
+     the meeting already did it: read the whole transcript, including the
+     part after the last note, and the chat from the window. An action
+     done during the meeting (a conversation held, a decision made, a
+     ticket filed) is a note of what happened, not an action item, and
+     needs no question.
 2. It is valid for a meeting to have no action items. Keep the
    `###### Action Items` section and write `None.` under it. Do not ask the
    user to confirm the action items, or that there are none.
@@ -641,13 +746,15 @@ Return final Markdown with:
 - Then `###### Agenda`, only when Step 3b captured an agenda
 - Then `###### Notes`
 - Then `###### Action Items`, always, with `None.` when there are none
-- Then the italic chat disclosure line, when a chat source was reachable
 
 Summary rule (based on read length):
 - Measure the finished Notes section by its text alone: count the words and
   lines of the notes, captions, and quotes. Images do not count toward the
   measurement, so a short meeting does not earn a summary by carrying
-  screenshots.
+  screenshots. Measure with `python3 <skill-dir>/scripts/measure_notes.py
+  <notes.md>` (or `-` to read the Markdown from standard input), never by
+  hand: it gives the counts, which trigger fires, and the summary length
+  band below.
 - Add a concise italicized summary when either trigger fires:
   - The Notes section exceeds ~500 words or ~40 lines. These are the same
     thresholds this project uses to decide when a documentation section is
@@ -680,13 +787,37 @@ Summary rule (based on read length):
   4. Before adding it, check each sentence against its note, and rewrite any
      sentence whose subject, verb, or claim that note does not support.
 
-After the Action Items section, add the Step 1b chat disclosure line in
-italics (`*Chat: searched ...*`), found or empty, whenever a chat source was
-reachable.
-
 At the very end, append:
 - `#### YYYY-MM-DD HH:MM: <Meeting Title>`
 - Use 24-hour time.
+
+HTML version:
+- When the run saves files (a batch run, or the user asked for files),
+  save the Markdown and an HTML version of it next to each other, with the
+  same base name (`2026-10-26-api-review.md` and `2026-10-26-api-review.html`),
+  and name both paths in the reply.
+- Otherwise, return the Markdown in the reply and, after the report, offer
+  the HTML version. When the user accepts, write the HTML file where the
+  session can save files, or return it in the reply where it cannot.
+- Build the HTML with the bundled script, never by hand:
+  `python3 <skill-dir>/scripts/render_html.py <notes.md> [--out
+  <notes.html>]`. It writes one self-contained page: the same content in
+  the same order, every Markdown element rendered,
+  [assets/meeting-notes.css](assets/meeting-notes.css) copied unchanged into
+  a `<style>` element, the palette picker first in `<body>`, no script, and
+  light or dark mode following the browser. It keeps a relative path for an
+  image in the HTML file's folder or below and embeds any other local image
+  file as a `data:` URI. It links only relative, http, https, and mailto
+  targets. It prints the path it wrote, and warns about an image it could
+  not find or a link or image it left as text. It reads and writes only
+  under the working folder, the home folder, and the temporary folder
+  `$TMPDIR` names.
+- When the Markdown is not saved, write it under `$TMPDIR` (for example
+  `"$TMPDIR/<notes>.md"`), not a scratch folder elsewhere, and pass
+  `--base <folder the image paths are relative to>` and `--out <where the
+  HTML goes>`.
+- Only where no script can run, build the same page by hand, following the
+  element mapping in the script's docstring.
 
 After the document, outside it, add a short report so the user can see what
 was done without having been asked along the way. Leave out any part with
@@ -698,7 +829,8 @@ nothing in it:
   platform team)`).
 - **Added from sources**: what Step 1b put in the document, by source, and
   what it left out and why. Open chat findings with the Step 1b disclosure
-  line, and tracker and Confluence findings with their own lines.
+  line, found or empty, whenever a chat source was reachable, and tracker
+  and Confluence findings with their own lines.
 - **Summary measurement**: the word and line count, and the section count
   when the notes are sectioned, so the user can see why a summary was or was
   not added, and the note each summary sentence came from.
@@ -712,7 +844,8 @@ nothing in it:
 - Quote only from a transcript the user actually provided, verbatim and
   attributed. Never invent, reconstruct, or paraphrase into a quotation, and
   never put a paraphrase in quotation marks, labelled or not; write it as
-  reported speech.
+  reported speech. Chat messages from a bounded read are reproduced
+  verbatim in their Step 1b exchanges, not quoted.
 - Add a summary only when the length rule calls for one, and section the
   notes only when the meeting genuinely had distinct topics. Neither is
   padding to apply by default.
