@@ -149,7 +149,8 @@ def main():
 
     p = sub.add_parser("due", help="the date a weekday due date refers to")
     p.add_argument("--meeting-date", required=True, help="YYYY-MM-DD")
-    p.add_argument("--weekday", required=True, choices=WEEKDAYS + [d.capitalize() for d in WEEKDAYS])
+    p.add_argument("--weekday", required=True, type=str.lower, choices=WEEKDAYS,
+                   help="a weekday name, in any case")
     p.add_argument("--next-week", action="store_true", help='for "next <weekday>" meaning the following week')
     p.set_defaults(func=due)
 

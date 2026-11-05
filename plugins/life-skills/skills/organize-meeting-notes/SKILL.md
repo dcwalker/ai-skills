@@ -807,11 +807,15 @@ HTML version:
   a `<style>` element, the palette picker first in `<body>`, no script, and
   light or dark mode following the browser. It keeps a relative path for an
   image in the HTML file's folder or below and embeds any other local image
-  as a `data:` URI. It prints the path it wrote, and warns about an image
-  it could not find.
-- When the Markdown is not saved, write it to the scratch or temporary
-  directory, and pass `--base <folder the image paths are relative to>`
-  and `--out <where the HTML goes>`.
+  file as a `data:` URI. It links only relative, http, https, and mailto
+  targets. It prints the path it wrote, and warns about an image it could
+  not find or a link or image it left as text. It reads and writes only
+  under the working folder, the home folder, and the temporary folder
+  `$TMPDIR` names.
+- When the Markdown is not saved, write it under `$TMPDIR` (for example
+  `"$TMPDIR/<notes>.md"`), not a scratch folder elsewhere, and pass
+  `--base <folder the image paths are relative to>` and `--out <where the
+  HTML goes>`.
 - Only where no script can run, build the same page by hand, following the
   element mapping in the script's docstring.
 
