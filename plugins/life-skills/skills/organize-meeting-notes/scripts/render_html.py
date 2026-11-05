@@ -293,9 +293,17 @@ LINK_SCHEMES = ("http", "https", "mailto")
 IMAGE_SCHEMES = ("http", "https")
 
 
+# What a browser drops from a URL before reading its scheme: every tab and
+# newline, and leading or trailing control characters and spaces.
+URL_DROPPED = re.compile(r"[\t\n\r]")
+URL_EDGES = "".join(chr(code) for code in range(0x21))
+
+
 def url_scheme(target):
-    """A URL's scheme in lowercase, or "" for a relative path or #anchor."""
-    match = re.match(r"([a-z][a-z0-9+.-]*):", target.strip(), re.IGNORECASE)
+    """A URL's scheme in lowercase, or "" for a relative path or #anchor,
+    read the way a browser reads it, so `jav<tab>ascript:` is javascript."""
+    cleaned = URL_DROPPED.sub("", target).strip(URL_EDGES)
+    match = re.match(r"([a-z][a-z0-9+.-]*):", cleaned, re.IGNORECASE)
     return match.group(1).lower() if match else ""
 
 
@@ -309,7 +317,7 @@ def safe_image_url(src):
     """A relative path, an http(s) URL, or a data: URI holding an image."""
     scheme = url_scheme(src)
     if scheme == "data":
-        return src.strip().lower().startswith("data:image/")
+        return URL_DROPPED.sub("", src).strip(URL_EDGES).lower().startswith("data:image/")
     return not scheme or scheme in IMAGE_SCHEMES
 
 
@@ -395,9 +403,10 @@ def safe_path(path, suffixes):
     resolved = os.path.realpath(path)
     if not resolved.lower().endswith(suffixes):
         sys.exit(f"render_html: {path} must end in {' or '.join(suffixes)}")
-    if not within_roots(resolved):
-        sys.exit(f"render_html: {path} is outside the current, home, and temporary folders")
-    return resolved
+    for root in allowed_roots():
+        if resolved.startswith(root.rstrip(os.sep) + os.sep):
+            return resolved
+    sys.exit(f"render_html: {path} is outside the current, home, and temporary folders")
 
 
 def render(md_path, out_path, base=None):
