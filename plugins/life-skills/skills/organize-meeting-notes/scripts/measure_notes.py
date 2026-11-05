@@ -26,7 +26,6 @@ import json
 import os
 import re
 import sys
-import tempfile
 
 IMAGE = re.compile(r"!\[[^\]]*\]\([^)]*\)")
 # A link is its bracketed text followed at once by a destination: `(url)`,
@@ -107,12 +106,13 @@ def measure(markdown):
 
 def safe_path(path):
     """path resolved, or exit when it is not Markdown or text under the
-    current folder, the home folder, or a temporary folder (including the
-    agent's scratch folder, CLAUDE_CODE_TMPDIR)."""
+    current folder, the home folder, or a temporary folder the environment
+    names (TMPDIR, TMP, TEMP, or the agent's scratch folder,
+    CLAUDE_CODE_TMPDIR)."""
     resolved = os.path.realpath(path)
     if not resolved.lower().endswith((".md", ".markdown", ".txt")):
         sys.exit(f"measure_notes: {path} must be a .md, .markdown, or .txt file")
-    roots = {os.getcwd(), os.path.expanduser("~"), tempfile.gettempdir(), "/tmp"}
+    roots = {os.getcwd(), os.path.expanduser("~")}
     roots.update(os.environ[name] for name in ("TMPDIR", "TMP", "TEMP", "CLAUDE_CODE_TMPDIR")
                  if os.environ.get(name))
     for root in (os.path.realpath(r) for r in roots):

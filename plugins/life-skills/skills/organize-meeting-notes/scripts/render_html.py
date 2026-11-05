@@ -29,8 +29,12 @@ fieldset (five radio inputs, Harbor checked), sets no data-theme or
 data-palette on <html>, and copies the stylesheet unchanged into <style>.
 
 An image whose file sits in the HTML file's folder or below keeps a relative
-path. A local image anywhere else is embedded as a data: URI, so the page
-still shows it after it is moved. Remote images keep their URL.
+path. A local image file anywhere else under the allowed folders (below) is
+embedded as a data: URI, so the page still shows it after it is moved; any
+other local file keeps its path as written, unread. Remote images keep their
+URL. Links may be relative or use http, https, or mailto, and images http,
+https, or a data:image/ URI; any other scheme (javascript:, file:) leaves
+the text without a link or image, with a warning.
 
 Standard library only (Python 3.9+).
 
@@ -41,7 +45,8 @@ The output defaults to the Markdown path with an .html extension. --base is
 the folder image paths are relative to (default: the Markdown file's
 folder), for a Markdown file kept in a scratch directory. It prints the path
 written. Both files must sit under the current folder, the home folder, or a
-temporary folder.
+temporary folder the environment names (TMPDIR, TMP, TEMP, or
+CLAUDE_CODE_TMPDIR).
 """
 
 import argparse
@@ -51,11 +56,11 @@ import mimetypes
 import os
 import re
 import sys
-import tempfile
 
 SKILL_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CSS_PATH = os.path.join(SKILL_DIR, "assets", "meeting-notes.css")
 
+HTML_SUFFIX = ".html"
 TEMP_VARIABLES = ("TMPDIR", "TMP", "TEMP", "CLAUDE_CODE_TMPDIR")
 
 PALETTES = ("harbor", "evergreen", "plum", "ember", "teal")
@@ -163,7 +168,11 @@ class Renderer:
             src = match.group(2) or match.group(3)
             return self.image(match.group(1), src, match.group(4))
         if kind == "link":
-            href = html.escape(match.group(2) or match.group(3), quote=True)
+            target = match.group(2) or match.group(3)
+            if not safe_link(target):
+                self.warnings.append(f"link scheme not allowed, kept as text: {target}")
+                return self.inline(match.group(1))
+            href = html.escape(target, quote=True)
             title = match.group(4)
             title_attr = f' title="{html.escape(title, quote=True)}"' if title else ""
             return f'<a href="{href}"{title_attr}>{self.inline(match.group(1))}</a>'
@@ -172,13 +181,16 @@ class Renderer:
         return f"<{tag}>{self.inline(inner)}</{tag}>"
 
     def image(self, alt, src, title):
+        if not safe_image_url(src):
+            self.warnings.append(f"image scheme not allowed, kept as text: {src}")
+            return html.escape(alt, quote=False)
         alt_attr = html.escape(alt, quote=True)
         title_attr = f' title="{html.escape(title, quote=True)}"' if title else ""
         return f'<img src="{html.escape(self.image_src(src), quote=True)}" alt="{alt_attr}"{title_attr}>'
 
     def image_src(self, src):
-        if re.match(r"^[a-z][a-z0-9+.-]*:", src, re.IGNORECASE):
-            return src  # http(s):, data:, and other URLs stay as written
+        if url_scheme(src):
+            return src  # http(s): and data:image/ URLs stay as written
         path = os.path.realpath(os.path.join(self.md_dir, os.path.expanduser(src)))
         out_dir = os.path.realpath(self.out_dir)
         if os.path.commonpath([path, out_dir]) == out_dir:
@@ -186,7 +198,12 @@ class Renderer:
         if not os.path.isfile(path):
             self.warnings.append(f"image not found, kept as written: {src}")
             return src
-        mime = mimetypes.guess_type(path)[0] or "application/octet-stream"
+        # Embed only an image file from an allowed folder, so a path in the
+        # notes cannot copy another file's contents into a shared page.
+        mime = mimetypes.guess_type(path)[0] or ""
+        if not mime.startswith("image/") or not within_roots(path):
+            self.warnings.append(f"not an image in an allowed folder, kept as written: {src}")
+            return src
         with open(path, "rb") as handle:
             data = base64.b64encode(handle.read()).decode("ascii")
         return f"data:{mime};base64,{data}"
@@ -272,6 +289,30 @@ class Renderer:
         return f"<li>{checkbox}{text}</li>"
 
 
+LINK_SCHEMES = ("http", "https", "mailto")
+IMAGE_SCHEMES = ("http", "https")
+
+
+def url_scheme(target):
+    """A URL's scheme in lowercase, or "" for a relative path or #anchor."""
+    match = re.match(r"([a-z][a-z0-9+.-]*):", target.strip(), re.IGNORECASE)
+    return match.group(1).lower() if match else ""
+
+
+def safe_link(target):
+    """A relative link, or one using http, https, or mailto."""
+    scheme = url_scheme(target)
+    return not scheme or scheme in LINK_SCHEMES
+
+
+def safe_image_url(src):
+    """A relative path, an http(s) URL, or a data: URI holding an image."""
+    scheme = url_scheme(src)
+    if scheme == "data":
+        return src.strip().lower().startswith("data:image/")
+    return not scheme or scheme in IMAGE_SCHEMES
+
+
 def indent_of(line):
     return len(line) - len(line.lstrip())
 
@@ -335,12 +376,17 @@ def palette_switcher():
 
 
 def allowed_roots():
-    """The folders this script reads notes from and writes pages to: the
-    current folder, the home folder, and the temporary folders, including
-    the agent's scratch folder (CLAUDE_CODE_TMPDIR)."""
-    roots = {os.getcwd(), os.path.expanduser("~"), tempfile.gettempdir(), "/tmp"}
+    """The folders this script reads notes and images from and writes pages
+    to: the current folder, the home folder, and the temporary folders the
+    environment names, including the agent's scratch folder
+    (CLAUDE_CODE_TMPDIR)."""
+    roots = {os.getcwd(), os.path.expanduser("~")}
     roots.update(os.environ[name] for name in TEMP_VARIABLES if os.environ.get(name))
     return [os.path.realpath(root) for root in roots]
+
+
+def within_roots(resolved):
+    return any(resolved.startswith(root.rstrip(os.sep) + os.sep) for root in allowed_roots())
 
 
 def safe_path(path, suffixes):
@@ -349,15 +395,14 @@ def safe_path(path, suffixes):
     resolved = os.path.realpath(path)
     if not resolved.lower().endswith(suffixes):
         sys.exit(f"render_html: {path} must end in {' or '.join(suffixes)}")
-    for root in allowed_roots():
-        if resolved.startswith(root.rstrip(os.sep) + os.sep):
-            return resolved
-    sys.exit(f"render_html: {path} is outside the current, home, and temporary folders")
+    if not within_roots(resolved):
+        sys.exit(f"render_html: {path} is outside the current, home, and temporary folders")
+    return resolved
 
 
 def render(md_path, out_path, base=None):
     md_path = safe_path(md_path, (".md", ".markdown", ".txt"))
-    out_path = safe_path(out_path, (".html",))
+    out_path = safe_path(out_path, (HTML_SUFFIX,))
     with open(md_path, encoding="utf-8") as handle:
         lines = handle.read().replace("\r\n", "\n").split("\n")
     with open(CSS_PATH, encoding="utf-8") as handle:
@@ -384,9 +429,9 @@ def main():
     args = parser.parse_args()
     if not os.path.isfile(args.markdown):
         sys.exit(f"render_html: no such file: {args.markdown}")
-    out = args.out or os.path.splitext(args.markdown)[0] + ".html"
-    if not out.lower().endswith(".html"):
-        sys.exit("render_html: --out must end in .html")
+    out = args.out or os.path.splitext(args.markdown)[0] + HTML_SUFFIX
+    if not out.lower().endswith(HTML_SUFFIX):
+        sys.exit(f"render_html: --out must end in {HTML_SUFFIX}")
     if args.base and not os.path.isdir(args.base):
         sys.exit(f"render_html: no such folder: {args.base}")
     for warning in render(args.markdown, out, args.base):
