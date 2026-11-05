@@ -22,23 +22,37 @@ in a contacts app.
    items and pages Step 1b found. A record that shows who joined, posted, or
    did the thing described ties a person to the event.
 2. **Names the user already confirmed**, in this run or in their other notes.
-3. **A directory search on the first name**: the user's contacts, the chat
+3. **Documents and records on the same subject, from any date**: search the
+   user's earlier meeting notes (the working folder, a notes app, a
+   journal), the wiki (in Confluence, `text ~ "<first name>"` with the
+   project or team the line names), the tracker (in Jira, `text ~` on the
+   project, then the assignees and reporters of what it returns), and
+   chat messages on that subject. A page, ticket, or earlier note that
+   names the person in full in the same role (the owner of the work, the
+   lead of the team) ties them to the subject.
+4. **A directory search on the first name**: the user's contacts, the chat
    directory, or a people directory. Compare each match's title, team,
    department, or organization with what was said about the person.
-4. **The org chart**: the reporting lines of the speaker and of anyone the
+5. **The org chart**: the reporting lines of the speaker and of anyone the
    discussion ties the person to (their manager, their manager's manager,
    their reports, their peers).
-5. **Sound-alike spellings** for a garbled name (`Kathrin` for `Catrin`,
-   `Shawn` for `Sean`), checked only against the people steps 1 to 4 found,
+6. **Sound-alike spellings** for a garbled name (`Kathrin` for `Catrin`,
+   `Shawn` for `Sean`), checked only against the people steps 1 to 5 found,
    never against the whole directory.
+
+A short form that matches an attendee (`Ben` for an attendee named
+Benjamin) is not that attendee when the line speaks of the person as
+someone else, such as someone the attendees are waiting on or cannot get
+time with. Research the name as any other.
 
 ## Tiers
 
 Sort each result into one tier and act on it:
 
-- **Confirmed**: a record ties the person to the event (they posted in the
-  incident channel, they created the item, the user named them). Use the
-  full name, and report the source.
+- **Confirmed**: a record ties the person to the event or its subject
+  (they posted in the incident channel, they created the item, a page or
+  ticket names them as the owner of the work discussed, the user named
+  them). Use the full name, and report the source.
 - **Likely**: exactly one directory match whose title, organization, or
   reporting line fits what was said, and no other match fits. Use the full
   name without asking, and list it in the report with its evidence, so the

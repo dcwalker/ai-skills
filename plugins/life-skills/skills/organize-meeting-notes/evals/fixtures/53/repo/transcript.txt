@@ -1,0 +1,12 @@
+Transcript: 1:1 with Rowan (auto-generated from recording)
+
+[11:01] Darby Wade: How did the alerting cleanup land?
+[11:02] Rowan Pike: It's done. We dropped forty noisy alerts and nobody has been paged overnight since.
+[11:05] Darby Wade: Great. Any blockers on the dashboards?
+[11:06] Rowan Pike: No, those shipped Monday.
+[11:12] Darby Wade: Let's talk about the on-call handbook.
+[11:13] Rowan Pike: I'll have a draft of the handbook by Friday.
+[11:24] Darby Wade: Before we go, I wanted to talk about what you take on next.
+[11:25] Rowan Pike: I'd like the billing export rewrite, if it's still open.
+[11:26] Darby Wade: It is. Let's make that your next project, starting after the handbook.
+[11:27] Rowan Pike: Sounds good.

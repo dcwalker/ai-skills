@@ -1,0 +1,32 @@
+{
+  "contacts": {
+    "people/c5801": {
+      "names": [
+        "Sam Ortiz"
+      ],
+      "emails": [
+        "sam.ortiz@example.com"
+      ],
+      "organizations": [
+        "Example Co — Finance Partner"
+      ],
+      "relationships": [
+        {
+          "person": "Lena Fischer",
+          "type": "Manager"
+        }
+      ]
+    },
+    "people/c5802": {
+      "names": [
+        "Lena Fischer"
+      ],
+      "emails": [
+        "lena.fischer@example.com"
+      ],
+      "organizations": [
+        "Example Co — Director of Finance"
+      ]
+    }
+  }
+}

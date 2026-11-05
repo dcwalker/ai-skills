@@ -1,0 +1,50 @@
+{
+  "cloud": {
+    "id": "a1b2c3d4-0000-4000-8000-000000000060",
+    "url": "https://example.atlassian.net",
+    "name": "example"
+  },
+  "timeZone": "America/Los_Angeles",
+  "projects": {},
+  "issues": {},
+  "transitions": [],
+  "me": {
+    "accountId": "acct-darby",
+    "displayName": "Darby Wade"
+  },
+  "users": [
+    {
+      "accountId": "acct-darby",
+      "displayName": "Darby Wade",
+      "emailAddress": "darby.wade@example.com"
+    },
+    {
+      "accountId": "acct-priya",
+      "displayName": "Priya Raman",
+      "emailAddress": "priya.raman@example.com"
+    }
+  ],
+  "pages": {
+    "9000006001": {
+      "id": "9000006001",
+      "title": "Deploy freeze calendar",
+      "spaceId": "9001",
+      "spaceKey": "ENG",
+      "space": "Engineering",
+      "tinyId": "Df6fC1",
+      "excerpt": "Freezes run from Friday 5 PM to Monday 9 AM around each release.",
+      "body": "Freezes run from Friday 5 PM to Monday 9 AM around each release.",
+      "versions": [
+        {
+          "number": 1,
+          "authorId": "acct-priya",
+          "createdAt": "2026-09-01T17:00:00.000Z",
+          "collaborators": [
+            "acct-priya"
+          ],
+          "body": "Freezes run from Friday 5 PM to Monday 9 AM around each release."
+        }
+      ]
+    }
+  }
+}

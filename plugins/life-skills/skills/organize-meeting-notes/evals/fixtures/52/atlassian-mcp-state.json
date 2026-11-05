@@ -1,0 +1,80 @@
+{
+  "cloud": {
+    "id": "a1b2c3d4-0000-4000-8000-000000000052",
+    "url": "https://example.atlassian.net",
+    "name": "example"
+  },
+  "timeZone": "America/Los_Angeles",
+  "projects": {
+    "BIL": {
+      "key": "BIL",
+      "id": "20052",
+      "name": "Billing Operations",
+      "issueTypes": [
+        "Task",
+        "Bug"
+      ]
+    }
+  },
+  "issues": {
+    "BIL-318": {
+      "key": "BIL-318",
+      "id": "10318",
+      "project": "BIL",
+      "summary": "Map invoice templates for the billing entity migration",
+      "description": "Billing Operations owns the invoice template mapping. Waiting on a working session with Ravi Menon before the migration can continue.",
+      "status": {
+        "name": "Blocked",
+        "statusCategory": "In Progress"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [],
+      "assignee": {
+        "accountId": "acct-benc",
+        "displayName": "Ben Castillo"
+      },
+      "reporter": {
+        "accountId": "acct-ravi",
+        "displayName": "Ravi Menon"
+      },
+      "creator": {
+        "accountId": "acct-ravi",
+        "displayName": "Ravi Menon"
+      },
+      "created": "2026-10-05T10:00:00-07:00",
+      "updated": "2026-10-22T15:00:00-07:00",
+      "resolution": null,
+      "duedate": null,
+      "comments": []
+    }
+  },
+  "transitions": [],
+  "me": {
+    "accountId": "acct-darby",
+    "displayName": "Darby Wade"
+  },
+  "users": [
+    {
+      "accountId": "acct-darby",
+      "displayName": "Darby Wade",
+      "emailAddress": "darby.wade@example.com"
+    },
+    {
+      "accountId": "acct-ravi",
+      "displayName": "Ravi Menon",
+      "emailAddress": "ravi.menon@example.com"
+    },
+    {
+      "accountId": "acct-beni",
+      "displayName": "Benjamin Ito",
+      "emailAddress": "benjamin.ito@example.com"
+    },
+    {
+      "accountId": "acct-benc",
+      "displayName": "Ben Castillo",
+      "emailAddress": "ben.castillo@example.com"
+    }
+  ],
+  "pages": {}
+}
