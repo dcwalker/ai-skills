@@ -1,0 +1,68 @@
+{
+  "me": {
+    "id": "U0DARBY",
+    "name": "darby.wade",
+    "real_name": "Darby Wade",
+    "email": "darby.wade@example.com",
+    "title": "Engineering Manager",
+    "timezone": "America/Los_Angeles",
+    "display_name": "darby.wade",
+    "org": "example-co"
+  },
+  "users": {
+    "U0DARBY": {
+      "id": "U0DARBY",
+      "name": "darby.wade",
+      "real_name": "Darby Wade",
+      "email": "darby.wade@example.com",
+      "title": "Engineering Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0PRIYA": {
+      "id": "U0PRIYA",
+      "name": "priya.raman",
+      "real_name": "Priya Raman",
+      "email": "priya.raman@example.com",
+      "title": "Staff Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0JORDANL": {
+      "id": "U0JORDANL",
+      "name": "jordan.lee",
+      "real_name": "Jordan Lee",
+      "email": "jordan.lee@example.com",
+      "title": "Site Reliability Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0JORDANP": {
+      "id": "U0JORDANP",
+      "name": "jordan.pierce",
+      "real_name": "Jordan Pierce",
+      "email": "jordan.pierce@example.com",
+      "title": "Product Designer",
+      "timezone": "America/Los_Angeles"
+    }
+  },
+  "channels": {
+    "C0INC4471": {
+      "id": "C0INC4471",
+      "name": "incident-4471",
+      "purpose": "Checkout latency incident",
+      "creator": "U0DARBY",
+      "created": "2025-01-10",
+      "is_archived": false,
+      "type": "public_channel"
+    }
+  },
+  "messages": {
+    "C0INC4471": [
+      {
+        "ts": "1793391660.000001",
+        "time": "2026-10-30 13:21:00 PDT",
+        "user": "U0JORDANL",
+        "text": "rolled back the cache config, error rate dropping",
+        "thread_ts": null
+      }
+    ]
+  }
+}

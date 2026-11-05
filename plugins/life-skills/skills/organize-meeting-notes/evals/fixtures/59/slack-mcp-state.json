@@ -1,0 +1,60 @@
+{
+  "me": {
+    "id": "U0DARBY",
+    "name": "darby.wade",
+    "real_name": "Darby Wade",
+    "email": "darby.wade@example.com",
+    "title": "Engineering Manager",
+    "timezone": "America/Los_Angeles",
+    "display_name": "darby.wade",
+    "org": "example-co"
+  },
+  "users": {
+    "U0DARBY": {
+      "id": "U0DARBY",
+      "name": "darby.wade",
+      "real_name": "Darby Wade",
+      "email": "darby.wade@example.com",
+      "title": "Engineering Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0NOOR": {
+      "id": "U0NOOR",
+      "name": "noor.haddad",
+      "real_name": "Noor Haddad",
+      "email": "noor.haddad@example.com",
+      "title": "Product Operations Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0TOM": {
+      "id": "U0TOM",
+      "name": "tom.becker",
+      "real_name": "Tom Becker",
+      "email": "tom.becker@example.com",
+      "title": "Site Reliability Engineer",
+      "timezone": "America/Los_Angeles"
+    }
+  },
+  "channels": {
+    "C0PRODOPS": {
+      "id": "C0PRODOPS",
+      "name": "product-ops",
+      "purpose": "Product operations",
+      "creator": "U0DARBY",
+      "created": "2025-01-10",
+      "is_archived": false,
+      "type": "public_channel"
+    }
+  },
+  "messages": {
+    "C0PRODOPS": [
+      {
+        "ts": "1791482400.000001",
+        "time": "2026-10-08 11:00:00 PDT",
+        "user": "U0NOOR",
+        "text": "New PIR (Product Intake Request) form is live, please route feature asks through it.",
+        "thread_ts": null
+      }
+    ]
+  }
+}

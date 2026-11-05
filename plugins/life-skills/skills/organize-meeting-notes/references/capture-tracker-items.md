@@ -30,7 +30,11 @@ actual end:
 Use actual times, not scheduled ones, as with chat. Compare creation times in
 the meeting's time zone: take it from the meeting details, the calendar, or
 the chat profile. When none gives it, ask the user once before sorting items
-into the window; a tracker's UTC times cannot be placed without it.
+into the window; a tracker's UTC times cannot be placed without it. Get the
+window's UTC bounds, including the 15 minutes after the end, from
+`python3 <skill-dir>/scripts/meeting_times.py window --start "YYYY-MM-DD
+HH:MM" --end "HH:MM" --tz <IANA zone> --extend-end 15` rather than
+converting by hand.
 
 ## Finding Them
 

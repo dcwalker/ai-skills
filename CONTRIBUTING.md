@@ -88,8 +88,8 @@ down should stay inline unless you are prepared to re-measure.
 Two consequences worth knowing before you split:
 
 - Anything that launches a skill in a scratch workspace has to stage
-  `references/` with `SKILL.md`. Both MCP trial drivers do; a hand-run trial
-  must too. Stage only `SKILL.md` and every link dangles silently, and the
+  `references/` (and `assets/`, when the skill has one) with `SKILL.md`.
+  Both MCP trial drivers do; a hand-run trial must too. Stage only `SKILL.md` and every link dangles silently, and the
   material behind it drops out of whatever you are measuring.
 - Re-run the skill's evals afterward and compare against the committed
   baseline. Moving prose out of `SKILL.md` changes when the model sees it,

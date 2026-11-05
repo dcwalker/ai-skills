@@ -1,0 +1,52 @@
+{
+  "me": {
+    "id": "U0DARBY",
+    "name": "darby.wade",
+    "real_name": "Darby Wade",
+    "email": "darby.wade@example.com",
+    "title": "Engineering Manager",
+    "timezone": "America/Los_Angeles",
+    "display_name": "darby.wade",
+    "org": "example-co"
+  },
+  "users": {
+    "U0DARBY": {
+      "id": "U0DARBY",
+      "name": "darby.wade",
+      "real_name": "Darby Wade",
+      "email": "darby.wade@example.com",
+      "title": "Engineering Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0PRIYA": {
+      "id": "U0PRIYA",
+      "name": "priya.raman",
+      "real_name": "Priya Raman",
+      "email": "priya.raman@example.com",
+      "title": "Staff Engineer",
+      "timezone": "America/Los_Angeles"
+    }
+  },
+  "channels": {
+    "C0PLATFORM": {
+      "id": "C0PLATFORM",
+      "name": "platform",
+      "purpose": "Platform team",
+      "creator": "U0DARBY",
+      "created": "2025-01-10",
+      "is_archived": false,
+      "type": "public_channel"
+    }
+  },
+  "messages": {
+    "C0PLATFORM": [
+      {
+        "ts": "1792602000.000001",
+        "time": "2026-10-21 10:00:00 PDT",
+        "user": "U0PRIYA",
+        "text": "deploy freeze starts Friday",
+        "thread_ts": null
+      }
+    ]
+  }
+}

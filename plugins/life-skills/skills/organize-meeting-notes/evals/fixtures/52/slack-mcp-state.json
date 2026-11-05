@@ -1,0 +1,56 @@
+{
+  "me": {
+    "id": "U0DARBY",
+    "name": "darby.wade",
+    "real_name": "Darby Wade",
+    "email": "darby.wade@example.com",
+    "title": "Engineering Manager",
+    "timezone": "America/Los_Angeles",
+    "display_name": "darby.wade",
+    "org": "example-co"
+  },
+  "users": {
+    "U0DARBY": {
+      "id": "U0DARBY",
+      "name": "darby.wade",
+      "real_name": "Darby Wade",
+      "email": "darby.wade@example.com",
+      "title": "Engineering Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0RAVI": {
+      "id": "U0RAVI",
+      "name": "ravi.menon",
+      "real_name": "Ravi Menon",
+      "email": "ravi.menon@example.com",
+      "title": "Program Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0BENI": {
+      "id": "U0BENI",
+      "name": "benjamin.ito",
+      "real_name": "Benjamin Ito",
+      "email": "benjamin.ito@example.com",
+      "title": "Engineering Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0BENC": {
+      "id": "U0BENC",
+      "name": "ben.castillo",
+      "real_name": "Ben Castillo",
+      "email": "ben.castillo@example.com",
+      "title": "Director, Billing Operations",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0BENH": {
+      "id": "U0BENH",
+      "name": "ben.hart",
+      "real_name": "Ben Hart",
+      "email": "ben.hart@example.com",
+      "title": "Account Executive",
+      "timezone": "America/Los_Angeles"
+    }
+  },
+  "channels": {},
+  "messages": {}
+}
