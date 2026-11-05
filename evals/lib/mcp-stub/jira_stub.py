@@ -667,31 +667,48 @@ def _split_cql_clause(clause: str) -> tuple[str, str, str]:
     return field.strip().lower(), operator, value.strip().strip("()").strip().strip('"')
 
 
-def _cql_clause_matches(page: dict, clause: str) -> bool:
+def _cql_person_matches(page: dict, field: str, value: str) -> bool:
     versions = _page_versions(page)
+    if field == "creator":
+        return versions[0]["authorId"] == value
+    return any(value == v["authorId"] or value in v.get("collaborators", []) for v in versions)
+
+
+def _cql_date_matches(page: dict, field: str, operator: str, value: str) -> bool:
+    versions = _page_versions(page)
+    actual = _parse_iso((versions[0] if field == "created" else versions[-1])["createdAt"])
+    bound = _parse_cql_datetime(value)
+    return {">=": actual >= bound, "<=": actual <= bound,
+            ">": actual > bound, "<": actual < bound}[operator]
+
+
+def _cql_type_matches(page: dict, value: str) -> bool:
+    wanted = {t.strip().strip('"').lower() for t in value.split(",")}
+    kinds = {"page"} | ({"live"} if page.get("subType") == "live" else set())
+    return bool(kinds & wanted)
+
+
+def _cql_text_matches(page: dict, field: str, value: str) -> bool:
+    """A case-insensitive substring match: title ~ reads the title alone;
+    text ~ and siteSearch ~ read the title, excerpt, and current body."""
+    haystack = page.get("title", "")
+    if field != "title":
+        haystack += " " + page.get("excerpt", "") + " " + page.get("body", "")
+    return value.lower() in haystack.lower()
+
+
+def _cql_clause_matches(page: dict, clause: str) -> bool:
     field, operator, value = _split_cql_clause(clause)
     if field in ("contributor", "creator") and operator == "=":
-        if field == "creator":
-            return versions[0]["authorId"] == value
-        return any(value == v["authorId"] or value in v.get("collaborators", []) for v in versions)
+        return _cql_person_matches(page, field, value)
     if field in ("created", "lastmodified") and operator in _CQL_OPERATORS:
-        actual = _parse_iso((versions[0] if field == "created" else versions[-1])["createdAt"])
-        bound = _parse_cql_datetime(value)
-        return {">=": actual >= bound, "<=": actual <= bound,
-                ">": actual > bound, "<": actual < bound}[operator]
+        return _cql_date_matches(page, field, operator, value)
     if field == "type" and operator in ("=", "in"):
-        wanted = {t.strip().strip('"').lower() for t in value.split(",")}
-        kinds = {"page"} | ({"live"} if page.get("subType") == "live" else set())
-        return bool(kinds & wanted)
+        return _cql_type_matches(page, value)
     if field == "space" and operator == "=":
         return page.get("spaceKey", "").lower() == value.lower()
     if field in ("title", "text", "sitesearch") and operator == "~":
-        # A case-insensitive substring match: title ~ reads the title alone;
-        # text ~ and siteSearch ~ read the title, excerpt, and current body.
-        haystack = page.get("title", "")
-        if field != "title":
-            haystack += " " + page.get("excerpt", "") + " " + page.get("body", "")
-        return value.lower() in haystack.lower()
+        return _cql_text_matches(page, field, value)
     raise ValueError(f"atlassian-stub: unsupported CQL clause {clause!r}")
 
 
