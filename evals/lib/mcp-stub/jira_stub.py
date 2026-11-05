@@ -84,7 +84,9 @@ included. getPeopleInfo resolves account IDs from "users".
 CQL support in searchConfluence is a small, documented subset: clauses
 joined by AND, each one of `contributor = "<id>"` (any version's author or
 collaborator), `creator = "<id>"` (version 1's author), `type = page` or
-`type in (page, live)`, `space = KEY`, and `created` or `lastmodified`
+`type in (page, live)`, `space = KEY`, `title ~ "<words>"` (the title),
+`text ~` or `siteSearch ~ "<words>"` (title, excerpt, and current body,
+both a case-insensitive substring match), and `created` or `lastmodified`
 compared with `>=`, `>`, `<=`, or `<` against "YYYY-MM-DD" or
 "YYYY-MM-DD HH:mm", read as UTC, with an optional trailing `ORDER BY`
 `lastmodified` or `created`. `created` is version 1's time and
@@ -652,7 +654,7 @@ def _split_cql_clause(clause: str) -> tuple[str, str, str]:
     list in the value."""
     text = clause.strip()
     lower = text.lower()
-    marks = [i for i in (lower.find(c) for c in "<>=") if i >= 0]
+    marks = [i for i in (lower.find(c) for c in "<>=~") if i >= 0]
     at_in = lower.find(" in ")
     if at_in >= 0 and (not marks or at_in < min(marks)):
         field, operator, value = text[:at_in], "in", text[at_in + 4:]
@@ -683,6 +685,13 @@ def _cql_clause_matches(page: dict, clause: str) -> bool:
         return bool(kinds & wanted)
     if field == "space" and operator == "=":
         return page.get("spaceKey", "").lower() == value.lower()
+    if field in ("title", "text", "sitesearch") and operator == "~":
+        # A case-insensitive substring match: title ~ reads the title alone;
+        # text ~ and siteSearch ~ read the title, excerpt, and current body.
+        haystack = page.get("title", "")
+        if field != "title":
+            haystack += " " + page.get("excerpt", "") + " " + page.get("body", "")
+        return value.lower() in haystack.lower()
     raise ValueError(f"atlassian-stub: unsupported CQL clause {clause!r}")
 
 

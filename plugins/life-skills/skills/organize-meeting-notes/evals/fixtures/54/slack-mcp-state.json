@@ -1,0 +1,67 @@
+{
+  "me": {
+    "id": "U0DARBY",
+    "name": "darby.wade",
+    "real_name": "Darby Wade",
+    "email": "darby.wade@example.com",
+    "title": "Engineering Manager",
+    "timezone": "America/Los_Angeles",
+    "display_name": "darby.wade",
+    "org": "example-co"
+  },
+  "users": {
+    "U0DARBY": {
+      "id": "U0DARBY",
+      "name": "darby.wade",
+      "real_name": "Darby Wade",
+      "email": "darby.wade@example.com",
+      "title": "Engineering Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0PRIYA": {
+      "id": "U0PRIYA",
+      "name": "priya.raman",
+      "real_name": "Priya Raman",
+      "email": "priya.raman@example.com",
+      "title": "Staff Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0MARCUS": {
+      "id": "U0MARCUS",
+      "name": "marcus.hall",
+      "real_name": "Marcus Hall",
+      "email": "marcus.hall@example.com",
+      "title": "Site Reliability Engineer",
+      "timezone": "America/Los_Angeles"
+    }
+  },
+  "channels": {
+    "C0PLATFORM": {
+      "id": "C0PLATFORM",
+      "name": "platform",
+      "purpose": "Platform team",
+      "creator": "U0DARBY",
+      "created": "2025-01-10",
+      "is_archived": false,
+      "type": "public_channel"
+    }
+  },
+  "messages": {
+    "C0PLATFORM": [
+      {
+        "ts": "1791822600.000001",
+        "time": "2026-10-12 09:30:00 PDT",
+        "user": "U0PRIYA",
+        "text": "Reminder: sign-ups for QRT (Quarterly Reliability Triage) close Friday. Each squad sends two people for the November round.",
+        "thread_ts": null
+      },
+      {
+        "ts": "1792537800.000001",
+        "time": "2026-10-20 16:10:00 PDT",
+        "user": "U0MARCUS",
+        "text": "anyone have the link to the on-call handbook?",
+        "thread_ts": null
+      }
+    ]
+  }
+}

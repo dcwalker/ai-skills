@@ -1,0 +1,81 @@
+{
+  "cloud": {
+    "id": "a1b2c3d4-0000-4000-8000-000000000051",
+    "url": "https://example.atlassian.net",
+    "name": "example"
+  },
+  "timeZone": "America/Los_Angeles",
+  "projects": {},
+  "issues": {},
+  "transitions": [],
+  "me": {
+    "accountId": "acct-darby",
+    "displayName": "Darby Wade"
+  },
+  "users": [
+    {
+      "accountId": "acct-darby",
+      "displayName": "Darby Wade",
+      "emailAddress": "darby.wade@example.com"
+    },
+    {
+      "accountId": "acct-priya",
+      "displayName": "Priya Raman",
+      "emailAddress": "priya.raman@example.com"
+    },
+    {
+      "accountId": "acct-theom",
+      "displayName": "Theo Marsh",
+      "emailAddress": "theo.marsh@example.com"
+    },
+    {
+      "accountId": "acct-theog",
+      "displayName": "Theo Grant",
+      "emailAddress": "theo.grant@example.com"
+    }
+  ],
+  "pages": {
+    "9000005101": {
+      "id": "9000005101",
+      "title": "Certificate renewal handoff plan",
+      "spaceId": "9001",
+      "spaceKey": "SEC",
+      "space": "Security",
+      "tinyId": "Cr5hP1",
+      "excerpt": "Owner: Theo Marsh",
+      "body": "Owner: Theo Marsh\n\nTheo Marsh is drafting the plan for moving certificate renewals from the security team to the platform team by the end of the quarter.",
+      "versions": [
+        {
+          "number": 1,
+          "authorId": "acct-theom",
+          "createdAt": "2026-10-14T17:00:00.000Z",
+          "collaborators": [
+            "acct-theom"
+          ],
+          "body": "Owner: Theo Marsh\n\nTheo Marsh is drafting the plan for moving certificate renewals from the security team to the platform team by the end of the quarter."
+        }
+      ]
+    },
+    "9000005102": {
+      "id": "9000005102",
+      "title": "Build cache cleanup",
+      "spaceId": "9001",
+      "spaceKey": "ENG",
+      "space": "Engineering",
+      "tinyId": "Bc5bQ1",
+      "excerpt": "Owner: Theo Grant",
+      "body": "Owner: Theo Grant\n\nRemove stale build cache entries older than 30 days.",
+      "versions": [
+        {
+          "number": 1,
+          "authorId": "acct-theog",
+          "createdAt": "2026-10-02T17:00:00.000Z",
+          "collaborators": [
+            "acct-theog"
+          ],
+          "body": "Owner: Theo Grant\n\nRemove stale build cache entries older than 30 days."
+        }
+      ]
+    }
+  }
+}

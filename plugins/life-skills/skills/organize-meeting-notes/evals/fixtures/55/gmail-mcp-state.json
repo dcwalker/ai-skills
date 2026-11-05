@@ -1,0 +1,68 @@
+{
+  "me": "darby.wade@example.com",
+  "labels": {
+    "INBOX": {
+      "id": "INBOX",
+      "name": "INBOX",
+      "type": "system"
+    },
+    "SENT": {
+      "id": "SENT",
+      "name": "SENT",
+      "type": "system"
+    }
+  },
+  "drafts": {},
+  "threads": {
+    "t-kestrel": {
+      "id": "t-kestrel",
+      "subject": "Project Kestrel kickoff: handheld scanner pilot",
+      "from": "sam.ortiz@example.com",
+      "to": [
+        "darby.wade@example.com"
+      ],
+      "date": "2026-09-14T10:00:00-07:00",
+      "snippet": "Kestrel is our pilot of handheld scanners at the north warehouse",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "m-t-kestrel",
+          "from": "sam.ortiz@example.com",
+          "to": [
+            "darby.wade@example.com"
+          ],
+          "date": "2026-09-14T10:00:00-07:00",
+          "snippet": "Kestrel is our pilot of handheld scanners at the north warehouse",
+          "body": "Darby,\n\nKestrel is our pilot of handheld scanners at the north warehouse, replacing paper pick lists for one shift. Kickoff is next week; the pilot was planned for December.\n\nSam"
+        }
+      ]
+    },
+    "t-lunch": {
+      "id": "t-lunch",
+      "subject": "Team lunch Friday",
+      "from": "sam.ortiz@example.com",
+      "to": [
+        "darby.wade@example.com"
+      ],
+      "date": "2026-10-26T12:00:00-07:00",
+      "snippet": "Tacos or pizza?",
+      "labelIds": [
+        "INBOX"
+      ],
+      "messages": [
+        {
+          "id": "m-t-lunch",
+          "from": "sam.ortiz@example.com",
+          "to": [
+            "darby.wade@example.com"
+          ],
+          "date": "2026-10-26T12:00:00-07:00",
+          "snippet": "Tacos or pizza?",
+          "body": "Tacos or pizza?"
+        }
+      ]
+    }
+  }
+}

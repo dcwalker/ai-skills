@@ -69,7 +69,7 @@ person wrote it produces a voice belonging to nobody.
   known. This skill establishes **how it should sound**. When the user has a
   topic but not the content, run the interview first, then apply this skill to
   the draft. When the content is already clear, skip the interview.
-- `organize-meeting-notes` owns the structure of journaled meeting notes. This
+- `organize-meeting-notes` owns the structure of meeting notes. This
   skill supplies the voice inside that structure.
 - `commit` and `pr` own the artifact and everything its convention dictates:
   what gets staged, the issue key, the conventional-commit prefix, a template's

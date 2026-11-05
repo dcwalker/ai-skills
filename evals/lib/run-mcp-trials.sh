@@ -211,14 +211,14 @@ else:
   # is also what a benchmark of an edited-but-uninstalled skill needs.
   #
   # stage_skill <skill dir>: copy one skill into the workspace's
-  # .claude/skills/<name>/ -- SKILL.md plus references/ and scripts/, never
-  # evals/, which would hand the trial its own answer key.
+  # .claude/skills/<name>/ -- SKILL.md plus references/, scripts/, and
+  # assets/, never evals/, which would hand the trial its own answer key.
   stage_skill() {
     local source_dir="$1" dest
     dest="$WORKSPACE_DIR/.claude/skills/$(basename "$source_dir")"
     mkdir -p "$dest"
     cp "$source_dir/SKILL.md" "$dest/"
-    for EXTRA in references scripts; do
+    for EXTRA in references scripts assets; do
       [[ -d "$source_dir/$EXTRA" ]] && cp -R "$source_dir/$EXTRA" "$dest/"
     done
     return 0
