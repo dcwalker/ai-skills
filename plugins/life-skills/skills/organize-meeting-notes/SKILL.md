@@ -459,7 +459,10 @@ Research every person named in the notes, the transcript, or chat, not
 only the attendees, following
 [references/resolve-names.md](references/resolve-names.md): it sets the
 order of sources and the confidence tier that decides whether a name is
-applied, applied and reported, or asked about with a candidate.
+applied, applied and reported, or asked about with a candidate. A name
+that matches an attendee only by a short form (`Ben` for Benjamin) is not
+settled by the attendee list: run source 3, the subject search from any
+date, before applying it.
 
 Refer to each person with the pronouns their profile states (a pronouns
 field, or pronouns written into a chat or directory name, such as
@@ -469,9 +472,11 @@ name or they/them. Never infer pronouns from a name.
 Research every acronym, project codename, and team or system term the line
 assumes, the same way, before asking what it means:
 1. The notes, the transcript, and the chat already read.
-2. A search for the term itself in each reachable source: chat messages,
-   the wiki (in Confluence, `text ~ "<term>"`), the tracker (in Jira,
-   `text ~ "<term>"`), email, and the user's other notes.
+2. A search for the term itself in each reachable source, run on its own
+   and with no date bound (the Step 1b window bounds only find what
+   happened during the meeting; a definition usually predates it): chat
+   messages, the wiki (in Confluence, `text ~ "<term>"`), the tracker (in
+   Jira, `text ~ "<term>"`), email, and the user's other notes.
 3. When a source defines the term (a glossary, a page or ticket that spells
    it out, a message that explains it), and no other source defines it
    differently, use that meaning without asking: spell the acronym out on
