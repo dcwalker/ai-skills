@@ -1,0 +1,20 @@
+{
+  "boards": {
+    "board-team": {
+      "id": "board-team",
+      "name": "Team Tasks"
+    }
+  },
+  "lists": {
+    "list-todo": {
+      "id": "list-todo",
+      "name": "To Do",
+      "board_id": "board-team"
+    }
+  },
+  "cards": {},
+  "labels": {},
+  "create_card_errors": {
+    "conference room": "Trello API error: 503 service unavailable"
+  }
+}

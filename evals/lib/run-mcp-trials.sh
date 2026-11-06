@@ -322,7 +322,7 @@ for name in ("settings.json", "settings.local.json"):
     except (OSError, ValueError):
         continue
     disabled.update({key: False for key in enabled})
-services = ("trello", "gmail", "atlassian", "slack", "calendar", "docs", "contacts")
+services = ("trello", "gmail", "atlassian", "slack", "calendar", "docs", "contacts", "messages")
 denied = [os.path.join(run_dir, name) for name in (
     "env.sh", "eval.json", "mcp-config.json", "mcp-config.resume.json",
     "events.jsonl", "stderr.txt", "metrics.json", "transcript.txt", "tools.log",
@@ -525,7 +525,7 @@ json.dump(config, open(sys.argv[2], 'w'), indent=2)
         CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 \
         claude -p --permission-mode dontAsk \
         --tools "$TRIAL_TOOLS" \
-        --allowedTools "Bash Read Glob Grep TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian mcp__slack mcp__calendar mcp__docs mcp__contacts" \
+        --allowedTools "Bash Read Glob Grep TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian mcp__slack mcp__calendar mcp__docs mcp__contacts mcp__messages" \
         --strict-mcp-config --verbose ${resume_flag[@]+"${resume_flag[@]}"} \
         --settings "$TRIAL_SETTINGS" \
         --mcp-config "$turn_mcp_config" --output-format stream-json -- "$turn_prompt" \

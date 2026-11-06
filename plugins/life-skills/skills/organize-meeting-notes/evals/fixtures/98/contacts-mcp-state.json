@@ -1,0 +1,46 @@
+{
+  "contacts": {
+    "people/c9801": {
+      "names": [
+        "Marcus Hall"
+      ],
+      "emails": [
+        "marcus.hall@example.com"
+      ],
+      "phones": [
+        "+1 (206) 555-0142 (mobile)"
+      ],
+      "organizations": [
+        "Example Co \u2014 Warehouse Operations"
+      ]
+    },
+    "people/c9802": {
+      "names": [
+        "Priya Raman"
+      ],
+      "emails": [
+        "priya.raman@example.com"
+      ],
+      "phones": [
+        "+1 (206) 555-0118 (mobile)"
+      ],
+      "organizations": [
+        "Example Co \u2014 Platform Engineering"
+      ]
+    },
+    "people/c9803": {
+      "names": [
+        "Noor Haddad"
+      ],
+      "emails": [
+        "noor.haddad@example.com"
+      ],
+      "phones": [
+        "+1 (206) 555-0177 (mobile)"
+      ],
+      "organizations": [
+        "Example Co \u2014 Recruiting"
+      ]
+    }
+  }
+}

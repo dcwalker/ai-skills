@@ -1,95 +1,137 @@
 # Skill Benchmark: organize-meeting-notes
 
 **Model**: claude-opus-5-5 (executor) / claude-opus-5-5 (analyzer)
-**Date**: 2026-11-05T00:00:00Z
-**Evals**: 1-61 (1 recorded run each, with_skill only)
+**Date**: 2026-11-06T00:00:00Z
+**Evals**: 1-103 except 27 (1 recorded run each, with_skill only)
 
 ## Summary
 
 | Metric | With Skill |
 |--------|------------|
-| Pass Rate | 96% ± 8% |
-| Time | 70.3s ± 25.9s (n=61) |
-| Tokens | 48168 ± 8508 (n=61) |
+| Pass Rate | 98% ± 8% |
+| Time | 78.8s ± 25.8s (n=102) |
+| Tokens | 50669 ± 7660 (n=102) |
 
 ## Per-eval results
 
 | Eval | Pass Rate | Time (s) | Tokens |
 |------|-----------|----------|--------|
-| 1 | 5/5 | 97.4 | 56313 |
-| 2 | 4/4 | 34.0 | 33777 |
-| 3 | 4/4 | 62.3 | 43945 |
-| 4 | 3/4 | 121.6 | 56680 |
-| 5 | 4/4 | 53.2 | 36899 |
-| 6 | 5/5 | 75.8 | 44309 |
-| 7 | 7/7 | 72.1 | 45238 |
-| 8 | 4/5 | 46.2 | 33841 |
-| 9 | 6/7 | 135.1 | 55860 |
-| 10 | 5/5 | 38.0 | 33955 |
-| 11 | 5/6 | 123.5 | 50018 |
-| 12 | 5/5 | 88.5 | 43241 |
-| 13 | 6/6 | 46.5 | 50756 |
-| 14 | 7/7 | 56.6 | 49897 |
-| 15 | 11/11 | 87.9 | 60581 |
-| 16 | 4/4 | 10.7 | 29937 |
-| 17 | 5/7 | 68.2 | 57996 |
-| 18 | 7/7 | 80.9 | 59024 |
-| 19 | 7/7 | 59.6 | 53687 |
-| 20 | 4/4 | 10.2 | 28991 |
-| 21 | 9/9 | 78.1 | 54437 |
-| 22 | 12/12 | 106.4 | 65514 |
-| 23 | 7/7 | 55.7 | 49031 |
-| 24 | 7/7 | 68.0 | 57291 |
-| 25 | 8/8 | 72.7 | 52222 |
-| 26 | 6/8 | 88.6 | 61338 |
-| 27 | 7/7 | 67.1 | 53193 |
-| 28 | 11/11 | 95.2 | 55705 |
-| 29 | 8/8 | 76.2 | 45917 |
-| 30 | 5/5 | 98.6 | 55239 |
-| 31 | 5/5 | 53.4 | 43608 |
-| 32 | 7/7 | 65.6 | 46025 |
-| 33 | 5/5 | 72.4 | 45926 |
-| 34 | 6/7 | 90.5 | 48307 |
-| 35 | 6/6 | 157.0 | 66357 |
-| 36 | 5/6 | 71.5 | 45407 |
-| 37 | 4/4 | 72.4 | 54794 |
-| 38 | 4/4 | 36.9 | 50662 |
-| 39 | 4/5 | 57.1 | 45157 |
-| 40 | 5/5 | 56.8 | 44821 |
-| 41 | 7/7 | 65.3 | 43934 |
-| 42 | 6/7 | 59.9 | 46285 |
-| 43 | 6/6 | 59.9 | 47358 |
-| 44 | 6/6 | 64.3 | 45414 |
-| 45 | 4/4 | 62.1 | 36973 |
-| 46 | 8/8 | 77.9 | 48965 |
-| 47 | 6/7 | 95.3 | 61181 |
-| 48 | 5/5 | 49.8 | 37736 |
-| 49 | 6/6 | 66.2 | 49730 |
-| 50 | 6/6 | 54.6 | 46294 |
-| 51 | 5/5 | 69.7 | 55442 |
-| 52 | 5/6 | 66.1 | 54901 |
-| 53 | 6/6 | 51.3 | 37512 |
-| 54 | 6/6 | 56.5 | 46545 |
-| 55 | 5/5 | 53.2 | 39656 |
-| 56 | 5/5 | 103.8 | 47627 |
-| 57 | 5/5 | 60.2 | 35623 |
-| 58 | 5/5 | 67.0 | 37253 |
-| 59 | 5/5 | 87.9 | 50620 |
-| 60 | 5/5 | 57.3 | 50813 |
-| 61 | 10/10 | 54.9 | 52507 |
+| 1 | 4/4 | 105.7 | 64381 |
+| 2 | 4/4 | 38.0 | 33790 |
+| 3 | 4/4 | 83.1 | 47709 |
+| 4 | 4/4 | 96.5 | 55224 |
+| 5 | 2/2 | 58.6 | 46558 |
+| 6 | 2/2 | 50.3 | 43194 |
+| 7 | 4/4 | 64.7 | 50155 |
+| 8 | 5/5 | 51.0 | 44889 |
+| 9 | 4/5 | 115.1 | 57249 |
+| 10 | 4/4 | 37.2 | 35195 |
+| 11 | 5/5 | 79.5 | 54448 |
+| 12 | 4/4 | 54.4 | 45272 |
+| 13 | 5/5 | 67.1 | 50225 |
+| 14 | 6/6 | 83.0 | 55396 |
+| 15 | 8/9 | 116.8 | 65410 |
+| 16 | 4/4 | 22.5 | 37361 |
+| 17 | 3/3 | 85.0 | 62761 |
+| 18 | 5/5 | 81.2 | 61058 |
+| 19 | 6/6 | 71.6 | 47150 |
+| 20 | 4/4 | 16.2 | 31136 |
+| 21 | 6/6 | 107.5 | 53735 |
+| 22 | 9/9 | 118.4 | 70647 |
+| 23 | 5/5 | 87.4 | 52661 |
+| 24 | 6/6 | 89.9 | 56973 |
+| 25 | 6/6 | 98.2 | 54366 |
+| 26 | 6/6 | 116.1 | 63812 |
+| 28 | 8/8 | 101.7 | 56730 |
+| 29 | 7/7 | 101.3 | 47453 |
+| 30 | 5/5 | 102.1 | 52820 |
+| 31 | 4/4 | 56.1 | 47748 |
+| 32 | 7/7 | 59.0 | 46473 |
+| 33 | 5/5 | 76.0 | 48106 |
+| 34 | 6/6 | 84.4 | 49729 |
+| 35 | 6/6 | 165.7 | 68951 |
+| 36 | 4/4 | 72.7 | 47163 |
+| 37 | 5/5 | 69.9 | 56622 |
+| 38 | 4/4 | 59.7 | 50735 |
+| 39 | 5/5 | 76.2 | 51593 |
+| 40 | 5/5 | 77.1 | 48110 |
+| 41 | 4/4 | 68.0 | 48645 |
+| 42 | 5/5 | 52.4 | 38724 |
+| 43 | 5/5 | 65.5 | 51348 |
+| 44 | 4/4 | 58.8 | 38097 |
+| 45 | 3/3 | 64.4 | 39859 |
+| 46 | 3/3 | 67.7 | 44235 |
+| 47 | 6/6 | 125.8 | 65728 |
+| 48 | 5/5 | 66.5 | 47449 |
+| 49 | 5/5 | 117.4 | 50142 |
+| 50 | 6/6 | 126.2 | 49714 |
+| 51 | 5/5 | 87.6 | 55541 |
+| 52 | 6/6 | 80.9 | 54313 |
+| 53 | 4/4 | 63.4 | 40674 |
+| 54 | 6/6 | 70.4 | 53094 |
+| 55 | 5/5 | 49.2 | 39270 |
+| 56 | 4/4 | 55.8 | 49612 |
+| 57 | 5/5 | 53.7 | 47180 |
+| 58 | 5/5 | 54.5 | 48759 |
+| 59 | 5/5 | 53.3 | 51997 |
+| 60 | 5/5 | 84.8 | 58530 |
+| 61 | 4/4 | 43.9 | 48341 |
+| 62 | 2/2 | 84.4 | 52678 |
+| 63 | 3/3 | 53.8 | 46384 |
+| 64 | 1/1 | 50.0 | 43373 |
+| 65 | 2/2 | 56.5 | 45785 |
+| 66 | 3/3 | 105.9 | 57320 |
+| 67 | 2/2 | 38.0 | 34527 |
+| 68 | 3/3 | 72.2 | 46805 |
+| 69 | 2/2 | 59.7 | 44955 |
+| 70 | 2/2 | 76.4 | 50601 |
+| 71 | 3/3 | 159.7 | 70123 |
+| 72 | 2/2 | 78.5 | 58877 |
+| 73 | 2/2 | 94.1 | 57304 |
+| 74 | 3/3 | 100.0 | 60013 |
+| 75 | 1/2 | 83.6 | 47401 |
+| 76 | 2/3 | 71.9 | 46008 |
+| 77 | 3/3 | 65.4 | 45307 |
+| 78 | 3/3 | 66.8 | 45092 |
+| 79 | 2/2 | 57.1 | 38814 |
+| 80 | 2/2 | 73.7 | 51420 |
+| 81 | 2/2 | 65.0 | 48926 |
+| 82 | 7/7 | 52.7 | 52987 |
+| 83 | 6/6 | 79.9 | 50938 |
+| 84 | 6/6 | 84.5 | 49010 |
+| 85 | 6/6 | 83.3 | 48181 |
+| 86 | 6/6 | 73.6 | 51104 |
+| 87 | 5/6 | 77.6 | 48631 |
+| 88 | 6/6 | 66.7 | 46636 |
+| 89 | 3/6 | 83.3 | 50836 |
+| 90 | 7/7 | 128.0 | 60502 |
+| 91 | 5/6 | 71.3 | 48281 |
+| 92 | 8/8 | 84.7 | 51804 |
+| 93 | 7/7 | 132.3 | 52182 |
+| 94 | 7/7 | 76.3 | 52891 |
+| 95 | 6/6 | 75.0 | 45225 |
+| 96 | 6/6 | 99.9 | 48659 |
+| 97 | 8/8 | 109.2 | 54882 |
+| 98 | 8/8 | 89.5 | 51794 |
+| 99 | 5/5 | 91.9 | 53759 |
+| 100 | 4/4 | 89.7 | 52984 |
+| 101 | 6/7 | 77.2 | 51594 |
+| 102 | 4/4 | 78.5 | 52340 |
+| 103 | 5/5 | 112.7 | 67113 |
 
 ## Notes
 
-- 61 evals and 61 recorded runs pass 361/375 expectations, with 49 evals passing every expectation. Graders checked every claimed search, read, lookup, card, and file write against the stub call logs, `events.jsonl`, `tools.log`, and saved workspace files rather than the executor's own report.
-- This baseline records the skill as merged in [dcwalker/ai-skills#151](https://github.com/dcwalker/ai-skills/pull/151), including the Step 4 rewording that the previous baseline (2026-11-04) ran only on evals 52 and 55. Against that baseline's 358/375, evals 1, 7, 20, 22, 24, 48, 52, and 55 scored higher, and evals 8, 9, 11, 17, 34, 36, and 42 scored lower.
-- The seven lower evals, and eval 52, which missed one expectation, were each re-run once. Evals 8, 9, 11, 34, 42, and 52 passed every expectation on the re-run, and their rows above keep the first-pass result. Eval 17 scored 6/7 and eval 36 scored 5/6 on the re-run.
+- 102 evals and 102 recorded runs pass 472/482 expectations, with 94 evals passing every expectation. Graders checked every claimed search, read, lookup, task, and file write against the stub call logs, `events.jsonl`, `tools.log`, and saved workspace files rather than the executor's own report.
+- This baseline is not comparable to the 2026-11-05 baseline (361/375 on evals 1-61): this change splits the evals so each tests one behavior area, rewrites their expectations to be tool-neutral, drops eval 27, and adds evals 62-103.
+- Evals 4 and 103 ran after the Step 7 retry change (three attempts at once, never waiting between them, and three more for each retry the user asks for after the report); the other evals ran before it, and none of them hits a failed task create. Eval 4 attempted its failing task three times; eval 103 attempted it three times, then three more when the user asked to wait and try again, with no sleep or scheduled retry in either.
 - Known gaps accepted for this baseline:
-  - Eval 36 struck Marcus Hall, whose invite response was tentative, as not attending on both runs, with an offer to change it rather than a question; Step 3 asks the user about an invitee whose attendance no source shows. The skill was left unchanged for this baseline.
-  - Eval 17 attributes Speaker 3's quotes to an unidentified speaker on both runs, as on the previous baseline, and on its first pass did not ask for the macro cleanup's due date.
-  - Evals 8 and 9 spelled out SLA from its usual meaning on their first pass after the term search found nothing, rather than asking; both passed on the re-run.
-  - Eval 26 leaves out REL-102 and REL-107, created during the meeting, while the time zone is unconfirmed, as on the previous baseline.
-  - Eval 47 reports the Confluence findings in prose, and lists the included pages without their links; the links appear only in the notes.
-  - Eval 4 retried a failed card at the simulated user's request, against the no-retry rule.
-  - Eval 39 describes Priya Raman's masked expletive rather than restoring a word, which the transcript does not give.
-- Run method: `evals/lib/run-mcp-trials.sh` with `SIMULATED_USER=1` and `TRIALS_DIR` under `$TMPDIR` (evals without `follow_ups` get a simulated user; the rest use their scripted follow-ups), on `main` at the merge of #151. `check-trial-hygiene.sh` has nothing to check here, since this skill's workspaces are not git repositories; a search of every workspace for Claude Code session trailers found none.
+  - Eval 9 adds the summary because of the section count, though the notes run about 285 words, short of the length band the expectation names.
+  - Eval 15 leaves out Lena Fischer dropping off the call as logistics, though Step 5 keeps short logistics messages.
+  - Eval 75 quotes a direct message the search showed only as context, and gives it a time (8:42 AM) that no bounded read supplied; its timestamp is 9:02 AM.
+  - Eval 76 lists Marcus Hall, whose invite response was tentative, as absent with an offer to change it, rather than asking.
+  - Evals 87, 89, and 91 give an attendee a pronoun no source states, against Step 5's pronoun rule.
+  - Eval 89 puts the quoted fragment only in the pull quote, not inline in the note.
+  - Eval 88 passes, but its lead-in still paraphrases the pull quote, as it did on the three earlier runs on this branch.
+  - Eval 101 bounds the tracker search to the meeting's start and end, so it misses PLAT-211, created in the 15 minutes after the end, and never reports leaving it out.
+- Run method: `evals/lib/run-mcp-trials.sh` with `SIMULATED_USER=1` and `TRIALS_DIR` under `$TMPDIR` (evals without `follow_ups` get a simulated user; the rest use their scripted follow-ups), on this branch. A search of every workspace for Claude Code session trailers found none.
 - Tokens are input, output, and cache-creation tokens summed across every turn of the `claude -p` session, excluding cache reads, the same measure as the previous baseline.

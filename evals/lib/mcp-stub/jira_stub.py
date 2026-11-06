@@ -50,6 +50,28 @@ stub creates are stamped with it. Two users with similar display names and
 different accountIds is a fixture worth writing, because attributing writing
 by display name is exactly the mistake this lets an eval catch.
 
+createJiraIssue is NOT connector-verified. Its tool name and parameter
+names come from Atlassian's own skills in the official atlassian-mcp-server
+repo (github.com/atlassian/atlassian-mcp-server, skills/v1/: spec-to-backlog,
+triage-issue, capture-tasks-from-meeting-notes), which call it as
+createJiraIssue(cloudId, projectKey, issueTypeName, summary, description,
+parent, assignee_account_id, additional_fields). Those are the v1 names, to
+match the v1 tool set this stub serves; skills/README.md there says v2
+renames issueTypeName to issueType and assignee_account_id to assignee. The
+docs give no types or required flags, so those are inferred from the
+examples (UNVERIFIED): cloudId, projectKey, issueTypeName, and summary are
+required strings, description, parent (an issue key), and
+assignee_account_id are optional strings, and additional_fields is an
+optional object of Jira REST fields, of which the stub accepts priority
+({"name": ...} or a string), labels, and duedate and refuses the rest
+loudly. The response layout is UNVERIFIED too: it is the {"key", "id",
+"self"} example response in skills/v1/spec-to-backlog/SKILL.md, which is
+also the Jira Cloud REST v3 create-issue shape. The new issue gets the next
+key in its project, the next numeric id, "me" (or the first user) as
+reporter and creator, the stub's now as created and updated, no rank (so it
+sorts after ranked issues), and the first "To Do" category status found in
+"transitions", falling back to {"name": "To Do", "statusCategory": "To Do"}.
+
 getConfluencePage serves a "pages" section of the state, keyed by page id:
   "pages": {"<id>": {"id": "...", "title": "...", "spaceId": "...",
                       "tinyId": "<code from /wiki/x/ URLs>",
@@ -470,6 +492,113 @@ def editJiraIssue(  # NOSONAR(S1542) camelCase = real MCP tool name
     state.flush()
     result = _issue_view(issue)
     state.log_call("editJiraIssue", {"cloudId": cloudId, "issueIdOrKey": issueIdOrKey, "fields": fields}, result)
+    return result
+
+
+_CREATE_EXTRA_FIELDS = {"priority", "labels", "duedate"}
+
+
+def _next_issue_key(project_key: str) -> str:
+    numbers = [int(k.rsplit("-", 1)[1]) for k, i in state.data["issues"].items()
+               if i.get("project") == project_key and k.rsplit("-", 1)[1].isdigit()]
+    return f"{project_key}-{max(numbers, default=0) + 1}"
+
+
+def _next_issue_id() -> str:
+    ids = [int(i["id"]) for i in state.data["issues"].values() if str(i.get("id", "")).isdigit()]
+    return str(max(ids, default=10000) + 1)
+
+
+_TO_DO = "To Do"
+
+
+def _to_do_status() -> dict:
+    for t in state.data.get("transitions", []):
+        if t.get("to", {}).get("statusCategory") == _TO_DO:
+            return dict(t["to"])
+    return {"name": _TO_DO, "statusCategory": _TO_DO}
+
+
+def _default_reporter() -> dict | None:
+    if state.data.get("me"):
+        return dict(state.data["me"])
+    users = state.data.get("users", [])
+    return {"accountId": users[0]["accountId"], "displayName": users[0]["displayName"]} if users else None
+
+
+def _resolve_assignee(account_id: str) -> dict:
+    me = state.data.get("me") or {}
+    if me.get("accountId") == account_id:
+        return dict(me)
+    for u in state.data.get("users", []):
+        if u["accountId"] == account_id:
+            return {"accountId": u["accountId"], "displayName": u["displayName"]}
+    raise ValueError(f"jira-stub: no user with accountId {account_id!r} -- see lookupJiraAccountId")
+
+
+def _apply_create_extras(issue: dict, additional_fields: dict) -> None:
+    for name, value in additional_fields.items():
+        if name not in _CREATE_EXTRA_FIELDS:
+            raise ValueError(f"jira-stub: additional_fields {name!r} is not supported here -- "
+                             f"supported: {sorted(_CREATE_EXTRA_FIELDS)}")
+        if name == "priority" and isinstance(value, dict):
+            value = value.get("name")
+        issue[name] = value
+
+
+@server.tool()
+def createJiraIssue(  # NOSONAR(S1542) camelCase = real MCP tool name
+    cloudId: str,
+    projectKey: str,
+    issueTypeName: str,
+    summary: str,
+    description: str = "",
+    parent: str = "",
+    assignee_account_id: str = "",
+    additional_fields: dict | None = None,
+) -> dict:
+    """Create a new Jira issue in projectKey with an issue type that
+    project offers (see getVisibleJiraProjects). parent is an existing
+    issue key, assignee_account_id an account ID from lookupJiraAccountId,
+    and additional_fields may set priority ({"name": "..."}), labels, or
+    duedate. Returns the new issue's key, id, and self URL."""
+    _check_cloud(cloudId)
+    args = {"cloudId": cloudId, "projectKey": projectKey, "issueTypeName": issueTypeName,
+            "summary": summary, "description": description, "parent": parent,
+            "assignee_account_id": assignee_account_id, "additional_fields": additional_fields}
+    try:
+        project = state.data["projects"].get(projectKey)
+        if project is None:
+            raise ValueError(f"jira-stub: no project with key {projectKey!r} -- see getVisibleJiraProjects "
+                             f"(known: {sorted(state.data['projects'])})")
+        if issueTypeName not in project.get("issueTypes", []):
+            raise ValueError(f"jira-stub: project {projectKey} has no issue type {issueTypeName!r} "
+                             f"-- it offers {project.get('issueTypes', [])}")
+        if not summary.strip():
+            raise ValueError("jira-stub: summary is required")
+        if parent:
+            _get_issue(parent)
+        reporter = _default_reporter()
+        issue = {
+            "key": _next_issue_key(projectKey), "id": _next_issue_id(), "project": projectKey,
+            "summary": summary, "description": description, "status": _to_do_status(),
+            "issuetype": issueTypeName, "priority": None, "labels": [],
+            "assignee": _resolve_assignee(assignee_account_id) if assignee_account_id else None,
+            "reporter": reporter, "creator": reporter, "created": _STUB_NOW, "updated": _STUB_NOW,
+            "resolution": None, "duedate": None, "comments": [],
+        }
+        if parent:
+            issue["parent"] = parent
+        _apply_create_extras(issue, additional_fields or {})
+    except ValueError as error:
+        # Logged before refusing, so a grader sees the attempt in the call log.
+        state.log_call("createJiraIssue", args, {"error": str(error)})
+        raise
+    state.data["issues"][issue["key"]] = issue
+    state.flush()
+    result = {"id": issue["id"], "key": issue["key"],
+              "self": f"{state.data['cloud']['url']}/rest/api/3/issue/{issue['id']}"}
+    state.log_call("createJiraIssue", args, result)
     return result
 
 

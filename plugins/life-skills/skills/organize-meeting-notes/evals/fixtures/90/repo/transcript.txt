@@ -1,0 +1,16 @@
+[10:02] Priya Raman: Let's start with Q4 carryover. Three of the seven pipeline items slipped.
+[10:05] Noor Haddad: Ingestion latency at p95 is 42 minutes. The target was 15.
+[10:08] Jordan Lee: Warehouse spend is up 31 percent quarter over quarter, and most of that is duplicate backfills.
+[10:10] Noor Haddad: A dedupe job would cut backfill volume roughly in half. I can have a design doc by December 4.
+[10:13] Jordan Lee: The schema registry rollout is stuck at 4 of 11 teams. I want registry adoption to be a gate for any new pipeline in Q1.
+[10:16] Priya Raman: Can you write that gate up as a policy? December 11?
+[10:17] Jordan Lee: December 11 works.
+[10:20] Noor Haddad: For context, quality checks cover 18 percent of tables today.
+[10:24] Marcus Hall: We've spent two years building pipelines nobody trusts. If we don't fix data quality first, everything else on this list is decoration.
+[10:26] Priya Raman: So what are you proposing?
+[10:27] Marcus Hall: Freeze new pipelines for the first six weeks of Q1 and run a quality sprint instead.
+[10:30] Priya Raman: I can live with a freeze if the marketing attribution pipeline is exempt. That one has a contract date.
+[10:31] Jordan Lee: Hang on, my badge reader is beeping.
+[10:33] Marcus Hall: Fine, attribution is exempt.
+[10:35] Priya Raman: Then we're agreed: freeze with the attribution exemption. Quality target is checks on 60 percent of tables by the end of Q1.
+[10:37] Priya Raman: I'll tell marketing about the freeze this week.
