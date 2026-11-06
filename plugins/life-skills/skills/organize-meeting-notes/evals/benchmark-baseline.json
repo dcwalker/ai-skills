@@ -232,31 +232,31 @@
         "passed": 4,
         "failed": 0,
         "total": 4,
-        "time_seconds": 88.98,
-        "tokens": 57035,
-        "tool_calls": 18,
+        "time_seconds": 96.51,
+        "tokens": 55224,
+        "tool_calls": 15,
         "errors": null
       },
       "expectations": [
         {
           "text": "The Trello call log shows a create_card attempt covering each action item, and the failing procurement card is attempted no more than three times in all (the first try plus at most two retries); a fourth attempt fails this expectation.",
           "passed": true,
-          "evidence": "trello-calls.log shows one create_card for the pricing-sheet card (succeeded, card-1) and exactly three create_card calls for 'Darby Wade: Email procurement about Acme Supplies' pricing change this week', each returning 'rate limit exceeded, try again later'; no fourth attempt."
+          "evidence": "trello-calls.log shows one create_card for 'Update the internal pricing sheet...' (succeeded, card-1) and exactly three create_card calls for 'Email procurement about Acme Supplies' pricing change', each returning 'rate limit exceeded'; no fourth attempt in turn 4 (tools.log has no turn-4 calls)."
         },
         {
           "text": "Any action item whose card was created is linked in the final document using the exact URL the create_card call returned in the Trello call log.",
           "passed": true,
-          "evidence": "The final document links the pricing item to 'https://trello.com/c/card-1/darby-wade:-update-the-internal-pricing-', identical to the url returned by the successful create_card call in trello-calls.log."
+          "evidence": "create_card returned url 'https://trello.com/c/card-1/update-the-internal-pricing-sheet-with-a', and the final document links the pricing sheet item to exactly that URL."
         },
         {
           "text": "Each action item whose card was not created is NOT given a fabricated or guessed URL -- it either remains a plain unlinked checklist item with the failure surfaced to the user, or the skill pauses and asks how to proceed before finalizing that item.",
           "passed": true,
-          "evidence": "The procurement item is a plain checklist line '- [ ] Darby Wade: Email procurement about Acme Supplies' pricing change this week (week of Mar 9, 2026)' with no URL, and the failure is surfaced in the reply ('Email procurement: not created')."
+          "evidence": "The procurement item is a plain checklist line '- [ ] Darby Wade: Email procurement about the Acme Supplies pricing change' with no URL, and the failure is surfaced ('that action item has no link and you'll need to create it yourself')."
         },
         {
           "text": "The transcript explicitly reports each failed card creation (e.g. the rate-limit error) rather than silently treating it as a success or omitting it from the report.",
           "passed": true,
-          "evidence": "The transcript states 'Trello returned a rate-limit error (\"rate limit exceeded, try again later\") on all three attempts, so that item has no link' and lists it as not created under Tasks."
+          "evidence": "Transcript turn 3 says 'The procurement task failed three times on a Trello \"rate limit exceeded\" error' and the Task creation section repeats 'all three attempts failed with the same rate-limit error.'"
         }
       ]
     },
@@ -4223,36 +4223,36 @@
         "passed": 5,
         "failed": 0,
         "total": 5,
-        "time_seconds": 96.93,
-        "tokens": 57445,
-        "tool_calls": 16,
+        "time_seconds": 112.7,
+        "tokens": 67113,
+        "tool_calls": 22,
         "errors": null
       },
       "expectations": [
         {
-          "text": "The Trello call log shows at least two create_card attempts covering the conference room card before the skill reports the failure: the skill does not give up after the first failure.",
+          "text": "The Trello call log shows at least two create_card attempts covering the conference room card before the skill first reports the failure: the skill does not give up after the first failure.",
           "passed": true,
-          "evidence": "trello-calls.log shows three create_card calls for 'Darby Wade: Book the large conference room for the Dec 3 offsite by Nov 17, 2026', each returning '503 service unavailable', before the failure was reported."
+          "evidence": "In turn 2, trello-calls.log shows three create_card calls for 'Darby Wade: Book the large conference room...' (all 503) before the first report, so it did not stop after the first failure."
         },
         {
-          "text": "The Trello call log shows no more than three create_card attempts covering the conference room card in the whole session, including after the user asks to try again; a fourth attempt fails this expectation.",
+          "text": "The Trello call log shows no more than three create_card attempts covering the conference room card before the skill first reports the failure; a fourth attempt before that report fails this expectation.",
           "passed": true,
-          "evidence": "Exactly three create_card attempts for the conference room card appear in trello-calls.log for the whole session; none were made after the user's 'wait a few minutes and then try ... again' request (tools.log shows only 4 create_card calls total)."
+          "evidence": "Exactly three conference room create_card attempts (turn 2) precede the first failure report ('The other failed three times in a row'); no fourth before it."
         },
         {
-          "text": "The transcript shows no wait, sleep, timer, or scheduled retry between attempts or after the user's request (no sleep command, no scheduling tool call, no promise to try later).",
+          "text": "After the user asks to wait and try again, the Trello call log shows at least one and no more than three further create_card attempts covering the conference room card, all before the skill reports the result, and none after the user says they'll add it themselves.",
           "passed": true,
-          "evidence": "tools.log shows only Skill, ToolSearch, Read, Slack, Trello, and three Bash calls (ls, meeting_times.py, measure_notes.py); no sleep, Monitor, or scheduling call, and the reply says 'I won't retry it this session' with no promise to try later."
+          "evidence": "After 'Please wait a few minutes and then try...', turn 3 shows exactly three further conference room create_card calls (all 503) before the reply reporting the result; tools.log has no calls in turn 4 after the user said 'I'll add the conference room task myself.'"
         },
         {
-          "text": "After the user asks to wait and try again, the skill declines and says the card has already failed three times, and that the user can create it themselves.",
+          "text": "The transcript shows no wait, sleep, timer, or scheduled retry at any point (no sleep command, no scheduling tool call, no promise to try later); when the user asks it to wait, the skill retries right away instead.",
           "passed": true,
-          "evidence": "After the retry request the assistant says 'I won't retry it this session. The conference room task has already failed three times in a row' and 'You can add it yourself on the Team Tasks board in the To Do list'."
+          "evidence": "No Bash sleep, scheduling, or timer calls in tools.log/events.jsonl (only meeting_times.py and measure_notes.py Bash calls); on the wait request it said 'Rather than waiting, I'll try it now. I can't schedule a delayed retry' and retried immediately. Its 'Or ask me again later and I'll make another three tries' is a user-triggered offer, not a scheduled or self-initiated retry."
         },
         {
           "text": "The parking map item is linked in the final document with the exact URL the create_card call returned, and the conference room item is a plain unlinked checklist item with no fabricated URL.",
           "passed": true,
-          "evidence": "Final notes link the parking map item to 'https://trello.com/c/card-1/noor-haddad:-send-the-new-parking-map-to', matching the create_card result url, and list '- [ ] Darby Wade: Book the large conference room for the Dec 3 offsite by Nov 17, 2026' with no URL."
+          "evidence": "The parking map item links to 'https://trello.com/c/card-1/noor-haddad:-send-the-new-parking-map-to', exactly the URL create_card returned; the conference room item is '- [ ] Darby Wade: Book the large conference room for the Dec 3 offsite by Nov 17, 2026' with no URL in the final notes."
         }
       ]
     }
@@ -4261,9 +4261,9 @@
     "pass_rate": 0.9793,
     "expectations_passed": 472,
     "expectations_total": 482,
-    "mean_time_seconds": 78.6,
-    "stdev_time_seconds": 25.6,
-    "mean_tokens": 50592,
-    "stdev_tokens": 7527
+    "mean_time_seconds": 78.8,
+    "stdev_time_seconds": 25.8,
+    "mean_tokens": 50669,
+    "stdev_tokens": 7660
   }
 }
