@@ -1,0 +1,15 @@
+{
+  "contacts": {
+    "people/c9501": {
+      "names": [
+        "Ronald McDonald"
+      ],
+      "emails": [
+        "ronald.mcdonald@example.com"
+      ],
+      "organizations": [
+        "Example Co — Supply Chain"
+      ]
+    }
+  }
+}
