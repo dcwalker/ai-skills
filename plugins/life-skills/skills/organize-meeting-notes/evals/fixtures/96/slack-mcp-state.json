@@ -1,0 +1,64 @@
+{
+  "me": {
+    "id": "U0DARBY",
+    "name": "darby.wade",
+    "display_name": "darby.wade",
+    "real_name": "Darby Wade",
+    "email": "darby.wade@example.com",
+    "title": "Engineering Manager",
+    "timezone": "America/Los_Angeles",
+    "org": "example-co"
+  },
+  "users": {
+    "U0DARBY": {
+      "id": "U0DARBY",
+      "name": "darby.wade",
+      "display_name": "darby.wade",
+      "real_name": "Darby Wade",
+      "email": "darby.wade@example.com",
+      "title": "Engineering Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0PRIYA": {
+      "id": "U0PRIYA",
+      "name": "priya.raman",
+      "display_name": "priya.raman",
+      "real_name": "Priya Raman",
+      "email": "priya.raman@example.com",
+      "title": "Staff Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0NOOR": {
+      "id": "U0NOOR",
+      "name": "noor.haddad",
+      "display_name": "noor.haddad",
+      "real_name": "Noor Haddad",
+      "email": "noor.haddad@example.com",
+      "title": "Product Designer",
+      "timezone": "America/Los_Angeles"
+    }
+  },
+  "channels": {
+    "C0DESIGN": {
+      "id": "C0DESIGN",
+      "name": "design-review",
+      "purpose": "Design reviews and feedback",
+      "creator": "U0DARBY",
+      "created": "2026-03-02 09:00:00 PST",
+      "is_archived": false,
+      "type": "public_channel"
+    }
+  },
+  "messages": {
+    "C0DESIGN": [
+      {
+        "ts": "1793135520.000100",
+        "time": "2026-10-27 14:12:00 PDT",
+        "user": "U0NOOR",
+        "text": "on my phone so I can't unmute. +1 to the two-column layout, just keep the filters pinned at the top",
+        "thread_ts": null,
+        "reactions": []
+      }
+    ]
+  }
+}

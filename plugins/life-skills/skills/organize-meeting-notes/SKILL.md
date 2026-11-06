@@ -45,8 +45,10 @@ made, so capture the path to each one. Examples of what is worth recording:
 
 In Step 4, these decide what each line of the user's notes is expanded to
 say; no line is dropped for fitting none of them. When drafting from
-artifacts, they decide what the draft leads with, and talk that adds nothing
-to an outcome or how it was reached stays out.
+artifacts, they decide what the draft leads with. An off-topic remark (a
+frozen screen, a question about lunch, someone stepping away) stays in as a
+short note in reported speech, in time order, because it shows the mood of
+the room and what attendees were thinking about.
 
 Capture the meeting as it happened, including what is uncomfortable.
 Feedback on a named person, conflict, performance, compensation, health, and
@@ -104,14 +106,20 @@ Confirm which of these the session can reach, then consult every one that
 is reachable:
 
 - **Calendar**: the matching event, its agenda, invitees, and scheduled times.
-- **Team chat**: the meeting window, searched by date alone, then each
-  active conversation and thread read.
+- **Chat**: the meeting window in every chat source: the meeting
+  platform's own chat (a chat log or export), workspace chat, and text
+  messages, each conversation and thread active in it read.
 - **Email**: threads with attendees or on the topic near the meeting date.
 - **Shared links**: every URL in the notes, chat, or email.
 - **Ticket tracker**: every referenced work item.
-- **Items created during the meeting**: work items and cards attendees
-  created or were assigned, and wiki pages (Confluence pages and live docs)
-  attendees created or edited.
+- **Items created during the meeting**: work items and tasks attendees
+  created or were assigned, and wiki pages and live docs attendees created
+  or edited.
+
+Products differ in what they call these and in how their tools search.
+Use whatever the session's own tools reach, and translate each step below
+into that tool's operations; the examples name common products only to
+make a step concrete.
 
 The detail for each follows.
 
@@ -123,15 +131,35 @@ For each available source:
   Compare the scheduled start/end against the actual times: note whether the
   meeting started and ended on time, ended early, or ran long, and by how much
   (see Step 2 for where this lands).
-- **Team chat**: read every direct message and group direct message the
+- **Chat**: every chat source the session reaches counts, and the rules
+  below apply to each the same way:
+  - The meeting platform's own chat: the chat panel of the video or audio
+    call, as a log, export, or pasted excerpt, or through a tool that
+    reads it. Its messages are in the meeting by definition, but still
+    keep only those inside the actual window.
+  - Workspace chat: direct messages, group direct messages, and channels.
+  - Text messages: the user's message threads with attendees, and any
+    other thread active in the window.
+
+  Read every direct message, group direct message, and text thread the
   user sent or received during the window, including those with people
   outside the meeting, and the channels attendees posted in (a one-to-one
-  meeting's chat is usually a direct message). Bound the window by the
-  meeting's actual start and end, not its scheduled times; meeting
-  platforms report the two separately. Leave out messages outside the
-  window, even when they look useful (a heads-up before the start, a
-  follow-up after the end). Read the window before any keyword or sender
-  search, in two steps:
+  meeting's chat is usually a direct message or a text thread). Bound the
+  window by the meeting's actual start and end, not its scheduled times;
+  meeting platforms report the two separately. Leave out messages outside
+  the window, even when they look useful (a heads-up before the start, a
+  follow-up after the end).
+
+  A text-message tool usually reads one thread at a time, by contact, with
+  no search by date: find each attendee's number from contacts or the
+  tool's own contact search, read that thread back past the start of the
+  window, and keep the messages inside it. Read a thread with someone who
+  is not an attendee when another source points to it, and say in the
+  report that threads with other people were not read when the tool
+  cannot list them by date.
+
+  For workspace chat, read the window before any keyword or sender search,
+  in two steps:
   1. Find the conversations active in the window with a search bounded only
      by date, carrying no topic keyword and no sender filter. When the tool
      takes timestamps, get them from the bundled script, never by hand, in
@@ -141,15 +169,15 @@ For each available source:
      window in UTC for a wiki search and the local date for a date filter,
      and handles a daylight-saving change. If the tool refuses a search bounded
      only by timestamps, retry it with the meeting's date added as a date
-     filter (`on:YYYY-MM-DD` in Slack's search syntax), keeping the
+     filter (for example `on:YYYY-MM-DD` in Slack), keeping the
      timestamp bounds alongside it; dropping them returns the whole day.
      Date filters take dates, never timestamps. A refused search is never
      a reason to fall back to keywords. Sort the search by time, and page
      through it until the results run out or reach past both the actual
      start and the actual end.
   2. Read each of those conversations between the actual start and end,
-     with the chat tool's own read operation bounded to the window (in
-     Slack, reading the channel or direct message history). This step is
+     with the chat tool's own read operation bounded to the window (a
+     channel or direct message history read). This step is
      required even when the search results already show the messages:
      search results and their surrounding context can leave messages out,
      so they are not a read. Never say a conversation was read unless that
@@ -163,13 +191,13 @@ For each available source:
   inside a thread are not included. When a message in the window has
   replies, read that thread too and treat it as part of the same read. The
   date-bounded search does return replies, each carrying its parent's
-  timestamp (`thread_ts`); when a search hit is a reply, read its thread
+  timestamp (in Slack, `thread_ts`); when a search hit is a reply, read its thread
   from that parent. A thread whose parent falls outside the window still
   counts when its replies fall inside it. Keep each reply with its own
   thread, even when two threads share a channel and their replies
   interleave in time:
   - Present each thread as its own exchange: the parent message first, then
-    only the replies whose `thread_ts` is that parent's, in time order.
+    only the replies that belong to that parent, in time order.
     Never list replies from different threads in one sequence.
   - A reply answers its own parent, not the message shown just before it.
     Read a short reply ("yes", "same here") against its parent; when its
@@ -204,8 +232,7 @@ For each available source:
   window's Unix timestamps and `on:2026-10-01` as the only filter, sorted
   by time, with no keywords and no `from:` filter. Read each conversation
   found with `oldest` and `latest` set to the same timestamps. Read the
-  thread of each message with replies, and of each reply hit. Then record
-  the check with the disclosure line below.
+  thread of each message with replies, and of each reply hit.
 
   When the chat tool cannot search by date alone, prefer a search bounded by
   start and end timestamps, which most tools accept even when they reject a
@@ -223,23 +250,10 @@ For each available source:
   keyword or sender search says nothing about the window. Report that chat
   holds nothing only after the window itself came back empty.
 
-  The report records each meeting's chat check, found or empty, so a
-  dropped message can be traced. The notes are the deliverable, not a log
-  of the check: never write this line into the document. Open the report's
-  chat findings with one line in this shape, filling in every part, before
-  any finding:
-
-  `Chat: searched <start> to <end> by date only (<date terms used>); read <conversations read>.`
-
-  For example: `Chat: searched 2:00 PM to 2:45 PM by date only
-  (on:2026-10-01); read the direct message with Marcus Hall, the group
-  direct message with Priya Raman and Marcus Hall, and #release-4-2.` When
-  the search found nothing, the line is still required, and ends with
-  `nothing to read` in place of the read part: `Chat: searched 9:00 AM to
-  9:20 AM by date only (on:2026-09-30); nothing to read.` Name
-  every conversation read, including one that came back empty. When the
-  listing fallback replaced the search, write `listed conversations for
-  <start> to <end>` in place of the search part.
+  Neither the notes nor the report is a log of the check: never write the
+  window searched, the search terms, or the list of conversations read into
+  either. The report gives findings: what chat added, and each message left
+  out with its reason.
 
   When one run covers more than one meeting, keep a checklist file in the
   session's scratch or temporary directory, outside the user's folder, so
@@ -247,8 +261,7 @@ For each available source:
   meeting an entry with the window searched, the search pages read, the
   conversations and threads read, and each item left out with its reason.
   Update a meeting's entry when its chat check finishes, before writing its
-  note. The report gives each meeting its own disclosure line. When
-  earlier work in the run is no longer in view, read the
+  note. When earlier work in the run is no longer in view, read the
   checklist rather than relying on memory, and re-run any check it does not
   record.
 
@@ -265,16 +278,22 @@ For each available source:
   - The lead-in opens with a link named for the chat tool (`[In
     Slack](<permalink>)`) to the exchange's first message, or to its thread,
     then says in reported speech who did what (asked, answered, followed
-    up), ending with a colon.
+    up), ending with a colon. When the source gives no link (a meeting chat
+    log, a text thread), name the source in plain text instead (`In the
+    meeting chat,`, `By text,`).
   - Each message bullet is `<Sender>, <time>: <message>`, with the sender as
-    Step 3 resolves names and the time the bounded read shows. The message
+    Step 3 resolves names and the time the bounded read shows. The user's
+    own messages carry the user's name, never `Me`, `You`, or a phone
+    number, whatever label the tool shows. The message
     is the text as sent, verbatim: never correct its spelling, trim it, or
     reword it.
   - An exchange that relates to the meeting's content goes at the end of
     the note on the discussion it ran alongside, as a continuation of that
     note.
   - An exchange that does not relate to it is a note of its own, in time
-    order with the discussion around it.
+    order with the discussion around it. When the notes are in topic
+    sections, it goes at the end of the section whose discussion it
+    happened during.
 
   Time order applies between conversations and threads, never across them:
   each thread stays one exchange, as in the example above, even when its
@@ -309,9 +328,9 @@ For each available source:
     excluded, and may appear only as the context that makes the reply
     readable, marked as a bot post.
   - A message whose author shows a blank name is not a bot post until its
-    user ID says so. Look the ID up (in Slack, the user's profile) before
+    user ID says so. Look the ID up (the user's profile) before
     deciding. An external user from a partner organization in a shared
-    channel (Slack Connect) is a person: keep the message, attributed to
+    channel (for example Slack Connect) is a person: keep the message, attributed to
     the name and organization the profile gives.
   - A short logistics message is kept like any other (joining, running
     late, a room change, "running 5 min late, start without me").
@@ -339,9 +358,9 @@ For each available source:
   items (an item key, or a topic recognizable as a tracked item), look them
   up and capture the item's current summary and status so the note can name
   what was actually discussed.
-- **Items created during the meeting**: for every reachable tracker (Jira,
-  Trello, or another task tool) and wiki (Confluence), whether or not the
-  notes mention one, find the items attendees created or were assigned, and
+- **Items created during the meeting**: for every reachable tracker or
+  task tool, and every reachable wiki, whether or not the notes mention
+  one, find the items attendees created or were assigned, and
   the pages they created or edited, during the meeting, following
   [references/capture-tracker-items.md](references/capture-tracker-items.md).
 
@@ -392,7 +411,13 @@ partial transcript):
 
 Transform attendee emails:
 - Email patterns: `<first>.<last>@...` or `<initial>.<last>@...`
-- Convert to title case names
+- Take each name's spelling and capitalization from a source that shows
+  the name: the calendar invite's display name, contacts, a people
+  directory, or a chat profile (`ronald.mcdonald@` is `Ronald McDonald`
+  when contacts say so, never `Ronald Mcdonald`). Only when no source shows
+  the name, convert the email to title case, and ask the user when its
+  capitalization cannot be told from the email (a prefix such as `Mc`,
+  `Mac`, `O'`, or `de`)
 - Remove `-contractor` from names
 - Sort alphabetically by first name, struck-through names included:
   striking a name does not move it
@@ -404,9 +429,12 @@ user's other notes. Ask the user only when none gives it.
 
 Establish who did not attend from what the sources show: the user's own
 words, calendar responses, a participant report, chat join notices, or who
-spoke in the transcript. A declined response shows absence; a tentative
-response, or none, shows nothing either way. Ask the user only about
-invitees whose attendance no source shows. Then:
+spoke in the transcript, including messages posted in the meeting
+window. A declined response shows absence; a tentative response, or none,
+shows nothing either way. An invitee a source shows present (posting in
+the meeting window, speaking in the transcript, joining) attended: list
+them unstruck and do not ask. Ask the user only about invitees whose
+attendance no source shows. Then:
 - Apply strikethrough to invited names that did not attend.
 
 When more than 20 people attended, or the names of everyone who attended
@@ -475,8 +503,9 @@ assumes, the same way, before asking what it means:
 2. A search for the term itself in each reachable source, run on its own
    and with no date bound (the Step 1b window bounds only find what
    happened during the meeting; a definition usually predates it): chat
-   messages, the wiki (in Confluence, `text ~ "<term>"`), the tracker (in
-   Jira, `text ~ "<term>"`), email, and the user's other notes.
+   messages, the wiki, the tracker, email, and the user's other notes,
+   each with its tool's full-text search (for example `text ~ "<term>"`
+   in Confluence and Jira).
 3. When a source defines the term (a glossary, a page or ticket that spells
    it out, a message that explains it), and no other source defines it
    differently, use that meaning without asking: spell the acronym out on
@@ -625,7 +654,21 @@ Quote rule (only when a transcript was provided):
     - To highlight "tweetables": short, punchy, or provocative lines that
       would work well on social media.
 - Format a pull quote as `> "<exact words>" — <Speaker>` on its own line
-  directly under the note it supports, indented to that note's bullet.
+  directly under the note it supports, indented to that note's bullet. The
+  note introduces the quote (who said it and about what) and never restates
+  the quoted words as paraphrase. For example, not this:
+
+  ```markdown
+  - Lena Fischer said the vendor had missed three deadlines and that she was done waiting on them.
+    > "Three missed deadlines. I'm done waiting on them." — Lena Fischer
+  ```
+
+  But this:
+
+  ```markdown
+  - Lena Fischer gave her view of the vendor's schedule:
+    > "Three missed deadlines. I'm done waiting on them." — Lena Fischer
+  ```
 - There is no fixed limit on quotes. Include every statement that meets
   this bar, however many come from one section or one speaker, as long as
   the notes stay balanced.
@@ -714,9 +757,12 @@ After Steps 4 and 5, format the notes section as a bulleted list:
    `###### Action Items` section and write `None.` under it. Do not ask the
    user to confirm the action items, or that there are none.
 3. Do not offer to create tasks for the action items. Create them only when
-   the user asks, in the tool the user names, using the skills and tools
-   available to you. If the user asks without naming a tool, ask which one.
-   An action item already linked to an item captured in Step 1b keeps that
+   the user asks, using the skills and tools available to you. Choose the
+   tool from what you know of the user, in this order: the tool the user
+   names; the one the user's instructions or memory say their tasks go in;
+   the only task tool the session can reach. Ask which tool only when none
+   of these settles it, and never pick one of several because it happens to
+   be connected. An action item already linked to an item captured in Step 1b keeps that
    link and gets no new task.
 4. When the user has asked, create one task per remaining action item:
    - If no available skill or tool can create tasks in the named tool, tell
@@ -728,7 +774,7 @@ After Steps 4 and 5, format the notes section as a bulleted list:
    - Preferred additional context: meeting topic and a short reason the action item exists.
    - After each task is created, capture the URL the tool returned and replace that checklist item's text with a Markdown link to the task.
    - Use format: `- [ ] [Action item text](<task URL>)`
-   - If a task fails to create, do not retry it. Report the error to the user, ask how to proceed, and leave that item unlinked unless the user says otherwise.
+   - If a task fails to create, try it again right away, up to two more times (three attempts in all). Never wait, sleep, or schedule a later attempt between tries. After the third failure, stop: report each error to the user, leave that item unlinked, and say the user can create it themselves. Do not attempt it again unless the user asks after that report; each such request gets up to three more attempts, made right away under the same rules, even when the user asks to wait first.
 5. After task creation (or when none was requested), produce the final
    Markdown document.
 
@@ -828,15 +874,15 @@ nothing in it:
   `Omar: Omar Haddad, likely (title Director, Data Platform fits the data
   platform team)`).
 - **Added from sources**: what Step 1b put in the document, by source, and
-  what it left out and why. Open chat findings with the Step 1b disclosure
-  line, found or empty, whenever a chat source was reachable, and tracker
-  and Confluence findings with their own lines.
+  what it left out and why. Report findings, not the search: never list
+  the windows, search terms, or conversations checked. Say when a source
+  could not be reached.
 - **Summary measurement**: the word and line count, and the section count
   when the notes are sectioned, so the user can see why a summary was or was
   not added, and the note each summary sentence came from.
 - **Still unknown**: anything left out because no source or answer gave it,
-  each item with its meeting, where it came up, and what was searched, never
-  a bare name or term.
+  each item with its meeting and where it came up, never a bare name or
+  term.
 
 ## Quality Rules
 

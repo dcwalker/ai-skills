@@ -1,0 +1,15 @@
+{
+  "contacts": {
+    "people/c2001": {
+      "names": [
+        "Maya Okafor"
+      ],
+      "emails": [
+        "m.okafor@example.com"
+      ],
+      "organizations": [
+        "Example Co — Product Marketing"
+      ]
+    }
+  }
+}

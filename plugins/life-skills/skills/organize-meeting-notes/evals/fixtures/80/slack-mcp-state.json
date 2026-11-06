@@ -1,0 +1,60 @@
+{
+  "me": {
+    "id": "U0DARBY",
+    "name": "darby.wade",
+    "display_name": "darby.wade",
+    "real_name": "Darby Wade",
+    "email": "darby.wade@example.com",
+    "title": "Engineering Manager",
+    "timezone": "America/Los_Angeles",
+    "org": "example-co"
+  },
+  "users": {
+    "U0DARBY": {
+      "id": "U0DARBY",
+      "name": "darby.wade",
+      "real_name": "Darby Wade",
+      "email": "darby.wade@example.com",
+      "title": "Engineering Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0PRIYA": {
+      "id": "U0PRIYA",
+      "name": "priya.raman",
+      "real_name": "Priya Raman",
+      "email": "priya.raman@example.com",
+      "title": "Staff Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0SAM": {
+      "id": "U0SAM",
+      "name": "sam.ortiz",
+      "real_name": "Sam Ortiz",
+      "email": "sam.ortiz@example.com",
+      "title": "Finance Partner",
+      "timezone": "America/Los_Angeles"
+    }
+  },
+  "channels": {
+    "C0APIREV": {
+      "id": "C0APIREV",
+      "name": "api-review",
+      "purpose": "API reviews",
+      "creator": "U0PRIYA",
+      "created": "2025-04-01",
+      "is_archived": false,
+      "type": "public_channel"
+    }
+  },
+  "messages": {
+    "C0APIREV": [
+      {
+        "ts": "1793031120.000001",
+        "time": "2026-10-26 09:12:00 PDT",
+        "user": "U0PRIYA",
+        "text": "here's the API diff we're reviewing <https://example.com/diff/412|diff 412>",
+        "thread_ts": null
+      }
+    ]
+  }
+}

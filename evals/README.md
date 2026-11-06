@@ -453,7 +453,7 @@ mode by the mere absence of its fixture file; three evals had no fixture, the
 developer's real Trello credentials were exported by their shell profile, and
 a trial created three real cards on a real personal board.
 
-## MCP stub servers (Trello, Gmail, Jira, Slack, Calendar, Claude Docs, Contacts)
+## MCP stub servers (Trello, Gmail, Jira, Slack, Calendar, Claude Docs, Contacts, Messages)
 
 `triage` and `writing` depend on real MCP tools (Trello, Gmail, Jira, and
 Slack) rather than a CLI on `PATH`, so they need a different mocking seam
@@ -480,10 +480,13 @@ layouts follow the schema and are flagged unverified in its docstring),
 `docs_stub.py` the Claude Docs connector's doc and comment tools (doc
 birth, block inserts and replaces, tab reads, and comments, with responses
 shaped on a cloud routine's live calls; replies, resolves, and guards follow
-the connector's guide and are flagged unverified), and `contacts_stub.py`
+the connector's guide and are flagged unverified), `contacts_stub.py`
 the Google Contacts read tools `search_contacts` and `get_contact` (text
 responses whose layout, apart from the documented group line, is flagged
-unverified),
+unverified), and `messages_stub.py` the text-messages connector's read tools
+`read_imessages`, `get_unread_imessages`, and `search_contacts` (no send
+tool; every response layout was designed rather than observed and is
+flagged unverified),
 each backed by an in-memory fake "database" seeded from a fixture
 file. Tool names and parameter schemas were confirmed against
 live connected MCP servers, not guessed from prose, so a skill's real tool
@@ -567,7 +570,7 @@ waiting three seconds for stdin that is not coming.
 `run-mcp-eval.sh` wires every `<service>-mcp-state.json` a fixture provides
 (`trello-mcp-state.json`, `gmail-mcp-state.json`, `atlassian-mcp-state.json`,
 `slack-mcp-state.json`, `calendar-mcp-state.json`, `docs-mcp-state.json`,
-`contacts-mcp-state.json`)
+`contacts-mcp-state.json`, `messages-mcp-state.json`)
 into a scratch
 `mcp-config.json` naming those stubs as the *only* MCP servers, so no real
 third-party server is reachable during a trial. A fixture that provides

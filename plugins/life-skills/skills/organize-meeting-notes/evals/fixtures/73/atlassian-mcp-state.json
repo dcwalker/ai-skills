@@ -1,0 +1,27 @@
+{
+  "cloud": {
+    "id": "a1b2c3d4-0000-4000-8000-000000000024",
+    "url": "https://example.atlassian.net",
+    "name": "example"
+  },
+  "projects": {},
+  "issues": {},
+  "users": [],
+  "transitions": [],
+  "pages": {
+    "40188": {
+      "id": "40188",
+      "title": "Export API rate limit proposal",
+      "spaceId": "9001",
+      "tinyId": "Rk7mQ2",
+      "body": "## Proposal\n\nCap the export API at 60 requests per minute per tenant, with a burst allowance of 120. Tenants over the cap get HTTP 429 with a Retry-After header.\n\n## Why\n\nThree of the last four export incidents were a single tenant saturating the worker pool. A per-tenant cap isolates them without slowing everyone else.\n\n## Rollout\n\nShadow mode for two weeks, logging would-be rejections, then enforce."
+    },
+    "40213": {
+      "id": "40213",
+      "title": "Q4 platform dependency tracker",
+      "spaceId": "9001",
+      "tinyId": "Pq2wX8",
+      "body": ""
+    }
+  }
+}

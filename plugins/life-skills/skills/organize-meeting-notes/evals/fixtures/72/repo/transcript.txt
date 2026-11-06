@@ -1,0 +1,16 @@
+Transcript: Support Tooling Review (auto-generated from recording)
+
+[11:01] Marcus Hall: Okay, let's start. The export queue is the main thing today.
+[11:02] Priya Raman: Support logged 212 manual exports last month. That's the number I want everyone to have in their head.
+[11:04] Marcus Hall: I'm sharing the dashboard now.
+[11:05] Speaker 3: Can we just raise the export limit from 10,000 rows to 50,000? That would kill most of the tickets.
+[11:07] Priya Raman: I'm against that. The last time we raised a limit, the database fell over during month-end close.
+[11:09] Marcus Hall: What if we raise it to 25,000 and only outside month-end?
+[11:10] Priya Raman: I can live with 25,000 outside month-end.
+[11:11] Speaker 3: Fine, 25,000 works.
+[11:13] Marcus Hall: I'll ship the limit change by Friday.
+[11:16] Priya Raman: Second thing, the macro library. Half the macros still reference the old refund policy.
+[11:18] Marcus Hall: I'm pulling up the audit sheet.
+[11:19] Priya Raman: Forty-one of the eighty macros are stale.
+[11:21] Speaker 3: I'll clean those up.
+[11:22] Priya Raman: Thanks. Sorry, someone's at my door.

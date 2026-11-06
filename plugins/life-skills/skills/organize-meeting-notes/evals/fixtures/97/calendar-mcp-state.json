@@ -1,0 +1,63 @@
+{
+  "calendar": {
+    "id": "darby.wade@example.com",
+    "summary": "Darby Wade",
+    "timeZone": "America/Los_Angeles"
+  },
+  "updated": "2026-11-03T23:00:00Z",
+  "events": [
+    {
+      "conferenceData": {},
+      "created": "2026-10-27T17:00:00Z",
+      "creator": {
+        "email": "darby.wade@example.com",
+        "self": true
+      },
+      "description": "Review the new hire onboarding checklist, the buddy program pilot, and laptop shipping.",
+      "end": {
+        "dateTime": "2026-11-03T14:45:00-08:00",
+        "timeZone": "America/Los_Angeles"
+      },
+      "eventType": "DEFAULT",
+      "htmlLink": "https://www.google.com/calendar/event?eid=evt-onboarding-1103",
+      "id": "evt-onboarding-1103",
+      "location": "Video call",
+      "organizer": {
+        "email": "darby.wade@example.com",
+        "self": true
+      },
+      "start": {
+        "dateTime": "2026-11-03T14:00:00-08:00",
+        "timeZone": "America/Los_Angeles"
+      },
+      "status": "confirmed",
+      "summary": "Onboarding Revamp Review",
+      "updated": "2026-10-27T17:00:00Z",
+      "useDefaultReminders": true,
+      "attendees": [
+        {
+          "email": "darby.wade@example.com",
+          "displayName": "Darby Wade",
+          "responseStatus": "accepted",
+          "organizer": true,
+          "self": true
+        },
+        {
+          "email": "priya.raman@example.com",
+          "displayName": "Priya Raman",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "lena.fischer@example.com",
+          "displayName": "Lena Fischer",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "sam.ortiz@example.com",
+          "displayName": "Sam Ortiz",
+          "responseStatus": "accepted"
+        }
+      ]
+    }
+  ]
+}
