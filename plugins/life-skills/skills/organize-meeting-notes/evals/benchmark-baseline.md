@@ -9,8 +9,8 @@
 | Metric | With Skill |
 |--------|------------|
 | Pass Rate | 98% ± 8% |
-| Time | 78.6s ± 25.6s (n=102) |
-| Tokens | 50592 ± 7527 (n=102) |
+| Time | 78.8s ± 25.8s (n=102) |
+| Tokens | 50669 ± 7660 (n=102) |
 
 ## Per-eval results
 
@@ -19,7 +19,7 @@
 | 1 | 4/4 | 105.7 | 64381 |
 | 2 | 4/4 | 38.0 | 33790 |
 | 3 | 4/4 | 83.1 | 47709 |
-| 4 | 4/4 | 89.0 | 57035 |
+| 4 | 4/4 | 96.5 | 55224 |
 | 5 | 2/2 | 58.6 | 46558 |
 | 6 | 2/2 | 50.3 | 43194 |
 | 7 | 4/4 | 64.7 | 50155 |
@@ -117,13 +117,13 @@
 | 100 | 4/4 | 89.7 | 52984 |
 | 101 | 6/7 | 77.2 | 51594 |
 | 102 | 4/4 | 78.5 | 52340 |
-| 103 | 5/5 | 96.9 | 57445 |
+| 103 | 5/5 | 112.7 | 67113 |
 
 ## Notes
 
 - 102 evals and 102 recorded runs pass 472/482 expectations, with 94 evals passing every expectation. Graders checked every claimed search, read, lookup, task, and file write against the stub call logs, `events.jsonl`, `tools.log`, and saved workspace files rather than the executor's own report.
 - This baseline is not comparable to the 2026-11-05 baseline (361/375 on evals 1-61): this change splits the evals so each tests one behavior area, rewrites their expectations to be tool-neutral, drops eval 27, and adds evals 62-103.
-- Evals 4 and 103 ran after the Step 7 retry change (three attempts in all, never waiting between them); the other evals ran before it, and none of them hits a failed task create. In both, the failing task was attempted exactly three times, with no sleep or scheduled retry.
+- Evals 4 and 103 ran after the Step 7 retry change (three attempts at once, never waiting between them, and three more for each retry the user asks for after the report); the other evals ran before it, and none of them hits a failed task create. Eval 4 attempted its failing task three times; eval 103 attempted it three times, then three more when the user asked to wait and try again, with no sleep or scheduled retry in either.
 - Known gaps accepted for this baseline:
   - Eval 9 adds the summary because of the section count, though the notes run about 285 words, short of the length band the expectation names.
   - Eval 15 leaves out Lena Fischer dropping off the call as logistics, though Step 5 keeps short logistics messages.

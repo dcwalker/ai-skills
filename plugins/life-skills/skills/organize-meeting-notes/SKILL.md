@@ -774,7 +774,7 @@ After Steps 4 and 5, format the notes section as a bulleted list:
    - Preferred additional context: meeting topic and a short reason the action item exists.
    - After each task is created, capture the URL the tool returned and replace that checklist item's text with a Markdown link to the task.
    - Use format: `- [ ] [Action item text](<task URL>)`
-   - If a task fails to create, try it again right away, up to two more times (three attempts in all). Never wait, sleep, or schedule a later attempt between tries. After the third failure, stop: report each error to the user, leave that item unlinked, and say the user can create it themselves. Do not attempt it again in this session, even when the user asks; say it has already failed three times.
+   - If a task fails to create, try it again right away, up to two more times (three attempts in all). Never wait, sleep, or schedule a later attempt between tries. After the third failure, stop: report each error to the user, leave that item unlinked, and say the user can create it themselves. Do not attempt it again unless the user asks after that report; each such request gets up to three more attempts, made right away under the same rules, even when the user asks to wait first.
 5. After task creation (or when none was requested), produce the final
    Markdown document.
 
