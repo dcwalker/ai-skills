@@ -509,11 +509,14 @@ def _next_issue_id() -> str:
     return str(max(ids, default=10000) + 1)
 
 
+_TO_DO = "To Do"
+
+
 def _to_do_status() -> dict:
     for t in state.data.get("transitions", []):
-        if t.get("to", {}).get("statusCategory") == "To Do":
+        if t.get("to", {}).get("statusCategory") == _TO_DO:
             return dict(t["to"])
-    return {"name": "To Do", "statusCategory": "To Do"}
+    return {"name": _TO_DO, "statusCategory": _TO_DO}
 
 
 def _default_reporter() -> dict | None:
