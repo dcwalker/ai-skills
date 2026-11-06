@@ -1,0 +1,57 @@
+{
+  "calendar": {
+    "id": "darby.wade@example.com",
+    "summary": "Darby Wade",
+    "timeZone": "America/Los_Angeles"
+  },
+  "updated": "2026-10-27T22:00:00Z",
+  "events": [
+    {
+      "conferenceData": {},
+      "created": "2026-10-19T17:00:00Z",
+      "creator": {
+        "email": "darby.wade@example.com"
+      },
+      "description": "",
+      "end": {
+        "dateTime": "2026-10-27T14:30:00-07:00",
+        "timeZone": "America/Los_Angeles"
+      },
+      "eventType": "DEFAULT",
+      "htmlLink": "https://www.google.com/calendar/event?eid=evt-design-1027",
+      "id": "evt-design-1027",
+      "location": "Zoom",
+      "organizer": {
+        "email": "darby.wade@example.com",
+        "self": true
+      },
+      "start": {
+        "dateTime": "2026-10-27T14:00:00-07:00",
+        "timeZone": "America/Los_Angeles"
+      },
+      "status": "confirmed",
+      "summary": "Design Review",
+      "updated": "2026-10-19T17:00:00Z",
+      "useDefaultReminders": true,
+      "attendees": [
+        {
+          "email": "darby.wade@example.com",
+          "displayName": "Darby Wade",
+          "responseStatus": "accepted",
+          "organizer": true,
+          "self": true
+        },
+        {
+          "email": "priya.raman@example.com",
+          "displayName": "Priya Raman",
+          "responseStatus": "accepted"
+        },
+        {
+          "email": "noor.haddad@example.com",
+          "displayName": "Noor Haddad",
+          "responseStatus": "tentative"
+        }
+      ]
+    }
+  ]
+}

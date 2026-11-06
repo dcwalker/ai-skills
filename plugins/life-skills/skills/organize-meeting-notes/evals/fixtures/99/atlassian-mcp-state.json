@@ -1,0 +1,37 @@
+{
+  "cloud": {
+    "id": "a1b2c3d4-0000-4000-8000-000000000099",
+    "url": "https://example.atlassian.net",
+    "name": "example"
+  },
+  "timeZone": "America/Los_Angeles",
+  "projects": {
+    "OPS": {
+      "key": "OPS",
+      "id": "20099",
+      "name": "Operations",
+      "issueTypes": [
+        "Task",
+        "Bug"
+      ]
+    }
+  },
+  "issues": {},
+  "transitions": [],
+  "me": {
+    "accountId": "acct-darby",
+    "displayName": "Darby Wade"
+  },
+  "users": [
+    {
+      "accountId": "acct-darby",
+      "displayName": "Darby Wade",
+      "emailAddress": "darby.wade@example.com"
+    },
+    {
+      "accountId": "acct-marcus",
+      "displayName": "Marcus Hall",
+      "emailAddress": "marcus.hall@example.com"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "cloud": {
+    "id": "a1b2c3d4-0000-4000-8000-000000000037",
+    "url": "https://example.atlassian.net",
+    "name": "example"
+  },
+  "timeZone": "America/Los_Angeles",
+  "projects": {
+    "DOCS": {
+      "key": "DOCS",
+      "id": "20037",
+      "name": "Documentation",
+      "issueTypes": [
+        "Task",
+        "Bug"
+      ]
+    }
+  },
+  "issues": {
+    "DOCS-12": {
+      "key": "DOCS-12",
+      "id": "10012",
+      "project": "DOCS",
+      "summary": "Audit the docs site navigation",
+      "description": "",
+      "status": {
+        "name": "Done",
+        "statusCategory": "Done"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [],
+      "assignee": {
+        "accountId": "acct-lena",
+        "displayName": "Lena Fischer"
+      },
+      "reporter": {
+        "accountId": "acct-darby",
+        "displayName": "Darby Wade"
+      },
+      "creator": {
+        "accountId": "acct-darby",
+        "displayName": "Darby Wade"
+      },
+      "created": "2026-09-21T10:15:00-07:00",
+      "updated": "2026-10-02T16:40:00-07:00",
+      "resolution": "Done",
+      "duedate": null,
+      "comments": []
+    }
+  },
+  "users": [
+    {
+      "accountId": "acct-darby",
+      "displayName": "Darby Wade",
+      "emailAddress": "darby.wade@example.com"
+    },
+    {
+      "accountId": "acct-lena",
+      "displayName": "Lena Fischer",
+      "emailAddress": "lena.fischer@example.com"
+    }
+  ],
+  "me": {
+    "accountId": "acct-darby",
+    "displayName": "Darby Wade"
+  },
+  "transitions": []
+}

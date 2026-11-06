@@ -1,0 +1,136 @@
+{
+  "cloud": {
+    "id": "a1b2c3d4-0000-4000-8000-000000000101",
+    "url": "https://example.atlassian.net",
+    "name": "example"
+  },
+  "timeZone": "America/Los_Angeles",
+  "projects": {
+    "PLAT": {
+      "key": "PLAT",
+      "id": "20101",
+      "name": "Platform",
+      "issueTypes": [
+        "Task",
+        "Bug"
+      ]
+    }
+  },
+  "issues": {
+    "PLAT-205": {
+      "key": "PLAT-205",
+      "id": "10205",
+      "project": "PLAT",
+      "summary": "Investigate staging TLS errors",
+      "description": "Staging requests failing with certificate errors.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [],
+      "assignee": {
+        "accountId": "acct-marcus",
+        "displayName": "Marcus Hall"
+      },
+      "reporter": {
+        "accountId": "acct-marcus",
+        "displayName": "Marcus Hall"
+      },
+      "creator": {
+        "accountId": "acct-marcus",
+        "displayName": "Marcus Hall"
+      },
+      "created": "2026-10-27T08:40:00-07:00",
+      "updated": "2026-10-27T08:40:00-07:00",
+      "resolution": null,
+      "duedate": null,
+      "comments": []
+    },
+    "PLAT-210": {
+      "key": "PLAT-210",
+      "id": "10210",
+      "project": "PLAT",
+      "summary": "Automate staging cert rotation",
+      "description": "Renew and rotate the staging TLS certificate automatically before it expires.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [],
+      "assignee": {
+        "accountId": "acct-jordan",
+        "displayName": "Jordan Lee"
+      },
+      "reporter": {
+        "accountId": "acct-jordan",
+        "displayName": "Jordan Lee"
+      },
+      "creator": {
+        "accountId": "acct-jordan",
+        "displayName": "Jordan Lee"
+      },
+      "created": "2026-10-29T10:14:22-07:00",
+      "updated": "2026-10-29T10:14:22-07:00",
+      "resolution": null,
+      "duedate": null,
+      "comments": []
+    },
+    "PLAT-211": {
+      "key": "PLAT-211",
+      "id": "10211",
+      "project": "PLAT",
+      "summary": "Book a room for the team offsite",
+      "description": "Find a room for 12 people for the December offsite.",
+      "status": {
+        "name": "To Do",
+        "statusCategory": "To Do"
+      },
+      "issuetype": "Task",
+      "priority": null,
+      "labels": [],
+      "assignee": {
+        "accountId": "acct-marcus",
+        "displayName": "Marcus Hall"
+      },
+      "reporter": {
+        "accountId": "acct-marcus",
+        "displayName": "Marcus Hall"
+      },
+      "creator": {
+        "accountId": "acct-marcus",
+        "displayName": "Marcus Hall"
+      },
+      "created": "2026-10-29T10:41:05-07:00",
+      "updated": "2026-10-29T10:41:05-07:00",
+      "resolution": null,
+      "duedate": null,
+      "comments": []
+    }
+  },
+  "transitions": [],
+  "me": {
+    "accountId": "acct-darby",
+    "displayName": "Darby Wade"
+  },
+  "users": [
+    {
+      "accountId": "acct-darby",
+      "displayName": "Darby Wade",
+      "emailAddress": "darby.wade@example.com"
+    },
+    {
+      "accountId": "acct-marcus",
+      "displayName": "Marcus Hall",
+      "emailAddress": "marcus.hall@example.com"
+    },
+    {
+      "accountId": "acct-jordan",
+      "displayName": "Jordan Lee",
+      "emailAddress": "jordan.lee@example.com"
+    }
+  ]
+}

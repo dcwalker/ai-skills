@@ -1,0 +1,82 @@
+{
+  "me": {
+    "id": "U0DARBY",
+    "name": "darby.wade",
+    "display_name": "darby.wade",
+    "real_name": "Darby Wade",
+    "email": "darby.wade@example.com",
+    "title": "Engineering Manager",
+    "timezone": "America/Los_Angeles",
+    "org": "example-co"
+  },
+  "users": {
+    "U0DARBY": {
+      "id": "U0DARBY",
+      "name": "darby.wade",
+      "real_name": "Darby Wade",
+      "email": "darby.wade@example.com",
+      "title": "Engineering Manager",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0PRIYA": {
+      "id": "U0PRIYA",
+      "name": "priya.raman",
+      "real_name": "Priya Raman",
+      "email": "priya.raman@example.com",
+      "title": "Staff Engineer",
+      "timezone": "America/Los_Angeles"
+    },
+    "U0DEPLOYBOT": {
+      "id": "U0DEPLOYBOT",
+      "name": "deploy-bot",
+      "real_name": "Deploy Bot",
+      "email": "",
+      "title": "",
+      "timezone": "America/Los_Angeles",
+      "is_bot": true
+    }
+  },
+  "channels": {
+    "C0DEPLOYS": {
+      "id": "C0DEPLOYS",
+      "name": "deploys",
+      "purpose": "Deploy notifications",
+      "creator": "U0DARBY",
+      "created": "2025-01-10",
+      "is_archived": false,
+      "type": "public_channel"
+    }
+  },
+  "messages": {
+    "C0DEPLOYS": [
+      {
+        "ts": "1792600800.000001",
+        "time": "2026-10-21 09:40:00 PDT",
+        "user": "U0DEPLOYBOT",
+        "text": "Deploy 4.2.0 to production finished. 212 of 212 steps passed.",
+        "thread_ts": null
+      },
+      {
+        "ts": "1792602300.000001",
+        "time": "2026-10-21 10:05:00 PDT",
+        "user": "U0DEPLOYBOT",
+        "text": "Deploy 4.2.1 to staging finished. 212 of 212 steps passed.",
+        "thread_ts": null
+      },
+      {
+        "ts": "1792602480.000002",
+        "time": "2026-10-21 10:08:00 PDT",
+        "user": "U0PRIYA",
+        "text": "staging smoke tests fail on login after this one, I'm holding the prod deploy until we know why",
+        "thread_ts": "1792602300.000001"
+      },
+      {
+        "ts": "1792602720.000001",
+        "time": "2026-10-21 10:12:00 PDT",
+        "user": "U0DEPLOYBOT",
+        "text": "Deploy 4.2.1 to production paused by priya.raman.",
+        "thread_ts": null
+      }
+    ]
+  }
+}
