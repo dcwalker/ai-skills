@@ -27,6 +27,23 @@ sending stayed with the user simply because no such call is possible.
 Environment: MCP_STUB_STATE_FILE / MCP_STUB_STATE_OUT / MCP_STUB_LOG, same
 contract as trello_stub.py.
 
+Filters: a fixture that seeds a top-level "filters" list also gets
+list_filters, create_filter, update_filter, and delete_filter, and the
+server's instructions gain the sentence sift's own Gmail server
+(sift_watch/gmail_mcp.py in dcwalker/sift) uses to say its filter tools
+refuse forwarding and anything that keeps mail out of the inbox. Their
+names, parameters, results, and refusals are copied from that server's
+code, not guessed. Each filter is {"id", "criteria", "action"}, as the Gmail
+API has it, with an action's "forward" an address; the top-level
+"sift_filter_ids" list is the host's ledger of the filters sift created,
+which decides whether an edit may add labels and which an edit's new id
+joins. create_filter's evidence check counts the fixture threads from the
+filter's sender (an address, or a domain and its subdomains) that are not
+STARRED and carry every label it adds and none it removes; subject, query,
+and the other narrowing criteria are not applied to that count. An update
+creates a new filter ("filter_<n>") and deletes the old one, as sift's does,
+since Gmail has no filter update.
+
 State model (the fake Gmail "database"):
   {
     "threads": {"<thread_id>": {
@@ -110,6 +127,7 @@ should be findable by.
 
 import copy
 import datetime
+import re
 from typing import Annotated
 
 from pydantic import Field
@@ -120,7 +138,17 @@ state = StubState(default={"threads": {}, "labels": {}, "drafts": {}})
 
 from mcp.server.mcpserver import MCPServer  # noqa: E402
 
-server = MCPServer("gmail-stub")
+# Filter tools are served only to a fixture that seeds "filters" (see
+# Filters below), so a trial of a skill or eval that has none sees the same
+# tool list as before.
+_FILTERS_SEEDED = "filters" in state.data
+server = MCPServer(
+    "gmail-stub",
+    instructions=(
+        "Filter tools list, create, update, and delete Gmail filters, and refuse forwarding and anything "
+        "that keeps mail out of the inbox."
+    ) if _FILTERS_SEEDED else None,
+)
 
 
 _VIEW_URL_BASE = "https://mail.google.com/mail/u/0/#all/"  # placeholder format; see View URLs above
@@ -676,6 +704,307 @@ def create_label(
                                     "labelListVisibility": labelListVisibility,
                                     "messageListVisibility": messageListVisibility}, result)
     return result
+
+
+# --- Filters (served only when the fixture seeds "filters"; see the docstring) ---
+
+_FILTER_CRITERIA = {"from", "to", "subject", "query", "negatedQuery", "hasAttachment"}
+# Copied from sift_watch/gmail_mcp.py: domains many unrelated senders share.
+_SHARED_DOMAINS = {
+    "gmail.com", "googlemail.com", "yahoo.com", "yahoo.co.uk", "ymail.com", "outlook.com", "hotmail.com",
+    "hotmail.co.uk", "live.com", "msn.com", "icloud.com", "me.com", "mac.com", "aol.com", "proton.me",
+    "protonmail.com", "pm.me", "hey.com", "gmx.com", "gmx.net", "mail.com", "yandex.com", "zoho.com",
+    "fastmail.com", "comcast.net", "att.net", "verizon.net", "sbcglobal.net",
+    # Platforms that send on behalf of many unrelated senders.
+    "substack.com", "googlegroups.com", "github.com", "amazonses.com", "sendgrid.net", "mailchimp.com",
+    "mailchimpapp.net", "mcsv.net", "constantcontact.com", "groups.io", "facebookmail.com", "linkedin.com",
+}
+_SUFFIX_LABELS = {"co", "com", "org", "net", "gov", "ac", "edu", "ne", "or", "go", "gob", "nic", "ltd", "plc"}
+_EVIDENCE_THREADS = 5
+_SENDER_ADDRESS = re.compile(r"^[a-z0-9._%+'-]+@[a-z0-9-]+(\.[a-z0-9-]+)+$")
+_SENDER_DOMAIN = re.compile(r"^@?([a-z0-9-]+(\.[a-z0-9-]+)+)$")
+_WIDENING = re.compile(r"\bOR\b|[{}()]|\bfrom:", re.I)
+
+
+def _user_only_actions(action: dict | None) -> list:
+    action = action or {}
+    adds = set(action.get("addLabelIds") or [])
+    removes = set(action.get("removeLabelIds") or [])
+    found = []
+    if action.get("forward"):
+        found.append("forwards")
+    if "INBOX" in removes:
+        found.append("skips the inbox")
+    if "TRASH" in adds:
+        found.append("deletes")
+    if "SPAM" in adds:
+        found.append("sends to Spam")
+    if "SPAM" in removes:
+        found.append("keeps mail out of Spam")
+    return found
+
+
+def _label_names() -> dict:
+    return {lbl["id"]: lbl["name"] for lbl in state.data["labels"].values()}
+
+
+def _filter_summary(f: dict) -> dict:
+    names = _label_names()
+    action = f.get("action") or {}
+    return {
+        "id": f["id"],
+        "criteria": f.get("criteria") or {},
+        "addLabels": [{"id": i, "name": names.get(i, i)} for i in action.get("addLabelIds") or []],
+        "removeLabels": [{"id": i, "name": names.get(i, i)} for i in action.get("removeLabelIds") or []],
+        "forwards": bool(action.get("forward")),
+        "userOnly": _user_only_actions(action),
+    }
+
+
+def _find_filter(filter_id: str) -> dict:
+    filter_id = str(filter_id or "").strip()
+    if not filter_id:
+        raise ValueError("filterId is empty")
+    for f in state.data["filters"]:
+        if f["id"] == filter_id:
+            return f
+    raise ValueError(f"Gmail API error 404: Filter not found: {filter_id}")
+
+
+def _sender_problem(sender: str):
+    domain = _SENDER_DOMAIN.match(sender)
+    if not (_SENDER_ADDRESS.match(sender) or domain):
+        return ("a filter sift creates needs `from` set to one sender's address or domain, "
+                "such as news@example.com or example.com")
+    account = str(state.data.get("me") or "").lower()
+    own = account.rsplit("@", 1)[-1]
+    if account and (sender == account or (domain and (domain.group(1) == own or domain.group(1).endswith("." + own)
+                                                      or own.endswith("." + domain.group(1))))):
+        return "a filter sift creates can't match the account's own mail or domain"
+    if domain:
+        name = domain.group(1)
+        parts = name.split(".")
+        shared = any(name == d or name.endswith("." + d) for d in _SHARED_DOMAINS)
+        if shared or (len(parts) == 2 and parts[0] in _SUFFIX_LABELS):
+            return f"{sender} is shared by many senders; name the sender's own address"
+    return None
+
+
+def _filter_criteria(criteria: dict) -> dict:
+    criteria = {k: v for k, v in (criteria or {}).items() if v not in (None, "", False)}
+    unknown = sorted(set(criteria) - _FILTER_CRITERIA)
+    if unknown:
+        raise ValueError(f"sift's filters can't use {', '.join(unknown)}")
+    sender = str(criteria.get("from", "")).strip().lower()
+    problem = _sender_problem(sender)
+    if problem:
+        raise ValueError(problem)
+    criteria["from"] = sender
+    for key in ("to", "subject", "query", "negatedQuery"):
+        if key in criteria:
+            criteria[key] = str(criteria[key]).strip()
+            if _WIDENING.search(criteria[key]):
+                raise ValueError(f"`{key}` may only narrow the sender's mail: no OR, parentheses, braces, or from:")
+    return criteria
+
+
+def _one_sender(criteria) -> bool:
+    try:
+        _filter_criteria(criteria)
+    except ValueError:
+        return False
+    return True
+
+
+def _normalized_ids(label_ids) -> list:
+    system = {"INBOX", "UNREAD", "STARRED", "IMPORTANT", "TRASH", "SPAM"} | _CATEGORY_IDS
+    out = []
+    for raw in label_ids or []:
+        lid = str(raw).strip()
+        if lid.upper() in system:
+            lid = lid.upper()
+        if lid and lid not in out:
+            out.append(lid)
+    return out
+
+
+def _filter_action(add_label_ids, remove_label_ids, old: dict | None = None) -> dict:
+    add, remove = _normalized_ids(add_label_ids), _normalized_ids(remove_label_ids)
+    if not add and not remove:
+        raise ValueError("a filter needs labels to add or remove")
+    if set(add) & set(remove):
+        raise ValueError("a filter can't add and remove the same label")
+    blocked = _user_only_actions({"addLabelIds": add, "removeLabelIds": remove})
+    if blocked:
+        raise ValueError(f"only the user sets a filter that {' or '.join(blocked)}")
+    if len(set(add) & _CATEGORY_IDS) > 1:
+        raise ValueError("a filter can put mail in one inbox tab at most")
+    old = old or {}
+    old_add, old_remove = set(old.get("addLabelIds") or []), set(old.get("removeLabelIds") or [])
+    for lid in add:
+        if lid in old_add or lid == "IMPORTANT" or lid in _CATEGORY_IDS:
+            continue
+        if (state.data["labels"].get(lid) or {}).get("type") != "user":
+            raise ValueError(f"sift's filters add user labels, IMPORTANT, or a CATEGORY_* tab, not {lid}")
+    for lid in remove:
+        if lid not in old_remove and lid != "IMPORTANT":
+            raise ValueError(f"sift's filters only remove IMPORTANT, not {lid}")
+    action = {}
+    if add:
+        action["addLabelIds"] = add
+    if remove:
+        action["removeLabelIds"] = remove
+    return action
+
+
+def _from_sender(t: dict, sender: str) -> bool:
+    raw = t.get("from", "")
+    bracketed = re.search(r"<([^>]+)>", raw)
+    address = (bracketed.group(1) if bracketed else raw).strip().lower()
+    if "@" in sender:
+        return address == sender
+    domain = address.rsplit("@", 1)[-1]
+    return domain == sender.lstrip("@") or domain.endswith("." + sender.lstrip("@"))
+
+
+def _evidence(criteria: dict, action: dict) -> int:
+    add, remove = set(action.get("addLabelIds") or []), set(action.get("removeLabelIds") or [])
+    found = 0
+    for t in state.data["threads"].values():
+        labels = set(t["labelIds"])
+        if _from_sender(t, criteria["from"]) and add <= labels and not remove & labels and "STARRED" not in labels:
+            found += 1
+    return found
+
+
+def _new_filter_id() -> str:
+    taken = {f["id"] for f in state.data["filters"]}
+    n = len(taken) + 1
+    while f"filter_{n}" in taken:
+        n += 1
+    return f"filter_{n}"
+
+
+def _sift_ids() -> list:
+    return state.data.setdefault("sift_filter_ids", [])
+
+
+if _FILTERS_SEEDED:
+
+    @server.tool()
+    def list_filters() -> dict:
+        """List the account's Gmail filters: each one's id, criteria, the labels it adds and removes (with names),
+        whether it forwards (never where), and userOnly, what it does that only the user may change (forwarding,
+        skipping the inbox, deleting, sending to Spam, or never sending to Spam)."""
+        result = {"filters": [_filter_summary(f) for f in state.data["filters"]]}
+        state.log_call("list_filters", {}, result)
+        return result
+
+    @server.tool()
+    def create_filter(
+        sender: Annotated[str, Field(description=(
+            "The filter's `from`: one sender's address (news@example.com) or domain (example.com). Required; "
+            "domains many senders share, such as gmail.com, are refused."))],
+        addLabelIds: Annotated[list[str] | None, Field(description=(
+            "Labels to add: user label IDs, IMPORTANT, or one CATEGORY_* tab."))] = None,
+        removeLabelIds: Annotated[list[str] | None, Field(description="Labels to remove: only IMPORTANT.")] = None,
+        to: Annotated[str, Field(description="Narrow to mail sent to this address.")] = "",
+        subject: Annotated[str, Field(description="Narrow to subjects containing this phrase.")] = "",
+        query: Annotated[str, Field(description="Narrow with a Gmail search.")] = "",
+        negatedQuery: Annotated[str, Field(description="Leave out mail matching this Gmail search.")] = "",
+        hasAttachment: Annotated[bool, Field(description="Narrow to mail with an attachment.")] = False,
+    ) -> dict:
+        """Create a Gmail filter for one sender's mail that adds or removes labels. It can't forward, skip the inbox,
+        delete, or send to Spam, and needs 5 of the sender's unstarred threads already carrying every label it adds.
+        Returns the new filter as list_filters shows it."""
+        args = {"sender": sender, "addLabelIds": addLabelIds, "removeLabelIds": removeLabelIds, "to": to,
+                "subject": subject, "query": query, "negatedQuery": negatedQuery, "hasAttachment": hasAttachment}
+        try:
+            criteria = _filter_criteria({"from": sender, "to": to, "subject": subject, "query": query,
+                                         "negatedQuery": negatedQuery, "hasAttachment": hasAttachment})
+            action = _filter_action(addLabelIds, removeLabelIds)
+            found = _evidence(criteria, action)
+            if found < _EVIDENCE_THREADS:
+                raise ValueError(f"only {found} of {criteria['from']}'s unstarred threads carry these labels; "
+                                 f"a filter needs {_EVIDENCE_THREADS}")
+        except ValueError as error:
+            state.log_call("create_filter", args, {"error": str(error)})
+            raise
+        created = {"id": _new_filter_id(), "criteria": criteria, "action": action}
+        state.data["filters"].append(created)
+        _sift_ids().append(created["id"])
+        state.flush()
+        result = _filter_summary(created)
+        state.log_call("create_filter", args, result)
+        return result
+
+    @server.tool()
+    def update_filter(
+        filterId: Annotated[str, Field(description="The filter's id, from list_filters.")],
+        addLabelIds: Annotated[list[str] | None, Field(description=(
+            "Every label the filter should add from now on, replacing its current list."))] = None,
+        removeLabelIds: Annotated[list[str] | None, Field(description=(
+            "Every label the filter should remove from now on, replacing its current list."))] = None,
+    ) -> dict:
+        """Change the labels a filter adds or removes, keeping its criteria. Any of its current labels may be kept or
+        dropped; new ones follow create_filter's rules, and only a filter sift created for one sender may gain any.
+        Refused for a filter with a userOnly action. Gmail can't edit a filter, so this creates the new one, then
+        deletes the old: the result has the new id."""
+        args = {"filterId": filterId, "addLabelIds": addLabelIds, "removeLabelIds": removeLabelIds}
+        try:
+            old = _find_filter(filterId)
+            old_action = old.get("action") or {}
+            blocked = _user_only_actions(old_action)
+            if blocked:
+                raise ValueError(f"this filter {' and '.join(blocked)}, so only the user changes it")
+            action = _filter_action(addLabelIds, removeLabelIds, old_action)
+            new = set(action.get("addLabelIds") or []) - set(old_action.get("addLabelIds") or [])
+            new |= set(action.get("removeLabelIds") or []) - set(old_action.get("removeLabelIds") or [])
+            sifts = old["id"] in _sift_ids()
+            if new and not sifts:
+                raise ValueError(f"this filter is the user's, so an edit can only drop labels, not add "
+                                 f"{', '.join(sorted(new))}")
+            if new and not _one_sender(old.get("criteria")):
+                raise ValueError(f"this filter matches more than one sender, so an edit can only drop labels, "
+                                 f"not add {', '.join(sorted(new))}")
+            if all(set(action.get(k) or []) == set(old_action.get(k) or [])
+                   for k in ("addLabelIds", "removeLabelIds")):
+                raise ValueError("the filter already does exactly this")
+        except ValueError as error:
+            state.log_call("update_filter", args, {"error": str(error)})
+            raise
+        created = {"id": _new_filter_id(), "criteria": copy.deepcopy(old.get("criteria") or {}), "action": action}
+        state.data["filters"] = [f for f in state.data["filters"] if f["id"] != old["id"]] + [created]
+        if sifts:
+            ids = _sift_ids()
+            ids.remove(old["id"])
+            ids.append(created["id"])
+        state.flush()
+        result = {"filter": _filter_summary(created), "replaced": old["id"]}
+        state.log_call("update_filter", args, result)
+        return result
+
+    @server.tool()
+    def delete_filter(
+        filterId: Annotated[str, Field(description="The filter's id, from list_filters.")],
+    ) -> dict:
+        """Delete a filter. Refused for a filter with a userOnly action."""
+        args = {"filterId": filterId}
+        try:
+            old = _find_filter(filterId)
+            blocked = _user_only_actions(old.get("action"))
+            if blocked:
+                raise ValueError(f"this filter {' and '.join(blocked)}, so only the user deletes it")
+        except ValueError as error:
+            state.log_call("delete_filter", args, {"error": str(error)})
+            raise
+        state.data["filters"] = [f for f in state.data["filters"] if f["id"] != old["id"]]
+        if old["id"] in _sift_ids():
+            _sift_ids().remove(old["id"])
+        state.flush()
+        result = {"deleted": old["id"]}
+        state.log_call("delete_filter", args, result)
+        return result
 
 
 if __name__ == "__main__":
