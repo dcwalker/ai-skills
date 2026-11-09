@@ -21,7 +21,12 @@ fixture-dates.py, which this script's input has already been through):
       "private": true,
       "checkout": true,                   // cloned beside the workspace, as a
                                           // routine clones an attached repo
-      "files": {"sift-email/rubric.md": "...", ...}
+      "files": {"sift-email/rubric.md": "...", ...},
+      "history": [                        // optional: earlier commits, oldest
+        {"date": "2026-10-01T12:00:00Z",  // first, each with its own date, so
+         "message": "...",                // git log and blame show when a
+         "files": {"...": "..."}}         // line changed; "files" is then
+      ]                                   // committed on top as "Fixture state"
     },
     "riley-sample/files": {"private": true, "files": {...}}
   }
@@ -80,8 +85,8 @@ def fail(message: str) -> None:
     sys.exit(1)
 
 
-def git(*args: str, cwd: str | None = None) -> str:
-    result = subprocess.run(["git", *args], cwd=cwd, env=GIT_ENV, capture_output=True, text=True)
+def git(*args: str, cwd: str | None = None, env: dict | None = None) -> str:
+    result = subprocess.run(["git", *args], cwd=cwd, env={**GIT_ENV, **(env or {})}, capture_output=True, text=True)
     if result.returncode != 0:
         fail(f"git {' '.join(args)} failed: {result.stderr.strip()}")
     return result.stdout
@@ -196,6 +201,14 @@ def cassette(seed: dict) -> dict:
         "stderr": "HTTP 404: Not Found (gh-stub: no fixture answer for this call)\n"}}
 
 
+def write_files(work: str, files: dict) -> None:
+    for path, content in files.items():
+        target = os.path.join(work, path)
+        os.makedirs(os.path.dirname(target), exist_ok=True)
+        with open(target, "w") as fh:
+            fh.write(content)
+
+
 def setup(seed_path: str, run_dir: str, checkouts_dir: str) -> None:
     with open(seed_path) as fh:
         seed = json.load(fh)
@@ -210,11 +223,13 @@ def setup(seed_path: str, run_dir: str, checkouts_dir: str) -> None:
         os.symlink(os.path.basename(bare), bare + ".git")
         work = bare + ".seed"
         git("clone", "--quiet", bare, work)
-        for path, content in spec.get("files", {}).items():
-            target = os.path.join(work, path)
-            os.makedirs(os.path.dirname(target), exist_ok=True)
-            with open(target, "w") as fh:
-                fh.write(content)
+        for entry in spec.get("history", []):
+            write_files(work, entry.get("files", {}))
+            git("add", "-A", cwd=work)
+            date = entry["date"]
+            git("commit", "--quiet", "--allow-empty", "-m", entry.get("message", "Earlier state"), cwd=work,
+                env={"GIT_AUTHOR_DATE": date, "GIT_COMMITTER_DATE": date})
+        write_files(work, spec.get("files", {}))
         git("add", "-A", cwd=work)
         git("commit", "--quiet", "--allow-empty", "-m", "Fixture state", cwd=work)
         git("push", "--quiet", "origin", DEFAULT_BRANCH, cwd=work)
