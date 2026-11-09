@@ -823,19 +823,25 @@ Eight things the shared driver does that a hand-run trial must do for itself:
     stops the batch at the first trial that does, rather than recording the
     rest as zero-token results. Bash reaches only the hosts a `WebFetch(domain:...)` allow rule in
     the loaded settings names, and the trial adds none, which suits every
-    eval run through this driver: each service it talks to is a stub. The
-    trial's `TMPDIR` and `CLAUDE_CODE_TMPDIR` both point into the run
-    directory, and sandboxed Bash gets `<TMPDIR>/claude-0` as its own
-    `$TMPDIR`. The exception is a long run directory (over 70 characters to
-    its `tmp/`). The sandbox creates its bridge sockets in `TMPDIR`, a Unix
-    socket path cannot exceed about 104 bytes (108 on Linux), and under a
-    117-character path every Bash call failed with "Failed to create bridge
-    sockets" while the preflight, which uses the real `TMPDIR`, passed. So
-    such a trial gets a short private `TMPDIR` from `mktemp -d
-    /tmp/mcp-trial.XXXXXX` (a symlink into the run directory does not work,
-    since bubblewrap cannot follow it). The write checks count it as the
-    trial's own, and after the trial its contents are copied to
-    `tmp/host-tmp/` in the run directory and it is removed. Hooks from the developer's enabled
+    eval run through this driver: each service it talks to is a stub. Each
+    trial gets a short private temp directory from `mktemp -d
+    /tmp/mcp-trial.XXXXXX` as both its `TMPDIR` and its
+    `CLAUDE_CODE_TMPDIR`, and sandboxed Bash gets
+    `<CLAUDE_CODE_TMPDIR>/claude-<uid>` as its own `$TMPDIR`. It has to be
+    short for two reasons. The sandbox creates its bridge sockets in
+    `TMPDIR`, a Unix socket path cannot exceed about 104 bytes (108 on
+    Linux), and under a 117-character path every Bash call failed with
+    "Failed to create bridge sockets". And when `CLAUDE_CODE_TMPDIR` is
+    long, sandboxed Bash gets a
+    [fallback](https://code.claude.com/docs/en/env-vars) under the system
+    default instead, `/tmp/claude-<uid>`, which every trial and the
+    developer's own sessions share. The docs do not say how long is too long; 30 characters was short enough and
+    34 was not. The preflight checks that sandboxed Bash gets a `$TMPDIR`
+    inside such a directory and stops the batch if it does not. A symlink
+    into the run directory does not work, since bubblewrap cannot follow it.
+    The write checks count the directory as the trial's own, and after the
+    trial its contents are copied to `tmp/host-tmp/` in the run directory and
+    it is removed. Hooks from the developer's enabled
     plugins still run, outside the sandbox. `disableAllHooks` would stop
     them, but in a trial it also stopped the `managed-only` instruction-files
     setting from applying, which loaded the developer's `~/.claude/rules`

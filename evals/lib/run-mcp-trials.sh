@@ -141,7 +141,33 @@ if ! CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 claude -p --tools Bash --strict-mcp-confi
   rm -f "$PREFLIGHT_LOG"
   exit 1
 fi
-rm -f "$PREFLIGHT_LOG"
+
+# Sandboxed Bash must get its $TMPDIR inside the trial's own temp directory,
+# set up the same way each trial's is (see TRIAL_HOST_TMP). If Claude Code
+# hands it the shared fallback under /tmp instead, which it does when it
+# judges CLAUDE_CODE_TMPDIR too long, every trial would write scratch files
+# where other trials and the developer's own sessions can see them, and the
+# write check would stop the run at the first one. This asks the model to
+# echo the variable, so an answer that does not name the directory counts as
+# a failure too, and the output is shown.
+PREFLIGHT_TMP="$(mktemp -d /tmp/mcp-trial.XXXXXX)"
+PREFLIGHT_TMP_REAL="$(cd "$PREFLIGHT_TMP" && pwd -P)"
+CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 TMPDIR="$PREFLIGHT_TMP" CLAUDE_CODE_TMPDIR="$PREFLIGHT_TMP" \
+  claude -p --tools Bash --allowedTools Bash --permission-mode dontAsk \
+  --strict-mcp-config --no-session-persistence \
+  --settings "{\"sandbox\":{\"enabled\":true,\"failIfUnavailable\":true,\"allowUnsandboxedCommands\":false,\"filesystem\":{\"allowWrite\":[\"$PREFLIGHT_TMP_REAL\"]}}}" \
+  -- 'Run this exact Bash command and reply with only its output: echo "TMPDIR=$TMPDIR"' \
+  < /dev/null > "$PREFLIGHT_LOG" 2>&1 || true
+if ! grep -qE "TMPDIR=($PREFLIGHT_TMP|$PREFLIGHT_TMP_REAL)/" "$PREFLIGHT_LOG"; then
+  echo "ERROR: sandboxed Bash did not get its \$TMPDIR inside the trial's own" >&2
+  echo "  temp directory ($PREFLIGHT_TMP), so trials would share scratch files." >&2
+  echo "  Its output follows; nothing under TRIALS_DIR was touched. See" >&2
+  echo "  CLAUDE_CODE_TMPDIR in https://code.claude.com/docs/en/env-vars." >&2
+  cat "$PREFLIGHT_LOG" >&2
+  rm -rf "$PREFLIGHT_LOG" "$PREFLIGHT_TMP"
+  exit 1
+fi
+rm -rf "$PREFLIGHT_LOG" "$PREFLIGHT_TMP"
 
 if [[ $# -gt 0 ]]; then
   IDS="$*"
@@ -402,19 +428,26 @@ print(json.dumps(settings))
   # socket path cannot exceed about 104 bytes (108 on Linux). Under a long
   # TRIALS_DIR every Bash call then fails with "Failed to create bridge
   # sockets", while the preflight, which runs with the real TMPDIR, passes.
-  # So a long run directory gets a short private TMPDIR under /tmp for those
-  # host-side files; a symlink will not do, since bubblewrap cannot follow it.
-  # Sandboxed Bash takes its own $TMPDIR from this one (<TMPDIR>/claude-0),
-  # so the write checks count it as the trial's, and after the trial its
-  # contents are copied to $RUN_DIR/tmp/host-tmp for the grader and it is
-  # removed.
-  TRIAL_TMP="$RUN_DIR/tmp"
-  TRIAL_HOST_TMP=""
-  if (( ${#TRIAL_TMP} > 70 )); then
-    TRIAL_HOST_TMP="$(mktemp -d /tmp/mcp-trial.XXXXXX)"
-    TRIAL_TMP="$TRIAL_HOST_TMP"
-    trap 'rm -rf "$TRIAL_HOST_TMP"' EXIT
-  fi
+  # And sandboxed Bash takes its $TMPDIR from CLAUDE_CODE_TMPDIR, not TMPDIR:
+  # <CLAUDE_CODE_TMPDIR>/claude-<uid>, unless that path is long, when it gets
+  # "a short fallback $TMPDIR under the system default" instead
+  # (https://code.claude.com/docs/en/env-vars). That fallback is
+  # /tmp/claude-<uid>, shared by every trial and by the developer's own
+  # sessions, and Claude Code lets its file tools write there. With
+  # CLAUDE_CODE_TMPDIR at $RUN_DIR/tmp (Claude Code 2.1.316), every trial got
+  # it: sift-email trials cloned repositories into /tmp/claude-501, where
+  # parallel trials could meet, and the write check stopped the run. "Long"
+  # is not quantified; 30 characters was short enough and 34 was not.
+  #
+  # So every trial gets a short private directory under /tmp, as both TMPDIR
+  # and CLAUDE_CODE_TMPDIR (a symlink will not do, since bubblewrap cannot
+  # follow it), and the preflight above checks that sandboxed Bash lands in
+  # such a directory. The write checks count it as the trial's, and after the
+  # trial its contents are copied to $RUN_DIR/tmp/host-tmp for the grader
+  # and it is removed.
+  TRIAL_HOST_TMP="$(mktemp -d /tmp/mcp-trial.XXXXXX)"
+  TRIAL_TMP="$TRIAL_HOST_TMP"
+  trap 'rm -rf "$TRIAL_HOST_TMP"' EXIT
   # $HOME is reassigned, but a trial can still write to the real home if it
   # learns the path -- and it does not have to snoop to learn it. Symlinks in
   # $TRIAL_HOME name their targets, and .claude.json carries a `projects` map
@@ -521,7 +554,7 @@ json.dump(config, open(sys.argv[2], 'w'), indent=2)
     fi
     (
       cd "$WORKSPACE_DIR"
-      HOME="$TRIAL_HOME" TMPDIR="$TRIAL_TMP" CLAUDE_CODE_TMPDIR="$RUN_DIR/tmp" \
+      HOME="$TRIAL_HOME" TMPDIR="$TRIAL_TMP" CLAUDE_CODE_TMPDIR="$TRIAL_TMP" \
         CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 \
         claude -p --permission-mode dontAsk \
         --tools "$TRIAL_TOOLS" \
@@ -658,7 +691,7 @@ print('\n\n'.join(last))
 print()
 " "$RUN_DIR/events.jsonl" >> "$RUN_DIR/conversation.txt"
       REPLY=$(cd "$SIM_DIR" && HOME="$TRIAL_HOME" TMPDIR="$TRIAL_TMP" \
-        CLAUDE_CODE_TMPDIR="$RUN_DIR/tmp" \
+        CLAUDE_CODE_TMPDIR="$TRIAL_TMP" \
         CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 \
         claude -p --tools "" --strict-mcp-config --no-session-persistence \
         --settings '{"pluginConfigs":{"agents-md@builtin":{"options":{"instructionFiles":"managed-only"}}}}' \
@@ -687,7 +720,7 @@ print()
 import json, os, re, shlex, sys
 run_dir, skill_name, run_dir_real, workspace, trial_home = sys.argv[1:6]
 trial_start = float(sys.argv[6]) - 1     # a second's slack for clock granularity
-# The short TMPDIR a long run directory gets (see TRIAL_HOST_TMP) is the
+# The short TMPDIR every trial gets (see TRIAL_HOST_TMP) is the
 # trial's own, and its contents are copied into the run directory afterwards.
 host_tmp_real = os.path.realpath(sys.argv[7]) if sys.argv[7] else ""
 
