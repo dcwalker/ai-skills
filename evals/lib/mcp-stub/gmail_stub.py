@@ -37,9 +37,10 @@ code, not guessed. Each filter is {"id", "criteria", "action"}, as the Gmail
 API has it, with an action's "forward" an address. Who created a filter
 makes no difference: any filter for one sender may gain labels in an edit,
 and one matching more than one sender may only drop them. create_filter's
-evidence check counts the fixture threads from the filter's sender (an address, or a domain and its subdomains) that are not
-STARRED and carry every label it adds and none it removes; subject, query,
-and the other narrowing criteria are not applied to that count. An update
+evidence check counts the fixture threads from the filter's sender (an
+address, or a domain and its subdomains) that are not STARRED and carry
+every label it adds and none it removes; subject, query, and the other
+narrowing criteria are not applied to that count. An update
 creates a new filter ("filter_<n>") and deletes the old one, as sift's does,
 since Gmail has no filter update.
 
