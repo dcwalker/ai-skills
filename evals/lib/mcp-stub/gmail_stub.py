@@ -827,6 +827,19 @@ def _normalized_ids(label_ids) -> list:
     return out
 
 
+def _check_label_ids(add: list, remove: list, old: dict) -> None:
+    """Refuse a label sift may not add or remove, unless the filter being edited already had it."""
+    old_add, old_remove = set(old.get("addLabelIds") or []), set(old.get("removeLabelIds") or [])
+    for lid in add:
+        if lid in old_add or lid == "IMPORTANT" or lid in _CATEGORY_IDS:
+            continue
+        if (state.data["labels"].get(lid) or {}).get("type") != "user":
+            raise ValueError(f"sift's filters add user labels, IMPORTANT, or a CATEGORY_* tab, not {lid}")
+    for lid in remove:
+        if lid not in old_remove and lid != "IMPORTANT":
+            raise ValueError(f"sift's filters only remove IMPORTANT, not {lid}")
+
+
 def _filter_action(add_label_ids, remove_label_ids, old: dict | None = None) -> dict:
     add, remove = _normalized_ids(add_label_ids), _normalized_ids(remove_label_ids)
     if not add and not remove:
@@ -838,16 +851,7 @@ def _filter_action(add_label_ids, remove_label_ids, old: dict | None = None) -> 
         raise ValueError(f"only the user sets a filter that {' or '.join(blocked)}")
     if len(set(add) & _CATEGORY_IDS) > 1:
         raise ValueError("a filter can put mail in one inbox tab at most")
-    old = old or {}
-    old_add, old_remove = set(old.get("addLabelIds") or []), set(old.get("removeLabelIds") or [])
-    for lid in add:
-        if lid in old_add or lid == "IMPORTANT" or lid in _CATEGORY_IDS:
-            continue
-        if (state.data["labels"].get(lid) or {}).get("type") != "user":
-            raise ValueError(f"sift's filters add user labels, IMPORTANT, or a CATEGORY_* tab, not {lid}")
-    for lid in remove:
-        if lid not in old_remove and lid != "IMPORTANT":
-            raise ValueError(f"sift's filters only remove IMPORTANT, not {lid}")
+    _check_label_ids(add, remove, old or {})
     action = {}
     if add:
         action["addLabelIds"] = add
