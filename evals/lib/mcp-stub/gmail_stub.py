@@ -889,6 +889,11 @@ def _new_filter_id() -> str:
     return f"filter_{n}"
 
 
+# SonarCloud flags the camelCase parameters below (python:S117, Code Smell, Minor:
+# https://sonarcloud.io/project/issues?id=dcwalker_ai-skills&pullRequest=154&rules=python%3AS117).
+# They are not valid findings: addLabelIds, removeLabelIds, negatedQuery, hasAttachment, and filterId are the
+# names sift's own filter tools use, copied from the Gmail API, and a renamed parameter would make sift's real
+# calls fail against the stub. .sonarcloud.properties records the same exception for every stub.
 if _FILTERS_SEEDED:
 
     @server.tool()
