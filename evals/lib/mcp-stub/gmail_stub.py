@@ -34,10 +34,9 @@ server's instructions gain the sentence sift's own Gmail server
 refuse forwarding and anything that keeps mail out of the inbox. Their
 names, parameters, results, and refusals are copied from that server's
 code, not guessed. Each filter is {"id", "criteria", "action"}, as the Gmail
-API has it, with an action's "forward" an address; the top-level
-"sift_filter_ids" list is the host's ledger of the filters sift created,
-which decides whether an edit may add labels and which an edit's new id
-joins. create_filter's evidence check counts the fixture threads from the
+API has it, with an action's "forward" an address. Who created a filter
+makes no difference: any filter for one sender may gain labels in an edit,
+and one matching more than one sender may only drop them. create_filter's evidence check counts the fixture threads from the
 filter's sender (an address, or a domain and its subdomains) that are not
 STARRED and carry every label it adds and none it removes; subject, query,
 and the other narrowing criteria are not applied to that count. An update
@@ -885,10 +884,6 @@ def _new_filter_id() -> str:
     return f"filter_{n}"
 
 
-def _sift_ids() -> list:
-    return state.data.setdefault("sift_filter_ids", [])
-
-
 if _FILTERS_SEEDED:
 
     @server.tool()
@@ -932,7 +927,6 @@ if _FILTERS_SEEDED:
             raise
         created = {"id": _new_filter_id(), "criteria": criteria, "action": action}
         state.data["filters"].append(created)
-        _sift_ids().append(created["id"])
         state.flush()
         result = _filter_summary(created)
         state.log_call("create_filter", args, result)
@@ -947,7 +941,7 @@ if _FILTERS_SEEDED:
             "Every label the filter should remove from now on, replacing its current list."))] = None,
     ) -> dict:
         """Change the labels a filter adds or removes, keeping its criteria. Any of its current labels may be kept or
-        dropped; new ones follow create_filter's rules, and only a filter sift created for one sender may gain any.
+        dropped; new ones follow create_filter's rules, and only a filter for one sender may gain any.
         Refused for a filter with a userOnly action. Gmail can't edit a filter, so this creates the new one, then
         deletes the old: the result has the new id."""
         args = {"filterId": filterId, "addLabelIds": addLabelIds, "removeLabelIds": removeLabelIds}
@@ -960,10 +954,6 @@ if _FILTERS_SEEDED:
             action = _filter_action(addLabelIds, removeLabelIds, old_action)
             new = set(action.get("addLabelIds") or []) - set(old_action.get("addLabelIds") or [])
             new |= set(action.get("removeLabelIds") or []) - set(old_action.get("removeLabelIds") or [])
-            sifts = old["id"] in _sift_ids()
-            if new and not sifts:
-                raise ValueError(f"this filter is the user's, so an edit can only drop labels, not add "
-                                 f"{', '.join(sorted(new))}")
             if new and not _one_sender(old.get("criteria")):
                 raise ValueError(f"this filter matches more than one sender, so an edit can only drop labels, "
                                  f"not add {', '.join(sorted(new))}")
@@ -975,10 +965,6 @@ if _FILTERS_SEEDED:
             raise
         created = {"id": _new_filter_id(), "criteria": copy.deepcopy(old.get("criteria") or {}), "action": action}
         state.data["filters"] = [f for f in state.data["filters"] if f["id"] != old["id"]] + [created]
-        if sifts:
-            ids = _sift_ids()
-            ids.remove(old["id"])
-            ids.append(created["id"])
         state.flush()
         result = {"filter": _filter_summary(created), "replaced": old["id"]}
         state.log_call("update_filter", args, result)
@@ -999,8 +985,6 @@ if _FILTERS_SEEDED:
             state.log_call("delete_filter", args, {"error": str(error)})
             raise
         state.data["filters"] = [f for f in state.data["filters"] if f["id"] != old["id"]]
-        if old["id"] in _sift_ids():
-            _sift_ids().remove(old["id"])
         state.flush()
         result = {"deleted": old["id"]}
         state.log_call("delete_filter", args, result)

@@ -335,7 +335,10 @@ repositories attached to it. An MCP-backed fixture with a
 - **Repositories.** Each entry under `repos` (`"owner/name": {"private":
   true, "files": {...}}`) becomes a bare repository at
   `<run-dir>/github/git/<owner>/<name>` with one commit holding its files.
-  Clones of `https://github.com/<owner>/<name>` resolve there through a
+  An optional `history` list adds earlier commits first, oldest first, each
+  `{"date", "message", "files"}` committed with that date, so `git log` and
+  `git blame` show when a line last changed; `files` is then committed on
+  top. Clones of `https://github.com/<owner>/<name>` resolve there through a
   `url.insteadOf` rule the trial's environment carries.
 - **Checkouts.** An entry with `"checkout": true` is also cloned to
   `<run-dir>/<name>`, beside the workspace, the way a routine clones each
@@ -514,8 +517,7 @@ against the fixture's optional `stub_now`. A fixture that seeds a top-level
 `"filters"` list also gets the filter tools of sift's own Gmail server
 (`list_filters`, `create_filter`, `update_filter`, `delete_filter`, with
 names, parameters, and refusals copied from `sift_watch/gmail_mcp.py` in
-dcwalker/sift), its instructions' sentence about them, and a
-`"sift_filter_ids"` ledger of the filters sift created; a fixture without
+dcwalker/sift) and its instructions' sentence about them; a fixture without
 `"filters"` sees the same tools as before.
 `gmail_stub.py` returns a `viewUrl` on each thread from `search_threads`
 and `get_thread`, and on each message from `get_thread`. The field name
