@@ -510,7 +510,13 @@ fixture that declares no `"me"` makes `from:me`/`to:me` match nothing rather
 than everything. For `sift-email`, `gmail_stub.py` also serves the
 official connector's `label_thread` and `unlabel_thread`, matches `label:`
 by display name as well as id, and answers `newer_than:`/`older_than:`
-against the fixture's optional `stub_now`.
+against the fixture's optional `stub_now`. A fixture that seeds a top-level
+`"filters"` list also gets the filter tools of sift's own Gmail server
+(`list_filters`, `create_filter`, `update_filter`, `delete_filter`, with
+names, parameters, and refusals copied from `sift_watch/gmail_mcp.py` in
+dcwalker/sift), its instructions' sentence about them, and a
+`"sift_filter_ids"` ledger of the filters sift created; a fixture without
+`"filters"` sees the same tools as before.
 `gmail_stub.py` returns a `viewUrl` on each thread from `search_threads`
 and `get_thread`, and on each message from `get_thread`. The field name
 comes from the live Gmail MCP's tool descriptions, which say both tools
