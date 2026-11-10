@@ -1,7 +1,7 @@
-        ---
-        name: "profile"
-        description: "Who Sam is"
-        ---
+---
+name: "profile"
+description: "Who Sam is"
+---
 
-        - Name: Sam Rivera [stated]
+- Name: Sam Rivera [stated]
 - Works as a product designer at Northwind Studio [stated]

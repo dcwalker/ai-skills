@@ -1,11 +1,11 @@
-        ---
-        name: feedback-iso-dates
-        description: "Write every date as ISO 8601 (YYYY-MM-DD)"
-        metadata:
-          type: feedback
-        ---
+---
+name: feedback-iso-dates
+description: "Write every date as ISO 8601 (YYYY-MM-DD)"
+metadata:
+  type: feedback
+---
 
-        Write dates as ISO 8601 (YYYY-MM-DD) in everything: code comments, docs, commit messages, and chat.
+Write dates as ISO 8601 (YYYY-MM-DD) in everything: code comments, docs, commit messages, and chat.
 
 **Why:** Sam works with collaborators in three countries and was burned by 03/04 meaning
 different days to different people.
