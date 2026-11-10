@@ -419,6 +419,20 @@ def removable_source(args, source):
     return source
 
 
+def rename_frontmatter(text, name):
+    """Set the top-level frontmatter name to the given file stem, adding frontmatter if there is
+    none, since Claude app memory resolves links by a file's name and expects it to be its stem."""
+    if not text.startswith("---\n") or text.find("\n---", 4) == -1:
+        return f"---\nname: {name}\n---\n\n{text}"
+    end = text.find("\n---", 4)
+    header, rest = text[4:end], text[end:]
+    if re.search(r"^name:.*$", header, flags=re.MULTILINE):
+        header = re.sub(r"^name:.*$", f"name: {name}", header, count=1, flags=re.MULTILINE)
+    else:
+        header = f"name: {name}\n{header}"
+    return f"---\n{header}{rest}"
+
+
 def remove_index_lines(index_path, filename):
     if not os.path.isfile(index_path):
         return 0
@@ -474,8 +488,8 @@ def command_promote(args):
         if action == "move":
             os.makedirs(os.path.dirname(target_path), exist_ok=True)
             with open(target_path, "x", encoding="utf-8") as out:
-                out.write(read_text(source))
-        project = os.path.basename(os.path.dirname(os.path.dirname(source)))
+                out.write(rename_frontmatter(read_text(source), os.path.splitext(os.path.basename(target_rel))[0]))
+        project =os.path.basename(os.path.dirname(os.path.dirname(source)))
         backup_dir = os.path.join(backup_root, project)
         os.makedirs(backup_dir, exist_ok=True)
         index_path = os.path.join(os.path.dirname(source), "MEMORY.md")
