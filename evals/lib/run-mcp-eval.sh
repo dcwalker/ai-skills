@@ -156,7 +156,7 @@ done
 [[ -n "$GITHUB_FIXTURE" ]] && CLI_STUB_FIXTURE=1
 
 # So does one whose whole state is files in the trial's private HOME (fixtures/<id>/home/,
-# copied in by run-mcp-trials.sh), such as consolidate-memory's Claude Code project data.
+# copied in by run-mcp-trials.sh), such as sync-memory's Claude Code project data.
 HOME_FIXTURE=""
 [[ -d "$FIXTURE_DIR/home" ]] && HOME_FIXTURE=1
 

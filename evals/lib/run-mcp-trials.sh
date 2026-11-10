@@ -83,7 +83,7 @@ TRIALS_DIR="${TRIALS_DIR:-$EVALS_DIR/.trial-runs}"
 # whichever directory holds its configuration, whatever allowWrite says
 # (https://code.claude.com/docs/en/sandboxing, "Protected paths"), so this is
 # how a skill that edits the user's ~/.claude/projects or ~/.claude.json
-# (consolidate-memory) can be measured doing it: the fixture's home/ then
+# (sync-memory) can be measured doing it: the fixture's home/ then
 # seeds plain user data the trial may change, and the trial's own session
 # transcripts land in claude-config/projects/ instead of among them. Evals
 # without the key keep the protected ~/.claude, which is how a skill's
@@ -498,7 +498,7 @@ for e in json.load(open(sys.argv[1]))['evals']:
     ln -s "$HOME/.config" "$TRIAL_HOME/.config"
 
   # Each piece is set up only when it is missing, rather than only when .claude is: a fixture's
-  # setup.sh may already have written .claude/projects/ (consolidate-memory's transcripts must
+  # setup.sh may already have written .claude/projects/ (sync-memory's transcripts must
   # record the run's absolute paths), and that must not cost the trial its settings and plugins.
   if [[ -d "$HOME/.claude" ]]; then
     mkdir -p "$TRIAL_CONFIG"

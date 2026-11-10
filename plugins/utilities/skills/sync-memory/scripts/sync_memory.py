@@ -11,9 +11,10 @@ Commands:
   inventory   Report every project directory, its real path, and whether that path still
               exists; every memory file with its frontmatter; index problems; near-duplicate
               memories across projects and the tree; and dead ~/.claude.json project entries.
-  promote     Apply an approved promotion plan: copy a memory into the tree ("move") or confirm
-              it was already merged into a tree file ("remove"), then take the project copy out
-              of its memory directory and MEMORY.md, keeping a backup.
+  promote     Apply an approved plan: copy a memory into the tree ("move"), confirm it was
+              already merged into a tree file ("remove"), or drop a memory that is no longer
+              true or useful ("retire"), then take the project copy out of its memory directory
+              and MEMORY.md, keeping a backup.
   cleanup     Remove transcripts of projects whose directory no longer exists, and remove dead
               project entries from ~/.claude.json.
   seed        Copy a Claude app memory export into the tree, never overwriting.
@@ -30,11 +31,11 @@ deletes a memory/ directory (it records the project's path beside it instead), b
 --ignore-sessions, and refuses when nearly everything looks dead unless passed --force.
 
 Usage:
-  consolidate_memory.py inventory [--json]
-  consolidate_memory.py promote --plan plan.json [--apply]
-  consolidate_memory.py cleanup [--apply] [--ignore-sessions] [--force] [--skip-claude-json]
-  consolidate_memory.py seed --from EXPORT_DIR [--apply]
-  consolidate_memory.py check-tree [--json]
+  sync_memory.py inventory [--json]
+  sync_memory.py promote --plan plan.json [--apply]
+  sync_memory.py cleanup [--apply] [--ignore-sessions] [--force] [--skip-claude-json]
+  sync_memory.py seed --from EXPORT_DIR [--apply]
+  sync_memory.py check-tree [--json]
 
 Common options: --claude-dir (default ~/.claude), --claude-json (default ~/.claude.json), and
 --tree. The tree defaults to a memories folder in iCloud Drive (~/Library/Mobile
@@ -42,10 +43,11 @@ Documents/com~apple~CloudDocs/memories), so the Claude iOS and desktop apps can 
 iCloud Drive, ~/Documents/memories; without a Documents folder, ~/memories. Every path the
 script writes under must be inside the home or temp directory.
 
-A promotion plan is a JSON list of objects, each source appearing once. A "remove" target must
-exist already or be created by an earlier "move" in the same plan:
+A plan is a JSON list of objects, each source appearing once. A "remove" target must exist
+already or be created by an earlier "move" in the same plan; a "retire" row has no target:
   {"action": "move", "source": "<project memory file>", "target": "topics/name.md"}
   {"action": "remove", "source": "<project memory file>", "target": "preferences.md"}
+  {"action": "retire", "source": "<project memory file>"}
 """
 
 import argparse
@@ -77,7 +79,7 @@ STOPWORDS = frozenset({
 MASS_DELETION_SHARE = 0.9
 MASS_DELETION_MINIMUM = 5
 TRANSCRIPT_HEAD_LINES = 200
-CLEANED_MARKER = ".consolidate-memory-project.json"
+CLEANED_MARKER = ".sync-memory-project.json"
 EMPTY = "<no conversation>"
 CLAUDE_NAMES = ("claude", "claude-code")
 SCRIPT_HOSTS = ("node", "bun")
@@ -561,7 +563,7 @@ def require_writable(directories):
     blocked = []
     for directory in sorted(directories):
         try:
-            descriptor, probe = tempfile.mkstemp(prefix=".consolidate-check-", dir=directory)
+            descriptor, probe = tempfile.mkstemp(prefix=".sync-memory-check-", dir=directory)
             os.close(descriptor)
             os.unlink(probe)
         except OSError as error:
@@ -626,8 +628,11 @@ def command_promote(args):
             sys.exit(f"plan lists the same source twice: {source}")
         sources.add(source)
         target_rel = os.path.normpath(target) if isinstance(target, str) and target else ""
-        if action not in ("move", "remove"):
+        if action not in ("move", "remove", "retire"):
             sys.exit(f"unknown action {action!r} for {source}")
+        if action == "retire":
+            steps.append((action, source, None, None))
+            continue
         if target_rel.startswith("..") or os.path.isabs(target_rel) or not tree_location_ok(target_rel):
             sys.exit(f"target is not a tree location (profile.md, preferences.md, topics/, areas/, people/): {target}")
         target_path = os.path.join(args.tree, target_rel)
@@ -645,8 +650,9 @@ def command_promote(args):
         require_writable(directories)
     backup_root = unique_directory(os.path.join(args.claude_dir, "memory-backups", timestamp())) if args.apply else None
     for number, (action, source, target_rel, target_path) in enumerate(steps, 1):
-        verb = "copy to tree and remove" if action == "move" else "remove (merged into tree)"
-        print(f"{'' if args.apply else 'would '}{verb}: {source} -> {target_rel}")
+        verb = {"move": "copy to tree and remove", "remove": "remove (merged into tree)",
+                "retire": "retire (no longer true or useful)"}[action]
+        print(f"{'' if args.apply else 'would '}{verb}: {source}" + (f" -> {target_rel}" if target_rel else ""))
         if not args.apply:
             continue
         try:
@@ -746,7 +752,7 @@ def remove_artifacts(project_dir):
     (removed count, whether the project directory remains and with what)."""
     entries = os.listdir(project_dir)
     artifacts = [e for e in entries if session_artifact(project_dir, e)]
-    quarantine = tempfile.mkdtemp(prefix=".consolidate-delete-", dir=project_dir)
+    quarantine = tempfile.mkdtemp(prefix=".sync-memory-delete-", dir=project_dir)
     for name in artifacts:
         os.rename(os.path.join(project_dir, name), os.path.join(quarantine, name))
     shutil.rmtree(quarantine)

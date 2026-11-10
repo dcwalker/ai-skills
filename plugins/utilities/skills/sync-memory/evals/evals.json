@@ -1,5 +1,5 @@
 {
-  "skill_name": "consolidate-memory",
+  "skill_name": "sync-memory",
   "instruction_files": "managed-only",
   "evals": [
     {
@@ -167,7 +167,7 @@
       "expected_output": "Writes under ~/.claude succeed in this eval. The skill writes an areas/ summary of old-blog from its memory, runs cleanup without --apply, then with --apply (adding --ignore-sessions when the session check refuses, as the user allowed, never --force). old-blog's two transcripts and its session side file are removed, its memory/ is kept, and a marker recording its path is left beside it. ~/.claude.json loses the old-blog and deleted-worktree entries, keeps recipe-app's entry and its other keys, and a private backup of it is written first. recipe-app is untouched.",
       "expectations": [
         "~/memories/areas/ has a file about old-blog saying it was a static or Jekyll blog that was retired",
-        "~/.claude/projects/-projects-old-blog/ has no .jsonl transcript and no 00000001-0000-4000-8000-000000000001.desktop-released.json, still has memory/project_overview.md, and has a .consolidate-memory-project.json marker",
+        "~/.claude/projects/-projects-old-blog/ has no .jsonl transcript and no 00000001-0000-4000-8000-000000000001.desktop-released.json, still has memory/project_overview.md, and has a .sync-memory-project.json marker",
         "~/.claude.json no longer has the old-blog entry or the brave-hopper-1a2b3c worktree entry, still has the recipe-app entry with its allowedTools, and still has numStartups 12 and theme dark",
         "A ~/.claude.json.backup-* file exists",
         "~/.claude/projects/-projects-recipe-app/ still has its transcript",
@@ -208,6 +208,19 @@
         "The transcript shows no cleanup command run with --ignore-sessions or --force",
         "The final reply explains the session check and either asks to confirm --ignore-sessions or tells the user to quit Claude and run the cleanup command themselves",
         "Any cleanup command the reply gives the user to run does not include --ignore-sessions"
+      ]
+    },
+    {
+      "id": 17,
+      "claude_config": "separate",
+      "prompt": "Sync my Claude memory across my projects into ~/memories. Show me the plan, then apply it without waiting for me. Don't clean up any project folders.",
+      "expected_output": "Writes under ~/.claude succeed in this eval. Before sorting memories across projects, the skill tidies each project's memory the way Anthropic's consolidate-memory skill describes (that skill isn't installed in the trial, so it applies the steps itself). recipe-app's project_v2_launch.md is about a launch whose date, 2026-04-15, has passed, so it is retired through the script's promote plan with a retire row: backed up under ~/.claude/memory-backups/ and its MEMORY.md line removed. project_beta_testers.md says the beta opens 'next month', noted 2026-11-02, so the relative date becomes December 2026 wherever that fact ends up (the project memory or the areas/recipe-app.md summary), and the plan says which date was assumed. Other memories are handled as usual.",
+      "expectations": [
+        "project_v2_launch.md is no longer in recipe-app's memory directory, recipe-app's MEMORY.md no longer links it, and a copy exists under ~/.claude/memory-backups/",
+        "No file under ~/.claude/projects/*/memory/ or ~/memories still says the beta opens 'next month'",
+        "Wherever the beta-tester fact remains (recipe-app's memory or ~/memories), it gives the opening as December 2026 (2026-12), not a relative time",
+        "The plan or final reply lists the v2 launch memory as retired because its date has passed, and says which date 'next month' was converted from",
+        "project_unit_parser_bug.md and project_frost_dates_api.md are still in their projects with unchanged content"
       ]
     }
   ]

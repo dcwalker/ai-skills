@@ -4,7 +4,7 @@
 A real, protocol-compliant stdio MCP server (built on the official `mcp`
 SDK) implementing the six memory tools a Claude app chat has for the user's
 memory: memory_list, memory_read, memory_write, memory_str_replace,
-memory_append, and memory_delete. consolidate-memory's app-sync procedure
+memory_append, and memory_delete. sync-memory's app-sync procedure
 uses them to compare the shared memory tree with app memory and write
 approved changes. See common.py's module docstring for the general
 stub-server design.

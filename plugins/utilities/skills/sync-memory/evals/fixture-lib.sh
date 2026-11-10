@@ -1,4 +1,4 @@
-# Shared by the consolidate-memory fixtures' setup.sh scripts. Source it with the workspace
+# Shared by the sync-memory fixtures' setup.sh scripts. Source it with the workspace
 # directory as $1. It defines RUN_DIR, PROJECTS (the trial's private ~/.claude/projects), and:
 #
 #   transcripts <slug> <cwd> [count]  write session transcripts that record <cwd>, the way
