@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Two live projects that each learned the same ISO date preference, plus project detail
+# and overview memories. The shared tree already exists.
+set -euo pipefail
+source "$(dirname "${BASH_SOURCE[0]}")/../../fixture-lib.sh" "$1"
+mkdir -p "$RUN_DIR/projects/recipe-app" "$RUN_DIR/projects/garden-planner"
+transcripts -projects-recipe-app "$RUN_DIR/projects/recipe-app" 2
+transcripts -projects-garden-planner "$RUN_DIR/projects/garden-planner"
