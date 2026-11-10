@@ -72,7 +72,7 @@ directory; read-only inputs (`--from`, `--plan`) can be anywhere.
 | `seed --from DIR [--apply]` | Copy a Claude app memory export into the tree, skipping anything already there |
 | `check-tree [--json]` | Check each tree file's location, frontmatter, and size against what Claude app memory accepts; exits 1 if any file has a problem |
 | `promote --plan FILE [--apply]` | Apply an approved promotion plan (below) |
-| `cleanup [--apply] [--ignore-sessions] [--force]` | Remove transcripts and session directories of projects whose folder is provably gone, and remove dead `~/.claude.json` entries |
+| `cleanup [--apply] [--ignore-sessions] [--force] [--skip-claude-json]` | Remove transcripts and session directories of projects whose folder is provably gone, and remove dead `~/.claude.json` entries |
 
 Options before the command: `--claude-dir` (default `~/.claude`), `--claude-json` (default
 `~/.claude.json`), `--tree` (default: the iCloud Drive, Documents, or home `memories` folder
@@ -185,6 +185,9 @@ final report comes too late.
 
 ### 6. Apply
 
+Before the first change, confirm the plan message from step 5 was sent in this conversation. If
+it wasn't, because the user authorized applying without waiting, send it now, then start.
+
 1. Write the tree changes yourself: new files, bullets merged into existing files, and `areas/`
    summaries. Edit existing tree files in place rather than rewriting them, so nothing already
    there is lost.
@@ -231,7 +234,11 @@ first, so in a sandbox the write block is what it reports):
   unmounted drive. Only `--force` overrides this; investigate before suggesting it, and never
   pass it just to get past the session check.
 - `~/.claude.json` is a symlink and has dead entries. Nothing is removed then, transcripts
-  included. Pass `--claude-json` with the resolved path if the user wants it changed.
+  included. A symlinked `~/.claude.json` usually means a dotfiles manager or repository owns the
+  real file, so changing it needs its own yes: tell the user where the link points and ask
+  before running with `--claude-json` set to that path, even when they already authorized the
+  cleanup. Without that yes, offer to remove the transcripts alone with `--skip-claude-json`,
+  which leaves `~/.claude.json` and its target untouched.
 
 ### 8. Report
 

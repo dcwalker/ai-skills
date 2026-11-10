@@ -110,6 +110,7 @@ def _store(path: str, content: str) -> str:
         raise ValueError(f"claude-memory-stub: {path} would be {size} bytes, over the {FILE_BYTE_CAP}-byte cap")
     version = _new_version(path, content)
     _files()[path] = {"content": content, "version": version, "updated": _now()}
+    state.flush()
     # UNVERIFIED layout; the live write reported its version and "600 of 49,152 bytes".
     return f"Wrote {path} at version {version}, {size} of {FILE_BYTE_CAP:,} bytes."
 
@@ -228,6 +229,7 @@ def memory_delete(path: str, if_version: str) -> str:
             raise ValueError("claude-memory-stub: memory_delete needs the file's version token, not \"new\"")
         _check_version(path, if_version)
         del _files()[path]
+        state.flush()
         result = f"Deleted {path}."  # UNVERIFIED wording
     except ValueError as error:
         state.log_call("memory_delete", args, f"error: {error}")

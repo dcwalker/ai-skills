@@ -32,7 +32,7 @@ deletes a memory/ directory (it records the project's path beside it instead), b
 Usage:
   consolidate_memory.py inventory [--json]
   consolidate_memory.py promote --plan plan.json [--apply]
-  consolidate_memory.py cleanup [--apply] [--ignore-sessions] [--force]
+  consolidate_memory.py cleanup [--apply] [--ignore-sessions] [--force] [--skip-claude-json]
   consolidate_memory.py seed --from EXPORT_DIR [--apply]
   consolidate_memory.py check-tree [--json]
 
@@ -761,7 +761,7 @@ def remove_artifacts(project_dir):
 def command_cleanup(args):
     projects = scan_all_projects(args)
     all_dead = [p for p in projects if p["state"] == "dead"]
-    claude_json = claude_json_report(args.claude_json)
+    claude_json = {"entries": 0} if args.skip_claude_json else claude_json_report(args.claude_json)
     dead_entries = claude_json.get("dead", [])
     # A dead project cleaned earlier keeps only memory/ and has nothing left to remove, so it is
     # left out of both the work and the mass-deletion share below.
@@ -908,6 +908,8 @@ def main():
     cleanup = commands.add_parser("cleanup")
     cleanup.add_argument("--apply", action="store_true")
     cleanup.add_argument("--ignore-sessions", action="store_true")
+    cleanup.add_argument("--skip-claude-json", action="store_true",
+                         help="remove dead projects' transcripts only, leaving ~/.claude.json untouched")
     cleanup.add_argument("--force", action="store_true")
     seed = commands.add_parser("seed")
     seed.add_argument("--from", dest="source", required=True)
