@@ -132,6 +132,7 @@ add_stub_server calendar calendar_stub.py
 add_stub_server docs docs_stub.py
 add_stub_server contacts contacts_stub.py
 add_stub_server messages messages_stub.py
+add_stub_server memory claude_memory_stub.py
 
 # A fixture with github-fixture.json gets a fake GitHub: bare repositories
 # under $RUN_DIR/github/git/<owner>/<name>, checkouts of the ones it marks
@@ -216,7 +217,7 @@ ENV_FILE="$RUN_DIR/env.sh"
     echo "export GITHUB_STATE_OUT=\"$RUN_DIR/github-state-out.json\""
   fi
   # Per-service grading artifacts (only for services this fixture wired up):
-  for SERVICE in trello gmail atlassian slack calendar docs contacts messages; do
+  for SERVICE in trello gmail atlassian slack calendar docs contacts messages memory; do
     if [[ -f "$FIXTURE_DIR/$SERVICE-mcp-state.json" ]]; then
       VAR="$(echo "$SERVICE" | tr '[:lower:]' '[:upper:]')"
       echo "export ${VAR}_STATE_SEED=\"$RUN_DIR/$SERVICE-state-seed.json\""

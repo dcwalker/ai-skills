@@ -76,6 +76,26 @@ MARKETPLACE_NAME="$(python3 -c "import json, sys; print(json.load(open(sys.argv[
 # within reach of an executor that goes looking, and that is the answer key.
 TRIALS_DIR="${TRIALS_DIR:-$EVALS_DIR/.trial-runs}"
 
+# An eval that sets "claude_config": "separate" gives its trial's own Claude
+# Code configuration a directory of its own,
+# $RUN_DIR/claude-config, through CLAUDE_CONFIG_DIR, instead of the private
+# HOME's ~/.claude and ~/.claude.json. Claude Code's sandbox refuses writes to
+# whichever directory holds its configuration, whatever allowWrite says
+# (https://code.claude.com/docs/en/sandboxing, "Protected paths"), so this is
+# how a skill that edits the user's ~/.claude/projects or ~/.claude.json
+# (consolidate-memory) can be measured doing it: the fixture's home/ then
+# seeds plain user data the trial may change, and the trial's own session
+# transcripts land in claude-config/projects/ instead of among them. Evals
+# without the key keep the protected ~/.claude, which is how a skill's
+# behavior under that protection is measured. Every eval's value is checked
+# here, before the first trial.
+python3 -c "
+import json, sys
+for e in json.load(open(sys.argv[1]))['evals']:
+    if e.get('claude_config', 'separate') != 'separate':
+        raise SystemExit(f'ERROR: eval {e[\"id\"]}: claude_config must be \"separate\" or absent')
+" "$EVALS_DIR/evals.json"
+
 # A trial can always reach the real home directory: HOME is reassigned, but the
 # account's actual home stays readable, and its own working directory is inside
 # it. Writes there are now refused (see the permission rules and sandbox set up
@@ -422,6 +442,19 @@ print(json.dumps(settings))
   # ran and chose not to search" from "the skill never loaded", two things
   # that look identical in a plain transcript.
   TRIAL_HOME="$RUN_DIR/home"
+  CLAUDE_CONFIG_MODE="$(python3 -c "
+import json, sys
+for e in json.load(open(sys.argv[1]))['evals']:
+    if str(e['id']) == sys.argv[2]:
+        print(e.get('claude_config', ''))
+" "$EVALS_DIR/evals.json" "$ID")"
+  if [[ "$CLAUDE_CONFIG_MODE" == "separate" ]]; then
+    TRIAL_CONFIG="$RUN_DIR/claude-config"
+    TRIAL_CLAUDE_JSON="$TRIAL_CONFIG/.claude.json"
+  else
+    TRIAL_CONFIG="$TRIAL_HOME/.claude"
+    TRIAL_CLAUDE_JSON="$TRIAL_HOME/.claude.json"
+  fi
   mkdir -p "$RUN_DIR/tmp" "$TRIAL_HOME"
   # The Bash sandbox creates its bridge sockets (srt-mux-<pid>-<n>.sock) and
   # bubblewrap's mount points in TMPDIR, outside the sandbox, and a Unix
@@ -468,14 +501,14 @@ print(json.dumps(settings))
   # setup.sh may already have written .claude/projects/ (consolidate-memory's transcripts must
   # record the run's absolute paths), and that must not cost the trial its settings and plugins.
   if [[ -d "$HOME/.claude" ]]; then
-    mkdir -p "$TRIAL_HOME/.claude"
+    mkdir -p "$TRIAL_CONFIG"
     # Copied without permissions, sandbox, or hooks: permission and sandbox
     # arrays merge across settings scopes, so a developer's own allow rules
     # or extra writable paths would widen the boundary set up per trial
     # below, and their hooks run outside it altogether. A file that is not
     # strict JSON is left out with a warning rather than ending the batch.
     for SETTING in settings.json settings.local.json; do
-      [[ -f "$HOME/.claude/$SETTING" && ! -e "$TRIAL_HOME/.claude/$SETTING" ]] && { python3 -c '
+      [[ -f "$HOME/.claude/$SETTING" && ! -e "$TRIAL_CONFIG/$SETTING" ]] && { python3 -c '
 import json, sys
 with open(sys.argv[1]) as fh:
     settings = json.load(fh)
@@ -483,17 +516,17 @@ for key in ("permissions", "sandbox", "hooks"):
     settings.pop(key, None)
 with open(sys.argv[2], "w") as fh:
     json.dump(settings, fh)
-' "$HOME/.claude/$SETTING" "$TRIAL_HOME/.claude/$SETTING" 2> /dev/null || \
+' "$HOME/.claude/$SETTING" "$TRIAL_CONFIG/$SETTING" 2> /dev/null || \
         echo "  WARNING: could not read ~/.claude/$SETTING as JSON; the trial runs without it"; }
     done
     # Plugins are 22M and read-only to a trial, so they stay a symlink rather
     # than being copied 27 times. The rest of ~/.claude -- projects/, sessions/,
     # history.jsonl, 268M of transcripts naming the real user -- is left out.
-    [[ -d "$HOME/.claude/plugins" && ! -e "$TRIAL_HOME/.claude/plugins" ]] && \
-      ln -s "$HOME/.claude/plugins" "$TRIAL_HOME/.claude/plugins"
+    [[ -d "$HOME/.claude/plugins" && ! -e "$TRIAL_CONFIG/plugins" ]] && \
+      ln -s "$HOME/.claude/plugins" "$TRIAL_CONFIG/plugins"
   fi
 
-  if [[ -f "$HOME/.claude.json" && ! -e "$TRIAL_HOME/.claude.json" ]]; then
+  if [[ -f "$HOME/.claude.json" && ! -e "$TRIAL_CLAUDE_JSON" ]]; then
     python3 -c '
 import json, sys
 with open(sys.argv[1]) as fh:
@@ -506,7 +539,7 @@ for key in ("oauthAccount", "userID", "anonymousId", "machineID",
     config.pop(key, None)
 with open(sys.argv[2], "w") as fh:
     json.dump(config, fh)
-' "$HOME/.claude.json" "$TRIAL_HOME/.claude.json" || {
+' "$HOME/.claude.json" "$TRIAL_CLAUDE_JSON" || {
       echo "  WARNING: could not sanitise .claude.json; trial may reach the real home" >&2
     }
   fi
@@ -557,11 +590,12 @@ json.dump(config, open(sys.argv[2], 'w'), indent=2)
     fi
     (
       cd "$WORKSPACE_DIR"
+      [[ "$CLAUDE_CONFIG_MODE" == "separate" ]] && export CLAUDE_CONFIG_DIR="$TRIAL_CONFIG"
       HOME="$TRIAL_HOME" TMPDIR="$TRIAL_TMP" CLAUDE_CODE_TMPDIR="$TRIAL_TMP" \
         CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 \
         claude -p --permission-mode dontAsk \
         --tools "$TRIAL_TOOLS" \
-        --allowedTools "Bash Read Glob Grep TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian mcp__slack mcp__calendar mcp__docs mcp__contacts mcp__messages" \
+        --allowedTools "Bash Read Glob Grep TodoWrite Skill mcp__gmail mcp__trello mcp__atlassian mcp__slack mcp__calendar mcp__docs mcp__contacts mcp__messages mcp__memory" \
         --strict-mcp-config --verbose ${resume_flag[@]+"${resume_flag[@]}"} \
         --settings "$TRIAL_SETTINGS" \
         --mcp-config "$turn_mcp_config" --output-format stream-json -- "$turn_prompt" \
