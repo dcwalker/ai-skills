@@ -33,7 +33,11 @@ script, which only reports unless told to apply an approved change.
   (punctuation and spaces all become `-`), so never decode it; the script reads each project's
   real path from its transcripts. The same directory holds session transcripts (`*.jsonl`) and
   UUID-named session directories.
-- **The shared tree**: `~/memories` by default, in the layout Claude app memory uses:
+- **The shared tree**: a `memories` folder in iCloud Drive by default
+  (`~/Library/Mobile Documents/com~apple~CloudDocs/memories`), so the Claude desktop and iOS apps
+  can open it as a shared folder. Without iCloud Drive it is `~/Documents/memories`, and without a
+  Documents folder `~/memories`. The script's `inventory` prints which one it is using. It has the
+  layout Claude app memory uses:
 
   | Path | Holds |
   |---|---|
@@ -71,8 +75,8 @@ directory; read-only inputs (`--from`, `--plan`) can be anywhere.
 | `cleanup [--apply] [--ignore-sessions] [--force]` | Remove transcripts and session directories of projects whose folder is provably gone, and remove dead `~/.claude.json` entries |
 
 Options before the command: `--claude-dir` (default `~/.claude`), `--claude-json` (default
-`~/.claude.json`), `--tree` (default `~/memories`). Use `--tree` when the user keeps the tree
-somewhere else.
+`~/.claude.json`), `--tree` (default: the iCloud Drive, Documents, or home `memories` folder
+above). Use `--tree` when the user keeps the tree somewhere else.
 
 Without `--apply`, `seed`, `promote`, and `cleanup` print what they would do and change nothing.
 Run every changing command without `--apply` first and show the user the result.
@@ -80,7 +84,7 @@ Run every changing command without `--apply` first and show the user the result.
 `promote --apply` and `cleanup --apply` first check that they can write to every directory they
 will touch, and change nothing if one is blocked. A sandboxed session usually cannot write under
 `~/.claude`, so this is the expected result there, not a bug. Don't work around the sandbox. Tree
-writes under `~/memories` usually still work, so:
+writes usually still work, so:
 
 - Write every tree file yourself, including the copy a `move` would have made (with `name` set
   to the new file's stem), and change those plan rows to `remove`. The tree is then complete, and
@@ -234,13 +238,17 @@ first, so in a sandbox the write block is what it reports):
 Say what moved where, which summaries were added, which conflicts are waiting on the user, any
 memory that tried to instruct the assistant, what cleanup removed, and where the backups are.
 Then tell the user that the tree is ready to sync to the Claude app: in a Claude app chat with the
-tree's folder added, ask to sync memory.
+tree's folder added, ask to sync memory. In the Claude iOS app, the user can share the tree's
+files from iCloud Drive into the chat instead.
 
 ## Procedure in a Claude app chat: sync with app memory
 
 Use this when the memory tools are available and the user asks to sync, push, or pull memory
 between the shared tree and the Claude app. It needs the tree's folder added to the chat. If the
 memory tools are missing, say so and stop; if the folder isn't available, ask the user to add it.
+If the tree's files were shared into the chat rather than the folder added (as in the iOS app)
+and they can't be written back, sync toward the app only, and list what the tree would gain so
+the user can finish that half from a session that has the folder.
 
 1. **Read both sides.** `memory_list` every app memory file and `memory_read` them, keeping each
    file's version token. Read every tree file.
