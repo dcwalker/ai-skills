@@ -63,6 +63,11 @@ import sys
 import tempfile
 
 TREE_ROOT_FILES = ("profile.md", "preferences.md")
+INDEX_NAME = "MEMORY.md"
+TRANSCRIPT_SUFFIX = ".jsonl"
+DRY_RUN_NOTE = "dry run. re-run with --apply to make these changes."
+BLOCK_SCALARS = (">", "|", ">-", "|-", ">+", "|+")
+KEY_RE = re.compile(r"[A-Za-z_][\w-]*")
 TREE_DIRS = ("topics", "areas", "people")
 WEB_FILE_BYTE_CAP = 49152
 INDEX_LINE_LIMIT = 200
@@ -101,7 +106,7 @@ def checked_arg_path(path, option):
     if not isinstance(path, str) or not path:
         sys.exit(f"{option} must be a path")
     resolved = os.path.realpath(os.path.expanduser(path))
-    for base in (os.path.expanduser("~"), tempfile.gettempdir(), "/tmp", "/private/tmp"):
+    for base in (os.path.expanduser("~"), tempfile.gettempdir()):
         base = os.path.realpath(base)
         if resolved == base or resolved.startswith(base + os.sep):
             return resolved
@@ -143,6 +148,19 @@ def split_frontmatter(text):
     return text[4:end], text[end:]
 
 
+def frontmatter_line(line):
+    """Split one frontmatter line into (indent, key, value), or None when it isn't a key line.
+    Quotes around a value are removed."""
+    stripped = line.lstrip(" \t")
+    key, colon, value = stripped.partition(":")
+    if not colon or not KEY_RE.fullmatch(key):
+        return None
+    value = value.strip()
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+        value = value[1:-1]
+    return line[: len(line) - len(stripped)], key, value
+
+
 def parse_frontmatter(text):
     """Parse the YAML-subset frontmatter Claude memory files use: top-level keys, one level of
     nested keys (such as metadata.type), and folded or literal block values (description: >).
@@ -152,30 +170,23 @@ def parse_frontmatter(text):
         return {}, normalized(text)
     fields, parent, block_key = {}, None, None
     for line in header.splitlines():
-        if block_key is not None:
-            if line.startswith((" ", "\t")) or not line.strip():
-                fields[block_key] = (fields[block_key] + " " + line.strip()).strip()
-                continue
-            block_key = None
-        if not line.strip():
+        if block_key is not None and (line.startswith((" ", "\t")) or not line.strip()):
+            fields[block_key] = (fields[block_key] + " " + line.strip()).strip()
             continue
-        match = re.match(r"^(\s*)([A-Za-z_][\w-]*):\s*(.*)$", line)
-        if not match:
+        block_key = None
+        parsed = frontmatter_line(line)
+        if parsed is None:
             continue
-        indent, key, value = match.groups()
-        value = value.strip()
-        if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
-            value = value[1:-1]
+        indent, key, value = parsed
         if indent and parent is not None:
             fields[parent][key] = value
-        elif value in (">", "|", ">-", "|-", ">+", "|+"):
+        elif value in BLOCK_SCALARS:
             fields[key], parent, block_key = "", None, key
         elif value:
             fields[key], parent = value, None
         else:
             fields[key], parent = {}, key
-    body = rest[4:].lstrip("\n")
-    return fields, body
+    return fields, rest[4:].lstrip("\n")
 
 
 def memory_type(fields):
@@ -215,7 +226,7 @@ def local_link(link):
 
 
 def index_health(memory_dir, files):
-    index_path = os.path.join(memory_dir, "MEMORY.md")
+    index_path = os.path.join(memory_dir, INDEX_NAME)
     if not os.path.isfile(index_path):
         return {"exists": False, "missing_from_index": sorted(files), "dangling_links": []}
     text = read_text(index_path)
@@ -296,10 +307,10 @@ def transcript_cwd(path):
     return None if conversation else EMPTY
 
 
-def scan_project(project_dir):
-    entries = sorted(os.listdir(project_dir))
-    transcripts = [e for e in entries if e.endswith(".jsonl") and os.path.isfile(os.path.join(project_dir, e))]
-    artifact_dirs = [e for e in entries if session_artifact(project_dir, e) and not e.endswith(".jsonl")]
+def recorded_paths(project_dir, transcripts):
+    """Count the project paths a project's transcripts record. A transcript with no conversation
+    is left out when another one records a path; with nothing else, it counts as no path. A
+    project whose transcripts cleanup removed uses the path cleanup recorded."""
     recorded = collections.Counter(transcript_cwd(os.path.join(project_dir, t)) for t in transcripts)
     if EMPTY in recorded and len(recorded) > 1:
         del recorded[EMPTY]
@@ -309,38 +320,51 @@ def scan_project(project_dir):
         remembered = cleaned_project_path(project_dir)
         if remembered:
             recorded = collections.Counter([remembered])
-            transcripts = []
-    known = [cwd for cwd, _ in recorded.most_common() if cwd]
-    states = {cwd: path_state(cwd) for cwd in known}
-    cwd, reason = (known[0] if known else None), None
-    # A session that moves into a worktree records the worktree path, so one directory can hold
-    # several paths. Any path that still exists keeps the directory live; it is dead only when
-    # every transcript names a path and every one of those paths is provably gone.
-    if not transcripts and not recorded:
-        state, reason = "unknown", "no transcripts"
-    elif any(s == "exists" for s in states.values()):
-        state = "live"
-    elif None in recorded:
-        state, reason = "unknown", "a transcript has no cwd"
-    elif all(s == "missing" for s in states.values()):
-        state = "dead"
-    elif any(s == "unmounted" for s in states.values()):
-        state = "unmounted"
-    else:
-        state, reason = "unknown", "a path could not be checked"
+    return recorded
+
+
+def project_state(recorded):
+    """Return (state, reason) from the recorded paths. A session that moves into a worktree records
+    the worktree path, so one directory can hold several paths. Any path that still exists keeps
+    the directory live; it is dead only when every transcript names a path and every one of those
+    paths is provably gone."""
+    if not recorded:
+        return "unknown", "no transcripts"
+    states = [path_state(cwd) for cwd in recorded if cwd]
+    if "exists" in states:
+        return "live", None
+    if None in recorded:
+        return "unknown", "a transcript has no cwd"
+    if all(state == "missing" for state in states):
+        return "dead", None
+    if "unmounted" in states:
+        return "unmounted", None
+    return "unknown", "a path could not be checked"
+
+
+def project_memories(project_dir):
     memory_dir = os.path.join(project_dir, "memory")
-    memories, index = [], None
-    if os.path.isdir(memory_dir):
-        names = sorted(f for f in os.listdir(memory_dir) if f.endswith(".md") and f != "MEMORY.md")
-        memories = [describe_memory(os.path.join(memory_dir, n)) for n in names]
-        index = index_health(memory_dir, names)
+    if not os.path.isdir(memory_dir):
+        return [], None
+    names = sorted(f for f in os.listdir(memory_dir) if f.endswith(".md") and f != INDEX_NAME)
+    return [describe_memory(os.path.join(memory_dir, n)) for n in names], index_health(memory_dir, names)
+
+
+def scan_project(project_dir):
+    entries = sorted(os.listdir(project_dir))
+    transcripts = [e for e in entries if e.endswith(TRANSCRIPT_SUFFIX) and os.path.isfile(os.path.join(project_dir, e))]
+    artifacts = [e for e in entries if session_artifact(project_dir, e) and not e.endswith(TRANSCRIPT_SUFFIX)]
+    recorded = recorded_paths(project_dir, transcripts)
+    known = [cwd for cwd, _ in recorded.most_common() if cwd]
+    state, reason = project_state(recorded)
+    memories, index = project_memories(project_dir)
     return {
         "dir": os.path.basename(project_dir),
-        "cwd": cwd,
+        "cwd": known[0] if known else None,
         "state": state,
         "reason": reason,
         "transcripts": len(transcripts),
-        "artifact_dirs": len(artifact_dirs),
+        "artifact_dirs": len(artifacts),
         "memories": memories,
         "index": index,
     }
@@ -496,7 +520,21 @@ def command_inventory(args):
     }
     if args.json:
         print(json.dumps(report, indent=2))
-        return
+    else:
+        print_inventory(report)
+
+
+def print_index_problems(index):
+    for file in index["missing_from_index"]:
+        print(f"    not in {INDEX_NAME}: {file}")
+    for link in index["dangling_links"]:
+        print(f"    {INDEX_NAME} links to missing file: {link}")
+    if index.get("truncated_on_load"):
+        print(f"    {INDEX_NAME} is over {INDEX_LINE_LIMIT} lines or {INDEX_BYTE_LIMIT} bytes and loads truncated")
+
+
+def print_inventory(report):
+    projects = report["projects"]
     with_memory = [p for p in projects if p["memories"]]
     print(f"{len(projects)} project directories; {len(with_memory)} with memory "
           f"({sum(len(p['memories']) for p in projects)} files)")
@@ -507,14 +545,9 @@ def command_inventory(args):
     print("\nMemory by project:")
     for project in with_memory:
         print(f"  {project['cwd'] or project['dir']} [{project['state']}]: {len(project['memories'])} files")
-        index = project["index"]
-        for file in index["missing_from_index"]:
-            print(f"    not in MEMORY.md: {file}")
-        for link in index["dangling_links"]:
-            print(f"    MEMORY.md links to missing file: {link}")
-        if index.get("truncated_on_load"):
-            print(f"    MEMORY.md is over {INDEX_LINE_LIMIT} lines or {INDEX_BYTE_LIMIT} bytes and loads truncated")
-    print(f"\nShared tree {args.tree}: " + (f"{len(tree_report)} files" if report["tree"]["exists"] else "does not exist"))
+        print_index_problems(project["index"])
+    tree = report["tree"]
+    print(f"\nShared tree {tree['path']}: " + (f"{len(tree['files'])} files" if tree["exists"] else "does not exist"))
     print(f"\nNear-duplicates (score >= {DUPLICATE_THRESHOLD}): {len(report['duplicates'])}")
     for pair in report["duplicates"]:
         print(f"  {pair['score']}  {pair['a']}\n        {pair['b']}")
@@ -530,7 +563,7 @@ def removable_source(args, source):
     memory_dir = os.path.dirname(source)
     project_dir = os.path.dirname(memory_dir)
     if (os.path.basename(memory_dir) != "memory" or os.path.dirname(project_dir) != projects_root(args)
-            or not source.endswith(".md") or os.path.basename(source) == "MEMORY.md"):
+            or not source.endswith(".md") or os.path.basename(source) == INDEX_NAME):
         sys.exit(f"plan source is not a project memory file: {source}")
     if not os.path.isfile(source):
         sys.exit(f"plan source does not exist: {source}")
@@ -608,9 +641,9 @@ def write_atomic(path, text, mode=None):
         raise
 
 
-def command_promote(args):
+def load_plan(path):
     try:
-        with open(input_path(args.plan, "--plan"), encoding="utf-8") as handle:
+        with open(input_path(path, "--plan"), encoding="utf-8") as handle:
             plan = json.load(handle)
     except OSError as error:
         sys.exit(f"cannot read --plan: {error}")
@@ -618,37 +651,53 @@ def command_promote(args):
         sys.exit(f"--plan is not valid JSON: {error}")
     if not isinstance(plan, list) or not plan:
         sys.exit("--plan must be a non-empty JSON list")
+    return plan
+
+
+def plan_step(args, row, targets):
+    """Validate one plan row against the tree and the targets earlier moves create. Returns
+    (action, source, target_rel, target_path)."""
+    action, target = row.get("action"), row.get("target", "")
+    source = removable_source(args, row.get("source", ""))
+    if action not in ("move", "remove", "retire"):
+        sys.exit(f"unknown action {action!r} for {source}")
+    if action == "retire":
+        return action, source, None, None
+    target_rel = os.path.normpath(target) if isinstance(target, str) and target else ""
+    if target_rel.startswith("..") or os.path.isabs(target_rel) or not tree_location_ok(target_rel):
+        sys.exit(f"target is not a tree location (profile.md, preferences.md, topics/, areas/, people/): {target}")
+    target_path = os.path.join(args.tree, target_rel)
+    if action == "move":
+        if os.path.lexists(target_path) or target_rel in targets:
+            sys.exit(f"target already exists, so it would be overwritten: {target_rel}")
+        targets.add(target_rel)
+    elif not os.path.isfile(target_path) and target_rel not in targets:
+        sys.exit(f"remove needs its merged target to exist already or to be created by an "
+                 f"earlier move in this plan: {target_rel}")
+    return action, source, target_rel, target_path
+
+
+def plan_steps(args, plan):
     steps, targets, sources = [], set(), set()
     for row in plan:
         if not isinstance(row, dict):
             sys.exit(f"each plan row must be an object with action, source, and target: {row!r}")
-        action, target = row.get("action"), row.get("target", "")
-        source = removable_source(args, row.get("source", ""))
-        if source in sources:
-            sys.exit(f"plan lists the same source twice: {source}")
-        sources.add(source)
-        target_rel = os.path.normpath(target) if isinstance(target, str) and target else ""
-        if action not in ("move", "remove", "retire"):
-            sys.exit(f"unknown action {action!r} for {source}")
-        if action == "retire":
-            steps.append((action, source, None, None))
-            continue
-        if target_rel.startswith("..") or os.path.isabs(target_rel) or not tree_location_ok(target_rel):
-            sys.exit(f"target is not a tree location (profile.md, preferences.md, topics/, areas/, people/): {target}")
-        target_path = os.path.join(args.tree, target_rel)
-        if action == "move":
-            if os.path.lexists(target_path) or target_rel in targets:
-                sys.exit(f"target already exists, so it would be overwritten: {target_rel}")
-            targets.add(target_rel)
-        elif not os.path.isfile(target_path) and target_rel not in targets:
-            sys.exit(f"remove needs its merged target to exist already or to be created by an "
-                     f"earlier move in this plan: {target_rel}")
-        steps.append((action, source, target_rel, target_path))
+        step = plan_step(args, row, targets)
+        if step[1] in sources:
+            sys.exit(f"plan lists the same source twice: {step[1]}")
+        sources.add(step[1])
+        steps.append(step)
+    return steps
+
+
+def command_promote(args):
+    steps = plan_steps(args, load_plan(args.plan))
+    backup_root = None
     if args.apply:
         directories = {os.path.dirname(source) for _, source, _, _ in steps} | {args.claude_dir}
         directories.add(existing_ancestor(args.tree))
         require_writable(directories)
-    backup_root = unique_directory(os.path.join(args.claude_dir, "memory-backups", timestamp())) if args.apply else None
+        backup_root = unique_directory(os.path.join(args.claude_dir, "memory-backups", timestamp()))
     for number, (action, source, target_rel, target_path) in enumerate(steps, 1):
         verb = {"move": "copy to tree and remove", "remove": "remove (merged into tree)",
                 "retire": "retire (no longer true or useful)"}[action]
@@ -663,7 +712,7 @@ def command_promote(args):
                      f"(and if {target_rel} was already written, change this row's action to remove), "
                      "then run it again.")
     if not args.apply:
-        print("dry run. re-run with --apply to make these changes.")
+        print(DRY_RUN_NOTE)
 
 
 def promote_step(action, source, target_rel, target_path, backup_root):
@@ -674,9 +723,9 @@ def promote_step(action, source, target_rel, target_path, backup_root):
     project = os.path.basename(os.path.dirname(os.path.dirname(source)))
     backup_dir = os.path.join(backup_root, project)
     os.makedirs(backup_dir, exist_ok=True)
-    index_path = os.path.join(os.path.dirname(source), "MEMORY.md")
-    if os.path.isfile(index_path) and not os.path.exists(os.path.join(backup_dir, "MEMORY.md")):
-        shutil.copy2(index_path, os.path.join(backup_dir, "MEMORY.md"))
+    index_path = os.path.join(os.path.dirname(source), INDEX_NAME)
+    if os.path.isfile(index_path) and not os.path.exists(os.path.join(backup_dir, INDEX_NAME)):
+        shutil.copy2(index_path, os.path.join(backup_dir, INDEX_NAME))
     shutil.move(source, os.path.join(backup_dir, os.path.basename(source)))
     removed, left = remove_index_link(index_path, os.path.basename(source))
     note = f"; {left} MEMORY.md line(s) also link other files, so edit them by hand" if left else ""
@@ -742,7 +791,7 @@ def runs_claude_script(pid):
 def session_artifact(project_dir, name):
     """True for a transcript (*.jsonl) or anything named after a session id: a session directory,
     or a side file such as <session-id>.desktop-released.json."""
-    if name.endswith(".jsonl") and os.path.isfile(os.path.join(project_dir, name)):
+    if name.endswith(TRANSCRIPT_SUFFIX) and os.path.isfile(os.path.join(project_dir, name)):
         return True
     return bool(UUID_RE.match(name.split(".", 1)[0]))
 
@@ -764,16 +813,7 @@ def remove_artifacts(project_dir):
     return len(artifacts), remaining
 
 
-def command_cleanup(args):
-    projects = scan_all_projects(args)
-    all_dead = [p for p in projects if p["state"] == "dead"]
-    claude_json = {"entries": 0} if args.skip_claude_json else claude_json_report(args.claude_json)
-    dead_entries = claude_json.get("dead", [])
-    # A dead project cleaned earlier keeps only memory/ and has nothing left to remove, so it is
-    # left out of both the work and the mass-deletion share below.
-    dead_dirs = [p for p in all_dead if p["transcripts"] or p["artifact_dirs"]]
-    cleaned = {p["dir"] for p in all_dead if p not in dead_dirs}
-    resolvable = [p for p in projects if p["state"] in ("live", "dead", "unmounted") and p["dir"] not in cleaned]
+def print_cleanup(args, projects, dead_dirs, dead_entries):
     for project in dead_dirs:
         memory_dir = os.path.join(projects_root(args), project["dir"], "memory")
         keep = " (memory/ kept)" if os.path.isdir(memory_dir) else ""
@@ -786,11 +826,59 @@ def command_cleanup(args):
             print(f"keep {project['dir']}: {project['cwd']} is on a volume that is not mounted")
         elif project["state"] == "unknown":
             print(f"keep {project['dir']}: its path is unknown ({project['reason']})")
+
+
+def session_refusal():
+    """The refusal for other Claude sessions, or None when none is running."""
+    sessions = other_claude_sessions()
+    if sessions is None:
+        return ("could not list running processes to check for other Claude sessions, which "
+                "can write their old copy of ~/.claude.json back (--ignore-sessions overrides)")
+    if sessions:
+        return (f"other Claude sessions are running (pids {', '.join(map(str, sessions))}), and "
+                "a running session can write its old copy of ~/.claude.json back "
+                "(--ignore-sessions overrides)")
+    return None
+
+
+def mass_deletion_refusals(counts):
+    """counts: (label, dead, total) tuples. A refusal for each where nearly everything is dead."""
+    return [f"{dead} of {total} {label} look dead, which usually means the wrong machine "
+            "or an unmounted volume (--force overrides)"
+            for label, dead, total in counts
+            if dead >= MASS_DELETION_MINIMUM and total and dead / total >= MASS_DELETION_SHARE]
+
+
+def clean_project(args, project):
+    project_dir = os.path.join(projects_root(args), project["dir"])
+    removed, remaining = remove_artifacts(project_dir)
+    if remaining:
+        # The folder stays (memory/, or a file this script doesn't know), so record where the
+        # project lived; without a transcript, later runs could no longer tell.
+        write_atomic(os.path.join(project_dir, CLEANED_MARKER),
+                     json.dumps({"cwd": project["cwd"], "cleaned": timestamp()}) + "\n")
+    kept = "; memory/ kept" if "memory" in remaining else ""
+    others = [e for e in remaining if e != "memory"]
+    note = f"; left {', '.join(others)}" if others else ""
+    print(f"removed {removed} items from {project['dir']}{kept}{note}")
+
+
+def command_cleanup(args):
+    projects = scan_all_projects(args)
+    all_dead = [p for p in projects if p["state"] == "dead"]
+    claude_json = {"entries": 0} if args.skip_claude_json else claude_json_report(args.claude_json)
+    dead_entries = claude_json.get("dead", [])
+    # A dead project cleaned earlier keeps only memory/ and has nothing left to remove, so it is
+    # left out of both the work and the mass-deletion share below.
+    dead_dirs = [p for p in all_dead if p["transcripts"] or p["artifact_dirs"]]
+    cleaned = {p["dir"] for p in all_dead if p not in dead_dirs}
+    resolvable = [p for p in projects if p["state"] in ("live", "dead", "unmounted") and p["dir"] not in cleaned]
+    print_cleanup(args, projects, dead_dirs, dead_entries)
     if not dead_dirs and not dead_entries:
         print("nothing to remove.")
         return
     if not args.apply:
-        print("dry run. re-run with --apply to make these changes.")
+        print(DRY_RUN_NOTE)
         return
     if dead_entries and args.claude_json_is_link:
         sys.exit(f"refusing to apply: {args.claude_json} is reached through a symlink, so nothing was "
@@ -799,36 +887,15 @@ def command_cleanup(args):
     if dead_entries:
         directories.add(os.path.dirname(args.claude_json))
     require_writable(directories)
-    refusals = []
-    if not args.ignore_sessions:
-        sessions = other_claude_sessions()
-        if sessions is None:
-            refusals.append("could not list running processes to check for other Claude sessions, which "
-                            "can write their old copy of ~/.claude.json back (--ignore-sessions overrides)")
-        elif sessions:
-            refusals.append(f"other Claude sessions are running (pids {', '.join(map(str, sessions))}), and "
-                            "a running session can write its old copy of ~/.claude.json back "
-                            "(--ignore-sessions overrides)")
+    refusals = [] if args.ignore_sessions else [r for r in [session_refusal()] if r]
     if not args.force:
-        for label, dead, total in (("project directories", len(dead_dirs), len(resolvable)),
-                                   (f"{args.claude_json} entries", len(dead_entries), claude_json.get("entries", 0))):
-            if dead >= MASS_DELETION_MINIMUM and total and dead / total >= MASS_DELETION_SHARE:
-                refusals.append(f"{dead} of {total} {label} look dead, which usually means the wrong machine "
-                                "or an unmounted volume (--force overrides)")
+        refusals += mass_deletion_refusals([
+            ("project directories", len(dead_dirs), len(resolvable)),
+            (f"{args.claude_json} entries", len(dead_entries), claude_json.get("entries", 0))])
     if refusals:
         sys.exit("refusing to apply: " + "; ".join(refusals) + ".")
     for project in dead_dirs:
-        project_dir = os.path.join(projects_root(args), project["dir"])
-        removed, remaining = remove_artifacts(project_dir)
-        if remaining:
-            # The folder stays (memory/, or a file this script doesn't know), so record where the
-            # project lived; without a transcript, later runs could no longer tell.
-            write_atomic(os.path.join(project_dir, CLEANED_MARKER),
-                         json.dumps({"cwd": project["cwd"], "cleaned": timestamp()}) + "\n")
-        kept = "; memory/ kept" if "memory" in remaining else ""
-        others = [e for e in remaining if e != "memory"]
-        note = f"; left {', '.join(others)}" if others else ""
-        print(f"removed {removed} items from {project['dir']}{kept}{note}")
+        clean_project(args, project)
     if dead_entries:
         prune_claude_json(args, set(dead_entries))
 
@@ -881,7 +948,7 @@ def command_seed(args):
     for relative, reason in skipped:
         print(f"skip {relative}: {reason}")
     if not args.apply:
-        print("dry run. re-run with --apply to make these changes.")
+        print(DRY_RUN_NOTE)
 
 
 def command_check_tree(args):
