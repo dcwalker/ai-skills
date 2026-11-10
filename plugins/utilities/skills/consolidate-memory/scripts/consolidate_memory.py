@@ -82,8 +82,18 @@ UUID_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]
 INDEX_LINK_RE = re.compile(r"\]\(([^)\s]+)\)")
 
 
+def input_path(path, option):
+    """Resolve a read-only input path. Inputs aren't confined to home or temp: an export on another
+    volume is fine to read."""
+    if not isinstance(path, str) or not path:
+        sys.exit(f"{option} must be a path")
+    return os.path.realpath(os.path.expanduser(path))
+
+
 def checked_arg_path(path, option):
     """Resolve a command-line path, exiting unless it is under the home or temp directory."""
+    if not isinstance(path, str) or not path:
+        sys.exit(f"{option} must be a path")
     resolved = os.path.realpath(os.path.expanduser(path))
     for base in (os.path.expanduser("~"), tempfile.gettempdir(), "/tmp", "/private/tmp"):
         base = os.path.realpath(base)
@@ -175,7 +185,7 @@ def describe_memory(path):
         "name": name,
         "description": description,
         "type": memory_type(fields),
-        "bytes": len(text.encode("utf-8")),
+        "bytes": os.path.getsize(path),
         "_text": f"{name or ''} {description or ''} {body}",
     }
 
@@ -223,13 +233,19 @@ def path_state(path):
         pass
     except OSError:
         return "unknown"
-    parts = os.path.normpath(path).split(os.sep)
-    for parent in VOLUME_PARENTS:
-        depth = len(parent.split(os.sep))
-        if (os.sep.join(parts[:depth]) == parent and len(parts) > depth
-                and not os.path.isdir(os.sep.join(parts[: depth + 1]))):
-            return "unmounted"
-    return "missing"
+    normal = os.path.normpath(path)
+    parents = [parent for parent in VOLUME_PARENTS if normal.startswith(parent + os.sep)]
+    if not parents:
+        return "missing"
+    # On a removable-volume path, the path is gone only if the volume holding it is mounted: the
+    # deepest existing ancestor is then a mount point below the volume parent. Otherwise the drive
+    # is unplugged (macOS /Volumes/<label>, Linux /media/<user>/<label>) and the path is kept.
+    ancestor = os.path.dirname(normal)
+    while not os.path.isdir(ancestor):
+        ancestor = os.path.dirname(ancestor)
+    if ancestor.startswith(max(parents, key=len) + os.sep) and os.path.ismount(ancestor):
+        return "missing"
+    return "unmounted"
 
 
 def transcript_cwd(path):
@@ -359,7 +375,7 @@ def check_tree_file(tree, relative):
     path = os.path.join(tree, relative)
     text = read_text(path)
     fields, _ = parse_frontmatter(text)
-    size = len(text.encode("utf-8"))
+    size = os.path.getsize(path)
     stem = os.path.splitext(os.path.basename(relative))[0]
     if not tree_location_ok(relative):
         return {"path": relative, "bytes": size, "problems": [], "ignored": True}
@@ -538,7 +554,7 @@ def remove_index_link(index_path, filename):
             shared += 1
         kept.append(line)
     if removed:
-        write_atomic(index_path, "".join(kept))
+        write_atomic(index_path, "".join(kept), os.stat(index_path).st_mode & 0o777)
     return removed, shared
 
 
@@ -557,8 +573,13 @@ def write_atomic(path, text, mode=None):
 
 
 def command_promote(args):
-    with open(checked_arg_path(args.plan, "--plan"), encoding="utf-8") as handle:
-        plan = json.load(handle)
+    try:
+        with open(input_path(args.plan, "--plan"), encoding="utf-8") as handle:
+            plan = json.load(handle)
+    except OSError as error:
+        sys.exit(f"cannot read --plan: {error}")
+    except ValueError as error:
+        sys.exit(f"--plan is not valid JSON: {error}")
     if not isinstance(plan, list) or not plan:
         sys.exit("--plan must be a non-empty JSON list")
     steps, targets, sources = [], set(), set()
@@ -598,8 +619,9 @@ def command_promote(args):
             promote_step(action, source, target_rel, target_path, backup_root)
         except OSError as error:
             sys.exit(f"step {number} of {len(steps)} failed ({error}); steps before it were applied, and "
-                     f"backups are in {backup_root}. Fix the cause, remove finished rows from the plan, "
-                     "and run it again.")
+                     f"backups are in {backup_root}. Fix the cause, remove the finished rows from the plan "
+                     f"(and if {target_rel} was already written, change this row's action to remove), "
+                     "then run it again.")
     if not args.apply:
         print("dry run. re-run with --apply to make these changes.")
 
@@ -696,12 +718,13 @@ def remove_artifacts(project_dir):
 def command_cleanup(args):
     projects = scan_all_projects(args)
     all_dead = [p for p in projects if p["state"] == "dead"]
-    resolvable = [p for p in projects if p["state"] in ("live", "dead", "unmounted")]
     claude_json = claude_json_report(args.claude_json)
     dead_entries = claude_json.get("dead", [])
-    # A dead project cleaned earlier keeps only memory/ and counts toward the mass-deletion share
-    # below, but has nothing left to remove.
+    # A dead project cleaned earlier keeps only memory/ and has nothing left to remove, so it is
+    # left out of both the work and the mass-deletion share below.
     dead_dirs = [p for p in all_dead if p["transcripts"] or p["artifact_dirs"]]
+    cleaned = {p["dir"] for p in all_dead if p not in dead_dirs}
+    resolvable = [p for p in projects if p["state"] in ("live", "dead", "unmounted") and p["dir"] not in cleaned]
     for project in dead_dirs:
         memory_dir = os.path.join(projects_root(args), project["dir"], "memory")
         keep = " (memory/ kept)" if os.path.isdir(memory_dir) else ""
@@ -709,9 +732,14 @@ def command_cleanup(args):
               f"{project['artifact_dirs']} session dirs: {project['dir']} (was {project['cwd']}){keep}")
     for entry in dead_entries:
         print(f"{'' if args.apply else 'would '}remove {args.claude_json} entry: {entry}")
-    kept = [p for p in projects if p["state"] in ("unknown", "unmounted")]
-    if kept:
-        print(f"kept {len(kept)} directories whose path is unknown or on an unmounted volume")
+    for project in projects:
+        if project["state"] == "unmounted":
+            print(f"keep {project['dir']}: {project['cwd']} is on a volume that is not mounted")
+        elif project["state"] == "unknown":
+            print(f"keep {project['dir']}: its path is unknown ({project['reason']})")
+    if not dead_dirs and not dead_entries:
+        print("nothing to remove.")
+        return
     if not args.apply:
         print("dry run. re-run with --apply to make these changes.")
         return
@@ -729,7 +757,7 @@ def command_cleanup(args):
                             "a running session can write its old copy of ~/.claude.json back "
                             "(--ignore-sessions overrides)")
     if not args.force:
-        for label, dead, total in (("project directories", len(all_dead), len(resolvable)),
+        for label, dead, total in (("project directories", len(dead_dirs), len(resolvable)),
                                    (f"{args.claude_json} entries", len(dead_entries), claude_json.get("entries", 0))):
             if dead >= MASS_DELETION_MINIMUM and total and dead / total >= MASS_DELETION_SHARE:
                 refusals.append(f"{dead} of {total} {label} look dead, which usually means the wrong machine "
@@ -778,7 +806,7 @@ def prune_claude_json(args, dead):
 
 
 def command_seed(args):
-    export = checked_arg_path(args.source, "--from")
+    export = input_path(args.source, "--from")
     if not os.path.isdir(export):
         sys.exit(f"--from is not a directory: {export}")
     copies, skipped = [], []

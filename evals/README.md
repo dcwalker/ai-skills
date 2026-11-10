@@ -66,7 +66,14 @@ plugins/<plugin>/skills/<skill>/evals/
         ├── home/              Optional: seeds the trial's private HOME,
         │                      for skills that keep state across sessions
         │                      or clean up under $HOME. run-eval.sh and
-        │                      run-mcp-trials.sh honor it.
+        │                      run-mcp-trials.sh honor it, and a fixture
+        │                      with only home/ (no MCP state) is valid.
+        │                      setup.sh runs first, with the workspace as
+        │                      $1 and the run directory as its parent, so
+        │                      it can write files that need the run's
+        │                      absolute paths under ../home, ~/.claude
+        │                      included; the driver still adds its own
+        │                      settings and plugins link beside them.
         └── sandbox-setup.sh   Optional, `"sandbox": true` evals only: runs
                                with the trial environment sourced, to point
                                origin at the sandbox repo and clear what the
