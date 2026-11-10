@@ -463,7 +463,7 @@ mode by the mere absence of its fixture file; three evals had no fixture, the
 developer's real Trello credentials were exported by their shell profile, and
 a trial created three real cards on a real personal board.
 
-## MCP stub servers (Trello, Gmail, Jira, Slack, Calendar, Claude Docs, Contacts, Messages)
+## MCP stub servers (Trello, Gmail, Jira, Slack, Calendar, Claude Docs, Contacts, Messages, Claude app memory)
 
 `triage` and `writing` depend on real MCP tools (Trello, Gmail, Jira, and
 Slack) rather than a CLI on `PATH`, so they need a different mocking seam
@@ -496,7 +496,11 @@ responses whose layout, apart from the documented group line, is flagged
 unverified), and `messages_stub.py` the text-messages connector's read tools
 `read_imessages`, `get_unread_imessages`, and `search_contacts` (no send
 tool; every response layout was designed rather than observed and is
-flagged unverified),
+flagged unverified), and `claude_memory_stub.py` the six memory tools a
+Claude app chat has for the user's memory, `memory_list`, `memory_read`,
+`memory_write`, `memory_str_replace`, `memory_append`, and `memory_delete`
+(names, parameters, version tokens, fixed locations, and the 49,152-byte cap
+from a live app chat; response wording flagged unverified),
 each backed by an in-memory fake "database" seeded from a fixture
 file. Tool names and parameter schemas were confirmed against
 live connected MCP servers, not guessed from prose, so a skill's real tool
@@ -784,6 +788,16 @@ Eight things the shared driver does that a hand-run trial must do for itself:
   and the driver stages each one beside the skill under test the same way,
   `SKILL.md`, `references/`, and `scripts/` only. A name with no sibling
   `SKILL.md` behind it stops the batch.
+- An eval that sets `"claude_config": "separate"` runs with its trial's own
+  Claude Code configuration (settings, the plugins link, the sanitized
+  `.claude.json`, and its session transcripts) in `$RUN_DIR/claude-config`
+  through `CLAUDE_CONFIG_DIR`, rather than in the private `HOME`. Claude
+  Code's sandbox refuses writes to the directory holding its configuration
+  whatever `allowWrite` says, so without this a skill that edits the user's
+  `~/.claude/projects` or `~/.claude.json` can only be measured being
+  refused. With it, the fixture's `home/.claude` and `home/.claude.json` are
+  plain user data the trial may change. Evals without the key keep the
+  protected `~/.claude`.
 - The same `enabledPlugins` setting turns off every other plugin the
   developer has enabled in `~/.claude/settings.json` or
   `settings.local.json`. The private `HOME` links the developer's plugins
