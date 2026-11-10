@@ -246,9 +246,9 @@ the conflicts cleanup can meet, so each one is a question for the user:
   this skill is exempt from the check but has the same effect when it exits. Ask the user to
   close other sessions, or to confirm running with `--ignore-sessions` knowing that removed
   entries may reappear; transcript removal is not affected.
-- nearly every directory or entry looks dead, which usually means the wrong machine or an
-  unmounted drive. Only `--force` overrides this; investigate before suggesting it, and never
-  pass it just to get past the session check.
+- nearly every directory or entry looks dead (or all of them, when there are only a few), which
+  usually means the wrong machine or an unmounted drive. Only `--force` overrides this;
+  investigate before suggesting it, and never pass it just to get past the session check.
 - `~/.claude.json` is a symlink and has dead entries. Nothing is removed then, transcripts
   included. A symlinked `~/.claude.json` usually means a dotfiles manager or repository owns the
   real file, so changing it needs its own yes: tell the user where the link points and ask

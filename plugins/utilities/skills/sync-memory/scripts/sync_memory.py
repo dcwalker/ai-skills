@@ -842,11 +842,14 @@ def session_refusal():
 
 
 def mass_deletion_refusals(counts):
-    """counts: (label, dead, total) tuples. A refusal for each where nearly everything is dead."""
+    """counts: (label, dead, total) tuples. A refusal for each where nearly everything is dead
+    (at least MASS_DELETION_MINIMUM and MASS_DELETION_SHARE of them), or where every one of two
+    or more is dead, so a short list that is wholly dead is caught too."""
     return [f"{dead} of {total} {label} look dead, which usually means the wrong machine "
             "or an unmounted volume (--force overrides)"
             for label, dead, total in counts
-            if dead >= MASS_DELETION_MINIMUM and total and dead / total >= MASS_DELETION_SHARE]
+            if total and ((dead >= MASS_DELETION_MINIMUM and dead / total >= MASS_DELETION_SHARE)
+                          or (total >= 2 and dead == total))]
 
 
 def clean_project(args, project):
@@ -932,7 +935,9 @@ def command_seed(args):
         sys.exit(f"--from is not a directory: {export}")
     copies, skipped = [], []
     for relative in tree_files(export):
-        if not tree_location_ok(relative):
+        if os.path.islink(os.path.join(export, relative)):
+            skipped.append((relative, "a symlink, which is not followed"))
+        elif not tree_location_ok(relative):
             skipped.append((relative, "not a Claude app memory location"))
         elif os.path.lexists(os.path.join(args.tree, relative)):
             skipped.append((relative, "already in the tree"))
