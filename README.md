@@ -143,6 +143,7 @@ underlying data.
 
 **utilities:**
 [build-soccer-scoresheet](plugins/utilities/skills/build-soccer-scoresheet/evals/benchmark-baseline.md) ·
+[consolidate-memory](plugins/utilities/skills/consolidate-memory/evals/benchmark-baseline.md) ·
 [transcribe-apple-notes-to-dayone](plugins/utilities/skills/transcribe-apple-notes-to-dayone/evals/benchmark-baseline.md)
 
 Repo-wide: `python3 evals/lib/report.py` prints one table across every
