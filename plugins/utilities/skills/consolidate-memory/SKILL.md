@@ -85,13 +85,14 @@ writes under `~/memories` usually still work, so:
 - Write every tree file yourself, including the copy a `move` would have made (with `name` set
   to the new file's stem), and change those plan rows to `remove`. The tree is then complete, and
   what is left for the user only removes project copies.
-- Save the plan where it will outlast the session: `~/memories/.plans/<YYYY-MM-DD-HHMM>.json`.
+- Save the plan where it will outlast the session: `<tree>/.plans/<YYYY-MM-DD-HHMM>.json`.
   The script and the app sync skip dot directories, so it is never synced. A session scratch or
   temp directory may be gone by the time the user runs the command.
 - Give the user the exact command to run in a terminal, with full paths, or let them decide
   whether to allow it to run outside the sandbox. For `cleanup`, tell them to quit Claude first,
   this session included: the script refuses while any Claude session is running, and a running
-  session could write its old `~/.claude.json` back afterward.
+  session could write its old `~/.claude.json` back afterward. Leave `--ignore-sessions` out of
+  the handed-off command unless the user chose it for that run.
 
 ## Procedure in Claude Code
 
@@ -171,9 +172,12 @@ Show the user, in one message:
 - Index problems from the inventory (`MEMORY.md` lines pointing at missing files, files missing
   from `MEMORY.md`, an index over 200 lines or 25 KiB that loads truncated), with the fix for each.
 
-Wait for approval. The user may approve all of it, some of it, or change destinations. When the
-user has already authorized you to apply without waiting, still send this plan as a message
-before the first change, then continue.
+Wait for approval. The user may approve all of it, some of it, or change destinations.
+
+When the user has already authorized you to apply without waiting, the plan is still not
+optional: send it as its own message, written out in full, before you write the first file or run
+the first command with `--apply`. Then continue without waiting. A plan that first appears in the
+final report comes too late.
 
 ### 6. Apply
 
@@ -211,7 +215,8 @@ first; the transcripts it removes can't be resumed afterward.
 
 On approval, run `cleanup --apply`. It backs up `~/.claude.json` before removing entries, records
 each cleaned project's path beside its kept `memory/` so later inventories still know where it
-lived, and refuses when:
+lived, removes session side files named after a session id, and refuses when (checking writes
+first, so in a sandbox the write block is what it reports):
 
 - another Claude session is running, or processes can't be listed to check, because a running
   session can write its old copy of `~/.claude.json` back over the cleanup. The session running
@@ -221,8 +226,8 @@ lived, and refuses when:
 - nearly every directory or entry looks dead, which usually means the wrong machine or an
   unmounted drive. Only `--force` overrides this; investigate before suggesting it, and never
   pass it just to get past the session check.
-- `~/.claude.json` is a symlink. Pass `--claude-json` with the resolved path if the user wants it
-  changed.
+- `~/.claude.json` is a symlink and has dead entries. Nothing is removed then, transcripts
+  included. Pass `--claude-json` with the resolved path if the user wants it changed.
 
 ### 8. Report
 

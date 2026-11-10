@@ -75,6 +75,7 @@ MASS_DELETION_SHARE = 0.9
 MASS_DELETION_MINIMUM = 5
 TRANSCRIPT_HEAD_LINES = 200
 CLEANED_MARKER = ".consolidate-memory-project.json"
+EMPTY = "<no conversation>"
 CLAUDE_NAMES = ("claude", "claude-code")
 SCRIPT_HOSTS = ("node", "bun")
 VOLUME_PARENTS = ("/Volumes", "/Network", "/mnt", "/media", "/run/media")
@@ -237,19 +238,32 @@ def path_state(path):
     parents = [parent for parent in VOLUME_PARENTS if normal.startswith(parent + os.sep)]
     if not parents:
         return "missing"
-    # On a removable-volume path, the path is gone only if the volume holding it is mounted: the
-    # deepest existing ancestor is then a mount point below the volume parent. Otherwise the drive
-    # is unplugged (macOS /Volumes/<label>, Linux /media/<user>/<label>) and the path is kept.
+    # On a removable-volume path, the path is gone only if the volume holding it is mounted: some
+    # folder between the volume parent and the deepest existing ancestor is then a mount point.
+    # Otherwise the drive is unplugged (macOS /Volumes/<label>, Linux /media/<user>/<label>) and
+    # the path is kept. If even the volume parent is missing, nothing is mounted there either.
+    parent = max(parents, key=len)
     ancestor = os.path.dirname(normal)
     while not os.path.isdir(ancestor):
         ancestor = os.path.dirname(ancestor)
-    if ancestor.startswith(max(parents, key=len) + os.sep) and os.path.ismount(ancestor):
-        return "missing"
+    if ancestor != parent and not ancestor.startswith(parent + os.sep):
+        return "unmounted"
+    real = os.path.realpath(ancestor)
+    if not any(real == p or real.startswith(p + os.sep) for p in VOLUME_PARENTS):
+        return "missing"  # resolved off the volume tree, as /Volumes/<system disk> links to /
+    probe = real
+    while probe not in VOLUME_PARENTS and probe != os.sep:
+        if os.path.ismount(probe):
+            return "missing"
+        probe = os.path.dirname(probe)
     return "unmounted"
 
 
 def transcript_cwd(path):
-    """Return the first cwd recorded in a transcript's first lines, or None."""
+    """Return the first cwd recorded in a transcript's first lines, None when there is none, or
+    EMPTY when the transcript holds no user or assistant message at all (an empty file, or only
+    bookkeeping records), which says nothing about where the project lived."""
+    conversation = False
     try:
         with open(path, encoding="utf-8", errors="replace") as handle:
             for _, line in zip(range(TRANSCRIPT_HEAD_LINES), handle):
@@ -257,18 +271,25 @@ def transcript_cwd(path):
                     record = json.loads(line)
                 except ValueError:
                     continue
-                if isinstance(record, dict) and isinstance(record.get("cwd"), str) and record["cwd"]:
+                if not isinstance(record, dict):
+                    continue
+                if isinstance(record.get("cwd"), str) and record["cwd"]:
                     return record["cwd"]
+                conversation = conversation or record.get("type") in ("user", "assistant")
     except OSError:
         return None
-    return None
+    return None if conversation else EMPTY
 
 
 def scan_project(project_dir):
     entries = sorted(os.listdir(project_dir))
     transcripts = [e for e in entries if e.endswith(".jsonl") and os.path.isfile(os.path.join(project_dir, e))]
-    artifact_dirs = [e for e in entries if UUID_RE.match(e) and os.path.isdir(os.path.join(project_dir, e))]
+    artifact_dirs = [e for e in entries if session_artifact(project_dir, e) and not e.endswith(".jsonl")]
     recorded = collections.Counter(transcript_cwd(os.path.join(project_dir, t)) for t in transcripts)
+    if EMPTY in recorded and len(recorded) > 1:
+        del recorded[EMPTY]
+    if EMPTY in recorded:
+        recorded = collections.Counter({None: recorded[EMPTY]})
     if not transcripts:
         remembered = cleaned_project_path(project_dir)
         if remembered:
@@ -699,20 +720,29 @@ def runs_claude_script(pid):
     return len(arguments) > 1 and os.path.basename(arguments[1]) in CLAUDE_NAMES
 
 
+def session_artifact(project_dir, name):
+    """True for a transcript (*.jsonl) or anything named after a session id: a session directory,
+    or a side file such as <session-id>.desktop-released.json."""
+    if name.endswith(".jsonl") and os.path.isfile(os.path.join(project_dir, name)):
+        return True
+    return bool(UUID_RE.match(name.split(".", 1)[0]))
+
+
 def remove_artifacts(project_dir):
-    """Quarantine then delete a dead project's transcripts and session directories. Returns
-    (removed count, whether memory/ remains)."""
+    """Quarantine then delete a dead project's transcripts and session artifacts. Returns
+    (removed count, whether the project directory remains and with what)."""
     entries = os.listdir(project_dir)
-    artifacts = [e for e in entries if (e.endswith(".jsonl") and os.path.isfile(os.path.join(project_dir, e)))
-                 or (UUID_RE.match(e) and os.path.isdir(os.path.join(project_dir, e)))]
+    artifacts = [e for e in entries if session_artifact(project_dir, e)]
     quarantine = tempfile.mkdtemp(prefix=".consolidate-delete-", dir=project_dir)
     for name in artifacts:
         os.rename(os.path.join(project_dir, name), os.path.join(quarantine, name))
     shutil.rmtree(quarantine)
-    remaining = os.listdir(project_dir)
+    remaining = [e for e in os.listdir(project_dir) if e != CLEANED_MARKER]
     if not remaining:
+        if os.path.exists(os.path.join(project_dir, CLEANED_MARKER)):
+            os.unlink(os.path.join(project_dir, CLEANED_MARKER))
         os.rmdir(project_dir)
-    return len(artifacts), "memory" in remaining
+    return len(artifacts), remaining
 
 
 def command_cleanup(args):
@@ -743,10 +773,14 @@ def command_cleanup(args):
     if not args.apply:
         print("dry run. re-run with --apply to make these changes.")
         return
-    refusals = []
     if dead_entries and args.claude_json_is_link:
-        sys.exit(f"refusing to apply: {args.claude_json} is reached through a symlink; "
-                 "pass --claude-json with the resolved path to change it")
+        sys.exit(f"refusing to apply: {args.claude_json} is reached through a symlink, so nothing was "
+                 "removed (transcripts included); pass --claude-json with the resolved path to change it")
+    directories = {os.path.join(projects_root(args), p["dir"]) for p in dead_dirs}
+    if dead_entries:
+        directories.add(os.path.dirname(args.claude_json))
+    require_writable(directories)
+    refusals = []
     if not args.ignore_sessions:
         sessions = other_claude_sessions()
         if sessions is None:
@@ -764,17 +798,18 @@ def command_cleanup(args):
                                 "or an unmounted volume (--force overrides)")
     if refusals:
         sys.exit("refusing to apply: " + "; ".join(refusals) + ".")
-    directories = {os.path.join(projects_root(args), p["dir"]) for p in dead_dirs}
-    if dead_entries:
-        directories.add(os.path.dirname(args.claude_json))
-    require_writable(directories)
     for project in dead_dirs:
         project_dir = os.path.join(projects_root(args), project["dir"])
-        removed, memory_kept = remove_artifacts(project_dir)
-        if memory_kept:
+        removed, remaining = remove_artifacts(project_dir)
+        if remaining:
+            # The folder stays (memory/, or a file this script doesn't know), so record where the
+            # project lived; without a transcript, later runs could no longer tell.
             write_atomic(os.path.join(project_dir, CLEANED_MARKER),
                          json.dumps({"cwd": project["cwd"], "cleaned": timestamp()}) + "\n")
-        print(f"removed {removed} items from {project['dir']}" + ("; memory/ kept" if memory_kept else ""))
+        kept = "; memory/ kept" if "memory" in remaining else ""
+        others = [e for e in remaining if e != "memory"]
+        note = f"; left {', '.join(others)}" if others else ""
+        print(f"removed {removed} items from {project['dir']}{kept}{note}")
     if dead_entries:
         prune_claude_json(args, set(dead_entries))
 
