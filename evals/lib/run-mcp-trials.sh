@@ -464,7 +464,10 @@ print(json.dumps(settings))
   [[ -e "$HOME/.config" && ! -e "$TRIAL_HOME/.config" ]] && \
     ln -s "$HOME/.config" "$TRIAL_HOME/.config"
 
-  if [[ -d "$HOME/.claude" && ! -e "$TRIAL_HOME/.claude" ]]; then
+  # Each piece is set up only when it is missing, rather than only when .claude is: a fixture's
+  # setup.sh may already have written .claude/projects/ (consolidate-memory's transcripts must
+  # record the run's absolute paths), and that must not cost the trial its settings and plugins.
+  if [[ -d "$HOME/.claude" ]]; then
     mkdir -p "$TRIAL_HOME/.claude"
     # Copied without permissions, sandbox, or hooks: permission and sandbox
     # arrays merge across settings scopes, so a developer's own allow rules
@@ -472,7 +475,7 @@ print(json.dumps(settings))
     # below, and their hooks run outside it altogether. A file that is not
     # strict JSON is left out with a warning rather than ending the batch.
     for SETTING in settings.json settings.local.json; do
-      [[ -f "$HOME/.claude/$SETTING" ]] && { python3 -c '
+      [[ -f "$HOME/.claude/$SETTING" && ! -e "$TRIAL_HOME/.claude/$SETTING" ]] && { python3 -c '
 import json, sys
 with open(sys.argv[1]) as fh:
     settings = json.load(fh)
@@ -486,7 +489,7 @@ with open(sys.argv[2], "w") as fh:
     # Plugins are 22M and read-only to a trial, so they stay a symlink rather
     # than being copied 27 times. The rest of ~/.claude -- projects/, sessions/,
     # history.jsonl, 268M of transcripts naming the real user -- is left out.
-    [[ -d "$HOME/.claude/plugins" ]] && \
+    [[ -d "$HOME/.claude/plugins" && ! -e "$TRIAL_HOME/.claude/plugins" ]] && \
       ln -s "$HOME/.claude/plugins" "$TRIAL_HOME/.claude/plugins"
   fi
 
