@@ -154,7 +154,13 @@ for CLI_FIXTURE in notes-fixture.json dayone-fixture.json ocr-fixture.json; do
 done
 [[ -n "$GITHUB_FIXTURE" ]] && CLI_STUB_FIXTURE=1
 
-if [[ "$MCP_SERVERS_JSON" == "{}" ]] && [[ -z "$CONVERSATION_ONLY" ]] && [[ -z "$CLI_STUB_FIXTURE" ]]; then
+# So does one whose whole state is files in the trial's private HOME (fixtures/<id>/home/,
+# copied in by run-mcp-trials.sh), such as consolidate-memory's Claude Code project data.
+HOME_FIXTURE=""
+[[ -d "$FIXTURE_DIR/home" ]] && HOME_FIXTURE=1
+
+if [[ "$MCP_SERVERS_JSON" == "{}" ]] && [[ -z "$CONVERSATION_ONLY" ]] && [[ -z "$CLI_STUB_FIXTURE" ]] \
+  && [[ -z "$HOME_FIXTURE" ]]; then
   echo "run-mcp-eval: fixture $FIXTURE_DIR provides no recognized *-mcp-state.json file" >&2
   exit 1
 fi
