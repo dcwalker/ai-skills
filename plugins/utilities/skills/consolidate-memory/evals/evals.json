@@ -96,10 +96,10 @@
     {
       "id": 8,
       "prompt": "Clean up the Claude Code data left behind by projects I've deleted.",
-      "expected_output": "Without authorization to apply, the skill inventories and runs cleanup without --apply, then shows the user what it would remove: old-blog's two transcripts, whose folder is gone, with its memory/ kept. It names -projects-mystery as kept because its path can't be determined, and recipe-app as live. It offers to summarize old-blog into ~/memories/areas/ first and asks before applying. Nothing is deleted and nothing in ~/memories changes.",
+      "expected_output": "Without authorization to apply, the skill inventories and runs cleanup without --apply, then shows the user what it would remove: old-blog's two transcripts, whose folder is gone, with its memory/ kept. It names -projects-mystery as kept because its path can't be determined, photo-archive as kept because its drive is not mounted, and recipe-app as live. It offers to summarize old-blog into ~/memories/areas/ first and asks before applying. Nothing is deleted and nothing in ~/memories changes.",
       "expectations": [
         "The final reply lists old-blog as the project whose data would be removed, and says its memory/ is kept",
-        "The final reply says nothing is removed for -projects-mystery (its path is unknown) or recipe-app",
+        "The final reply says nothing is removed for -projects-mystery (its path is unknown), photo-archive (its drive is not mounted), or recipe-app",
         "The final reply asks the user to approve before removing anything",
         "Every transcript under ~/.claude/projects is still present",
         "Every file under ~/memories is unchanged",
