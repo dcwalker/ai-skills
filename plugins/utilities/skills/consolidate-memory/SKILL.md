@@ -30,8 +30,8 @@ script, which only reports unless told to apply an approved change.
 
 - **Project memory**: `~/.claude/projects/<slug>/memory/`, one Markdown file per memory plus a
   `MEMORY.md` index of one-line links. The `<slug>` is a lossy encoding of the project path
-  (`/`, `.`, and spaces all become `-`), so never decode it; the script reads each project's real
-  path from its transcripts. The same directory holds session transcripts (`*.jsonl`) and
+  (punctuation and spaces all become `-`), so never decode it; the script reads each project's
+  real path from its transcripts. The same directory holds session transcripts (`*.jsonl`) and
   UUID-named session directories.
 - **The shared tree**: `~/memories` by default, in the layout Claude app memory uses:
 
@@ -67,7 +67,7 @@ only. Every path option must be inside the home or temp directory.
 | `seed --from DIR [--apply]` | Copy a Claude app memory export into the tree, skipping anything already there |
 | `check-tree [--json]` | Check each tree file's location, frontmatter, and size against what Claude app memory accepts; exits 1 if any file has a problem |
 | `promote --plan FILE [--apply]` | Apply an approved promotion plan (below) |
-| `cleanup [--apply] [--force]` | Remove transcripts and session directories of projects whose folder is provably gone, and remove dead `~/.claude.json` entries |
+| `cleanup [--apply] [--ignore-sessions] [--force]` | Remove transcripts and session directories of projects whose folder is provably gone, and remove dead `~/.claude.json` entries |
 
 Options before the command: `--claude-dir` (default `~/.claude`), `--claude-json` (default
 `~/.claude.json`), `--tree` (default `~/memories`). Use `--tree` when the user keeps the tree
@@ -75,6 +75,13 @@ somewhere else.
 
 Without `--apply`, `seed`, `promote`, and `cleanup` print what they would do and change nothing.
 Run every changing command without `--apply` first and show the user the result.
+
+`promote --apply` and `cleanup --apply` first check that they can write to every directory they
+will touch, and change nothing if one is blocked. A sandboxed session usually cannot write under
+`~/.claude`, so this is the expected result there, not a bug. Don't work around the sandbox: tell
+the user, and give them the exact command to run in a terminal (with the plan file's full path
+for `promote`), or let them decide whether to allow it to run outside the sandbox. Tree writes
+under `~/memories` usually still work, so finish those first.
 
 ## Procedure in Claude Code
 
@@ -122,6 +129,10 @@ meaning, so read both files before treating a pair as duplicates.
   `topics/<name>.md`, kept whole, with `name` changed to the new file's stem. Don't flatten its
   reasoning into a bullet.
 - Near-duplicates merge into one file or bullet that keeps every distinct detail from each copy.
+  For a merged bullet, write it yourself and `remove` every copy. For a merged standalone file,
+  either `move` one copy and then `remove` the others into the same target (in one plan, the
+  move first), editing the moved file afterward to add the others' details, or write the merged
+  file yourself and `remove` all copies.
 
 ### 4. Find conflicts
 
@@ -161,9 +172,13 @@ Wait for approval. The user may approve all of it, some of it, or change destina
    ```
    `move` copies the file into the tree (refusing to overwrite), sets its frontmatter `name` to the
    new file's stem, and then removes the project copy.
-   `remove` is for a memory you already merged into an existing tree file in step 1; it requires
-   that target to exist. Either way the project copy is backed up under
+   `remove` is for a memory whose content is already in the tree, merged in step 1 or carried by
+   an earlier `move` in the same plan; its target must exist or be created by that move. A
+   source may appear only once per plan. Either way the project copy is backed up under
    `~/.claude/memory-backups/<timestamp>/` and its line is removed from that project's `MEMORY.md`.
+   A `MEMORY.md` line that also links other files is left in place and reported; edit it by hand.
+   If a step fails partway, the script says which steps were already applied: remove those rows
+   from the plan before running it again.
 3. Fix approved index problems by editing `MEMORY.md` directly.
 4. Run `check-tree` and fix anything it reports.
 
@@ -175,14 +190,18 @@ temporary or eval workspace, and one whose path can't be determined or sits on a
 is kept. A dead project's `memory/` directory is always kept, so promote or summarize its memories
 first; the transcripts it removes can't be resumed afterward.
 
-On approval, run `cleanup --apply`. It backs up `~/.claude.json` before removing entries, and it
-refuses when:
+On approval, run `cleanup --apply`. It backs up `~/.claude.json` before removing entries, records
+each cleaned project's path beside its kept `memory/` so later inventories still know where it
+lived, and refuses when:
 
-- another Claude session is running, because a running session can write its old copy of
-  `~/.claude.json` back over the cleanup. Ask the user to close other sessions, or to confirm
-  running with `--force` knowing that dead entries may reappear.
+- another Claude session is running, or processes can't be listed to check, because a running
+  session can write its old copy of `~/.claude.json` back over the cleanup. The session running
+  this skill is exempt from the check but has the same effect when it exits. Ask the user to
+  close other sessions, or to confirm running with `--ignore-sessions` knowing that removed
+  entries may reappear; transcript removal is not affected.
 - nearly every directory or entry looks dead, which usually means the wrong machine or an
-  unmounted drive. Investigate before suggesting `--force`.
+  unmounted drive. Only `--force` overrides this; investigate before suggesting it, and never
+  pass it just to get past the session check.
 - `~/.claude.json` is a symlink. Pass `--claude-json` with the resolved path if the user wants it
   changed.
 
@@ -209,8 +228,8 @@ memory tools are missing, say so and stop; if the folder isn't available, ask th
    versions' differing lines and ask which way each should go, or offer a merge that keeps both
    sides' facts). Raise contradictions as conflicts, as in step 4 above.
 4. **Apply what the user approves.**
-   - To the app: `memory_write` with the version token from step 1, or `new` for a file the app
-     doesn't have, so a file changed since you read it fails instead of being overwritten; re-read
+   - To the app: `memory_write` with `if_version` set to the version token from step 1, or to
+     `new` for a file the app doesn't have, so a file changed since you read it fails instead of being overwritten; re-read
      and re-compare that file if it does. Keep each file under 49,152 bytes, and keep
      `profile.md` and `preferences.md` short.
    - To the tree: write the approved content into the tree folder.
