@@ -54,7 +54,6 @@ contract as trello_stub.py.
 import datetime
 import hashlib
 import re
-from typing import List, Optional, Union
 
 from common import StubState
 
@@ -116,12 +115,14 @@ def _store(path: str, content: str) -> str:
 
 
 def _description(content: str) -> str:
-    match = re.search(r"^description:\s*(.*)$", content, flags=re.MULTILINE)
-    return match.group(1).strip().strip("\"'") if match else ""
+    for line in content.splitlines():
+        if line.startswith("description:"):
+            return line.removeprefix("description:").strip().strip("\"'")
+    return ""
 
 
 @server.tool()
-def memory_list(path_prefix: str = "", cursor: Optional[str] = None, include_preview: bool = False) -> str:
+def memory_list(path_prefix: str = "", cursor: str | None = None, include_preview: bool = False) -> str:
     """List memory files sorted by path, with size and last-updated time. path_prefix filters by
     directory, cursor pages through large stores, and include_preview adds a one-line preview taken
     from each file's description."""
@@ -144,7 +145,7 @@ def memory_list(path_prefix: str = "", cursor: Optional[str] = None, include_pre
 
 
 @server.tool()
-def memory_read(path: Union[str, List[str]]) -> str:
+def memory_read(path: str | list[str]) -> str:
     """Read one memory file, or a list of up to 20. Returns each file's content with its
     last-updated time, size, and version token; pass that token as if_version to change the
     file."""

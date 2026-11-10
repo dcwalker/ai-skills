@@ -23,6 +23,7 @@ transcripts() {
 }
 
 session_dir() {
-  mkdir -p "$PROJECTS/$1/00000009-0000-4000-8000-000000000009/subagents"
-  printf '{"type":"assistant"}\n' > "$PROJECTS/$1/00000009-0000-4000-8000-000000000009/subagents/agent.jsonl"
+  local slug="$1"
+  mkdir -p "$PROJECTS/$slug/00000009-0000-4000-8000-000000000009/subagents"
+  printf '{"type":"assistant"}\n' > "$PROJECTS/$slug/00000009-0000-4000-8000-000000000009/subagents/agent.jsonl"
 }
