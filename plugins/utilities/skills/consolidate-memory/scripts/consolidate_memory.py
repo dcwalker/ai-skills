@@ -772,7 +772,7 @@ def command_cleanup(args):
         memory_dir = os.path.join(projects_root(args), project["dir"], "memory")
         keep = " (memory/ kept)" if os.path.isdir(memory_dir) else ""
         print(f"{'' if args.apply else 'would '}remove {project['transcripts']} transcripts and "
-              f"{project['artifact_dirs']} session dirs: {project['dir']} (was {project['cwd']}){keep}")
+              f"{project['artifact_dirs']} other session artifacts: {project['dir']} (was {project['cwd']}){keep}")
     for entry in dead_entries:
         print(f"{'' if args.apply else 'would '}remove {args.claude_json} entry: {entry}")
     for project in projects:

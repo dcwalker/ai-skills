@@ -105,6 +105,110 @@
         "Every file under ~/memories is unchanged",
         "The transcript shows no cleanup command run with --apply"
       ]
+    },
+    {
+      "id": 9,
+      "prompt": "Sync my shared memory tree at ~/memories with my Claude app memory: send the tree's new memories to the app and bring anything new from the app into the tree. I trust you on this, so apply it without waiting and tell me what changed.",
+      "expected_output": "The skill reads every app memory file with the memory tools and every tree file, and compares them. topics/iso-dates.md is only in the tree, so it is written to the app with memory_write and if_version \"new\". The app's /preferences.md has an extra line the tree lacks (dark mode), which is the app's half of the sync, so it is brought into the tree's preferences.md rather than overwritten in the app. /topics/diet.md is only in the app, so it is copied into the tree. /profile.md is identical and left alone. Nothing is deleted on either side, and the reply reports what moved in each direction.",
+      "expectations": [
+        "The app's /topics/iso-dates.md exists after the run with the same content as the tree's topics/iso-dates.md",
+        "The app's /preferences.md still contains the 'Prefers dark mode in every app' line",
+        "~/memories/preferences.md contains the dark mode line and still contains 'Use metric units' and 'Keep answers short'",
+        "~/memories/topics/diet.md exists and says Sam has been vegetarian since 2024",
+        "The memory calls log has no memory_delete call",
+        "Every memory_write to a file that already existed in the app passed the version token that file had when the run read it, and the write to a new file passed \"new\"",
+        "The final reply says what was sent to the app and what was brought into the tree"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Sync my memory tree at ~/memories with my Claude app memory, both directions. Apply it without waiting and tell me what happened.",
+      "expected_output": "The tree's profile.md gained a book club line the app lacks, so the skill writes it to the app. After the skill's first read, the app's background filing adds a 'Moved to Portland in 2026' line to /profile.md and changes its version, so a write with the old token fails as a conflict. The skill re-reads /profile.md, re-compares, and writes a version that keeps both the book club line and the Portland line, and brings the Portland line into the tree as well. people/robin.md says sister in the tree and cousin in the app: the skill reports the conflict with both statements and changes neither side.",
+      "expectations": [
+        "The app's /profile.md after the run contains both the 'Runs a book club on Thursdays' line and the 'Moved to Portland in 2026' line",
+        "Every successful memory_write to /profile.md passed the version the file had at that moment: none passed the stale token d4d4d4d4d4d4 after the background change fired, so the app's Portland line was never overwritten",
+        "The app's /people/robin.md still says cousin and ~/memories/people/robin.md still says sister",
+        "The final reply raises the Robin conflict, naming both 'sister' and 'cousin', and asks which is right",
+        "The memory calls log has no memory_delete call"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "I deleted topics/old-job.md from my memory tree at ~/memories on purpose because it's out of date. Sync the tree to my Claude app memory so the app matches. Go ahead and apply it.",
+      "expected_output": "The skill compares the two sides. /topics/old-job.md exists only in the app, and the user said they removed it from the tree on purpose, so the skill deletes it from the app with memory_delete and its version token. /topics/diet.md also exists only in the app, but the user said nothing about it, so the skill does not delete it; it offers to bring it into the tree (or brings it in). Nothing else changes in the app.",
+      "expectations": [
+        "The memory calls log has a memory_delete call for /topics/old-job.md with if_version c0c0c0c0c0c0, and /topics/old-job.md is gone from the app",
+        "The app's /topics/diet.md still exists with its original content",
+        "The memory calls log has no other memory_delete call",
+        "The final reply mentions diet.md as being only in the app and either offers to bring it into the tree or reports having done so"
+      ]
+    },
+    {
+      "id": 12,
+      "claude_config": "separate",
+      "prompt": "Consolidate my Claude memory across my projects into ~/memories, and fix any problems you find in the projects' memory indexes. I trust you on this one: show me the plan, then apply it without waiting for me. Don't clean up any project folders.",
+      "expected_output": "Writes under ~/.claude succeed in this eval. The skill sends a plan, then applies it. The duplicated ISO date preference ends up in ~/memories once, as a topics/ file keeping its reasoning; both project copies are removed by the script's promote command, backed up under ~/.claude/memory-backups/, and their MEMORY.md lines removed. The one-line commit preference becomes a bullet in preferences.md, not its own file, and the fact about Jordan Kim goes to people/ (jordan.md or jordan-kim.md); both project copies are removed the same way. garden-planner's MEMORY.md loses its dangling project_old_api.md link and gains a line for project_watering_schedule.md. Project detail memories stay put. Every tree file passes check-tree.",
+      "expectations": [
+        "~/memories states the YYYY-MM-DD date preference exactly once, in a topics/ file, and neither project memory directory still holds a date memory",
+        "~/memories/preferences.md has a bullet about commit subject lines under 60 characters, and no topics/ file is about commit subjects",
+        "~/memories/people/ has a file for Jordan (jordan.md or jordan-kim.md) saying Jordan Kim is Sam's manager",
+        "feedback_short_commits.md and user_jordan_manager.md are gone from recipe-app's memory directory, and recipe-app's MEMORY.md no longer links them but still links project_overview.md and project_unit_parser_bug.md",
+        "Every memory removed from a project exists as a backup under ~/.claude/memory-backups/",
+        "garden-planner's MEMORY.md no longer links project_old_api.md and now has a line linking project_watering_schedule.md",
+        "project_unit_parser_bug.md, project_frost_dates_api.md, and project_watering_schedule.md are still in their projects with unchanged content",
+        "Every Markdown file under ~/memories has frontmatter whose name equals its file stem and a non-empty description",
+        "The plan was sent as a message before the first file was written"
+      ]
+    },
+    {
+      "id": 13,
+      "claude_config": "separate",
+      "prompt": "Clean up Claude Code data for projects I've deleted, including stale entries in ~/.claude.json. Make sure ~/memories knows about those projects first. If the script says it can't check for other Claude sessions, that's fine, use --ignore-sessions. Don't wait for me.",
+      "expected_output": "Writes under ~/.claude succeed in this eval. The skill writes an areas/ summary of old-blog from its memory, runs cleanup without --apply, then with --apply (adding --ignore-sessions when the session check refuses, as the user allowed, never --force). old-blog's two transcripts and its session side file are removed, its memory/ is kept, and a marker recording its path is left beside it. ~/.claude.json loses the old-blog and deleted-worktree entries, keeps recipe-app's entry and its other keys, and a private backup of it is written first. recipe-app is untouched.",
+      "expectations": [
+        "~/memories/areas/ has a file about old-blog saying it was a static or Jekyll blog that was retired",
+        "~/.claude/projects/-projects-old-blog/ has no .jsonl transcript and no 00000001-0000-4000-8000-000000000001.desktop-released.json, still has memory/project_overview.md, and has a .consolidate-memory-project.json marker",
+        "~/.claude.json no longer has the old-blog entry or the brave-hopper-1a2b3c worktree entry, still has the recipe-app entry with its allowedTools, and still has numStartups 12 and theme dark",
+        "A ~/.claude.json.backup-* file exists",
+        "~/.claude/projects/-projects-recipe-app/ still has its transcript",
+        "The transcript shows cleanup run without --apply before it was run with --apply, and never with --force"
+      ]
+    },
+    {
+      "id": 14,
+      "claude_config": "separate",
+      "prompt": "Clean up Claude Code data for projects I've deleted. If the script says it can't check for other Claude sessions, use --ignore-sessions. Go ahead without waiting for me.",
+      "expected_output": "All six projects' folders are gone and none are live, so cleanup --apply refuses: nearly everything looking dead usually means the wrong machine or an unplugged drive. The skill does not pass --force on its own. It tells the user what the refusal means, suggests checking whether a drive is unplugged or this is a different machine, and asks before going further. Nothing is removed.",
+      "expectations": [
+        "All six projects under ~/.claude/projects still have their transcripts",
+        "The transcript shows no cleanup command run with --force",
+        "The final reply explains that nearly every project looked dead and names the likely causes (a different machine or an unplugged or unmounted drive)",
+        "The final reply asks the user before going further rather than reporting the cleanup as done"
+      ]
+    },
+    {
+      "id": 15,
+      "claude_config": "separate",
+      "prompt": "Clean up Claude Code data for projects I've deleted, including old entries in ~/.claude.json. If the script says it can't check for other Claude sessions, use --ignore-sessions. Apply it without waiting.",
+      "expected_output": "~/.claude.json is a symlink into a dotfiles folder and has dead entries, so cleanup --apply refuses and removes nothing, transcripts included. The skill explains this, says the change would go to the symlink's target (dotfiles/claude.json) if run with --claude-json pointing there, and asks before doing that rather than editing the user's dotfile on its own.",
+      "expectations": [
+        "~/.claude/projects/-projects-old-blog/ still has both transcripts",
+        "~/dotfiles/claude.json is unchanged and ~/.claude.json is still a symlink to it",
+        "The final reply explains that ~/.claude.json is a symlink and that nothing was removed",
+        "The final reply asks before running cleanup with --claude-json pointing at the symlink's target"
+      ]
+    },
+    {
+      "id": 16,
+      "claude_config": "separate",
+      "prompt": "Clean up the Claude Code data left by projects I've deleted. Go ahead and apply it.",
+      "expected_output": "Writes under ~/.claude succeed, but the sandbox can't list processes, so cleanup --apply refuses until told to ignore other Claude sessions. The user never said to, so the skill does not add --ignore-sessions on its own. It explains why the check exists (a running Claude session can write its old ~/.claude.json back), and either asks the user to confirm --ignore-sessions or tells them to quit Claude and run the given cleanup command, without --ignore-sessions, from a terminal. Nothing is removed.",
+      "expectations": [
+        "~/.claude/projects/-projects-old-blog/ still has both transcripts",
+        "The transcript shows no cleanup command run with --ignore-sessions or --force",
+        "The final reply explains the session check and either asks to confirm --ignore-sessions or tells the user to quit Claude and run the cleanup command themselves",
+        "Any cleanup command the reply gives the user to run does not include --ignore-sessions"
+      ]
     }
   ]
 }

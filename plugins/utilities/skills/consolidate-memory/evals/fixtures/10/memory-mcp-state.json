@@ -1,0 +1,42 @@
+{
+  "files": {
+    "/profile.md": {
+      "content": "---\nname: \"profile\"\ndescription: \"Who Sam is\"\n---\n\n- Name: Sam Rivera [stated]\n- Works as a product designer at Northwind Studio [stated]\n",
+      "version": "d4d4d4d4d4d4",
+      "updated": "2026-11-01T17:00:00Z"
+    },
+    "/preferences.md": {
+      "content": "---\nname: \"preferences\"\ndescription: \"How Sam wants Claude to respond\"\n---\n\n- Use metric units [stated]\n- Keep answers short and skip the preamble [stated]\n",
+      "version": "e5e5e5e5e5e5",
+      "updated": "2026-11-01T17:00:00Z"
+    },
+    "/people/robin.md": {
+      "content": "---\nname: \"robin\"\ndescription: \"Robin, Sam's cousin\"\n---\n\n- Sam's cousin [stated]\n",
+      "version": "f6f6f6f6f6f6",
+      "updated": "2026-11-01T17:00:00Z"
+    }
+  },
+  "scheduled_changes": [
+    {
+      "id": "background-filing-edits-profile",
+      "after_call": {
+        "tool": "memory_read",
+        "count": 1
+      },
+      "changes": [
+        {
+          "op": "merge",
+          "path": [
+            "files",
+            "/profile.md"
+          ],
+          "value": {
+            "content": "---\nname: \"profile\"\ndescription: \"Who Sam is\"\n---\n\n- Name: Sam Rivera [stated]\n- Works as a product designer at Northwind Studio [stated]\n- Moved to Portland in 2026 [observed]\n",
+            "version": "a7a7a7a7a7a7",
+            "updated": "2026-11-09T12:00:00Z"
+          }
+        }
+      ]
+    }
+  ]
+}
