@@ -1,10 +1,10 @@
-# Skill Benchmark: consolidate-memory
+# Skill Benchmark: sync-memory
 
 **Executor**: claude-opus-5-5 (Claude Code 2.1.316)
 **Grader**: claude-opus-5-5
 **Date**: 2026-11-10
 **Evals**: 1-16 (1 run each, with_skill only)
-**Driver**: `TRIALS_DIR=$TMPDIR/cmt5 bash evals/lib/run-mcp-trials.sh plugins/utilities/skills/consolidate-memory/evals`
+**Driver**: `TRIALS_DIR=$TMPDIR/cmt5 bash evals/lib/run-mcp-trials.sh plugins/utilities/skills/sync-memory/evals`
 
 ## Summary
 

@@ -1,7 +1,7 @@
 {
  "metadata": {
-  "skill_name": "consolidate-memory",
-  "skill_path": "plugins/utilities/skills/consolidate-memory",
+  "skill_name": "sync-memory",
+  "skill_path": "plugins/utilities/skills/sync-memory",
   "executor_model": "claude-opus-5-5",
   "analyzer_model": "claude-opus-5-5",
   "timestamp": "2026-11-10T01:30:00Z",
@@ -24,7 +24,7 @@
    16
   ],
   "runs_per_configuration": 1,
-  "executor": "TRIALS_DIR=$TMPDIR/cmt5 bash evals/lib/run-mcp-trials.sh plugins/utilities/skills/consolidate-memory/evals",
+  "executor": "TRIALS_DIR=$TMPDIR/cmt5 bash evals/lib/run-mcp-trials.sh plugins/utilities/skills/sync-memory/evals",
   "notes": "Graded against each trial's home/ (the tree, project memory and MEMORY.md, backups, ~/.claude.json), memory-state-out.json and memory-calls.log for the app-sync evals, tools.log, and events.jsonl, not the reply's own account. Evals 1-11 keep the protected ~/.claude, so promote and cleanup end in the blocked-write handoff; evals 12-16 set claude_config separate so those writes land. No trial wrote outside its run directory."
  },
  "runs": [
@@ -631,7 +631,7 @@
      "evidence": "-projects-old-blog has no transcripts or side file, keeps memory/ and the marker; ~/.claude.json keeps only recipe-app with its keys; backup written; dry run first; --ignore-sessions as allowed; no --force."
     },
     {
-     "text": "~/.claude/projects/-projects-old-blog/ has no .jsonl transcript and no 00000001-0000-4000-8000-000000000001.desktop-released.json, still has memory/project_overview.md, and has a .consolidate-memory-project.json marker",
+     "text": "~/.claude/projects/-projects-old-blog/ has no .jsonl transcript and no 00000001-0000-4000-8000-000000000001.desktop-released.json, still has memory/project_overview.md, and has a .sync-memory-project.json marker",
      "passed": true,
      "evidence": "-projects-old-blog has no transcripts or side file, keeps memory/ and the marker; ~/.claude.json keeps only recipe-app with its keys; backup written; dry run first; --ignore-sessions as allowed; no --force."
     },

@@ -1,21 +1,22 @@
 ---
-name: consolidate-memory
+name: sync-memory
 description: >
-  Consolidate Claude memory across every project and Claude app memory: find memories that apply
-  everywhere (preferences, conventions, facts about the user) scattered or duplicated across
-  per-project Claude Code memory directories, promote them into one shared memory tree in the same
-  layout Claude app memory uses, summarize each project for the app, flag conflicts, clean up
-  project directories whose folders no longer exist, and sync the shared tree with Claude app
-  memory from an app chat. Use when the user wants to consolidate, deduplicate, share, sync, or
-  clean up Claude memory across projects or between Claude Code and the Claude app, such as
-  "make my memories apply to all projects", "this preference should be everywhere", "sync my Code
-  memory to the Claude app", "clean up old project memory", or "which of my memories are
-  duplicated". Not for tidying one project's memory directory on its own.
+  Sync Claude memory across every project and Claude app memory: tidy each project's memory, find
+  memories that apply everywhere (preferences, conventions, facts about the user) scattered or
+  duplicated across per-project Claude Code memory directories, promote them into one shared memory
+  tree in the same layout Claude app memory uses, summarize each project for the app, flag
+  conflicts, clean up project directories whose folders no longer exist, and sync the shared tree
+  with Claude app memory from an app chat. Use when the user wants to consolidate, deduplicate,
+  share, sync, or clean up Claude memory across projects or between Claude Code and the Claude app,
+  such as "make my memories apply to all projects", "this preference should be everywhere", "sync my
+  Code memory to the Claude app", "clean up old project memory", or "which of my memories are
+  duplicated". For tidying a single project's memory on its own, use Anthropic's consolidate-memory
+  skill instead; this skill runs that pass on every project as its first step.
 metadata:
   category: utilities
 ---
 
-# Consolidate Memory
+# Sync Memory
 
 Claude Code learns memories one project at a time, so a fact that holds everywhere ends up
 learned several times, in slightly different words, in several projects, and the Claude app never
@@ -62,7 +63,7 @@ script, which only reports unless told to apply an approved change.
 
 ## The bundled script
 
-`scripts/consolidate_memory.py`, resolved relative to this `SKILL.md`. Python 3.9 or later,
+`scripts/sync_memory.py`, resolved relative to this `SKILL.md`. Python 3.9 or later,
 standard library only. Every path the script writes under must be inside the home or temp
 directory; read-only inputs (`--from`, `--plan`) can be anywhere.
 
@@ -71,7 +72,7 @@ directory; read-only inputs (`--from`, `--plan`) can be anywhere.
 | `inventory [--json]` | Every project directory with its real path and state (`live`, `dead`, `unmounted`, `unknown`), every memory file with its name, description, and type, `MEMORY.md` problems, near-duplicate memories across projects and the tree, the tree's files, and dead `~/.claude.json` entries |
 | `seed --from DIR [--apply]` | Copy a Claude app memory export into the tree, skipping anything already there |
 | `check-tree [--json]` | Check each tree file's location, frontmatter, and size against what Claude app memory accepts; exits 1 if any file has a problem |
-| `promote --plan FILE [--apply]` | Apply an approved promotion plan (below) |
+| `promote --plan FILE [--apply]` | Apply an approved plan of `move`, `remove`, and `retire` rows (below) |
 | `cleanup [--apply] [--ignore-sessions] [--force] [--skip-claude-json]` | Remove transcripts and session directories of projects whose folder is provably gone, and remove dead `~/.claude.json` entries |
 
 Options before the command: `--claude-dir` (default `~/.claude`), `--claude-json` (default
@@ -113,7 +114,29 @@ If the tree doesn't exist and the user has a Claude app memory export (a folder 
 `profile.md`, `preferences.md`, and `topics/`, `areas/`, `people/`), seed the tree from it with
 `seed --from`, dry run first. If there is no export, the tree starts empty and this run creates it.
 
-### 2. Classify each project memory
+### 2. Tidy each project's memory
+
+Before sorting anything across projects, give every project's memory the per-project pass that
+Anthropic's `consolidate-memory` skill describes. Invoke it (`anthropic-skills:consolidate-memory`,
+or `consolidate-memory` where it is installed under that name) to load its instructions, then
+follow its phases on each project memory directory the inventory lists, one directory at a time,
+not only the current session's. Where that skill isn't available, apply its main changes
+directly:
+
+- Retire memories about work that is finished or past its date, folding any lasting lesson
+  ("prefers X format for launch docs") into a durable memory first.
+- Convert relative time references ("next week", "by Friday") to absolute dates. Anchor them to
+  when the memory was written (the file's modification time, or a date in the memory itself), and
+  say in the plan which date you assumed.
+- Drop memories that only restate something easy to look up again from the user's tools.
+- Merge overlapping memories within the project and fix its `MEMORY.md`.
+
+That skill edits as it goes; here, don't. Collect each change it calls for as a proposal for the
+plan in step 6: retirements become `retire` rows in the promotion plan, and date fixes, merges,
+and index fixes become edits you make in step 7 once approved. A memory about to be promoted to
+the tree needs only its dates fixed, and those go in the tree copy.
+
+### 3. Classify each project memory
 
 Put every project memory in exactly one group:
 
@@ -140,7 +163,7 @@ Promote first what the inventory's near-duplicate list shows in two or more proj
 rule learned twice is the clearest sign it is universal. The score finds similar wording, not
 meaning, so read both files before treating a pair as duplicates.
 
-### 3. Decide where each universal memory goes
+### 4. Decide where each universal memory goes
 
 - A one-line preference joins `preferences.md` as a bullet, in the existing file's style.
 - A fact about the user joins `profile.md`, or the matching `topics/` file when one covers that
@@ -155,7 +178,7 @@ meaning, so read both files before treating a pair as duplicates.
   move first), editing the moved file afterward to add the others' details, or write the merged
   file yourself and `remove` all copies.
 
-### 4. Find conflicts
+### 5. Find conflicts
 
 Compare every memory you are about to promote, and every project summary, with what the tree
 already says. A conflict is two statements that can't both be true or followed ("partner" versus
@@ -163,13 +186,15 @@ already says. A conflict is two statements that can't both be true or followed (
 around it: list each conflict with both statements and where each came from, and ask the user
 which is right. Leave a conflicting memory unpromoted until the user answers.
 
-### 5. Present the plan
+### 6. Present the plan
 
 Show the user, in one message:
 
 - Each universal memory: its project and file, the tree file it goes to, and whether it becomes
   its own file or merges into an existing one.
 - Each project summary to add or update in `areas/`.
+- The per-project tidying from step 2: each retirement with its reason, and each edit (dates
+  converted, with the date assumed; memories merged).
 - Each conflict, with both sides.
 - Memories you are leaving as project detail, as a count per project, with any you were unsure
   about named.
@@ -183,9 +208,9 @@ optional: send it as its own message, written out in full, before you write the 
 the first command with `--apply`. Then continue without waiting. A plan that first appears in the
 final report comes too late.
 
-### 6. Apply
+### 7. Apply
 
-Before the first change, confirm the plan message from step 5 was sent in this conversation. If
+Before the first change, confirm the plan message from step 6 was sent in this conversation. If
 it wasn't, because the user authorized applying without waiting, send it now, then start.
 
 1. Write the tree changes yourself: new files, bullets merged into existing files, and `areas/`
@@ -209,10 +234,12 @@ it wasn't, because the user authorized applying without waiting, send it now, th
    If a step fails partway, the script says which steps were already applied: remove those rows
    from the plan, and change the failed row to `remove` if its tree file was already written,
    before running it again.
-3. Fix approved index problems by editing `MEMORY.md` directly.
+3. Make the approved per-project edits from step 2, and fix approved index problems, by editing
+   the memory files and `MEMORY.md` directly. Retirements go in the promotion plan as
+   `{"action": "retire", "source": "..."}` rows, so they are backed up like every removal.
 4. Run `check-tree` and fix anything it reports.
 
-### 7. Clean up dead projects
+### 8. Clean up dead projects
 
 Run `cleanup` without `--apply` and show the user what it would remove. It only touches projects
 whose recorded path is provably gone: a project whose folder still exists is never touched, even a
@@ -240,10 +267,11 @@ first, so in a sandbox the write block is what it reports):
   cleanup. Without that yes, offer to remove the transcripts alone with `--skip-claude-json`,
   which leaves `~/.claude.json` and its target untouched.
 
-### 8. Report
+### 9. Report
 
-Say what moved where, which summaries were added, which conflicts are waiting on the user, any
-memory that tried to instruct the assistant, what cleanup removed, and where the backups are.
+Say what moved where, what was retired or edited in each project, which summaries were added,
+which conflicts are waiting on the user, any memory that tried to instruct the assistant, what
+cleanup removed, and where the backups are.
 Then tell the user that the tree is ready to sync to the Claude app: in a Claude app chat with the
 tree's folder added, ask to sync memory. In the Claude iOS app, the user can share the tree's
 files from iCloud Drive into the chat instead.
@@ -268,7 +296,7 @@ the user can finish that half from a session that has the folder.
    tree, or to delete them from the app when the user removed them from the tree on purpose),
    tree-only files (offer to write them to the app), and differing files (show both versions'
    differing lines and ask which way each should go, or offer a merge that keeps both sides'
-   facts). Raise contradictions as conflicts, as in step 4 above.
+   facts). Raise contradictions as conflicts, as in step 5 of the Claude Code procedure.
 4. **Apply what the user approves.**
    - To the app: `memory_write` with `if_version` set to the version token from step 1, or to
      `new` for a file the app doesn't have, so a file changed since you read it fails instead of

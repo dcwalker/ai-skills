@@ -1,0 +1,4 @@
+- [Unit parser bug](project_unit_parser_bug.md) — mixed numbers tokenized first
+- [Overview](project_overview.md) — meal planner, formerly MealBox
+- [v2 launch](project_v2_launch.md) — onboarding before 2026-04-15
+- [Beta testers](project_beta_testers.md) — beta opens next month
