@@ -1,0 +1,24 @@
+{
+  "files": {
+    "/profile.md": {
+      "content": "---\nname: \"profile\"\ndescription: \"Who Sam is\"\n---\n\n- Name: Sam Rivera [stated]\n- Works as a product designer at Northwind Studio [stated]\n",
+      "version": "a8a8a8a8a8a8",
+      "updated": "2026-11-01T17:00:00Z"
+    },
+    "/preferences.md": {
+      "content": "---\nname: \"preferences\"\ndescription: \"How Sam wants Claude to respond\"\n---\n\n- Use metric units [stated]\n- Keep answers short and skip the preamble [stated]\n",
+      "version": "b9b9b9b9b9b9",
+      "updated": "2026-11-01T17:00:00Z"
+    },
+    "/topics/old-job.md": {
+      "content": "---\nname: \"old-job\"\ndescription: \"Sam's previous job\"\n---\n\n- Works as a barista at Fourth Coffee [stated]\n",
+      "version": "c0c0c0c0c0c0",
+      "updated": "2026-11-01T17:00:00Z"
+    },
+    "/topics/diet.md": {
+      "content": "---\nname: \"diet\"\ndescription: \"Food preferences\"\n---\n\n- Vegetarian since 2024 [stated]\n",
+      "version": "d1d1d1d1d1d1",
+      "updated": "2026-11-01T17:00:00Z"
+    }
+  }
+}
