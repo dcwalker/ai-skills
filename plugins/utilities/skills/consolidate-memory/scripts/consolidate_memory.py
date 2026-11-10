@@ -4,7 +4,7 @@
 Claude Code keeps one directory per project under <claude-dir>/projects/, named with a lossy
 slug of the project path. Each holds session transcripts (*.jsonl, plus UUID-named artifact
 directories) and, for some projects, auto memory in memory/ with a MEMORY.md index. The shared
-tree (--tree, default ~/memories) uses the same layout as Claude app memory: profile.md,
+tree (--tree) uses the same layout as Claude app memory: profile.md,
 preferences.md, and topics/, areas/, and people/ directories of Markdown files.
 
 Commands:
@@ -36,8 +36,11 @@ Usage:
   consolidate_memory.py seed --from EXPORT_DIR [--apply]
   consolidate_memory.py check-tree [--json]
 
-Common options: --claude-dir (default ~/.claude), --claude-json (default ~/.claude.json),
---tree (default ~/memories). Every path option must be inside the home or temp directory.
+Common options: --claude-dir (default ~/.claude), --claude-json (default ~/.claude.json), and
+--tree. The tree defaults to a memories folder in iCloud Drive (~/Library/Mobile
+Documents/com~apple~CloudDocs/memories), so the Claude iOS and desktop apps can open it; without
+iCloud Drive, ~/Documents/memories; without a Documents folder, ~/memories. Every path the
+script writes under must be inside the home or temp directory.
 
 A promotion plan is a JSON list of objects, each source appearing once. A "remove" target must
 exist already or be created by an earlier "move" in the same plan:
@@ -101,6 +104,16 @@ def checked_arg_path(path, option):
         if resolved == base or resolved.startswith(base + os.sep):
             return resolved
     sys.exit(f"{option} must be inside your home directory or the temp directory: {path}")
+
+
+def default_tree():
+    """The tree's default location: iCloud Drive when present, then Documents, then home."""
+    home = os.path.expanduser("~")
+    for parent in (os.path.join(home, "Library", "Mobile Documents", "com~apple~CloudDocs"),
+                   os.path.join(home, "Documents")):
+        if os.path.isdir(parent):
+            return os.path.join(parent, "memories")
+    return os.path.join(home, "memories")
 
 
 def timestamp():
@@ -884,7 +897,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--claude-dir", default="~/.claude")
     parser.add_argument("--claude-json", default="~/.claude.json")
-    parser.add_argument("--tree", default="~/memories")
+    parser.add_argument("--tree", default=None,
+                        help="the shared tree (default: memories in iCloud Drive, else ~/Documents, else ~)")
     commands = parser.add_subparsers(dest="command", required=True)
     inventory = commands.add_parser("inventory")
     inventory.add_argument("--json", action="store_true")
@@ -904,7 +918,7 @@ def main():
     args.claude_json_is_link = os.path.islink(os.path.expanduser(args.claude_json))
     args.claude_dir = checked_arg_path(args.claude_dir, "--claude-dir")
     args.claude_json = checked_arg_path(args.claude_json, "--claude-json")
-    args.tree = checked_arg_path(args.tree, "--tree")
+    args.tree = checked_arg_path(args.tree or default_tree(), "--tree")
     if args.tree == os.path.realpath(os.path.expanduser("~")):
         sys.exit("--tree must be a folder inside your home directory, not the home directory itself")
     {"inventory": command_inventory, "promote": command_promote, "cleanup": command_cleanup,
