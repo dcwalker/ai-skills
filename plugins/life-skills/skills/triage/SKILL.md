@@ -487,8 +487,9 @@ without giving one, ask when.
 
 A check-in, or an appointment fixed at a set time, keeps the date Step 6
 gave it and is recorded the way the scope records such dates, a due date
-included when that is the scope's pattern. Step 6 still asks when such an
-action has no date. A soft target in the item's text ("hoping to finish by
+included when that is the scope's pattern. A check-in's date is the day the
+other person promised to act ("I'll send it by Thursday"), when they named
+one. Step 6 asks when only when no such date exists. A soft target in the item's text ("hoping to finish by
 Friday") is neither: it stays in the description, not the due date.
 
 Otherwise, leave the field empty and do not raise it, on an active item as
