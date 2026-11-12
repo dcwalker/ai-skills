@@ -1,0 +1,95 @@
+{
+  "anchor_date": "2026-11-12",
+  "stub_now": "2026-11-12T15:00:00Z",
+  "boards": {
+    "board-1": {
+      "id": "board-1",
+      "name": "Personal Tasks"
+    }
+  },
+  "lists": {
+    "list-1": {
+      "id": "list-1",
+      "name": "Inbox",
+      "board_id": "board-1"
+    }
+  },
+  "labels": {
+    "label-1": {
+      "id": "label-1",
+      "name": "home",
+      "color": "green",
+      "board_id": "board-1"
+    }
+  },
+  "cards": {
+    "card-1": {
+      "id": "card-1",
+      "name": "Fix the porch light",
+      "desc": "porch light flickers. bulb spec https://hardware.invalid/specs/br30-led.pdf maybe the bulb maybe the switch??",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [
+        "label-1"
+      ],
+      "due": null,
+      "due_complete": false,
+      "pos": 1024,
+      "url": "https://trello.com/c/card-1/fix-the-porch-light",
+      "attachments": [
+        {
+          "id": "att-1",
+          "name": "BR30 LED bulb spec sheet",
+          "url": "https://hardware.invalid/specs/br30-led.pdf"
+        },
+        {
+          "id": "att-2",
+          "name": "porch-fixture.jpg",
+          "url": "https://trello.com/1/cards/card-1/attachments/att-2/download/porch-fixture.jpg"
+        }
+      ]
+    },
+    "card-2": {
+      "id": "card-2",
+      "name": "Order a new furnace filter",
+      "desc": "filter size on the receipt https://hardware.invalid/receipts/furnace-filter-16x25.pdf need same size again",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [
+        "label-1"
+      ],
+      "due": null,
+      "due_complete": false,
+      "pos": 2048,
+      "url": "https://trello.com/c/card-2/order-a-new-furnace-filter",
+      "attachments": [
+        {
+          "id": "att-3",
+          "name": "Furnace filter receipt",
+          "url": "https://hardware.invalid/receipts/furnace-filter-16x25.pdf"
+        }
+      ]
+    },
+    "card-3": {
+      "id": "card-3",
+      "name": "Repaint the back door",
+      "desc": "paint is peeling on the back door",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [
+        "label-1"
+      ],
+      "due": null,
+      "due_complete": false,
+      "pos": 3072,
+      "url": "https://trello.com/c/card-3/repaint-the-back-door",
+      "attachments": [
+        {
+          "id": "att-4",
+          "name": "back-door.jpg",
+          "url": "https://trello.com/1/cards/card-3/attachments/att-4/download/back-door.jpg"
+        }
+      ]
+    }
+  }
+}

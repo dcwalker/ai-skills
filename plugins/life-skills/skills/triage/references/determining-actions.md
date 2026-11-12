@@ -61,8 +61,9 @@ Never invent a date. A date comes from the item, its links, or the user:
   against the date of the message or comment that says it.
 - A promise someone else made ("I'll send it by Thursday") sets a check-in's
   date: the day the promise falls due.
-- With no date anywhere, ask. "Next week" or "in a few days" picked by you is
-  an invented date.
+- With no date anywhere, ask for a check-in or a fixed appointment; any
+  other action is left without a date (SKILL.md Step 7, "Due Date"). "Next
+  week" or "in a few days" picked by you is an invented date.
 
 ## Finding the scope's pattern
 
@@ -71,7 +72,8 @@ skill's choice. Look at the other items in the scope for an established
 pattern before proposing where this one goes:
 
 - **Due dates.** Do similar items, especially other check-ins, carry due
-  dates? Then this one gets a due date too.
+  dates? Then this one gets a due date too, when the item, its sources, or the
+  user gives the date. The pattern decides where a date goes, never that one exists.
 - **A waiting-for list or label.** Is there a waiting-for list on the board,
   or a waiting-for label in use? Check-ins go there.
 - **The preferences file.** Does it say how check-ins and due dates are

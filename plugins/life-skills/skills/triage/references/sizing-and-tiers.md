@@ -69,8 +69,8 @@ Use the context and size to select the right enrichment level. The goal is
 
 | Tier | When | What to enrich |
 |---|---|---|
-| **1 — Lightweight** | Personal + Small, or any pure personal quick-task, or a short email that needs only a reply or a delete | Title/subject clarity, assignee (if shared), due date (if time-sensitive), maybe a brief note |
-| **2 — Standard** | Professional + Small/Medium, or Personal + Medium/Large, or an email that needs to be captured as an action | Title, description outcome, labels, assignee, priority, due date |
+| **1 — Lightweight** | Personal + Small, or any pure personal quick-task, or a short email that needs only a reply or a delete | Title/subject clarity, assignee (if shared), due date (if it has a hard deadline), maybe a brief note |
+| **2 — Standard** | Professional + Small/Medium, or Personal + Medium/Large, or an email that needs to be captured as an action | Title, description outcome, labels, assignee, priority, due date (if it has a hard deadline) |
 | **3 — Full** | Professional + Large, or any item that is clearly a project or initiative | Everything in Tier 2, plus phases/sub-tasks, external links, and effort estimate |
 
 When in doubt, start at a lower tier. It is always better to under-enrich and
