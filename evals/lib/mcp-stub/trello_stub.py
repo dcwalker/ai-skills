@@ -505,7 +505,7 @@ _DESC_URL = re.compile(r"https?://[^\s)\]>\"']+")
 
 
 def _desc_urls(desc: str | None) -> list[str]:
-    return [u.rstrip(".,;:!?") for u in _DESC_URL.findall(desc or "")]
+    return [u.rstrip(".,;:!?*_`") for u in _DESC_URL.findall(desc or "")]
 
 
 def _sync_desc_attachments(card: dict, old_desc: str) -> None:
@@ -515,7 +515,7 @@ def _sync_desc_attachments(card: dict, old_desc: str) -> None:
     new_urls = _desc_urls(card["desc"])
     kept = [a for a in card["attachments"] if not (a["url"] in old_urls and a["url"] not in new_urls)]
     attached = {a["url"] for a in kept}
-    used_ids = {a["id"] for a in card["attachments"]} | {a["id"] for a in kept}
+    used_ids = {a["id"] for a in card["attachments"]}
     n = 0
     for url in dict.fromkeys(new_urls):
         if url in attached:
