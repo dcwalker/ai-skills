@@ -308,11 +308,11 @@ Classify the item on two axes and let them pick a tier:
 - **Task size** — small (one action, under a day), medium (a few steps, 1-5
   days), or large/project (multi-week, multi-phase, multiple people).
 
-Personal + small selects **Tier 1** (title clarity, and a due date only if it
-is time-sensitive). Professional small/medium, or personal medium/large,
+Personal + small selects **Tier 1** (title clarity, and a due date only for a
+hard deadline). Professional small/medium, or personal medium/large,
 selects **Tier 2** (title, description outcome, labels, assignee, priority,
-due date). Professional + large selects **Tier 3** (Tier 2 plus phases,
-external links, and an effort estimate).
+and a due date for a hard deadline). Professional + large selects **Tier 3**
+(Tier 2 plus phases, external links, and an effort estimate).
 
 When in doubt, start at a lower tier. It is always better to under-enrich and
 ask than to impose structure the user didn't want.
@@ -476,8 +476,28 @@ action is the check-in Step 6 named.
 
 ### Due Date
 
-If no due date is set and the item is active (not backlog/icebox), propose the
-time Step 6 found, or ask whether there is a target date. Do not invent a date.
+A due date marks a hard deadline, not a date it would be nice to be done by.
+Propose or set one only when the item has a hard deadline: a date the item or
+its sources state, or one that clearly follows from them. A stated deadline
+or expiry is the due date itself. A deadline that follows from an event is
+the event's date, or the day before when the work can't happen on the day
+itself: packing for a trip that launches early on Jan 1 is due Dec 31. When
+the user asks for a due date, use the timing they give; when they ask
+without giving one, ask when.
+
+A check-in, or an appointment fixed at a set time, keeps the date Step 6
+gave it and is recorded the way the scope records such dates, a due date
+included when that is the scope's pattern. A check-in's date is the day the
+other person promised to act ("I'll send it by Thursday"), when they named
+one. Step 6 asks when only when no such date exists. A soft target in the item's text ("hoping to finish by
+Friday") is neither: it stays in the description, not the due date.
+
+Otherwise, leave the field empty and do not raise it, on an active item as
+much as a backlog one. Do not ask whether there is a target date: a soft
+date adds a question the user has to decline, and one set by mistake has to
+be found and removed later. The one exception is an item that clearly hangs on
+a fixed event whose date you can't find (a gift for a birthday): ask for that
+event's date. Do not invent a date.
 
 ### Priority (Professional items only)
 
@@ -560,7 +580,8 @@ Apply this flow:
      description on every one of them — the back-link belongs on the cards
      themselves, not only in the reply you send the user, and never claim in
      that reply that a card links back unless you put the link on the card.
-   - **Labels and due date:** propose based on the source item's context.
+   - **Labels and due date:** propose labels based on the source item's
+     context, and a due date only as Step 7's "Due Date" rule allows.
 4. **A capture is not a license to edit the source.** The item you captured
    *from* gets triaged on its own merits by the normal per-item loop and no
    other way. In particular, do not rewrite its description to strip out the
@@ -659,8 +680,9 @@ always comes first.
 1. A `Done:` line naming what changed ("Done: archived, left unread."), or
    `Done: no changes.` when the user moved on or declined.
 2. A one-line note for any item skipped because it left the scope (Step 3.0).
-3. Then exactly one of: an offer (below), the next item, or the closing
-   report. A report of items changed together (Step 9b) comes before the
+3. Then exactly one of: the current item's next open point (such as a
+   dropped attachment to restore), an offer (below), the next item, or the
+   closing report. A report of items changed together (Step 9b) comes before the
    next item when it asks nothing.
 
 Each reply asks exactly one question, and a reply that already holds a
@@ -732,6 +754,19 @@ Apply an item's changes in this order:
 A change goes on an `Applied:` or `Done:` line, or into the closing report,
 only after its write call succeeded and the re-fetch shows it. A change that
 was proposed but not written is never reported as made.
+
+**Re-check a Trello card's attachments after any description write.** Trello
+drops attachments that a new description no longer references and adds links
+that it does. Before writing a card's description, list its attachments (the
+card's full view, or `GET /1/cards/{id}/attachments`); after the write, list
+them again and compare. Report every attachment that was dropped or added, by
+name, on the item's `Applied:` or `Done:` line. When one was dropped, say so
+plainly, and make restoring it the item's next open point, ahead of the rest:
+it is the reply's one question. Restore it by attaching its URL to the card
+again (`POST /1/cards/{id}/attachments` with `url`, or the connected tool's
+equivalent); an uploaded file whose URL no longer serves it can't be
+restored, so say so instead of offering. When the attachments are unchanged,
+say nothing about them.
 
 ### 9a. Every state change is its own decision
 
@@ -872,6 +907,10 @@ never impose more structure than the work justifies.
   confident changes, and ask only about the points that are genuinely
   unclear. A question about one field or item never holds back the others.
 - Never invent facts, dates, names, or descriptions. Ask if unknown.
+- A due date is a hard deadline. Set or ask about one only as Step 7's
+  "Due Date" rule allows, and never ask for a target date.
+- After any write to a Trello card's description, compare its attachments with
+  the list from before the write and report any that were dropped or added.
 - Refer to every card, issue, or thread by a hyperlink to the item itself,
   never a bare title or key, and never a URL the platform did not return.
 - Always show the full draft of any comment, email, or new Trello card before
