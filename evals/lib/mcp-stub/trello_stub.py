@@ -42,7 +42,8 @@ State model (the fake Trello "database"):
   }
 
 Attachments: a card's optional "attachments" come back from view_card as
-seeded. A description change on update_card does what Trello does to them:
+seeded. A description change on update_card does what Trello was seen
+doing to them in live use (Trello's API reference does not describe it):
 an attachment whose URL the old description referenced and the new one
 doesn't is dropped, and each URL the new description references that no
 attachment carries is added as a link attachment named by its URL. A card
@@ -514,9 +515,16 @@ def _sync_desc_attachments(card: dict, old_desc: str) -> None:
     new_urls = _desc_urls(card["desc"])
     kept = [a for a in card["attachments"] if not (a["url"] in old_urls and a["url"] not in new_urls)]
     attached = {a["url"] for a in kept}
-    for n, url in enumerate(dict.fromkeys(new_urls)):
-        if url not in attached:
-            kept.append({"id": f"{card['id']}-link-{len(card['attachments']) + n + 1}", "name": url, "url": url})
+    used_ids = {a["id"] for a in card["attachments"]} | {a["id"] for a in kept}
+    n = 0
+    for url in dict.fromkeys(new_urls):
+        if url in attached:
+            continue
+        n += 1
+        while f"{card['id']}-link-{n}" in used_ids:
+            n += 1
+        used_ids.add(f"{card['id']}-link-{n}")
+        kept.append({"id": f"{card['id']}-link-{n}", "name": url, "url": url})
     card["attachments"] = kept
 
 

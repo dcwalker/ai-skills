@@ -16,8 +16,8 @@ be done, offer to do it now (reply, comment, set the label, archive) and do
 it on a yes. Anything longer gets captured as a tracked action. Triage decides
 and records; it does not take on the work behind an item unless the user asks.
 
-**Kanban** — An item in an active column with no assignee, no due date, and no
-recent activity is unmanaged WIP. Assign it and move it forward, or pull it
+**Kanban** — An item in an active column with no assignee and no recent
+activity is unmanaged WIP. Assign it and move it forward, or pull it
 out of the active flow.
 
 **LEAN** — Don't create more structure than the work justifies. A two-minute
