@@ -1,0 +1,63 @@
+{
+  "anchor_date": "2026-11-12",
+  "stub_now": "2026-11-12T15:00:00Z",
+  "boards": {
+    "board-1": {
+      "id": "board-1",
+      "name": "Personal Tasks"
+    }
+  },
+  "lists": {
+    "list-1": {
+      "id": "list-1",
+      "name": "Inbox",
+      "board_id": "board-1"
+    }
+  },
+  "labels": {
+    "label-1": {
+      "id": "label-1",
+      "name": "home",
+      "color": "green",
+      "board_id": "board-1"
+    }
+  },
+  "cards": {
+    "card-1": {
+      "id": "card-1",
+      "name": "Clean out the garage",
+      "desc": "Sort the boxes, take what we don't use to the donation center, and sweep the floor.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": ["label-1"],
+      "due": null,
+      "due_complete": false,
+      "pos": 1024,
+      "url": "https://trello.com/c/card-1/clean-out-the-garage"
+    },
+    "card-2": {
+      "id": "card-2",
+      "name": "Pay the water bill",
+      "desc": "City water bill is $64.20. Payment is due {{date:2026-11-20|%B %-d}}, and late payments get a $15 fee. Pay on the city's portal: https://city-utilities.invalid/pay",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": ["label-1"],
+      "due": null,
+      "due_complete": false,
+      "pos": 2048,
+      "url": "https://trello.com/c/card-2/pay-the-water-bill"
+    },
+    "card-3": {
+      "id": "card-3",
+      "name": "Replace the hallway smoke detector battery",
+      "desc": "It chirps every few minutes. Needs one 9V battery from the drawer by the back door.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": ["label-1"],
+      "due": null,
+      "due_complete": false,
+      "pos": 3072,
+      "url": "https://trello.com/c/card-3/replace-the-hallway-smoke-detector-battery"
+    }
+  }
+}
