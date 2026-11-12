@@ -479,13 +479,15 @@ action is the check-in Step 6 named.
 A due date marks a hard deadline, not a date it would be nice to be done by.
 Propose or set one only when the item has a hard deadline: a date the item or
 its sources state, or one that clearly follows from them. Packing for a trip
-that launches on Jan 1 is due before Jan 1. When the user asks for a due
+that launches on Jan 1 is due before Jan 1: set the day before the event.
+When the user asks for a due
 date, use the timing they give; when they ask without giving one, ask when.
 
-A check-in, or an action Step 6 found at a set time, keeps the date Step 6
+A check-in, or an appointment fixed at a set time, keeps the date Step 6
 gave it and is recorded the way the scope records such dates, a due date
 included when that is the scope's pattern. Step 6 still asks when such an
-action has no date.
+action has no date. A soft target in the item's text ("hoping to finish by
+Friday") is neither: it stays in the description, not the due date.
 
 Otherwise, leave the field empty and do not raise it, on an active item as
 much as a backlog one. Do not ask whether there is a target date: a soft
@@ -576,8 +578,7 @@ Apply this flow:
      themselves, not only in the reply you send the user, and never claim in
      that reply that a card links back unless you put the link on the card.
    - **Labels and due date:** propose labels based on the source item's
-     context, and a due date only for a hard deadline the source gives
-     (Step 7, "Due Date").
+     context, and a due date only as Step 7's "Due Date" rule allows.
 4. **A capture is not a license to edit the source.** The item you captured
    *from* gets triaged on its own merits by the normal per-item loop and no
    other way. In particular, do not rewrite its description to strip out the
@@ -676,8 +677,9 @@ always comes first.
 1. A `Done:` line naming what changed ("Done: archived, left unread."), or
    `Done: no changes.` when the user moved on or declined.
 2. A one-line note for any item skipped because it left the scope (Step 3.0).
-3. Then exactly one of: an offer (below), the next item, or the closing
-   report. A report of items changed together (Step 9b) comes before the
+3. Then exactly one of: the current item's next open point (such as a
+   dropped attachment to restore), an offer (below), the next item, or the
+   closing report. A report of items changed together (Step 9b) comes before the
    next item when it asks nothing.
 
 Each reply asks exactly one question, and a reply that already holds a
@@ -750,7 +752,7 @@ A change goes on an `Applied:` or `Done:` line, or into the closing report,
 only after its write call succeeded and the re-fetch shows it. A change that
 was proposed but not written is never reported as made.
 
-**Re-check a Trello card's attachments after a description rewrite.** Trello
+**Re-check a Trello card's attachments after any description write.** Trello
 drops attachments that a new description no longer references and adds links
 that it does. Before writing a card's description, list its attachments (the
 card's full view, or `GET /1/cards/{id}/attachments`); after the write, list
@@ -907,7 +909,7 @@ never impose more structure than the work justifies.
   Step 6 dated, or when the user asks. Never ask for a target date; ask only
   for the date of a fixed event the item hangs on, or when a timed action or
   check-in has none.
-- After rewriting a Trello card's description, compare its attachments with
+- After any write to a Trello card's description, compare its attachments with
   the list from before the write and report any that were dropped or added.
 - Refer to every card, issue, or thread by a hyperlink to the item itself,
   never a bare title or key, and never a URL the platform did not return.
