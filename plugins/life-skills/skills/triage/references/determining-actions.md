@@ -71,7 +71,8 @@ skill's choice. Look at the other items in the scope for an established
 pattern before proposing where this one goes:
 
 - **Due dates.** Do similar items, especially other check-ins, carry due
-  dates? Then this one gets a due date too.
+  dates? Then this one gets a due date too, when the item or the user gives
+  the date. The pattern decides where a date goes, never that one exists.
 - **A waiting-for list or label.** Is there a waiting-for list on the board,
   or a waiting-for label in use? Check-ins go there.
 - **The preferences file.** Does it say how check-ins and due dates are
