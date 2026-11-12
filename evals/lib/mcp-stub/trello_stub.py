@@ -32,12 +32,21 @@ State model (the fake Trello "database"):
                               "closed": <bool, optional: archived>,
                               "pos": <number, optional>,
                               "url": "https://trello.com/c/<id>/<slug>",
-                              "created": "<ISO datetime, optional>"}},
+                              "created": "<ISO datetime, optional>",
+                              "attachments": [{"id": "...", "name": "...",
+                                               "url": "..."}, ...]}},
     "labels": {"<label_id>": {"id": "...", "name": "...", "color": "...",
                                "board_id": "..."}},
     "stub_now": "<ISO datetime, optional: the stub's fixed 'now'>",
     "create_card_errors": {"<name substring>": "<error message>"}
   }
+
+Attachments: a card's optional "attachments" come back from view_card as
+seeded. A description change on update_card does what Trello does to them:
+an attachment whose URL the old description referenced and the new one
+doesn't is dropped, and each URL the new description references that no
+attachment carries is added as a link attachment named by its URL. A card
+with no "attachments" key is left without one.
 
 Failed creates: a fixture's optional "create_card_errors" makes create_card
 raise the given error for any card whose name contains the key, ignoring
@@ -491,6 +500,26 @@ def _apply_simple_field_updates(card: dict, name, desc, due, due_complete, pos) 
         card["pos"] = _resolve_pos(card["list_id"], pos, exclude_id=card["id"])
 
 
+_DESC_URL = re.compile(r"https?://[^\s)\]>\"']+")
+
+
+def _desc_urls(desc: str | None) -> list[str]:
+    return [u.rstrip(".,;:!?") for u in _DESC_URL.findall(desc or "")]
+
+
+def _sync_desc_attachments(card: dict, old_desc: str) -> None:
+    if "attachments" not in card or card["desc"] == old_desc:
+        return
+    old_urls = set(_desc_urls(old_desc))
+    new_urls = _desc_urls(card["desc"])
+    kept = [a for a in card["attachments"] if not (a["url"] in old_urls and a["url"] not in new_urls)]
+    attached = {a["url"] for a in kept}
+    for n, url in enumerate(dict.fromkeys(new_urls)):
+        if url not in attached:
+            kept.append({"id": f"{card['id']}-link-{len(card['attachments']) + n + 1}", "name": url, "url": url})
+    card["attachments"] = kept
+
+
 def _apply_list_move(card: dict, list_id, list_name, board_id, board_name) -> None:
     if list_id is None and list_name is None:
         return
@@ -531,7 +560,9 @@ def _update_one_card(
     # caller reports the card as failed, giving graders an inconsistent
     # state snapshot.
     card = copy.deepcopy(state.data["cards"][card_id])
+    old_desc = card.get("desc", "")
     _apply_simple_field_updates(card, name, desc, due, due_complete, pos)
+    _sync_desc_attachments(card, old_desc)
     _apply_list_move(card, list_id, list_name, board_id, board_name)
     _apply_label_changes(card, add_labels, remove_labels)
     state.data["cards"][card_id] = card
