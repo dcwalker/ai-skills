@@ -478,10 +478,12 @@ action is the check-in Step 6 named.
 
 A due date marks a hard deadline, not a date it would be nice to be done by.
 Propose or set one only when the item has a hard deadline: a date the item or
-its sources state, or one that clearly follows from them. Packing for a trip
-that launches on Jan 1 is due before Jan 1: set the day before the event.
-When the user asks for a due
-date, use the timing they give; when they ask without giving one, ask when.
+its sources state, or one that clearly follows from them. A stated deadline
+or expiry is the due date itself. A deadline that follows from an event is
+the event's date, or the day before when the work can't happen on the day
+itself: packing for a trip that launches early on Jan 1 is due Dec 31. When
+the user asks for a due date, use the timing they give; when they ask
+without giving one, ask when.
 
 A check-in, or an appointment fixed at a set time, keeps the date Step 6
 gave it and is recorded the way the scope records such dates, a due date
@@ -904,11 +906,8 @@ never impose more structure than the work justifies.
   confident changes, and ask only about the points that are genuinely
   unclear. A question about one field or item never holds back the others.
 - Never invent facts, dates, names, or descriptions. Ask if unknown.
-- A due date is a hard deadline. Set one only when the item or its sources
-  state one or it clearly follows from them, for a check-in or timed action
-  Step 6 dated, or when the user asks. Never ask for a target date; ask only
-  for the date of a fixed event the item hangs on, or when a timed action or
-  check-in has none.
+- A due date is a hard deadline. Set or ask about one only as Step 7's
+  "Due Date" rule allows, and never ask for a target date.
 - After any write to a Trello card's description, compare its attachments with
   the list from before the write and report any that were dropped or added.
 - Refer to every card, issue, or thread by a hyperlink to the item itself,
