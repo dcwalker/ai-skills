@@ -308,11 +308,11 @@ Classify the item on two axes and let them pick a tier:
 - **Task size** — small (one action, under a day), medium (a few steps, 1-5
   days), or large/project (multi-week, multi-phase, multiple people).
 
-Personal + small selects **Tier 1** (title clarity, and a due date only if it
-is time-sensitive). Professional small/medium, or personal medium/large,
+Personal + small selects **Tier 1** (title clarity, and a due date only for a
+hard deadline). Professional small/medium, or personal medium/large,
 selects **Tier 2** (title, description outcome, labels, assignee, priority,
-due date). Professional + large selects **Tier 3** (Tier 2 plus phases,
-external links, and an effort estimate).
+and a due date for a hard deadline). Professional + large selects **Tier 3**
+(Tier 2 plus phases, external links, and an effort estimate).
 
 When in doubt, start at a lower tier. It is always better to under-enrich and
 ask than to impose structure the user didn't want.
@@ -476,8 +476,18 @@ action is the check-in Step 6 named.
 
 ### Due Date
 
-If no due date is set and the item is active (not backlog/icebox), propose the
-time Step 6 found, or ask whether there is a target date. Do not invent a date.
+A due date marks a hard deadline, not a date it would be nice to be done by.
+Propose or set one only when the item has a hard deadline: a date the item or
+its sources state, or one that clearly follows from them. Packing for a trip
+that launches on Jan 1 is due before Jan 1. When the user asks for a due
+date, use the timing they give.
+
+Otherwise, leave the field empty and do not raise it, on an active item as
+much as a backlog one. Do not ask whether there is a target date: a soft
+date adds a question the user has to decline, and one set by mistake has to
+be found and removed later. The one exception is an item that clearly hangs on
+a fixed event whose date you can't find (a gift for a birthday): ask for that
+event's date. Do not invent a date.
 
 ### Priority (Professional items only)
 
@@ -560,7 +570,9 @@ Apply this flow:
      description on every one of them — the back-link belongs on the cards
      themselves, not only in the reply you send the user, and never claim in
      that reply that a card links back unless you put the link on the card.
-   - **Labels and due date:** propose based on the source item's context.
+   - **Labels and due date:** propose labels based on the source item's
+     context, and a due date only for a hard deadline the source gives
+     (Step 7, "Due Date").
 4. **A capture is not a license to edit the source.** The item you captured
    *from* gets triaged on its own merits by the normal per-item loop and no
    other way. In particular, do not rewrite its description to strip out the
@@ -733,6 +745,15 @@ A change goes on an `Applied:` or `Done:` line, or into the closing report,
 only after its write call succeeded and the re-fetch shows it. A change that
 was proposed but not written is never reported as made.
 
+**Re-check a Trello card's attachments after a description rewrite.** Trello
+drops attachments that a new description no longer references and adds links
+that it does. Before writing a card's description, list its attachments (the
+card's full view, or `GET /1/cards/{id}/attachments`); after the write, list
+them again and compare. Report every attachment that was dropped or added, by
+name, on the item's `Applied:` or `Done:` line. When one was dropped, say so
+plainly and offer to restore it. When the attachments are unchanged, say
+nothing about them.
+
 ### 9a. Every state change is its own decision
 
 Read or unread, archived, complete or done, resolved, starred, and moved are
@@ -872,6 +893,10 @@ never impose more structure than the work justifies.
   confident changes, and ask only about the points that are genuinely
   unclear. A question about one field or item never holds back the others.
 - Never invent facts, dates, names, or descriptions. Ask if unknown.
+- A due date is a hard deadline. Set one only when the item or its sources
+  give one, or the user asks; never ask for a target date.
+- After rewriting a Trello card's description, compare its attachments with
+  the list from before the write and report any that were dropped or added.
 - Refer to every card, issue, or thread by a hyperlink to the item itself,
   never a bare title or key, and never a URL the platform did not return.
 - Always show the full draft of any comment, email, or new Trello card before
