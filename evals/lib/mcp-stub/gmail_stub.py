@@ -828,7 +828,7 @@ def _normalized_ids(label_ids) -> list:
     return out
 
 
-def _check_label_ids(add: list, remove: list, old: dict) -> None:
+def _check_filter_label_ids(add: list, remove: list, old: dict) -> None:
     """Refuse a label sift may not add or remove, unless the filter being edited already had it."""
     old_add, old_remove = set(old.get("addLabelIds") or []), set(old.get("removeLabelIds") or [])
     for lid in add:
@@ -852,7 +852,7 @@ def _filter_action(add_label_ids, remove_label_ids, old: dict | None = None) -> 
         raise ValueError(f"only the user sets a filter that {' or '.join(blocked)}")
     if len(set(add) & _CATEGORY_IDS) > 1:
         raise ValueError("a filter can put mail in one inbox tab at most")
-    _check_label_ids(add, remove, old or {})
+    _check_filter_label_ids(add, remove, old or {})
     action = {}
     if add:
         action["addLabelIds"] = add
