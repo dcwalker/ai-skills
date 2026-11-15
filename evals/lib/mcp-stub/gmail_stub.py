@@ -57,6 +57,7 @@ State model (the fake Gmail "database"):
         "viewUrl": "<optional: overrides the generated URL; null omits it>",
         "messages": [{"id": "...", "from": "...", "to": [...],
                        "date": "...", "snippet": "...", "body": "...",
+                       "labelIds": ["<optional: this message's own labels>"],
                        "viewUrl": "<optional, as for the thread>"}]
     }},
     "labels": {"<label_id>": {"id": "...", "name": "...",
@@ -68,6 +69,15 @@ State model (the fake Gmail "database"):
     "view_url_style": "<optional: 'authuser' for the live format; see below>",
     "stub_now": "<ISO datetime, optional: the stub's fixed 'now'>"
   }
+
+Message labels: Gmail keeps labels on each message, and a thread's labels
+are those of all its messages together. A fixture that gives a message its
+own "labelIds" models that: get_thread returns them, and every thread label
+change (label_thread, unlabel_thread, modify_thread_labels, archive_thread,
+trash_thread) applies to each such message too, as threads.modify does. The
+thread's "labelIds" stays what search and listings match, so a fixture that
+gives messages their own labels should make it their union. A message
+without "labelIds" has none of its own, as before.
 
 The optional top-level "me" is the fixture's account owner, and it is what
 `from:me` / `to:me` resolve to, as they do in real Gmail. A fixture that
@@ -572,17 +582,30 @@ def _check_label_ids(label_ids: list[str]) -> None:
             raise ValueError(f"gmail-stub: no label with id {lbl!r} -- use list_labels for ids")
 
 
-def _change_labels(t: dict, add: list[str], remove: list[str]) -> None:
-    """Add and remove label ids on a thread, leaving every other label alone,
-    except that adding a category replaces the thread's previous one."""
+def _change_label_list(holder: dict, add: list[str], remove: list[str]) -> None:
+    """Add and remove label ids on one thread or message, leaving every other
+    label alone, except that adding a category replaces the previous one."""
     if any(lbl.startswith("CATEGORY_") for lbl in add):
-        t["labelIds"] = [lbl for lbl in t["labelIds"] if not lbl.startswith("CATEGORY_")]
+        holder["labelIds"] = [lbl for lbl in holder["labelIds"] if not lbl.startswith("CATEGORY_")]
     for lbl in add:
-        if lbl not in t["labelIds"]:
-            t["labelIds"].append(lbl)
+        if lbl not in holder["labelIds"]:
+            holder["labelIds"].append(lbl)
     for lbl in remove:
-        if lbl in t["labelIds"]:
-            t["labelIds"].remove(lbl)
+        if lbl in holder["labelIds"]:
+            holder["labelIds"].remove(lbl)
+
+
+def _change_labels(t: dict, add: list[str], remove: list[str]) -> None:
+    """Change a thread's labels and, as the Gmail API's threads.modify does
+    ("applies to all messages in the thread"), those of each of its messages
+    that carries its own labelIds. A message that arrives later doesn't
+    inherit them: in live mail (2026-11-15), a reply that arrived after a
+    label_thread call lacked the label its earlier messages carried, despite
+    the connector's description saying future messages get it."""
+    _change_label_list(t, add, remove)
+    for m in t.get("messages", []):
+        if "labelIds" in m:
+            _change_label_list(m, add, remove)
 
 
 # The official connector's parameter names are camelCase. A validation alias
@@ -630,8 +653,7 @@ def archive_thread(thread_id: str) -> dict:
     if thread_id not in state.data["threads"]:
         raise ValueError(f"gmail-stub: no thread with id {thread_id!r}")
     t = state.data["threads"][thread_id]
-    if "INBOX" in t["labelIds"]:
-        t["labelIds"].remove("INBOX")
+    _change_labels(t, [], ["INBOX"])
     state.flush()
     result = {"thread_id": thread_id, "labelIds": list(t["labelIds"])}
     state.log_call("archive_thread", {"thread_id": thread_id}, result)
@@ -646,10 +668,7 @@ def trash_thread(threadId: str) -> dict:
     if threadId not in state.data["threads"]:
         raise ValueError(f"gmail-stub: no thread with id {threadId!r}")
     t = state.data["threads"][threadId]
-    if "INBOX" in t["labelIds"]:
-        t["labelIds"].remove("INBOX")
-    if "TRASH" not in t["labelIds"]:
-        t["labelIds"].append("TRASH")
+    _change_labels(t, ["TRASH"], ["INBOX"])
     state.flush()
     result = {"id": threadId, "labelIds": list(t["labelIds"])}
     state.log_call("trash_thread", {"threadId": threadId}, result)
@@ -828,7 +847,7 @@ def _normalized_ids(label_ids) -> list:
     return out
 
 
-def _check_label_ids(add: list, remove: list, old: dict) -> None:
+def _check_filter_label_ids(add: list, remove: list, old: dict) -> None:
     """Refuse a label sift may not add or remove, unless the filter being edited already had it."""
     old_add, old_remove = set(old.get("addLabelIds") or []), set(old.get("removeLabelIds") or [])
     for lid in add:
@@ -852,7 +871,7 @@ def _filter_action(add_label_ids, remove_label_ids, old: dict | None = None) -> 
         raise ValueError(f"only the user sets a filter that {' or '.join(blocked)}")
     if len(set(add) & _CATEGORY_IDS) > 1:
         raise ValueError("a filter can put mail in one inbox tab at most")
-    _check_label_ids(add, remove, old or {})
+    _check_filter_label_ids(add, remove, old or {})
     action = {}
     if add:
         action["addLabelIds"] = add
