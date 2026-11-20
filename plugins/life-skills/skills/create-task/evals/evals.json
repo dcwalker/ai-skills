@@ -1,0 +1,223 @@
+{
+  "skill_name": "create-task",
+  "notes": "MCP-driver suite (evals/lib/run-mcp-trials.sh via run-trials.sh). Every eval is single-turn: an empty follow_ups list, so the reply is graded as the user would first see it and the simulated user never answers. Evals 1-7 and 11-16 are conversation_only (no tracker connected, so the presented task is the deliverable); 8-10 run against the Trello stub. Positive cases: 1 (hard deadline and resources), 3 (check-in with a promised date), 4 (combined contexts), 8 (pre-authorized filing with existing labels). Negative or ambiguous cases: 2 (soft target, no due date), 5 (not an action, and a password), 6 (project hanging on an event with no date), 7 (too vague to rewrite without inventing), 9 (duplicate already on the board), 10 (draft only, no filing without a yes), 12 (one trip, so one task, not split). Positive case 11 splits actions that need different contexts. Evals 13-15 ask for a different format (an email to self, plain prose, a Markdown checklist) and grade that the content survives the format. The top-level \"instruction_files\": \"managed-only\" keeps the running user's own instructions out of every trial. Eval 16 checks that create-task can write a meeting's action items the way organize-meeting-notes needs them: owner-first lines, dates with their calendar date, an open question for a missing owner, no date borrowed from another event, and nothing already done in the meeting.",
+  "instruction_files": "managed-only",
+  "evals": [
+    {
+      "id": 1,
+      "conversation_only": true,
+      "prompt": "Today is Tuesday, November 17, 2026. Remind me to renew my car registration. The notice says it expires December 12, the fee is $86, and I can do it at https://dmv.example.gov/renew. Just write the task, I'll paste it into my app.",
+      "expected_output": "One task presented in the skill's Title / Notes / Contexts / Due shape. The title leads with a verb, names the registration, and is short (for example 'Renew the car registration online'). The due date is December 12, 2026, the expiry the notice states. The notes carry the fee and the renewal URL. Nothing claims the task was filed anywhere.",
+      "expectations": [
+        "The task's title starts with a verb, names the car registration, and is ten words or fewer.",
+        "The task carries a due date of December 12 (2026), and no other date is presented as its due date.",
+        "The task includes the URL https://dmv.example.gov/renew and the $86 fee.",
+        "The reply does not claim the task was created, filed, or added to any app or tracker.",
+        "The reply contains no em dash character in the task text.",
+        "Any Links line in the task holds an actual URL or item key; the task has no Links line that only names a source (such as 'DMV renewal notice').",
+        "Any weekday the reply names beside December 12, 2026 is Saturday; no other weekday is attached to that date."
+      ],
+      "follow_ups": []
+    },
+    {
+      "id": 2,
+      "conversation_only": true,
+      "prompt": "Today is Tuesday, November 17, 2026. Make me a to-do to clean out the garage. I'm hoping to get it done by the end of the month but no big deal if it slips.",
+      "expected_output": "A task whose title leads with a verb ('Clean out the garage'). The end of the month is a soft target the user says can slip, so the task has no due date, and the soft target, if mentioned, sits in the notes. The reply does not ask whether there is a target or due date.",
+      "expectations": [
+        "The task's title starts with a verb and names the garage.",
+        "The task has no due date set: November 30 (or 'end of the month') does not appear as the task's due date, though it may appear in the notes as a soft target.",
+        "The reply does not ask the user for a due date or target date."
+      ],
+      "follow_ups": []
+    },
+    {
+      "id": 3,
+      "conversation_only": true,
+      "prompt": "Today is Tuesday, November 17, 2026. Rick Alvarez, the plumber, said he'd email the estimate for replacing the water heater by Thursday. Don't let me forget about it. His number is (555) 014-2290.",
+      "expected_output": "A check-in task: the user's action is to check in with Rick Alvarez about the water heater estimate, not 'Wait for the estimate' and not Rick's own task. Its date is Thursday, November 19, 2026, the day Rick promised. The phone number is included so the user can call him.",
+      "expectations": [
+        "The task's title is the user's own action, a check-in or follow-up with Rick (for example 'Check in with Rick Alvarez about the water heater estimate'); it is not phrased as waiting, and not as Rick sending the estimate.",
+        "The task's date is Thursday, November 19, 2026, and the reply resolves 'Thursday' to that calendar date.",
+        "The task includes the phone number (555) 014-2290.",
+        "The reply does not ask the user when to check in, since Rick named the day.",
+        "The reply does not dispute or contradict the user's statement that today is November 17, 2026 (for example by citing a system clock)."
+      ],
+      "follow_ups": []
+    },
+    {
+      "id": 4,
+      "conversation_only": true,
+      "prompt": "I need to drop off the signed loan papers at the Harbor Credit Union branch on 5th Ave. They're only open weekdays 9 to 5, and Jordan has to come with me to sign in person. Write it up as a task for me.",
+      "expected_output": "A task whose title leads with a verb and names the loan papers and the credit union. Every context the user gave is recorded: the place (the Harbor Credit Union branch on 5th Ave), the time window (weekdays, 9 to 5), and the person (Jordan, in person). No due date is set, since none was given, and no phone number, URL, or street number is invented.",
+      "expectations": [
+        "The task's title starts with a verb and names the loan papers or the credit union.",
+        "The task records the place (Harbor Credit Union, 5th Ave), the time window (weekdays 9 to 5), and the person (Jordan, needed in person), all three.",
+        "The task has no due date.",
+        "The task contains no phone number, URL, or street number that the user did not give.",
+        "The task adds no step, item, or reminder the user did not mention (such as bringing ID) as part of the task; one may only be raised as a question."
+      ],
+      "follow_ups": []
+    },
+    {
+      "id": 5,
+      "conversation_only": true,
+      "prompt": "Make a task for this so I have it: the guest wifi password is BlueHeron42 and the router is in the hall closet.",
+      "expected_output": "This is reference, not an action. The skill says so rather than inventing a to-do, and suggests keeping it somewhere it can be found (a note or a password manager). It does not write the password into a task.",
+      "expectations": [
+        "The reply identifies the information as reference rather than an action (or says it is not a task), instead of presenting a verb-first to-do built from it as the deliverable.",
+        "The reply does not present a task whose title or notes contain the password BlueHeron42.",
+        "The reply suggests a place to keep it, such as a note or a password manager.",
+        "The reply does not repeat the password BlueHeron42 anywhere.",
+        "The reply presents no task, to-do, or checklist item of any kind, including one about saving or storing the password."
+      ],
+      "follow_ups": []
+    },
+    {
+      "id": 6,
+      "conversation_only": true,
+      "prompt": "Add a to-do: plan my dad's 70th birthday party.",
+      "expected_output": "Planning a party is a project, so the task is its next concrete action (for example picking a date or a guest list), with the outcome (a party for the 70th birthday) in the notes. The party hangs on the birthday, whose date the skill cannot find, so the one question it asks is when the birthday (or the party) is. It invents no date, venue, or guest.",
+      "expectations": [
+        "The task's title is a concrete first action for the party (such as choosing a date, a venue, or a guest list), not just 'Plan the party' restated.",
+        "The reply asks when the birthday or party is.",
+        "The task carries no due date, and the reply invents no date, venue, or guest name.",
+        "The reply asks at most one question."
+      ],
+      "follow_ups": []
+    },
+    {
+      "id": 7,
+      "conversation_only": true,
+      "prompt": "Can you rewrite this to-do so it's clearer? It just says \"taxes\".",
+      "expected_output": "'taxes' is a topic, and nothing says what the user needs to do about it. The skill asks one brief question about what the action is (file a return, gather documents, pay an estimate, call the accountant), and may offer verb-first examples, but does not present one invented specific action as the rewritten task with a made-up deadline or tax year.",
+      "expectations": [
+        "The reply asks what the user needs to do about taxes.",
+        "The reply does not present a single rewritten task as the answer that commits to an action the user never mentioned. Offering several candidate titles, or one candidate clearly labeled a guess alongside alternatives and a question, passes.",
+        "The reply sets no due date and names no deadline, such as April 15, as the task's due date."
+      ],
+      "follow_ups": []
+    },
+    {
+      "id": 8,
+      "prompt": "Add a card to my Personal board for me: call Riverside Animal Clinic to book Biscuit's annual shots. Dr. Patel's office, (555) 016-3344, they close at 6 on weekdays.",
+      "expected_output": "The user authorized the card up front, so the skill searches the board for an existing card, finds none for the vet, and creates one card in the Personal board's Inbox. The title leads with a verb ('Call Riverside Animal Clinic to book Biscuit's shots' or similar). The description carries the phone number and the hours. The board's existing @phone label is applied; no new label is created. No due date is set. The reply links the new card and lists what was set.",
+      "expectations": [
+        "Exactly one create_card call appears in the call log, and the created card's title starts with a verb and names the clinic or the vet and Biscuit's shots.",
+        "The created card's description contains (555) 016-3344 and the closing time (6, weekdays).",
+        "The created card carries the board's existing @phone label, and no create_label call appears in the call log.",
+        "The created card has no due date.",
+        "A search_trello or view_list call precedes the create_card call, checking the existing cards for a duplicate (a view_board call alone, which returns no card names, does not count).",
+        "The reply includes the new card's URL, https://trello.com/c/card-3/ followed by its slug."
+      ],
+      "follow_ups": []
+    },
+    {
+      "id": 9,
+      "prompt": "Add a card to my Personal board so I remember to get Biscuit his vaccinations.",
+      "expected_output": "The board already has 'Call the vet to book Biscuit's annual shots' (card-1). The skill finds it before creating anything, points it out with its link, and proposes updating it (or leaving it) instead of creating a second card. No card is created in this turn.",
+      "expectations": [
+        "No create_card call appears in the call log.",
+        "The reply names the existing card about Biscuit's shots and links it (https://trello.com/c/card-1/call-vet).",
+        "The reply proposes using or updating the existing card rather than adding a second one."
+      ],
+      "follow_ups": []
+    },
+    {
+      "id": 10,
+      "prompt": "Help me write a to-do for returning the library books. They're due back Friday, December 4.",
+      "expected_output": "The user asked for help writing it, not for a card. The skill presents the task (verb-first title such as 'Return the library books', due December 4, the library as the place) and offers to add it to Trello, but makes no write in this turn.",
+      "expectations": [
+        "The reply presents a task whose title starts with a verb and names the library books.",
+        "The task's due date is December 4.",
+        "No create_card, update_card, or create_label call appears in the call log.",
+        "The reply offers to add the task to Trello (or asks where to file it)."
+      ],
+      "follow_ups": []
+    },
+    {
+      "id": 11,
+      "conversation_only": true,
+      "prompt": "Today is Tuesday, November 17, 2026. I want to repaint the spare bedroom. First I have to ask my landlord, Dana Whitfield, if it's okay, her number is (555) 017-4410. Then I need to pick up the paint at Corner Hardware, and I want to email my sister Priya the color swatches to get her opinion. Make me tasks for this.",
+      "expected_output": "Three actions in three different contexts: a phone call (the landlord), a computer task (email Priya), and an errand (Corner Hardware). The skill splits them into separate tasks, each with its own verb-first title and context, rather than one combined task. The landlord call comes first; the hardware store task notes that it waits on the landlord's yes. The landlord's number is in the call task. No due dates are set.",
+      "expectations": [
+        "The reply presents at least three separate tasks: one to call or ask Dana Whitfield, one to buy the paint at Corner Hardware, and one to email Priya the swatches. Combining the call and the store trip into one task fails.",
+        "Each task's title starts with a verb.",
+        "The call task includes the phone number (555) 017-4410.",
+        "The Corner Hardware task (or the reply's ordering) says it comes after the landlord agrees.",
+        "No task carries a due date."
+      ],
+      "follow_ups": []
+    },
+    {
+      "id": 12,
+      "conversation_only": true,
+      "prompt": "Make a to-do: at Corner Hardware I need to pick up a gallon of eggshell white paint, two rollers, a paint tray, and painter's tape.",
+      "expected_output": "Everything happens in one place on one trip, so it stays one task (for example 'Buy painting supplies at Corner Hardware'), with the items listed in the notes. It is not split into a task per item.",
+      "expectations": [
+        "The reply presents exactly one task, not a separate task per item.",
+        "The task's title starts with a verb and names Corner Hardware or the painting supplies.",
+        "The task lists all four items: eggshell white paint (a gallon), two rollers, a paint tray, and painter's tape."
+      ],
+      "follow_ups": []
+    },
+    {
+      "id": 13,
+      "conversation_only": true,
+      "prompt": "Today is Tuesday, November 17, 2026. Write this up as an email to myself, subject and body: I need to return the rented tile saw to Bayside Tool Rental, 410 Marsh Rd, by Saturday, November 21, or they charge another day. They're open 7 to 3 on Saturdays, and the rental agreement number is R-55812.",
+      "expected_output": "An email to self. The subject is the task's verb-first title (for example 'Return the tile saw to Bayside Tool Rental'). The body carries every detail: the hard deadline (Saturday, November 21, since a late return costs another day), the address, the Saturday hours, and the agreement number. The format changes; the content does not.",
+      "expectations": [
+        "The reply presents an email with a subject line, and the subject starts with a verb and names the tile saw or Bayside Tool Rental.",
+        "The email body states the deadline of Saturday, November 21 (2026).",
+        "The email body includes the address 410 Marsh Rd, the Saturday hours (7 to 3), and the agreement number R-55812.",
+        "The reply does not also present the task in the skill's labeled Title / Notes / Contexts block in place of the email."
+      ],
+      "follow_ups": []
+    },
+    {
+      "id": 14,
+      "conversation_only": true,
+      "prompt": "Just give me one or two plain sentences I can drop into my journal's to-do section, no labels or bullets: I need to call Dr. Osei's office at (555) 019-6620 to move my December 3 physical, they only take calls weekdays 8 to 4.",
+      "expected_output": "Plain prose, one or two sentences, no 'Title:' labels or bullets. It opens with the action (call Dr. Osei's office to move the physical) and still carries the phone number, the weekday 8 to 4 calling window, and the December 3 appointment it is about. December 3 is the appointment being moved, not a due date the skill invents for the call.",
+      "expectations": [
+        "The task is written as one or two sentences of prose, with no 'Title:' or similar field labels and no bullet points.",
+        "The prose opens with the action: calling Dr. Osei's office to move or reschedule the physical.",
+        "The prose includes the phone number (555) 019-6620 and the weekday 8 to 4 calling window.",
+        "The prose mentions the December 3 physical being moved.",
+        "Any weekday the reply names beside December 3 is Thursday; no other weekday is attached to that date.",
+        "The prose names no calendar date other than December 3 (no invented target such as 'by December 2'); saying the call must happen before the appointment is fine."
+      ],
+      "follow_ups": []
+    },
+    {
+      "id": 15,
+      "conversation_only": true,
+      "prompt": "Make me a markdown checklist I can paste into my notes file for this weekend: buy furnace filters (16x25x1) at the hardware store, call my brother Marco at (555) 013-8854 about borrowing his ladder, and once I have the ladder, clean the gutters.",
+      "expected_output": "A Markdown checklist ('- [ ]' items), one item per task, each starting with a verb. The errand, the call, and the gutter cleaning are separate items because they need different contexts, and the gutter item says it waits on the ladder. The filter size and Marco's number stay in their items.",
+      "expectations": [
+        "The reply presents a Markdown checklist using '- [ ]' (or '* [ ]') items.",
+        "There are separate checklist items for buying the filters, calling Marco, and cleaning the gutters, and each item starts with a verb.",
+        "The filter size 16x25x1 and Marco's number (555) 013-8854 appear in their items.",
+        "The gutter item says it comes after getting the ladder."
+      ],
+      "follow_ups": []
+    },
+    {
+      "id": 16,
+      "conversation_only": true,
+      "prompt": "Pull the action items out of my notes from today's Platform sync (Thursday, August 20, 2026, 10:00 to 10:30; attendees Lena Fischer, Jordan Lee, Priya Nair, and me) as a markdown checklist for the notes' Action Items section:\n\n- Lena will publish the Q4 on-call schedule by Friday.\n- The old metrics cluster shuts down September 30. We'll need the dashboards migrated at some point.\n- Jordan said he'd send the vendor shortlist to finance by Sep 10.\n- Decided to keep the weekly sync at 30 minutes.\n- Priya filed INFRA-212 for the flaky deploy job during the meeting.",
+      "expected_output": "A '- [ ]' checklist of meeting action items, each led by its owner's full name: 'Lena Fischer: Publish the Q4 on-call schedule by Friday (Aug 21, 2026)' and 'Jordan Lee: Send the vendor shortlist to finance by Sep 10, 2026'. The dashboard migration has no owner, so the skill asks who owns it without proposing a name, and does not give it September 30, the cluster's shutdown date, as its due date. The 30-minute decision and the filing of INFRA-212 happened in the meeting, so neither is an action item.",
+      "expectations": [
+        "The reply presents the action items as a Markdown checklist using '- [ ]' items.",
+        "One item leads with 'Lena Fischer', starts its action with a verb, and gives the due date as Friday with the calendar date August 21, 2026.",
+        "One item leads with 'Jordan Lee' and gives the due date September 10 (2026) for sending the vendor shortlist to finance.",
+        "The reply asks who owns the dashboard migration without proposing or assigning a name for it.",
+        "The dashboard migration is not given September 30 as its due date.",
+        "No action item is listed for keeping the sync at 30 minutes or for filing INFRA-212.",
+        "The reply asks for no due date on any item (no 'by when?' question).",
+        "The reply does not say that any date from the meeting (August 21 or September 10) has passed or is in the past."
+      ],
+      "follow_ups": []
+    }
+  ]
+}

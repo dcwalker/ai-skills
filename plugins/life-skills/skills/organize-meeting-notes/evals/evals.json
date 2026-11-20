@@ -10,6 +10,9 @@
         "The Trello call log shows exactly two cards created (one per action item, in one create_card call or two), each with a description including the meeting title 'Weekly Sync' and a February 2026 date.",
         "The final Markdown document's Action Items section links each item as `- [ ] [<text>](<trello card url>)` using the exact URLs the create_card calls returned in the Trello call log, not fabricated URLs.",
         "The final document's section order is exactly: metadata block, ###### Attendees, ###### Notes, ###### Action Items, matching Step 8."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -21,6 +24,9 @@
         "The final document records no action items rather than inventing one or omitting the `###### Action Items` section, and the skill does not ask the user to confirm that there are none.",
         "The final document keeps the `###### Action Items` section with `None.` under it (Step 7.2), rather than a fabricated item, an empty section, or no section at all.",
         "The skill never offers to create tasks in any tool, since the user did not ask for any (Step 7.3)."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -33,7 +39,10 @@
         "The final document's Action Items section contains the tooling budget proposal item as a plain `- [ ] <text>` line with no link, since no task was created.",
         "The final document is produced without the skill asking the user to confirm the notes or the action item."
       ],
-      "simulated_user": "You are the person who took these notes. If the assistant asks about the notes, answer: the Q2 goals you discussed were shipping the reporting rewrite and mentoring the new hire, and you'll draft the tooling budget proposal by Friday, Mar 13, 2026. If the assistant asks you to confirm or approve something, say it's fine. Never bring up Trello, tasks, or any task tool yourself. If the assistant offers to create a task, say no."
+      "simulated_user": "You are the person who took these notes. If the assistant asks about the notes, answer: the Q2 goals you discussed were shipping the reporting rewrite and mentoring the new hire, and you'll draft the tooling budget proposal by Friday, Mar 13, 2026. If the assistant asks you to confirm or approve something, say it's fine. Never bring up Trello, tasks, or any task tool yourself. If the assistant offers to create a task, say no.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 4,
@@ -45,7 +54,10 @@
         "Each action item whose card was not created is NOT given a fabricated or guessed URL -- it either remains a plain unlinked checklist item with the failure surfaced to the user, or the skill pauses and asks how to proceed before finalizing that item.",
         "The transcript explicitly reports each failed card creation (e.g. the rate-limit error) rather than silently treating it as a success or omitting it from the report."
       ],
-      "simulated_user": "You are the person who took these notes. You already approved creating both tasks in your first message. If the assistant asks about the notes, answer briefly: the new pricing takes effect Apr 1, 2026, you'll update the pricing sheet by Mar 20, 2026, and you'll email procurement this week. If the assistant reports that a task failed, accept it and say you'll add that one yourself; never ask it to retry, wait, or try later. If the assistant asks you to confirm something, say it's fine."
+      "simulated_user": "You are the person who took these notes. You already approved creating both tasks in your first message. If the assistant asks about the notes, answer briefly: the new pricing takes effect Apr 1, 2026, you'll update the pricing sheet by Mar 20, 2026, and you'll email procurement this week. If the assistant reports that a task failed, accept it and say you'll add that one yourself; never ask it to retry, wait, or try later. If the assistant asks you to confirm something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 5,
@@ -54,6 +66,9 @@
       "expectations": [
         "The final metadata line's End field shows the original 3:30 PM struck through with the corrected 3:45 PM appended, matching the skill's documented mismatch-correction pattern -- not silently left as just 3:30 PM and not silently corrected without showing the original.",
         "No task is created in any tool, since no action items exist in this content."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -63,6 +78,9 @@
       "expectations": [
         "The skill uses the full names already supplied in the prompt ('Alex Lee', 'Amy Wong') without asking about the initials or guessing a different expansion of the 'a.' initial for either person.",
         "The final Attendees section lists 'Alex Lee' and 'Amy Wong' (title case, alphabetically sorted by first name), not 'A. Lee'/'A. Wong' or an incorrect guessed name."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -74,6 +92,9 @@
         "The End time in the metadata line is NOT struck through: 10:42 matches Start + Duration, so the time-correction rule does not fire; the schedule note is the only place the overrun appears.",
         "Every raw note line appears in the final notes as a complete sentence, without a per-line interview or a request to confirm the notes, and the final document follows the standard order (metadata, attendees, agenda, notes, action items).",
         "The skill never offers to create tasks in any tool, since the user did not ask for any, and no Action Items entry links to a task."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -86,6 +107,9 @@
         "The final notes contain only facts the user provided in the raw notes and the user's answers; no agenda items, chat messages, email threads, link summaries, or work item details are invented.",
         "The normal flow still completes without a per-line interview: every raw note line appears in the notes, attendees are formatted from the emails, and the standard section order is produced.",
         "The skill never offers to create tasks in any tool, since the user did not ask for any, and no Action Items entry links to a task."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -98,6 +122,9 @@
         "The summary reads as prose rather than a list: it contains no semicolons, and no sentence is built by chaining clauses together with 'and'.",
         "All thirty raw note lines are carried into the final notes without a per-line interview or a request to confirm the notes, and no note adds a fact the raw notes, a source, or the user's answers do not give.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -109,6 +136,9 @@
         "The skill does not run a per-line interview or ask the user to confirm the notes, a paraphrase, or the action items: any question it asks is about a gap no source settles (for example, what the staging credentials block, if no source says).",
         "No task is created in any tool.",
         "The final document still follows the standard order: metadata block, ###### Attendees, ###### Notes, ###### Action Items."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -121,6 +151,9 @@
         "The trivial closing remark about the dog is not quoted, showing the significance bar was applied rather than quoting whatever was available.",
         "Quotes go into the document without a request for the user's approval, and each appears verbatim in the transcript.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -132,6 +165,9 @@
         "No blockquote pull quote attributed to a speaker appears in the final document, since there is no transcript to quote from.",
         "No quotations are invented for the other two note lines, and no words are attributed to anyone that the user did not supply.",
         "The normal flow still completes: each raw note line appears in the notes, attendees are formatted, and the standard section order is produced, and no task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -144,6 +180,9 @@
         "The launch-date screenshot is placed with the launch-date note (content over its earlier timestamp) and the report says it followed the content over the timestamp, rather than filing it in strict timestamp order between the first two notes.",
         "The undated whiteboard photo is not placed by guesswork: it is placed by what it shows, or, when its content does not settle where it belongs, the skill asks the user.",
         "No task is created in any tool, and the standard section order is produced."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -157,6 +196,9 @@
         "The summary reads as prose rather than a list: it contains no semicolons, and no sentence is built by chaining clauses together with 'and'.",
         "All nine raw note lines are carried into the final notes without a per-line interview or a request to confirm the notes.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -173,6 +215,9 @@
         "The notes follow the order topics came up in the chat (on-call rotation, then the migration, then staging costs), not the agenda's order.",
         "The skill does not review the draft with the user section by section, run a per-line interview, or ask the user to confirm takeaways or attributions.",
         "No facts, owners, or dates appear that are absent from the chat log, the pasted calendar event, and the user's answers, and no task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -184,6 +229,9 @@
         "No notes are drafted: no Notes bullets describing what was discussed appear anywhere in the response, and no decisions, owners, or action items are invented for the meeting.",
         "No `###### Agenda` section appears, since no agenda was available.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -194,6 +242,9 @@
         "Before drafting, the skill tells the user no raw notes were found, names transcript.txt and both screenshots, and says the notes are drafted from them.",
         "The export-limit disagreement is recorded with its resolution: the 50,000-row proposal, Priya Raman's objection citing the database failure during month-end close, and the accepted compromise of 25,000 rows outside month-end, proposed by Marcus Hall.",
         "No `###### Agenda` section appears, chatter such as the knock at Priya Raman's door is kept as a short note in reported speech rather than dropped, and no task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -206,6 +257,9 @@
         "The whiteboard photo's referral bonus increase is recorded as an open question rather than a decision unless the user says otherwise.",
         "The take-home decision is attributed from the comment thread: Lena Fischer proposed it and Darby Wade agreed.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -219,6 +273,9 @@
         "The docs freeze date is recorded after the last note as an agenda item the meeting did not reach and a decision still to be made, not omitted, given an invented date, or placed under a catch-all section.",
         "The notes are a flat list with no bold topic labels, since only two topics were discussed.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -230,6 +287,9 @@
         "Because the user declined upfront, no drafted notes, Notes section, or final document is produced.",
         "No action items are drawn from the transcript, and the transcript's lines are not run through a per-line interview as though they were the user's notes.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -249,6 +309,9 @@
         "Looks good.",
         "Looks good. Finalize it and give me the final document.",
         "Finalize it now and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -270,6 +333,9 @@
         "Context: Marcus's burn-up showed the platform track at 62% of planned points and he thinks it's on pace. Data migration is green because the read replicas cut over cleanly. Lena wants two more SREs in Q1; Priya will answer after the budget review. Everyone attended.",
         "Looks good.",
         "Looks good. Finalize it and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -287,6 +353,9 @@
         "Context: PLAT-412 is waiting on the SSO cutover in October. PLAT-418 slipped because the team is short this sprint. PLAT-421 finished Tuesday with no downtime. Lena owns the runbook update, due Friday, Oct 2. Everyone attended.",
         "The link Priya shared is her Q4 capacity model; it shows we can't take on the rate limit work until November.",
         "Looks good. Finalize it and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -306,6 +375,9 @@
         "The dependency tracker is a table of every platform team's Q4 milestones with dates and owners.",
         "Looks good. Finalize it and give me the final document.",
         "Finalize it now and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -325,6 +397,9 @@
         "Looks good.",
         "Looks good. Finalize it and give me the final document.",
         "Finalize it now and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -345,6 +420,9 @@
         "No due dates yet for the tickets that don't carry one.",
         "Looks good. Finalize it and give me the final document.",
         "Finalize it now and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -366,6 +444,9 @@
         "Looks good.",
         "Looks good. Finalize it and give me the final document.",
         "Finalize it now and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -386,6 +467,9 @@
         "Looks good.",
         "Looks good. Finalize it and give me the final document.",
         "Finalize it now and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -405,6 +489,9 @@
         "Looks good.",
         "Looks good. Finalize it and give me the final document.",
         "Finalize it now and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -420,6 +507,9 @@
       "follow_ups": [
         "Context for every line: we agreed to move the API reference into the main docs site this quarter. Lena is drafting the migration plan; no due date was set. Whether to keep the old URLs is still open, nobody decided. Both of us attended.",
         "Finalize it now and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -439,6 +529,9 @@
         "Context: we reviewed last year's usage, which was steady. Sam is sending revised pricing. The SLA changes looked fine to everyone. All three of us attended. Yes, add what Sam's email says to the pricing note.",
         "Looks good.",
         "Finalize it now and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -457,6 +550,9 @@
         "Looks good.",
         "Looks good. Finalize it and give me the final document.",
         "Finalize it now and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -476,6 +572,9 @@
         "Looks good.",
         "Looks good. Finalize it and give me the final document.",
         "Finalize it now and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -495,6 +594,9 @@
         "Context for the Hiring Sync: the backend pipeline is down to one candidate. Both of us attended. Save it.",
         "Wait, I gave you the Design Sync's times in Eastern; I was in New York for that one. The Hiring Sync's times were Pacific. Fix whatever that affects, and include any chat items you find.",
         "Finalize both and tell me which files changed and which didn't."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -512,6 +614,9 @@
         "Looks good.",
         "Looks good. Finalize it and give me the final document.",
         "Finalize it now and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -525,7 +630,10 @@
         "The final document's Action Items section links each item using the exact URL the create_card call returned in the Trello call log.",
         "No Jira issue is created or edited at any point in the run: the tasks go only to the tool the user named."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. If the assistant asks about the notes, answer: about a dozen links in the setup guide still point at the old docs site, and Lena is fixing them by Friday, Oct 16, 2026. You are writing the 4.2 upgrade notes by Tuesday, Oct 20, 2026. Both of you attended. If the assistant asks you to confirm or approve something, say it's fine. Your opening message did not say which tool the tasks go in; if the assistant asks, say the To Do list on the Team Tasks board in Trello, not Jira."
+      "simulated_user": "You are Darby Wade, who took these notes. If the assistant asks about the notes, answer: about a dozen links in the setup guide still point at the old docs site, and Lena is fixing them by Friday, Oct 16, 2026. You are writing the 4.2 upgrade notes by Tuesday, Oct 20, 2026. Both of you attended. If the assistant asks you to confirm or approve something, say it's fine. Your opening message did not say which tool the tasks go in; if the assistant asks, say the To Do list on the Team Tasks board in Trello, not Jira.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 38,
@@ -537,7 +645,10 @@
         "The final document's Action Items section lists both action items as plain `- [ ] <text>` lines with no links.",
         "The final document is still produced after the user says to leave the action items as a plain list."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. If the assistant asks about the notes, answer: Priya is scheduling three panel interviews for the platform role by Wednesday, Oct 21, 2026, and you are sending the decline emails to the two candidates who did not pass the take-home round by Friday, Oct 16, 2026. Both of you attended. If the assistant asks you to confirm or approve something, say it's fine. If the assistant says it cannot reach Todoist, tell it to leave the action items as a plain list and that you'll add them yourself. If it offers to use Trello instead, say no."
+      "simulated_user": "You are Darby Wade, who took these notes. If the assistant asks about the notes, answer: Priya is scheduling three panel interviews for the platform role by Wednesday, Oct 21, 2026, and you are sending the decline emails to the two candidates who did not pass the take-home round by Friday, Oct 16, 2026. Both of you attended. If the assistant asks you to confirm or approve something, say it's fine. If the assistant says it cannot reach Todoist, tell it to leave the action items as a plain list and that you'll add them yourself. If it offers to use Trello instead, say no.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 39,
@@ -550,7 +661,10 @@
         "The skill never asks whether to censor, soften, or leave out the explicit language, and the note on Marcus's refusal keeps its force (he refused to put his name on a broken rollback path) rather than reducing it to a neutral phrase such as 'raised concerns'.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. If the assistant asks about the notes, answer: Marcus refused because the rollback path failed in staging on Monday and nobody had re-tested it; he was angry, and you think he was right. The launch moved from Thursday, Oct 15 to Thursday, Oct 22, 2026, and Marcus is fixing the rollback path by then. Everyone attended. If the assistant asks you to confirm or approve something, say it's fine. You want every censored word written out in full, including the one the transcript shows as [expletive]; accept the assistant's reading of it as what was said. Never ask the assistant to clean up, censor, or keep a mask on anything. If it asks whether to censor or soften the language, say no, keep it exactly as it was said."
+      "simulated_user": "You are Darby Wade, who took these notes. If the assistant asks about the notes, answer: Marcus refused because the rollback path failed in staging on Monday and nobody had re-tested it; he was angry, and you think he was right. The launch moved from Thursday, Oct 15 to Thursday, Oct 22, 2026, and Marcus is fixing the rollback path by then. Everyone attended. If the assistant asks you to confirm or approve something, say it's fine. You want every censored word written out in full, including the one the transcript shows as [expletive]; accept the assistant's reading of it as what was said. Never ask the assistant to clean up, censor, or keep a mask on anything. If it asks whether to censor or soften the language, say no, keep it exactly as it was said.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 40,
@@ -563,7 +677,10 @@
         "The notes keep the strength of what was said: the reviews are called rubber stamps (or described in the user's own words), and Lena's anger and her job search are stated plainly, not reduced to vague phrases such as 'discussed compensation' or 'personal matters'.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, Lena Fischer's manager, who took these notes. If the assistant asks about the notes, answer: Jordan Lee approves pull requests within minutes and never leaves comments, and two bugs reached production last sprint that a real review would have caught; Lena wants you to talk to Jordan this week. Her raise was approved in July, but finance has pushed it twice, now to Q1; she called it a broken promise. She is having knee surgery and is out Nov 2 to Nov 20, 2026. She told you she has two interviews lined up and will take an offer if the raise is not in by January. Both of you attended. If the assistant asks you to confirm or approve something, say it's fine. If the assistant asks whether to leave anything out or soften it, say no, keep everything as it was said."
+      "simulated_user": "You are Darby Wade, Lena Fischer's manager, who took these notes. If the assistant asks about the notes, answer: Jordan Lee approves pull requests within minutes and never leaves comments, and two bugs reached production last sprint that a real review would have caught; Lena wants you to talk to Jordan this week. Her raise was approved in July, but finance has pushed it twice, now to Q1; she called it a broken promise. She is having knee surgery and is out Nov 2 to Nov 20, 2026. She told you she has two interviews lined up and will take an offer if the raise is not in by January. Both of you attended. If the assistant asks you to confirm or approve something, say it's fine. If the assistant asks whether to leave anything out or soften it, say no, keep everything as it was said.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 41,
@@ -571,11 +688,14 @@
       "expected_output": "Tests resolving an initial from contacts before asking. Contacts hold Maya Okafor (m.okafor@example.com), so the 'm.' initial resolves to Maya without asking, and the report says the first name came from contacts. The skill never runs a per-line interview or asks the user to confirm anything.",
       "expectations": [
         "The contacts call log shows a search_contacts or get_contact call that returns Maya Okafor, and the final Attendees section lists 'Maya Okafor', without the skill asking the user for the first name behind 'm.'.",
-        "The skill does not run a per-line interview or ask the user to confirm the notes, a paraphrase, or the action items: any question it asks is about a gap no source settles (only the press kit's due date needs asking here).",
+        "The skill does not run a per-line interview or ask the user to confirm the notes, a paraphrase, or the action items: any question it asks is about a gap no source settles, and the press kit's missing due date is not asked about.",
         "The reply's report says Maya Okafor's first name came from contacts.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. If the assistant asks when Priya is sending the press kit, say by Friday, Oct 23, 2026. If it asks anything else, answer briefly: the docs freeze on Oct 28, 2026 so translations can start. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+      "simulated_user": "You are Darby Wade, who took these notes. If the assistant asks when Priya is sending the press kit, say by Friday, Oct 23, 2026. If it asks anything else, answer briefly: the docs freeze on Oct 28, 2026 so translations can start. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 42,
@@ -588,7 +708,10 @@
         "The report does not list Priya's reply among items left out, and does not call that reply a bot or integration post.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. Answer any question briefly: the checklist was fine except for the staging login issue. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+      "simulated_user": "You are Darby Wade, who took these notes. Answer any question briefly: the checklist was fine except for the staging login issue. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 43,
@@ -601,7 +724,10 @@
         "The 2:20 PM Jira Cloud post is not presented as an attendee's message.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. Answer any question briefly: the plan is for Jordan to add idempotency keys to the webhook handler this sprint. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+      "simulated_user": "You are Darby Wade, who took these notes. Answer any question briefly: the plan is for Jordan to add idempotency keys to the webhook handler this sprint. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 44,
@@ -613,7 +739,10 @@
         "The report does not list the standup thread among items left out as off topic or unrelated.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. If asked, the travel budget stays at this year's level and contractor spend is on plan; there are no action items from the budget discussion. If asked who owns the flaky auth test or when it is due, say you own it and there's no date. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+      "simulated_user": "You are Darby Wade, who took these notes. If asked, the travel budget stays at this year's level and contractor spend is on plan; there are no action items from the budget discussion. If asked who owns the flaky auth test or when it is due, say you own it and there's no date. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 45,
@@ -624,7 +753,10 @@
         "The report does not list the 3:01 PM or 3:02 PM messages among items left out as trivial, logistical, or not meeting content.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. If asked, you agreed Priya will lead the cache redesign starting next sprint. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+      "simulated_user": "You are Darby Wade, who took these notes. If asked, you agreed Priya will lead the cache redesign starting next sprint. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 46,
@@ -635,7 +767,10 @@
         "Each meeting's notes are saved in their own Markdown file in the working directory: the API Review file carries Priya's 9:12 AM diff 412 link, and the Budget Check-in file carries no chat from the API Review window.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. If asked, the pagination change ships in the next release, and the Q4 forecast stays at the number from September. There are no action items. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+      "simulated_user": "You are Darby Wade, who took these notes. If asked, the pagination change ships in the next release, and the Q4 forecast stays at the number from September. There are no action items. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 47,
@@ -649,7 +784,10 @@
         "The Loom live doc 'Incident Review 2026-10-07' is not presented as notes or edits made by an attendee during the meeting; the report says it was left out because only the organizer's (Loom's) account edited it.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. Answer any question briefly: the outage started when 4.2.0 shipped a cache change, and Priya owns the rollback, done today. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+      "simulated_user": "You are Darby Wade, who took these notes. Answer any question briefly: the outage started when 4.2.0 shipped a cache change, and Priya owns the rollback, done today. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 48,
@@ -662,7 +800,10 @@
         "The report's Resolved from sources section lists Tina as Tina Alvarez, marked likely (or equivalent), with the evidence that Tina Alvarez's title (Director, Strategic Programs) fits, and may note Tina Brooks as the match that did not fit.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. If asked who Tina is, say Tina Alvarez. If asked anything else, answer briefly: intake opens in January. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+      "simulated_user": "You are Darby Wade, who took these notes. If asked who Tina is, say Tina Alvarez. If asked anything else, answer briefly: intake opens in January. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 49,
@@ -675,7 +816,10 @@
         "After the user confirms, the final notes name Mareike Vogt.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. If asked whether Marika is Mareike Vogt, say yes. If asked anything else, answer briefly: the reorg lands in January. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+      "simulated_user": "You are Darby Wade, who took these notes. If asked whether Marika is Mareike Vogt, say yes. If asked anything else, answer briefly: the reorg lands in January. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 50,
@@ -689,7 +833,10 @@
         "The final notes name Shane Patel.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. If asked who Shane is, say Shane Patel, the vendor's account manager. If asked anything else, answer briefly: the renewal went up 18 percent. If a question about Shane gives no meeting or quote, answer anyway. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+      "simulated_user": "You are Darby Wade, who took these notes. If asked who Shane is, say Shane Patel, the vendor's account manager. If asked anything else, answer briefly: the renewal went up 18 percent. If a question about Shane gives no meeting or quote, answer anyway. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 51,
@@ -702,7 +849,10 @@
         "The report's Resolved from sources section lists Theo as Theo Marsh with the Confluence page 'Certificate renewal handoff plan' as the evidence.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. If asked who Theo is, say Theo Marsh. If asked anything else, answer briefly: nothing was decided yet. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+      "simulated_user": "You are Darby Wade, who took these notes. If asked who Theo is, say Theo Marsh. If asked anything else, answer briefly: nothing was decided yet. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 52,
@@ -716,7 +866,10 @@
         "The earlier notes file is not edited, and it is not treated as the raw notes for this meeting.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. If asked who Ben is, say Ben Castillo. If asked anything else, answer briefly: Ravi is trying again next week. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+      "simulated_user": "You are Darby Wade, who took these notes. If asked who Ben is, say Ben Castillo. If asked anything else, answer briefly: Ravi is trying again next week. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 53,
@@ -728,7 +881,10 @@
         "The final notes record that Rowan's next project is the billing export rewrite, starting after the handbook.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. If asked whether you asked Rowan what they want to pick up next, say yes, at the end of the meeting. If asked about Rowan's pronouns, say they/them. If asked anything else, answer briefly: nothing else came up. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+      "simulated_user": "You are Darby Wade, who took these notes. If asked whether you asked Rowan what they want to pick up next, say yes, at the end of the meeting. If asked about Rowan's pronouns, say they/them. If asked anything else, answer briefly: nothing else came up. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 54,
@@ -742,7 +898,10 @@
         "The Oct 12 post is not woven into the notes as a chat exchange from the meeting.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. If asked what QRT means, say Quarterly Reliability Triage. If asked anything else, answer briefly: Marcus asks the data squad by Monday. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+      "simulated_user": "You are Darby Wade, who took these notes. If asked what QRT means, say Quarterly Reliability Triage. If asked anything else, answer briefly: Marcus asks the data squad by Monday. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 55,
@@ -755,7 +914,10 @@
         "The report lists Kestrel as resolved from Sam Ortiz's Sep 14 kickoff email.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. If asked what Kestrel is, say the handheld scanner pilot. If asked anything else, answer briefly: Sam is chasing the vendor. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+      "simulated_user": "You are Darby Wade, who took these notes. If asked what Kestrel is, say the handheld scanner pilot. If asked anything else, answer briefly: Sam is chasing the vendor. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 56,
@@ -767,7 +929,10 @@
         "The report's Resolved from sources section lists 'jordon' as Jordan Lee, confirmed (or equivalent), with his 1:21 PM #incident-4471 message as the evidence.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. If asked who jordon is, say Jordan Lee. If asked anything else, answer briefly: Priya's timeline is due Monday. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+      "simulated_user": "You are Darby Wade, who took these notes. If asked who jordon is, say Jordan Lee. If asked anything else, answer briefly: Priya's timeline is due Monday. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 57,
@@ -780,7 +945,10 @@
         "The report's Resolved from sources section gives the calendar invite (or the Slack directory) as the source of both spellings.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. If asked about a spelling, say Priya Raman and Marcus Hall. If asked anything else, answer briefly: no decision on the milestone yet. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+      "simulated_user": "You are Darby Wade, who took these notes. If asked about a spelling, say Priya Raman and Marcus Hall. If asked anything else, answer briefly: no decision on the milestone yet. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 58,
@@ -793,7 +961,10 @@
         "The report's Resolved from sources section lists Sam's boss as Lena Fischer, with Sam Ortiz's manager relationship in contacts as the evidence.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. If asked who Sam's boss is, say Lena Fischer. If asked anything else, answer briefly: Sam writes the postings. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+      "simulated_user": "You are Darby Wade, who took these notes. If asked who Sam's boss is, say Lena Fischer. If asked anything else, answer briefly: Sam writes the postings. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 59,
@@ -806,7 +977,10 @@
         "After the user answers, the final notes spell out PIR on first use as Post-Incident Review.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. If asked what PIR means, say Post-Incident Review. If asked anything else, answer briefly: Tom owns the backlog. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+      "simulated_user": "You are Darby Wade, who took these notes. If asked what PIR means, say Post-Incident Review. If asked anything else, answer briefly: Tom owns the backlog. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 60,
@@ -819,7 +993,10 @@
         "After the user answers, the final notes spell out ZQX as the zone quality index (dashboard).",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. If asked what ZQX is, say the zone quality index dashboard. If asked anything else, answer briefly: Priya rechecks the query tomorrow. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+      "simulated_user": "You are Darby Wade, who took these notes. If asked what ZQX is, say the zone quality index dashboard. If asked anything else, answer briefly: Priya rechecks the query tomorrow. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 61,
@@ -831,7 +1008,10 @@
         "After the user accepts, the working directory holds an HTML file of the notes, and the reply names its path.",
         "No task is created in any tool."
       ],
-      "simulated_user": "You are Darby Wade, who took these notes. If offered an HTML version, say yes please. If asked anything else, answer briefly: the screenshot was taken at 2:12 PM. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine."
+      "simulated_user": "You are Darby Wade, who took these notes. If offered an HTML version, say yes please. If asked anything else, answer briefly: the screenshot was taken at 2:12 PM. Do not volunteer anything it does not ask about. If it asks you to confirm or approve something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 62,
@@ -840,6 +1020,9 @@
       "expectations": [
         "Attendees are formatted in title case with -contractor stripped, deduplicated to two people despite the duplicate email, and sorted alphabetically by first name: 'Sarah Chen' and Rivera, whose 'j.' initial is either expanded to the first name the user gives when asked (Step 3) or left as 'J. Rivera', never expanded by guesswork.",
         "The skill does not run a per-line interview or ask the user to confirm the notes, a paraphrase, or the action items: any question it asks is about a gap no source settles (such as the 'j.' initial, or a missing owner or due date)."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -850,6 +1033,9 @@
         "Kim Park's name appears with strikethrough formatting in the final Attendees section, since the user stated she did not attend despite being invited.",
         "The skill does not ask the user whether Kim Park attended or who did not attend, since the user already said so.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -858,6 +1044,9 @@
       "expected_output": "Tests the due-date rule for a weekday. The action item is due 'by Friday', and the meeting was on Sunday, Mar 15, 2026, so the item keeps the user's words and adds the calendar date they refer to, Mar 20, 2026, computed from the meeting date rather than dropped or replacing the user's wording.",
       "expectations": [
         "The mockup action item keeps the user's 'by Friday' wording and adds the calendar date it refers to, Mar 20, 2026 (the Friday after the Sunday, Mar 15 meeting), rather than dropping the due date or replacing the user's words with the date alone."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -867,6 +1056,9 @@
       "expectations": [
         "An `###### Agenda` section sits between `###### Attendees` and `###### Notes`, listing the calendar event's two agenda items in their original order and wording, with the roadmap link rendered as a Markdown hyperlink, and no items the agenda did not list.",
         "The skill never offers to create tasks in any tool, since the user did not ask for any, and no Action Items entry links to a task."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -877,6 +1069,9 @@
         "The Notes section is divided into topic sections marked as bold label lines (e.g. `**Hiring**`), not as Markdown headings, with every note assigned to exactly one section and the sections ordered as the meeting covered them.",
         "The section count and names reflect the meeting's own topics (roughly: hiring, the Postgres migration, customer escalations, the Q4 budget, and roadmap commitments), rather than a single flat list or an invented catch-all section such as 'Other'.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -886,6 +1081,9 @@
       "expectations": [
         "The Notes section is a single flat bulleted list with no bold topic labels and no sub-sections.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -896,6 +1094,9 @@
         "The `Speaker 3` line is not attributed to Darby Wade or any other attendee by guesswork: the skill either asks the user who spoke or leaves that line out of the notes entirely.",
         "Any question about `Speaker 3` does not propose a name (for example, it never asks 'Was that Darby?').",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -905,6 +1106,9 @@
       "expectations": [
         "The 'we were flying blind for 40 minutes' phrase never appears in quotation marks in the final document, labelled as a paraphrase or not: with no transcript it is written as reported speech (for example, Lena Fischer said the team had been flying blind for about 40 minutes), and the skill does not offer to keep it as a quotation marked '(paraphrased)'.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -914,16 +1118,22 @@
       "expectations": [
         "No summary appears: the notes are neither over the length thresholds nor divided into three or more sections, and the four images must not be counted toward the measurement to manufacture one.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
       "id": 71,
       "prompt": "Organize my notes from this morning's Platform Planning meeting for my journal. Everything I have from it is in my working directory.\n\nMeeting: Platform Planning\nStart: Aug 26, 2026 at 10:00 AM\nEnd: 10:45 AM\nDuration: 45 minutes\nAttendees: darby.wade@example.com, priya.raman@example.com, lena.fischer@example.com\n\nHere's the calendar event too:\nTitle: Platform Planning\nScheduled: Aug 26, 2026, 10:00 AM to 10:45 AM\nAgenda: 1) Postgres migration cutover date 2) Q4 on-call rotation 3) Staging environment costs\nInvitees: darby.wade@example.com, priya.raman@example.com, lena.fischer@example.com\n\nI'll answer your questions as we go.",
-      "expected_output": "Tests the open question for a missing owner or due date (Step 7). Drafted from the chat log, the decommission ticket has no due date and the runbook update has no owner, and no source gives either, so before producing the document the skill asks about each as an open question (by when? who owns this?) without proposing a date or a name. Whatever the user does not give is left off, never guessed.",
+      "expected_output": "Tests the open question for a missing owner (Step 7) and that a missing due date gets no question. Drafted from the chat log, the decommission ticket has no due date and the runbook update has no owner, and no source gives either. Before producing the document the skill asks who owns the runbook update, as an open question that proposes no name. It does not ask for the decommission ticket's due date, which stays off the item. Whatever the user does not give is left off, never guessed.",
       "expectations": [
-        "Before producing the final document, the skill asks for the decommission ticket's missing due date and the runbook update's missing owner, which no source gives, as open questions that propose no date and no name.",
-        "In the final Action Items section, each item leads with its owner's name where one is known, and the decommission ticket's due date and the runbook update's owner appear only as the user's answers give them, never as a guessed or inferred value.",
+        "Before producing the final document, the skill asks who owns the runbook update, which no source gives, as an open question that proposes no name, and it does not ask for the decommission ticket's missing due date.",
+        "In the final Action Items section, each item leads with its owner's name where one is known, the runbook update's owner appears only as the user's answer gives it, and the decommission ticket carries no due date, never a guessed or inferred one.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -933,6 +1143,9 @@
       "expectations": [
         "Both screenshots are embedded with descriptive alt text and an italic caption, and interwoven among the notes rather than collected at the end: the manual-exports dashboard beside the export-volume note ahead of the limit debate, and the macro audit sheet beside the stale-macros note.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -948,6 +1161,9 @@
       "expectations": [
         "The final notes keep both links exactly as the user gave them: https://example.atlassian.net/wiki/x/Rk7mQ2 for the proposal and https://example.atlassian.net/wiki/spaces/PLAT/pages/40213 for the dependency tracker. Replacing either with a URL the Confluence tool returned (such as .../wiki/pages/40188, .../wiki/pages/40213, or .../wiki/x/Pq2wX8) fails.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -965,6 +1181,9 @@
         "The rollback checklist action item links to REL-101 and the go/no-go criteria action item links to REL-103, and neither gets a new task.",
         "The Trello call log shows exactly one card created, for the release comms action item; none is created for the rollback checklist or the go/no-go criteria.",
         "The final document's release comms action item links to the exact URL the create_card call returned in the Trello call log."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -980,6 +1199,9 @@
       "expectations": [
         "Sam's 9:02 AM direct message (\"morning! pulling the numbers today\"), which a search shows only as context with no time, is not quoted, included, or presented as chat from during the meeting, and is not given a time inside the window.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -996,6 +1218,9 @@
         "The skill does not silently add or drop Marcus Hall, invited on the calendar event but missing from the user's attendee list: his tentative response does not show whether he attended, so the skill asks the user.",
         "The final Attendees section lists Darby Wade, Marcus Hall, and Priya Raman sorted by first name, with Marcus Hall struck through and no other name struck through.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1007,6 +1232,9 @@
         "Sam Ortiz is struck through in the final Attendees section, established from the calendar's declined response, without the skill asking who did not attend; no other name is struck through.",
         "The reply's report says Sam Ortiz's absence came from the calendar's declined response.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1018,6 +1246,9 @@
         "The launch checklist action item is led by Maya Okafor and carries the Oct 23 due date from the calendar agenda, without the skill asking for its owner or due date.",
         "The reply's report says the launch checklist's due date came from the calendar agenda.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1028,6 +1259,9 @@
       "expectations": [
         "Priya's reply is woven into the note on the deploy checklist discussion as an exchange: a lead-in sentence that links the conversation (for example `[In Slack](...)`) and ends with a colon, then a nested bullet `Priya Raman, 10:08 AM: <her message verbatim>`. A separate chat section, or chat listed apart from the notes, fails.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1038,6 +1272,9 @@
       "expectations": [
         "Beside each saved Markdown file, the working directory holds an HTML file with the same base name (for example `2026-10-26-api-review.html` next to `2026-10-26-api-review.md`), and the reply names both paths.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1048,6 +1285,9 @@
       "expectations": [
         "Wherever the notes or report use a pronoun for Rowan, it is they/them/their; they never use he, him, his, she, or her for Rowan.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1063,6 +1303,9 @@
         "The body opens with the palette picker: a `page-controls` div holding the `palette-switcher` fieldset with five radio inputs (harbor, evergreen, plum, ember, teal), Harbor checked.",
         "The title is an `<h2>` followed directly by the metadata `<p>`, section labels are `<h6>`, attendee names are separated by `<br>` in one `<p>`, and the closing line is an `<h4>`.",
         "No task is created in any tool."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1081,6 +1324,9 @@
         "Everyone on the invite attended. Marcus was on call for the whole launch week and got paged most nights. Sam's release calendar is due Friday, Nov 13. Nothing else to add.",
         "Looks good.",
         "Looks good. Finalize it and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1099,6 +1345,9 @@
         "Everyone attended. The one-week cap starts Tuesday, Dec 1, and Jordan's rotation tool update is due Wednesday, Nov 25. Nothing else to add.",
         "Looks good.",
         "Looks good. Finalize it and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1117,6 +1366,9 @@
         "Everyone attended. Sam's reshare is due Wednesday, Nov 18. Nothing else to add.",
         "Looks good.",
         "Looks good. Finalize it and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1135,6 +1387,9 @@
         "Everyone attended. Jordan's dashboard is due Friday, Dec 4. Nothing else to add.",
         "Looks good.",
         "Looks good. Finalize it and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1153,6 +1408,9 @@
         "Everyone attended. Nothing else to add.",
         "Looks good.",
         "Looks good. Finalize it and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1171,6 +1429,9 @@
         "Everyone attended. The importer ships Friday, Nov 13, and Jordan's release notes are due Thursday, Nov 12. Nothing else to add.",
         "Looks good.",
         "Looks good. Finalize it and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1189,6 +1450,9 @@
         "Everyone attended. Sam's signed order form is due Friday, Nov 20. Nothing else to add.",
         "Looks good.",
         "Looks good. Finalize it and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1208,6 +1472,9 @@
         "Everyone attended. Noor's design doc is due Friday, Dec 4, Jordan's gate policy is due Friday, Dec 11, and Priya tells marketing this week, by Friday, Nov 20. Nothing else to add.",
         "Looks good.",
         "Looks good. Finalize it and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1226,6 +1493,9 @@
         "Everyone attended. The sprint runs Monday, Dec 7 through Friday, Dec 11, and Sam's flag export is due Monday, Nov 30. Nothing else to add.",
         "Looks good.",
         "Looks good. Finalize it and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1246,6 +1516,9 @@
         "Everyone attended. Halvorsen Freight is our biggest logistics customer. Priya's call is due Friday, Nov 20, and Noor's scope is due Tuesday, Nov 24. Nothing else to add.",
         "Looks good.",
         "Looks good. Finalize it and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1265,6 +1538,9 @@
         "Everyone attended. Lena's judging criteria are due Friday, Jan 15, 2027, and Jordan books the spring dates by Friday, Dec 18. Nothing else to add.",
         "Looks good.",
         "Looks good. Finalize it and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1284,6 +1560,9 @@
         "Everyone attended; Jordan was there but didn't say anything. My tooling contracts pull is due Friday, Dec 4. Nothing else to add.",
         "Looks good.",
         "Looks good. Finalize it and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1303,6 +1582,9 @@
         "Looks good.",
         "Looks good. Finalize it and give me the final document.",
         "Finalize it now and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1322,6 +1604,9 @@
         "Looks good.",
         "Looks good. Finalize it and give me the final document.",
         "Finalize it now and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1342,6 +1627,9 @@
         "Context: we agreed to cut the checklist to first-week essentials, and Priya is drafting that version. Lena's buddy pilot starts with the December hires. Sam is checking with IT on laptop shipping. Everyone attended.",
         "Looks good. Finalize it and give me the final document.",
         "Finalize it now and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1362,6 +1650,9 @@
         "I'm Darby Wade. Context: the pilot ran two weeks at the north dock, and we agreed the south dock waits for the firmware update. Everyone attended; Marcus joined by phone.",
         "Looks good. Finalize it and give me the final document.",
         "Finalize it now and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1380,6 +1671,9 @@
         "Looks good.",
         "Looks good. Make the tasks, finalize it, and give me the final document.",
         "Finalize it now and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1397,6 +1691,9 @@
         "Looks good.",
         "Looks good. Make the tasks, finalize it, and give me the final document.",
         "Finalize it now and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1417,6 +1714,9 @@
         "Looks good.",
         "Looks good. Finalize it and give me the final document.",
         "Finalize it now and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1433,6 +1733,9 @@
         "Everyone attended. Sam's fixes are due Monday, Nov 16, and my release notes are due Tuesday, Nov 17. Nothing else to add.",
         "Looks good.",
         "Looks good. Finalize it and give me the final document."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1446,7 +1749,10 @@
         "The transcript shows no wait, sleep, timer, or scheduled retry at any point (no sleep command, no scheduling tool call, no promise to try later); when the user asks it to wait, the skill retries right away instead.",
         "The parking map item is linked in the final document with the exact URL the create_card call returned, and the conference room item is a plain unlinked checklist item with no fabricated URL."
       ],
-      "simulated_user": "You are the person who took these notes. You already approved creating both tasks in your first message. If the assistant asks about the notes, answer briefly: Noor will send the parking map by Friday, Nov 13, 2026, and you'll book the conference room by Nov 17, 2026. The first time the assistant reports that a task failed, ask it to wait a few minutes and try that one again. The next time it reports that the task failed, accept that, say you'll add it yourself, and ask for the final notes. If the assistant asks you to confirm something, say it's fine."
+      "simulated_user": "You are the person who took these notes. You already approved creating both tasks in your first message. If the assistant asks about the notes, answer briefly: Noor will send the parking map by Friday, Nov 13, 2026, and you'll book the conference room by Nov 17, 2026. The first time the assistant reports that a task failed, ask it to wait a few minutes and try that one again. The next time it reports that the task failed, accept that, say you'll add it yourself, and ask for the final notes. If the assistant asks you to confirm something, say it's fine.",
+      "stage_skills": [
+        "create-task"
+      ]
     }
   ]
 }

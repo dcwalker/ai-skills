@@ -5,42 +5,20 @@ what to do when the next move belongs to someone else, and where a time or
 place gets recorded. Read this whenever the action is not obvious from the
 item alone.
 
-## The action is the user's
+## The action is the user's, in one of three kinds
 
-Every item's action is phrased as what the user will do. An item often
-describes something else: a topic ("Garage"), an event ("Meeting moved"),
-or another person's task ("Vendor to send quote"). None of those is an action.
-Ask what the user does about it, and write that.
+What counts as an action, and how to phrase each of the three kinds (now, at
+a time or place, and a check-in on someone else's move), is create-task's
+Step 1. Triage applies it to each item and adds only this:
 
-| Item says | The user's action |
-|---|---|
-| "Dishwasher" (the landlord is fixing it) | Check in with the landlord about the dishwasher repair |
-| "Prescription ready" | Pick up the prescription at the pharmacy |
-| "Can you send me the slides?" | Send the slides to Priya |
-| "Your statement is ready" (link) | Whatever the statement shows needs doing, or nothing: file it as reference |
-
-An item with no action at all is not an action item. It is reference (keep
-it, file it), someday (park it), or noise (delete or archive it). Say which.
-
-## The three kinds
-
-**Now.** Something to do at the next opportunity, with no particular time or
-place. Under two minutes, it is offered under the 2-minute rule ("Want me to
-draft that reply now?") and done in this run only on a yes. Longer, it is
-captured as an action. Either way, what the user says needs doing is recorded
-as the item's action; triage does not start the task on its own (SKILL.md
-Step 6).
-
-**At a time or place.** Something tied to a date, a deadline, an appointment,
-or a location. The time becomes a due date or a calendar entry; the place goes
-in the title when it is where the action happens ("at the pharmacy", "at the
-leasing office"), or in a context label when the scope uses them.
-
-**Check-in.** The next move is someone else's: a reply, a quote, a repair, a
-review. The user's action is to check in on it, with that person, about that
-thing, at a time or place. The other person's work is not assigned to the
-user, and the user's check-in is not left implicit. Write it out: "Check in
-with the landlord about the dishwasher repair on Oct 12."
+- An item with no action is reference (keep it, file it), someday (park it),
+  or noise (delete or archive it). Say which in the item's reply.
+- A "now" action under two minutes is offered under the 2-minute rule and
+  done in this run only on a yes. Longer, it is captured as an action.
+  Either way, triage does not start the task on its own (SKILL.md Step 6).
+- A place goes in the title when it is where the action happens, or in a
+  context label when the scope uses them; a time becomes a due date or a
+  calendar entry the way the scope records it (below).
 
 ## Linked content first
 

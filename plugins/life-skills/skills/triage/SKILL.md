@@ -375,6 +375,24 @@ auto-capture, and the search order.
 
 ## Step 6: Determine the Action
 
+**Triage writes every action, title, description, due date, and capture by
+the create-task skill's rules.** Load create-task (or read its `SKILL.md`, in
+the `create-task` directory beside this skill's) once, before the first
+item's Step 6, and apply it to every item. What follows here and in Step 7
+is only what triage adds to it: how the scope's own pattern records a time
+or place, linked content first, and proposing before writing.
+
+Use create-task's rules to write a field, or to judge whether one fails them,
+never as a list of things every item should have. An item whose title says
+what to do is complete, even with an empty description: don't retitle it to
+add detail, append a "Done when" line, or question a due date it already
+states. A missing phone number, link, name, or address is not a gap either.
+Create-task's resources make a new task quicker to finish; they are not a
+test an existing item fails. Mention one only when the item can't be done
+without it, or when you found it yourself and propose adding it. Otherwise
+the item gets the "Looks complete" reply (Step 9), with no Missing: line and
+no question about its details.
+
 Before auditing any field, name the item's next action from the item and what
 Step 5 gathered, always as something the user does: **now** (at the next
 opportunity; under two minutes, offered to do in this run), **at a time or
@@ -429,25 +447,21 @@ field, apply this decision rule:
 
 ### Title / Subject
 
-A good title is action-oriented and specific enough to act on without reading
-the description. If the title is a noun phrase, a question, or too vague to act
-on, propose a rewrite and confirm before changing it. The rewrite states the
-action Step 6 named. **Only propose the title once**, in the item's reply
-(Step 9).
+Judge the title by create-task's title rules (its Step 2). If it is a noun
+phrase, a question, or too vague to act on, propose a rewrite and confirm
+before changing it. The rewrite states the action Step 6 named. **Only
+propose the title once**, in the item's reply (Step 9).
 
 ### Description
 
-A description should answer: what needs to be done, why it matters, what done
-looks like, and any constraints. If key parts are missing, suggest additions in
-plain language that fits the context. Confirm before adding anything.
-
-An item whose action happens somewhere specific ("renew it online", "pay on
-the portal", "call the office") needs the means to do it: the link, the
-portal, the phone number. When it doesn't carry one, it is not complete,
-even if every other field is set. Take the quick look Step 6 allows in the
-sources already connected (the email that prompted it, the user's files), and
-propose adding what you find, or say the link is missing when nothing turns
-it up.
+Judge the description by create-task's outcome, contexts, and resources
+rules (its Steps 3 and 4): what needs doing and what done looks like, the
+contexts it needs, and the means to do it. An item whose action happens
+somewhere specific and doesn't carry the link, portal, or phone number is not
+complete, even if every other field is set. Take the quick look Step 6 allows
+in the sources already connected, and propose adding what you find, or say it
+is missing when nothing turns it up. Suggest additions in plain language that
+fits the context, and confirm before adding anything.
 
 ### Labels / Tags
 
@@ -476,28 +490,16 @@ action is the check-in Step 6 named.
 
 ### Due Date
 
-A due date marks a hard deadline, not a date it would be nice to be done by.
-Propose or set one only when the item has a hard deadline: a date the item or
-its sources state, or one that clearly follows from them. A stated deadline
-or expiry is the due date itself. A deadline that follows from an event is
-the event's date, or the day before when the work can't happen on the day
-itself: packing for a trip that launches early on Jan 1 is due Dec 31. When
-the user asks for a due date, use the timing they give; when they ask
-without giving one, ask when.
+Propose or set a due date only as create-task's dates rules allow (its Step
+3, "Dates"): a hard deadline the item or its sources state or that clearly
+follows from them, never a soft target, and never an invented date. With no
+hard deadline, leave the field empty and do not raise it, on an active item
+as much as a backlog one; do not ask whether there is a target date.
 
 A check-in, or an appointment fixed at a set time, keeps the date Step 6
 gave it and is recorded the way the scope records such dates, a due date
-included when that is the scope's pattern. A check-in's date is the day the
-other person promised to act ("I'll send it by Thursday"), when they named
-one. Step 6 asks when only when no such date exists. A soft target in the item's text ("hoping to finish by
-Friday") is neither: it stays in the description, not the due date.
-
-Otherwise, leave the field empty and do not raise it, on an active item as
-much as a backlog one. Do not ask whether there is a target date: a soft
-date adds a question the user has to decline, and one set by mistake has to
-be found and removed later. The one exception is an item that clearly hangs on
-a fixed event whose date you can't find (a gift for a birthday): ask for that
-event's date. Do not invent a date.
+included when that is the scope's pattern. Step 6 asks when only when no
+such date exists.
 
 ### Priority (Professional items only)
 
@@ -909,6 +911,8 @@ never impose more structure than the work justifies.
 - Never invent facts, dates, names, or descriptions. Ask if unknown.
 - A due date is a hard deadline. Set or ask about one only as Step 7's
   "Due Date" rule allows, and never ask for a target date.
+- Write every title, description, due date, and capture by create-task's
+  rules, loaded once before the first item.
 - After any write to a Trello card's description, compare its attachments with
   the list from before the write and report any that were dropped or added.
 - Refer to every card, issue, or thread by a hyperlink to the item itself,
@@ -947,6 +951,10 @@ the file),
 [field-guidance](references/field-guidance.md) (title, description and label
 calibration), [sizing-and-tiers](references/sizing-and-tiers.md) (Steps 1a and
 3a-3c), [methodology](references/methodology.md) (GTD, Kanban, LEAN).
+
+Sibling skill: create-task, the rules for every action, title, description,
+due date, and capture (Steps 6, 7, and 7c), loaded once before the first
+item.
 
 External:
 

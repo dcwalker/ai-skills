@@ -1,0 +1,69 @@
+{
+  "anchor_date": "2026-11-17",
+  "boards": {
+    "board-1": {
+      "id": "board-1",
+      "name": "Personal"
+    }
+  },
+  "lists": {
+    "list-1": {
+      "id": "list-1",
+      "name": "Inbox",
+      "board_id": "board-1"
+    },
+    "list-2": {
+      "id": "list-2",
+      "name": "Waiting For",
+      "board_id": "board-1"
+    }
+  },
+  "cards": {
+    "card-1": {
+      "id": "card-1",
+      "name": "Call the vet to book Biscuit's annual shots",
+      "desc": "Riverside Animal Clinic, (555) 016-3344.",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [
+        "label-1"
+      ],
+      "due": null,
+      "due_complete": false,
+      "url": "https://trello.com/c/card-1/call-vet"
+    },
+    "card-2": {
+      "id": "card-2",
+      "name": "Call the dentist to reschedule the cleaning",
+      "desc": "Office: (555) 018-7731",
+      "list_id": "list-1",
+      "board_id": "board-1",
+      "labels": [
+        "label-1"
+      ],
+      "due": null,
+      "due_complete": false,
+      "url": "https://trello.com/c/card-2/call-dentist"
+    }
+  },
+  "labels": {
+    "label-1": {
+      "id": "label-1",
+      "name": "@phone",
+      "color": "green",
+      "board_id": "board-1"
+    },
+    "label-2": {
+      "id": "label-2",
+      "name": "@errands",
+      "color": "orange",
+      "board_id": "board-1"
+    },
+    "label-3": {
+      "id": "label-3",
+      "name": "@computer",
+      "color": "blue",
+      "board_id": "board-1"
+    }
+  }
+}
