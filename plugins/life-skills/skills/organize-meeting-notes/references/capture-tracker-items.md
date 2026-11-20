@@ -131,8 +131,8 @@ Include each item that counts, without asking; the report lists them all.
   note follows the Step 5 unanchored enrichment rule.
 - **Action items**: when the item is a task, it also becomes a Step 7 action
   item linked to it, led by its assignee, or its creator when unassigned.
-  Find a due date the item does not carry as Step 7 does for any action
-  item.
+  It carries the item's own due date, or a date the meeting stated for it,
+  and otherwise none, as Step 7 allows for any action item.
 - **No duplicates**: when an action item matches a captured item,
   link the captured item and do not create a task for it. Ask the
   user when it is unclear whether the two are the same work.

@@ -472,7 +472,7 @@ is still unresolved. Never ask the user to confirm the notes, a paraphrase,
 or anything a source already settles.
 
 For each gap a line leaves (an unclear or misspelled word, a name or initial,
-a missing owner or due date, a project or term the line assumes), look for
+a missing owner, a project or term the line assumes), look for
 the answer before asking:
 - The notes themselves, and the transcript when there is one.
 - The Step 1b sources: the calendar event, chat, email, links, and trackers.
@@ -529,7 +529,7 @@ quote when one helps, which sources were already checked, and any candidate
 with its evidence. Not `Who is Ravi?`, but: `In the Hiring Sync, your note
 says "ravi has the offer letter". I found no Ravi in the chat directory or
 your contacts. Who is Ravi?` This holds for every question the skill
-asks (names, owners, due dates, speakers, image placement, conflicts) and
+asks (names, owners, speakers, image placement, conflicts) and
 for each item in the Step 8 "Still unknown" list.
 
 - Capture not just facts but also action items, events and experiences, and
@@ -721,38 +721,30 @@ After Steps 4 and 5, format the notes section as a bulleted list:
 
 ### Step 7: Action Items
 
-1. Identify action items from the notes and format them as a simple checklist bullet list:
-   - Markdown format: `- [ ] ...`
-   - No sub-sections
-   - Lead each item with its owner's name, and include its due date:
-     `- [ ] Lena Fischer: Publish the Q4 on-call schedule by Friday (Aug 28, 2026)`
-   - Keep a due date in the words used in the meeting; adding the year to an
-     otherwise specific date (`by Sep 10, 2026`) is fine. When those words
-     could mean more than one date (a weekday such as "Friday"), add the
-     calendar date they refer to, counted from the meeting date with
+Write every action item by the create-task skill's rules. Load create-task
+(or read its `SKILL.md`, in the `create-task` directory beside this skill's)
+before this step. Its rules settle what counts as an action item (nothing
+already done in the meeting), whose action it is, its owner, its title, and
+whether it has a due date. This step adds only what meeting notes need:
+
+1. List the action items as a checklist in create-task's one-line form:
+   - Markdown format: `- [ ] ...`, with no sub-sections.
+   - `- [ ] Lena Fischer: Publish the Q4 on-call schedule by Friday (Aug 28, 2026)`
+   - When a date's words could mean more than one date (a weekday such as
+     "Friday"), add the calendar date, counted from the meeting date with
      `python3 <skill-dir>/scripts/meeting_times.py due --meeting-date
      YYYY-MM-DD --weekday <day>` (add `--next-week` for "next Friday" meant
      as the following week). When it notes the weekday is the meeting's
      own, settle which week from the transcript or ask.
-   - When an item's owner or due date is unknown, look for it as Step 4
-     does (the tracker, the chat thread, the calendar, the user's other
-     notes). When no source gives it, ask an open question about whichever
-     is missing (who owns this? by when?) without proposing a name or a
-     date. If the user does not know, leave it off; never guess.
-   - Ask that question before producing the document, for every item still
-     missing an owner or a due date, even when nothing else needs asking.
-     Never fill the gap with a date the meeting did not state, such as one
-     inferred from a dependency ("after the migration").
-   - A date the meeting stated for something else (when a system shuts
-     down, when a release ships) is not the due date of an action that
-     leads to it. Give an action that date only when the meeting tied the
-     date to that action itself.
-   - Before listing an item, or asking whether it happened, check whether
-     the meeting already did it: read the whole transcript, including the
-     part after the last note, and the chat from the window. An action
-     done during the meeting (a conversation held, a decision made, a
-     ticket filed) is a note of what happened, not an action item, and
-     needs no question.
+   - When an item's owner is unknown, look for it as Step 4 does. When no
+     source gives it, ask "Who owns this?" before producing the document,
+     without proposing a name. If the user does not know, leave it off.
+   - An item gets a due date only when the meeting or a Step 4 source
+     states one for that action. An item without one gets none, and no
+     question about it.
+   - Before listing an item, read the whole transcript, including the part
+     after the last note, and the chat from the window: an action done
+     during the meeting is a note, not an action item.
 2. It is valid for a meeting to have no action items. Keep the
    `###### Action Items` section and write `None.` under it. Do not ask the
    user to confirm the action items, or that there are none.
@@ -764,14 +756,13 @@ After Steps 4 and 5, format the notes section as a bulleted list:
    of these settles it, and never pick one of several because it happens to
    be connected. An action item already linked to an item captured in Step 1b keeps that
    link and gets no new task.
-4. When the user has asked, create one task per remaining action item:
+4. When the user has asked, create one task per remaining action item, filed
+   and described by create-task's Step 6 and its source rule (the meeting's
+   title, date, and time, plus the topic and why the item exists when they
+   help):
    - If no available skill or tool can create tasks in the named tool, tell
      the user the tasks could not be created and why, and ask how to proceed.
      Never skip task creation silently.
-   - Never create a test or placeholder task to see whether the tool works.
-   - Give every task a description with source context.
-   - Minimum required description context: meeting title plus meeting date/time.
-   - Preferred additional context: meeting topic and a short reason the action item exists.
    - After each task is created, capture the URL the tool returned and replace that checklist item's text with a Markdown link to the task.
    - Use format: `- [ ] [Action item text](<task URL>)`
    - If a task fails to create, try it again right away, up to two more times (three attempts in all). Never wait, sleep, or schedule a later attempt between tries. After the third failure, stop: report each error to the user, leave that item unlinked, and say the user can create it themselves. Do not attempt it again unless the user asks after that report; each such request gets up to three more attempts, made right away under the same rules, even when the user asks to wait first.
@@ -779,7 +770,7 @@ After Steps 4 and 5, format the notes section as a bulleted list:
    Markdown document.
 
 Do not re-ask a question the user already answered or passed over: leave out
-whatever is still unknown (an owner, a due date, a link), list it in the
+whatever is still unknown (an owner, a link), list it in the
 report, and produce the final document. When the user asks for the final
 document, produce it in that reply.
 

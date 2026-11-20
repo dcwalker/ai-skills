@@ -62,9 +62,9 @@ though it were the user's notes.
 ## Gaps and Conflicts
 
 Do not review the draft with the user or ask them to confirm its takeaways
-or attributions. Fill each gap the artifacts leave (an owner, a due date, a
-speaker, anything unclear) as Step 4 does: from the sources first, asking
-only when none settles it, without proposing a speaker, an owner, or a date.
+or attributions. Fill each gap the artifacts leave (an owner, a speaker,
+anything unclear) as Step 4 does: from the sources first, asking only when
+none settles it, without proposing a speaker or an owner.
 A person mentioned in the artifacts is researched like any other, following
 [resolve-names.md](resolve-names.md). The user's
 word overrides the artifacts; a conflict between them is a question to ask,

@@ -1,0 +1,2115 @@
+{
+  "metadata": {
+    "skill_name": "create-task",
+    "skill_path": "plugins/life-skills/skills/create-task",
+    "executor_model": "claude-opus-5-5",
+    "analyzer_model": "claude-opus-5-5 (grader)",
+    "timestamp": "2026-11-20T06:45:38Z",
+    "evals_run": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ],
+    "runs_per_configuration": "2 with the skill, 1 without"
+  },
+  "runs": [
+    {
+      "eval_id": 3,
+      "eval_name": "check-in-promised-date",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 14.034,
+        "tokens": 69562,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The task's title is the user's own action, a check-in or follow-up with Rick (for example 'Check in with Rick Alvarez about the water heater estimate'); it is not phrased as waiting, and not as Rick sending the estimate.",
+          "passed": true,
+          "evidence": "Title: 'Check in with Rick Alvarez about the water heater estimate', the user's own follow-up."
+        },
+        {
+          "text": "The task's date is Thursday, November 19, 2026, and the reply resolves 'Thursday' to that calendar date.",
+          "passed": true,
+          "evidence": "'Due: Thursday, Nov 19, 2026 (the day Rick said he'd send it)'."
+        },
+        {
+          "text": "The task includes the phone number (555) 014-2290.",
+          "passed": true,
+          "evidence": "Notes include 'Phone: (555) 014-2290'."
+        },
+        {
+          "text": "The reply does not ask the user when to check in, since Rick named the day.",
+          "passed": true,
+          "evidence": "No question about when to check in; the reply ends by offering to format for the user's app."
+        },
+        {
+          "text": "The reply does not dispute or contradict the user's statement that today is November 17, 2026 (for example by citing a system clock).",
+          "passed": true,
+          "evidence": "Uses Nov 19, 2026 as Thursday consistent with today being Nov 17; no system-clock dispute."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "check-in-promised-date",
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 22.905,
+        "tokens": 69886,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The task's title is the user's own action, a check-in or follow-up with Rick (for example 'Check in with Rick Alvarez about the water heater estimate'); it is not phrased as waiting, and not as Rick sending the estimate.",
+          "passed": true,
+          "evidence": "Title: 'Check in with Rick Alvarez about the water heater estimate'."
+        },
+        {
+          "text": "The task's date is Thursday, November 19, 2026, and the reply resolves 'Thursday' to that calendar date.",
+          "passed": true,
+          "evidence": "'Due: Thursday, Nov 19, 2026' and 'I checked the calendar: Thursday is November 19.'"
+        },
+        {
+          "text": "The task includes the phone number (555) 014-2290.",
+          "passed": true,
+          "evidence": "Notes: 'Rick Alvarez (plumber): (555) 014-2290'."
+        },
+        {
+          "text": "The reply does not ask the user when to check in, since Rick named the day.",
+          "passed": true,
+          "evidence": "No question asking when to check in."
+        },
+        {
+          "text": "The reply does not dispute or contradict the user's statement that today is November 17, 2026 (for example by citing a system clock).",
+          "passed": true,
+          "evidence": "No mention of a different current date; the user's Nov 17 framing is accepted."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "eval_name": "combined-contexts",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 14.628,
+        "tokens": 44219,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The task's title starts with a verb and names the loan papers or the credit union.",
+          "passed": true,
+          "evidence": "Title: 'Drop off signed loan papers at Harbor Credit Union'."
+        },
+        {
+          "text": "The task records the place (Harbor Credit Union, 5th Ave), the time window (weekdays 9 to 5), and the person (Jordan, needed in person), all three.",
+          "passed": true,
+          "evidence": "Contexts: 'At the Harbor Credit Union branch on 5th Ave, weekdays 9 to 5, with Jordan (needs to sign in person)'."
+        },
+        {
+          "text": "The task has no due date.",
+          "passed": true,
+          "evidence": "No Due line; reply says 'I also didn't set a due date'."
+        },
+        {
+          "text": "The task contains no phone number, URL, or street number that the user did not give.",
+          "passed": true,
+          "evidence": "Only '5th Ave' given; reply says it left out street address and phone rather than guess."
+        },
+        {
+          "text": "The task adds no step, item, or reminder the user did not mention (such as bringing ID) as part of the task; one may only be raised as a question.",
+          "passed": true,
+          "evidence": "Notes contain only the done-when, branch, and Jordan signing; no ID or other added step."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "eval_name": "combined-contexts",
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 15.127,
+        "tokens": 44261,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The task's title starts with a verb and names the loan papers or the credit union.",
+          "passed": true,
+          "evidence": "Title: 'Drop off signed loan papers at Harbor Credit Union'."
+        },
+        {
+          "text": "The task records the place (Harbor Credit Union, 5th Ave), the time window (weekdays 9 to 5), and the person (Jordan, needed in person), all three.",
+          "passed": true,
+          "evidence": "Contexts: 'At the Harbor Credit Union branch on 5th Ave · weekdays 9 to 5 · with Jordan (has to sign in person)'."
+        },
+        {
+          "text": "The task has no due date.",
+          "passed": true,
+          "evidence": "No Due line; 'I also didn't set a due date because you didn't mention a deadline.'"
+        },
+        {
+          "text": "The task contains no phone number, URL, or street number that the user did not give.",
+          "passed": true,
+          "evidence": "Branch line is just 'Harbor Credit Union, 5th Ave'; no phone, URL, or street number."
+        },
+        {
+          "text": "The task adds no step, item, or reminder the user did not mention (such as bringing ID) as part of the task; one may only be raised as a question.",
+          "passed": true,
+          "evidence": "No added step such as bringing ID; only suggests the user may add address or phone."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 10,
+      "eval_name": "drafts-without-filing",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 12.329,
+        "tokens": 69551,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply presents a task whose title starts with a verb and names the library books.",
+          "passed": true,
+          "evidence": "Title: 'Return the library books'."
+        },
+        {
+          "text": "The task's due date is December 4.",
+          "passed": true,
+          "evidence": "'Due: Fri, Dec 4, 2026'."
+        },
+        {
+          "text": "No create_card, update_card, or create_label call appears in the call log.",
+          "passed": true,
+          "evidence": "tools.log has only Skill and Bash (cal); Trello seed and out state are identical."
+        },
+        {
+          "text": "The reply offers to add the task to Trello (or asks where to file it).",
+          "passed": true,
+          "evidence": "'Do you want me to add this to Trello? If so, which board and list should it go on?'"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 10,
+      "eval_name": "drafts-without-filing",
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 13.986,
+        "tokens": 69504,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply presents a task whose title starts with a verb and names the library books.",
+          "passed": true,
+          "evidence": "Title: 'Return the library books'."
+        },
+        {
+          "text": "The task's due date is December 4.",
+          "passed": true,
+          "evidence": "'Due: Friday, Dec 4, 2026'."
+        },
+        {
+          "text": "No create_card, update_card, or create_label call appears in the call log.",
+          "passed": true,
+          "evidence": "tools.log has only Skill and Bash (date); Trello seed and out state are identical."
+        },
+        {
+          "text": "The reply offers to add the task to Trello (or asks where to file it).",
+          "passed": true,
+          "evidence": "'Trello is connected. Do you want me to add this as a card there?'"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 13,
+      "eval_name": "email-to-self-format",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 29.842,
+        "tokens": 70125,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply presents an email with a subject line, and the subject starts with a verb and names the tile saw or Bayside Tool Rental.",
+          "passed": true,
+          "evidence": "'**Subject:** Return the tile saw to Bayside Tool Rental'."
+        },
+        {
+          "text": "The email body states the deadline of Saturday, November 21 (2026).",
+          "passed": true,
+          "evidence": "Body: 'by Saturday, November 21, 2026'."
+        },
+        {
+          "text": "The email body includes the address 410 Marsh Rd, the Saturday hours (7 to 3), and the agreement number R-55812.",
+          "passed": true,
+          "evidence": "Body has '410 Marsh Rd', 'open 7 to 3 on Saturdays', and 'Rental agreement number: R-55812'."
+        },
+        {
+          "text": "The reply does not also present the task in the skill's labeled Title / Notes / Contexts block in place of the email.",
+          "passed": true,
+          "evidence": "Only Subject/Body email is presented; no Title/Notes/Contexts block."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 13,
+      "eval_name": "email-to-self-format",
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 14.786,
+        "tokens": 70204,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply presents an email with a subject line, and the subject starts with a verb and names the tile saw or Bayside Tool Rental.",
+          "passed": true,
+          "evidence": "'**Subject:** Return the tile saw to Bayside Tool Rental'."
+        },
+        {
+          "text": "The email body states the deadline of Saturday, November 21 (2026).",
+          "passed": true,
+          "evidence": "Body: 'Due Saturday, November 21.'"
+        },
+        {
+          "text": "The email body includes the address 410 Marsh Rd, the Saturday hours (7 to 3), and the agreement number R-55812.",
+          "passed": true,
+          "evidence": "Body: 'Bayside Tool Rental, 410 Marsh Rd', 'Saturday hours: 7 am to 3 pm', 'Rental agreement number: R-55812'."
+        },
+        {
+          "text": "The reply does not also present the task in the skill's labeled Title / Notes / Contexts block in place of the email.",
+          "passed": true,
+          "evidence": "Only Subject/Body email is presented; no Title/Notes/Contexts block."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 8,
+      "eval_name": "files-preauthorized-card",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 33.326,
+        "tokens": 180781,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Exactly one create_card call appears in the call log, and the created card's title starts with a verb and names the clinic or the vet and Biscuit's shots.",
+          "passed": true,
+          "evidence": "One create_card in trello-calls.log: name 'Call Riverside Animal Clinic to book Biscuit's shots'."
+        },
+        {
+          "text": "The created card's description contains (555) 016-3344 and the closing time (6, weekdays).",
+          "passed": true,
+          "evidence": "desc: 'Dr. Patel's office: (555) 016-3344\\nWhen: weekdays, before 6 pm (closing time)'."
+        },
+        {
+          "text": "The created card carries the board's existing @phone label, and no create_label call appears in the call log.",
+          "passed": true,
+          "evidence": "Out state card-3 labels ['label-1'] (@phone); no create_label call; labels unchanged from seed."
+        },
+        {
+          "text": "The created card has no due date.",
+          "passed": true,
+          "evidence": "create_card 'due': null; out state 'due': null."
+        },
+        {
+          "text": "A search_trello or view_list call precedes the create_card call, checking the existing cards for a duplicate (a view_board call alone, which returns no card names, does not count).",
+          "passed": true,
+          "evidence": "Three search_trello calls (Biscuit, Riverside, vet) precede create_card."
+        },
+        {
+          "text": "The reply includes the new card's URL, https://trello.com/c/card-3/ followed by its slug.",
+          "passed": true,
+          "evidence": "Reply links https://trello.com/c/card-3/call-riverside-animal-clinic-to-book-bis."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 8,
+      "eval_name": "files-preauthorized-card",
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 59.327,
+        "tokens": 182336,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Exactly one create_card call appears in the call log, and the created card's title starts with a verb and names the clinic or the vet and Biscuit's shots.",
+          "passed": true,
+          "evidence": "One create_card in trello-calls.log: name 'Call Riverside Animal Clinic to book Biscuit's shots'."
+        },
+        {
+          "text": "The created card's description contains (555) 016-3344 and the closing time (6, weekdays).",
+          "passed": true,
+          "evidence": "desc: '(Dr. Patel's office): (555) 016-3344\\nCall on a weekday before 6 pm, when they close.'"
+        },
+        {
+          "text": "The created card carries the board's existing @phone label, and no create_label call appears in the call log.",
+          "passed": true,
+          "evidence": "create_card labels ['label-1'] (@phone); no create_label call; labels unchanged from seed."
+        },
+        {
+          "text": "The created card has no due date.",
+          "passed": true,
+          "evidence": "create_card 'due': null; out state 'due': null."
+        },
+        {
+          "text": "A search_trello or view_list call precedes the create_card call, checking the existing cards for a duplicate (a view_board call alone, which returns no card names, does not count).",
+          "passed": true,
+          "evidence": "view_list on list-1 (returns card names) precedes create_card."
+        },
+        {
+          "text": "The reply includes the new card's URL, https://trello.com/c/card-3/ followed by its slug.",
+          "passed": true,
+          "evidence": "Reply links https://trello.com/c/card-3/call-riverside-animal-clinic-to-book-bis."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 9,
+      "eval_name": "finds-duplicate-card",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 54.273,
+        "tokens": 180759,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "No create_card call appears in the call log.",
+          "passed": true,
+          "evidence": "trello-calls.log has get_boards, view_board, get_board_labels, search_trello, view_list, view_card; no create_card; state unchanged."
+        },
+        {
+          "text": "The reply names the existing card about Biscuit's shots and links it (https://trello.com/c/card-1/call-vet).",
+          "passed": true,
+          "evidence": "Links '[Call the vet to book Biscuit's annual shots](https://trello.com/c/card-1/call-vet)'."
+        },
+        {
+          "text": "The reply proposes using or updating the existing card rather than adding a second one.",
+          "passed": true,
+          "evidence": "'I didn't add a new card... Is there anything you'd like to add to it, like a due date...?'"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 9,
+      "eval_name": "finds-duplicate-card",
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 22.275,
+        "tokens": 101532,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "No create_card call appears in the call log.",
+          "passed": true,
+          "evidence": "trello-calls.log has get_boards, search_trello, view_card, view_board; no create_card; state unchanged."
+        },
+        {
+          "text": "The reply names the existing card about Biscuit's shots and links it (https://trello.com/c/card-1/call-vet).",
+          "passed": true,
+          "evidence": "Links '[Call the vet to book Biscuit's annual shots](https://trello.com/c/card-1/call-vet)'."
+        },
+        {
+          "text": "The reply proposes using or updating the existing card rather than adding a second one.",
+          "passed": true,
+          "evidence": "'A second card would mean two to-dos for the same job. Do you want me to change the existing card...?'"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "hard-deadline-with-resources",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 16.094,
+        "tokens": 69771,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The task's title starts with a verb, names the car registration, and is ten words or fewer.",
+          "passed": true,
+          "evidence": "Title: 'Renew the car registration online' (5 words)."
+        },
+        {
+          "text": "The task carries a due date of December 12 (2026), and no other date is presented as its due date.",
+          "passed": true,
+          "evidence": "'Due: Sat, Dec 12, 2026 (the expiry date on the notice)'; no other due date."
+        },
+        {
+          "text": "The task includes the URL https://dmv.example.gov/renew and the $86 fee.",
+          "passed": true,
+          "evidence": "'Portal: https://dmv.example.gov/renew' and 'The fee is $86.'"
+        },
+        {
+          "text": "The reply does not claim the task was created, filed, or added to any app or tracker.",
+          "passed": true,
+          "evidence": "Says 'Here's the task to paste'; no claim of filing."
+        },
+        {
+          "text": "The reply contains no em dash character in the task text.",
+          "passed": true,
+          "evidence": "Em dash count in transcript: 0."
+        },
+        {
+          "text": "Any Links line in the task holds an actual URL or item key; the task has no Links line that only names a source (such as 'DMV renewal notice').",
+          "passed": true,
+          "evidence": "No Links line; the URL sits on a 'Portal:' line with the actual URL."
+        },
+        {
+          "text": "Any weekday the reply names beside December 12, 2026 is Saturday; no other weekday is attached to that date.",
+          "passed": true,
+          "evidence": "'Dec 12 is a Saturday.' and 'Sat, Dec 12, 2026'."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "hard-deadline-with-resources",
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 41.783,
+        "tokens": 69261,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The task's title starts with a verb, names the car registration, and is ten words or fewer.",
+          "passed": true,
+          "evidence": "Title: 'Renew the car registration online' (5 words)."
+        },
+        {
+          "text": "The task carries a due date of December 12 (2026), and no other date is presented as its due date.",
+          "passed": true,
+          "evidence": "'Due: Sat, Dec 12, 2026 (the registration expires that day...)'; the reminder suggestion is not a due date."
+        },
+        {
+          "text": "The task includes the URL https://dmv.example.gov/renew and the $86 fee.",
+          "passed": true,
+          "evidence": "'Portal: https://dmv.example.gov/renew' and 'Fee is $86.'"
+        },
+        {
+          "text": "The reply does not claim the task was created, filed, or added to any app or tracker.",
+          "passed": true,
+          "evidence": "Presents a block only; no claim it was added anywhere."
+        },
+        {
+          "text": "The reply contains no em dash character in the task text.",
+          "passed": true,
+          "evidence": "Em dash count in transcript: 0."
+        },
+        {
+          "text": "Any Links line in the task holds an actual URL or item key; the task has no Links line that only names a source (such as 'DMV renewal notice').",
+          "passed": true,
+          "evidence": "No Links line; the URL is on a 'Portal:' line."
+        },
+        {
+          "text": "Any weekday the reply names beside December 12, 2026 is Saturday; no other weekday is attached to that date.",
+          "passed": true,
+          "evidence": "'Sat, Dec 12, 2026' is the only weekday attached."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 15,
+      "eval_name": "markdown-checklist-format",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 25.899,
+        "tokens": 70210,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply presents a Markdown checklist using '- [ ]' (or '* [ ]') items.",
+          "passed": true,
+          "evidence": "Uses '- [ ] Buy...', '- [ ] Call...', '- [ ] Clean...'."
+        },
+        {
+          "text": "There are separate checklist items for buying the filters, calling Marco, and cleaning the gutters, and each item starts with a verb.",
+          "passed": true,
+          "evidence": "Three items: 'Buy furnace filters...', 'Call Marco...', 'Clean the gutters'."
+        },
+        {
+          "text": "The filter size 16x25x1 and Marco's number (555) 013-8854 appear in their items.",
+          "passed": true,
+          "evidence": "Filter item has 'Size: **16x25x1**'; Marco item has 'Phone: (555) 013-8854'."
+        },
+        {
+          "text": "The gutter item says it comes after getting the ladder.",
+          "passed": true,
+          "evidence": "Gutter item: 'Start once you have Marco's ladder'."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 15,
+      "eval_name": "markdown-checklist-format",
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 15.962,
+        "tokens": 70121,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply presents a Markdown checklist using '- [ ]' (or '* [ ]') items.",
+          "passed": true,
+          "evidence": "Uses '- [ ]' items."
+        },
+        {
+          "text": "There are separate checklist items for buying the filters, calling Marco, and cleaning the gutters, and each item starts with a verb.",
+          "passed": true,
+          "evidence": "Three items: 'Buy 16x25x1 furnace filters...', 'Call Marco...', 'Clean the gutters'."
+        },
+        {
+          "text": "The filter size 16x25x1 and Marco's number (555) 013-8854 appear in their items.",
+          "passed": true,
+          "evidence": "'Buy 16x25x1 furnace filters' and '@phone: (555) 013-8854'."
+        },
+        {
+          "text": "The gutter item says it comes after getting the ladder.",
+          "passed": true,
+          "evidence": "Gutter item: 'Start once you have Marco's ladder (after the call above)'."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 16,
+      "eval_name": "meeting-action-items",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 25.289,
+        "tokens": 70998,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply presents the action items as a Markdown checklist using '- [ ]' items.",
+          "passed": true,
+          "evidence": "Three '- [ ]' items under Action Items."
+        },
+        {
+          "text": "One item leads with 'Lena Fischer', starts its action with a verb, and gives the due date as Friday with the calendar date August 21, 2026.",
+          "passed": true,
+          "evidence": "'- [ ] Lena Fischer: Publish the Q4 on-call schedule by Friday (Aug 21, 2026)'."
+        },
+        {
+          "text": "One item leads with 'Jordan Lee' and gives the due date September 10 (2026) for sending the vendor shortlist to finance.",
+          "passed": true,
+          "evidence": "'- [ ] Jordan Lee: Send the vendor shortlist to finance by Thu, Sep 10, 2026'."
+        },
+        {
+          "text": "The reply asks who owns the dashboard migration without proposing or assigning a name for it.",
+          "passed": true,
+          "evidence": "'Who's taking the dashboard migration? ... I left the owner off rather than guess.'"
+        },
+        {
+          "text": "The dashboard migration is not given September 30 as its due date.",
+          "passed": true,
+          "evidence": "Dashboard item has Sep 30 only as background in parentheses; 'I didn't give this item a due date.'"
+        },
+        {
+          "text": "No action item is listed for keeping the sync at 30 minutes or for filing INFRA-212.",
+          "passed": true,
+          "evidence": "Both are listed under 'Left off the list'; no checklist item for them."
+        },
+        {
+          "text": "The reply asks for no due date on any item (no 'by when?' question).",
+          "passed": true,
+          "evidence": "Only question is about the dashboard owner."
+        },
+        {
+          "text": "The reply does not say that any date from the meeting (August 21 or September 10) has passed or is in the past.",
+          "passed": true,
+          "evidence": "No grep hits for 'passed' or 'in the past'."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 16,
+      "eval_name": "meeting-action-items",
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 21.233,
+        "tokens": 70835,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply presents the action items as a Markdown checklist using '- [ ]' items.",
+          "passed": true,
+          "evidence": "Three '- [ ]' items under '## Action Items'."
+        },
+        {
+          "text": "One item leads with 'Lena Fischer', starts its action with a verb, and gives the due date as Friday with the calendar date August 21, 2026.",
+          "passed": true,
+          "evidence": "'- [ ] Lena Fischer: Publish the Q4 on-call schedule by Friday (Aug 21, 2026)'."
+        },
+        {
+          "text": "One item leads with 'Jordan Lee' and gives the due date September 10 (2026) for sending the vendor shortlist to finance.",
+          "passed": true,
+          "evidence": "'- [ ] Jordan Lee: Send the vendor shortlist to finance by Sep 10, 2026'."
+        },
+        {
+          "text": "The reply asks who owns the dashboard migration without proposing or assigning a name for it.",
+          "passed": true,
+          "evidence": "'**Who owns the dashboard migration?** Your notes don't say, so the item has no owner yet.'"
+        },
+        {
+          "text": "The dashboard migration is not given September 30 as its due date.",
+          "passed": true,
+          "evidence": "'Dashboard migration has no due date... I didn't use it as the deadline.'"
+        },
+        {
+          "text": "No action item is listed for keeping the sync at 30 minutes or for filing INFRA-212.",
+          "passed": true,
+          "evidence": "Both are explained under 'Not action items'; no checklist item."
+        },
+        {
+          "text": "The reply asks for no due date on any item (no 'by when?' question).",
+          "passed": true,
+          "evidence": "Only question is about the dashboard owner."
+        },
+        {
+          "text": "The reply does not say that any date from the meeting (August 21 or September 10) has passed or is in the past.",
+          "passed": true,
+          "evidence": "No grep hits for 'passed' or 'in the past'."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 12,
+      "eval_name": "one-trip-one-task",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 15.332,
+        "tokens": 44045,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply presents exactly one task, not a separate task per item.",
+          "passed": true,
+          "evidence": "One block; 'It's one trip, so I kept it as one task'."
+        },
+        {
+          "text": "The task's title starts with a verb and names Corner Hardware or the painting supplies.",
+          "passed": true,
+          "evidence": "Title: 'Buy paint supplies at Corner Hardware'."
+        },
+        {
+          "text": "The task lists all four items: eggshell white paint (a gallon), two rollers, a paint tray, and painter's tape.",
+          "passed": true,
+          "evidence": "Notes list '1 gallon eggshell white paint', '2 paint rollers', '1 paint tray', 'Painter's tape'."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 12,
+      "eval_name": "one-trip-one-task",
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 24.432,
+        "tokens": 43980,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply presents exactly one task, not a separate task per item.",
+          "passed": true,
+          "evidence": "One Title/Notes/Contexts block."
+        },
+        {
+          "text": "The task's title starts with a verb and names Corner Hardware or the painting supplies.",
+          "passed": true,
+          "evidence": "Title: 'Buy paint supplies at Corner Hardware'."
+        },
+        {
+          "text": "The task lists all four items: eggshell white paint (a gallon), two rollers, a paint tray, and painter's tape.",
+          "passed": true,
+          "evidence": "Notes list '1 gallon eggshell white paint', '2 rollers', 'Paint tray', 'Painter's tape'."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "eval_name": "project-needs-event-date",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 16.425,
+        "tokens": 44239,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The task's title is a concrete first action for the party (such as choosing a date, a venue, or a guest list), not just 'Plan the party' restated.",
+          "passed": true,
+          "evidence": "Title: 'Pick a date for Dad's 70th birthday party'."
+        },
+        {
+          "text": "The reply asks when the birthday or party is.",
+          "passed": true,
+          "evidence": "'**When is his birthday?**'"
+        },
+        {
+          "text": "The task carries no due date, and the reply invents no date, venue, or guest name.",
+          "passed": true,
+          "evidence": "No Due line; no date, venue, or guest named."
+        },
+        {
+          "text": "The reply asks at most one question.",
+          "passed": true,
+          "evidence": "Exactly one question: 'When is his birthday?'"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "eval_name": "project-needs-event-date",
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 15.902,
+        "tokens": 44117,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The task's title is a concrete first action for the party (such as choosing a date, a venue, or a guest list), not just 'Plan the party' restated.",
+          "passed": true,
+          "evidence": "Title: 'Pick a date for Dad's 70th birthday party'."
+        },
+        {
+          "text": "The reply asks when the birthday or party is.",
+          "passed": true,
+          "evidence": "'When is your dad's birthday?'"
+        },
+        {
+          "text": "The task carries no due date, and the reply invents no date, venue, or guest name.",
+          "passed": true,
+          "evidence": "No Due line; no date, venue, or guest named."
+        },
+        {
+          "text": "The reply asks at most one question.",
+          "passed": true,
+          "evidence": "Exactly one question."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 14,
+      "eval_name": "prose-format",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 11.124,
+        "tokens": 44448,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The task is written as one or two sentences of prose, with no 'Title:' or similar field labels and no bullet points.",
+          "passed": true,
+          "evidence": "Two plain sentences, no labels or bullets."
+        },
+        {
+          "text": "The prose opens with the action: calling Dr. Osei's office to move or reschedule the physical.",
+          "passed": true,
+          "evidence": "Opens 'Call Dr. Osei's office at (555) 019-6620 to move my December 3 physical'."
+        },
+        {
+          "text": "The prose includes the phone number (555) 019-6620 and the weekday 8 to 4 calling window.",
+          "passed": true,
+          "evidence": "Includes '(555) 019-6620' and 'weekdays from 8 to 4'."
+        },
+        {
+          "text": "The prose mentions the December 3 physical being moved.",
+          "passed": true,
+          "evidence": "'to move my December 3 physical'."
+        },
+        {
+          "text": "Any weekday the reply names beside December 3 is Thursday; no other weekday is attached to that date.",
+          "passed": true,
+          "evidence": "No weekday is named beside December 3."
+        },
+        {
+          "text": "The prose names no calendar date other than December 3 (no invented target such as 'by December 2'); saying the call must happen before the appointment is fine.",
+          "passed": true,
+          "evidence": "Says 'do it before that date'; the only calendar date named is December 3."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 14,
+      "eval_name": "prose-format",
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 18.08,
+        "tokens": 44445,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The task is written as one or two sentences of prose, with no 'Title:' or similar field labels and no bullet points.",
+          "passed": true,
+          "evidence": "Two plain sentences, no labels or bullets."
+        },
+        {
+          "text": "The prose opens with the action: calling Dr. Osei's office to move or reschedule the physical.",
+          "passed": true,
+          "evidence": "Opens 'Call Dr. Osei's office at (555) 019-6620 to move my December 3 physical.'"
+        },
+        {
+          "text": "The prose includes the phone number (555) 019-6620 and the weekday 8 to 4 calling window.",
+          "passed": true,
+          "evidence": "Includes '(555) 019-6620' and 'weekdays from 8 to 4'."
+        },
+        {
+          "text": "The prose mentions the December 3 physical being moved.",
+          "passed": true,
+          "evidence": "'to move my December 3 physical'."
+        },
+        {
+          "text": "Any weekday the reply names beside December 3 is Thursday; no other weekday is attached to that date.",
+          "passed": true,
+          "evidence": "No weekday is named beside December 3."
+        },
+        {
+          "text": "The prose names no calendar date other than December 3 (no invented target such as 'by December 2'); saying the call must happen before the appointment is fine.",
+          "passed": true,
+          "evidence": "Says 'I need to call before the 3rd'; the only calendar date named is December 3."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "eval_name": "reference-not-task",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 11.228,
+        "tokens": 43965,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply identifies the information as reference rather than an action (or says it is not a task), instead of presenting a verb-first to-do built from it as the deliverable.",
+          "passed": true,
+          "evidence": "'I didn't make a task for this. There's nothing here for you to do, so it's reference info'."
+        },
+        {
+          "text": "The reply does not present a task whose title or notes contain the password BlueHeron42.",
+          "passed": true,
+          "evidence": "No task presented; password absent from reply."
+        },
+        {
+          "text": "The reply suggests a place to keep it, such as a note or a password manager.",
+          "passed": true,
+          "evidence": "Suggests 'Your password manager' and 'A \"House info\" note'."
+        },
+        {
+          "text": "The reply does not repeat the password BlueHeron42 anywhere.",
+          "passed": true,
+          "evidence": "grep for BlueHeron42 in transcript: no match."
+        },
+        {
+          "text": "The reply presents no task, to-do, or checklist item of any kind, including one about saving or storing the password.",
+          "passed": true,
+          "evidence": "No task or checklist item; only offers to write one if there's an actual job."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "eval_name": "reference-not-task",
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 14.654,
+        "tokens": 44069,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply identifies the information as reference rather than an action (or says it is not a task), instead of presenting a verb-first to-do built from it as the deliverable.",
+          "passed": true,
+          "evidence": "'I didn't make this a task, because there's nothing in it for you to do.'"
+        },
+        {
+          "text": "The reply does not present a task whose title or notes contain the password BlueHeron42.",
+          "passed": true,
+          "evidence": "No task presented; 'I also left the password out of my reply on purpose'."
+        },
+        {
+          "text": "The reply suggests a place to keep it, such as a note or a password manager.",
+          "passed": true,
+          "evidence": "Suggests 'A password manager' and 'A \"Home info\" note'."
+        },
+        {
+          "text": "The reply does not repeat the password BlueHeron42 anywhere.",
+          "passed": true,
+          "evidence": "grep for BlueHeron42 in transcript: no match."
+        },
+        {
+          "text": "The reply presents no task, to-do, or checklist item of any kind, including one about saving or storing the password.",
+          "passed": true,
+          "evidence": "No task or checklist item; the two suggested places are a bulleted list of locations, not to-dos."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "soft-target-no-due-date",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 16.637,
+        "tokens": 44363,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The task's title starts with a verb and names the garage.",
+          "passed": true,
+          "evidence": "Title: 'Clean out the garage'."
+        },
+        {
+          "text": "The task has no due date set: November 30 (or 'end of the month') does not appear as the task's due date, though it may appear in the notes as a soft target.",
+          "passed": true,
+          "evidence": "No Due line; Notes: 'Aiming to finish by the end of the month (Nov 30, 2026), but that's a soft target'."
+        },
+        {
+          "text": "The reply does not ask the user for a due date or target date.",
+          "passed": true,
+          "evidence": "No due-date question; it asks only about breaking the job into steps."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "soft-target-no-due-date",
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 15.837,
+        "tokens": 44249,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The task's title starts with a verb and names the garage.",
+          "passed": true,
+          "evidence": "Title: 'Clean out the garage'."
+        },
+        {
+          "text": "The task has no due date set: November 30 (or 'end of the month') does not appear as the task's due date, though it may appear in the notes as a soft target.",
+          "passed": true,
+          "evidence": "No Due line; Notes: 'Soft target: end of the month (Nov 30, 2026).'"
+        },
+        {
+          "text": "The reply does not ask the user for a due date or target date.",
+          "passed": true,
+          "evidence": "No question about dates."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 11,
+      "eval_name": "splits-by-context",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 14.581,
+        "tokens": 44565,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply presents at least three separate tasks: one to call or ask Dana Whitfield, one to buy the paint at Corner Hardware, and one to email Priya the swatches. Combining the call and the store trip into one task fails.",
+          "passed": true,
+          "evidence": "Three blocks: 'Call Dana Whitfield...', 'Email Priya the paint swatches...', 'Pick up paint at Corner Hardware'."
+        },
+        {
+          "text": "Each task's title starts with a verb.",
+          "passed": true,
+          "evidence": "Titles start with Call, Email, Pick."
+        },
+        {
+          "text": "The call task includes the phone number (555) 017-4410.",
+          "passed": true,
+          "evidence": "Call task: 'Dana Whitfield (landlord): (555) 017-4410'."
+        },
+        {
+          "text": "The Corner Hardware task (or the reply's ordering) says it comes after the landlord agrees.",
+          "passed": true,
+          "evidence": "Hardware task: 'Start after Dana says yes.'"
+        },
+        {
+          "text": "No task carries a due date.",
+          "passed": true,
+          "evidence": "No Due lines; 'I didn't set due dates'."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 11,
+      "eval_name": "splits-by-context",
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 22.031,
+        "tokens": 44639,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply presents at least three separate tasks: one to call or ask Dana Whitfield, one to buy the paint at Corner Hardware, and one to email Priya the swatches. Combining the call and the store trip into one task fails.",
+          "passed": true,
+          "evidence": "Three blocks: 'Call Dana Whitfield...', 'Pick up paint at Corner Hardware', 'Email Priya the paint color swatches'."
+        },
+        {
+          "text": "Each task's title starts with a verb.",
+          "passed": true,
+          "evidence": "Titles start with Call, Pick, Email."
+        },
+        {
+          "text": "The call task includes the phone number (555) 017-4410.",
+          "passed": true,
+          "evidence": "Call task: 'Phone: (555) 017-4410'."
+        },
+        {
+          "text": "The Corner Hardware task (or the reply's ordering) says it comes after the landlord agrees.",
+          "passed": true,
+          "evidence": "Hardware task: 'Start after Dana Whitfield says yes to repainting.'"
+        },
+        {
+          "text": "No task carries a due date.",
+          "passed": true,
+          "evidence": "No Due lines; 'I didn't add due dates'."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 7,
+      "eval_name": "vague-title-asks",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 26.167,
+        "tokens": 69959,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply asks what the user needs to do about taxes.",
+          "passed": true,
+          "evidence": "'**What's actually the next thing you need to do for your taxes?**'"
+        },
+        {
+          "text": "The reply does not present a single rewritten task as the answer that commits to an action the user never mentioned. Offering several candidate titles, or one candidate clearly labeled a guess alongside alternatives and a question, passes.",
+          "passed": true,
+          "evidence": "One draft labeled as assuming a starting point ('here's a draft that assumes...'), with alternative titles and a question."
+        },
+        {
+          "text": "The reply sets no due date and names no deadline, such as April 15, as the task's due date.",
+          "passed": true,
+          "evidence": "'No due date.' April 15, 2027 is raised only conditionally ('Tell me if that applies'), not set."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 7,
+      "eval_name": "vague-title-asks",
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 17.583,
+        "tokens": 69670,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply asks what the user needs to do about taxes.",
+          "passed": true,
+          "evidence": "'**What's the next thing you need to do about taxes?**'"
+        },
+        {
+          "text": "The reply does not present a single rewritten task as the answer that commits to an action the user never mentioned. Offering several candidate titles, or one candidate clearly labeled a guess alongside alternatives and a question, passes.",
+          "passed": true,
+          "evidence": "Draft labeled 'a best guess', with alternatives (booking accountant, estimated payment, extension) and a question."
+        },
+        {
+          "text": "The reply sets no due date and names no deadline, such as April 15, as the task's due date.",
+          "passed": true,
+          "evidence": "'I didn't set a due date.' No deadline named."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "check-in-promised-date",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.6,
+        "passed": 3,
+        "failed": 2,
+        "total": 5,
+        "time_seconds": 20.265,
+        "tokens": 57648,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The task's title is the user's own action, a check-in or follow-up with Rick (for example 'Check in with Rick Alvarez about the water heater estimate'); it is not phrased as waiting, and not as Rick sending the estimate.",
+          "passed": false,
+          "evidence": "Saved task heading is \"Water heater estimate from Rick Alvarez (plumber)\", a topic, not the user's check-in action."
+        },
+        {
+          "text": "The task's date is Thursday, November 19, 2026, and the reply resolves 'Thursday' to that calendar date.",
+          "passed": true,
+          "evidence": "REMINDERS.md says \"by **Thursday, Nov 19, 2026**\"."
+        },
+        {
+          "text": "The task includes the phone number (555) 014-2290.",
+          "passed": true,
+          "evidence": "Reply and file include \"(555) 014-2290\"."
+        },
+        {
+          "text": "The reply does not ask the user when to check in, since Rick named the day.",
+          "passed": true,
+          "evidence": "No question about when to check in."
+        },
+        {
+          "text": "The reply does not dispute or contradict the user's statement that today is November 17, 2026 (for example by citing a system clock).",
+          "passed": false,
+          "evidence": "\"The dates don't match. You said today is Tuesday, November 17, but this machine's clock says Thursday, November 19\"."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "eval_name": "combined-contexts",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
+        "total": 5,
+        "time_seconds": 9.387,
+        "tokens": 18858,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The task's title starts with a verb and names the loan papers or the credit union.",
+          "passed": true,
+          "evidence": "Title: \"Drop off signed loan papers at Harbor Credit Union (5th Ave branch)\"."
+        },
+        {
+          "text": "The task records the place (Harbor Credit Union, 5th Ave), the time window (weekdays 9 to 5), and the person (Jordan, needed in person), all three.",
+          "passed": true,
+          "evidence": "Where/When/Who lines give 5th Ave branch, \"Weekdays only, 9:00 AM – 5:00 PM\", and Jordan signing in person."
+        },
+        {
+          "text": "The task has no due date.",
+          "passed": true,
+          "evidence": "\"You didn't give a due date, so I left it open.\""
+        },
+        {
+          "text": "The task contains no phone number, URL, or street number that the user did not give.",
+          "passed": true,
+          "evidence": "No phone, URL, or street number appears."
+        },
+        {
+          "text": "The task adds no step, item, or reminder the user did not mention (such as bringing ID) as part of the task; one may only be raised as a question.",
+          "passed": false,
+          "evidence": "Checklist adds \"Bring photo ID for both of you\" and \"Get a copy or receipt\", which the user never mentioned."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 10,
+      "eval_name": "drafts-without-filing",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 2,
+        "failed": 2,
+        "total": 4,
+        "time_seconds": 25.536,
+        "tokens": 142759,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply presents a task whose title starts with a verb and names the library books.",
+          "passed": true,
+          "evidence": "Card title \"Return library books\"."
+        },
+        {
+          "text": "The task's due date is December 4.",
+          "passed": true,
+          "evidence": "Card due \"2026-12-04\"."
+        },
+        {
+          "text": "No create_card, update_card, or create_label call appears in the call log.",
+          "passed": false,
+          "evidence": "tools.log shows create_card {\"name\": \"Return library books\", ...}; out state has new card-3."
+        },
+        {
+          "text": "The reply offers to add the task to Trello (or asks where to file it).",
+          "passed": false,
+          "evidence": "It filed the card (\"I added the to-do to your Trello board\") instead of offering."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 13,
+      "eval_name": "email-to-self-format",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 7.229,
+        "tokens": 18794,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply presents an email with a subject line, and the subject starts with a verb and names the tile saw or Bayside Tool Rental.",
+          "passed": true,
+          "evidence": "\"**Subject:** Return tile saw to Bayside Tool Rental by Sat 11/21 (Agreement #R-55812)\"."
+        },
+        {
+          "text": "The email body states the deadline of Saturday, November 21 (2026).",
+          "passed": true,
+          "evidence": "Body: \"by **Saturday, November 21**\"."
+        },
+        {
+          "text": "The email body includes the address 410 Marsh Rd, the Saturday hours (7 to 3), and the agreement number R-55812.",
+          "passed": true,
+          "evidence": "Body lists \"410 Marsh Rd\", \"Saturday hours: 7:00 AM – 3:00 PM\", \"R-55812\"."
+        },
+        {
+          "text": "The reply does not also present the task in the skill's labeled Title / Notes / Contexts block in place of the email.",
+          "passed": true,
+          "evidence": "No labeled task block; email only."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 8,
+      "eval_name": "files-preauthorized-card",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 3,
+        "failed": 3,
+        "total": 6,
+        "time_seconds": 18.338,
+        "tokens": 98131,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Exactly one create_card call appears in the call log, and the created card's title starts with a verb and names the clinic or the vet and Biscuit's shots.",
+          "passed": true,
+          "evidence": "One create_card, name \"Call Riverside Animal Clinic to book Biscuit's annual shots\"."
+        },
+        {
+          "text": "The created card's description contains (555) 016-3344 and the closing time (6, weekdays).",
+          "passed": true,
+          "evidence": "desc: \"Phone: (555) 016-3344\\nCloses at 6 PM on weekdays\"."
+        },
+        {
+          "text": "The created card carries the board's existing @phone label, and no create_label call appears in the call log.",
+          "passed": false,
+          "evidence": "create_card \"labels\": null; card has no @phone label."
+        },
+        {
+          "text": "The created card has no due date.",
+          "passed": true,
+          "evidence": "\"due\": null."
+        },
+        {
+          "text": "A search_trello or view_list call precedes the create_card call, checking the existing cards for a duplicate (a view_board call alone, which returns no card names, does not count).",
+          "passed": false,
+          "evidence": "Only get_boards and view_board precede create_card; no search_trello or view_list."
+        },
+        {
+          "text": "The reply includes the new card's URL, https://trello.com/c/card-3/ followed by its slug.",
+          "passed": false,
+          "evidence": "Reply gives no card URL."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 9,
+      "eval_name": "finds-duplicate-card",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 18.917,
+        "tokens": 118522,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "No create_card call appears in the call log.",
+          "passed": true,
+          "evidence": "Only get_boards, view_board, view_list in trello-calls.log; no create_card."
+        },
+        {
+          "text": "The reply names the existing card about Biscuit's shots and links it (https://trello.com/c/card-1/call-vet).",
+          "passed": true,
+          "evidence": "Names \"Call the vet to book Biscuit's annual shots\" with https://trello.com/c/card-1/call-vet."
+        },
+        {
+          "text": "The reply proposes using or updating the existing card rather than adding a second one.",
+          "passed": true,
+          "evidence": "\"I didn't add a new card... I can also put a due date on the existing card instead\"."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "hard-deadline-with-resources",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.8571,
+        "passed": 6,
+        "failed": 1,
+        "total": 7,
+        "time_seconds": 14.811,
+        "tokens": 19028,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The task's title starts with a verb, names the car registration, and is ten words or fewer.",
+          "passed": true,
+          "evidence": "Title \"Renew car registration ($86)\", 4 words."
+        },
+        {
+          "text": "The task carries a due date of December 12 (2026), and no other date is presented as its due date.",
+          "passed": false,
+          "evidence": "\"**Due:** Friday, December 4, 2026\", with Dec 12 only as \"Expires\"."
+        },
+        {
+          "text": "The task includes the URL https://dmv.example.gov/renew and the $86 fee.",
+          "passed": true,
+          "evidence": "Includes \"Fee: $86\" and https://dmv.example.gov/renew."
+        },
+        {
+          "text": "The reply does not claim the task was created, filed, or added to any app or tracker.",
+          "passed": true,
+          "evidence": "No claim of filing."
+        },
+        {
+          "text": "The reply contains no em dash character in the task text.",
+          "passed": true,
+          "evidence": "0 em dashes."
+        },
+        {
+          "text": "Any Links line in the task holds an actual URL or item key; the task has no Links line that only names a source (such as 'DMV renewal notice').",
+          "passed": true,
+          "evidence": "No Links line."
+        },
+        {
+          "text": "Any weekday the reply names beside December 12, 2026 is Saturday; no other weekday is attached to that date.",
+          "passed": true,
+          "evidence": "\"December 12 is a Saturday\"; Friday is attached to December 4, not December 12."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 15,
+      "eval_name": "markdown-checklist-format",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 5.581,
+        "tokens": 18561,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply presents a Markdown checklist using '- [ ]' (or '* [ ]') items.",
+          "passed": true,
+          "evidence": "Uses \"- [ ]\" items."
+        },
+        {
+          "text": "There are separate checklist items for buying the filters, calling Marco, and cleaning the gutters, and each item starts with a verb.",
+          "passed": true,
+          "evidence": "Three items starting \"Buy\", \"Call\", \"Clean\"."
+        },
+        {
+          "text": "The filter size 16x25x1 and Marco's number (555) 013-8854 appear in their items.",
+          "passed": true,
+          "evidence": "\"Buy furnace filters (16x25x1)\" and \"Call Marco at (555) 013-8854\"."
+        },
+        {
+          "text": "The gutter item says it comes after getting the ladder.",
+          "passed": true,
+          "evidence": "\"Clean the gutters (once I have Marco's ladder)\"."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 16,
+      "eval_name": "meeting-action-items",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.75,
+        "passed": 6,
+        "failed": 2,
+        "total": 8,
+        "time_seconds": 11.625,
+        "tokens": 19368,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply presents the action items as a Markdown checklist using '- [ ]' items.",
+          "passed": true,
+          "evidence": "\"- [ ]\" checklist."
+        },
+        {
+          "text": "One item leads with 'Lena Fischer', starts its action with a verb, and gives the due date as Friday with the calendar date August 21, 2026.",
+          "passed": true,
+          "evidence": "\"**Lena Fischer**: Publish the Q4 on-call schedule. Due Fri, Aug 21, 2026.\""
+        },
+        {
+          "text": "One item leads with 'Jordan Lee' and gives the due date September 10 (2026) for sending the vendor shortlist to finance.",
+          "passed": true,
+          "evidence": "\"**Jordan Lee**: Send the vendor shortlist to finance. Due Thu, Sep 10, 2026.\""
+        },
+        {
+          "text": "The reply asks who owns the dashboard migration without proposing or assigning a name for it.",
+          "passed": false,
+          "evidence": "Item says \"Owner TBD\" and \"You may want to pick an owner\"; no question asking who owns it."
+        },
+        {
+          "text": "The dashboard migration is not given September 30 as its due date.",
+          "passed": false,
+          "evidence": "\"Must be done before the cluster shuts down on Wed, Sep 30, 2026\" and \"I listed it with Sep 30 as the hard cutoff\"."
+        },
+        {
+          "text": "No action item is listed for keeping the sync at 30 minutes or for filing INFRA-212.",
+          "passed": true,
+          "evidence": "Sync and INFRA-212 left off."
+        },
+        {
+          "text": "The reply asks for no due date on any item (no 'by when?' question).",
+          "passed": true,
+          "evidence": "No \"by when?\" question."
+        },
+        {
+          "text": "The reply does not say that any date from the meeting (August 21 or September 10) has passed or is in the past.",
+          "passed": true,
+          "evidence": "Mentions system clock Nov 19 but only says \"if these notes are from a different week\"; never says dates passed."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 12,
+      "eval_name": "one-trip-one-task",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 13.613,
+        "tokens": 75126,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply presents exactly one task, not a separate task per item.",
+          "passed": true,
+          "evidence": "One to-do with a sub-checklist."
+        },
+        {
+          "text": "The task's title starts with a verb and names Corner Hardware or the painting supplies.",
+          "passed": true,
+          "evidence": "\"Pick up painting supplies at Corner Hardware\"."
+        },
+        {
+          "text": "The task lists all four items: eggshell white paint (a gallon), two rollers, a paint tray, and painter's tape.",
+          "passed": true,
+          "evidence": "Lists \"1 gallon of eggshell white paint\", \"2 paint rollers\", \"1 paint tray\", \"Painter's tape\"."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "eval_name": "project-needs-event-date",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 2,
+        "failed": 2,
+        "total": 4,
+        "time_seconds": 15.987,
+        "tokens": 76127,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The task's title is a concrete first action for the party (such as choosing a date, a venue, or a guest list), not just 'Plan the party' restated.",
+          "passed": false,
+          "evidence": "Saved \"- [ ] Plan Dad's 70th birthday party\", the request restated."
+        },
+        {
+          "text": "The reply asks when the birthday or party is.",
+          "passed": false,
+          "evidence": "Reply never asks when the birthday or party is."
+        },
+        {
+          "text": "The task carries no due date, and the reply invents no date, venue, or guest name.",
+          "passed": true,
+          "evidence": "No due date and no invented details."
+        },
+        {
+          "text": "The reply asks at most one question.",
+          "passed": true,
+          "evidence": "Zero questions."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 14,
+      "eval_name": "prose-format",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 4.421,
+        "tokens": 18446,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The task is written as one or two sentences of prose, with no 'Title:' or similar field labels and no bullet points.",
+          "passed": true,
+          "evidence": "Two plain sentences."
+        },
+        {
+          "text": "The prose opens with the action: calling Dr. Osei's office to move or reschedule the physical.",
+          "passed": true,
+          "evidence": "Opens \"Call Dr. Osei's office at (555) 019-6620 to reschedule the December 3 physical\"."
+        },
+        {
+          "text": "The prose includes the phone number (555) 019-6620 and the weekday 8 to 4 calling window.",
+          "passed": true,
+          "evidence": "Includes the number and \"weekdays from 8 to 4\"."
+        },
+        {
+          "text": "The prose mentions the December 3 physical being moved.",
+          "passed": true,
+          "evidence": "\"reschedule the December 3 physical\"."
+        },
+        {
+          "text": "Any weekday the reply names beside December 3 is Thursday; no other weekday is attached to that date.",
+          "passed": true,
+          "evidence": "No weekday named beside December 3."
+        },
+        {
+          "text": "The prose names no calendar date other than December 3 (no invented target such as 'by December 2'); saying the call must happen before the appointment is fine.",
+          "passed": true,
+          "evidence": "Only 'reschedule the December 3 physical'; no deadline or target date for the call itself."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "eval_name": "reference-not-task",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.0,
+        "passed": 0,
+        "failed": 5,
+        "total": 5,
+        "time_seconds": 16.446,
+        "tokens": 75811,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply identifies the information as reference rather than an action (or says it is not a task), instead of presenting a verb-first to-do built from it as the deliverable.",
+          "passed": false,
+          "evidence": "Treated it as a task and saved \"- [ ] Guest Wi-Fi info\" to TASKS.md."
+        },
+        {
+          "text": "The reply does not present a task whose title or notes contain the password BlueHeron42.",
+          "passed": false,
+          "evidence": "Presented task contains \"Password: BlueHeron42\"."
+        },
+        {
+          "text": "The reply suggests a place to keep it, such as a note or a password manager.",
+          "passed": false,
+          "evidence": "Kept it in a TASKS.md file; suggests no note or password manager."
+        },
+        {
+          "text": "The reply does not repeat the password BlueHeron42 anywhere.",
+          "passed": false,
+          "evidence": "Reply repeats \"BlueHeron42\"."
+        },
+        {
+          "text": "The reply presents no task, to-do, or checklist item of any kind, including one about saving or storing the password.",
+          "passed": false,
+          "evidence": "Presents a \"- [ ] Guest Wi-Fi info\" checklist item."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "soft-target-no-due-date",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 23.569,
+        "tokens": 58291,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The task's title starts with a verb and names the garage.",
+          "passed": true,
+          "evidence": "\"**Clean out the garage**\"."
+        },
+        {
+          "text": "The task has no due date set: November 30 (or 'end of the month') does not appear as the task's due date, though it may appear in the notes as a soft target.",
+          "passed": true,
+          "evidence": "Nov 30 given as \"target date... (marked as a soft deadline)\" and in the file as \"**Target:** ... (soft deadline, fine if it slips)\"; no due date field."
+        },
+        {
+          "text": "The reply does not ask the user for a due date or target date.",
+          "passed": true,
+          "evidence": "Does not ask for a date."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 11,
+      "eval_name": "splits-by-context",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 20.963,
+        "tokens": 76422,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply presents at least three separate tasks: one to call or ask Dana Whitfield, one to buy the paint at Corner Hardware, and one to email Priya the swatches. Combining the call and the store trip into one task fails.",
+          "passed": true,
+          "evidence": "Three separate items: ask landlord, email Priya, pick up paint."
+        },
+        {
+          "text": "Each task's title starts with a verb.",
+          "passed": true,
+          "evidence": "Items start \"Ask\", \"Email\", \"Pick up\"."
+        },
+        {
+          "text": "The call task includes the phone number (555) 017-4410.",
+          "passed": true,
+          "evidence": "\"Call Dana Whitfield at (555) 017-4410\"."
+        },
+        {
+          "text": "The Corner Hardware task (or the reply's ordering) says it comes after the landlord agrees.",
+          "passed": true,
+          "evidence": "\"Pick up paint at Corner Hardware once Dana says yes\"."
+        },
+        {
+          "text": "No task carries a due date.",
+          "passed": true,
+          "evidence": "\"I didn't add due dates\"."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 7,
+      "eval_name": "vague-title-asks",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.6667,
+        "passed": 2,
+        "failed": 1,
+        "total": 3,
+        "time_seconds": 11.905,
+        "tokens": 37512,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply asks what the user needs to do about taxes.",
+          "passed": true,
+          "evidence": "\"If you tell me what the task actually involves... I can make the wording exact.\""
+        },
+        {
+          "text": "The reply does not present a single rewritten task as the answer that commits to an action the user never mentioned. Offering several candidate titles, or one candidate clearly labeled a guess alongside alternatives and a question, passes.",
+          "passed": true,
+          "evidence": "Offers five candidate rewrites."
+        },
+        {
+          "text": "The reply sets no due date and names no deadline, such as April 15, as the task's due date.",
+          "passed": false,
+          "evidence": "Candidate title \"File 2026 federal and state tax returns by April 15, 2027\" names April 15 as the task deadline."
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 21.6597,
+        "stddev": 11.4539,
+        "min": 11.124,
+        "max": 59.327
+      },
+      "tokens": {
+        "mean": 70145.9062,
+        "stddev": 39116.9573,
+        "min": 43965,
+        "max": 182336
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.7609,
+        "stddev": 0.2862,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 14.9121,
+        "stddev": 6.2854,
+        "min": 4.421,
+        "max": 25.536
+      },
+      "tokens": {
+        "mean": 58087.75,
+        "stddev": 39459.8864,
+        "min": 18446,
+        "max": 142759
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.24",
+      "time_seconds": "+6.7",
+      "tokens": "+12058"
+    }
+  },
+  "notes": []
+}

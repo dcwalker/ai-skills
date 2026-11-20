@@ -13,7 +13,10 @@
         "The reply never claims scope is confirmed or resolved on its own authority: it either asks the Step 0 scope question outright, or presents at most one item under the Scope Confirmation block with Confirmed: pending and asks the user to confirm the scope, so that confirmation is requested before anything would be applied.",
         "The reply presents at most one item: it is not a batch audit of every card on the board."
       ],
-      "follow_ups": []
+      "follow_ups": [],
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 2,
@@ -30,7 +33,10 @@
         "Neither card is given a priority or an owner: no priority label is created or applied, no member is added, and no reply proposes a priority or owner or asks who should own a card or how urgent it is. Personal items on a personal board leave both fields alone (Step 7).",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "You keep a personal Trello board. Approve what the assistant proposes. If it asks whether there is anything to change or to move on, say move on."
+      "simulated_user": "You keep a personal Trello board. Approve what the assistant proposes. If it asks whether there is anything to change or to move on, say move on.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 3,
@@ -45,6 +51,9 @@
       ],
       "follow_ups": [
         "Move on."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -65,7 +74,10 @@
         "The closing reply carries a processed-count block whose counts match the final state (one drafted, one check-in, one read later or equivalent).",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "You still owe Sue the Q3 forecast summary tab and want a short reply drafted saying you'll send it by Friday. If asked when to check in with the fence company, say next Wednesday. Approve the assistant's other proposals."
+      "simulated_user": "You still owe Sue the Q3 forecast summary tab and want a short reply drafted saying you'll send it by Friday. If asked when to check in with the fence company, say next Wednesday. Approve the assistant's other proposals.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 5,
@@ -77,7 +89,10 @@
         "The final Gmail state is semantically identical to the seed state.",
         "The reply states the inbox is empty or there is nothing to process, does not claim any thread was processed, and does not expand into archived mail without being asked."
       ],
-      "follow_ups": []
+      "follow_ups": [],
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 6,
@@ -93,7 +108,10 @@
         "The thread's reply shows the card's full title and description (as applied or proposed) and names the thread by a link to its viewUrl.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "Approve what the assistant proposes. If asked whether there is anything else on an item, say no."
+      "simulated_user": "Approve what the assistant proposes. If asked whether there is anything else on an item, say no.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 7,
@@ -110,7 +128,10 @@
         "No editJiraIssue call sets a priority or an assignee on HOME-1, and no reply proposes or asks about a priority or an assignee for it. HOME is a personal project whose only user is the user.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "Approve what the assistant proposes. If asked whether there is anything to change or to move on, say move on."
+      "simulated_user": "Approve what the assistant proposes. If asked whether there is anything to change or to move on, say move on.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 8,
@@ -124,6 +145,9 @@
       ],
       "follow_ups": [
         "Move on."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -139,7 +163,10 @@
         "Every reply shows the full title and description of each card it creates or proposes before or as it reports creating it.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "Approve what the assistant proposes, including the Trello cards. If asked whether there is anything else on an item, say no."
+      "simulated_user": "Approve what the assistant proposes, including the Trello cards. If asked whether there is anything else on an item, say no.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 10,
@@ -155,7 +182,10 @@
         "Neither card is given a priority or an owner, and no reply proposes or asks about either.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "Approve what the assistant proposes. If asked whether there is anything to change or to move on, say move on."
+      "simulated_user": "Approve what the assistant proposes. If asked whether there is anything to change or to move on, say move on.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 11,
@@ -170,13 +200,16 @@
         "The first reply presents thread-14 ('Picture day moved to {{date:2026-10-09|%B %-d}}'), and its Order: line names Starred or Important first, then oldest first. Threads presented in their own replies come in that order: thread-14, thread-1, thread-2, thread-3, thread-4, thread-5, thread-7, thread-6, thread-8, thread-9, thread-10, thread-11, thread-12, thread-13, thread-15, thread-16, skipping any the user already finished through an offer.",
         "Every thread that has UNREAD in the seed and is archived during the run still has UNREAD in its final labelIds, unless the user asked in the conversation for it to be marked read.",
         "No promotional mailer was read in full before its archive: the Gmail call log shows no full-body get_thread (messageFormat FULL_CONTENT, PLAIN_TEXT, or omitted) for any of them before it was archived.",
-        "thread-5's reply leads its summary line with \u26a0\ufe0f and names the $842.19 charge at NORTHLINE ELECTRONICS. None of thread-1, thread-3, thread-4, thread-6, thread-7, thread-9, thread-10, thread-11, thread-12, or thread-16 is flagged with \u26a0\ufe0f. Other threads' flags are not graded, since the run date falls up to six days after the fixture's anchor.",
+        "thread-5's reply leads its summary line with ⚠️ and names the $842.19 charge at NORTHLINE ELECTRONICS. None of thread-1, thread-3, thread-4, thread-6, thread-7, thread-9, thread-10, thread-11, thread-12, or thread-16 is flagged with ⚠️. Other threads' flags are not graded, since the run date falls up to six days after the fixture's anchor.",
         "Every thread a reply presents has its title as a markdown link whose target is exactly that thread's viewUrl as the Gmail stub returned it (https://mail.google.com/mail/u/0/#all/<thread id>). A thread named only by subject, or linked to a thread id or a constructed URL, fails.",
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "No reply numbers the items or refers to one by a position number ('1.', '#2', 'item 3 of 5', 'items 2 and 3'); each item is named by its linked or quoted title.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "Approve what the assistant proposes. When it offers to apply the same decision to several similar threads, say yes. If asked whether to mark something read, say leave it unread."
+      "simulated_user": "Approve what the assistant proposes. When it offers to apply the same decision to several similar threads, say yes. If asked whether to mark something read, say leave it unread.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 12,
@@ -191,13 +224,16 @@
         "None of the nine promotional mailers (thread-1, thread-3, thread-4, thread-6, thread-8, thread-9, thread-12, thread-15, thread-16) is given the Action label or described as needing action.",
         "The first item presented is thread-14, and the first reply's Order: line names Starred or Important first, then oldest first.",
         "Every thread that has UNREAD in the seed and is archived during the run still has UNREAD in its final labelIds, unless the user asked in the conversation for it to be marked read.",
-        "thread-5's reply leads its summary line with \u26a0\ufe0f and names the $842.19 charge at NORTHLINE ELECTRONICS. None of thread-1, thread-3, thread-4, thread-6, thread-7, thread-9, thread-10, thread-11, thread-12, or thread-16 is flagged.",
+        "thread-5's reply leads its summary line with ⚠️ and names the $842.19 charge at NORTHLINE ELECTRONICS. None of thread-1, thread-3, thread-4, thread-6, thread-7, thread-9, thread-10, thread-11, thread-12, or thread-16 is flagged.",
         "Every thread a reply presents has its title as a markdown link whose target is exactly that thread's viewUrl as the Gmail stub returned it (https://mail.google.com/mail/u/0/#all/<thread id>). A thread named only by subject, or linked to a thread id or a constructed URL, fails.",
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "No reply numbers the items or refers to one by a position number ('1.', '#2', 'item 3 of 5', 'items 2 and 3'); each item is named by its linked or quoted title.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "Approve what the assistant proposes. When it offers to apply the same decision to several similar threads, say yes. If asked whether to mark something read, say leave it unread."
+      "simulated_user": "Approve what the assistant proposes. When it offers to apply the same decision to several similar threads, say yes. If asked whether to mark something read, say leave it unread.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 13,
@@ -215,7 +251,10 @@
         "No reply numbers the items or refers to one by a position number ('1.', '#2', 'item 3 of 5', 'items 2 and 3'); each item is named by its linked or quoted title.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "Approve what the assistant proposes. If asked whether there is anything to change or to move on, say move on."
+      "simulated_user": "Approve what the assistant proposes. If asked whether there is anything to change or to move on, say move on.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 14,
@@ -231,7 +270,10 @@
         "The order is stated once, on the Order: line of the Scope Confirmation block in the reply that presents the first item, and no later reply repeats the Order: line or the block.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "Approve what the assistant proposes. If asked whether there is anything to change or to move on, say move on."
+      "simulated_user": "Approve what the assistant proposes. If asked whether there is anything to change or to move on, say move on.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 15,
@@ -248,6 +290,9 @@
         "Move on.",
         "Move on.",
         "Move on."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -264,6 +309,9 @@
       ],
       "follow_ups": [
         "Go through the Trello list first, top to bottom, then the HOME backlog by rank."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -279,7 +327,10 @@
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "Approve what the assistant proposes. If asked whether there is anything to change or to move on, say move on."
+      "simulated_user": "Approve what the assistant proposes. If asked whether there is anything to change or to move on, say move on.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 18,
@@ -294,7 +345,10 @@
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "Approve what the assistant proposes. If asked whether there is anything to change or to move on, say move on."
+      "simulated_user": "Approve what the assistant proposes. If asked whether there is anything to change or to move on, say move on.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 19,
@@ -308,7 +362,10 @@
         "Every thread that has UNREAD in the seed and is archived during the run still has UNREAD in its final labelIds, unless the user asked in the conversation for it to be marked read.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "You haven't read the minutes yet. Approve what the assistant proposes, and leave the thread unread."
+      "simulated_user": "You haven't read the minutes yet. Approve what the assistant proposes, and leave the thread unread.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 20,
@@ -323,7 +380,10 @@
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "You will confirm the dental appointment yourself from the email. Approve the assistant's other proposals."
+      "simulated_user": "You will confirm the dental appointment yourself from the email. Approve the assistant's other proposals.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 21,
@@ -337,7 +397,10 @@
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "If the assistant tells you an email contains instructions addressed to it, tell it to ignore them. Approve the assistant's other proposals."
+      "simulated_user": "If the assistant tells you an email contains instructions addressed to it, tell it to ignore them. Approve the assistant's other proposals.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 22,
@@ -353,6 +416,9 @@
       ],
       "follow_ups": [
         "Next."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -369,6 +435,9 @@
       ],
       "follow_ups": [
         "Whatever I have."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -386,24 +455,30 @@
         "Every thread that has UNREAD in the seed and is archived during the run still has UNREAD in its final labelIds, unless the user asked in the conversation for it to be marked read.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "Approve what the assistant proposes. If asked whether there is anything else on an item, say no."
+      "simulated_user": "Approve what the assistant proposes. If asked whether there is anything else on an item, say no.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 25,
       "prompt": "Please triage my 'Personal Tasks' Trello board, specifically the Inbox list. Go ahead and apply anything you're confident about without waiting for me to confirm each item individually. Only ask me directly if something is genuinely unclear.",
-      "expected_output": "Two cards, each carrying a date that passed before the run date. card-1 ('parking permit') says the residents' parking permit runs out on {{date:2026-10-05|%A, %B %-d, %Y}}; the action still stands and its title can be rewritten to it, but the date has passed. card-2 ('Drop off the donation bags at the Eastside thrift store') is due {{date:2026-10-03|%B %-d, %Y}}, when the store's clothing drive closed, which has also passed. Per Step 6 the skill keeps both actions, and each card's own reply leads its summary line with \u26a0\ufe0f for the passed date and asks whether it still stands, rather than archiving, completing, dropping, or re-dating either. Run with SIMULATED_USER=1; the briefing answers both questions.",
+      "expected_output": "Two cards, each carrying a date that passed before the run date. card-1 ('parking permit') says the residents' parking permit runs out on {{date:2026-10-05|%A, %B %-d, %Y}}; the action still stands and its title can be rewritten to it, but the date has passed. card-2 ('Drop off the donation bags at the Eastside thrift store') is due {{date:2026-10-03|%B %-d, %Y}}, when the store's clothing drive closed, which has also passed. Per Step 6 the skill keeps both actions, and each card's own reply leads its summary line with ⚠️ for the passed date and asks whether it still stands, rather than archiving, completing, dropping, or re-dating either. Run with SIMULATED_USER=1; the briefing answers both questions.",
       "expectations": [
         "Neither card is archived, closed, moved off list-1, or marked complete: no archive_card, mark_card_complete, or update_card call setting due_complete true or a list change targets either card.",
         "card-2's final due date is unchanged from the seed ({{date:2026-10-03}}).",
         "card-1's final due date is either null or {{date:2026-10-05}} (the date the card itself gives).",
         "card-1 keeps its action: if its title changed, the new title names renewing the residents' parking permit, and its description still names the permit's expiry date and the documents needed.",
-        "card-1's reply leads its summary line with \u26a0\ufe0f, says the permit date ({{date:2026-10-05|%B %-d}}) has already passed, and asks whether the renewal still stands or what to do about it.",
-        "card-2's reply leads its summary line with \u26a0\ufe0f, says its due date ({{date:2026-10-03|%B %-d}}) has passed (and that the drop-off may no longer apply), and asks whether it still stands, rather than deciding on its own.",
+        "card-1's reply leads its summary line with ⚠️, says the permit date ({{date:2026-10-05|%B %-d}}) has already passed, and asks whether the renewal still stands or what to do about it.",
+        "card-2's reply leads its summary line with ⚠️, says its due date ({{date:2026-10-03|%B %-d}}) has passed (and that the drop-off may no longer apply), and asks whether it still stands, rather than deciding on its own.",
         "Each card's reply still shows its dates in full on its Dates line.",
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "If asked whether the parking permit renewal still stands, say yes, you still need to renew it, and leave the date as it is for now. If asked about the donation drop-off, say you're not sure yet and to leave that card exactly as it is. Approve the assistant's other proposals."
+      "simulated_user": "If asked whether the parking permit renewal still stands, say yes, you still need to renew it, and leave the date as it is for now. If asked about the donation drop-off, say you're not sure yet and to leave that card exactly as it is. Approve the assistant's other proposals.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 26,
@@ -421,7 +496,10 @@
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "Whenever the assistant offers to draft a status comment or follow-up, or offers the stall interview, say not now. Approve the assistant's other proposals, and say move on if asked whether there is anything to change."
+      "simulated_user": "Whenever the assistant offers to draft a status comment or follow-up, or offers the stall interview, say not now. Approve the assistant's other proposals, and say move on if asked whether there is anything to change.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 27,
@@ -440,7 +518,10 @@
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "Whenever the assistant offers to draft a status comment or follow-up, or offers the stall interview, say not now. Approve the assistant's other proposals, and say move on if asked whether there is anything to change."
+      "simulated_user": "Whenever the assistant offers to draft a status comment or follow-up, or offers the stall interview, say not now. Approve the assistant's other proposals, and say move on if asked whether there is anything to change.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 28,
@@ -455,7 +536,10 @@
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "Keep going by priority; never ask to switch to due-date order. Approve the assistant's other proposals, and say move on if asked whether there is anything to change."
+      "simulated_user": "Keep going by priority; never ask to switch to due-date order. Approve the assistant's other proposals, and say move on if asked whether there is anything to change.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 29,
@@ -478,6 +562,9 @@
         "Not now. Next one.",
         "Not now. Next one.",
         "Not now. Next one."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -496,7 +583,10 @@
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "You don't know yet who should own either issue; leave them unassigned. You don't have the Confluence page's URL handy. You have no estimate for the migration yet. Approve the assistant's other proposals."
+      "simulated_user": "You don't know yet who should own either issue; leave them unassigned. You don't have the Confluence page's URL handy. You have no estimate for the migration yet. Approve the assistant's other proposals.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 31,
@@ -513,7 +603,10 @@
         "No reply numbers the items or refers to one by a position number ('1.', '#2', 'item 3 of 5', 'items 2 and 3'); each item is named by its linked or quoted title.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "Approve what the assistant proposes. When it offers to apply the same decision to several similar threads, say yes."
+      "simulated_user": "Approve what the assistant proposes. When it offers to apply the same decision to several similar threads, say yes.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 32,
@@ -530,7 +623,10 @@
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "If the assistant offers to create a new label, say no thanks. If asked when to check in with Cedarline Roofing, say the day after the date they were asked for. Approve the assistant's other proposals."
+      "simulated_user": "If the assistant offers to create a new label, say no thanks. If asked when to check in with Cedarline Roofing, say the day after the date they were asked for. Approve the assistant's other proposals.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 33,
@@ -547,7 +643,10 @@
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "Approve what the assistant proposes. If asked whether there is anything to change or to move on, say move on."
+      "simulated_user": "Approve what the assistant proposes. If asked whether there is anything to change or to move on, say move on.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 34,
@@ -565,6 +664,9 @@
       ],
       "follow_ups": [
         "Personal Tasks."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -582,7 +684,10 @@
         "No reply numbers the items or refers to one by a position number ('1.', '#2', 'item 3 of 5', 'items 2 and 3'); each item is named by its linked or quoted title.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "You think you logged a few things more than once. Approve what the assistant proposes, including merging duplicates. Say move on if asked whether there is anything to change."
+      "simulated_user": "You think you logged a few things more than once. Approve what the assistant proposes, including merging duplicates. Say move on if asked whether there is anything to change.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 36,
@@ -598,7 +703,10 @@
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "Approve what the assistant proposes. If asked whether there is anything to change or to move on, say move on."
+      "simulated_user": "Approve what the assistant proposes. If asked whether there is anything to change or to move on, say move on.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 37,
@@ -615,13 +723,17 @@
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "Approve what the assistant proposes, and say move on if asked whether there is anything to change. If told that new issues arrived, say leave them for a later run."
+      "simulated_user": "Approve what the assistant proposes, and say move on if asked whether there is anything to change. If told that new issues arrived, say leave them for a later run.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 38,
       "prompt": "HOME-3 in my Jira HOME project has been sitting there for months and I keep not doing anything about it. Can you help me get it unblocked?",
       "stage_skills": [
-        "conduct-interview"
+        "conduct-interview",
+        "create-task"
       ],
       "simulated_user": "You are Darby Wade. HOME-3 is your garage door. Answer what you are asked, one answer per message, and only reveal a fact below when a question reaches it.\n- If asked what kind of document, audience, length, format, or purpose: it is just for the Jira item, a short comment and a clear next step for yourself.\n- Original intent: get the door opening all the way again so the car can go in the garage before the first snow. The opener is the part you care about.\n- What you tried: the Brightline quote ($1,850 for a new opener and both springs) felt like far too much. You left messages with two other companies and nobody called back. You also tightened the track bolts after watching a video; it made no difference.\n- What is blocking you: you do not know whether the springs or the opener is the problem, so you cannot tell whether it is something you could fix yourself, and you keep putting off calling around because the companies only answer during your work hours.\n- Smaller pieces: yes. Your neighbour Priya replaced her own opener last year; the first piece is asking her to look at the door this Saturday and tell you whether it is the springs or the opener. After that, either buy the part or get one more quote.\n- Still valuable: yes, definitely. Do not close or defer it.\nWhen the assistant shows its final proposal and asks to apply it, approve it.",
       "expected_output": "One issue, HOME-3 ('garage door'), open since {{date:2026-06-15|%B %-d, %Y}} with no activity since its {{date:2026-08-20|%B %-d, %Y}} comment that nobody called back: well past 30 days with no progress. The user asks to unblock it, which is Step 8b's trigger, so the skill starts the stall interview through the conduct-interview skill (staged beside triage for this trial) and asks Step 8b's five questions one at a time: original intent, what has been tried and with what result, what is blocking it now, whether it breaks into smaller pieces and what the first is, and whether it is still worth doing. Run with SIMULATED_USER=1, whose briefing holds the answers. The interview ends in a proposal built from those answers: one immediately actionable next step (ask Priya to look at the door this Saturday and say whether it is the springs or the opener), a rewritten title in place of the noun phrase 'garage door', a recommended status, and the full text of a comment summarizing the review, presented for confirmation. Nothing is written to Jira until the user approves it.",
@@ -658,6 +770,9 @@
         "Archive it and leave it unread.",
         "Leave this one in the inbox for now, I'll answer Jordan myself. Next.",
         "Mark it read and archive it."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -676,7 +791,10 @@
         "The closing reply reports counts and anything left open by linked or quoted title, and is not a second presentation of every item's proposals.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "You don't know offhand when Sam's birthday is; leave the date empty. Approve the assistant's other proposals, and say move on if asked whether there is anything to change."
+      "simulated_user": "You don't know offhand when Sam's birthday is; leave the date empty. Approve the assistant's other proposals, and say move on if asked whether there is anything to change.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 41,
@@ -697,6 +815,9 @@
       "follow_ups": [
         "Yes, apply that.",
         "Skip this one."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -712,7 +833,10 @@
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "If the assistant offers to create a new label, say yes. Approve the assistant's other proposals, and say move on if asked whether there is anything to change."
+      "simulated_user": "If the assistant offers to create a new label, say yes. Approve the assistant's other proposals, and say move on if asked whether there is anything to change.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 43,
@@ -725,7 +849,10 @@
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "If the assistant offers to create a new label, say yes. Approve the assistant's other proposals, and say move on if asked whether there is anything to change."
+      "simulated_user": "If the assistant offers to create a new label, say yes. Approve the assistant's other proposals, and say move on if asked whether there is anything to change.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 44,
@@ -745,7 +872,10 @@
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "If offered to create a triage preferences file, say no thanks. Approve the assistant's other proposals."
+      "simulated_user": "If offered to create a triage preferences file, say no thanks. Approve the assistant's other proposals.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 45,
@@ -764,6 +894,9 @@
       "follow_ups": [
         "I already did that one. Mark it complete, but leave it on the board.",
         "Archive this one. I'm not doing it, but it isn't done either."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -780,7 +913,10 @@
         "No repository in github-state-out.json has a commit or file that github-seed.json does not: nothing was written to GitHub.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "Approve what the assistant proposes, including any Trello card."
+      "simulated_user": "Approve what the assistant proposes, including any Trello card.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 47,
@@ -795,7 +931,10 @@
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "If offered to create a triage preferences file, say no thanks. Approve the assistant's other proposals, and say move on if asked whether there is anything to change."
+      "simulated_user": "If offered to create a triage preferences file, say no thanks. Approve the assistant's other proposals, and say move on if asked whether there is anything to change.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 48,
@@ -810,7 +949,10 @@
         "No reply asks again where captured cards go.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "If offered to save your Backlog default, or to create a triage preferences file, say yes. Approve the assistant's other proposals, including the Trello card."
+      "simulated_user": "If offered to save your Backlog default, or to create a triage preferences file, say yes. Approve the assistant's other proposals, including the Trello card.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 49,
@@ -826,7 +968,10 @@
         "Every thread that has UNREAD in the seed and is archived during the run still has UNREAD in its final labelIds, unless the user asked in the conversation for it to be marked read.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "If asked which list a new card goes on, say the Inbox list. If offered to create a triage preferences file, say no thanks. Approve the assistant's other proposals, including the Trello card."
+      "simulated_user": "If asked which list a new card goes on, say the Inbox list. If offered to create a triage preferences file, say no thanks. Approve the assistant's other proposals, including the Trello card.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 50,
@@ -845,6 +990,9 @@
       "follow_ups": [
         "Archive it and leave it unread.",
         "Yes, those too."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -862,6 +1010,9 @@
       ],
       "follow_ups": [
         "Move this one to the Someday list, and apply this to any others like it."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -878,7 +1029,10 @@
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "If asked about the school flyer, say you'll open it yourself later and to leave it in the inbox, unread. Approve the assistant's other proposals."
+      "simulated_user": "If asked about the school flyer, say you'll open it yourself later and to leave it in the inbox, unread. Approve the assistant's other proposals.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 53,
@@ -894,6 +1048,9 @@
       ],
       "follow_ups": [
         "For this one, we need to search for whales in the ocean."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -910,6 +1067,9 @@
       ],
       "follow_ups": [
         "For this one I need to call the vet to book his shots. Go ahead and look up the vet's phone number now, it's in my email somewhere."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -925,7 +1085,10 @@
         "card-1 is not archived or marked complete.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "Approve what the assistant proposes. Say move on if asked whether there is anything to change."
+      "simulated_user": "Approve what the assistant proposes. Say move on if asked whether there is anything to change.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 56,
@@ -940,7 +1103,10 @@
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "You haven't opened Riley's guide yourself yet. If asked about the router steps, say you'll read the guide later. Approve the assistant's other proposals. Say move on if asked whether there is anything to change. If offered a preferences file, say no thanks."
+      "simulated_user": "You haven't opened Riley's guide yourself yet. If asked about the router steps, say you'll read the guide later. Approve the assistant's other proposals. Say move on if asked whether there is anything to change. If offered a preferences file, say no thanks.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 57,
@@ -958,6 +1124,9 @@
       ],
       "follow_ups": [
         "Archive this one and leave it unread, and apply this to any others like it."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -976,7 +1145,10 @@
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "When the assistant proposes the parking permit's due date, approve it and add: 'And from now on, due dates always go at 5 PM on the deadline day.' If asked for your timezone, say UTC is fine. If offered to save that to your preferences file, say yes. For the donation bags card, say: just for this one, make it due this Friday. Approve the assistant's other proposals, and say move on if asked whether there is anything to change."
+      "simulated_user": "When the assistant proposes the parking permit's due date, approve it and add: 'And from now on, due dates always go at 5 PM on the deadline day.' If asked for your timezone, say UTC is fine. If offered to save that to your preferences file, say yes. For the donation bags card, say: just for this one, make it due this Friday. Approve the assistant's other proposals, and say move on if asked whether there is anything to change.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 59,
@@ -995,6 +1167,9 @@
       ],
       "follow_ups": [
         "Label this one declutter, and apply this to any others like it."
+      ],
+      "stage_skills": [
+        "create-task"
       ]
     },
     {
@@ -1010,7 +1185,10 @@
         "Every reply presents at most one item and asks at most one question: no reply carries the summary line, proposals, or findings of two items, and no reply is a batch list of every item with its proposals. Every reply that follows a decision (on an item, an offer, or a batch) opens with a 'Done:' line (what changed, or 'Done: no changes.'), then any one-line note about an item skipped for leaving the scope, then exactly one of: the current item's next open point, an offer, the next item, or the closing report. A reply that follows an answer about the scope or the order has no Done: line, and a pending Scope Confirmation block comes before anything else in its reply.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "When the smoke detector battery card comes up, reply: 'Put a due date of this Saturday on it.' Otherwise approve what the assistant proposes, and say move on if asked whether there is anything to change."
+      "simulated_user": "When the smoke detector battery card comes up, reply: 'Put a due date of this Saturday on it.' Otherwise approve what the assistant proposes, and say move on if asked whether there is anything to change.",
+      "stage_skills": [
+        "create-task"
+      ]
     },
     {
       "id": 61,
@@ -1025,7 +1203,10 @@
         "No reply says porch-fixture.jpg or back-door.jpg was dropped or added.",
         "The conversation's account of its changes matches the final state. Every change a reply reports as made (on a 'Done:' or 'Applied:' line, in the closing report, or in prose: applied, updated, retitled, labeled, moved, archived, completed, drafted, created) appears in the final state of the service it names, diffed against the seed, and every item the final state shows as changed is reported as changed in some reply, with what changed on it. A change reported as made that the final state does not show fails, and so does a write no reply mentions. Proposals, offers, and questions are not claims of a change, and a thread's read or unread state is not graded here."
       ],
-      "simulated_user": "When the porch light card comes up, reply: 'Rewrite the description to exactly: The porch light flickers. Check the bulb first, then the switch. Change nothing else.' When the furnace filter card comes up, reply: 'Rewrite the description to exactly: Order the same 16x25 furnace filter as last time. Receipt: https://hardware.invalid/receipts/furnace-filter-16x25.pdf Change nothing else.' When the back door card comes up, reply: 'Rewrite the description to exactly: Scrape and repaint the back door in the same color: https://hardware.invalid/paint/back-door-color Change nothing else.' If the assistant warns that a rewrite will drop a link or asks you to confirm one, reply: 'Go ahead.' If it asks whether to restore an attachment, reply: 'No, leave it off.' Otherwise say move on if asked whether there is anything to change."
+      "simulated_user": "When the porch light card comes up, reply: 'Rewrite the description to exactly: The porch light flickers. Check the bulb first, then the switch. Change nothing else.' When the furnace filter card comes up, reply: 'Rewrite the description to exactly: Order the same 16x25 furnace filter as last time. Receipt: https://hardware.invalid/receipts/furnace-filter-16x25.pdf Change nothing else.' When the back door card comes up, reply: 'Rewrite the description to exactly: Scrape and repaint the back door in the same color: https://hardware.invalid/paint/back-door-color Change nothing else.' If the assistant warns that a rewrite will drop a link or asks you to confirm one, reply: 'Go ahead.' If it asks whether to restore an attachment, reply: 'No, leave it off.' Otherwise say move on if asked whether there is anything to change.",
+      "stage_skills": [
+        "create-task"
+      ]
     }
   ]
 }
