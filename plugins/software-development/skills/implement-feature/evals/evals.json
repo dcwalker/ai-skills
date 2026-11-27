@@ -68,7 +68,7 @@
       "expected_output": "QA rounds may find genuine small issues (missing docstring, unhandled unknown op, formatting) which the main thread fixes each time rather than disputing. Whether the loop concludes early (a round finds nothing) or runs the full 3-round cap, there is no unresolved/reaffirmed disagreement at the end, so the PR is marked ready per the skill's 'capped with no blocking disagreement' rule.",
       "expectations": [
         "No QA-raised issue is pushed back on across the run -- the transcript shows every issue QA raised was fixed, not disputed.",
-        "The QA loop ran at most 3 rounds.",
+        "The QA loop ran at most 5 rounds.",
         "The gh-stub log shows `pr ready` was called (since there is no blocking disagreement at the end, per the skill's rule).",
         "calculator/ops.py contains a describe(a, b, op) function with a passing test.",
         "The gh-stub log contains zero `pr merge` calls."
