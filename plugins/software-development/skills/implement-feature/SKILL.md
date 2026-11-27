@@ -58,9 +58,9 @@ As soon as the first meaningful commit exists, invoke the `pr` skill to open a *
 
 Continue steps 2–4 until the feature is functionally complete and any relevant documentation (README, inline docs, comments) reflects the change.
 
-### 6. QA review loop (max 3 rounds)
+### 6. QA review loop (max 5 rounds)
 
-Repeat up to 3 rounds:
+Repeat up to 5 rounds:
 
 a. Spawn a **fresh-context sub-agent** instructed to act as a QA engineer. Its prompt must be self-contained, the same way step 2's implementation sub-agent prompts are: include the original feature request text (or a link to it), the PR number/branch, the relevant file paths, and — from round 2 onward — any issues pushed back on in a prior round together with the reasoning given, so this round's agent can independently concur with or reaffirm the original issue despite the rebuttal. The sub-agent has no memory of this conversation and nothing to judge against otherwise. Ask it to review the current implementation and its documentation against that request and list concrete issues — bugs, missed edge cases, doc/code mismatches, etc. It should not modify code itself — only report findings; fixing or pushing back is the main thread's responsibility. Tell it explicitly that it may invoke the `review-code` skill if a structured pass over the diff would help, but that this is an internal QA pass, not a human-facing review — it must tell `review-code` not to post to the PR, and instead return findings as text.
 
@@ -70,7 +70,7 @@ b. For each issue the QA agent raises, the main thread does one of:
 
 c. If anything was fixed or pushed back on, run another round: spawn a **new fresh-context QA sub-agent** rather than continuing the prior one, so it evaluates the current state on its own merits instead of just reacting to the rebuttal.
 
-d. Stop the loop when a round returns zero issues — none fixed, none pushed back on, none reaffirmed from a prior round — or when 3 rounds are complete, whichever comes first. A reaffirmed issue (one the QA agent raises again despite a prior round's pushback) still counts as an issue for this check; it is not "no new issues."
+d. Stop the loop when a round returns zero issues — none fixed, none pushed back on, none reaffirmed from a prior round — or when 5 rounds are complete, whichever comes first. A reaffirmed issue (one the QA agent raises again despite a prior round's pushback) still counts as an issue for this check; it is not "no new issues."
 
 If the cap is hit while a disagreement is still unresolved (QA keeps raising something the main thread keeps pushing back on), stop and surface the specific disagreement to the user instead of forcing a resolution.
 
