@@ -1,6 +1,6 @@
 {
   "skill_name": "create-task",
-  "notes": "MCP-driver suite (evals/lib/run-mcp-trials.sh via run-trials.sh). Every eval is single-turn: an empty follow_ups list, so the reply is graded as the user would first see it and the simulated user never answers. Evals 1-7 and 11-16 are conversation_only (no tracker connected, so the presented task is the deliverable); 8-10 run against the Trello stub. Positive cases: 1 (hard deadline and resources), 3 (check-in with a promised date), 4 (combined contexts), 8 (pre-authorized filing with existing labels). Negative or ambiguous cases: 2 (soft target, no due date), 5 (not an action, and a password), 6 (project hanging on an event with no date), 7 (too vague to rewrite without inventing), 9 (duplicate already on the board), 10 (draft only, no filing without a yes), 12 (one trip, so one task, not split). Positive case 11 splits actions that need different contexts. Evals 13-15 ask for a different format (an email to self, plain prose, a Markdown checklist) and grade that the content survives the format. The top-level \"instruction_files\": \"managed-only\" keeps the running user's own instructions out of every trial. Eval 16 checks that create-task can write a meeting's action items the way organize-meeting-notes needs them: owner-first lines, dates with their calendar date, an open question for a missing owner, no date borrowed from another event, and nothing already done in the meeting.",
+  "notes": "MCP-driver suite (evals/lib/run-mcp-trials.sh via run-trials.sh). Every eval is single-turn: an empty follow_ups list, so the reply is graded as the user would first see it and the simulated user never answers. Evals 1-7 and 11-18 are conversation_only (no tracker connected, so the presented task is the deliverable); 8-10 run against the Trello stub. Positive cases: 1 (hard deadline and resources), 3 (check-in with a promised date), 4 (combined contexts), 8 (pre-authorized filing with existing labels). Negative or ambiguous cases: 2 (soft target, no due date), 5 (not an action, and a password), 6 (project hanging on an event with no date), 7 (too vague to rewrite without inventing), 9 (duplicate already on the board), 10 (draft only, no filing without a yes), 12 (one trip, so one task, not split). Positive case 11 splits actions that need different contexts. Evals 13-15 ask for a different format (an email to self, plain prose, a Markdown checklist) and grade that the content survives the format. The top-level \"instruction_files\": \"managed-only\" keeps the running user's own instructions out of every trial. Eval 16 checks that create-task can write a meeting's action items the way organize-meeting-notes needs them: owner-first lines, dates with their calendar date, an open question for a missing owner, no date borrowed from another event, and nothing already done in the meeting. Evals 17 and 18 cover email links: 17 (positive) builds both the Gmail link and an encoded Apple Mail link from the raw headers given, and 18 (negative) has no Message-ID, so the skill must not invent a message: link and says it is missing.",
   "instruction_files": "managed-only",
   "evals": [
     {
@@ -216,6 +216,35 @@
         "No action item is listed for keeping the sync at 30 minutes or for filing INFRA-212.",
         "The reply asks for no due date on any item (no 'by when?' question).",
         "The reply does not say that any date from the meeting (August 21 or September 10) has passed or is in the past."
+      ],
+      "follow_ups": []
+    },
+    {
+      "id": 17,
+      "conversation_only": true,
+      "prompt": "Make a Trello card from this email. It's in my Gmail account, which I also read in Apple Mail on my Mac and iPhone.\n\nGmail link: https://mail.google.com/mail/?authuser=sam.rivera@gmail.com#all/thread-f:1700000000000000001\n\nRaw headers:\nFrom: Priya Nair <priya.nair@example.com>\nDate: Mon, 30 Nov 2026 08:12:40 -0800\nSubject: Field trip permission slip\nMessage-ID: <CAF+9x=Qa7Lm@mail.gmail.com>\n\nBody:\nHi Sam, please sign and return Maya's field trip permission slip by Friday, December 4. You can drop it at the front office. Thanks, Priya",
+      "expected_output": "A task to sign and return Maya's field trip permission slip, due Friday, December 4, 2026, with the front office as where it goes. Its links include both the Gmail link as given and an Apple Mail link built from the Message-ID: message:%3CCAF%2B9x%3DQa7Lm@mail.gmail.com%3E, with the '+' and '=' percent-encoded. Because Trello attachments accept only web links, the message: link is placed in the description, not as an attachment.",
+      "expectations": [
+        "The task's title starts with a verb and names signing and returning the permission slip.",
+        "The task gives Friday, December 4, 2026 as the due date.",
+        "The task includes the Gmail link exactly as given.",
+        "The task includes the Apple Mail link 'message:%3CCAF%2B9x%3DQa7Lm@mail.gmail.com%3E', with '+' encoded as %2B, '=' as %3D, and the angle brackets as %3C and %3E.",
+        "The Gmail link comes before the Apple Mail link.",
+        "The reply does not put the message: link in a Trello attachment; it goes in the card's description."
+      ],
+      "follow_ups": []
+    },
+    {
+      "id": 18,
+      "conversation_only": true,
+      "prompt": "Remind me to book Maya's dentist cleaning from this email in my Gmail, which I also read in Apple Mail: https://mail.google.com/mail/?authuser=sam.rivera@gmail.com#all/thread-f:1700000000000000002 (subject 'Time for Maya's cleaning', from Bright Smiles Dental, call 206-555-0142 to book).",
+      "expected_output": "A task to call Bright Smiles Dental at 206-555-0142 to book Maya's cleaning, with the Gmail link as given. No Message-ID is available, so the reply does not invent an Apple Mail message: link and says the Mail link is missing because the email's Message-ID header couldn't be read.",
+      "expectations": [
+        "The task's title starts with a verb and names booking Maya's dentist cleaning.",
+        "The task includes the phone number 206-555-0142.",
+        "The task includes the Gmail link exactly as given.",
+        "The reply contains no 'message:' link and does not make up a Message-ID.",
+        "The reply says the Apple Mail link is missing, or that it needs the email's Message-ID header."
       ],
       "follow_ups": []
     }
