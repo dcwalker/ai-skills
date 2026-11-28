@@ -260,6 +260,45 @@ the thing that explains it. Follow the user's own rules about which way
 links may point; some trackers are private, and links go from them, not to
 them.
 
+### Email links
+
+A task from an email links to that one email, so it opens on a phone as well
+as a computer. Gmail web links (`https://mail.google.com/mail/...`) open the
+email only in a desktop browser; on an iPhone they land in Safari, and Gmail
+has no documented link that opens one email in its app. Apple Mail links
+(`message:`) open the email in Mail on both a Mac and an iPhone, once Mail on
+that device has downloaded it. When the email is in a Gmail account (a
+`@gmail.com` address, or a Google Workspace account the user reads in Gmail)
+and the user also reads that account in Apple Mail, include both links, the
+Gmail one first:
+
+```
+Email: https://mail.google.com/mail/?authuser=<address>#all/thread-f:1700000000000000001
+Apple Mail: [Open in Mail](message:%3CAbC%2B12%3Dxy@mail.gmail.com%3E)
+```
+
+Both are built from the email itself:
+
+- **Pick the one email.** A Gmail thread link covers a conversation; a Mail
+  link opens a single email. Use the email the task is about, or the most
+  recent one from the other person when the task doesn't say.
+- **Read its `Message-ID` header.** It comes from the email's raw headers:
+  a Gmail connector's raw message format, Gmail's "Show original", or Mail's
+  headers view. Never guess or reconstruct it. A Gmail link's `thread-f:` and
+  `msg-f:` numbers are decimal; converted to hex, they are the thread and
+  message IDs a Gmail connector takes.
+- **Mail link:** `message:%3C` + the Message-ID without its angle brackets +
+  `%3E`. Percent-encode any `+` (`%2B`), `=` (`%3D`), and other characters
+  outside letters, digits, `@`, `.`, `_`, and `-`.
+- **Gmail link from a Message-ID:** when only the Mail link is known,
+  `https://mail.google.com/mail/?authuser=<address>#search/rfc822msgid:<Message-ID>`
+  finds the email in Gmail, encoded the same way.
+
+A tracker that accepts only web addresses as attachments (Trello does) can't
+hold a `message:` link there, so put it in the description as a Markdown
+link. When the headers can't be read, include the link you have and say the
+other one is missing.
+
 ## Step 5: Present it
 
 The content from Steps 1 to 4 is the skill; the format is only its
